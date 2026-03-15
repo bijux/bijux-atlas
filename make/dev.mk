@@ -14,7 +14,7 @@ dev-doctor: ## Run dev control-plane doctor suite
 	@$(DEV_ATLAS) registry doctor --format $(FORMAT)
 
 dev-check-ci: ## Run dev control-plane ci suite
-	@$(DEV_ATLAS) suites run --suite ci_fast --mode all --format $(FORMAT)
+	@$(DEV_ATLAS) check run --suite ci_fast --include-internal --include-slow --format $(FORMAT)
 
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
 	@$(DEV_ATLAS) build install-local --allow-subprocess --allow-write --format $(FORMAT)

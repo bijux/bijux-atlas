@@ -22,7 +22,7 @@ include make/runenv.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	artifacts-clean build clean docker doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make make-fast make-target-list openapi-generate ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-all suites-list tests-all
+	build ci-fast ci-nightly ci-pr clean docker doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make openapi-generate ops-contracts ops-contracts-effect registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-list tests-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format $(FORMAT)
@@ -53,23 +53,15 @@ root-surface-explain: ## Explain why each root file and directory exists
 clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format $(FORMAT)
 
-artifacts-clean: ## Clean ephemeral artifacts through the control plane
-	@$(DEV_ATLAS) artifacts clean --allow-write --format $(FORMAT)
-
-lint-make: ## Run make contracts through the control plane
-	@$(DEV_ATLAS) suites run --suite make_required --mode all --format $(FORMAT)
-
-make-fast: ## Run the fastest make-focused contract lane
-	@printf '%s\n' "run: $(DEV_ATLAS) suites run --suite make_required --mode all --format $(FORMAT)"
-	@mkdir -p $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)
-	@$(DEV_ATLAS) suites run --suite make_required --mode all --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)/report.json >/dev/null
+lint-make: ## Run the governed make-required check suite
+	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
-	@$(DEV_ATLAS) suites run --suite make_required --mode all --format $(FORMAT)
+	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)
 
 _internal-make-drift-report: ## Generate make drift report artifact from make-domain checks
 	@mkdir -p $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)
-	@$(DEV_ATLAS) suites run --suite make_required --mode all --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
 k8s-render: ## Render Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format $(FORMAT)"
@@ -90,21 +82,6 @@ stack-down: ## Stop local ops stack through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops stack down --profile $(PROFILE) --allow-subprocess --format $(FORMAT)"
 	@mkdir -p $(ARTIFACT_ROOT)/stack-down/$(RUN_ID)
 	@$(DEV_ATLAS) ops stack down --profile $(PROFILE) --allow-subprocess --format $(FORMAT) --out $(ARTIFACT_ROOT)/stack-down/$(RUN_ID)/report.txt >/dev/null
-
-ops-fast: ## Run fast ops check suite through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) suites run --suite ci_fast --mode all --format $(FORMAT)"
-	@mkdir -p $(ARTIFACT_ROOT)/ops-fast/$(RUN_ID)
-	@$(DEV_ATLAS) suites run --suite ci_fast --mode all --format $(FORMAT) --out $(ARTIFACT_ROOT)/ops-fast/$(RUN_ID)/report.json >/dev/null
-
-ops-pr: ## Run PR ops check suite through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) suites run --suite ci_pr --mode all --format $(FORMAT)"
-	@mkdir -p $(ARTIFACT_ROOT)/ops-pr/$(RUN_ID)
-	@$(DEV_ATLAS) suites run --suite ci_pr --mode all --format $(FORMAT) --out $(ARTIFACT_ROOT)/ops-pr/$(RUN_ID)/report.json >/dev/null
-
-ops-nightly: ## Run nightly ops check suite through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) suites run --suite ci_nightly --mode all --format $(FORMAT)"
-	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
-	@$(DEV_ATLAS) suites run --suite ci_nightly --mode all --format $(FORMAT) --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
 kind-up: ## Create or verify the deterministic kind simulation cluster
 	@$(DEV_ATLAS) ops kind up --allow-subprocess --allow-write --format $(FORMAT)
@@ -128,10 +105,6 @@ openapi-generate: ## Regenerate OpenAPI contract artifacts through dev-atlas
 suites-list: ## List suite ids exposed through the control plane
 	@$(DEV_ATLAS) suites list --format $(FORMAT)
 
-suites-all: ## Run the governed validation suites sequentially
-	@$(DEV_ATLAS) suites run --suite deep --mode all $(SUITE_FAIL_FAST_FLAG) --format $(FORMAT)
-	@$(DEV_ATLAS) suites run --suite contracts --mode all $(SUITE_FAIL_FAST_FLAG) --format $(FORMAT)
-
 checks-group: ## Run one checks suite group (GROUP=<name>)
 	@[ -n "$${GROUP:-}" ] || { echo "usage: make checks-group GROUP=<name>" >&2; exit 2; }
 	@$(DEV_ATLAS) checks run --group "$${GROUP}" --format $(FORMAT)
@@ -152,34 +125,8 @@ registry-doctor: ## Validate governed suite registries and mappings
 tests-all: ## Run the deterministic test suite without external network
 	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) $(if $(filter 1 true yes,$(INCLUDE_CLIENT_PYTHON)),--include-client-python,) --format $(FORMAT)
 
-release-verify: ## Run release verification lane through bijux-dev-atlas only
-	@mkdir -p $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)
-	@echo "run: $(DEV_ATLAS) suites run --suite deep --mode all --format json"
-	@$(DEV_ATLAS) suites run --suite deep --mode all --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-deep.json \
-	|| { echo "release-verify failed at deep validation suite; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-deep.json and rerun with --verbose"; exit 1; }
-	@echo "run: $(DEV_ATLAS) suites run --suite contracts --mode all --format json"
-	@$(DEV_ATLAS) suites run --suite contracts --mode all --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-full.json \
-	|| { echo "release-verify failed at contracts suite; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-full.json and rerun a focused domain with --suite contracts"; exit 1; }
-	@echo "run: $(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format json"
-	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json \
-	|| { echo "release-verify failed at test-all; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json and rerun the failing suite"; exit 1; }
-	@echo "run: $(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json"
-	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json \
-	|| { echo "release-verify failed at docs build; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json and fix docs build errors"; exit 1; }
-	@echo "run: $(DEV_ATLAS) release crates dry-run --format json"
-	@$(DEV_ATLAS) release crates dry-run --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json \
-	|| { echo "release-verify failed at crates packaging dry-run; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json"; exit 1; }
-	@echo "run: $(DEV_ATLAS) release ops publish-plan --format json"
-	@$(DEV_ATLAS) release ops publish-plan --format json --out $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json \
-	|| { echo "release-verify failed at ops packaging dry-run; next: inspect $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json"; exit 1; }
-	@printf '{\n  "schema_version": 1,\n  "status": "ok",\n  "text": "release verify passed",\n  "artifacts": {\n    "checks": "%s",\n    "contracts": "%s",\n    "tests": "%s",\n    "docs_build": "%s",\n    "crates_dry_run": "%s",\n    "ops_packaging_dry_run": "%s"\n  }\n}\n' \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/checks-deep.json" \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/contracts-full.json" \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/tests-all.json" \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/docs-build.json" \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/crates-dry-run.json" \
-	"$(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/ops-packaging-dry-run.json" \
-	> $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json
-	@echo "release-verify summary: $(ARTIFACT_ROOT)/release-verify/$(RUN_ID)/summary.json"
+release-verify: ## Verify a release evidence tarball through bijux-dev-atlas
+	@[ -n "$${EVIDENCE:-}" ] || { echo "usage: make release-verify EVIDENCE=<tarball>" >&2; exit 2; }
+	@$(DEV_ATLAS) release verify --evidence "$${EVIDENCE}" --format $(FORMAT)
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan release-verify root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly suites-all suites-list tests-all
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report checks-effect checks-group checks-pure checks-tag clean doctor kind-down kind-reset kind-status kind-up openapi-generate registry-doctor release-plan release-verify root-surface-explain k8s-render k8s-validate lint-make stack-up stack-down suites-list tests-all

@@ -84,7 +84,7 @@ jobs:
           git diff --exit-code -- docs > "${logs_root}/docs-generated-diff.log"
           make docker > "${logs_root}/docker.stdout.log" 2> "${logs_root}/docker.stderr.log"
           make ops-contracts-effect > "${logs_root}/ops-contracts-effect.stdout.log" 2> "${logs_root}/ops-contracts-effect.stderr.log"
-          make ops-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
+          make ci-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-nightly.json"
           printf "- lane: ci-nightly\n- report: %s\n- docs registry build: %s\n- docs reference generate: %s\n- contracts configs static: %s\n- contracts make static: %s\n- ops validation: %s\n- docker check: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-nightly.json" "${report_root}/docs-registry-build.json" "${report_root}/docs-reference-generate.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-validate.json" "${report_root}/docker-check.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"

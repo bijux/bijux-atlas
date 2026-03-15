@@ -676,7 +676,7 @@ jobs:
               "active_waivers": active_waivers
           }, indent=2) + "\n")
           PY
-          make ops-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
+          make ci-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check list --suite ci_fast --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_fast.json"
           cargo run --locked -q -p bijux-dev-atlas -- demo quickstart --format json > "${report_root}/demo-quickstart.json"
           python - <<'PY'
@@ -1504,7 +1504,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- docs external-links --allow-network --format json > "${report_root}/docs-linkcheck.json" 2> "${logs_root}/docs-linkcheck.stderr.log"
           make docker > "${logs_root}/docker.stdout.log" 2> "${logs_root}/docker.stderr.log"
           make ops-contracts > "${logs_root}/ops-contracts-static.stdout.log" 2> "${logs_root}/ops-contracts-static.stderr.log"
-          make ops-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"
+          make ci-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check list --suite ci_pr --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_pr.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-pr.json"
           printf "- lane: ci-pr\n- report: %s\n- docs build: %s\n- docs linkcheck: %s\n- docs preview: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \

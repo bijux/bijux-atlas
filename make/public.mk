@@ -8,7 +8,7 @@ include make/checks.mk
 include make/contracts.mk
 
 make-target-list: ## Regenerate make public target list artifact
-	@$(DEV_ATLAS) make surface --allow-write --format $(FORMAT) --out make/target-list.json >/dev/null
+	@$(DEV_ATLAS) make target-list --allow-write --format $(FORMAT) >/dev/null
 	@printf '%s\n' "wrote: make/target-list.json"
 
 .PHONY: make-target-list make-contract-check

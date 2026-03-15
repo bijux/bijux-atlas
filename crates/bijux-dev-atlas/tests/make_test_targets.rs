@@ -35,31 +35,26 @@ fn test_all_runs_nextest_once_without_retries() {
 }
 
 #[test]
-fn suites_all_runs_only_suites_surface_commands() {
-    let root_mk =
-        fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
-    let start = root_mk
-        .find("suites-all: ## Run the governed validation suites sequentially")
-        .expect("suites-all target");
-    let tail = &root_mk[start..];
-    let end = tail.find("\n\n").unwrap_or(tail.len());
-    let target_block = &tail[..end];
-
-    assert_eq!(
-        target_block.matches("$(DEV_ATLAS) suites run").count(),
-        2,
-        "suites-all should execute the deep and contracts suites directly"
-    );
-    assert!(
-        !target_block.contains("checks run"),
-        "suites-all should not use the retired checks surface"
-    );
-    assert!(
-        !target_block.contains("contract run"),
-        "suites-all should not use the retired contract surface"
-    );
-    assert!(target_block.contains("--suite deep"));
-    assert!(target_block.contains("--suite contracts"));
+fn ci_lane_targets_use_check_run_surface() {
+    let ci_mk = fs::read_to_string(workspace_root().join("make/ci.mk")).expect("read make/ci.mk");
+    for marker in [
+        "ci-fast: ## CI fast lane wrapper",
+        "ci-pr: ## CI PR lane wrapper",
+        "ci-nightly: ## CI nightly lane (includes slow checks)",
+    ] {
+        let start = ci_mk.find(marker).expect("target block");
+        let tail = &ci_mk[start..];
+        let end = tail.find("\n\n").unwrap_or(tail.len());
+        let target_block = &tail[..end];
+        assert!(
+            target_block.contains("$(DEV_ATLAS) check run --suite"),
+            "{marker} should use the live checks surface"
+        );
+        assert!(
+            !target_block.contains("suites run"),
+            "{marker} should not use the retired suites lane surface"
+        );
+    }
 }
 
 #[test]
@@ -87,4 +82,25 @@ fn checks_variant_targets_use_human_check_run_surface() {
             "{marker} should not emit legacy json by default"
         );
     }
+}
+
+#[test]
+fn make_target_list_wrapper_uses_target_list_surface() {
+    let public_mk =
+        fs::read_to_string(workspace_root().join("make/public.mk")).expect("read make/public.mk");
+    let start = public_mk
+        .find("make-target-list: ## Regenerate make public target list artifact")
+        .expect("make-target-list target");
+    let tail = &public_mk[start..];
+    let end = tail.find("\n\n").unwrap_or(tail.len());
+    let target_block = &tail[..end];
+
+    assert!(
+        target_block.contains("$(DEV_ATLAS) make target-list --allow-write"),
+        "make-target-list should use the dedicated target-list surface"
+    );
+    assert!(
+        !target_block.contains("make surface"),
+        "make-target-list should not reuse the surface report envelope"
+    );
 }

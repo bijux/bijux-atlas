@@ -57,7 +57,7 @@ The narrow workflow is:
 
 ```bash
 cargo run -q -p bijux-dev-atlas -- suites list
-cargo run -q -p bijux-dev-atlas -- suites run --suite ci_pr --format json
+cargo run -q -p bijux-dev-atlas -- check run --suite ci_pr --include-internal --include-slow --allow-git --format json
 cargo run -q -p bijux-dev-atlas -- check list
 cargo run -q -p bijux-dev-atlas -- check run --tag lint --format json
 ```

@@ -1520,9 +1520,9 @@ fn report_payload_for_check(
         }
         "check-suite-summary" => {
             let source = [
-                "ops-fast/suite-run/report.json",
-                "ops-pr/suite-run/report.json",
-                "ops-nightly/suite-run/report.json",
+                "ci-fast/suite-run/report.json",
+                "ci-pr/suite-run/report.json",
+                "ci-nightly/suite-run/report.json",
             ]
             .into_iter()
             .find_map(|rel| read_optional_json(&source_report_path(task_root, rel)))

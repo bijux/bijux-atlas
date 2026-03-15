@@ -244,7 +244,7 @@ fn run_wrappers_verify(
         "kind": "make_wrappers_verify",
         "text": if code == 0 { "make wrapper verification passed" } else { "make wrapper verification failed" },
         "status": if code == 0 { "ok" } else { "failed" },
-        "verification_command": "cargo run -p bijux-dev-atlas -- contract run --mode static --domain make --format json",
+        "verification_command": "cargo run -p bijux-dev-atlas -- check run --suite make_required --include-internal --include-slow --format json",
         "duration_ms": started.elapsed().as_millis() as u64,
         "exit_code": code,
     });
