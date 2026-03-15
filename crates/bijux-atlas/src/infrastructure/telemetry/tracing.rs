@@ -2,6 +2,10 @@
 
 use opentelemetry::trace::TracerProvider as _;
 use opentelemetry_otlp::WithExportConfig;
+use std::fs::{File, OpenOptions};
+use std::io::{self, Write};
+use std::path::Path;
+use std::sync::{Arc, Mutex};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use crate::telemetry::logging::LoggingConfig;
@@ -24,6 +28,42 @@ pub struct TraceConfig {
     pub jaeger_endpoint: Option<String>,
     pub trace_file_path: Option<String>,
     pub service_name: String,
+}
+
+#[derive(Clone)]
+struct SharedFileWriter {
+    file: Arc<Mutex<File>>,
+}
+
+impl SharedFileWriter {
+    fn new(path: &Path) -> Result<Self, String> {
+        let file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
+            .map_err(|e| format!("failed opening trace file: {e}"))?;
+        Ok(Self {
+            file: Arc::new(Mutex::new(file)),
+        })
+    }
+}
+
+impl Write for SharedFileWriter {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        let mut file = self
+            .file
+            .lock()
+            .map_err(|_| io::Error::other("trace file writer lock poisoned"))?;
+        file.write(buf)
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        let mut file = self
+            .file
+            .lock()
+            .map_err(|_| io::Error::other("trace file writer lock poisoned"))?;
+        file.flush()
+    }
 }
 
 pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
@@ -108,19 +148,13 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                     std::fs::create_dir_all(parent)
                         .map_err(|e| format!("failed creating trace file directory: {e}"))?;
                 }
-                let make_writer_path = writer_path.clone();
+                let writer = SharedFileWriter::new(&writer_path)?;
                 tracing_subscriber::registry()
                     .with(filter)
                     .with(
                         tracing_subscriber::fmt::layer()
                             .json()
-                            .with_writer(move || {
-                                std::fs::OpenOptions::new()
-                                    .create(true)
-                                    .append(true)
-                                    .open(&make_writer_path)
-                                    .expect("trace file writer must be creatable")
-                            }),
+                            .with_writer(move || writer.clone()),
                     )
                     .try_init()
                     .map_err(|e| format!("failed to initialize file tracing subscriber: {e}"))?;
@@ -133,6 +167,28 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
         init_plain_subscriber(config.logging.log_json, filter)?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::SharedFileWriter;
+    use std::io::Write;
+
+    #[test]
+    fn shared_trace_writer_appends_without_panicking() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let path = temp.path().join("trace.jsonl");
+        let mut writer_a = SharedFileWriter::new(&path).expect("writer a");
+        let mut writer_b = writer_a.clone();
+
+        writer_a.write_all(br#"{"event":"a"}"#).expect("write a");
+        writer_b.write_all(br#"{"event":"b"}"#).expect("write b");
+        writer_b.flush().expect("flush");
+
+        let contents = std::fs::read_to_string(&path).expect("read trace file");
+        assert!(contents.contains(r#"{"event":"a"}"#));
+        assert!(contents.contains(r#"{"event":"b"}"#));
+    }
 }
 
 fn init_otel_subscriber(
