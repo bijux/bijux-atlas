@@ -276,7 +276,7 @@ fn normalize_legacy_command_aliases(args: &mut [String]) {
 
 fn print_legacy_atlas_help() {
     const LEGACY_ATLAS_HELP: &str = "\
-Legacy atlas namespace compatibility surface
+Legacy atlas namespace command mapping
 Commands:
   ingest
   serve

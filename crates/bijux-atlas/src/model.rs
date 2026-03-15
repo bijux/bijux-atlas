@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
-//! Atlas model compatibility surface.
+//! Atlas model compatibility exports.
 //!
 //! ```compile_fail
 //! use bijux_atlas::model::DiffStatus;
