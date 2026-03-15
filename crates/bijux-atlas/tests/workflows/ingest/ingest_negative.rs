@@ -14,14 +14,14 @@ fn fixture(path: &str) -> PathBuf {
 #[test]
 fn malformed_gff3_coordinates_fail_with_validation_error() {
     let out = tempdir().expect("tmp");
+    let dataset = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
     let opts = IngestOptions {
         gff3_path: fixture("tests/fixtures/contigs/genes_invalid_coord.gff3"),
         fasta_path: fixture("tests/fixtures/contigs/genome.fa"),
         fai_path: fixture("tests/fixtures/contigs/genome.fa.fai"),
         output_root: out.path().to_path_buf(),
-        dataset: DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset"),
         strictness: StrictnessMode::Strict,
-        ..IngestOptions::default()
+        ..IngestOptions::for_dataset(dataset)
     };
 
     let err = ingest_dataset(&opts).expect_err("invalid coordinate must fail");
@@ -37,15 +37,15 @@ fn malformed_gff3_coordinates_fail_with_validation_error() {
 #[test]
 fn missing_fai_without_opt_in_auto_generation_fails() {
     let out = tempdir().expect("tmp");
+    let dataset = DatasetId::new("112", "homo_sapiens", "GRCh38").expect("dataset");
     let opts = IngestOptions {
         gff3_path: fixture("tests/fixtures/tiny/genes.gff3"),
         fasta_path: fixture("tests/fixtures/tiny/genome.fa"),
         fai_path: out.path().join("missing.fa.fai"),
         output_root: out.path().to_path_buf(),
-        dataset: DatasetId::new("112", "homo_sapiens", "GRCh38").expect("dataset"),
         strictness: StrictnessMode::Strict,
         dev_allow_auto_generate_fai: false,
-        ..IngestOptions::default()
+        ..IngestOptions::for_dataset(dataset)
     };
 
     let err = ingest_dataset(&opts).expect_err("missing fai must fail");

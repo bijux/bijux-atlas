@@ -15,15 +15,15 @@ fn fixture(path: &str) -> PathBuf {
 #[test]
 fn fixture_ingest_produces_expected_artifacts_and_hashes() {
     let out = tempdir().expect("tmp");
+    let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
     let opts = IngestOptions {
         gff3_path: fixture("tests/fixtures/tiny/genes.gff3"),
         fasta_path: fixture("tests/fixtures/tiny/genome.fa"),
         fai_path: fixture("tests/fixtures/tiny/genome.fa.fai"),
         output_root: out.path().to_path_buf(),
-        dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
         strictness: StrictnessMode::Strict,
         timestamp_policy: TimestampPolicy::DeterministicZero,
-        ..IngestOptions::default()
+        ..IngestOptions::for_dataset(dataset)
     };
 
     let (result, events) = ingest_dataset_with_events(&opts).expect("ingest");

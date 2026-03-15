@@ -89,14 +89,15 @@ pub enum TimestampPolicy {
     SourceMetadataOnly,
 }
 
-impl Default for IngestOptions {
-    fn default() -> Self {
+impl IngestOptions {
+    #[must_use]
+    pub fn for_dataset(dataset: DatasetId) -> Self {
         Self {
             gff3_path: PathBuf::new(),
             fasta_path: PathBuf::new(),
             fai_path: PathBuf::new(),
             output_root: PathBuf::new(),
-            dataset: DatasetId::new("0", "unknown", "unknown").expect("default dataset"),
+            dataset,
             strictness: StrictnessMode::Strict,
             duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,
             duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy::Reject,
