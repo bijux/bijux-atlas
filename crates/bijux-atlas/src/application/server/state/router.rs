@@ -2,6 +2,12 @@
 
 use super::*;
 use crate::application::config::ApiConfig;
+use crate::domain::{
+    canonical, load_cluster_config_from_path, ConsistencyGuarantee, ConsistencyLevel,
+    FailureDetectionPolicy, FailureRecoveryRegistry, MembershipPolicy, MembershipRegistry,
+    RecoveryPolicy, ReplicaRegistry, ReplicationPolicy, ResilienceGuarantees, ShardRegistry,
+    sha256_hex,
+};
 
 impl AppState {
     fn init_request_metrics() -> Arc<RequestMetrics> {
@@ -13,62 +19,62 @@ impl AppState {
             "api": api,
             "limits": limits
         });
-        match bijux_atlas_core::canonical::stable_json_bytes(&payload) {
-            Ok(bytes) => bijux_atlas_core::sha256_hex(&bytes),
-            Err(_) => bijux_atlas_core::sha256_hex(b"runtime-policy-hash-fallback"),
+        match canonical::stable_json_bytes(&payload) {
+            Ok(bytes) => sha256_hex(&bytes),
+            Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         }
     }
 
-    fn init_membership_registry() -> bijux_atlas_core::MembershipRegistry {
+    fn init_membership_registry() -> MembershipRegistry {
         let policy = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
             .ok()
             .and_then(|cluster_path| {
-                bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
+                load_cluster_config_from_path(std::path::Path::new(&cluster_path))
                     .ok()
-                    .map(|cfg| bijux_atlas_core::MembershipPolicy {
+                    .map(|cfg| MembershipPolicy {
                         heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
                         node_timeout_ms: cfg.health.node_timeout_ms,
                     })
             })
-            .unwrap_or(bijux_atlas_core::MembershipPolicy {
+            .unwrap_or(MembershipPolicy {
                 heartbeat_interval_ms: 1_000,
                 node_timeout_ms: 5_000,
             });
-        bijux_atlas_core::MembershipRegistry::new(policy)
+        MembershipRegistry::new(policy)
     }
 
-    fn init_shard_registry() -> bijux_atlas_core::ShardRegistry {
-        bijux_atlas_core::ShardRegistry::new()
+    fn init_shard_registry() -> ShardRegistry {
+        ShardRegistry::new()
     }
 
-    fn init_replica_registry() -> bijux_atlas_core::ReplicaRegistry {
-        bijux_atlas_core::ReplicaRegistry::new(
-            bijux_atlas_core::ReplicationPolicy {
+    fn init_replica_registry() -> ReplicaRegistry {
+        ReplicaRegistry::new(
+            ReplicationPolicy {
                 replication_factor: 2,
                 primary_required: true,
                 max_replication_lag_ms: 2_000,
             },
-            bijux_atlas_core::ConsistencyGuarantee {
-                read_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
-                write_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
+            ConsistencyGuarantee {
+                read_consistency: ConsistencyLevel::Quorum,
+                write_consistency: ConsistencyLevel::Quorum,
             },
         )
     }
 
-    fn init_resilience_registry() -> bijux_atlas_core::FailureRecoveryRegistry {
-        bijux_atlas_core::FailureRecoveryRegistry::new(
-            bijux_atlas_core::FailureDetectionPolicy {
+    fn init_resilience_registry() -> FailureRecoveryRegistry {
+        FailureRecoveryRegistry::new(
+            FailureDetectionPolicy {
                 node_timeout_ms: 5_000,
                 replica_lag_threshold_ms: 2_000,
                 recovery_retry_budget: 3,
             },
-            bijux_atlas_core::RecoveryPolicy {
+            RecoveryPolicy {
                 auto_recovery_enabled: true,
                 shard_failover_enabled: true,
                 replica_failover_enabled: true,
                 rebalance_after_recovery: true,
             },
-            bijux_atlas_core::ResilienceGuarantees {
+            ResilienceGuarantees {
                 failover_within_ms: 10_000,
                 diagnostics_available: true,
                 event_logging_required: true,

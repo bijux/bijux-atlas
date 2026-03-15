@@ -2,16 +2,16 @@
 
 #![deny(clippy::redundant_clone)]
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use crate::http::handlers::{
     api_error_response, dataset_artifact_hash, dataset_etag, error_json, if_none_match,
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
     with_request_id, CachePolicy,
 };
 use crate::*;
-use bijux_atlas_model::{DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndexEntry};
+use crate::domain::dataset::Catalog;
+use crate::domain::query::{
+    DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndex, ReleaseGeneIndexEntry,
+};
 use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;
@@ -96,7 +96,7 @@ fn load_index(path: &std::path::Path) -> Result<Vec<ReleaseGeneIndexEntry>, ApiE
             json!({"message": e.0}),
         )
     })?;
-    let idx: bijux_atlas_model::ReleaseGeneIndex = serde_json::from_slice(&bytes).map_err(|e| {
+    let idx: ReleaseGeneIndex = serde_json::from_slice(&bytes).map_err(|e| {
         error_json(
             ApiErrorCode::Internal,
             "release index parse failed",
@@ -110,7 +110,7 @@ fn resolve_explicit_release_alias(
     release: &str,
     species: &str,
     assembly: &str,
-    catalog: &bijux_atlas_model::Catalog,
+    catalog: &Catalog,
 ) -> Option<String> {
     if release != "latest" {
         return Some(release.to_string());
@@ -176,7 +176,7 @@ async fn diff_common(
         .cache
         .current_catalog()
         .await
-        .unwrap_or_else(|| bijux_atlas_model::Catalog::new(Vec::new()));
+        .unwrap_or_else(|| Catalog::new(Vec::new()));
 
     let from_release_raw = params.get("from_release").map(String::as_str).unwrap_or("");
     let to_release_raw = params.get("to_release").map(String::as_str).unwrap_or("");

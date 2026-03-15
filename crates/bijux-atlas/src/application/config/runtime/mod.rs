@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::time::Duration;
+use crate::domain::dataset::DatasetId;
 
 mod env_parsing;
 
@@ -706,7 +704,7 @@ impl RuntimeConfig {
             .filter_map(|s| {
                 let p: Vec<_> = s.split('/').collect();
                 if p.len() == 3 {
-                    bijux_atlas_model::DatasetId::new(p[0], p[1], p[2]).ok()
+                    DatasetId::new(p[0], p[1], p[2]).ok()
                 } else {
                     None
                 }

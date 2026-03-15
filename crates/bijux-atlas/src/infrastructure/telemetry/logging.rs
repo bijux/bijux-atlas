@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+use crate::domain::sha256_hex;
 
 #[derive(Debug, Clone)]
 pub struct LoggingConfig {
@@ -37,7 +36,7 @@ impl LoggingConfig {
         if self.sampling_rate <= 0.0 {
             return false;
         }
-        let digest = bijux_atlas_core::sha256_hex(stable_key.as_bytes());
+        let digest = sha256_hex(stable_key.as_bytes());
         let bucket = u64::from_str_radix(&digest[..8], 16).unwrap_or(0);
         let ratio = (bucket as f64) / (u32::MAX as f64);
         ratio <= self.sampling_rate

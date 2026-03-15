@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use crate::{CacheError, DatasetCacheManager};
-use bijux_atlas_model::DatasetId;
+use crate::domain::dataset::DatasetId;
 use std::sync::atomic::Ordering;
 use std::time::Instant;
 

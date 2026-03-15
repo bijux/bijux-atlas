@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend, RegistrySourceHealth};
 use async_trait::async_trait;
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
+use crate::domain::dataset::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
+use crate::domain::sha256_hex;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};

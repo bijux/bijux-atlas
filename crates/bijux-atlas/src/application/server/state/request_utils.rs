@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::domain::{
+    AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
+    PermissionEvaluator, RoleCatalog, RoleRegistry, https_enforced,
+};
 
 use base64::Engine as _;
 
@@ -349,15 +353,15 @@ fn build_embedded_authorization_engine(
     permissions_raw: &str,
     roles_raw: &str,
     policy_raw: &str,
-) -> Result<bijux_atlas_core::AuthorizationEngine, String> {
-    let permissions: bijux_atlas_core::PermissionCatalog = serde_yaml::from_str(permissions_raw)
+) -> Result<AuthorizationEngine, String> {
+    let permissions: PermissionCatalog = serde_yaml::from_str(permissions_raw)
         .map_err(|err| format!("embedded permission catalog: {err}"))?;
-    let roles: bijux_atlas_core::RoleCatalog =
+    let roles: RoleCatalog =
         serde_yaml::from_str(roles_raw).map_err(|err| format!("embedded role catalog: {err}"))?;
-    let policy: bijux_atlas_core::AuthorizationPolicy = serde_yaml::from_str(policy_raw)
+    let policy: AuthorizationPolicy = serde_yaml::from_str(policy_raw)
         .map_err(|err| format!("embedded authorization policy: {err}"))?;
-    let evaluator = bijux_atlas_core::PermissionEvaluator::new(permissions);
-    let mut registry = bijux_atlas_core::RoleRegistry::new();
+    let evaluator = PermissionEvaluator::new(permissions);
+    let mut registry = RoleRegistry::new();
     for role in roles.roles {
         registry.upsert_role(role);
     }
@@ -369,7 +373,7 @@ fn build_embedded_authorization_engine(
     ] {
         registry.assign_role(principal_id, role_id);
     }
-    Ok(bijux_atlas_core::AuthorizationEngine::new(
+    Ok(AuthorizationEngine::new(
         registry, evaluator, policy,
     ))
 }
@@ -476,7 +480,7 @@ fn embedded_authorization_allows(
         include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/roles.yaml"));
     const EMBEDDED_AUTHZ_POLICY: &str =
         include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
-    static ENGINE: std::sync::OnceLock<Result<bijux_atlas_core::AuthorizationEngine, String>> =
+    static ENGINE: std::sync::OnceLock<Result<AuthorizationEngine, String>> =
         std::sync::OnceLock::new();
     let engine = match ENGINE.get_or_init(|| {
         build_embedded_authorization_engine(
@@ -497,7 +501,7 @@ fn embedded_authorization_allows(
     };
     matches!(
         engine.evaluate(principal, action, resource_kind, route),
-        bijux_atlas_core::AuthorizationDecision::Allow
+        AuthorizationDecision::Allow
     )
 }
 
@@ -957,7 +961,7 @@ pub(super) async fn security_middleware(
             "evaluating https transport requirement"
         );
         let forwarded_proto = normalized_header_value(req.headers(), "x-forwarded-proto", 16);
-        if !bijux_atlas_core::https_enforced(forwarded_proto.as_deref(), true) {
+        if !https_enforced(forwarded_proto.as_deref(), true) {
             record_policy_violation(&state, "https_required").await;
             let err = Json(ApiError::new(
                 ApiErrorCode::QueryRejectedByPolicy,
@@ -1491,8 +1495,8 @@ mod tests {
 
     #[test]
     fn https_enforcement_requires_https_proto_header() {
-        assert!(bijux_atlas_core::https_enforced(Some("https"), true));
-        assert!(!bijux_atlas_core::https_enforced(Some("http"), true));
+        assert!(https_enforced(Some("https"), true));
+        assert!(!https_enforced(Some("http"), true));
     }
 
     #[test]

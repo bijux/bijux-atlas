@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use crate::application::server::cache;
 use crate::application::config::ApiConfig;
 use crate::contracts::api::{ApiError, ApiErrorCode};
+use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
+use crate::domain::{
+    FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
+};
 use crate::http;
 use async_trait::async_trait;
 use axum::body::Body;
@@ -16,8 +17,6 @@ use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use bijux_atlas::query::QueryLimits;
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use hmac::{Hmac, Mac};
 use rusqlite::Connection;
 use sha2::Sha256;
@@ -576,10 +575,10 @@ pub struct AppState {
     pub(crate) hot_query_cache: Arc<Mutex<cache::hot::HotQueryCache>>,
     pub(crate) redis_backend: Option<Arc<RedisBackend>>,
     pub(crate) queued_requests: Arc<AtomicU64>,
-    pub(crate) membership: Arc<Mutex<bijux_atlas_core::MembershipRegistry>>,
-    pub(crate) shard_registry: Arc<Mutex<bijux_atlas_core::ShardRegistry>>,
-    pub(crate) replica_registry: Arc<Mutex<bijux_atlas_core::ReplicaRegistry>>,
-    pub(crate) resilience_registry: Arc<Mutex<bijux_atlas_core::FailureRecoveryRegistry>>,
+    pub(crate) membership: Arc<Mutex<MembershipRegistry>>,
+    pub(crate) shard_registry: Arc<Mutex<ShardRegistry>>,
+    pub(crate) replica_registry: Arc<Mutex<ReplicaRegistry>>,
+    pub(crate) resilience_registry: Arc<Mutex<FailureRecoveryRegistry>>,
     pub runtime_policy_hash: Arc<String>,
     pub runtime_policy_mode: Arc<String>,
 }

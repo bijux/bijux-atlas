@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
+use crate::domain::dataset::{artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId};
+use crate::domain::sha256_hex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
 use std::net::IpAddr;
@@ -42,7 +39,7 @@ impl LocalFsBackend {
     fn safe_dataset_paths(
         &self,
         dataset: &DatasetId,
-    ) -> Result<bijux_atlas_model::ArtifactPaths, CacheError> {
+    ) -> Result<ArtifactPaths, CacheError> {
         let paths = artifact_paths(Path::new(&self.root), dataset);
         Ok(paths)
     }

@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use super::*;
+use crate::domain::dataset::DatasetId;
 
 pub(super) fn invalid_format(name: &str, value: String, message: String) -> RuntimeConfigError {
     RuntimeConfigError::InvalidFormat {
@@ -85,7 +83,7 @@ pub(super) fn env_list(name: &str) -> Vec<String> {
 
 pub(super) fn env_dataset_list(
     name: &str,
-) -> Result<Vec<bijux_atlas_model::DatasetId>, RuntimeConfigError> {
+) -> Result<Vec<DatasetId>, RuntimeConfigError> {
     let Some(value) = std::env::var(name).ok() else {
         return Ok(Vec::new());
     };
@@ -106,7 +104,7 @@ pub(super) fn env_dataset_list(
             ));
         }
         let dataset =
-            bijux_atlas_model::DatasetId::new(parts[0], parts[1], parts[2]).map_err(|err| {
+            DatasetId::new(parts[0], parts[1], parts[2]).map_err(|err| {
                 invalid_format(
                     name,
                     value.clone(),

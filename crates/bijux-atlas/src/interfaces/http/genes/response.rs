@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::core as bijux_atlas_core;
-
 use crate::domain::dataset::DatasetId;
 use crate::http::handlers;
 use crate::query::{BiotypePolicy, GeneNamePolicy, GeneQueryRequest, QueryClass};
