@@ -1,0 +1,57 @@
+---
+title: Environment Variables
+audience: mixed
+type: reference
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-03-15
+---
+
+# Environment Variables
+
+Atlas supports a mix of stable public environment variables and lower-level runtime variables used by server configuration.
+
+## Environment Variable Layers
+
+```mermaid
+flowchart LR
+    Stable[Stable public env vars] --> Runtime[Runtime behavior]
+    RuntimeSpecific[Runtime-specific env vars] --> Runtime
+```
+
+## Main Stable Variables
+
+```mermaid
+flowchart TD
+    Env[Environment] --> Log[BIJUX_LOG_LEVEL]
+    Env --> Cache[BIJUX_CACHE_DIR]
+```
+
+## Public Variables
+
+- `BIJUX_LOG_LEVEL`: log verbosity override
+- `BIJUX_CACHE_DIR`: shared cache directory override
+
+## Runtime-Oriented Variables Seen in the Current Codebase
+
+- `ATLAS_BIND`
+- `ATLAS_STORE_ROOT`
+- `ATLAS_CACHE_ROOT`
+- `ATLAS_POLICY_MODE`
+- `ATLAS_REDIS_URL`
+- `ATLAS_LOG_LEVEL`
+- `ATLAS_TRACE_EXPORTER`
+- `ATLAS_CLUSTER_CONFIG_PATH`
+
+## Reference Guidance
+
+Use environment variables when:
+
+- the runtime specifically supports them
+- you need deployment-time overrides
+
+Prefer explicit documented configuration when:
+
+- the value is operationally important
+- you need repeatable reviewable deployment behavior
+

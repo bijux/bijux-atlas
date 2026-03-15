@@ -1,0 +1,46 @@
+---
+title: Feature Flags
+audience: maintainer
+type: reference
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-03-15
+---
+
+# Feature Flags
+
+This page summarizes the notable Cargo feature flags in the current `bijux-atlas` crate.
+
+## Feature Flag Groups
+
+```mermaid
+flowchart LR
+    Features[Cargo features] --> Runtime[Runtime capabilities]
+    Features --> Bench[Benchmark enablement]
+    Features --> Allocator[Allocator choice]
+```
+
+## Current Features
+
+```mermaid
+flowchart TD
+    FeatureSet[Feature set] --> Default[default]
+    FeatureSet --> Local[backend-local]
+    FeatureSet --> S3[backend-s3]
+    FeatureSet --> Bench[bench-ingest-throughput]
+    FeatureSet --> Jemalloc[jemalloc]
+```
+
+## Feature Summary
+
+- `default`
+- `serde`
+- `backend-local`
+- `backend-s3`
+- `bench-ingest-throughput`
+- `jemalloc`
+
+## Reading Guidance
+
+Treat feature flags as build-time capability switches. Do not confuse them with runtime configuration flags.
+
