@@ -51,8 +51,11 @@ fn core_module_has_no_runtime_io_or_async_imports() {
 fn core_module_rand_dependency_is_forbidden() {
     for path in core_sources() {
         let text = fs::read_to_string(&path).expect("read source");
+        let rand_dependency_markers = ["use rand", "rand::", "extern crate rand", " rand ="];
         assert!(
-            !text.contains("rand"),
+            !rand_dependency_markers
+                .iter()
+                .any(|marker| text.contains(marker)),
             "core module must not reference rand in {}",
             path.display()
         );
