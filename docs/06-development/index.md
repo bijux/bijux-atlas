@@ -39,6 +39,8 @@ flowchart LR
 
 - [Workspace and Tooling](workspace-and-tooling.md)
 - [Local Development](local-development.md)
+- [Contributor Workflow](contributor-workflow.md)
+- [Automation Control Plane](automation-control-plane.md)
 - [Testing and Evidence](testing-and-evidence.md)
 - [Adding CLI Surface](adding-cli-surface.md)
 - [Adding HTTP Surface](adding-http-surface.md)
@@ -46,4 +48,3 @@ flowchart LR
 - [Change and Compatibility](change-and-compatibility.md)
 - [Release and Versioning](release-and-versioning.md)
 - [Documentation Standards](documentation-standards.md)
-

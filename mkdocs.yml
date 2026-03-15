@@ -142,6 +142,8 @@ nav:
       - Overview: 06-development/index.md
       - Workspace and Tooling: 06-development/workspace-and-tooling.md
       - Local Development: 06-development/local-development.md
+      - Contributor Workflow: 06-development/contributor-workflow.md
+      - Automation Control Plane: 06-development/automation-control-plane.md
       - Testing and Evidence: 06-development/testing-and-evidence.md
       - Adding CLI Surface: 06-development/adding-cli-surface.md
       - Adding HTTP Surface: 06-development/adding-http-surface.md
