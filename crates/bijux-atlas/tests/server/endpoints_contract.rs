@@ -37,7 +37,7 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
             .expect("parse endpoints contract");
 
     let server_src =
-        std::fs::read_to_string(root.join("crates/bijux-atlas/src/application/router.rs"))
+        std::fs::read_to_string(root.join("crates/bijux-atlas/src/application/server/router.rs"))
         .expect("read server routing source");
 
     let mut route_set = std::collections::BTreeSet::new();
