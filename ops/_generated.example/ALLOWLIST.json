@@ -1,10 +1,9 @@
 {
   "schema_version": 1,
-  "generated_by": "bijux dev atlas ops evidence allowlist",
+  "generated_by": "manual+curated-example",
   "allowed_files": [
     "ops/_generated.example/.gitkeep",
     "ops/_generated.example/ALLOWLIST.json",
-    "ops/_generated.example/MIRROR_POLICY.md",
     "ops/_generated.example/OWNER.md",
     "ops/_generated.example/README.md",
     "ops/_generated.example/REQUIRED_FILES.md",
@@ -13,7 +12,6 @@
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/contract-dependency-graph.json",
     "ops/_generated.example/contracts-registry-snapshot.json",
-    "ops/_generated.example/contracts-required.json",
     "ops/_generated.example/control-graph-coverage-map.json",
     "ops/_generated.example/control-graph-diff-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
@@ -29,7 +27,6 @@
     "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/generation-audit-log.json",
     "ops/_generated.example/generator-coverage-report.json",
-    "ops/_generated.example/INDEX.example.md",
     "ops/_generated.example/incident-playbook-generation-report.json",
     "ops/_generated.example/inventory-completeness-score.json",
     "ops/_generated.example/inventory-index.json",

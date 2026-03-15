@@ -26,4 +26,4 @@ Canonical inventory documents for ops ownership, command surface, namespaces, to
 
 - Owner: `bijux-atlas-operations`
 - Purpose: `ops inventory registries and authority mappings`
-- Consumers: `bijux dev atlas ops inventory *, checks_ops_domain_contract_structure`
+- Consumers: `bijux-dev-atlas ops inventory --format json`, `checks_ops_domain_contract_structure`

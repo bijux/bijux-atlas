@@ -43,7 +43,7 @@
     {
       "path": "ops/inventory/contracts.json",
       "schema": "ops/schema/inventory/contracts.schema.json",
-      "generator": "bijux dev atlas ops gen run",
+      "generator": "manual+registry-sync",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -91,7 +91,7 @@
     {
       "path": "ops/inventory/layers.json",
       "schema": "ops/schema/inventory/layers.schema.json",
-      "generator": "bijux dev atlas ops gen run",
+      "generator": "manual+registry-sync",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -115,7 +115,7 @@
     {
       "path": "ops/inventory/owner-docs.fragments.json",
       "schema": "ops/schema/inventory/owner-docs.fragments.schema.json",
-      "generator": "bijux dev atlas ops migrate inventory-fragments",
+      "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -139,7 +139,7 @@
     {
       "path": "ops/inventory/pins.yaml",
       "schema": "ops/schema/inventory/pins.schema.json",
-      "generator": "bijux dev atlas ops generate pins-index",
+      "generator": "bijux-dev-atlas ops generate pins-index",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -157,7 +157,7 @@
     {
       "path": "ops/inventory/surfaces.json",
       "schema": "ops/schema/inventory/surfaces.schema.json",
-      "generator": "bijux dev atlas ops gen run",
+      "generator": "manual+registry-sync",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {

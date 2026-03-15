@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_by": "bijux dev atlas ops inventory registry-graph --write-example",
+  "generated_by": "manual+curated-example",
   "edges": [
     {
       "artifact": "ops/inventory/owners.json",
@@ -10,22 +10,22 @@
     {
       "artifact": "ops/inventory/surfaces.json",
       "schema": "ops/schema/inventory/surfaces.schema.json",
-      "generator": "bijux dev atlas ops gen run"
+      "generator": "manual+registry-sync"
     },
     {
       "artifact": "ops/inventory/contracts.json",
       "schema": "ops/schema/inventory/contracts.schema.json",
-      "generator": "bijux dev atlas ops gen run"
+      "generator": "manual+registry-sync"
     },
     {
       "artifact": "ops/inventory/layers.json",
       "schema": "ops/schema/inventory/layers.schema.json",
-      "generator": "bijux dev atlas ops gen run"
+      "generator": "manual+registry-sync"
     },
     {
       "artifact": "ops/inventory/pins.yaml",
       "schema": "ops/schema/inventory/pins.schema.json",
-      "generator": "bijux dev atlas ops generate pins-index"
+      "generator": "bijux-dev-atlas ops generate pins-index"
     },
     {
       "artifact": "ops/inventory/gc-pins.json",
@@ -70,7 +70,7 @@
     {
       "artifact": "ops/inventory/owner-docs.fragments.json",
       "schema": "ops/schema/inventory/owner-docs.fragments.schema.json",
-      "generator": "bijux dev atlas ops migrate inventory-fragments"
+      "generator": "manual"
     },
     {
       "artifact": "ops/inventory/generated-committed-mirror.json",
