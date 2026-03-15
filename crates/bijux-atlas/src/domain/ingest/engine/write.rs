@@ -2,7 +2,7 @@
 
 use std::fs;
 
-use crate::model::{
+use crate::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, ManifestStats, ShardCatalog, ShardingPlan,
 };
 

@@ -3,8 +3,8 @@
 #[allow(unused_imports)]
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
+use crate::domain::dataset::DatasetId;
 use crate::http::handlers;
-use crate::model::DatasetId;
 use crate::query::{GeneQueryRequest, QueryClass};
 use serde_json::json;
 

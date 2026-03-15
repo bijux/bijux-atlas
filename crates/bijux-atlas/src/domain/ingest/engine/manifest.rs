@@ -4,7 +4,7 @@ use super::extract::ExtractResult;
 use super::IngestError;
 use crate::domain::canonical;
 use crate::domain::sha256_hex;
-use crate::model::{
+use crate::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
     ShardingPlan, ValidationError,
 };

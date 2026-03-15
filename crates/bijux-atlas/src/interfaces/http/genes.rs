@@ -2,7 +2,7 @@
 
 #![deny(clippy::redundant_clone)]
 
-use crate::model::ShardCatalog;
+use crate::domain::dataset::ShardCatalog;
 use crate::*;
 use bijux_atlas::query::{
     estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,

@@ -4,7 +4,9 @@ use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use super::fai::ContigStats;
 use super::IngestError;
 use crate::domain::{canonical, sha256_hex};
-use crate::model::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
+use crate::domain::dataset::manifest::ShardId;
+use crate::domain::dataset::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
+use crate::domain::query::SeqId;
 use rusqlite::{params, Connection};
 use std::collections::BTreeMap;
 use std::fs;
@@ -484,7 +486,7 @@ pub fn write_sharded_sqlite_catalog(
             fai_sha256: "",
         })?;
         shards.push(ShardEntry::new(
-            crate::model::ShardId::parse(
+            ShardId::parse(
                 &bucket
                     .chars()
                     .map(|c| {
@@ -501,7 +503,7 @@ pub fn write_sharded_sqlite_catalog(
             .map_err(|e| IngestError(e.to_string()))?,
             seqids
                 .iter()
-                .map(|s| crate::model::SeqId::parse(s).map_err(|e| IngestError(e.to_string())))
+                .map(|s| SeqId::parse(s).map_err(|e| IngestError(e.to_string())))
                 .collect::<Result<Vec<_>, _>>()?,
             file_name,
             sha256_hex(&fs::read(&sqlite_path).map_err(|e| IngestError(e.to_string()))?),

@@ -3,7 +3,7 @@
 use crate::contracts::api::params::{IncludeField, SortKey};
 use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::canonical::sha256_hex;
-use crate::model::DatasetId;
+use crate::domain::dataset::DatasetId;
 use crate::query::{
     GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, RegionFilter,
 };

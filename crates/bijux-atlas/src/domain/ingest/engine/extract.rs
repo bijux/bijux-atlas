@@ -3,9 +3,10 @@
 use super::gff3::Gff3Record;
 use super::{IngestError, IngestOptions};
 use crate::domain::canonical;
-use crate::model::{
+use crate::domain::dataset::{IngestAnomalyReport, IngestRejection};
+use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
+use crate::domain::query::{
     DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
-    GeneIdentifierPolicy, IngestAnomalyReport, IngestRejection, StrictnessMode,
     UnknownFeaturePolicy,
 };
 use serde::Serialize;

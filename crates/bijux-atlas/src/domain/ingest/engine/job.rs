@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use crate::model::{artifact_paths, ArtifactPaths, DatasetId};
+use crate::domain::dataset::{artifact_paths, ArtifactPaths, DatasetId};
 
 use super::IngestOptions;
 

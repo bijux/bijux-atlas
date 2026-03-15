@@ -3,15 +3,18 @@
 use super::extract::GeneRecord;
 use super::IngestError;
 use crate::domain::{canonical, sha256_hex};
-use crate::model::{DatasetId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry};
+use crate::domain::dataset::DatasetId;
+use crate::domain::query::{
+    GeneId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId,
+};
 use std::path::Path;
 
 fn signature_for_gene(row: &GeneRecord) -> Result<String, IngestError> {
     let payload = GeneSignatureInput::new(
-        crate::model::GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
+        GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
         row.gene_name.clone(),
         row.biotype.clone(),
-        crate::model::SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
+        SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
         row.start,
         row.end,
         row.transcript_count,
@@ -28,8 +31,8 @@ pub fn build_and_write_release_gene_index(
     let mut entries = Vec::with_capacity(rows.len());
     for row in rows {
         entries.push(ReleaseGeneIndexEntry::new(
-            crate::model::GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
-            crate::model::SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
+            GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
+            SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
             row.start,
             row.end,
             signature_for_gene(row)?,
