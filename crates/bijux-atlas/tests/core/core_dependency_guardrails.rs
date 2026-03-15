@@ -59,7 +59,12 @@ fn core_module_rand_dependency_is_forbidden() {
 fn core_module_isolated_from_runtime_modules() {
     for path in core_sources() {
         let text = fs::read_to_string(&path).expect("read source");
-        for forbidden in ["crate::ingest", "crate::model", "crate::query", "crate::store"] {
+        for forbidden in [
+            "crate::ingest",
+            "crate::model",
+            "crate::query",
+            "crate::store",
+        ] {
             assert!(
                 !text.contains(forbidden),
                 "core module must not reference runtime module `{forbidden}` in {}",

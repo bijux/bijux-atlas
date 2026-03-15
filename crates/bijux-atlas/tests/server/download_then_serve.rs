@@ -5,11 +5,9 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use std::sync::Arc;
 
+use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore};
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
-use bijux_atlas::{
-    build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
-};
 use rusqlite::Connection;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};

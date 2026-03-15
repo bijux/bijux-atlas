@@ -6,12 +6,10 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
+use bijux_atlas::{CatalogFetch, DatasetStoreBackend, LocalFsBackend, RetryPolicy, S3LikeBackend};
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
-};
-use bijux_atlas::{
-    CatalogFetch, DatasetStoreBackend, LocalFsBackend, RetryPolicy, S3LikeBackend,
 };
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
