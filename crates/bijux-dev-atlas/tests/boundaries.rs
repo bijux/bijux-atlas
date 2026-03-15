@@ -8,6 +8,7 @@ fn internal_module_skeleton_exists() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
     for rel in [
         "lib.rs",
+        "bootstrap/mod.rs",
         "engine/mod.rs",
         "model/mod.rs",
         "policies/mod.rs",
@@ -94,7 +95,8 @@ fn core_module_does_not_import_adapters() {
 
 #[test]
 fn adapters_module_does_not_import_core_checks() {
-    let adapters_mod = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/adapters/mod.rs");
+    let adapters_mod =
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/infrastructure/adapters/mod.rs");
     let content = fs::read_to_string(&adapters_mod)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", adapters_mod.display()));
     for forbidden in ["crate::core::checks", "bijux_dev_atlas_core::checks"] {
