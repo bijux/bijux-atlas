@@ -226,6 +226,7 @@ pub(crate) fn configs_validate_payload(
             let workflow_text = fs::read_to_string(&workflow_path)
                 .map_err(|e| format!("failed to read {}: {e}", workflow_path.display()))?;
             if !workflow_text.contains("cargo run -q -p bijux-dev-atlas")
+                && !workflow_text.contains("cargo run --locked -q -p bijux-dev-atlas")
                 && !workflow_text.contains("make ")
             {
                 warnings.push(format!(
