@@ -19,6 +19,8 @@ flowchart LR
     Shared --> Managed[Managed production deployment]
 ```
 
+These models describe operational shape, not a maturity badge. The real boundary is whether artifact publication, runtime config, observability, and rollback are handled deliberately enough for the environment you are serving.
+
 ## Model 1: Local Development Runtime
 
 Use this when:
@@ -32,6 +34,7 @@ Characteristics:
 - local bind address
 - local artifact store under `artifacts/`
 - minimal operational complexity
+- useful for validating workflow shape, not for proving production readiness
 
 ## Model 2: Shared Internal Service
 
@@ -46,6 +49,7 @@ Characteristics:
 - stable network address
 - managed artifact store
 - runtime config treated as controlled deployment input
+- enough observability and rollback discipline that other people can depend on it
 
 ## Model 3: Managed Production Service
 
@@ -62,12 +66,20 @@ flowchart TD
     Observe --> Upgrade[Upgrade or rollback]
 ```
 
+This model assumes the operator owns the surrounding infrastructure story. Atlas defines the runtime, contract, and artifact boundaries, but it does not replace environment-specific security, networking, storage, or incident policy.
+
 ## What Does Not Change Across Models
 
 - the runtime serves from published artifacts, not ingest build roots
 - the catalog remains the discoverability boundary
 - health and readiness remain first-class concerns
 - runtime config should be explicit and reviewable
+
+## What These Models Are Not
+
+- a license to serve directly from ingest build roots
+- a promise that local filesystem habits scale unchanged into managed environments
+- a substitute for operator-owned capacity, security, backup, or compliance decisions
 
 ## Choosing a Model
 
@@ -76,4 +88,3 @@ If you are unsure, start with the simplest model that still preserves:
 - explicit artifact ownership
 - observable health behavior
 - safe rollback of runtime or store state
-

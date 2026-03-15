@@ -15,6 +15,8 @@ Running Atlas locally is easiest when you separate the workflow into three areas
 - built artifacts
 - runtime processes
 
+A good local run proves that your inputs, artifacts, store, and server wiring agree with each other. It does not prove that production infrastructure, scaling, or operational policy are already correct.
+
 ## Local Layout
 
 ```mermaid
@@ -74,6 +76,19 @@ flowchart LR
     Good[Build root published into serving store] --> Confidence[Deterministic local behavior]
 ```
 
+## What This Local Loop Proves
+
+- ingest and validation accept the chosen fixture set
+- publication creates a serving-shaped store and catalog state
+- the runtime can boot from that store with explicit config
+- query behavior matches the release state you just built
+
+## What This Local Loop Does Not Prove
+
+- that a shared or production deployment is sized, secured, or observed correctly
+- that local filesystem shortcuts are acceptable in managed environments
+- that skipping publication into a serving store is safe just because a local test happened to work
+
 ## Recommended Local Sequence
 
 - follow [Load a Sample Dataset](load-a-sample-dataset.md)
@@ -89,3 +104,5 @@ You are running Atlas locally in the intended way when:
 - the serving store contains published artifacts plus catalog state
 - the server points at the serving store rather than raw fixtures or the ingest build root
 - queries return data for the release you just built
+
+If any of those conditions are false, you may still have a working demo, but you do not yet have the Atlas workflow running in its intended shape.
