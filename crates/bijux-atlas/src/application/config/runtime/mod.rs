@@ -8,11 +8,10 @@ use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-mod contract_artifacts;
 mod env_parsing;
 
 pub const CONFIG_SCHEMA_VERSION: &str = "1";
-pub use contract_artifacts::{
+pub use crate::contracts::config::{
     effective_config_payload, effective_runtime_config_payload, runtime_config_contract_snapshot,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
 };
@@ -447,9 +446,9 @@ pub struct RuntimeStartupConfig {
     pub cache_root: PathBuf,
 }
 
-const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8080";
-const DEFAULT_STORE_ROOT: &str = "artifacts/server-store";
-const DEFAULT_CACHE_ROOT: &str = "artifacts/server-cache";
+pub(crate) const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8080";
+pub(crate) const DEFAULT_STORE_ROOT: &str = "artifacts/server-store";
+pub(crate) const DEFAULT_CACHE_ROOT: &str = "artifacts/server-cache";
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))

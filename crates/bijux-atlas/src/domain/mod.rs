@@ -2,7 +2,6 @@
 
 pub mod canonical;
 pub mod cluster;
-pub mod config;
 pub mod dataset;
 pub mod ingest;
 pub mod policy;
@@ -20,7 +19,7 @@ pub use cluster::routing;
 pub use cluster::sharding;
 pub use cluster::state as cluster_state;
 pub use cluster::state::{ClusterStateRegistry, ClusterStatusSnapshot, NodeMetadata};
-pub use config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
+pub use crate::application::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub use distributed::{
     BootstrapPolicy, ClusterDescriptor, ClusterHealth, ClusterMetadataStore, CompatibilityPolicy,
     DiscoveryStrategy, HealthPolicy, MetadataBackend, NodeDescriptor, NodeIdentity, NodeRole,
