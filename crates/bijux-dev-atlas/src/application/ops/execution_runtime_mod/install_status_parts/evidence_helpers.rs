@@ -429,8 +429,8 @@ pub(super) fn collect_observability_assets(repo_root: &std::path::Path) -> Resul
     for rel in [
         "configs/schemas/contracts/observability/log.schema.json",
         "configs/schemas/contracts/observability/metrics.schema.json",
-        "configs/schemas/contracts/observability/error-codes.json",
-        "configs/schemas/contracts/observability/label-policy.json",
+        "configs/sources/operations/observability/error-codes.json",
+        "configs/sources/operations/observability/label-policy.json",
         "ops/observe/dashboards/atlas-observability-dashboard.json",
         "ops/observe/alerts/atlas-alert-rules.yaml",
         "ops/observe/slo-definitions.json",
@@ -605,7 +605,7 @@ pub(super) fn observability_contract_checks(
     )
     .map_err(|err| format!("failed to read response contract source: {err}"))?;
     let error_registry = std::fs::read_to_string(
-        repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
+        repo_root.join("configs/sources/operations/observability/error-codes.json"),
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
     let openapi =
@@ -711,7 +711,7 @@ pub(super) fn observability_contract_checks(
     let mut label_policy_passed = true;
     let mut alert_rules_reference_known_metrics = true;
     let label_policy: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../../configs/schemas/contracts/observability/label-policy.json"
+        "../../../../../../../configs/sources/operations/observability/label-policy.json"
     ))
     .map_err(|err| format!("failed to parse label policy: {err}"))?;
     let alert_required_labels = label_policy["alerts_required_labels"]

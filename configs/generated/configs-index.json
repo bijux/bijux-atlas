@@ -540,14 +540,16 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 8,
         "generated": 0,
         "internal": 0,
-        "public": 6,
+        "public": 8,
         "schemas": 1
       },
       "files": [
         "configs/sources/operations/observability/audit-log.schema.json",
+        "configs/sources/operations/observability/error-codes.json",
+        "configs/sources/operations/observability/label-policy.json",
         "configs/sources/operations/observability/log-field-inventory.schema.json",
         "configs/sources/operations/observability/log-safe-fields.schema.json",
         "configs/sources/operations/observability/log-safe-fields.yaml",
@@ -807,7 +809,7 @@
         "covered": 139,
         "generated": 1,
         "internal": 119,
-        "public": 19,
+        "public": 20,
         "schemas": 13
       },
       "files": [
@@ -844,8 +846,8 @@
         "configs/schemas/contracts/inventory-ops.schema.json",
         "configs/schemas/contracts/inventory-owners.schema.json",
         "configs/schemas/contracts/make-contracts-check-output.schema.json",
-        "configs/schemas/contracts/observability/error-codes.json",
-        "configs/schemas/contracts/observability/label-policy.json",
+        "configs/schemas/contracts/observability/error-codes.schema.json",
+        "configs/schemas/contracts/observability/label-policy.schema.json",
         "configs/schemas/contracts/observability/log.schema.json",
         "configs/schemas/contracts/observability/metrics.schema.json",
         "configs/schemas/contracts/ops-lint-output.schema.json",
@@ -947,9 +949,9 @@
         "configs/schemas/registry/reports/report-budget.schema.json",
         "configs/schemas/registry/reports/reports.registry.schema.json",
         "configs/schemas/registry/reports/schema-registry.schema.json",
+        "configs/schemas/registry/schema-versioning-policy.schema.json",
         "configs/schemas/registry/target-renames.schema.json",
-        "configs/schemas/registry/tool-versions.schema.json",
-        "configs/schemas/registry/versioning-policy.schema.json"
+        "configs/schemas/registry/tool-versions.schema.json"
       ],
       "name": "schema",
       "owner": "platform",
@@ -1115,6 +1117,7 @@
     "configs/registry/consumers.json",
     "configs/registry/contracts.json",
     "configs/registry/owners.json",
+    "configs/registry/schema-versioning-policy.json",
     "configs/registry/schemas.json"
   ],
   "schema_version": 1

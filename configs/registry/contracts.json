@@ -625,7 +625,7 @@
       "severity": "must",
       "title": "governed public schemas keep a versioning policy",
       "touched_paths": [
-        "configs/schemas/registry/versioning-policy.json",
+        "configs/registry/schema-versioning-policy.json",
         "configs/schemas/registry/*.json",
         "configs/registry/inventory/configs.json"
       ]

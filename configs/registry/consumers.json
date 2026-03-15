@@ -12,6 +12,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/registry/schema-versioning-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/generated/configs-index.json": [
       "bijux-dev-atlas",
       "ci"
@@ -36,10 +40,6 @@
       "ci"
     ],
     "configs/registry/contracts.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
-    "configs/registry/consumers.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -142,6 +142,11 @@
     "configs/sources/repository/nextest/*.toml": [
       "ci"
     ],
+    "configs/sources/operations/observability/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
     "configs/sources/operations/observability/*.yaml": [
       "bijux-dev-atlas",
       "runtime"
@@ -168,10 +173,6 @@
     "configs/sources/operations/ops/*/*.json": [
       "bijux-dev-atlas",
       "runtime",
-      "ci"
-    ],
-    "configs/registry/owners.json": [
-      "bijux-dev-atlas",
       "ci"
     ],
     "configs/registry/owners/*.json": [
@@ -251,19 +252,11 @@
       "ci",
       "bijux-dev-atlas"
     ],
-    "configs/registry/schemas.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
     "configs/schemas/registry/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
     "configs/schemas/registry/generated/*.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
-    "configs/schemas/registry/versioning-policy.json": [
       "bijux-dev-atlas",
       "ci"
     ],

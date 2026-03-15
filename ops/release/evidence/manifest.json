@@ -161,8 +161,8 @@
   "observability_assets": [
     "configs/schemas/contracts/observability/log.schema.json",
     "configs/schemas/contracts/observability/metrics.schema.json",
-    "configs/schemas/contracts/observability/error-codes.json",
-    "configs/schemas/contracts/observability/label-policy.json",
+    "configs/sources/operations/observability/error-codes.json",
+    "configs/sources/operations/observability/label-policy.json",
     "ops/observe/dashboards/atlas-observability-dashboard.json",
     "ops/observe/alerts/atlas-alert-rules.yaml",
     "ops/observe/slo-definitions.json",

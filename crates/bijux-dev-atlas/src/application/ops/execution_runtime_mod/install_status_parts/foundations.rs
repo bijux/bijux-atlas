@@ -263,7 +263,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ("network policy guide", repo_root.join("docs/operations/networkpolicy.md")),
             (
                 "error registry",
-                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
+                repo_root.join("configs/sources/operations/observability/error-codes.json"),
             ),
             (
                 "drills guide",
@@ -289,7 +289,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "error registry",
-                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
+                repo_root.join("configs/sources/operations/observability/error-codes.json"),
             ),
         ],
         "store-unreachable" => vec![
@@ -303,7 +303,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "error registry",
-                repo_root.join("configs/schemas/contracts/observability/error-codes.json"),
+                repo_root.join("configs/sources/operations/observability/error-codes.json"),
             ),
         ],
         "rollout-failure-recovery" => vec![

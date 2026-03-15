@@ -4,7 +4,7 @@
 
 Role layout:
 - `configs/registry/` contains ownership, consumer, and inventory registries.
-- `configs/schemas/` contains validation schemas and contract definitions.
+- `configs/schemas/` contains validation schemas and contract definitions only.
 - `configs/sources/` contains authored configuration inputs grouped by domain.
 - `configs/examples/` contains non-authoritative example inputs.
 - `configs/generated/` contains machine-written config artifacts that should be regenerated, not hand-edited.
@@ -16,6 +16,7 @@ Machine-readable authorities:
 - `configs/registry/consumers.json` declares file-level consumer coverage.
 - `configs/registry/schemas.json` declares file-level schema coverage.
 - `configs/registry/contracts.json` declares the executable contracts that govern this tree.
+- `configs/registry/schema-versioning-policy.json` declares compatibility expectations for governed public schemas.
 
 Common commands:
 - `bijux dev atlas contracts configs --format table`

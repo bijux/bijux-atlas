@@ -512,7 +512,7 @@
         "configs/schemas/registry/release-reproducibility-policy.schema.json",
         "configs/schemas/registry/target-renames.schema.json",
         "configs/schemas/registry/tool-versions.schema.json",
-        "configs/schemas/registry/versioning-policy.schema.json",
+        "configs/schemas/registry/schema-versioning-policy.schema.json",
         "configs/schemas/contracts/*.json",
         "configs/schemas/contracts/datasets/*.json",
         "configs/schemas/contracts/governance/*.json",
@@ -537,7 +537,8 @@
         "configs/schemas/registry/meta-ownership.schema.json",
         "configs/schemas/registry/public-surface.schema.json",
         "configs/schemas/registry/release-version-policy.schema.json",
-        "configs/schemas/registry/reports/*.json"
+        "configs/schemas/registry/reports/*.json",
+        "configs/schemas/registry/schema-versioning-policy.schema.json"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -650,6 +651,7 @@
     "configs/registry/consumers.json",
     "configs/registry/contracts.json",
     "configs/registry/owners.json",
+    "configs/registry/schema-versioning-policy.json",
     "configs/registry/schemas.json"
   ],
   "schema_version": 1
