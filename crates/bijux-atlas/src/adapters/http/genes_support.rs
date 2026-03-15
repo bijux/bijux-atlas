@@ -2,11 +2,12 @@
 
 use crate::api::params::{IncludeField, SortKey};
 use crate::api::{ApiError, ApiErrorCode};
+use crate::model::DatasetId;
 use crate::query::{
     GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, RegionFilter,
 };
 use crate::support::sha256_hex;
-use crate::{AppState, DatasetId};
+use crate::AppState;
 use serde_json::json;
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-mod runtime_core;
 pub(crate) mod runtime_config;
+mod state;
 
 pub mod bootstrap;
 pub mod config;
 pub mod runtime;
 
-pub use self::runtime_core::{
+pub use self::state::{
     build_router, chrono_like_unix_millis, effective_config_payload,
     effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
     record_shed_reason, route_sli_class, runtime_config_contract_snapshot,

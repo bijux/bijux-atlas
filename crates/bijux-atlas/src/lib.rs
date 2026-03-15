@@ -6,35 +6,35 @@
 extern crate self as bijux_atlas;
 
 #[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+pub(crate) use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
-use crate::api::{ApiError, ApiErrorCode};
-use async_trait::async_trait;
-use axum::body::Body;
-use axum::extract::{DefaultBodyLimit, State};
-use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
-use axum::middleware::{from_fn_with_state, Next};
-use axum::response::{IntoResponse, Response};
-use axum::routing::{get, post};
-use axum::{Json, Router};
-use bijux_atlas::query::{
+pub(crate) use crate::api::{ApiError, ApiErrorCode};
+pub(crate) use async_trait::async_trait;
+pub(crate) use axum::body::Body;
+pub(crate) use axum::extract::{DefaultBodyLimit, State};
+pub(crate) use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
+pub(crate) use axum::middleware::{from_fn_with_state, Next};
+pub(crate) use axum::response::{IntoResponse, Response};
+pub(crate) use axum::routing::{get, post};
+pub(crate) use axum::{Json, Router};
+pub(crate) use bijux_atlas::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
     TranscriptFilter, TranscriptQueryRequest,
 };
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-use hmac::{Hmac, Mac};
-use rusqlite::Connection;
-use sha2::Sha256;
-use std::collections::{HashMap, HashSet, VecDeque};
-use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::Arc;
-use std::time::{Duration, Instant};
-use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
-use tokio::time::timeout;
-use tracing::{error, info, warn, Instrument};
+pub(crate) use bijux_atlas_core::sha256_hex;
+pub(crate) use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
+pub(crate) use hmac::{Hmac, Mac};
+pub(crate) use rusqlite::Connection;
+pub(crate) use sha2::Sha256;
+pub(crate) use std::collections::{HashMap, HashSet, VecDeque};
+pub(crate) use std::path::{Path, PathBuf};
+pub(crate) use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+pub(crate) use std::sync::Arc;
+pub(crate) use std::time::{Duration, Instant};
+pub(crate) use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
+pub(crate) use tokio::time::timeout;
+pub(crate) use tracing::{error, info, warn, Instrument};
 
 pub mod adapters;
 pub mod api;
@@ -58,6 +58,7 @@ pub mod support;
 pub mod types;
 
 pub use crate::adapters::cli;
+pub use crate::adapters::cli::main_entry;
 pub use crate::adapters::client;
 pub use crate::adapters::http;
 pub use crate::adapters::store;
@@ -73,8 +74,7 @@ pub use crate::app::{
     RegistrySourceHealth, RetryPolicy, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig,
     S3LikeBackend, StoreConfig, StoreMode,
 };
-pub use crate::adapters::cli::main_entry;
-pub use crate::domain::ingest as ingest;
+pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;

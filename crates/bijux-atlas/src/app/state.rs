@@ -32,8 +32,6 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
-pub const SERVER_CRATE_NAME: &str = "bijux-atlas-server";
-
 #[derive(Debug)]
 pub struct CacheError(pub String);
 
@@ -394,7 +392,7 @@ impl RequestMetrics {
 
 include!("request_utils.rs");
 include!("cache_runtime.rs");
-include!("bootstrap_impl.rs");
+include!("router.rs");
 async fn cors_middleware(
     State(state): State<AppState>,
     req: Request<Body>,

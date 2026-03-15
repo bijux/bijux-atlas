@@ -196,7 +196,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     )
     .expect("parse endpoints");
     let server_sources = [
-        root.join("crates/bijux-atlas/src/app/bootstrap_impl.rs"),
+        root.join("crates/bijux-atlas/src/app/router.rs"),
         root.join("crates/bijux-atlas/src/adapters/http/genes.rs"),
         root.join("crates/bijux-atlas/src/adapters/http/handlers.rs"),
         root.join("crates/bijux-atlas/src/adapters/http/diff.rs"),
