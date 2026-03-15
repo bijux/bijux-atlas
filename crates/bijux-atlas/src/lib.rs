@@ -51,7 +51,6 @@ pub mod effects;
 pub mod errors;
 #[path = "core/generated/mod.rs"]
 mod generated;
-pub mod ingest;
 #[path = "adapters/http/middleware/mod.rs"]
 mod middleware;
 pub mod model;
@@ -83,6 +82,7 @@ pub use crate::app::{
     S3LikeBackend, StoreConfig, StoreMode,
 };
 pub use crate::adapters::cli::main_entry;
+pub use crate::domain::ingest as ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;

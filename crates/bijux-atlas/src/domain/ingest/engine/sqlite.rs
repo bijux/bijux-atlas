@@ -11,7 +11,7 @@ use std::fs;
 use std::path::Path;
 
 pub const SQLITE_SCHEMA_VERSION: i64 = 4;
-pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../sql/schema_v4.sql");
+pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../../../sql/schema_v4.sql");
 #[allow(dead_code)] // ATLAS-EXC-0001
 pub const SQLITE_SCHEMA_SSOT_SHA256: &str =
     "a695a4e39b45e4fd87491dd9a55817142059100480d77b59168db0f5fe0a6901";
