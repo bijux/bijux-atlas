@@ -4,6 +4,7 @@ use rusqlite::{Connection, OpenFlags};
 
 use crate::CacheError;
 
+#[cfg(test)]
 pub(crate) fn open_readonly(path: &std::path::Path) -> Result<Connection, CacheError> {
     let uri = format!("file:{}?mode=ro&immutable=1", path.display());
     Connection::open_with_flags(

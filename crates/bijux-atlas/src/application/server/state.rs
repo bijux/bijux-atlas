@@ -14,11 +14,7 @@ use axum::middleware::{from_fn_with_state, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
-use bijux_atlas::query::{
-    classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
-    GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
-    TranscriptFilter, TranscriptQueryRequest,
-};
+use bijux_atlas::query::QueryLimits;
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use hmac::{Hmac, Mac};

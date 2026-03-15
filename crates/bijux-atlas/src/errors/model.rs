@@ -47,8 +47,7 @@ pub enum ConfigPathScope {
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum Error {
-    #[cfg(feature = "serde")]
-    SerdeJson(serde_json::Error),
+    JsonEncoding(String),
     #[cfg(feature = "serde")]
     DecodeCursorBase64(String),
     #[cfg(feature = "serde")]
@@ -63,8 +62,7 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(feature = "serde")]
-            Self::SerdeJson(err) => write!(f, "serde json error: {err}"),
+            Self::JsonEncoding(message) => write!(f, "json encoding error: {message}"),
             #[cfg(feature = "serde")]
             Self::DecodeCursorBase64(message) => {
                 write!(f, "cursor base64 decode failed: {message}")
@@ -83,22 +81,18 @@ impl fmt::Display for Error {
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
+            Self::JsonEncoding(_) => None,
             #[cfg(feature = "serde")]
-            Self::SerdeJson(err) => Some(err),
-            #[cfg(feature = "serde")]
-            Self::DecodeCursorBase64(_)
-            | Self::DecodeCursorJson(_)
-            | Self::InvalidIdentifier { .. } => None,
-            #[cfg(not(feature = "serde"))]
+            Self::DecodeCursorBase64(_) | Self::DecodeCursorJson(_) => None,
             Self::InvalidIdentifier { .. } => None,
         }
     }
 }
 
-#[cfg(feature = "serde")]
-impl From<serde_json::Error> for Error {
-    fn from(value: serde_json::Error) -> Self {
-        Self::SerdeJson(value)
+impl Error {
+    #[must_use]
+    pub fn json_encoding(message: impl Into<String>) -> Self {
+        Self::JsonEncoding(message.into())
     }
 }
 

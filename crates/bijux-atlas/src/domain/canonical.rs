@@ -57,12 +57,13 @@ pub struct CanonicalJson(Value);
 #[cfg(feature = "serde")]
 impl CanonicalJson {
     pub fn from_serialize<T: Serialize>(value: &T) -> Result<Self> {
-        let raw = serde_json::to_value(value)?;
+        let raw =
+            serde_json::to_value(value).map_err(|err| Error::json_encoding(err.to_string()))?;
         Ok(Self(normalize_json_value(raw)))
     }
 
     pub fn to_bytes(&self) -> Result<Vec<u8>> {
-        Ok(serde_json::to_vec(&self.0)?)
+        serde_json::to_vec(&self.0).map_err(|err| Error::json_encoding(err.to_string()))
     }
 
     pub fn hash(&self) -> Result<Hash256> {

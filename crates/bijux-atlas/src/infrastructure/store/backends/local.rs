@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::super::backend::{
+use crate::ports::store::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
 };

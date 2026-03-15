@@ -9,32 +9,25 @@ extern crate self as bijux_atlas;
 pub(crate) use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 pub(crate) use crate::contracts::api::{ApiError, ApiErrorCode};
-pub(crate) use async_trait::async_trait;
 pub(crate) use axum::body::Body;
-pub(crate) use axum::extract::{DefaultBodyLimit, State};
-pub(crate) use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
-pub(crate) use axum::middleware::{from_fn_with_state, Next};
+pub(crate) use axum::extract::State;
+pub(crate) use axum::http::{HeaderMap, HeaderValue, StatusCode};
 pub(crate) use axum::response::{IntoResponse, Response};
-pub(crate) use axum::routing::{get, post};
-pub(crate) use axum::{Json, Router};
+pub(crate) use axum::Json;
 pub(crate) use bijux_atlas::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
-    GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
-    TranscriptFilter, TranscriptQueryRequest,
+    GeneFields, GeneQueryRequest, OrderMode, QueryClass, RegionFilter, TranscriptFilter,
+    TranscriptQueryRequest,
 };
 pub(crate) use bijux_atlas_core::sha256_hex;
-pub(crate) use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-pub(crate) use hmac::{Hmac, Mac};
+pub(crate) use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use rusqlite::Connection;
-pub(crate) use sha2::Sha256;
-pub(crate) use std::collections::{HashMap, HashSet, VecDeque};
-pub(crate) use std::path::{Path, PathBuf};
-pub(crate) use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+pub(crate) use std::collections::HashMap;
+pub(crate) use std::sync::atomic::{AtomicU64, Ordering};
 pub(crate) use std::sync::Arc;
 pub(crate) use std::time::{Duration, Instant};
-pub(crate) use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 pub(crate) use tokio::time::timeout;
-pub(crate) use tracing::{error, info, warn, Instrument};
+pub(crate) use tracing::Instrument;
 
 pub mod application;
 pub mod bootstrap;
