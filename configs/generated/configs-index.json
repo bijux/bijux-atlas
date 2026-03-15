@@ -222,23 +222,21 @@
     },
     {
       "counts": {
-        "covered": 33,
+        "covered": 31,
         "generated": 0,
         "internal": 0,
-        "public": 33,
+        "public": 31,
         "schemas": 1
       },
       "files": [
         "configs/sources/governance/governance/allowed-nonrust.json",
         "configs/sources/governance/governance/check-groups.json",
         "configs/sources/governance/governance/check-policy-authority-map.json",
-        "configs/sources/governance/governance/checks-output.schema.json",
         "configs/sources/governance/governance/checks.registry.json",
         "configs/sources/governance/governance/cli-dev-command-surface.json",
         "configs/sources/governance/governance/cli-user-command-surface.json",
         "configs/sources/governance/governance/compatibility.yaml",
         "configs/sources/governance/governance/contract-groups.json",
-        "configs/sources/governance/governance/contract-modes.json",
         "configs/sources/governance/governance/contract-policy-authority-map.json",
         "configs/sources/governance/governance/contracts.registry.json",
         "configs/sources/governance/governance/deprecations.yaml",
