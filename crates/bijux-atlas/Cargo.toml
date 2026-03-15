@@ -98,33 +98,33 @@ name = "bijux-atlas-store"
 path = "src/bin/bijux-atlas-store.rs"
 
 [[bench]]
-name = "core_canonical_hash"
-path = "benches/core/canonical_hash.rs"
+name = "domain_canonical_json"
+path = "benches/domain/canonical_json.rs"
 harness = false
 
 [[bench]]
-name = "core_stable_selector"
-path = "benches/core/stable_selector.rs"
+name = "domain_stable_sorting"
+path = "benches/domain/stable_sorting.rs"
 harness = false
 
 [[bench]]
-name = "core_security_data_protection"
-path = "benches/core/security_data_protection.rs"
+name = "domain_security_data_protection"
+path = "benches/domain/security_data_protection.rs"
 harness = false
 
 [[bench]]
-name = "model_dataset_parse"
-path = "benches/model/dataset_parse.rs"
+name = "domain_dataset_id_parse"
+path = "benches/domain/dataset_id_parse.rs"
 harness = false
 
 [[bench]]
-name = "model_parse_validation"
-path = "benches/model/parse_validation.rs"
+name = "domain_query_parse_validation"
+path = "benches/domain/query_parse_validation.rs"
 harness = false
 
 [[bench]]
-name = "model_codec"
-path = "benches/model/model_codec.rs"
+name = "domain_dataset_manifest_codec"
+path = "benches/domain/dataset_manifest_codec.rs"
 harness = false
 
 [[bench]]

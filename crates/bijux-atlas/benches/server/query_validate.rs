@@ -2,9 +2,7 @@
 
 use std::sync::Arc;
 
-use bijux_atlas::{
-    build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
-};
+use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 type RequestTuple = (
