@@ -352,7 +352,6 @@ pub fn build_router(state: AppState) -> Router {
         .with_state(state)
 }
 
-pub use crate::store::registry::fake::FakeStore;
 
 #[cfg(test)]
 mod bulkhead_tests {
