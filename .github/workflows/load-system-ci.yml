@@ -4,14 +4,14 @@ on:
   pull_request:
     paths:
       - "ops/load/**"
-      - "docs/operations/load/**"
+      - "docs/04-operations/performance-and-load.md"
       - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
       - ".github/workflows/load-system-ci.yml"
   push:
     branches: [main]
     paths:
       - "ops/load/**"
-      - "docs/operations/load/**"
+      - "docs/04-operations/performance-and-load.md"
       - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
       - ".github/workflows/load-system-ci.yml"
 

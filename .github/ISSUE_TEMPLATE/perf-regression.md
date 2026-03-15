@@ -35,13 +35,13 @@ Describe the regression and affected suite(s).
 ## How to verify
 
 ```bash
-make ops-load-nightly
-make ops-load-run
+make ops-load-plan SUITE=mixed
+make ops-load-run SUITE=mixed
 ```
 
 Expected output shape: violating suite names and threshold deltas.
 
 ## See also
 
-- `docs/operations/runbooks/load-failure-triage.md`
-- `docs/operations/observability/perf-regression-policy.md`
+- `docs/04-operations/incident-response.md`
+- `docs/04-operations/performance-and-load.md`

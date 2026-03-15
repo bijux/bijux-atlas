@@ -6,7 +6,7 @@ on:
     paths:
       - "crates/bijux-dev-atlas/src/commands/audit.rs"
       - "configs/sources/governance/audit/**"
-      - "docs/operations/**"
+      - "docs/04-operations/**"
       - ".github/workflows/final-readiness.yml"
 
 permissions:

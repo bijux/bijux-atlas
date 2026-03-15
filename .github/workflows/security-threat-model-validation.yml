@@ -4,10 +4,10 @@ on:
   pull_request:
     paths:
       - "ops/security/threat-model/**"
-      - "crates/bijux-dev-atlas/src/commands/security.rs"
-      - "crates/bijux-dev-atlas/src/cli/mod.rs"
-      - "crates/bijux-dev-atlas/tests/threat_model_governance_contracts.rs"
-      - "docs/operations/security/**"
+      - "crates/bijux-dev-atlas/src/application/security.rs"
+      - "crates/bijux-dev-atlas/src/domains/security/**"
+      - "crates/bijux-dev-atlas/src/interfaces/cli/mod.rs"
+      - "docs/04-operations/security-operations.md"
   workflow_dispatch:
 
 jobs:

@@ -6,7 +6,7 @@ on:
       - "configs/sources/operations/perf/**"
       - "ops/load/**"
       - "ops/report/generated/**"
-      - "docs/operations/performance-*.md"
+      - "docs/04-operations/performance-and-load.md"
       - ".github/workflows/performance-regression-ci.yml"
   push:
     branches: [main]
@@ -14,7 +14,7 @@ on:
       - "configs/sources/operations/perf/**"
       - "ops/load/**"
       - "ops/report/generated/**"
-      - "docs/operations/performance-*.md"
+      - "docs/04-operations/performance-and-load.md"
       - ".github/workflows/performance-regression-ci.yml"
   schedule:
     - cron: "0 3 * * *"

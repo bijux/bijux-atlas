@@ -65,14 +65,19 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ops-kind"
           mkdir -p "${report_root}" "${logs_root}"
-          make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
+          make FORMAT=json doctor > "${logs_root}/doctor.stdout.log" 2> "${logs_root}/doctor.stderr.log"
+          cp "artifacts/doctor/${RUN_ID}/report.json" "${report_root}/doctor.json"
+          cp "artifacts/doctor/${RUN_ID}/touched-paths-report.json" "${report_root}/doctor-touched-paths.json"
           cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
-          make stack-up > "${report_root}/ops-kind-up.json" 2> "${logs_root}/ops-kind-up.stderr.log"
+          make FORMAT=json stack-up > "${logs_root}/ops-kind-up.stdout.log" 2> "${logs_root}/ops-kind-up.stderr.log"
+          cp "artifacts/stack-up/${RUN_ID}/report.txt" "${report_root}/ops-kind-up.txt"
           cargo run --locked -q -p bijux-dev-atlas -- ops k8s smoke --profile kind --allow-subprocess --format json > "${report_root}/ops-k8s-smoke.json" 2> "${logs_root}/ops-k8s-smoke.stderr.log"
           if [ "${{ github.event.inputs.run_conformance || 'true' }}" = "true" ]; then
-            make k8s-validate > "${report_root}/ops-k8s.json" 2> "${logs_root}/ops-k8s.stderr.log"
+            make FORMAT=json k8s-validate > "${logs_root}/ops-k8s.stdout.log" 2> "${logs_root}/ops-k8s.stderr.log"
+            cp "artifacts/k8s-validate/${RUN_ID}/report.json" "${report_root}/ops-k8s.json"
           fi
-          make stack-down > "${report_root}/ops-kind-down.json" 2> "${logs_root}/ops-kind-down.stderr.log"
+          make FORMAT=json stack-down > "${logs_root}/ops-kind-down.stdout.log" 2> "${logs_root}/ops-kind-down.stderr.log"
+          cp "artifacts/stack-down/${RUN_ID}/report.txt" "${report_root}/ops-kind-down.txt"
           printf "- lane: ops-kind\n- report root: %s\n- cache target hit: %s\n" \
             "${report_root}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"

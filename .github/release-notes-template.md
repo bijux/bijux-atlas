@@ -9,7 +9,7 @@
 - 
 
 ### Compatibility
-- See `docs/reference/compatibility/umbrella-atlas-matrix.md`.
+- See `docs/08-contracts/api-compatibility.md`.
 
 ### Supply Chain Artifacts
 - SBOM: SPDX JSON artifact attached to release workflow.
