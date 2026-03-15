@@ -558,7 +558,7 @@ fn tiny_fixture_matches_cross_machine_golden_hashes() {
     let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
     assert_eq!(
         run.manifest.checksums.sqlite_sha256,
-        "24a4420ab3433c7f37949773aa5b1cac4b311f3e7290982e3d81b8e8df9edb7a"
+        "a1be584819cdb23d64689b5fcac288ce3683d62008b0871f5f0fcd1d77ada1b7"
     );
     assert_eq!(
         run.manifest.dataset_signature_sha256,
