@@ -27,10 +27,6 @@
     "configs/sources/repository/ci/*.json": [
       "ci"
     ],
-    "configs/sources/runtime/cli/*.toml": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
     "configs/sources/runtime/cli/hidden-command-allowlist.json": [
       "bijux-dev-atlas",
       "ci"

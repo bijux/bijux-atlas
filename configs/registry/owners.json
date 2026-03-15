@@ -8,7 +8,6 @@
     "configs/sources/governance/audit/audit-artifact-checklist.json": "atlas-governance",
     "configs/sources/governance/audit/schemas/audit-bundle.schema.json": "atlas-governance",
     "configs/sources/governance/audit/compliance-matrix-template.json": "atlas-governance",
-    "configs/sources/runtime/cli/*.toml": "platform",
     "configs/sources/runtime/clients/schemas/*.json": "platform",
     "configs/registry/contracts.json": "platform",
     "configs/sources/runtime/datasets/manifest.yaml": "data-governance",

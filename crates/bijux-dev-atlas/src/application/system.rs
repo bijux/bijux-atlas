@@ -331,7 +331,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         SystemClusterCommand::ShardRouting(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
             let root = resolve_repo_root(args.repo_root.clone())?;
-            let shard_meta_path = root.join("configs/sources/operations/ops/runtime/shard-metadata.example.json");
+            let shard_meta_path = root.join("configs/examples/operations/runtime/shard-metadata.json");
             let shard_meta: serde_json::Value = read_json_file(&shard_meta_path)?;
             let key = "chr1:100-200";
             let mut registry = ShardRegistry::new();
@@ -941,10 +941,10 @@ mod tests {
     fn cluster_topology_command_renders_cluster_shape() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -958,7 +958,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -978,8 +978,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run topology command");
         assert_eq!(code, 0);
@@ -992,10 +992,10 @@ mod tests {
     fn cluster_node_drain_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1009,7 +1009,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1031,9 +1031,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
+                        "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
                 },
                 node_id: "node-1".to_string(),
             },
@@ -1049,10 +1049,10 @@ mod tests {
     fn cluster_shard_routing_command_renders_selected_shard() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1066,7 +1066,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1081,7 +1081,7 @@ mod tests {
         )
         .expect("write node config");
         write_json(
-            &configs_dir.join("shard-metadata.example.json"),
+            &configs_dir.join("shard-metadata.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "dataset_id": "atlas-default",
@@ -1097,8 +1097,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run shard routing command");
         assert_eq!(code, 0);
@@ -1111,10 +1111,10 @@ mod tests {
     fn cluster_shard_rebalance_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1128,7 +1128,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1150,9 +1150,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
+                        "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
                 },
                 shard_id: None,
                 target_node_id: None,
@@ -1169,10 +1169,10 @@ mod tests {
     fn cluster_replica_list_command_renders_replica_rows() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1186,7 +1186,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1206,8 +1206,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run replica list command");
         assert_eq!(code, 0);
@@ -1222,10 +1222,10 @@ mod tests {
     fn cluster_replica_failover_command_renders_promote_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1239,7 +1239,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "cluster_id": "atlas-test",
@@ -1261,9 +1261,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
+                        "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
                 },
                 dataset_id: "atlas-default".to_string(),
                 shard_id: "atlas-default-s001".to_string(),
@@ -1282,10 +1282,10 @@ mod tests {
     fn cluster_recovery_run_command_renders_recovery_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
                 "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
@@ -1297,7 +1297,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
                 "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
@@ -1312,8 +1312,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run recovery command");
         assert_eq!(code, 0);
@@ -1326,10 +1326,10 @@ mod tests {
     fn cluster_chaos_test_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
                 "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
@@ -1341,7 +1341,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
                 "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
@@ -1358,9 +1358,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
+                        "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "network_partition".to_string(),
@@ -1377,10 +1377,10 @@ mod tests {
     fn cluster_failover_command_renders_resilience_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
                 "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
@@ -1392,7 +1392,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
                 "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
@@ -1409,9 +1409,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
+                        "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "node_crash".to_string(),
@@ -1428,10 +1428,10 @@ mod tests {
     fn cluster_resilience_diagnostics_command_renders_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/sources/operations/ops/runtime");
+        let configs_dir = root.join("configs/examples/operations/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
-            &configs_dir.join("cluster-config.example.json"),
+            &configs_dir.join("cluster-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "topology_mode": "clustered_static",
                 "discovery": {"strategy": "static_seed_list", "seed_nodes": ["http://node-1:8080"]},
@@ -1443,7 +1443,7 @@ mod tests {
         )
         .expect("write cluster config");
         write_json(
-            &configs_dir.join("node-config.example.json"),
+            &configs_dir.join("node-config.json"),
             &serde_json::json!({
                 "schema_version": 1, "cluster_id": "atlas-test", "node_id": "node-1", "generation": 1,
                 "role": "hybrid", "advertise_addr": "http://node-1:8080", "capabilities": ["query.execute"],
@@ -1458,8 +1458,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             },
         ))
         .expect("run resilience diagnostics");

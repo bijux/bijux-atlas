@@ -502,9 +502,9 @@ mod tests {
             "cluster",
             "topology",
             "--cluster-config",
-            "configs/sources/operations/ops/runtime/cluster-config.example.json",
+            "configs/examples/operations/runtime/cluster-config.json",
             "--node-config",
-            "configs/sources/operations/ops/runtime/node-config.example.json",
+            "configs/examples/operations/runtime/node-config.json",
         ])
         .expect("parse");
         match cli.command {

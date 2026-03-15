@@ -79,7 +79,6 @@
     "configs/sources/operations/slo/*.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/sources/operations/system/chaos-scenarios.json": "configs/schemas/contracts/inventory-ops.schema.json",
     "configs/sources/operations/system/failure-injection.json": "configs/schemas/contracts/inventory-ops.schema.json",
-    "configs/sources/operations/system/resilience-policy.example.json": "configs/schemas/contracts/inventory-ops.schema.json",
     "configs/sources/operations/system/simulation-scenarios.json": "configs/schemas/contracts/inventory-ops.schema.json",
     "configs/sources/tutorials/*.json": "configs/schemas/contracts/inventory-configs.schema.json"
   },

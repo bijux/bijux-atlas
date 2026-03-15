@@ -60,8 +60,7 @@
       "name": "cli",
       "owner": "platform",
       "public_files": [
-        "configs/sources/runtime/cli/*.json",
-        "configs/sources/runtime/cli/*.toml"
+        "configs/sources/runtime/cli/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [

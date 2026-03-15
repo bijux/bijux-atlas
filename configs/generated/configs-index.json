@@ -70,14 +70,13 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
         "internal": 1,
-        "public": 2,
+        "public": 1,
         "schemas": 1
       },
       "files": [
-        "configs/sources/runtime/cli/config.example.toml",
         "configs/sources/runtime/cli/hidden-command-allowlist.json",
         "configs/sources/runtime/cli/schemas/config.schema.json"
       ],
@@ -184,10 +183,10 @@
     },
     {
       "counts": {
-        "covered": 10,
+        "covered": 16,
         "generated": 0,
         "internal": 0,
-        "public": 10,
+        "public": 16,
         "schemas": 2
       },
       "files": [
@@ -199,6 +198,12 @@
         "configs/examples/datasets/atlas-example-minimal/metadata.json",
         "configs/examples/datasets/schemas/dataset-metadata.schema.json",
         "configs/examples/datasets/schemas/gene-record.schema.json",
+        "configs/examples/operations/runtime/cluster-config.json",
+        "configs/examples/operations/runtime/node-config.json",
+        "configs/examples/operations/runtime/replication-metadata.json",
+        "configs/examples/operations/runtime/shard-metadata.json",
+        "configs/examples/operations/system/resilience-policy.json",
+        "configs/examples/runtime/cli-config.toml",
         "configs/examples/runtime/server-minimal.toml",
         "configs/examples/runtime/server-observability.toml"
       ],
@@ -584,10 +589,10 @@
     },
     {
       "counts": {
-        "covered": 50,
+        "covered": 46,
         "generated": 0,
         "internal": 5,
-        "public": 47,
+        "public": 43,
         "schemas": 3
       },
       "files": [
@@ -623,10 +628,6 @@
         "configs/sources/operations/ops/ports.json",
         "configs/sources/operations/ops/public-make-targets.json",
         "configs/sources/operations/ops/public-surface-doc-exceptions.txt",
-        "configs/sources/operations/ops/runtime/cluster-config.example.json",
-        "configs/sources/operations/ops/runtime/node-config.example.json",
-        "configs/sources/operations/ops/runtime/replication-metadata.example.json",
-        "configs/sources/operations/ops/runtime/shard-metadata.example.json",
         "configs/sources/operations/ops/schema-contracts.json",
         "configs/sources/operations/ops/schemas/env.schema.json",
         "configs/sources/operations/ops/schemas/scenarios.schema.json",
@@ -1032,16 +1033,15 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 5,
         "generated": 0,
         "internal": 2,
-        "public": 4,
+        "public": 3,
         "schemas": 1
       },
       "files": [
         "configs/sources/operations/system/chaos-scenarios.json",
         "configs/sources/operations/system/failure-injection.json",
-        "configs/sources/operations/system/resilience-policy.example.json",
         "configs/sources/operations/system/schemas/system-diagnostics-report.schema.json",
         "configs/sources/operations/system/schemas/system-simulation-report.schema.json",
         "configs/sources/operations/system/simulation-scenarios.json"
