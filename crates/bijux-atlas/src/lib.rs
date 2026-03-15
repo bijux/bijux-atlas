@@ -64,7 +64,6 @@ pub mod model;
 mod platform_adapters;
 pub mod policies;
 pub mod ports;
-pub mod query;
 #[path = "server/routing.rs"]
 mod routing_hash;
 pub mod server;
@@ -92,6 +91,7 @@ pub use crate::app::{
     S3LikeBackend, StoreConfig, StoreMode,
 };
 pub use crate::cli::main_entry;
+pub use crate::domain::query;
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
 pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
 pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
