@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 use base64::Engine as _;
 
-fn chrono_like_unix_millis() -> u128 {
+pub fn chrono_like_unix_millis() -> u128 {
     use std::time::{SystemTime, UNIX_EPOCH};
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -263,7 +263,7 @@ fn validate_signed_token(
     })
 }
 
-pub(crate) fn route_sli_class(route: &str) -> &'static str {
+pub fn route_sli_class(route: &str) -> &'static str {
     if matches!(
         route,
         "/health"
@@ -874,7 +874,7 @@ async fn record_authorization_denial(state: &AppState, route: &str, action: &str
     );
 }
 
-pub(crate) async fn record_shed_reason(state: &AppState, reason: &str) {
+pub async fn record_shed_reason(state: &AppState, reason: &str) {
     let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
     *by.entry(reason.to_string()).or_insert(0) += 1;
 }

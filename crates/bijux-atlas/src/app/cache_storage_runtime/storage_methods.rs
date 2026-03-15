@@ -214,7 +214,7 @@ impl DatasetCacheManager {
         }
     }
 
-    async fn ensure_dataset_cached(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+    pub(crate) async fn ensure_dataset_cached(&self, dataset: &DatasetId) -> Result<(), CacheError> {
         self.check_quarantine(dataset).await?;
         if self.is_cached_and_verified(dataset).await? {
             self.metrics

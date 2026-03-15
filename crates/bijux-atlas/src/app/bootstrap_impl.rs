@@ -19,16 +19,17 @@ impl AppState {
     fn init_membership_registry() -> bijux_atlas_core::MembershipRegistry {
         let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
             .unwrap_or_else(|_| "configs/ops/runtime/cluster-config.example.json".to_string());
-        let policy = bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
-            .ok()
-            .map(|cfg| bijux_atlas_core::MembershipPolicy {
-                heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
-                node_timeout_ms: cfg.health.node_timeout_ms,
-            })
-            .unwrap_or(bijux_atlas_core::MembershipPolicy {
-                heartbeat_interval_ms: 1_000,
-                node_timeout_ms: 5_000,
-            });
+        let policy =
+            bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
+                .ok()
+                .map(|cfg| bijux_atlas_core::MembershipPolicy {
+                    heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
+                    node_timeout_ms: cfg.health.node_timeout_ms,
+                })
+                .unwrap_or(bijux_atlas_core::MembershipPolicy {
+                    heartbeat_interval_ms: 1_000,
+                    node_timeout_ms: 5_000,
+                });
         bijux_atlas_core::MembershipRegistry::new(policy)
     }
 
@@ -248,12 +249,18 @@ pub fn build_router(state: AppState) -> Router {
                 "/debug/registry-health",
                 get(http::handlers::registry_health_handler),
             )
-            .route("/debug/diagnostics", get(http::handlers::diagnostics_handler))
+            .route(
+                "/debug/diagnostics",
+                get(http::handlers::diagnostics_handler),
+            )
             .route(
                 "/debug/runtime-stats",
                 get(http::handlers::runtime_stats_handler),
             )
-            .route("/debug/system-info", get(http::handlers::system_info_handler))
+            .route(
+                "/debug/system-info",
+                get(http::handlers::system_info_handler),
+            )
             .route(
                 "/debug/build-metadata",
                 get(http::handlers::build_metadata_handler),
@@ -266,7 +273,10 @@ pub fn build_router(state: AppState) -> Router {
                 "/debug/dataset-registry",
                 get(http::handlers::dataset_registry_dump_handler),
             )
-            .route("/debug/shard-map", get(http::handlers::shard_map_dump_handler))
+            .route(
+                "/debug/shard-map",
+                get(http::handlers::shard_map_dump_handler),
+            )
             .route(
                 "/debug/query-planner-stats",
                 get(http::handlers::query_planner_stats_dump_handler),

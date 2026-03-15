@@ -3,6 +3,8 @@
 #[allow(unused_imports)]
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
+use crate::api::{ApiError, ApiErrorCode};
+use crate::{cache, dataset_shards, http, telemetry};
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
@@ -11,14 +13,13 @@ use axum::middleware::{from_fn_with_state, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::{Json, Router};
-use crate::api::{ApiError, ApiErrorCode};
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use bijux_atlas::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
     TranscriptFilter, TranscriptQueryRequest,
 };
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use hmac::{Hmac, Mac};
 use rusqlite::Connection;
 use sha2::Sha256;
@@ -178,21 +179,21 @@ pub struct CacheMetrics {
 }
 
 #[derive(Default)]
-struct RequestMetrics {
-    counts: Mutex<HashMap<(String, String, u16, String), u64>>,
-    latency_ns: Mutex<HashMap<String, Vec<u64>>>,
-    sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
-    stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
-    query_row_count: Mutex<HashMap<String, Vec<u64>>>,
-    request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
-    response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
-    heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
-    exemplars: Mutex<HashMap<RequestMetricKey, RequestExemplar>>,
-    client_fingerprint_counts: Mutex<HashMap<(String, String), u64>>,
-    query_cache_hits_total: AtomicU64,
-    query_cache_misses_total: AtomicU64,
-    slow_queries_total: AtomicU64,
-    dataset_query_distribution: Mutex<HashMap<String, u64>>,
+pub(crate) struct RequestMetrics {
+    pub(crate) counts: Mutex<HashMap<(String, String, u16, String), u64>>,
+    pub(crate) latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) stage_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) query_row_count: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) request_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) response_size_bytes: Mutex<HashMap<String, Vec<u64>>>,
+    pub(crate) heavy_latency_recent_ns: Mutex<VecDeque<u64>>,
+    pub(crate) exemplars: Mutex<HashMap<RequestMetricKey, RequestExemplar>>,
+    pub(crate) client_fingerprint_counts: Mutex<HashMap<(String, String), u64>>,
+    pub(crate) query_cache_hits_total: AtomicU64,
+    pub(crate) query_cache_misses_total: AtomicU64,
+    pub(crate) slow_queries_total: AtomicU64,
+    pub(crate) dataset_query_distribution: Mutex<HashMap<String, u64>>,
 }
 
 type RequestMetricKey = (String, String, u16, String);
@@ -311,7 +312,8 @@ impl RequestMetrics {
     }
 
     pub(crate) fn observe_query_cache_miss(&self) {
-        self.query_cache_misses_total.fetch_add(1, Ordering::Relaxed);
+        self.query_cache_misses_total
+            .fetch_add(1, Ordering::Relaxed);
     }
 
     pub(crate) fn observe_slow_query(&self) {
@@ -391,6 +393,8 @@ impl RequestMetrics {
 }
 
 include!("request_utils.rs");
+include!("cache_runtime.rs");
+include!("bootstrap_impl.rs");
 async fn cors_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
@@ -445,8 +449,8 @@ async fn cors_middleware(
 
 pub use crate::config::{
     effective_config_payload, effective_runtime_config_payload, load_runtime_config,
-    load_runtime_startup_config, runtime_startup_config_docs_markdown,
-    runtime_config_contract_snapshot, runtime_startup_config_schema_json,
+    load_runtime_startup_config, runtime_config_contract_snapshot,
+    runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
     validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, CatalogMode,
     RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
     StoreMode,
@@ -489,18 +493,18 @@ pub enum CatalogFetch {
     Updated { etag: String, catalog: Catalog },
 }
 
-struct DatasetEntry {
-    sqlite_path: PathBuf,
-    shard_sqlite_paths: Vec<PathBuf>,
-    shard_by_seqid: HashMap<String, Vec<PathBuf>>,
-    last_access: Instant,
-    size_bytes: u64,
-    dataset_semaphore: Arc<Semaphore>,
-    query_semaphore: Arc<Semaphore>,
+pub(crate) struct DatasetEntry {
+    pub(crate) sqlite_path: PathBuf,
+    pub(crate) shard_sqlite_paths: Vec<PathBuf>,
+    pub(crate) shard_by_seqid: HashMap<String, Vec<PathBuf>>,
+    pub(crate) last_access: Instant,
+    pub(crate) size_bytes: u64,
+    pub(crate) dataset_semaphore: Arc<Semaphore>,
+    pub(crate) query_semaphore: Arc<Semaphore>,
 }
 
 #[derive(Default)]
-struct CatalogCache {
+pub(crate) struct CatalogCache {
     etag: Option<String>,
     catalog: Option<Catalog>,
     consecutive_errors: u32,
@@ -510,15 +514,15 @@ struct CatalogCache {
 }
 
 #[derive(Default)]
-struct BreakerState {
+pub(crate) struct BreakerState {
     failure_count: u32,
     open_until: Option<Instant>,
 }
 
 #[derive(Default)]
-struct StoreBreakerState {
-    failure_count: u32,
-    open_until: Option<Instant>,
+pub(crate) struct StoreBreakerState {
+    pub(crate) failure_count: u32,
+    pub(crate) open_until: Option<Instant>,
 }
 
 use crate::telemetry::rate_limiter::RateLimiter;
@@ -542,21 +546,21 @@ pub struct DatasetHealthSnapshot {
 }
 
 pub struct DatasetCacheManager {
-    cfg: DatasetCacheConfig,
-    store: Arc<dyn DatasetStoreBackend>,
-    entries: Mutex<HashMap<DatasetId, DatasetEntry>>,
-    inflight: Mutex<HashMap<DatasetId, Arc<Mutex<()>>>>,
-    breakers: Mutex<HashMap<DatasetId, BreakerState>>,
-    quarantine_failures: Mutex<HashMap<DatasetId, u32>>,
-    quarantined: Mutex<HashSet<DatasetId>>,
-    store_breaker: Mutex<StoreBreakerState>,
-    catalog_cache: Mutex<CatalogCache>,
-    registry_health_cache: RwLock<Vec<RegistrySourceHealth>>,
-    global_semaphore: Arc<Semaphore>,
-    download_semaphore: Arc<Semaphore>,
-    shard_open_semaphore: Arc<Semaphore>,
-    retry_budget_remaining: AtomicU64,
-    dataset_retry_budget: Mutex<HashMap<DatasetId, u32>>,
+    pub(crate) cfg: DatasetCacheConfig,
+    pub(crate) store: Arc<dyn DatasetStoreBackend>,
+    pub(crate) entries: Mutex<HashMap<DatasetId, DatasetEntry>>,
+    pub(crate) inflight: Mutex<HashMap<DatasetId, Arc<Mutex<()>>>>,
+    pub(crate) breakers: Mutex<HashMap<DatasetId, BreakerState>>,
+    pub(crate) quarantine_failures: Mutex<HashMap<DatasetId, u32>>,
+    pub(crate) quarantined: Mutex<HashSet<DatasetId>>,
+    pub(crate) store_breaker: Mutex<StoreBreakerState>,
+    pub(crate) catalog_cache: Mutex<CatalogCache>,
+    pub(crate) registry_health_cache: RwLock<Vec<RegistrySourceHealth>>,
+    pub(crate) global_semaphore: Arc<Semaphore>,
+    pub(crate) download_semaphore: Arc<Semaphore>,
+    pub(crate) shard_open_semaphore: Arc<Semaphore>,
+    pub(crate) retry_budget_remaining: AtomicU64,
+    pub(crate) dataset_retry_budget: Mutex<HashMap<DatasetId, u32>>,
     pub metrics: Arc<CacheMetrics>,
 }
 

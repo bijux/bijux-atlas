@@ -5,6 +5,37 @@
 
 extern crate self as bijux_atlas;
 
+#[allow(unused_imports)]
+use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
+
+use crate::api::{ApiError, ApiErrorCode};
+use async_trait::async_trait;
+use axum::body::Body;
+use axum::extract::{DefaultBodyLimit, State};
+use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
+use axum::middleware::{from_fn_with_state, Next};
+use axum::response::{IntoResponse, Response};
+use axum::routing::{get, post};
+use axum::{Json, Router};
+use bijux_atlas::query::{
+    classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
+    GeneFields, GeneFilter, GeneQueryRequest, OrderMode, QueryClass, QueryLimits, RegionFilter,
+    TranscriptFilter, TranscriptQueryRequest,
+};
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_model::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
+use hmac::{Hmac, Mac};
+use rusqlite::Connection;
+use sha2::Sha256;
+use std::collections::{HashMap, HashSet, VecDeque};
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
+use tokio::time::timeout;
+use tracing::{error, info, warn, Instrument};
+
 pub mod adapters;
 pub mod api;
 pub mod app;
@@ -49,10 +80,17 @@ pub mod support;
 mod telemetry;
 pub mod types;
 
-include!("server/runtime/state/mod.rs");
-include!("server/runtime/effects/mod.rs");
-include!("server/runtime/orchestrator/mod.rs");
-
+pub use crate::app::{
+    build_router, chrono_like_unix_millis, effective_config_payload,
+    effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
+    record_shed_reason, route_sli_class, runtime_config_contract_snapshot,
+    runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
+    validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, AppState,
+    CacheError, CatalogFetch, CatalogMode, DatasetCacheConfig, DatasetCacheManager,
+    DatasetStoreBackend, FederatedBackend, LocalFsBackend, RateLimitConfig, RegistrySource,
+    RegistrySourceHealth, RetryPolicy, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig,
+    S3LikeBackend, StoreConfig, StoreMode,
+};
 pub use crate::cli::main_entry;
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
 pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
