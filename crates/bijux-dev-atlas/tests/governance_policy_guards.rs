@@ -216,3 +216,24 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         );
     }
 }
+
+#[test]
+fn atlas_legacy_root_modules_stay_compatibility_only() {
+    let root = repo_root();
+    for path in [
+        "crates/bijux-atlas/src/application/mod.rs",
+        "crates/bijux-atlas/src/interfaces/mod.rs",
+        "crates/bijux-atlas/src/infrastructure/mod.rs",
+        "crates/bijux-atlas/src/bootstrap/mod.rs",
+    ] {
+        let text = fs::read_to_string(root.join(path)).expect("legacy root surface");
+        assert!(
+            text.contains("Compatibility surface"),
+            "legacy root must declare its compatibility-only role: {path}"
+        );
+        assert!(
+            text.lines().count() <= 10,
+            "legacy root entrypoint must stay minimal: {path}"
+        );
+    }
+}
