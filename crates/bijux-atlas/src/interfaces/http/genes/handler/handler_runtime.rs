@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-include!("handler_runtime/genes_response_finalize.rs");
-include!("handler_runtime/main_handler.rs");
+mod genes_response_finalize;
+mod main_handler;
+
+pub(crate) use self::main_handler::genes_handler;

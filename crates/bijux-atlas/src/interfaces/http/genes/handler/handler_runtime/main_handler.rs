@@ -1,17 +1,32 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::domain::dataset::ShardCatalog;
+use crate::http::genes::{genes_admission, genes_response};
+use crate::http::{genes_support, handlers};
+use crate::*;
+use bijux_atlas::query::{
+    estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,
+    query_gene_id_name_json_minimal_fast, query_genes_fanout, select_shards_for_request,
+};
+use serde_json::json;
+use tracing::{info, info_span, warn};
+
+use super::genes_response_finalize::{
+    finalize_genes_success_response, GenesResponseFinalizeContext,
+};
+
 pub(crate) async fn genes_handler(
     State(state): State<AppState>,
     headers: HeaderMap,
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
     let started = Instant::now();
-    let request_id = super::handlers::propagated_request_id(&headers, &state);
+    let request_id = handlers::propagated_request_id(&headers, &state);
     if !state.accepting_requests.load(Ordering::Relaxed) {
         crate::record_shed_reason(&state, "draining").await;
-        let resp = super::handlers::api_error_response(
+        let resp = handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
-            super::handlers::error_json(
+            handlers::error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server draining; refusing new requests",
                 json!({}),
@@ -25,11 +40,11 @@ pub(crate) async fn genes_handler(
                 started.elapsed(),
             )
             .await;
-        return super::handlers::with_request_id(resp, &request_id);
+        return handlers::with_request_id(resp, &request_id);
     }
     info!(request_id = %request_id, "request start");
     let overloaded_early = crate::http::middleware::shedding::overloaded(&state).await;
-    let adaptive_rl = super::genes_support::adaptive_rl_factor(&state, overloaded_early);
+    let adaptive_rl = genes_support::adaptive_rl_factor(&state, overloaded_early);
     if let Some(resp) = async {
         genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
             .await
@@ -57,18 +72,18 @@ pub(crate) async fn genes_handler(
         return resp;
     }
     let (dataset, mut req) =
-        match async { super::genes_support::build_dataset_query(&params, state.limits.max_limit) }
+        match async { genes_support::build_dataset_query(&params, state.limits.max_limit) }
             .instrument(info_span!("dataset_resolve", route = "/v1/genes"))
             .await
         {
             Ok(v) => v,
             Err(e) => {
-                let resp = super::handlers::api_error_response(StatusCode::BAD_REQUEST, e);
+                let resp = handlers::api_error_response(StatusCode::BAD_REQUEST, e);
                 state
                     .metrics
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
-                return super::handlers::with_request_id(resp, &request_id);
+                return handlers::with_request_id(resp, &request_id);
             }
         };
     let class = classify_query(&req);
@@ -100,10 +115,10 @@ pub(crate) async fn genes_handler(
             state.api.shed_latency_p95_threshold_ms,
         )
         .await;
-    super::genes_support::record_overload_cheap(&state, class, overloaded);
+    genes_support::record_overload_cheap(&state, class, overloaded);
     if overloaded
         && state.api.allow_min_viable_response
-        && super::handlers::wants_min_viable_response(&params)
+        && handlers::wants_min_viable_response(&params)
     {
         req.fields = GeneFields {
             gene_id: true,
@@ -114,8 +129,8 @@ pub(crate) async fn genes_handler(
             sequence_length: false,
         };
     }
-    if let Some(error) = super::genes_support::check_serialization_budget(&req, &state.limits) {
-        let resp = super::handlers::api_error_response(StatusCode::UNPROCESSABLE_ENTITY, error);
+    if let Some(error) = genes_support::check_serialization_budget(&req, &state.limits) {
+        let resp = handlers::api_error_response(StatusCode::UNPROCESSABLE_ENTITY, error);
         state
             .metrics
             .observe_request(
@@ -124,12 +139,12 @@ pub(crate) async fn genes_handler(
                 started.elapsed(),
             )
             .await;
-        return super::handlers::with_request_id(resp, &request_id);
+        return handlers::with_request_id(resp, &request_id);
     }
     if class == QueryClass::Heavy && req.limit > state.limits.heavy_projection_limit {
-        let resp = super::handlers::api_error_response(
+        let resp = handlers::api_error_response(
             StatusCode::UNPROCESSABLE_ENTITY,
-            super::handlers::error_json(
+            handlers::error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "heavy projection limit exceeded",
                 json!({"limit": req.limit, "max": state.limits.heavy_projection_limit}),
@@ -143,20 +158,19 @@ pub(crate) async fn genes_handler(
                 started.elapsed(),
             )
             .await;
-        return super::handlers::with_request_id(resp, &request_id);
+        return handlers::with_request_id(resp, &request_id);
     }
-    super::genes_support::cap_heavy_limit(&mut req, &state, class, overloaded);
-    let (exact_gene_id, redis_cache_key) =
-        super::genes_support::exact_lookup_cache_keys(&dataset, &req);
+    genes_support::cap_heavy_limit(&mut req, &state, class, overloaded);
+    let (exact_gene_id, redis_cache_key) = genes_support::exact_lookup_cache_keys(&dataset, &req);
     if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
         || crate::http::middleware::shedding::should_shed_noncheap(&state, class).await
     {
         crate::record_shed_reason(&state, "bulkhead_shed_heavy").await;
         let backoff = crate::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
-        let mut resp = super::handlers::api_error_response(
+        let mut resp = handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
-            super::handlers::error_json(
+            handlers::error_json(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "server is shedding heavy query load",
                 json!({"class":"heavy","retry_after_ms": backoff}),
@@ -173,13 +187,13 @@ pub(crate) async fn genes_handler(
                 started.elapsed(),
             )
             .await;
-        return super::handlers::with_request_id(resp, &request_id);
+        return handlers::with_request_id(resp, &request_id);
     }
     let _queue_guard = match genes_admission::try_enter_request_queue(&state) {
         Ok(g) => g,
         Err(e) => {
             crate::record_shed_reason(&state, "queue_depth_exceeded").await;
-            let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
                 .metrics
                 .observe_request(
@@ -188,14 +202,14 @@ pub(crate) async fn genes_handler(
                     started.elapsed(),
                 )
                 .await;
-            return super::handlers::with_request_id(resp, &request_id);
+            return handlers::with_request_id(resp, &request_id);
         }
     };
-    let _class_permit = match super::genes_support::acquire_class_permit(&state, class).await {
+    let _class_permit = match genes_support::acquire_class_permit(&state, class).await {
         Ok(v) => v,
         Err(e) => {
             crate::record_shed_reason(&state, "class_permit_saturated").await;
-            let resp = super::handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
                 .metrics
                 .observe_request(
@@ -204,7 +218,7 @@ pub(crate) async fn genes_handler(
                     started.elapsed(),
                 )
                 .await;
-            return super::handlers::with_request_id(resp, &request_id);
+            return handlers::with_request_id(resp, &request_id);
         }
     };
     let _heavy_worker_permit =
@@ -217,35 +231,35 @@ pub(crate) async fn genes_handler(
                 return resp;
             }
         };
-    let normalized = super::handlers::normalize_query(&params);
+    let normalized = handlers::normalize_query(&params);
     let query_id = {
         let fingerprint = format!("{}|{}", request_id, normalized);
         let digest = bijux_atlas_core::sha256_hex(fingerprint.as_bytes());
         format!("qry-{}", &digest[..12])
     };
     let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
-    let artifact_hash = super::handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
-    let etag = super::handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
+    let artifact_hash = handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
+    let etag = handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
     let cache_key_debug = format!("/v1/genes?{normalized}");
     state
         .metrics
         .observe_request_size("/v1/genes", cache_key_debug.len())
         .await;
-    let explain_mode = super::handlers::bool_query_flag(&params, "explain");
+    let explain_mode = handlers::bool_query_flag(&params, "explain");
     let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
         if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
             match redis.get_gene_cache(cache_key).await {
                 Ok(Some(cached_bytes)) => {
-                    if super::handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
+                    if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
                         let mut resp = StatusCode::NOT_MODIFIED.into_response();
-                        super::handlers::put_cache_headers(
+                        handlers::put_cache_headers(
                             resp.headers_mut(),
                             state.api.immutable_gene_ttl,
                             &etag,
-                            super::handlers::CachePolicy::ImmutableDataset,
+                            handlers::CachePolicy::ImmutableDataset,
                         );
-                        resp = super::handlers::with_query_class(resp, class);
+                        resp = handlers::with_query_class(resp, class);
                         state
                             .metrics
                             .observe_request(
@@ -254,7 +268,7 @@ pub(crate) async fn genes_handler(
                                 started.elapsed(),
                             )
                             .await;
-                        return super::handlers::with_request_id(resp, &request_id);
+                        return handlers::with_request_id(resp, &request_id);
                     }
                     let mut resp = Response::builder()
                         .status(StatusCode::OK)
@@ -262,37 +276,37 @@ pub(crate) async fn genes_handler(
                         .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
                     resp.headers_mut()
                         .insert("content-type", HeaderValue::from_static("application/json"));
-                    super::handlers::put_cache_headers(
+                    handlers::put_cache_headers(
                         resp.headers_mut(),
                         state.api.immutable_gene_ttl,
                         &etag,
-                        super::handlers::CachePolicy::ImmutableDataset,
+                        handlers::CachePolicy::ImmutableDataset,
                     );
                     if let Ok(v) = HeaderValue::from_str("redis-hit") {
                         resp.headers_mut().insert("x-atlas-cache", v);
                     }
-                    resp = super::handlers::with_query_class(resp, class);
+                    resp = handlers::with_query_class(resp, class);
                     state
                         .metrics
                         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                         .await;
-                    return super::handlers::with_request_id(resp, &request_id);
+                    return handlers::with_request_id(resp, &request_id);
                 }
                 Ok(None) => {
                     let guard = redis.acquire_fill_lock(cache_key).await;
                     match redis.get_gene_cache(cache_key).await {
                         Ok(Some(cached_bytes)) => {
-                            if super::handlers::if_none_match(&headers).as_deref()
+                            if handlers::if_none_match(&headers).as_deref()
                                 == Some(etag.as_str())
                             {
                                 let mut resp = StatusCode::NOT_MODIFIED.into_response();
-                                super::handlers::put_cache_headers(
+                                handlers::put_cache_headers(
                                     resp.headers_mut(),
                                     state.api.immutable_gene_ttl,
                                     &etag,
-                                    super::handlers::CachePolicy::ImmutableDataset,
+                                    handlers::CachePolicy::ImmutableDataset,
                                 );
-                                resp = super::handlers::with_query_class(resp, class);
+                                resp = handlers::with_query_class(resp, class);
                                 state
                                     .metrics
                                     .observe_request(
@@ -301,7 +315,7 @@ pub(crate) async fn genes_handler(
                                         started.elapsed(),
                                     )
                                     .await;
-                                return super::handlers::with_request_id(resp, &request_id);
+                                return handlers::with_request_id(resp, &request_id);
                             }
                             let mut resp = Response::builder()
                                 .status(StatusCode::OK)
@@ -313,21 +327,21 @@ pub(crate) async fn genes_handler(
                                 "content-type",
                                 HeaderValue::from_static("application/json"),
                             );
-                            super::handlers::put_cache_headers(
+                            handlers::put_cache_headers(
                                 resp.headers_mut(),
                                 state.api.immutable_gene_ttl,
                                 &etag,
-                                super::handlers::CachePolicy::ImmutableDataset,
+                                handlers::CachePolicy::ImmutableDataset,
                             );
                             if let Ok(v) = HeaderValue::from_str("redis-hit") {
                                 resp.headers_mut().insert("x-atlas-cache", v);
                             }
-                            resp = super::handlers::with_query_class(resp, class);
+                            resp = handlers::with_query_class(resp, class);
                             state
                                 .metrics
                                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                                 .await;
-                            return super::handlers::with_request_id(resp, &request_id);
+                            return handlers::with_request_id(resp, &request_id);
                         }
                         Ok(None) => {
                             redis_fill_guard = Some(guard);
@@ -347,7 +361,7 @@ pub(crate) async fn genes_handler(
         dataset.canonical_string(),
         format!("{class:?}").to_lowercase(),
         normalized,
-        super::handlers::wants_pretty(&params)
+        handlers::wants_pretty(&params)
     );
     let dataset_key = {
         let hash = bijux_atlas_core::sha256_hex(dataset.canonical_string().as_bytes());
@@ -378,18 +392,18 @@ pub(crate) async fn genes_handler(
                 .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
             resp.headers_mut()
                 .insert("content-type", HeaderValue::from_static("application/json"));
-            super::handlers::put_cache_headers(
+            handlers::put_cache_headers(
                 resp.headers_mut(),
                 state.api.immutable_gene_ttl,
                 &entry.etag,
-                super::handlers::CachePolicy::ImmutableDataset,
+                handlers::CachePolicy::ImmutableDataset,
             );
-            resp = super::handlers::with_query_class(resp, class);
+            resp = handlers::with_query_class(resp, class);
             state
                 .metrics
                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                 .await;
-            return super::handlers::with_request_id(resp, &request_id);
+            return handlers::with_request_id(resp, &request_id);
         }
         info!(
             event_id = "cache_miss_hot_query",
@@ -583,7 +597,7 @@ pub(crate) async fn genes_handler(
                 query_id = %query_id,
                 dataset = %format!("{}/{}/{}", dataset.release, dataset.species, dataset.assembly),
                 class = %format!("{class:?}").to_lowercase(),
-                normalized_query = %super::handlers::normalize_query(&params),
+                normalized_query = %handlers::normalize_query(&params),
                 "slow query detected"
             );
         }
@@ -598,7 +612,7 @@ pub(crate) async fn genes_handler(
                 .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
                 .await;
             state.metrics.observe_stage("query", query_elapsed).await;
-            let provenance = super::handlers::dataset_provenance(&state, &dataset).await;
+            let provenance = handlers::dataset_provenance(&state, &dataset).await;
             info_span!(
                 "cursor_generation",
                 dataset_id = %dataset.canonical_string(),
@@ -657,9 +671,9 @@ pub(crate) async fn genes_handler(
                 } else {
                     StatusCode::UNPROCESSABLE_ENTITY
                 };
-                let resp = super::handlers::api_error_response(
+                let resp = handlers::api_error_response(
                     status,
-                    super::handlers::error_json(
+                    handlers::error_json(
                         code,
                         "query rejected",
                         json!({"message": msg, "reason_code": reason_code}),
@@ -669,12 +683,12 @@ pub(crate) async fn genes_handler(
                     .metrics
                     .observe_request("/v1/genes", status, started.elapsed())
                     .await;
-                return super::handlers::with_request_id(resp, &request_id);
+                return handlers::with_request_id(resp, &request_id);
             }
             if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
-                let resp = super::handlers::api_error_response(
+                let resp = handlers::api_error_response(
                     StatusCode::BAD_REQUEST,
-                    super::handlers::error_json(
+                    handlers::error_json(
                         ApiErrorCode::InvalidQueryParameter,
                         "invalid query parameter",
                         json!({"message": msg}),
@@ -684,7 +698,7 @@ pub(crate) async fn genes_handler(
                     .metrics
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
-                return super::handlers::with_request_id(resp, &request_id);
+                return handlers::with_request_id(resp, &request_id);
             }
             if req.cursor.is_some() {
                 let reason_code = if msg.contains("UnsupportedVersion") {
@@ -694,9 +708,9 @@ pub(crate) async fn genes_handler(
                 } else {
                     "CURSOR_INVALID"
                 };
-                let resp = super::handlers::api_error_response(
+                let resp = handlers::api_error_response(
                     StatusCode::BAD_REQUEST,
-                    super::handlers::error_json(
+                    handlers::error_json(
                         ApiErrorCode::InvalidCursor,
                         "invalid cursor",
                         json!({"message": msg, "reason_code": reason_code}),
@@ -706,11 +720,11 @@ pub(crate) async fn genes_handler(
                     .metrics
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
-                return super::handlers::with_request_id(resp, &request_id);
+                return handlers::with_request_id(resp, &request_id);
             }
-            let resp = super::handlers::api_error_response(
+            let resp = handlers::api_error_response(
                 StatusCode::SERVICE_UNAVAILABLE,
-                super::handlers::error_json(
+                handlers::error_json(
                     ApiErrorCode::Internal,
                     "query failed",
                     json!({"message": msg}),
@@ -724,7 +738,7 @@ pub(crate) async fn genes_handler(
                     started.elapsed(),
                 )
                 .await;
-            return super::handlers::with_request_id(resp, &request_id);
+            return handlers::with_request_id(resp, &request_id);
         }
         Err(_) => {
             warn!(
@@ -744,15 +758,15 @@ pub(crate) async fn genes_handler(
                     let _ = cache.prefetch_dataset(ds).await;
                 });
             }
-            let resp = super::handlers::api_error_response(
+            let resp = handlers::api_error_response(
                 StatusCode::GATEWAY_TIMEOUT,
-                super::handlers::error_json(ApiErrorCode::Timeout, "request timed out", json!({})),
+                handlers::error_json(ApiErrorCode::Timeout, "request timed out", json!({})),
             );
             state
                 .metrics
                 .observe_request("/v1/genes", StatusCode::GATEWAY_TIMEOUT, started.elapsed())
                 .await;
-            return super::handlers::with_request_id(resp, &request_id);
+            return handlers::with_request_id(resp, &request_id);
         }
     };
     finalize_genes_success_response(GenesResponseFinalizeContext {

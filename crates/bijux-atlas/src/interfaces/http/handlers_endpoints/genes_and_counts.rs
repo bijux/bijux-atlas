@@ -111,9 +111,6 @@ pub(crate) async fn genes_count_handler(
         }
     }
 }
-
-include!("../transcript_endpoints.rs");
-
 fn query_gene_count_with_filters(
     conn: &rusqlite::Connection,
     req: &bijux_atlas::query::GeneQueryRequest,

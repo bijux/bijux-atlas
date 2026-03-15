@@ -1,21 +1,29 @@
-struct GenesResponseFinalizeContext<'a, R> {
-    state: &'a AppState,
-    headers: &'a HeaderMap,
-    params: &'a HashMap<String, String>,
-    payload: serde_json::Value,
-    started: Instant,
-    etag: &'a str,
-    class: QueryClass,
-    redis_cache_key: &'a Option<String>,
-    exact_gene_id: &'a Option<String>,
-    redis_fill_guard: Option<R>,
-    artifact_hash: &'a str,
-    cache_key_debug: &'a str,
-    coalesce_key: String,
-    request_id: &'a str,
+use crate::application::server::cache::hot::HotEntry;
+use crate::http::handlers;
+use crate::*;
+use serde_json::json;
+use tracing::info_span;
+
+pub(super) struct GenesResponseFinalizeContext<'a, R> {
+    pub(super) state: &'a AppState,
+    pub(super) headers: &'a HeaderMap,
+    pub(super) params: &'a HashMap<String, String>,
+    pub(super) payload: serde_json::Value,
+    pub(super) started: Instant,
+    pub(super) etag: &'a str,
+    pub(super) class: QueryClass,
+    pub(super) redis_cache_key: &'a Option<String>,
+    pub(super) exact_gene_id: &'a Option<String>,
+    pub(super) redis_fill_guard: Option<R>,
+    pub(super) artifact_hash: &'a str,
+    pub(super) cache_key_debug: &'a str,
+    pub(super) coalesce_key: String,
+    pub(super) request_id: &'a str,
 }
 
-async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_, R>) -> Response {
+pub(super) async fn finalize_genes_success_response<R>(
+    ctx: GenesResponseFinalizeContext<'_, R>,
+) -> Response {
     let GenesResponseFinalizeContext {
         state,
         headers,
@@ -44,15 +52,15 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
     }
     let serialize_started = Instant::now();
     let bytes = match info_span!("serialize_response").in_scope(|| {
-        super::handlers::serialize_payload_with_capacity(
+        handlers::serialize_payload_with_capacity(
             &payload,
-            super::handlers::wants_pretty(params),
+            handlers::wants_pretty(params),
             state.api.response_max_bytes / 4,
         )
     }) {
         Ok(v) => v,
         Err(err) => {
-            let resp = super::handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+            let resp = handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
             state
                 .metrics
                 .observe_request(
@@ -61,7 +69,7 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
                     started.elapsed(),
                 )
                 .await;
-            return super::handlers::with_request_id(resp, request_id);
+            return handlers::with_request_id(resp, request_id);
         }
     };
     state
@@ -69,9 +77,9 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         .observe_stage("serialize", serialize_started.elapsed())
         .await;
     if bytes.len() > state.api.response_max_bytes {
-        let resp = super::handlers::api_error_response(
+        let resp = handlers::api_error_response(
             StatusCode::PAYLOAD_TOO_LARGE,
-            super::handlers::error_json(
+            handlers::error_json(
                 ApiErrorCode::ResponseTooLarge,
                 "response exceeds configured size guard",
                 json!({"bytes": bytes.len(), "max": state.api.response_max_bytes}),
@@ -85,22 +93,22 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
                 started.elapsed(),
             )
             .await;
-        return super::handlers::with_request_id(resp, request_id);
+        return handlers::with_request_id(resp, request_id);
     }
-    if super::handlers::if_none_match(headers).as_deref() == Some(etag) {
+    if handlers::if_none_match(headers).as_deref() == Some(etag) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
-        super::handlers::put_cache_headers(
+        handlers::put_cache_headers(
             resp.headers_mut(),
             state.api.immutable_gene_ttl,
             etag,
-            super::handlers::CachePolicy::ImmutableDataset,
+            handlers::CachePolicy::ImmutableDataset,
         );
-        resp = super::handlers::with_query_class(resp, class);
+        resp = handlers::with_query_class(resp, class);
         state
             .metrics
             .observe_request("/v1/genes", StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
-        return super::handlers::with_request_id(resp, request_id);
+        return handlers::with_request_id(resp, request_id);
     }
     if state.api.enable_redis_response_cache {
         if let (Some(redis), Some(cache_key), Some(_)) =
@@ -110,16 +118,16 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
                 .set_gene_cache(cache_key, &bytes, state.api.redis_response_cache_ttl_secs)
                 .await
             {
-                warn!("redis cache write fallback: {e}");
+                tracing::warn!("redis cache write fallback: {e}");
             }
         }
     }
     drop(redis_fill_guard);
     let (response_bytes, content_encoding) =
-        match super::handlers::maybe_compress_response(headers, state, bytes) {
+        match handlers::maybe_compress_response(headers, state, bytes) {
             Ok(v) => v,
             Err(err) => {
-                let resp = super::handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+                let resp = handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
                 state
                     .metrics
                     .observe_request(
@@ -128,28 +136,28 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
                         started.elapsed(),
                     )
                     .await;
-                return super::handlers::with_request_id(resp, request_id);
+                return handlers::with_request_id(resp, request_id);
             }
         };
     state
         .metrics
         .observe_response_size("/v1/genes", response_bytes.len())
         .await;
-    if super::handlers::wants_text(headers) {
+    if handlers::wants_text(headers) {
         let text = String::from_utf8_lossy(&response_bytes).to_string();
         let mut resp = (StatusCode::OK, text).into_response();
-        super::handlers::put_cache_headers(
+        handlers::put_cache_headers(
             resp.headers_mut(),
             state.api.immutable_gene_ttl,
             etag,
-            super::handlers::CachePolicy::ImmutableDataset,
+            handlers::CachePolicy::ImmutableDataset,
         );
-        resp = super::handlers::with_query_class(resp, class);
+        resp = handlers::with_query_class(resp, class);
         state
             .metrics
             .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
             .await;
-        return super::handlers::with_request_id(resp, request_id);
+        return handlers::with_request_id(resp, request_id);
     }
     let mut resp = Response::builder()
         .status(StatusCode::OK)
@@ -161,14 +169,14 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         resp.headers_mut()
             .insert("content-encoding", HeaderValue::from_static(encoding));
     }
-    resp = super::handlers::with_query_class(resp, class);
-    super::handlers::put_cache_headers(
+    resp = handlers::with_query_class(resp, class);
+    handlers::put_cache_headers(
         resp.headers_mut(),
         state.api.immutable_gene_ttl,
         etag,
-        super::handlers::CachePolicy::ImmutableDataset,
+        handlers::CachePolicy::ImmutableDataset,
     );
-    super::handlers::cache_debug_headers(
+    handlers::cache_debug_headers(
         resp.headers_mut(),
         state.api.enable_debug_datasets,
         artifact_hash,
@@ -178,7 +186,7 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         let mut cache = state.hot_query_cache.lock().await;
         cache.insert(
             coalesce_key,
-            crate::application::server::cache::hot::HotEntry {
+            HotEntry {
                 body: response_bytes,
                 etag: etag.to_string(),
                 created_at: Instant::now(),
@@ -189,6 +197,6 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         .metrics
         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
         .await;
-    info!(request_id = %request_id, status = 200_u16, "request complete");
-    super::handlers::with_request_id(resp, request_id)
+    tracing::info!(request_id = %request_id, status = 200_u16, "request complete");
+    handlers::with_request_id(resp, request_id)
 }
