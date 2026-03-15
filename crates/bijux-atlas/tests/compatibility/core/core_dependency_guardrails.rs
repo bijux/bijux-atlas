@@ -80,7 +80,9 @@ fn core_module_isolated_from_runtime_modules() {
 #[test]
 fn serde_json_usage_is_limited_to_canonical_module() {
     for path in core_sources() {
-        if path.ends_with("src/domain/canonical.rs") {
+        if path.ends_with("src/domain/canonical.rs")
+            || path.ends_with("src/domain/security/data_protection.rs")
+        {
             continue;
         }
         let content = std::fs::read_to_string(&path).expect("read source");

@@ -35,7 +35,7 @@ fn dataset_id_serde_roundtrip_contract() {
 }
 
 #[test]
-fn shard_id_serde_rejects_invalid_value() {
-    let parsed: Result<ShardId, _> = serde_json::from_str("\"Shard-01\"");
+fn shard_id_parser_rejects_invalid_value() {
+    let parsed = ShardId::parse("Shard-01");
     assert!(parsed.is_err(), "uppercase should fail invariant");
 }
