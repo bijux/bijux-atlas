@@ -18,8 +18,7 @@ pub fn normalize_request(req: &GeneQueryRequest) -> GeneQueryRequest {
     normalized
 }
 
-#[must_use]
-pub fn normalized_ast_format(ast: &GeneQueryAst) -> String {
+pub fn normalized_ast_format(ast: &GeneQueryAst) -> Result<String, String> {
     let mut predicates = ast.predicates.clone();
     predicates.sort_by_key(predicate_sort_key);
     let ordered = GeneQueryAst {
@@ -30,7 +29,8 @@ pub fn normalized_ast_format(ast: &GeneQueryAst) -> String {
         has_cursor: ast.has_cursor,
         sort_key: ast.sort_key,
     };
-    serde_json::to_string(&ordered).expect("ast serialization must succeed")
+    serde_json::to_string(&ordered)
+        .map_err(|err| format!("serialize normalized query ast: {err}"))
 }
 
 fn predicate_sort_key(predicate: &Predicate) -> String {

@@ -451,11 +451,12 @@ pub(crate) const DEFAULT_STORE_ROOT: &str = "artifacts/server-store";
 pub(crate) const DEFAULT_CACHE_ROOT: &str = "artifacts/server-cache";
 
 fn repo_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    manifest_dir
         .parent()
         .and_then(|path| path.parent())
-        .expect("bijux-atlas workspace root")
-        .to_path_buf()
+        .map(Path::to_path_buf)
+        .unwrap_or(manifest_dir)
 }
 
 fn resolve_runtime_path(path: PathBuf) -> PathBuf {
