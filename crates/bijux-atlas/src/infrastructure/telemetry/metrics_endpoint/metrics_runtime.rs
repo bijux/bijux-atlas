@@ -1,4 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
-include!("metrics_runtime/request_and_latency_metrics.rs");
-include!("metrics_runtime/main_handler.rs");
+use crate::*;
+
+#[path = "../metrics_helpers.rs"]
+mod metrics_helpers;
+use self::metrics_helpers::{
+    make_request_id, percentile_ns, push_histogram_from_samples, shed_reason_class,
+    with_request_id, METRIC_DATASET_ALL, METRIC_SUBSYSTEM, METRIC_VERSION,
+};
+
+mod main_handler;
+mod request_and_latency_metrics;
+
+pub(crate) use self::main_handler::metrics_handler;

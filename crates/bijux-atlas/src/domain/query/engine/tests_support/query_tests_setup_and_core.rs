@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
+use crate::query::*;
 use rusqlite::Connection;
-use std::time::Duration;
 
-fn setup_db() -> Connection {
+use super::super::planner::validate_request;
+
+pub(super) fn setup_db() -> Connection {
     let conn = Connection::open_in_memory().expect("open memory db");
     conn.execute_batch(
         "
@@ -231,7 +232,7 @@ fn transcript_query_uses_indexes_and_paginates() {
     assert_eq!(page2.rows.len(), 1);
 }
 
-fn limits() -> QueryLimits {
+pub(super) fn limits() -> QueryLimits {
     QueryLimits {
         max_limit: 500,
         max_transcript_limit: 500,

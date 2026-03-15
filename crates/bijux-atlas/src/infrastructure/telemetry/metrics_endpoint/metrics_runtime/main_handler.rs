@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::*;
-
-#[path = "../../metrics_helpers.rs"]
-mod metrics_helpers;
-use metrics_helpers::{
-    make_request_id, percentile_ns, push_histogram_from_samples, shed_reason_class,
-    with_request_id, METRIC_DATASET_ALL, METRIC_SUBSYSTEM, METRIC_VERSION,
-};
+use super::*;
+use super::request_and_latency_metrics::append_request_and_latency_metrics;
 
 #[cfg(target_os = "linux")]
 fn current_process_rss_bytes() -> u64 {

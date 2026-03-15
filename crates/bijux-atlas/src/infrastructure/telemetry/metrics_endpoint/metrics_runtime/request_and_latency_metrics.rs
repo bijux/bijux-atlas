@@ -1,4 +1,6 @@
-async fn append_request_and_latency_metrics(
+use super::*;
+
+pub(super) async fn append_request_and_latency_metrics(
     state: &AppState,
     body: &mut String,
     download_lat: &[u64],

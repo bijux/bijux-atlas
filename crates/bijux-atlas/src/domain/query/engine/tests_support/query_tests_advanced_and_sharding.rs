@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::query_tests_setup_and_core::{limits, setup_db};
+use crate::query::*;
+use std::time::Duration;
+
+use super::super::filters;
+
 #[test]
 fn cursor_generation_is_concurrency_stable() {
     let conn = setup_db();
@@ -79,8 +85,8 @@ fn pathological_prefix_is_rejected_by_cost_estimator() {
 
 #[test]
 fn unicode_normalization_policy_nfkc_is_stable() {
-    let n1 = super::filters::normalize_name_lookup("Å");
-    let n2 = super::filters::normalize_name_lookup("Å");
+    let n1 = filters::normalize_name_lookup("Å");
+    let n2 = filters::normalize_name_lookup("Å");
     assert_eq!(n1, n2);
 }
 
