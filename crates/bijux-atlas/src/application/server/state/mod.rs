@@ -4,23 +4,13 @@ use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 use crate::application::server::cache;
 use crate::application::config::ApiConfig;
-use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use crate::domain::{
     FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
 };
-use crate::http;
-use axum::body::Body;
-use axum::extract::{DefaultBodyLimit, State};
-use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
-use axum::middleware::{from_fn_with_state, Next};
-use axum::response::{IntoResponse, Response};
-use axum::routing::{get, post};
-use axum::{Json, Router};
+use axum::http::StatusCode;
 use bijux_atlas::query::QueryLimits;
-use hmac::{Hmac, Mac};
 use rusqlite::Connection;
-use sha2::Sha256;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -33,8 +23,6 @@ use tracing::{error, info, warn, Instrument};
 pub(crate) mod cache_runtime;
 mod request_utils;
 mod router;
-
-use self::request_utils::*;
 
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct DatasetCacheConfig {
@@ -372,58 +360,6 @@ impl RequestMetrics {
             .entry((client_type.to_string(), user_agent_family.to_string()))
             .or_insert(0) += 1;
     }
-}
-
-async fn cors_middleware(
-    State(state): State<AppState>,
-    req: Request<Body>,
-    next: Next,
-) -> Response {
-    let origin = normalized_header_value(req.headers(), "origin", 256);
-    let method = req.method().clone();
-    if method == axum::http::Method::OPTIONS {
-        let mut resp = StatusCode::NO_CONTENT.into_response();
-        if let Some(origin_value) = origin {
-            if state
-                .api
-                .cors_allowed_origins
-                .iter()
-                .any(|x| x == &origin_value)
-            {
-                if let Ok(v) = HeaderValue::from_str(&origin_value) {
-                    resp.headers_mut().insert("access-control-allow-origin", v);
-                }
-                resp.headers_mut().insert(
-                    "access-control-allow-methods",
-                    HeaderValue::from_static("GET,OPTIONS"),
-                );
-                resp.headers_mut().insert(
-                    "access-control-allow-headers",
-                    HeaderValue::from_static(
-                        "x-api-key,x-bijux-signature,x-bijux-timestamp,content-type",
-                    ),
-                );
-            }
-        }
-        return resp;
-    }
-
-    let mut resp = next.run(req).await;
-    if let Some(origin_value) = origin {
-        if state
-            .api
-            .cors_allowed_origins
-            .iter()
-            .any(|x| x == &origin_value)
-        {
-            if let Ok(v) = HeaderValue::from_str(&origin_value) {
-                resp.headers_mut().insert("access-control-allow-origin", v);
-            }
-            resp.headers_mut()
-                .insert("vary", HeaderValue::from_static("Origin"));
-        }
-    }
-    resp
 }
 
 pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};

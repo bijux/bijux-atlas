@@ -8,6 +8,8 @@ pub(crate) mod handlers;
 pub(crate) mod handlers_endpoints;
 pub(crate) mod handlers_utilities;
 pub(crate) mod middleware;
+pub(crate) mod request_policies;
+pub(crate) mod router;
 pub(crate) mod request_tracing;
 pub(crate) mod response_contract;
 pub(crate) mod sequence;
