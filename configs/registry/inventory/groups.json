@@ -32,6 +32,7 @@
     "security",
     "shellcheck",
     "slo",
+    "sources",
     "system",
     "tutorials"
   ],

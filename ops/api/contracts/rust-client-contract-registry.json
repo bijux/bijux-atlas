@@ -3,7 +3,7 @@
   "kind": "rust_client_contract_registry",
   "crate": "bijux-atlas",
   "contracts": [
-    "configs/clients/atlas-rust-client-config.schema.json",
+    "configs/sources/runtime/clients/atlas-rust-client-config.schema.json",
     "ops/api/contracts/rust-client-runtime-compatibility.json"
   ]
 }

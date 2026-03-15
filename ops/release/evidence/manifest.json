@@ -36,8 +36,8 @@
     "sha256": "98881e617477796334454fe48c937d68a230dfed47872392b27b4a3d36af70c8"
   },
   "dataset_assets": [
-    "configs/datasets/manifest.yaml",
-    "configs/datasets/pinned-policy.yaml",
+    "configs/sources/runtime/datasets/manifest.yaml",
+    "configs/sources/runtime/datasets/pinned-policy.yaml",
     "configs/schemas/contracts/datasets/manifest.schema.json",
     "configs/schemas/contracts/datasets/pinned-policy.schema.json",
     "configs/schemas/contracts/datasets/ingest-plan.schema.json",

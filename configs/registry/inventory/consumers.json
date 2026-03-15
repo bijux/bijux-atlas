@@ -108,6 +108,9 @@
     "slo": [
       "slo contract checks"
     ],
+    "sources": [
+      "authored config inputs grouped by domain"
+    ],
     "system": [
       "system simulation validation"
     ],

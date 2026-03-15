@@ -42,11 +42,11 @@
       "sha256": "7c8b24abb4fe57c1e6dab0a7dd29d866c9ed3ab6b7b801ef7ac0f2d7e574f4ed"
     },
     {
-      "path": "configs/datasets/manifest.yaml",
+      "path": "configs/sources/runtime/datasets/manifest.yaml",
       "sha256": "a9cc1599261349e3b9c435dce290c8ba4d85989824203693145b815641b555cb"
     },
     {
-      "path": "configs/datasets/pinned-policy.yaml",
+      "path": "configs/sources/runtime/datasets/pinned-policy.yaml",
       "sha256": "197a72014d2ebe58648f076ed3300b6393d444d296e5c5a3a02af450cc52ee74"
     },
     {

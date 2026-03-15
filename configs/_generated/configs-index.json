@@ -77,9 +77,9 @@
         "schemas": 1
       },
       "files": [
-        "configs/cli/config.example.toml",
-        "configs/cli/config.schema.json",
-        "configs/cli/hidden-command-allowlist.json"
+        "configs/sources/runtime/cli/config.example.toml",
+        "configs/sources/runtime/cli/config.schema.json",
+        "configs/sources/runtime/cli/hidden-command-allowlist.json"
       ],
       "name": "cli",
       "owner": "platform",
@@ -102,13 +102,13 @@
         "schemas": 2
       },
       "files": [
-        "configs/clients/atlas-rust-client-config.schema.json"
+        "configs/sources/runtime/clients/atlas-rust-client-config.schema.json"
       ],
       "name": "clients",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/clients/*.schema.json",
+        "configs/sources/runtime/clients/*.schema.json",
         "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
@@ -126,8 +126,8 @@
         "schemas": 1
       },
       "files": [
-        "configs/datasets/manifest.yaml",
-        "configs/datasets/pinned-policy.yaml"
+        "configs/sources/runtime/datasets/manifest.yaml",
+        "configs/sources/runtime/datasets/pinned-policy.yaml"
       ],
       "name": "datasets",
       "owner": "data-governance",
@@ -325,9 +325,6 @@
         "configs/layout/ops-markdown-naming-policy.json",
         "configs/layout/root-markdown-allowlist.json",
         "configs/layout/root_markdown_allowlist.json",
-        "configs/product/README.md",
-        "configs/product/artifact-manifest.schema.json",
-        "configs/product/external-tools-manifest.json",
         "configs/release/crate-package-policy.json",
         "configs/release/dependency-policy.json",
         "configs/release/feature-policy.json",
@@ -350,7 +347,10 @@
         "configs/repo/symlink-allowlist.json",
         "configs/repo/tree-budget-exceptions.json",
         "configs/shellcheck/README.md",
-        "configs/shellcheck/shellcheckrc"
+        "configs/shellcheck/shellcheckrc",
+        "configs/sources/runtime/product/README.md",
+        "configs/sources/runtime/product/artifact-manifest.schema.json",
+        "configs/sources/runtime/product/external-tools-manifest.json"
       ],
       "name": "layout",
       "owner": "platform",
@@ -469,8 +469,8 @@
         "schemas": 1
       },
       "files": [
-        "configs/openapi/v1/openapi.generated.json",
-        "configs/openapi/v1/openapi.snapshot.json"
+        "configs/sources/runtime/openapi/v1/openapi.generated.json",
+        "configs/sources/runtime/openapi/v1/openapi.snapshot.json"
       ],
       "name": "openapi",
       "owner": "api-contracts",
@@ -1020,7 +1020,7 @@
     }
   ],
   "kind": "configs-index",
-  "max_depth": 4,
+  "max_depth": 5,
   "max_group_depth": 2,
   "max_groups": 25,
   "registry_path": "configs/registry/inventory/configs.json",

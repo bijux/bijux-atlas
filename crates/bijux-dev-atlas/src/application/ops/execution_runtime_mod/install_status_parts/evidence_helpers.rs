@@ -488,8 +488,8 @@ pub(super) fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<Str
 pub(super) fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
-        "configs/datasets/manifest.yaml",
-        "configs/datasets/pinned-policy.yaml",
+        "configs/sources/runtime/datasets/manifest.yaml",
+        "configs/sources/runtime/datasets/pinned-policy.yaml",
         "configs/schemas/contracts/datasets/manifest.schema.json",
         "configs/schemas/contracts/datasets/pinned-policy.schema.json",
         "configs/schemas/contracts/datasets/ingest-plan.schema.json",
@@ -609,7 +609,7 @@ pub(super) fn observability_contract_checks(
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
     let openapi =
-        std::fs::read_to_string(repo_root.join("configs/openapi/v1/openapi.snapshot.json"))
+        std::fs::read_to_string(repo_root.join("configs/sources/runtime/openapi/v1/openapi.snapshot.json"))
         .map_err(|err| format!("failed to read openapi: {err}"))?;
     let error_registry_aligned = error_registry.contains("NotReady")
         && error_registry.contains("RateLimited")

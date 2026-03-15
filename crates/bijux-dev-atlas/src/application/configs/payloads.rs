@@ -297,6 +297,7 @@ pub(crate) fn configs_validate_payload(
     let inventory_manifest_path = ctx.repo_root.join("configs/registry/inventory/index.json");
     let groups_path = ctx.repo_root.join("configs/registry/inventory/groups.json");
     let consumers_path = ctx.repo_root.join("configs/registry/inventory/consumers.json");
+    let mut max_depth = 4usize;
     if !inventory_manifest_path.exists() {
         errors.push(
             "CONFIGS_LAYOUT_ERROR: missing canonical inventory manifest `configs/registry/inventory/index.json`"
@@ -307,7 +308,7 @@ pub(crate) fn configs_validate_payload(
             .map_err(|e| format!("failed to read {}: {e}", inventory_manifest_path.display()))?;
         let inventory_json: serde_json::Value = serde_json::from_str(&inventory_text)
             .map_err(|e| format!("failed to parse {}: {e}", inventory_manifest_path.display()))?;
-        for key in ["groups_path", "consumers_path", "owners_path"] {
+        for key in ["groups_path", "consumers_path", "owners_path", "registry_path"] {
             let Some(path) = inventory_json[key].as_str() else {
                 errors.push(format!(
                     "CONFIGS_SCHEMA_ERROR: configs/registry/inventory/index.json missing string key `{key}`"
@@ -318,6 +319,22 @@ pub(crate) fn configs_validate_payload(
                 errors.push(format!(
                     "CONFIGS_LAYOUT_ERROR: configs/registry/inventory/index.json references missing path `{path}`"
                 ));
+            }
+        }
+        if let Some(registry_path) = inventory_json["registry_path"].as_str() {
+            let registry_full_path = ctx.repo_root.join(registry_path);
+            if registry_full_path.exists() {
+                let registry_text = fs::read_to_string(&registry_full_path).map_err(|e| {
+                    format!("failed to read {}: {e}", registry_full_path.display())
+                })?;
+                let registry_json: serde_json::Value =
+                    serde_json::from_str(&registry_text).map_err(|e| {
+                        format!("failed to parse {}: {e}", registry_full_path.display())
+                    })?;
+                max_depth = registry_json["max_depth"]
+                    .as_u64()
+                    .map(|value| value as usize)
+                    .unwrap_or(max_depth);
             }
         }
     }
@@ -440,7 +457,7 @@ pub(crate) fn configs_validate_payload(
             .unwrap_or_default();
         let is_governed_config = matches!(ext, "json" | "toml" | "yaml" | "yml" | "md" | "txt");
         let in_vendor_path = rel.contains("/node_modules/") || rel.contains("/.vale/styles/");
-        if is_governed_config && !in_vendor_path && depth > 4 {
+        if is_governed_config && !in_vendor_path && depth > max_depth {
             errors.push(format!(
                 "CONFIGS_LAYOUT_ERROR: config path depth exceeds budget (depth={depth}) `{rel}`"
             ));

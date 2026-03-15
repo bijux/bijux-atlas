@@ -56,8 +56,8 @@
       "name": "cli",
       "owner": "platform",
       "public_files": [
-        "configs/cli/*.json",
-        "configs/cli/*.toml"
+        "configs/sources/runtime/cli/*.json",
+        "configs/sources/runtime/cli/*.toml"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -75,11 +75,11 @@
       "name": "clients",
       "owner": "platform",
       "public_files": [
-        "configs/clients/*.json"
+        "configs/sources/runtime/clients/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
-        "configs/clients/*.schema.json",
+        "configs/sources/runtime/clients/*.schema.json",
         "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
@@ -94,7 +94,7 @@
       "name": "datasets",
       "owner": "data-governance",
       "public_files": [
-        "configs/datasets/*.yaml"
+        "configs/sources/runtime/datasets/*.yaml"
       ],
       "schema_owner": "data-governance",
       "schemas": [
@@ -208,7 +208,7 @@
         "configs/gates/*.json",
         "configs/coverage/*",
         "configs/shellcheck/*",
-        "configs/product/*",
+        "configs/sources/runtime/product/*",
         "configs/release/*.json"
       ],
       "schema_owner": "platform",
@@ -297,7 +297,7 @@
       "name": "openapi",
       "owner": "api-contracts",
       "public_files": [
-        "configs/openapi/**/*.json"
+        "configs/sources/runtime/openapi/**/*.json"
       ],
       "schema_owner": "api-contracts",
       "schemas": [
@@ -557,7 +557,7 @@
       ]
     }
   ],
-  "max_depth": 4,
+  "max_depth": 5,
   "max_group_depth": 2,
   "max_groups": 25,
   "root_files": [

@@ -33,7 +33,7 @@ flowchart LR
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas -- openapi generate \
-  --out configs/openapi/v1/openapi.generated.json
+  --out configs/sources/runtime/openapi/v1/openapi.generated.json
 ```
 
 Offline generation is best for review, diffing, and contract validation before a server is even running.

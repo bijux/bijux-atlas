@@ -70,8 +70,8 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/schemas/contracts/datasets/manifest.schema.json"))?;
     ensure_json(&root.join("configs/schemas/contracts/datasets/pinned-policy.schema.json"))?;
-    let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
-    let pinned_policy = read_yaml(&root.join("configs/datasets/pinned-policy.yaml"))?;
+    let manifest = read_yaml(&root.join("configs/sources/runtime/datasets/manifest.yaml"))?;
+    let pinned_policy = read_yaml(&root.join("configs/sources/runtime/datasets/pinned-policy.yaml"))?;
     let offline = read_yaml(&root.join("ops/k8s/values/offline.yaml"))?;
 
     let datasets = manifest
@@ -127,7 +127,7 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
     let report = serde_json::json!({
         "schema_version": 1,
         "status": if required_fields_ok && unique_ids && checksums_ok && data_004 && data_005 { "ok" } else { "failed" },
-        "manifest_path": "configs/datasets/manifest.yaml",
+        "manifest_path": "configs/sources/runtime/datasets/manifest.yaml",
         "contracts": {
             "DATA-001": required_fields_ok,
             "DATA-002": unique_ids,
@@ -162,7 +162,7 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
 fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/schemas/contracts/datasets/ingest-plan.schema.json"))?;
-    let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
+    let manifest = read_yaml(&root.join("configs/sources/runtime/datasets/manifest.yaml"))?;
     let datasets = manifest
         .get("datasets")
         .and_then(serde_yaml::Value::as_sequence)
@@ -175,7 +175,7 @@ fn run_ingest_dry_run(args: IngestDryRunArgs) -> Result<(String, i32), String> {
         })
         .ok_or_else(|| {
             format!(
-                "dataset `{}` is not declared in configs/datasets/manifest.yaml",
+                "dataset `{}` is not declared in configs/sources/runtime/datasets/manifest.yaml",
                 args.dataset
             )
         })?;
@@ -265,7 +265,7 @@ fn dataset_source_and_hashes(
     root: &Path,
     dataset_id: &str,
 ) -> Result<(String, String, String, String), String> {
-    let manifest = read_yaml(&root.join("configs/datasets/manifest.yaml"))?;
+    let manifest = read_yaml(&root.join("configs/sources/runtime/datasets/manifest.yaml"))?;
     let datasets = manifest
         .get("datasets")
         .and_then(serde_yaml::Value::as_sequence)
@@ -275,7 +275,7 @@ fn dataset_source_and_hashes(
         .iter()
         .find(|entry| entry.get("id").and_then(serde_yaml::Value::as_str) == Some(dataset_id))
         .ok_or_else(|| {
-            format!("dataset `{dataset_id}` is not declared in configs/datasets/manifest.yaml")
+            format!("dataset `{dataset_id}` is not declared in configs/sources/runtime/datasets/manifest.yaml")
         })?;
     let source_dir = selected
         .get("source")

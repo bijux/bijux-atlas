@@ -32,7 +32,7 @@ jobs:
               - 'mkdocs.yml'
               - '.github/**'
               - 'configs/docs/**'
-              - 'configs/openapi/**'
+              - 'configs/sources/runtime/openapi/**'
               - 'make/makefiles/_docs.mk'
 
   minimal-root-policies:

@@ -1,6 +1,14 @@
 # Configurations
 
-`configs/` is the canonical home for repository configuration inputs. The authoritative machine registries are `configs/registry/inventory/configs.json` and `configs/registry/contracts.json`.
+`configs/` is the canonical home for repository configuration inputs.
+
+Role layout:
+- `configs/registry/` contains ownership, consumer, and inventory registries.
+- `configs/schemas/` contains validation schemas and contract definitions.
+- `configs/sources/` contains authored configuration inputs grouped by domain.
+- `configs/examples/` contains non-authoritative example inputs.
+
+The authoritative machine registries are `configs/registry/inventory/configs.json` and `configs/registry/contracts.json`.
 Ownership and consumer mapping SSOT files:
 - `configs/registry/owners.json`
 - `configs/registry/consumers.json`

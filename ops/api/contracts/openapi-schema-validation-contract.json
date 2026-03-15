@@ -10,7 +10,7 @@
     "title",
     "version"
   ],
-  "openapi_document": "configs/openapi/v1/openapi.generated.json",
+  "openapi_document": "configs/sources/runtime/openapi/v1/openapi.generated.json",
   "registry": "ops/api/surface-registry.json",
   "version_tracking": "ops/api/openapi-version-tracking.json"
 }

@@ -474,7 +474,7 @@ fn load_hidden_command_allowlist() -> Result<BTreeSet<String>, String> {
 }
 
 fn resolve_hidden_command_allowlist_path() -> PathBuf {
-    let cwd_path = Path::new("configs/cli/hidden-command-allowlist.json");
+    let cwd_path = Path::new("configs/sources/runtime/cli/hidden-command-allowlist.json");
     if cwd_path.exists() {
         return cwd_path.to_path_buf();
     }
@@ -482,5 +482,5 @@ fn resolve_hidden_command_allowlist_path() -> PathBuf {
         .parent()
         .and_then(|path| path.parent())
         .unwrap_or_else(|| Path::new("."))
-        .join("configs/cli/hidden-command-allowlist.json")
+        .join("configs/sources/runtime/cli/hidden-command-allowlist.json")
 }

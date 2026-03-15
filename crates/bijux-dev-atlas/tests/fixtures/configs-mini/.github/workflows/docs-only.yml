@@ -8,7 +8,7 @@ on:
       - 'make/makefiles/_docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_generated/openapi/**'
-      - 'configs/openapi/v1/openapi.generated.json'
+      - 'configs/sources/runtime/openapi/v1/openapi.generated.json'
 
 permissions:
   contents: read
