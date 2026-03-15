@@ -616,16 +616,15 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
 pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
-        .unwrap_or_else(|_| "configs/ops/runtime/cluster-config.example.json".to_string());
-    let node_path = std::env::var("ATLAS_NODE_CONFIG_PATH")
-        .unwrap_or_else(|_| "configs/ops/runtime/node-config.example.json".to_string());
+    let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH").ok();
+    let node_path = std::env::var("ATLAS_NODE_CONFIG_PATH").ok();
 
     let mut response_status = StatusCode::OK;
-    let payload = match (
-        bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path)),
-        bijux_atlas_core::load_node_config_from_path(std::path::Path::new(&node_path)),
-    ) {
+    let payload = match (cluster_path.as_deref(), node_path.as_deref()) {
+        (Some(cluster_path), Some(node_path)) => match (
+            bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(cluster_path)),
+            bijux_atlas_core::load_node_config_from_path(std::path::Path::new(node_path)),
+        ) {
         (Ok(cluster_cfg), Ok(node_cfg)) => {
             let cluster = cluster_cfg.to_descriptor();
             let node = node_cfg.to_descriptor();
@@ -663,6 +662,18 @@ pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> imp
                 "error": {
                     "cluster_config": cluster_result.err().unwrap_or_default(),
                     "node_config": node_result.err().unwrap_or_default()
+                }
+            })
+        }
+        },
+        _ => {
+            response_status = StatusCode::SERVICE_UNAVAILABLE;
+            json!({
+                "cluster_id": Value::Null,
+                "health": "unavailable",
+                "error": {
+                    "cluster_config": "ATLAS_CLUSTER_CONFIG_PATH must be set",
+                    "node_config": "ATLAS_NODE_CONFIG_PATH must be set"
                 }
             })
         }

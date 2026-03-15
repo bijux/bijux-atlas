@@ -19,7 +19,7 @@ fn chrono_like_unix_secs() -> u64 {
 struct AuthenticationContext {
     principal: &'static str,
     mechanism: &'static str,
-    subject: &'static str,
+    subject: String,
     issuer: Option<String>,
     scopes: Vec<String>,
 }
@@ -253,14 +253,13 @@ fn validate_signed_token(
             return Err(TokenValidationError::Scope);
         }
     }
+    let Some(subject) = claims.sub.filter(|value| !value.trim().is_empty()) else {
+        return Err(TokenValidationError::Malformed);
+    };
     Ok(AuthenticationContext {
         principal: "user",
         mechanism: "token",
-        subject: if claims.sub.as_deref().is_some_and(|value| !value.is_empty()) {
-            "user"
-        } else {
-            "unknown-subject"
-        },
+        subject,
         issuer: claims.iss,
         scopes,
     })
@@ -779,6 +778,7 @@ pub(super) async fn resilience_middleware(
     next: Next,
 ) -> Response {
     let path = req.uri().path().to_string();
+    let request_id = crate::http::handlers::propagated_request_id(req.headers(), &state);
     if state.api.emergency_global_breaker
         && path != "/healthz"
         && path != "/healthz/overload"
@@ -789,18 +789,24 @@ pub(super) async fn resilience_middleware(
             ApiErrorCode::NotReady,
             "emergency global circuit breaker is enabled",
             serde_json::json!({}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::SERVICE_UNAVAILABLE, err).into_response(),
+            &request_id,
+        );
     }
     if state.api.disable_heavy_endpoints && is_heavy_endpoint_path(&path) {
         let err = Json(ApiError::new(
             ApiErrorCode::QueryRejectedByPolicy,
             "heavy endpoints are temporarily disabled by safety valve policy",
             serde_json::json!({"policy":"disable_heavy_endpoints"}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::SERVICE_UNAVAILABLE, err).into_response(),
+            &request_id,
+        );
     }
     let mut resp = next.run(req).await;
     if crate::http::middleware::shedding::overloaded(&state).await {
@@ -934,6 +940,7 @@ pub(super) async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     let route = req.uri().path().to_string();
+    let request_id = crate::http::handlers::propagated_request_id(req.headers(), &state);
     info!(
         event_id = "authentication_evaluation_started",
         event = "authentication_evaluation_started",
@@ -956,9 +963,12 @@ pub(super) async fn security_middleware(
                 ApiErrorCode::QueryRejectedByPolicy,
                 "https is required",
                 serde_json::json!({"class": "transport", "reason": "https_required"}),
-                "req-unknown",
+                request_id.clone(),
             ));
-            return (StatusCode::UPGRADE_REQUIRED, err).into_response();
+            return crate::http::handlers::with_request_id(
+                (StatusCode::UPGRADE_REQUIRED, err).into_response(),
+                &request_id,
+            );
         }
     }
     if route_is_admin_endpoint(&route) && !state.api.enable_admin_endpoints {
@@ -967,9 +977,12 @@ pub(super) async fn security_middleware(
             ApiErrorCode::DatasetNotFound,
             "admin endpoints are disabled",
             serde_json::json!({}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::NOT_FOUND, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::NOT_FOUND, err).into_response(),
+            &request_id,
+        );
     }
     if uri_text.len() > state.api.max_uri_bytes {
         record_policy_violation(&state, "uri_bytes").await;
@@ -977,9 +990,12 @@ pub(super) async fn security_middleware(
             ApiErrorCode::QueryRejectedByPolicy,
             "request URI too large",
             serde_json::json!({"max_uri_bytes": state.api.max_uri_bytes, "actual": uri_text.len()}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::BAD_REQUEST, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::BAD_REQUEST, err).into_response(),
+            &request_id,
+        );
     }
     let header_bytes: usize = req
         .headers()
@@ -996,9 +1012,12 @@ pub(super) async fn security_middleware(
             ApiErrorCode::QueryRejectedByPolicy,
             "request headers too large",
             serde_json::json!({"max_header_bytes": state.api.max_header_bytes, "actual": header_bytes}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::BAD_REQUEST, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::BAD_REQUEST, err).into_response(),
+            &request_id,
+        );
     }
 
     let user_agent = normalized_header_value(req.headers(), "user-agent", 512);
@@ -1019,9 +1038,12 @@ pub(super) async fn security_middleware(
             auth_error_code(StatusCode::UNAUTHORIZED),
             "api key required",
             serde_json::json!({}),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::UNAUTHORIZED, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::UNAUTHORIZED, err).into_response(),
+            &request_id,
+        );
     }
     if let Some(key) = &api_key {
         if !api_key_store.records.is_empty()
@@ -1033,9 +1055,12 @@ pub(super) async fn security_middleware(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "invalid api key",
                 serde_json::json!({}),
-                "req-unknown",
+                request_id.clone(),
             ));
-            return (StatusCode::UNAUTHORIZED, err).into_response();
+            return crate::http::handlers::with_request_id(
+                (StatusCode::UNAUTHORIZED, err).into_response(),
+                &request_id,
+            );
         }
     }
 
@@ -1051,9 +1076,12 @@ pub(super) async fn security_middleware(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "bearer token required",
                 serde_json::json!({}),
-                "req-unknown",
+                request_id.clone(),
             ));
-            return (StatusCode::UNAUTHORIZED, err).into_response();
+            return crate::http::handlers::with_request_id(
+                (StatusCode::UNAUTHORIZED, err).into_response(),
+                &request_id,
+            );
         };
         match validate_signed_token(raw_token, &state.api) {
             Ok(context) => Some(context),
@@ -1064,9 +1092,12 @@ pub(super) async fn security_middleware(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid bearer token",
                     serde_json::json!({"class": "authentication", "reason": err.as_code()}),
-                    "req-unknown",
+                    request_id.clone(),
                 ));
-                return (StatusCode::UNAUTHORIZED, err).into_response();
+                return crate::http::handlers::with_request_id(
+                    (StatusCode::UNAUTHORIZED, err).into_response(),
+                    &request_id,
+                );
             }
         }
     } else {
@@ -1083,9 +1114,12 @@ pub(super) async fn security_middleware(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "missing required HMAC headers",
                 serde_json::json!({}),
-                "req-unknown",
+                request_id.clone(),
             ));
-            return (StatusCode::UNAUTHORIZED, err).into_response();
+            return crate::http::handlers::with_request_id(
+                (StatusCode::UNAUTHORIZED, err).into_response(),
+                &request_id,
+            );
         }
         if let (Some(ts_value), Some(sig_value)) = (ts, sig) {
             let now = chrono_like_unix_millis() / 1000;
@@ -1096,9 +1130,12 @@ pub(super) async fn security_middleware(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac timestamp",
                     serde_json::json!({}),
-                    "req-unknown",
+                    request_id.clone(),
                 ));
-                return (StatusCode::UNAUTHORIZED, err).into_response();
+                return crate::http::handlers::with_request_id(
+                    (StatusCode::UNAUTHORIZED, err).into_response(),
+                    &request_id,
+                );
             };
             let skew = now.abs_diff(parsed_ts);
             if skew > state.api.hmac_max_skew_secs as u128 {
@@ -1108,9 +1145,12 @@ pub(super) async fn security_middleware(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "hmac timestamp outside allowed skew",
                     serde_json::json!({"max_skew_secs": state.api.hmac_max_skew_secs}),
-                    "req-unknown",
+                    request_id.clone(),
                 ));
-                return (StatusCode::UNAUTHORIZED, err).into_response();
+                return crate::http::handlers::with_request_id(
+                    (StatusCode::UNAUTHORIZED, err).into_response(),
+                    &request_id,
+                );
             }
             let method = req.method().as_str();
             let uri = req.uri().path_and_query().map_or("", |pq| pq.as_str());
@@ -1123,9 +1163,12 @@ pub(super) async fn security_middleware(
                     auth_error_code(StatusCode::UNAUTHORIZED),
                     "invalid hmac signature",
                     serde_json::json!({}),
-                    "req-unknown",
+                    request_id.clone(),
                 ));
-                return (StatusCode::UNAUTHORIZED, err).into_response();
+                return crate::http::handlers::with_request_id(
+                    (StatusCode::UNAUTHORIZED, err).into_response(),
+                    &request_id,
+                );
             }
         }
     }
@@ -1134,7 +1177,7 @@ pub(super) async fn security_middleware(
         AuthenticationContext {
             principal: "operator",
             mechanism: "internal-admin",
-            subject: "operator",
+            subject: "operator".to_string(),
             issuer: None,
             scopes: Vec::new(),
         }
@@ -1144,7 +1187,7 @@ pub(super) async fn security_middleware(
         AuthenticationContext {
             principal: "user",
             mechanism: "none",
-            subject: "anonymous",
+            subject: "anonymous".to_string(),
             issuer: None,
             scopes: Vec::new(),
         }
@@ -1163,14 +1206,17 @@ pub(super) async fn security_middleware(
                 auth_error_code(StatusCode::UNAUTHORIZED),
                 "trusted auth proxy identity header required",
                 serde_json::json!({"auth_mode": state.api.auth_mode.as_str()}),
-                "req-unknown",
+                request_id.clone(),
             ));
-            return (StatusCode::UNAUTHORIZED, err).into_response();
+            return crate::http::handlers::with_request_id(
+                (StatusCode::UNAUTHORIZED, err).into_response(),
+                &request_id,
+            );
         };
         AuthenticationContext {
             principal,
             mechanism: state.api.auth_mode.as_str(),
-            subject: principal,
+            subject: principal.to_string(),
             issuer: None,
             scopes: Vec::new(),
         }
@@ -1178,7 +1224,7 @@ pub(super) async fn security_middleware(
         AuthenticationContext {
             principal: "service-account",
             mechanism: "api-key",
-            subject: "service-account",
+            subject: "service-account".to_string(),
             issuer: None,
             scopes: Vec::new(),
         }
@@ -1211,7 +1257,7 @@ pub(super) async fn security_middleware(
         event = "authentication_context",
         auth_mode = state.api.auth_mode.as_str(),
         mechanism = auth_context.mechanism,
-        subject = auth_context.subject,
+        subject = auth_context.subject.as_str(),
         issuer = auth_context.issuer.as_deref().unwrap_or("unknown"),
         scope_count = auth_context.scopes.len(),
         route = route,
@@ -1244,9 +1290,12 @@ pub(super) async fn security_middleware(
                 "action": route_action_id(&route),
                 "resource_kind": route_resource_kind(&route)
             }),
-            "req-unknown",
+            request_id.clone(),
         ));
-        return (StatusCode::FORBIDDEN, err).into_response();
+        return crate::http::handlers::with_request_id(
+            (StatusCode::FORBIDDEN, err).into_response(),
+            &request_id,
+        );
     }
 
     let started = Instant::now();
@@ -1564,6 +1613,7 @@ mod tests {
         );
         let ctx = validate_signed_token(&token, &api).expect("valid token");
         assert_eq!(ctx.principal, "user");
+        assert_eq!(ctx.subject, "user-1");
         assert!(ctx.scopes.iter().any(|value| value == "dataset.read"));
 
         let expired = signed_token(
@@ -1592,6 +1642,45 @@ mod tests {
         };
         assert_eq!(
             validate_signed_token("not.a.jwt", &api),
+            Err(TokenValidationError::Malformed)
+        );
+    }
+
+    #[test]
+    fn token_validation_requires_a_non_empty_subject() {
+        let now = chrono_like_unix_secs();
+        let api = crate::application::config::ApiConfig {
+            token_signing_secret: Some("token-secret".to_string()),
+            ..crate::application::config::ApiConfig::default()
+        };
+        let missing_subject = signed_token(
+            serde_json::json!({
+                "iss":"atlas-auth",
+                "aud":"atlas-api",
+                "exp": now + 60,
+                "nbf": now - 1,
+                "scope":"dataset.read"
+            }),
+            "token-secret",
+        );
+        let empty_subject = signed_token(
+            serde_json::json!({
+                "sub":"",
+                "iss":"atlas-auth",
+                "aud":"atlas-api",
+                "exp": now + 60,
+                "nbf": now - 1,
+                "scope":"dataset.read"
+            }),
+            "token-secret",
+        );
+
+        assert_eq!(
+            validate_signed_token(&missing_subject, &api),
+            Err(TokenValidationError::Malformed)
+        );
+        assert_eq!(
+            validate_signed_token(&empty_subject, &api),
             Err(TokenValidationError::Malformed)
         );
     }

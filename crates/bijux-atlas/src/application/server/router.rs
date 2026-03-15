@@ -20,19 +20,20 @@ impl AppState {
     }
 
     fn init_membership_registry() -> bijux_atlas_core::MembershipRegistry {
-        let cluster_path = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
-            .unwrap_or_else(|_| "configs/ops/runtime/cluster-config.example.json".to_string());
-        let policy =
-            bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
-                .ok()
-                .map(|cfg| bijux_atlas_core::MembershipPolicy {
-                    heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
-                    node_timeout_ms: cfg.health.node_timeout_ms,
-                })
-                .unwrap_or(bijux_atlas_core::MembershipPolicy {
-                    heartbeat_interval_ms: 1_000,
-                    node_timeout_ms: 5_000,
-                });
+        let policy = std::env::var("ATLAS_CLUSTER_CONFIG_PATH")
+            .ok()
+            .and_then(|cluster_path| {
+                bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(&cluster_path))
+                    .ok()
+                    .map(|cfg| bijux_atlas_core::MembershipPolicy {
+                        heartbeat_interval_ms: cfg.health.heartbeat_interval_ms,
+                        node_timeout_ms: cfg.health.node_timeout_ms,
+                    })
+            })
+            .unwrap_or(bijux_atlas_core::MembershipPolicy {
+                heartbeat_interval_ms: 1_000,
+                node_timeout_ms: 5_000,
+            });
         bijux_atlas_core::MembershipRegistry::new(policy)
     }
 
