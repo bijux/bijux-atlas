@@ -184,15 +184,39 @@ metadata:
 }
 
 #[test]
-fn rollout_safety_requires_prod_replicas_strategy_and_pdb() {
+fn rollout_safety_requires_prod_rollout_replicas_and_pdb() {
     let repo_root = PathBuf::from(".");
     let kind_summary = BTreeMap::new();
     let merged_values = serde_json::json!({
         "replicaCount": 1,
-        "rollout": {"strategy": "Recreate"},
-        "podDisruptionBudget": {"enabled": false}
+        "rollout": {"enabled": false, "steps": []},
+        "pdb": {"enabled": false}
     });
     let status = rollout_safety_status(&repo_root, "prod", &kind_summary, &merged_values);
     assert_eq!(status.status, "fail");
     assert_eq!(status.errors.len(), 4);
+}
+
+#[test]
+fn rollout_safety_accepts_rendered_rollout_for_rollout_class_profiles() {
+    let repo_root = PathBuf::from(".");
+    let kind_summary = BTreeMap::from([
+        (String::from("Rollout"), 1usize),
+        (String::from("PodDisruptionBudget"), 1usize),
+    ]);
+    let merged_values = serde_json::json!({
+        "replicaCount": 3,
+        "pdb": {"enabled": true},
+        "terminationGracePeriodSeconds": 30,
+        "rollout": {
+            "enabled": true,
+            "steps": [
+                {"setWeight": 10},
+                {"pause": {"duration": "60s"}}
+            ]
+        }
+    });
+    let status = rollout_safety_status(&repo_root, "prod", &kind_summary, &merged_values);
+    assert_eq!(status.status, "pass");
+    assert!(status.errors.is_empty());
 }

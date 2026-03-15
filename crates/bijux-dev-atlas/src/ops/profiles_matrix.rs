@@ -326,16 +326,18 @@ fn rollout_safety_status(
     kind_summary: &BTreeMap<String, usize>,
     merged_values: &serde_json::Value,
 ) -> StatusReport {
+    let rollout_enabled = merged_values
+        .pointer("/rollout/enabled")
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
     let replicas = merged_values
         .pointer("/replicaCount")
         .and_then(serde_json::Value::as_u64);
-    let strategy_type = merged_values
-        .pointer("/rollout/strategy")
-        .or_else(|| merged_values.pointer("/strategy/type"))
-        .and_then(serde_json::Value::as_str)
-        .map(ToOwned::to_owned);
+    let rollout_steps = merged_values
+        .pointer("/rollout/steps")
+        .and_then(serde_json::Value::as_array);
     let pdb_enabled = merged_values
-        .pointer("/podDisruptionBudget/enabled")
+        .pointer("/pdb/enabled")
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     let statefulset_update_strategy = merged_values
@@ -350,16 +352,30 @@ fn rollout_safety_status(
         .and_then(serde_json::Value::as_bool);
 
     let mut errors = Vec::new();
+    let rollout_profile = matches!(profile_name, "kind" | "perf" | "prod");
+    if rollout_profile && !rollout_enabled {
+        errors.push(
+            "$.rollout.enabled: rollout-class profiles must enable Argo Rollouts".to_string(),
+        );
+    }
+    if rollout_enabled {
+        if kind_summary.get("Rollout").copied().unwrap_or(0) == 0 {
+            errors.push(
+                "rendered resources: rollout-enabled profiles must render an Argo Rollout"
+                    .to_string(),
+            );
+        }
+        if rollout_steps.is_none_or(|steps| steps.is_empty()) {
+            errors.push(
+                "$.rollout.steps: rollout-enabled profiles must define at least one rollout step"
+                    .to_string(),
+            );
+        }
+    }
     if profile_name == "prod" || profile_name == "perf" {
         if replicas.unwrap_or(0) < 2 {
             errors
                 .push("$.replicaCount: prod-class profiles require replicaCount >= 2".to_string());
-        }
-        if strategy_type.as_deref() != Some("RollingUpdate") {
-            errors.push(
-                "$.rollout.strategy: prod-class profiles require RollingUpdate strategy"
-                    .to_string(),
-            );
         }
         if !pdb_enabled
             && kind_summary
@@ -369,7 +385,7 @@ fn rollout_safety_status(
                 == 0
         {
             errors.push(
-                "$.podDisruptionBudget.enabled: prod-class profiles require a PodDisruptionBudget"
+                "$.pdb.enabled: prod-class profiles require a PodDisruptionBudget"
                     .to_string(),
             );
         }
