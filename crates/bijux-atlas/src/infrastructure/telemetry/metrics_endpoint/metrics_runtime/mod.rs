@@ -2,9 +2,8 @@
 
 use crate::*;
 
-#[path = "../metrics_helpers.rs"]
-mod metrics_helpers;
-use self::metrics_helpers::{
+mod helpers;
+use self::helpers::{
     make_request_id, percentile_ns, push_histogram_from_samples, shed_reason_class,
     with_request_id, METRIC_DATASET_ALL, METRIC_SUBSYSTEM, METRIC_VERSION,
 };
