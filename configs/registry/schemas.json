@@ -1,8 +1,5 @@
 {
   "files": {
-    "configs/registry/consumers.json": "configs/schemas/registry/configs-consumer-map.schema.json",
-    "configs/registry/owners.json": "configs/schemas/registry/configs-owner-map.schema.json",
-    "configs/registry/schemas.json": "configs/schemas/registry/configs-schema-map.schema.json",
     "configs/generated/configs-index.json": "configs/schemas/registry/configs-index.schema.json",
     "configs/sources/governance/audit/audit-artifact-checklist.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/sources/governance/audit/compliance-matrix-template.json": "configs/schemas/contracts/inventory-configs.schema.json",
@@ -72,7 +69,6 @@
     "configs/registry/reports/reports.registry.json": "configs/schemas/registry/reports/reports.registry.schema.json",
     "configs/registry/reports/schema-registry.json": "configs/schemas/registry/reports/schema-registry.schema.json",
     "configs/sources/repository/rust-tooling/*.json": "configs/schemas/contracts/inventory-configs.schema.json",
-    "configs/registry/schemas.json": "configs/schemas/registry/configs-schema-map.schema.json",
     "configs/schemas/registry/generated/*.json": "configs/schemas/registry/configs-schema-index.schema.json",
     "configs/schemas/registry/versioning-policy.json": "configs/schemas/registry/versioning-policy.schema.json",
     "configs/sources/security/dependency-source-policy.json": "configs/schemas/contracts/security/dependency-source-policy.schema.json",

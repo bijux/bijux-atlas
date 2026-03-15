@@ -500,9 +500,7 @@
       ],
       "internal_files": [
         "configs/schemas/registry/README.md",
-        "configs/schemas/registry/config-compiler-report.schema.json",
         "configs/schemas/registry/configs-ownership.schema.json",
-        "configs/schemas/registry/contracts/contract-run-summary.schema.json",
         "configs/schemas/registry/docs-registry.schema.json",
         "configs/schemas/registry/docs-sections.schema.json",
         "configs/schemas/registry/forbidden-adjectives-approvals.schema.json",
@@ -539,8 +537,7 @@
         "configs/schemas/registry/meta-ownership.schema.json",
         "configs/schemas/registry/public-surface.schema.json",
         "configs/schemas/registry/release-version-policy.schema.json",
-        "configs/schemas/registry/reports/*.json",
-        "configs/schemas/registry/versioning-policy.json"
+        "configs/schemas/registry/reports/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
