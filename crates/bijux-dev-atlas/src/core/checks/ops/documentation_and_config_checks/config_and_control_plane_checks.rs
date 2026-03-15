@@ -101,49 +101,53 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
 pub(super) fn check_ops_control_plane_doc_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel_control_plane = Path::new("ops/CONTROL_PLANE.md");
-    let text_control_plane = fs::read_to_string(ctx.repo_root.join(rel_control_plane))
+    let rel_readme = Path::new("ops/README.md");
+    let text_readme = fs::read_to_string(ctx.repo_root.join(rel_readme))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let rel_ssot = Path::new("ops/SSOT.md");
+    let text_ssot = fs::read_to_string(ctx.repo_root.join(rel_ssot))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let rel_contract = Path::new("ops/CONTRACT.md");
     let text_contract = fs::read_to_string(ctx.repo_root.join(rel_contract))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
-        "Control plane version:",
-        "## Scope",
-        "## SSOT Rules",
-        "## Invariants",
-        "## Effect Rules",
-        "bijux dev atlas doctor",
-        "check run --suite ci",
+        "Machine validation entrypoint:",
+        "Human walkthroughs and procedures live in `docs/",
+        "Root Docs",
     ] {
-        if !text_control_plane.contains(required) {
+        if !text_readme.contains(required) {
             violations.push(violation(
-                "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
-                format!(
-                    "ops/CONTROL_PLANE.md is missing required content `{required}`"
-                ),
-                "update the control plane definition document with the required invariant/entrypoint text",
-                Some(rel_control_plane),
+                "OPS_ROOT_README_INCOMPLETE",
+                format!("ops/README.md is missing required content `{required}`"),
+                "keep the root ops README aligned with the live control-plane entrypoints",
+                Some(rel_readme),
             ));
         }
     }
     for required in [
-        "Ops is specification-only.",
-        "Schemas under `ops/schema/` are versioned APIs",
-        "Release pins are immutable after release publication",
-        "_generated/` is ephemeral output only",
-        "_generated.example/` is curated evidence",
-        "Use `observe` as the canonical observability domain name",
-        "Compatibility migrations must be timeboxed and include explicit cutoff dates",
-        "Canonical directory budget:",
+        "## Scope",
+        "## Durable Rules",
+        "## Machine Authorities",
+        "## Evidence",
+        "## Minimal Release Surface",
     ] {
         if !text_contract.contains(required) {
             violations.push(violation(
-                "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
+                "OPS_CONTRACT_DOC_INCOMPLETE",
                 format!("ops/CONTRACT.md is missing required content `{required}`"),
-                "update ops contract to keep SSOT/evolution invariants explicit and enforceable",
+                "update ops/CONTRACT.md to reflect the live ops authorities and invariants",
                 Some(rel_contract),
+            ));
+        }
+    }
+    for required in ["## Allowed Root Markdown", "## Forbidden Markdown Shape"] {
+        if !text_ssot.contains(required) {
+            violations.push(violation(
+                "OPS_SSOT_DOC_INCOMPLETE",
+                format!("ops/SSOT.md is missing required content `{required}`"),
+                "keep ops/SSOT.md aligned with the five-root-doc markdown policy",
+                Some(rel_ssot),
             ));
         }
     }
@@ -313,15 +317,16 @@ pub(super) fn check_ops_ssot_manifests_schema_versions(
             ));
         }
     }
-    let control_plane = Path::new("ops/CONTROL_PLANE.md");
-    let control_text = fs::read_to_string(ctx.repo_root.join(control_plane))
+    let ssot_rel = Path::new("ops/SSOT.md");
+    let ssot_text = fs::read_to_string(ctx.repo_root.join(ssot_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if !control_text.contains("Control plane version:") {
+    if !ssot_text.contains("ops/SSOT.md") {
         violations.push(violation(
-            "OPS_CONTROL_PLANE_VERSION_MISSING",
-            "ops/CONTROL_PLANE.md must declare a control plane version".to_string(),
-            "add `Control plane version:` line to ops/CONTROL_PLANE.md",
-            Some(control_plane),
+            "OPS_SSOT_ROOT_DOC_REFERENCE_MISSING",
+            "ops/SSOT.md should explicitly list itself in the allowed root markdown set"
+                .to_string(),
+            "keep ops/SSOT.md explicit about the full five-doc root markdown surface",
+            Some(ssot_rel),
         ));
     }
     Ok(violations)

@@ -4,457 +4,173 @@ pub(super) fn checks_ops_human_workflow_maturity(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
-    validate_required_human_workflow_docs(ctx, &mut violations)?;
-    validate_drill_ownership_coverage(ctx, &mut violations)?;
-    validate_human_workflow_cross_links(ctx, &mut violations)?;
+    validate_root_ops_docs(ctx, &mut violations)?;
+    validate_drill_cross_links(ctx, &mut violations)?;
+    validate_generated_workflow_reports(ctx, &mut violations)?;
     Ok(violations)
 }
 
-fn validate_required_human_workflow_docs(
+fn validate_root_ops_docs(
     ctx: &CheckContext<'_>,
     violations: &mut Vec<Violation>,
 ) -> Result<(), CheckError> {
-    let doc_requirements = [
+    let requirements = [
         (
-            "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+            "ops/README.md",
             [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Required Inputs",
-                "ops/schema/VERSIONING_POLICY.md",
-                "ops/schema/generated/compatibility-lock.json",
-                "## Enforcement Links",
+                "Machine validation entrypoint:",
+                "Human walkthroughs and procedures live in `docs/",
+                "Root Docs",
             ]
             .as_slice(),
         ),
         (
-            "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+            "ops/CONTRACT.md",
             [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Checklist",
-                "Authority updated",
-                "Schema coverage updated",
-                "Evidence impact reviewed",
-                "## Escalation Conditions",
+                "## Scope",
+                "## Durable Rules",
+                "## Machine Authorities",
+                "## Evidence",
+                "## Minimal Release Surface",
             ]
             .as_slice(),
         ),
         (
-            "ops/BREAKING_CHANGE_TEMPLATE.md",
+            "ops/INDEX.md",
             [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Change Summary",
-                "## Impact Analysis",
-                "## Migration Plan",
-                "## Approval",
+                "Canonical ops pillars:",
+                "Generated directories",
+                "Schema registry:",
             ]
             .as_slice(),
         ),
         (
-            "ops/OPS_ADR_TEMPLATE.md",
+            "ops/SSOT.md",
             [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Title",
-                "## Status",
-                "## Context",
-                "## Decision",
-                "## Consequences",
-                "## Contract and Check Impact",
-                "## Reviewers",
+                "## Allowed Root Markdown",
+                "## Forbidden Markdown Shape",
+                "## Rationale",
             ]
             .as_slice(),
         ),
         (
-            "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+            "ops/ERRORS.md",
             [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Sign-Off Checklist",
-                "readiness-score.json",
-                "historical-comparison.json",
-                "release-evidence-bundle.json",
-                "## Required Sign-Off Roles",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Required Inputs",
-                "## Required Sign-Off Roles",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/OPS_FREEZE_WORKFLOW.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Freeze Exceptions",
-                "## Required Inputs",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/DEPRECATION_WORKFLOW.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Required Metadata",
-                "Cutoff Date",
-                "Replacement Path",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Override Requirements",
-                "Expiry Time",
-                "Rollback Plan",
-                "Audit Evidence",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/OWNERSHIP_ROTATION_POLICY.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Rotation Scope",
-                "## Rotation Cadence",
-                "## Handover Requirements",
-                "ops/inventory/owners.json",
-                "ops/observe/drills/OWNERSHIP.md",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/ESCALATION_MAPPING.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Escalation Classes",
-                "## Escalation Paths",
-                "## Evidence Requirements",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Inputs",
-                "ops/inventory/control-graph.json",
-                "ops/inventory/drill-contract-links.json",
-                "ops/inventory/authority-index.json",
-                "## Generation Rules",
-                "## Outputs",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/INCIDENT_PLAYBOOK_GENERATION.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Inputs",
-                "ops/inventory/control-graph.json",
-                "## Generation Rules",
-                "## Outputs",
-                "ops/_generated.example/incident-playbook-generation-report.json",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "docs/operations/redirect-expiry-workflow.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Workflow",
-                "## Required Metadata",
-                "Expiry Date",
-                "Replacement Path",
-                "## Enforcement Links",
-            ]
-            .as_slice(),
-        ),
-        (
-            "ops/observe/drills/OWNERSHIP.md",
-            [
-                "- Owner:",
-                "- Purpose:",
-                "- Consumers:",
-                "## Ownership Map",
-                "## Enforcement Links",
+                "Use `bijux-dev-atlas ops validate --format json`",
+                "REPO-LAW-001",
+                "REPO-LAW-004",
             ]
             .as_slice(),
         ),
     ];
 
-    for (rel_str, required_snippets) in doc_requirements {
+    for (rel_str, snippets) in requirements {
         let rel = Path::new(rel_str);
-        let path = ctx.repo_root.join(rel);
-        if !path.exists() {
-            violations.push(violation(
-                "OPS_HUMAN_WORKFLOW_DOC_MISSING",
-                format!("missing human workflow contract `{}`", rel.display()),
-                "restore the required workflow contract document",
-                Some(rel),
-            ));
-            continue;
-        }
-        let text = fs::read_to_string(&path)
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
             .map_err(|err| CheckError::Failed(format!("read {}: {err}", rel.display())))?;
-        for snippet in required_snippets {
+        for snippet in snippets {
             if !text.contains(snippet) {
                 violations.push(violation(
-                    "OPS_HUMAN_WORKFLOW_DOC_INCOMPLETE",
-                    format!(
-                        "workflow contract `{}` is missing required content `{snippet}`",
-                        rel.display()
-                    ),
-                    "complete the workflow contract with the required metadata and sections",
+                    "OPS_ROOT_DOC_INCOMPLETE",
+                    format!("ops root doc `{}` is missing `{snippet}`", rel.display()),
+                    "keep the five root docs complete and aligned with the live ops layout",
                     Some(rel),
                 ));
             }
         }
     }
+
     Ok(())
 }
 
-fn validate_drill_ownership_coverage(
+fn validate_drill_cross_links(
     ctx: &CheckContext<'_>,
     violations: &mut Vec<Violation>,
 ) -> Result<(), CheckError> {
-    let inventory_drills_rel = Path::new("ops/inventory/drills.json");
-    let inventory_drills_text = fs::read_to_string(ctx.repo_root.join(inventory_drills_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", inventory_drills_rel.display())))?;
-    let inventory_drills_json: serde_json::Value = serde_json::from_str(&inventory_drills_text)
-        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", inventory_drills_rel.display())))?;
-    let drill_ids = inventory_drills_json
+    let drills_rel = Path::new("ops/inventory/drills.json");
+    let drills_text = fs::read_to_string(ctx.repo_root.join(drills_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", drills_rel.display())))?;
+    let drills_json: serde_json::Value = serde_json::from_str(&drills_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", drills_rel.display())))?;
+    let drill_ids = drills_json
         .get("drills")
-        .and_then(|v| v.as_array())
-        .cloned()
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(|v| v.as_str().map(ToString::to_string))
-        .collect::<BTreeSet<_>>();
-
-    let owners_rel = Path::new("ops/inventory/owners.json");
-    let owners_text = fs::read_to_string(ctx.repo_root.join(owners_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", owners_rel.display())))?;
-    let owners_json: serde_json::Value = serde_json::from_str(&owners_text)
-        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", owners_rel.display())))?;
-    let owner_values = owners_json
-        .get("areas")
-        .and_then(|v| v.as_object())
-        .map(|obj| {
-            obj.values()
-                .filter_map(|v| v.as_str())
+        .and_then(|value| value.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|item| item.as_str())
                 .map(ToString::to_string)
                 .collect::<BTreeSet<_>>()
         })
         .unwrap_or_default();
 
-    let ownership_rel = Path::new("ops/observe/drills/OWNERSHIP.md");
-    let ownership_text = fs::read_to_string(ctx.repo_root.join(ownership_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", ownership_rel.display())))?;
-
-    let mut declared_drills = BTreeSet::new();
-    for line in ownership_text.lines() {
-        let trimmed = line.trim();
-        let Some(rest) = trimmed.strip_prefix("- `ops.drill.") else {
-            continue;
-        };
-        let Some((id_suffix, owner_part)) = rest.split_once("`: `") else {
-            violations.push(violation(
-                "OPS_DRILL_OWNERSHIP_FORMAT_INVALID",
-                format!(
-                    "drill ownership entry has invalid format in `{}`: `{trimmed}`",
-                    ownership_rel.display()
-                ),
-                "use `- `ops.drill.<id>`: `<owner>` format in ops/observe/drills/OWNERSHIP.md",
-                Some(ownership_rel),
-            ));
-            continue;
-        };
-        let Some(owner) = owner_part.strip_suffix('`') else {
-            violations.push(violation(
-                "OPS_DRILL_OWNERSHIP_FORMAT_INVALID",
-                format!(
-                    "drill ownership entry has invalid owner quoting in `{}`: `{trimmed}`",
-                    ownership_rel.display()
-                ),
-                "wrap owner ids in backticks and keep one owner per drill entry",
-                Some(ownership_rel),
-            ));
-            continue;
-        };
-        let drill_id = format!("ops.drill.{id_suffix}");
-        if !declared_drills.insert(drill_id.clone()) {
-            violations.push(violation(
-                "OPS_DRILL_OWNERSHIP_DUPLICATE",
-                format!("duplicate drill ownership entry for `{drill_id}`"),
-                "keep exactly one ownership entry per drill id",
-                Some(ownership_rel),
-            ));
-        }
-        if !owner_values.contains(owner) {
-            violations.push(violation(
-                "OPS_DRILL_OWNERSHIP_OWNER_UNKNOWN",
-                format!(
-                    "drill ownership entry `{drill_id}` references unknown owner `{owner}` not present in ops/inventory/owners.json"
-                ),
-                "use an owner id defined in ops/inventory/owners.json areas values",
-                Some(ownership_rel),
-            ));
-        }
-    }
+    let links_rel = Path::new("ops/inventory/drill-contract-links.json");
+    let links_text = fs::read_to_string(ctx.repo_root.join(links_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", links_rel.display())))?;
+    let links_json: serde_json::Value = serde_json::from_str(&links_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", links_rel.display())))?;
+    let linked_ids = links_json
+        .get("links")
+        .and_then(|value| value.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|item| item.get("drill_id").and_then(|value| value.as_str()))
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
 
     let missing = drill_ids
-        .difference(&declared_drills)
+        .difference(&linked_ids)
         .cloned()
         .collect::<Vec<_>>();
     if !missing.is_empty() {
         violations.push(violation(
-            "OPS_DRILL_OWNERSHIP_MISSING",
+            "OPS_DRILL_CONTRACT_LINKAGE_MISSING",
             format!(
-                "missing ownership declarations for inventory drill ids: {}",
+                "inventory drills are missing contract linkage entries: {}",
                 missing.join(", ")
             ),
-            "add ownership entries for every drill in ops/inventory/drills.json",
-            Some(ownership_rel),
-        ));
-    }
-    let stale = declared_drills
-        .difference(&drill_ids)
-        .cloned()
-        .collect::<Vec<_>>();
-    if !stale.is_empty() {
-        violations.push(violation(
-            "OPS_DRILL_OWNERSHIP_STALE",
-            format!(
-                "ownership declarations exist for non-inventory drill ids: {}",
-                stale.join(", ")
-            ),
-            "remove stale drill ownership entries or restore the drill ids in ops/inventory/drills.json",
-            Some(ownership_rel),
+            "link every drill id from ops/inventory/drills.json in ops/inventory/drill-contract-links.json",
+            Some(links_rel),
         ));
     }
 
     Ok(())
 }
 
-fn validate_human_workflow_cross_links(
+fn validate_generated_workflow_reports(
     ctx: &CheckContext<'_>,
     violations: &mut Vec<Violation>,
 ) -> Result<(), CheckError> {
-    let runbook_rel = Path::new("ops/RUNBOOK_GENERATION_FROM_GRAPH.md");
-    let runbook_text = fs::read_to_string(ctx.repo_root.join(runbook_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", runbook_rel.display())))?;
-    if !runbook_text.contains("ops/inventory/control-graph.json")
-        || !runbook_text.contains("docs/operations/")
-    {
+    let incident_rel = Path::new("ops/_generated.example/incident-playbook-generation-report.json");
+    let incident_text = fs::read_to_string(ctx.repo_root.join(incident_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", incident_rel.display())))?;
+    let incident_json: serde_json::Value = serde_json::from_str(&incident_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", incident_rel.display())))?;
+    if incident_json.get("status").and_then(|value| value.as_str()) != Some("pass") {
         violations.push(violation(
-            "OPS_HUMAN_WORKFLOW_RUNBOOK_GRAPH_LINK_MISSING",
-            format!(
-                "runbook generation workflow `{}` must link control graph inputs to docs outputs",
-                runbook_rel.display()
-            ),
-            "declare control-graph inputs and docs/operations outputs in the runbook generation workflow",
-            Some(runbook_rel),
+            "OPS_INCIDENT_PLAYBOOK_REPORT_BLOCKING",
+            "incident playbook generation report status is not `pass`".to_string(),
+            "refresh ops/_generated.example/incident-playbook-generation-report.json after fixing playbook generation drift",
+            Some(incident_rel),
         ));
     }
 
-    let escalation_rel = Path::new("ops/ESCALATION_MAPPING.md");
-    let escalation_text = fs::read_to_string(ctx.repo_root.join(escalation_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", escalation_rel.display())))?;
-    for required in ["Primary Owner", "Secondary Owner", "On-Call Route"] {
-        if !escalation_text.contains(required) {
-            violations.push(violation(
-                "OPS_HUMAN_WORKFLOW_ESCALATION_MAPPING_INCOMPLETE",
-                format!(
-                    "escalation mapping `{}` is missing required route field `{required}`",
-                    escalation_rel.display()
-                ),
-                "complete escalation route fields for each escalation class",
-                Some(escalation_rel),
-            ));
-        }
-    }
-
-    let evidence_rel = Path::new("ops/EVIDENCE_SIGNOFF_WORKFLOW.md");
-    let evidence_text = fs::read_to_string(ctx.repo_root.join(evidence_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", evidence_rel.display())))?;
-    if !evidence_text.contains("ops/GOLDEN_REFRESH_POLICY.md") {
-        violations.push(violation(
-            "OPS_HUMAN_WORKFLOW_EVIDENCE_GOLDEN_POLICY_LINK_MISSING",
-            format!(
-                "evidence signoff workflow `{}` must reference ops/GOLDEN_REFRESH_POLICY.md",
-                evidence_rel.display()
-            ),
-            "link the golden refresh policy from the evidence signoff workflow",
-            Some(evidence_rel),
-        ));
-    }
-
-    let incident_report_rel = Path::new("ops/_generated.example/incident-playbook-generation-report.json");
-    let incident_report_text = fs::read_to_string(ctx.repo_root.join(incident_report_rel))
-        .map_err(|err| CheckError::Failed(format!("read {}: {err}", incident_report_rel.display())))?;
-    let incident_report_json: serde_json::Value = serde_json::from_str(&incident_report_text)
-        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", incident_report_rel.display())))?;
-    if incident_report_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
-        violations.push(violation(
-            "OPS_HUMAN_WORKFLOW_INCIDENT_PLAYBOOK_REPORT_BLOCKING",
-            format!("incident playbook generation report `{}` status is not `pass`", incident_report_rel.display()),
-            "resolve incident playbook generation gaps and regenerate incident-playbook-generation-report.json",
-            Some(incident_report_rel),
-        ));
-    }
-    let playbooks = incident_report_json.get("playbooks").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+    let playbooks = incident_json
+        .get("playbooks")
+        .and_then(|value| value.as_array())
+        .cloned()
+        .unwrap_or_default();
     if playbooks.is_empty() {
         violations.push(violation(
-            "OPS_HUMAN_WORKFLOW_INCIDENT_PLAYBOOK_REPORT_EMPTY",
-            format!("incident playbook generation report `{}` must include playbooks entries", incident_report_rel.display()),
-            "emit playbook mappings with drill_id, runbook_path, and control_graph_node",
-            Some(incident_report_rel),
+            "OPS_INCIDENT_PLAYBOOK_REPORT_EMPTY",
+            "incident playbook generation report must include playbooks entries".to_string(),
+            "include representative playbooks in ops/_generated.example/incident-playbook-generation-report.json",
+            Some(incident_rel),
         ));
     }
+
     Ok(())
 }

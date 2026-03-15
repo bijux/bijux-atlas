@@ -7,10 +7,7 @@ fn validate_ops_root_index_and_root_doc_budgets(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     for root_doc in [
         "CONTRACT.md",
-        "CONTROL_PLANE.md",
-        "DRIFT.md",
         "ERRORS.md",
-        "NAMING.md",
         "README.md",
         "SSOT.md",
     ] {
@@ -42,11 +39,9 @@ fn validate_ops_root_index_and_root_doc_budgets(
     let root_doc_line_budgets = [
         ("ops/README.md", 80usize),
         ("ops/CONTRACT.md", 140usize),
-        ("ops/CONTROL_PLANE.md", 80usize),
-        ("ops/DRIFT.md", 80usize),
         ("ops/ERRORS.md", 80usize),
-        ("ops/NAMING.md", 80usize),
         ("ops/SSOT.md", 80usize),
+        ("ops/INDEX.md", 80usize),
     ];
     for (rel_str, max_lines) in root_doc_line_budgets {
         let rel = Path::new(rel_str);

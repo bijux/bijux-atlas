@@ -24,7 +24,6 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/meta/ownership.schema.json",
         "ops/schema/meta/namespaces.schema.json",
         "ops/schema/meta/pins.schema.json",
-        "ops/schema/meta/required-files-contract.schema.json",
         "ops/schema/meta/inventory-index.schema.json",
         "ops/schema/meta/ops-index.schema.json",
         "ops/schema/meta/scorecard.schema.json",
@@ -115,7 +114,6 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/meta/compatibility-lock.schema.json",
         "ops/schema/meta/namespaces.schema.json",
         "ops/schema/meta/pins.schema.json",
-        "ops/schema/meta/required-files-contract.schema.json",
         "ops/schema/meta/inventory-index.schema.json",
         "ops/schema/meta/ops-index.schema.json",
         "ops/schema/meta/scorecard.schema.json",
@@ -334,73 +332,6 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
             Some(ops_index_rel),
         ));
     }
-    let required_files_schema_rel =
-        Path::new("ops/schema/meta/required-files-contract.schema.json");
-    let required_files_schema_text =
-        fs::read_to_string(ctx.repo_root.join(required_files_schema_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let required_files_schema_json: serde_json::Value =
-        serde_json::from_str(&required_files_schema_text)
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let required_fields = required_files_schema_json
-        .get("required")
-        .and_then(|v| v.as_array())
-        .map(|arr| {
-            arr.iter()
-                .filter_map(|v| v.as_str())
-                .collect::<BTreeSet<_>>()
-        })
-        .unwrap_or_default();
-    for key in [
-        "required_files",
-        "required_dirs",
-        "forbidden_patterns",
-        "notes",
-    ] {
-        if !required_fields.contains(key) {
-            violations.push(violation(
-                "OPS_REQUIRED_FILES_SCHEMA_KEY_MISSING",
-                format!("required-files schema must require key `{key}`"),
-                "keep required-files meta schema aligned with REQUIRED_FILES contract format",
-                Some(required_files_schema_rel),
-            ));
-        }
-    }
-    for required_doc in walk_files(&ctx.repo_root.join("ops"))
-        .into_iter()
-        .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
-        .filter(|rel| rel.file_name().and_then(|n| n.to_str()) == Some("REQUIRED_FILES.md"))
-    {
-        let text = fs::read_to_string(ctx.repo_root.join(&required_doc))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        let Some(yaml_block) = extract_required_files_yaml_block(&text) else {
-            continue;
-        };
-        let yaml_value: serde_yaml::Value =
-            serde_yaml::from_str(&yaml_block).map_err(|err| CheckError::Failed(err.to_string()))?;
-        let json_value =
-            serde_json::to_value(yaml_value).map_err(|err| CheckError::Failed(err.to_string()))?;
-        let json_obj = json_value.as_object().cloned().unwrap_or_default();
-        for key in [
-            "required_files",
-            "required_dirs",
-            "forbidden_patterns",
-            "notes",
-        ] {
-            if !json_obj.contains_key(key) {
-                violations.push(violation(
-                    "OPS_REQUIRED_FILES_CONTRACT_KEY_MISSING",
-                    format!(
-                        "required files contract `{}` is missing key `{key}`",
-                        required_doc.display()
-                    ),
-                    "include all canonical REQUIRED_FILES keys",
-                    Some(&required_doc),
-                ));
-            }
-        }
-    }
-
     for schema_rel in &actual_schema_files {
         let schema_path = Path::new(schema_rel);
         let schema_text = fs::read_to_string(ctx.repo_root.join(schema_path))

@@ -63,13 +63,13 @@ Options:
   -h, --help                           Print help
 
 Ops Pillars And Docs Entrypoints:
-  inventory -> docs/operations/reference/ops-surface.md
-  schema -> docs/operations/reference/schema-index.md
-  datasets -> docs/operations/datasets.md
-  e2e -> docs/operations/e2e/index.md
-  env -> docs/operations/config.md
-  stack -> docs/operations/local-stack.md
-  k8s -> docs/operations/k8s/index.md
-  load -> docs/operations/load/index.md
-  observe -> docs/operations/observability/index.md
-  report -> docs/operations/unified-report.md
+  inventory -> docs/07-reference/command-surface.md
+  schema -> docs/07-reference/index.md
+  datasets -> docs/04-operations/index.md
+  e2e -> docs/04-operations/performance-and-load.md
+  env -> docs/04-operations/runtime-configuration.md
+  stack -> docs/04-operations/deployment-models.md
+  k8s -> docs/04-operations/deployment-models.md
+  load -> docs/04-operations/performance-and-load.md
+  observe -> docs/04-operations/logging-metrics-and-tracing.md
+  report -> docs/07-reference/automation-reports-reference.md

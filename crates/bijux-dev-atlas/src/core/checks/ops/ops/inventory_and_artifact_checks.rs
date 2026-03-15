@@ -140,9 +140,7 @@ fn checks_ops_retired_artifact_path_references_absent(
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let allowlist = [
-        "ops/ARTIFACTS.md",
         "ops/CONTRACT.md",
-        "ops/_generated.example/control-plane.snapshot.md",
         "crates/bijux-dev-atlas/src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
     ];
     let scan_roots = [

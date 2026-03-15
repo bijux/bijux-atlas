@@ -575,85 +575,16 @@ fn validate_e2e_fixture_and_mapping_governance(
         }
     }
 
-    let realdata_readme_rel = Path::new("ops/e2e/realdata/README.md");
-    if ctx.adapters.fs.exists(ctx.repo_root, realdata_readme_rel) {
-        let text = fs::read_to_string(ctx.repo_root.join(realdata_readme_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        if !(text.to_lowercase().contains("example") && text.to_lowercase().contains("required")) {
+    let contract_rel = Path::new("ops/CONTRACT.md");
+    let contract_text = fs::read_to_string(ctx.repo_root.join(contract_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for required in ["ops/observe/drills.json", "ops/report/generated/readiness-score.json"] {
+        if !contract_text.contains(required) {
             violations.push(violation(
-                "OPS_E2E_REALDATA_SNAPSHOT_POLICY_MISSING",
-                "realdata README must distinguish example snapshots from required fixtures"
-                    .to_string(),
-                "document example vs required snapshot policy in ops/e2e/realdata/README.md",
-                Some(realdata_readme_rel),
-            ));
-        }
-    }
-
-    let incident_template_rel = Path::new("ops/observe/drills/templates/incident-template.md");
-    if ctx.adapters.fs.exists(ctx.repo_root, incident_template_rel) {
-        let text = fs::read_to_string(ctx.repo_root.join(incident_template_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        for required in ["- Dashboard Links:", "- Runbook Links:", "- Drill Result Path:"] {
-            if !text.contains(required) {
-                violations.push(violation(
-                    "OPS_INCIDENT_TEMPLATE_LINKAGE_FIELD_MISSING",
-                    format!(
-                        "incident drill template must include linkage field `{required}`"
-                    ),
-                    "add dashboard, runbook, and drill result path linkage fields to incident template",
-                    Some(incident_template_rel),
-                ));
-            }
-        }
-    }
-
-    let golden_refresh_policy_rel = Path::new("ops/GOLDEN_REFRESH_POLICY.md");
-    if !ctx.adapters.fs.exists(ctx.repo_root, golden_refresh_policy_rel) {
-        violations.push(violation(
-            "OPS_GOLDEN_REFRESH_POLICY_MISSING",
-            "missing golden refresh policy `ops/GOLDEN_REFRESH_POLICY.md`".to_string(),
-            "add a golden refresh policy with approvers, regeneration commands, and review expectations",
-            Some(golden_refresh_policy_rel),
-        ));
-    } else {
-        let text = fs::read_to_string(ctx.repo_root.join(golden_refresh_policy_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        for required in ["## Scope", "## Regeneration", "## Review", "## Approval"] {
-            if !text.contains(required) {
-                violations.push(violation(
-                    "OPS_GOLDEN_REFRESH_POLICY_INCOMPLETE",
-                    format!("golden refresh policy is missing `{required}`"),
-                    "document scope, regeneration, review, and approval sections",
-                    Some(golden_refresh_policy_rel),
-                ));
-            }
-        }
-    }
-
-    let e2e_invariants_rel = Path::new("ops/e2e/END_TO_END_INVARIANTS.md");
-    if !ctx.adapters.fs.exists(ctx.repo_root, e2e_invariants_rel) {
-        violations.push(violation(
-            "OPS_E2E_INVARIANTS_CONTRACT_MISSING",
-            "missing end-to-end invariants contract `ops/e2e/END_TO_END_INVARIANTS.md`".to_string(),
-            "add a deterministic end-to-end invariants contract with at least five must-pass invariants",
-            Some(e2e_invariants_rel),
-        ));
-    } else {
-        let text = fs::read_to_string(ctx.repo_root.join(e2e_invariants_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        let invariant_count = text
-            .lines()
-            .filter(|line| line.trim_start().starts_with("- "))
-            .count();
-        if invariant_count < 5 {
-            violations.push(violation(
-                "OPS_E2E_INVARIANTS_CONTRACT_TOO_SMALL",
-                format!(
-                    "end-to-end invariants contract must define at least 5 invariants; found {invariant_count}"
-                ),
-                "add at least five concrete end-to-end invariants with deterministic pass criteria",
-                Some(e2e_invariants_rel),
+                "OPS_E2E_ROOT_CONTRACT_LINK_MISSING",
+                format!("ops/CONTRACT.md should mention `{required}` for e2e and evidence linkage"),
+                "keep root ops contract aligned with the live e2e and evidence authorities",
+                Some(contract_rel),
             ));
         }
     }

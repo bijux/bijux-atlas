@@ -326,7 +326,7 @@ fn render_docs_reference_ops_surface(repo_root: &std::path::Path) -> Result<Stri
     actions.sort_by_key(|row| row["id"].as_str().unwrap_or_default().to_string());
     let mut out = String::new();
     out.push_str("# Ops Surface Reference\n\n");
-    out.push_str("- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane.snapshot.md`\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane-surface-list.json`\n\n");
     out.push_str("## Purpose\n\nGenerated ops surface reference derived from inventory surfaces.\n\n");
     out.push_str("## Entry Points\n\n");
     for item in entrypoints {
@@ -342,7 +342,7 @@ fn render_docs_reference_ops_surface(repo_root: &std::path::Path) -> Result<Stri
             .map_err(|e| format!("encode action row for ops surface reference failed: {e}"))?;
         out.push_str(&format!("- `{encoded}`\n"));
     }
-    out.push_str("\n## See Also\n\n- `ops/_generated.example/control-plane.snapshot.md` (example generated snapshot)\n- `ops/inventory/surfaces.json` (machine truth)\n");
+    out.push_str("\n## See Also\n\n- `ops/_generated.example/control-plane-surface-list.json` (generated surface evidence)\n- `ops/inventory/surfaces.json` (machine truth)\n");
     Ok(out)
 }
 

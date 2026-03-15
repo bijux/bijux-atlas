@@ -144,18 +144,9 @@ fn validate_dataset_fixture_policies_and_filesystem(
 
     let fixtures_root = ctx.repo_root.join("ops/datasets/fixtures");
     if fixtures_root.exists() {
-        let allowed_root_docs = BTreeSet::from([
-            "ops/datasets/fixtures/README.md".to_string(),
-            "ops/datasets/fixtures/CONTRACT.md".to_string(),
-            "ops/datasets/fixtures/INDEX.md".to_string(),
-            "ops/datasets/fixtures/OWNER.md".to_string(),
-        ]);
         for file in walk_files(&fixtures_root) {
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
             let rel_str = rel.display().to_string();
-            if allowed_root_docs.contains(&rel_str) {
-                continue;
-            }
             if rel_str.contains("/assets/")
                 && rel_str.contains("/v")
                 && !rel_str.ends_with(".tar.gz")
@@ -359,4 +350,3 @@ fn validate_dataset_fixture_policies_and_filesystem(
 
     Ok(())
 }
-

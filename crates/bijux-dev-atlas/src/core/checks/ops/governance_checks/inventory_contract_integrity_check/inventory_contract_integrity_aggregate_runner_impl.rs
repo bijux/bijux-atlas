@@ -145,9 +145,6 @@ fn check_ops_inventory_contract_integrity_aggregate_runner(
 
     let inventory_root = ctx.repo_root.join("ops/inventory");
     let allowed_unmapped = [
-        PathBuf::from("ops/inventory/OWNER.md"),
-        PathBuf::from("ops/inventory/README.md"),
-        PathBuf::from("ops/inventory/REQUIRED_FILES.md"),
         PathBuf::from("ops/inventory/registry.toml"),
         PathBuf::from("ops/inventory/tools.toml"),
     ]

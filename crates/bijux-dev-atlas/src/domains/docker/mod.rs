@@ -47,7 +47,7 @@ impl Domain for DockerDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["ops/docker/README.md"]
+        &["ops/README.md"]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

@@ -47,77 +47,17 @@ pub(super) fn check_ops_docs_governance(
         }
     }
 
-    let domain_dirs = [
-        "ops/datasets",
-        "ops/e2e",
-        "ops/k8s",
-        "ops/load",
-        "ops/observe",
-        "ops/report",
-        "ops/stack",
-        "ops/env",
-        "ops/inventory",
-        "ops/schema",
-    ];
-    for domain in domain_dirs {
-        let index_rel = Path::new(domain).join("INDEX.md");
-        if ctx.adapters.fs.exists(ctx.repo_root, &index_rel) {
-            let index_text = fs::read_to_string(ctx.repo_root.join(&index_rel))
-                .map_err(|err| CheckError::Failed(err.to_string()))?;
-            for line in index_text.lines() {
-                let trimmed = line.trim();
-                if trimmed.is_empty() || trimmed.starts_with('#') {
-                    continue;
-                }
-                if !trimmed.starts_with("- ") {
-                    violations.push(violation(
-                        "OPS_DOC_INDEX_NON_LINK_CONTENT",
-                        format!(
-                            "domain index must be links-only; found non-link content in `{}`: `{trimmed}`",
-                            index_rel.display()
-                        ),
-                        "keep domain INDEX.md files links-only with headings and bullet links",
-                        Some(&index_rel),
-                    ));
-                }
-            }
-
-            for required_doc in ["README.md", "CONTRACT.md", "REQUIRED_FILES.md", "OWNER.md"] {
-                let doc_rel = Path::new(domain).join(required_doc);
-                if ctx.adapters.fs.exists(ctx.repo_root, &doc_rel)
-                    && !index_text.contains(required_doc)
-                {
-                    violations.push(violation(
-                        "OPS_DOC_INDEX_REQUIRED_LINK_MISSING",
-                        format!(
-                            "domain index `{}` must link `{}`",
-                            index_rel.display(),
-                            doc_rel.display()
-                        ),
-                        "add README.md and CONTRACT.md links to domain INDEX.md when files exist",
-                        Some(&index_rel),
-                    ));
-                }
-            }
-        }
-
-        let readme_rel = Path::new(domain).join("README.md");
-        if ctx.adapters.fs.exists(ctx.repo_root, &readme_rel) {
-            let readme_text = fs::read_to_string(ctx.repo_root.join(&readme_rel))
-                .map_err(|err| CheckError::Failed(err.to_string()))?;
-            let line_count = readme_text.lines().count();
-            if line_count > 30 {
-                violations.push(violation(
-                    "OPS_DOC_README_SIZE_BUDGET_EXCEEDED",
-                    format!(
-                        "domain README exceeds 30 line budget: `{}` has {} lines",
-                        readme_rel.display(),
-                        line_count
-                    ),
-                    "keep domain README focused on what it is and where to start within 30 lines",
-                    Some(&readme_rel),
-                ));
-            }
+    let root_index_rel = Path::new("ops/INDEX.md");
+    let root_index_text = fs::read_to_string(ctx.repo_root.join(root_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for required_doc in ["README.md", "CONTRACT.md", "ERRORS.md", "SSOT.md"] {
+        if !root_index_text.contains(required_doc) {
+            violations.push(violation(
+                "OPS_ROOT_INDEX_REQUIRED_LINK_MISSING",
+                format!("ops/INDEX.md must link `{required_doc}`"),
+                "keep the root index aligned with the five root docs",
+                Some(root_index_rel),
+            ));
         }
     }
 

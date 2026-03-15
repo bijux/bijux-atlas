@@ -85,7 +85,7 @@ pub enum Command {
         out: Option<PathBuf>,
     },
     #[command(
-        after_help = "Ops Pillars And Docs Entrypoints:\n  inventory -> docs/operations/reference/ops-surface.md\n  schema -> docs/operations/reference/schema-index.md\n  datasets -> docs/operations/datasets.md\n  e2e -> docs/operations/e2e/index.md\n  env -> docs/operations/config.md\n  stack -> docs/operations/local-stack.md\n  k8s -> docs/operations/k8s/index.md\n  load -> docs/operations/load/index.md\n  observe -> docs/operations/observability/index.md\n  report -> docs/operations/unified-report.md"
+        after_help = "Ops Pillars And Docs Entrypoints:\n  inventory -> docs/07-reference/command-surface.md\n  schema -> docs/07-reference/index.md\n  datasets -> docs/04-operations/index.md\n  e2e -> docs/04-operations/performance-and-load.md\n  env -> docs/04-operations/runtime-configuration.md\n  stack -> docs/04-operations/deployment-models.md\n  k8s -> docs/04-operations/deployment-models.md\n  load -> docs/04-operations/performance-and-load.md\n  observe -> docs/04-operations/logging-metrics-and-tracing.md\n  report -> docs/07-reference/automation-reports-reference.md"
     )]
     Ops {
         #[command(subcommand)]

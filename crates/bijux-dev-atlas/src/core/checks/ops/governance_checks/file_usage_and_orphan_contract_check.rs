@@ -137,18 +137,7 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
         })
         .unwrap_or_default();
 
-    let mut required_file_refs = BTreeSet::new();
-    for req in walk_files(&ctx.repo_root.join("ops")) {
-        let rel = req.strip_prefix(ctx.repo_root).unwrap_or(req.as_path());
-        if rel.file_name().and_then(|name| name.to_str()) != Some("REQUIRED_FILES.md") {
-            continue;
-        }
-        let content = fs::read_to_string(&req).map_err(|err| CheckError::Failed(err.to_string()))?;
-        let parsed = parse_required_files_markdown_yaml(&content, rel)?;
-        for required in parsed.required_files {
-            required_file_refs.insert(required.display().to_string());
-        }
-    }
+    let required_file_refs = BTreeSet::<String>::new();
 
     let mut docs_refs = BTreeSet::new();
     for root in ["docs", "ops"] {
