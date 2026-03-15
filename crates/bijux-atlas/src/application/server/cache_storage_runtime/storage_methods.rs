@@ -1,3 +1,5 @@
+use super::*;
+
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
         let max_concurrent_downloads = cfg

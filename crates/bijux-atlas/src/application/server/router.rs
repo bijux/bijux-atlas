@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::*;
+
 impl AppState {
     fn init_request_metrics() -> Arc<RequestMetrics> {
         Arc::new(RequestMetrics::default())

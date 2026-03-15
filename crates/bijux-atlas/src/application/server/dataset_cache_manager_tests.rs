@@ -4,7 +4,9 @@
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use super::*;
-use crate::application::server::state::{dataset_index_path, local_cache_paths};
+use crate::application::server::state::cache_runtime::cache_storage_runtime::{
+    dataset_index_path, local_cache_paths,
+};
 use crate::infrastructure::store::registry::fake::FakeStore;
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;

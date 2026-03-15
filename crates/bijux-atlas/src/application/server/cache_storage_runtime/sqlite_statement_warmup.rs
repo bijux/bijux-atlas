@@ -1,4 +1,6 @@
-fn prime_prepared_statements(conn: &Connection) {
+use super::*;
+
+pub(super) fn prime_prepared_statements(conn: &Connection) {
     let hot_sql = [
         "SELECT gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length FROM gene_summary WHERE gene_id = ?1 ORDER BY gene_id LIMIT ?2",
         "SELECT gene_id, name, seqid, start, end, biotype, transcript_count, sequence_length FROM gene_summary WHERE biotype = ?1 ORDER BY gene_id LIMIT ?2",

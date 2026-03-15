@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
+
+use super::*;
+
 use base64::Engine as _;
 
 pub fn chrono_like_unix_millis() -> u128 {
@@ -699,7 +702,7 @@ fn parse_dataset_from_uri(uri: &Uri) -> Option<DatasetId> {
     .ok()
 }
 
-async fn provenance_headers_middleware(
+pub(super) async fn provenance_headers_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
     next: Next,
@@ -737,7 +740,7 @@ async fn provenance_headers_middleware(
     resp
 }
 
-async fn resilience_middleware(
+pub(super) async fn resilience_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
     next: Next,
@@ -782,7 +785,11 @@ fn is_heavy_endpoint_path(path: &str) -> bool {
         || (path.starts_with("/v1/genes/") && path.ends_with("/sequence"))
 }
 
-fn normalized_header_value(headers: &HeaderMap, key: &str, max_len: usize) -> Option<String> {
+pub(super) fn normalized_header_value(
+    headers: &HeaderMap,
+    key: &str,
+    max_len: usize,
+) -> Option<String> {
     let raw = headers.get(key)?.to_str().ok()?.trim();
     if raw.is_empty() || raw.len() > max_len {
         return None;
@@ -887,7 +894,7 @@ pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str
     *by.entry(invariant.to_string()).or_insert(0) += 1;
 }
 
-async fn security_middleware(
+pub(super) async fn security_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
     next: Next,

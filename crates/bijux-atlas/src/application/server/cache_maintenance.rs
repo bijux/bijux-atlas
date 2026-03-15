@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::*;
+
 impl DatasetCacheManager {
-    async fn record_data_protection_event(&self, event: &str, dataset: &DatasetId) {
+    pub(super) async fn record_data_protection_event(&self, event: &str, dataset: &DatasetId) {
         match event {
             "encryption.operation" => {
                 self.metrics
@@ -61,7 +63,7 @@ impl DatasetCacheManager {
         Ok(())
     }
 
-    async fn check_quarantine(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+    pub(super) async fn check_quarantine(&self, dataset: &DatasetId) -> Result<(), CacheError> {
         if self.cfg.quarantine_retry_ttl > Duration::from_secs(0) {
             let mut breakers = self.breakers.lock().await;
             if let Some(state) = breakers.get_mut(dataset) {
@@ -81,7 +83,7 @@ impl DatasetCacheManager {
         Ok(())
     }
 
-    async fn record_corruption_failure(&self, dataset: &DatasetId) {
+    pub(super) async fn record_corruption_failure(&self, dataset: &DatasetId) {
         let mut failures = self.quarantine_failures.lock().await;
         let count = failures.entry(dataset.clone()).or_insert(0);
         *count += 1;
@@ -96,7 +98,7 @@ impl DatasetCacheManager {
         }
     }
 
-    async fn verify_dataset_integrity_strict(
+    pub(super) async fn verify_dataset_integrity_strict(
         &self,
         dataset: &DatasetId,
     ) -> Result<bool, CacheError> {
@@ -115,7 +117,7 @@ impl DatasetCacheManager {
         Ok(sqlite_hash == manifest.checksums.sqlite_sha256)
     }
 
-    async fn check_breaker(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+    pub(super) async fn check_breaker(&self, dataset: &DatasetId) -> Result<(), CacheError> {
         let mut lock = self.breakers.lock().await;
         let state = lock.entry(dataset.clone()).or_default();
         if let Some(until) = state.open_until {
@@ -126,7 +128,7 @@ impl DatasetCacheManager {
         Ok(())
     }
 
-    async fn record_open_failure(&self, dataset: &DatasetId) {
+    pub(super) async fn record_open_failure(&self, dataset: &DatasetId) {
         let mut lock = self.breakers.lock().await;
         let state = lock.entry(dataset.clone()).or_default();
         state.failure_count += 1;
@@ -135,7 +137,7 @@ impl DatasetCacheManager {
         }
     }
 
-    async fn reset_breaker(&self, dataset: &DatasetId) {
+    pub(super) async fn reset_breaker(&self, dataset: &DatasetId) {
         let mut lock = self.breakers.lock().await;
         let state = lock.entry(dataset.clone()).or_default();
         state.failure_count = 0;

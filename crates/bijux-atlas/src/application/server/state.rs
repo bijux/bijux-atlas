@@ -29,6 +29,15 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
+#[path = "cache_runtime.rs"]
+pub(crate) mod cache_runtime;
+#[path = "request_utils.rs"]
+mod request_utils;
+#[path = "router.rs"]
+mod router;
+
+use self::request_utils::*;
+
 #[derive(Debug)]
 pub struct CacheError(pub String);
 
@@ -387,9 +396,6 @@ impl RequestMetrics {
     }
 }
 
-include!("request_utils.rs");
-include!("cache_runtime.rs");
-include!("router.rs");
 async fn cors_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
@@ -452,6 +458,8 @@ pub use crate::application::config::{
 };
 pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 pub use crate::store::registry::federated::{FederatedBackend, RegistrySource};
+pub use self::request_utils::{chrono_like_unix_millis, record_shed_reason, route_sli_class};
+pub use self::router::build_router;
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {

@@ -1,3 +1,5 @@
+use super::*;
+
 #[derive(Debug, Clone)]
 pub(crate) struct LocalCachePaths {
     pub(crate) cache_root: PathBuf,
@@ -26,7 +28,7 @@ pub(crate) fn local_cache_paths(root: &Path, cache_key: &str) -> LocalCachePaths
     }
 }
 
-fn manifest_cache_key(manifest: &ArtifactManifest) -> String {
+pub(super) fn manifest_cache_key(manifest: &ArtifactManifest) -> String {
     let key = manifest.artifact_hash.trim();
     if !key.is_empty() {
         key.to_string()
@@ -42,14 +44,14 @@ pub(crate) fn dataset_index_path(root: &Path, dataset: &DatasetId) -> PathBuf {
         .join(format!("{}.key", dataset.key_string()))
 }
 
-fn safe_cache_key(key: &str) -> Result<(), CacheError> {
+pub(super) fn safe_cache_key(key: &str) -> Result<(), CacheError> {
     if key.is_empty() || key.contains('/') || key.contains("..") {
         return Err(CacheError("invalid cache key".to_string()));
     }
     Ok(())
 }
 
-fn write_atomic_file(path: &Path, bytes: &[u8]) -> Result<(), CacheError> {
+pub(super) fn write_atomic_file(path: &Path, bytes: &[u8]) -> Result<(), CacheError> {
     let parent = path
         .parent()
         .ok_or_else(|| CacheError("atomic write missing parent".to_string()))?;
@@ -72,7 +74,7 @@ fn write_atomic_file(path: &Path, bytes: &[u8]) -> Result<(), CacheError> {
     Ok(())
 }
 
-fn acquire_artifact_lease(
+pub(super) fn acquire_artifact_lease(
     lock_path: &Path,
     timeout: Duration,
 ) -> Result<std::fs::File, CacheError> {
@@ -100,7 +102,7 @@ fn acquire_artifact_lease(
     }
 }
 
-fn ensure_secure_dir(path: &Path) -> Result<(), CacheError> {
+pub(super) fn ensure_secure_dir(path: &Path) -> Result<(), CacheError> {
     std::fs::create_dir_all(path).map_err(|e| CacheError(e.to_string()))?;
     #[cfg(unix)]
     {
