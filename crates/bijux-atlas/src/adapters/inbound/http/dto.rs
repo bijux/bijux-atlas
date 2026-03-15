@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::FailureCategory;
+use crate::domain::cluster::resilience::FailureCategory;
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct ClusterRegisterRequest {
@@ -93,7 +93,7 @@ mod tests {
     use super::{
         FailureInjectionRequest, resolve_chaos_target_node, resolve_failure_injection_plan,
     };
-    use crate::domain::FailureCategory;
+    use crate::domain::cluster::resilience::FailureCategory;
 
     #[test]
     fn failure_injection_requires_explicit_targets() {

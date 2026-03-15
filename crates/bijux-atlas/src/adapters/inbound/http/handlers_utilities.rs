@@ -2,10 +2,12 @@
 
 use crate::*;
 use crate::domain::cluster::config::{load_cluster_config_from_path, load_node_config_from_path};
-use crate::domain::{
-    ClusterStateRegistry, FailureCategory, HeartbeatMessage, NodeDescriptor, NodeIdentity,
-    NodeMetadata, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
+use crate::domain::cluster::distributed::{
+    NodeDescriptor, NodeIdentity, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
 };
+use crate::domain::cluster::membership::HeartbeatMessage;
+use crate::domain::cluster::resilience::FailureCategory;
+use crate::domain::cluster::state::{ClusterStateRegistry, NodeMetadata};
 use serde_json::json;
 use serde_json::Value;
 pub(crate) use crate::adapters::inbound::http::cache_headers::*;

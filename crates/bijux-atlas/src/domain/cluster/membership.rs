@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::domain::distributed::{NodeDescriptor, NodeIdentity};
+use crate::domain::cluster::distributed::{NodeDescriptor, NodeIdentity};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -229,7 +229,7 @@ impl MembershipRegistry {
 #[cfg(test)]
 mod tests {
     use super::{HeartbeatMessage, MembershipPolicy, MembershipRegistry, MembershipState};
-    use crate::domain::distributed::{
+    use crate::domain::cluster::distributed::{
         NodeDescriptor, NodeIdentity, NodeRole, ReadinessPolicy, ShutdownPolicy,
     };
 

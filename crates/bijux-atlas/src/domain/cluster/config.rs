@@ -5,7 +5,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::domain::distributed::{
+use crate::domain::cluster::distributed::{
     BootstrapPolicy, ClusterDescriptor, ClusterMetadataStore, CompatibilityPolicy,
     DiscoveryStrategy, HealthPolicy, MetadataBackend, NodeDescriptor, NodeIdentity, NodeRole,
     ReadinessPolicy, TopologyMode,
@@ -115,7 +115,7 @@ impl NodeConfigFile {
             advertise_addr: self.advertise_addr.clone(),
             capabilities: self.capabilities.clone(),
             readiness: self.readiness.clone(),
-            shutdown: crate::domain::distributed::ShutdownPolicy {
+            shutdown: crate::domain::cluster::distributed::ShutdownPolicy {
                 drain_timeout_ms: self.shutdown.drain_timeout_ms,
                 publish_exit_state: self.shutdown.publish_exit_state,
             },

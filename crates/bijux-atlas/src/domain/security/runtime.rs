@@ -217,7 +217,7 @@ mod tests {
         SecurityKeyConfig, SecurityPolicy, SecurityPolicyRegistry, SecuritySecretsConfig,
         SecurityTransportConfig, StaticSecretsProvider,
     };
-    use crate::domain::security_runtime::SecretsProvider;
+    use crate::domain::security::runtime::SecretsProvider;
 
     fn sample_config() -> SecurityConfig {
         SecurityConfig {

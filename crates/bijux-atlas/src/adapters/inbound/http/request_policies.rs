@@ -3,10 +3,11 @@
 use crate::app::server::state::AppState;
 use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::dataset::DatasetId;
-use crate::domain::{
+use crate::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
-    PermissionEvaluator, RoleCatalog, RoleRegistry, https_enforced,
+    PermissionEvaluator, RoleCatalog, RoleRegistry,
 };
+use crate::domain::security::data_protection::https_enforced;
 use base64::Engine as _;
 use crate::sha256_hex;
 use axum::body::Body;

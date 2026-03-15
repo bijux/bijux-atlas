@@ -6,10 +6,12 @@ use crate::{chrono_like_unix_millis, route_sli_class};
 use crate::StatusCode;
 use crate::app::server::cache;
 use crate::runtime::config::ApiConfig;
+use crate::domain::cluster::membership::MembershipRegistry;
+use crate::domain::cluster::replication::ReplicaRegistry;
+use crate::domain::cluster::resilience::FailureRecoveryRegistry;
+use crate::domain::cluster::sharding::ShardRegistry;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-use crate::domain::{
-    FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
-};
+use crate::domain::sha256_hex;
 use bijux_atlas::domain::query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -360,9 +362,6 @@ impl RequestMetrics {
             .or_insert(0) += 1;
     }
 }
-
-pub use crate::adapters::outbound::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
-pub use crate::adapters::outbound::store::registry::federated::{FederatedBackend, RegistrySource};
 
 pub(crate) struct DatasetEntry {
     pub(crate) sqlite_path: PathBuf,

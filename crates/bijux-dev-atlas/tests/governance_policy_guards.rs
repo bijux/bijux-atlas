@@ -211,10 +211,116 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 #[test]
 fn atlas_removed_legacy_root_modules_do_not_reappear() {
     let root = repo_root();
-    for path in ["crates/bijux-atlas/src/bootstrap/mod.rs"] {
+    for path in [
+        "crates/bijux-atlas/src/bootstrap/mod.rs",
+        "crates/bijux-atlas/src/runtime/wiring/mod.rs",
+        "crates/bijux-atlas/src/runtime/wiring/server.rs",
+        "crates/bijux-atlas/src/runtime/wiring/cli.rs",
+        "crates/bijux-atlas/src/contracts/generated/mod.rs",
+        "crates/bijux-atlas/src/contracts/store/mod.rs",
+        "crates/bijux-atlas/src/contracts/telemetry/mod.rs",
+    ] {
         assert!(
             !root.join(path).exists(),
             "removed legacy root must not reappear: {path}"
+        );
+    }
+}
+
+#[test]
+fn atlas_runtime_surface_keeps_wiring_internal() {
+    let root = repo_root();
+    let text =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/runtime/mod.rs")).expect("runtime");
+    assert!(
+        text.contains("pub mod config;"),
+        "runtime root must expose config as the canonical public runtime surface"
+    );
+    assert!(
+        !text.contains("pub mod wiring;"),
+        "runtime root must not expose wiring as a second public surface"
+    );
+}
+
+#[test]
+fn atlas_contract_roots_stay_contract_owned() {
+    let root = repo_root();
+    let contracts =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/mod.rs")).expect("contracts");
+    let config = fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/config/mod.rs"))
+        .expect("contracts config");
+
+    for expected in ["pub mod api;", "pub mod config;", "pub mod errors;"] {
+        assert!(
+            contracts.contains(expected),
+            "contracts root must expose only real contract owners"
+        );
+    }
+    for forbidden in ["pub mod generated;", "pub mod store;", "pub mod telemetry;"] {
+        assert!(
+            !contracts.contains(forbidden),
+            "contracts root must not mirror adapter or generated roots"
+        );
+    }
+    assert!(
+        !config.contains("validate_runtime_env_contract"),
+        "contracts config must not re-export runtime validation helpers"
+    );
+}
+
+#[test]
+fn atlas_domain_barrel_stays_thin() {
+    let root = repo_root();
+    let text =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/domain/mod.rs")).expect("domain");
+
+    assert!(
+        text.contains("pub use canonical::{sha256, sha256_hex, Hash256};"),
+        "domain barrel must keep only canonical hashing helpers as top-level reexports"
+    );
+    for forbidden in [
+        "pub use cluster::",
+        "pub use distributed::",
+        "pub use membership::",
+        "pub use replication::",
+        "pub use resilience::",
+        "pub use security::",
+        "pub use sharding::",
+    ] {
+        assert!(
+            !text.contains(forbidden),
+            "domain barrel must not re-export mixed cluster or security surfaces"
+        );
+    }
+}
+
+#[test]
+fn atlas_app_server_surface_stays_app_owned() {
+    let root = repo_root();
+    let app_server =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/mod.rs")).expect("app server");
+    let app_state = fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/state/mod.rs"))
+        .expect("app server state");
+
+    for forbidden in [
+        "FederatedBackend",
+        "LocalFsBackend",
+        "RegistrySource",
+        "RetryPolicy",
+        "S3LikeBackend",
+    ] {
+        assert!(
+            !app_server.contains(forbidden),
+            "app server surface must not export adapter-owned store backends or registry helpers"
+        );
+    }
+    for forbidden in [
+        "pub use crate::adapters::outbound::store::registry::backends::{",
+        "pub use crate::adapters::outbound::store::registry::federated::{",
+    ] {
+        assert!(
+            !app_state.contains(forbidden),
+            "app server surface must not export adapter-owned store backends or registry helpers"
         );
     }
 }
