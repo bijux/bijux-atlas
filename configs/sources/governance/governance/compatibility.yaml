@@ -29,10 +29,10 @@ compatibility_rules:
     breaking_changes:
       - remove required field
       - change field type
-      - change report identity without migration notice
+      - change report identity without compatibility notice
     rename_requirements:
       - compatibility entry
-      - migration note when schema version changes
+      - compatibility note when schema version changes
   docs_urls:
     breaking_changes:
       - move reader URL without redirect

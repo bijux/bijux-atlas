@@ -3,7 +3,7 @@
   "policy_owner": "bijux-atlas-governance",
   "python": {
     "allowed_zones": [],
-    "forbidden_after_migration_complete": [
+    "forbidden_paths": [
       "ops/tutorials/**/*.py",
       "ops/tutorials/scripts/**"
     ],
@@ -17,7 +17,7 @@
     "tutorials": "Tutorial artifacts and tutorial-facing static assets. Automation executes via bijux-dev-atlas commands.",
     "clients": "Legacy path retired. Repo automation executes via bijux-dev-atlas commands."
   },
-  "migration_status": {
-    "tutorials_legacy_automation_removed": true
+  "policy_state": {
+    "tutorials_script_enforcement": "active"
   }
 }

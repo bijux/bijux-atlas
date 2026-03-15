@@ -991,12 +991,12 @@
         "configs/sources/tutorials/cache-eviction-policy.json",
         "configs/sources/tutorials/data-source-volatility-policy.json",
         "configs/sources/tutorials/fetch-retry-policy.json",
-        "configs/sources/tutorials/legacy-script-exceptions.json",
         "configs/sources/tutorials/nondeterministic-fields-policy.json",
         "configs/sources/tutorials/real-data-runs-workflow.json",
         "configs/sources/tutorials/real-data-runs.json",
         "configs/sources/tutorials/redaction-policy.json",
-        "configs/sources/tutorials/regression-threshold-policy.json"
+        "configs/sources/tutorials/regression-threshold-policy.json",
+        "configs/sources/tutorials/script-exceptions.json"
       ],
       "name": "tutorials",
       "owner": "platform",

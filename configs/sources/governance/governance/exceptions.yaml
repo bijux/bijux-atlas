@@ -15,5 +15,5 @@ policy:
 reason_taxonomy:
   - compatibility
   - third-party
-  - temporary-incident
+  - incident-response
 exceptions: []

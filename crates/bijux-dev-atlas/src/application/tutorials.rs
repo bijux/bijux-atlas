@@ -172,9 +172,10 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
     let (evidence_ok, evidence_detail) = validate_evidence(&assets.evidence_items);
     let (contract_ok, contract_detail) =
         validate_dataset_contract_semantics(&assets.dataset_contract);
-    let (legacy_ok, legacy_detail) = validate_tutorials_legacy_automation_policy(&repo_root);
+    let (script_policy_ok, script_policy_detail) = validate_tutorials_script_policy(&repo_root);
     let (run_artifacts_ok, run_artifacts_detail) = validate_real_data_run_artifacts(&repo_root);
-    let success = dashboards_ok && evidence_ok && contract_ok && legacy_ok && run_artifacts_ok;
+    let success =
+        dashboards_ok && evidence_ok && contract_ok && script_policy_ok && run_artifacts_ok;
     let report = serde_json::json!({
         "schema_version": 1,
         "domain": "tutorials",
@@ -184,7 +185,7 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
             "dashboards": dashboards_detail,
             "evidence": evidence_detail,
             "dataset_contract": contract_detail,
-            "legacy_automation_policy": legacy_detail,
+            "script_policy": script_policy_detail,
             "run_artifacts": run_artifacts_detail
         },
         "catalog": {
@@ -205,8 +206,8 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
     Ok((rendered, if success { 0 } else { 1 }))
 }
 
-fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde_json::Value) {
-    let exceptions_path = repo_root.join("configs/sources/tutorials/legacy-script-exceptions.json");
+fn validate_tutorials_script_policy(repo_root: &Path) -> (bool, serde_json::Value) {
+    let exceptions_path = repo_root.join("configs/sources/tutorials/script-exceptions.json");
     let exceptions_json: serde_json::Value = fs::read_to_string(&exceptions_path)
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
@@ -223,7 +224,7 @@ fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde
         let expires = row["expires_on"].as_str().unwrap_or_default().to_string();
         if path.is_empty() || reason.is_empty() || expires.is_empty() {
             violations.push(
-                "legacy-script exception entries require path, reason, and expires_on".to_string(),
+                "script exception entries require path, reason, and expires_on".to_string(),
             );
             continue;
         }
@@ -231,7 +232,7 @@ fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde
             allow.insert(path);
         } else {
             violations.push(format!(
-                "legacy-script exception has invalid expires_on format (expected YYYY-MM-DD): {path} ({expires})"
+                "script exception has invalid expires_on format (expected YYYY-MM-DD): {path} ({expires})"
             ));
         }
     }
@@ -251,7 +252,7 @@ fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde
     }
     if !offenders.is_empty() {
         violations.push(format!(
-            "tutorials legacy automation sources are forbidden unless explicitly allowlisted: {}",
+            "tutorials script sources are forbidden unless explicitly allowlisted: {}",
             offenders.join(", ")
         ));
     }

@@ -3209,7 +3209,7 @@
     },
     {
       "contract_id": "AUTOMATION-BOUNDARIES-001",
-      "summary": "Enforce automation-boundary doctrine contract including forbidden tooling/script patterns and migration completion boundaries.",
+      "summary": "Enforce automation-boundary doctrine contract including forbidden tooling/script patterns and automation-boundary completion criteria.",
       "owner": "team:atlas-governance",
       "mode": "pure",
       "group": "governance",

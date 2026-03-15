@@ -56,7 +56,7 @@
           },
           "reason": {
             "type": "string",
-            "enum": ["compatibility", "third-party", "temporary-incident"]
+            "enum": ["compatibility", "third-party", "incident-response"]
           },
           "owner": {
             "type": "string",
