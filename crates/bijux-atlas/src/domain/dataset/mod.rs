@@ -2,6 +2,7 @@
 
 pub mod keys;
 pub mod manifest;
+pub mod serde_helpers;
 pub mod version;
 
 pub use keys::{

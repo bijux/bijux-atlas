@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::keys::{DatasetId, ValidationError};
+use super::serde_helpers as dataset_serde;
 use super::version::ModelVersion;
 use crate::domain::query::gene::SeqId;
-use crate::model::serde_helpers as model_serde;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -114,7 +114,7 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub toolchain_hash: String,
     #[serde(default)]
-    #[serde(with = "model_serde::timestamp_string")]
+    #[serde(with = "dataset_serde::timestamp_string")]
     pub created_at: String,
     #[serde(default)]
     pub qc_report_path: String,
@@ -126,11 +126,11 @@ pub struct ArtifactManifest {
     pub source_fai_filename: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
-    #[serde(default, skip_serializing_if = "model_serde::map_is_empty")]
+    #[serde(default, skip_serializing_if = "dataset_serde::map_is_empty")]
     pub contig_normalization_aliases: BTreeMap<String, String>,
     #[serde(
         default = "default_derived_column_origins",
-        skip_serializing_if = "model_serde::map_is_empty"
+        skip_serializing_if = "dataset_serde::map_is_empty"
     )]
     pub derived_column_origins: BTreeMap<String, String>,
 }
