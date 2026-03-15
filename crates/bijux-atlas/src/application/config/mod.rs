@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
+pub mod paths;
 pub mod runtime;
 
+pub use self::paths::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub use self::runtime::{
     effective_config_payload, effective_runtime_config_payload, load_runtime_config,
     load_runtime_startup_config, runtime_config_contract_snapshot,

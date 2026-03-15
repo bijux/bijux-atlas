@@ -8,7 +8,8 @@ mod ingest_inputs;
 mod operations;
 pub(crate) mod output;
 
-use crate::domain::{canonical, resolve_bijux_cache_dir, resolve_bijux_config_path};
+use crate::application::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
+use crate::domain::canonical;
 use crate::errors::{ConfigPathScope, ExitCode, MachineError};
 use crate::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
