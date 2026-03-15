@@ -43,10 +43,10 @@ flowchart LR
 
 - [System Overview](system-overview.md)
 - [Source Layout and Ownership](source-layout-and-ownership.md)
+- [Automation Architecture](automation-architecture.md)
 - [Request Lifecycle](request-lifecycle.md)
 - [Ingest Architecture](ingest-architecture.md)
 - [Query Architecture](query-architecture.md)
 - [Storage Architecture](storage-architecture.md)
 - [Runtime Composition](runtime-composition.md)
 - [Contracts and Boundaries](contracts-and-boundaries.md)
-
