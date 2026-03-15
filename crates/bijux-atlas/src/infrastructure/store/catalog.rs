@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::canonical;
-use crate::model::{Catalog, CatalogEntry};
+use crate::domain::dataset::{Catalog, CatalogEntry};
 use std::collections::BTreeMap;
 
 pub fn validate_catalog_strict(catalog: &Catalog) -> Result<(), String> {

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
+use crate::domain::dataset::manifest::{
+    LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
+};
 
 pub const CRATE_NAME: &str = "bijux-atlas::api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
@@ -145,9 +147,10 @@ mod tests {
             assert!(spec["paths"].get(route).is_some(), "missing route: {route}");
         }
 
-        let a = crate::core::canonical::stable_json_bytes(&spec).expect("stable bytes a");
+        let a = crate::domain::canonical::stable_json_bytes(&spec).expect("stable bytes a");
         let b =
-            crate::core::canonical::stable_json_bytes(&openapi_v1_spec()).expect("stable bytes b");
+            crate::domain::canonical::stable_json_bytes(&openapi_v1_spec())
+                .expect("stable bytes b");
         assert_eq!(a, b);
     }
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::{ArtifactManifest, DatasetId};
+use crate::domain::dataset::{ArtifactManifest, DatasetId};
 use crate::store::{ArtifactStore, PublishLockGuard, StoreError, StoreErrorCode};
 
 #[derive(

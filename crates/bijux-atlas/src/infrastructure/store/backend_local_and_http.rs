@@ -12,7 +12,7 @@ use super::paths::{
 #[cfg(feature = "backend-s3")]
 use super::retry::{BackoffPolicy, RetryPolicy};
 use crate::errors::ErrorCode;
-use crate::model::{ArtifactManifest, Catalog, DatasetId};
+use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
 #[cfg(feature = "backend-s3")]
 use reqwest::blocking::{Client, Response};
 #[cfg(feature = "backend-s3")]

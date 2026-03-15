@@ -3,7 +3,7 @@
 #[allow(unused_imports)]
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
-use crate::model::{DatasetId, ShardCatalog};
+use crate::domain::dataset::{DatasetId, ShardCatalog};
 use crate::{CacheError, DatasetCacheManager};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};

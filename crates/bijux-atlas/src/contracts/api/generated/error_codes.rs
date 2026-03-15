@@ -34,4 +34,4 @@ pub const API_ERROR_CODES: &[&str] = &[
     "ValidationFailed",
 ];
 
-pub type ApiErrorCode = crate::core::ErrorCode;
+pub type ApiErrorCode = crate::errors::ErrorCode;

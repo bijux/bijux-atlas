@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::{artifact_paths, ArtifactPaths, DatasetId};
+use crate::domain::dataset::{artifact_paths, ArtifactPaths, DatasetId};
 use std::path::{Path, PathBuf};
 
 pub const CATALOG_FILE: &str = "catalog.json";
