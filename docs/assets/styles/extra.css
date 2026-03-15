@@ -1,0 +1,51 @@
+:root {
+  --atlas-border: rgba(15, 23, 42, 0.12);
+  --atlas-panel: rgba(15, 118, 110, 0.06);
+  --atlas-panel-strong: rgba(8, 145, 178, 0.08);
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  letter-spacing: -0.02em;
+}
+
+.md-typeset p,
+.md-typeset li {
+  line-height: 1.75;
+}
+
+.md-typeset code {
+  border-radius: 0.35rem;
+}
+
+.md-typeset pre > code {
+  border-radius: 0.75rem;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0.75rem;
+}
+
+.md-typeset table:not([class]) {
+  border: 1px solid var(--atlas-border);
+}
+
+.md-typeset blockquote {
+  border-left: 0.2rem solid rgb(13, 148, 136);
+  background: var(--atlas-panel);
+  padding: 0.1rem 0.8rem;
+}
+
+.md-typeset hr {
+  border-bottom: 1px solid var(--atlas-border);
+}
+
+.md-typeset .mermaid {
+  background: var(--atlas-panel-strong);
+  border: 1px solid var(--atlas-border);
+  border-radius: 0.9rem;
+  padding: 1rem;
+  overflow-x: auto;
+}

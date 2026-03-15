@@ -1,5 +1,5 @@
 site_name: bijux-atlas
-site_description: bijux-atlas reference documentation
+site_description: bijux-atlas documentation
 site_url: https://bijux.github.io/bijux-atlas/
 repo_name: bijux/bijux-atlas
 repo_url: https://github.com/bijux/bijux-atlas
@@ -14,18 +14,17 @@ validation:
   omitted_files: ignore
 
 exclude_docs: |
-  _drafts/**
+  --archive/**
+  automation/**
   README.md
 
 theme:
   name: material
-  custom_dir: docs/_internal/overrides
-  logo: _assets/bijux_logo_hq.png
-  favicon: _assets/bijux_icon.png
+  logo: assets/bijux_logo_hq.png
+  favicon: assets/bijux_icon.png
   features:
     - navigation.tabs
     - navigation.tabs.sticky
-    - announce.dismiss
     - navigation.sections
     - navigation.indexes
     - navigation.top
@@ -35,28 +34,25 @@ theme:
     - toc.follow
     - search.suggest
     - search.highlight
-    - content.tabs.link
-    - content.code.annotate
     - content.code.copy
-    - content.code.select
     - content.action.edit
     - content.action.view
     - navigation.footer
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: IBM Plex Sans
+    code: IBM Plex Mono
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: teal
+      accent: amber
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/weather-night
         name: Switch to dark mode
     - scheme: slate
-      primary: teal
+      primary: blue grey
       accent: lime
       toggle:
-        icon: material/toggle-switch
+        icon: material/weather-sunny
         name: Switch to light mode
   icon:
     repo: fontawesome/brands/github
@@ -79,191 +75,96 @@ markdown_extensions:
 
 plugins:
   - search
-  - git-revision-date-localized:
-      type: date
-      enable_creation_date: false
-      fallback_to_build_date: false
-      strict: false
-  - redirects:
-      # redirect_maps generated from docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
-      redirect_maps:
-        _generated/governance-audit/index.md: _internal/generated/governance-audit/index.md
-        _generated/topic-index.md: _internal/generated/topic-index.md
-        architecture/faq.md: product/faq.md
-        contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
-        contracts/compatibility.md: reference/contracts/compatibility.md
-        contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
-        contracts/endpoints.md: reference/contracts/endpoints.md
-        contracts/errors.md: reference/contracts/errors.md
-        contracts/index.md: reference/contracts/index.md
-        contracts/metrics.md: reference/contracts/telemetry.md
-        contracts/plugin/index.md: reference/contracts/plugins/index.md
-        contracts/plugin/mode.md: reference/contracts/plugins/mode.md
-        contracts/plugin/spec.md: reference/contracts/plugins/spec.md
-        contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        contracts/tracing.md: reference/contracts/telemetry.md
-        control-plane/add-a-check-in-30-minutes.md: control-plane/extend-control-plane.md
-        control-plane/add-a-contract-registry-in-30-minutes.md: control-plane/extend-control-plane.md
-        control-plane/contracts.md: control-plane/index.md
-        control-plane/ops-boundary.md: control-plane/index.md
-        dev/check-failures.md: development/debugging-locally.md
-        dev/index.md: development/index.md
-        development/contributor-onboarding-checklist.md: development/contributor-onboarding-rubric.md
-        development/control-plane.md: control-plane/index.md
-        development/docs-site-map.md: site-map.md
-        development/how-to-add-check.md: control-plane/add-a-check-in-30-minutes.md
-        development/how-to-add-contract-registry.md: control-plane/add-a-contract-registry-in-30-minutes.md
-        development/how-to-add-gate-policy.md: control-plane/add-a-gate-policy.md
-        development/known-limitations.md: control-plane/known-limitations.md
-        development/reports-and-ci-consumption.md: control-plane/ci-report-consumption.md
-        engineering/index.md: _internal/governance/docs-lint-rules.md
-        engineering/lints.md: _internal/governance/docs-lint-rules.md
-        examples/catalog-example.md: reference/examples/catalog-example.md
-        examples/index.md: reference/examples/index.md
-        governance/contract-breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
-        governance/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
-        governance/contract-ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        governance/docs-dashboard.md: _internal/governance/docs-dashboard.md
-        governance/docs-lint-rules.md: _internal/governance/docs-lint-rules.md
-        governance/docs-operating-model.md: _internal/governance/docs-operating-model.md
-        governance/docs-ownership.md: _internal/governance/docs-ownership.md
-        governance/docs-rewrite-plan.md: _internal/meta/internal/docs-rewrite-plan.md
-        governance/docs-style.md: _internal/governance/docs-style.md
-        governance/index.md: _internal/governance/index.md
-        governance/root-legacy-mapping.md: _internal/meta/internal/root-legacy-mapping.md
-        operations/observability/observability-faq.md: product/faq.md
-        operations/operator-faq.md: product/faq.md
-        operations/performance-faq.md: product/faq.md
-        operations/reference/commands.md: reference/commands.md
-        operations/security/security-faq.md: product/faq.md
-        ownership.md: _internal/governance/docs-ownership.md
-        product/reading-tracks.md: what-to-read-next.md
-        reference/contracts/artifacts/directory-contract.md: reference/contracts/artifacts/index.md
-        reference/contracts/artifacts/manifest-contract.md: reference/contracts/artifacts/index.md
-        reference/contracts/artifacts/sqlite-schema-contract.md: reference/contracts/artifacts/index.md
-        reference/contracts/artifacts/sqlite-schema-evolution-strategy.md: reference/contracts/artifacts/index.md
-        reference/contracts/breaking-change-examples.md: _internal/governance/contract-breaking-change-examples.md
-        reference/contracts/contract-change-checklist.md: _internal/governance/contract-change-checklist.md
-        reference/contracts/metrics.md: reference/contracts/telemetry.md
-        reference/contracts/ssot-workflow.md: _internal/governance/contract-ssot-workflow.md
-        reference/contracts/tracing.md: reference/contracts/telemetry.md
-        reference/errors.md: reference/errors-and-exit-codes.md
-        root/architecture-overview.md: architecture/index.md
-        root/ci-workflow-explanation.md: development/ci-overview.md
-        root/command-index.md: reference/commands.md
-        root/commands-reference.md: reference/commands.md
-        root/compatibility-policy.md: product/compatibility-promise.md
-        root/configs-overview.md: reference/configs.md
-        root/control-plane-overview.md: control-plane/index.md
-        root/docker-overview.md: operations/deploy.md
-        root/faq.md: start-here.md
-        root/glossary.md: glossary.md
-        root/index.md: index.md
-        root/makefiles-overview.md: development/repo-layout.md
-        root/navigation-policy.md: _internal/governance/docs-navigation-policy.md
-        root/observability-overview.md: operations/observability/index.md
-        root/ops-overview.md: operations/index.md
-        root/release-process-overview.md: operations/release/index.md
-        root/repository-structure.md: development/repo-layout.md
-        root/reproducibility-guarantees.md: product/compatibility-promise.md
-        root/schema-index.md: reference/schemas.md
-        root/security-model.md: operations/security/index.md
-        root/stability-guarantees.md: product/compatibility-promise.md
-        root/terminology-rules.md: _internal/governance/docs-style.md
-        science/index.md: product/index.md
-        security/index.md: operations/security/index.md
-        style.md: _internal/governance/docs-style.md
-        tutorials/faq.md: product/faq.md
-      # end generated redirect_maps
-
-extra:
-  announcement: "This site is generated from main or a release tag."
-  release_tag: !ENV [RELEASE_TAG, "main"]
 
 not_in_nav: |
-  _assets/**
-  _drafts/**
-  _internal/**
-  contracts/**/*.json
+  assets/**
+  automation/**
+  overrides/**
+  --archive/**
 
 extra_css:
-  - _assets/styles/extra.css
+  - assets/styles/extra.css
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
-  - _assets/javascripts/mermaid-init.js
+  - assets/javascripts/mermaid-init.js
 
 nav:
   - Home: index.md
-  - Start Here: start-here.md
-  - Product:
-      - Product Index: product/index.md
-      - FAQ: product/faq.md
-      - Tutorials: tutorials/index.md
-      - Real Data Runs: tutorials/real-data/index.md
-      - What We Built: what-we-built.md
-  - Architecture:
-      - Architecture Index: architecture/index.md
-      - Why This Structure Exists: architecture/why-this-structure-exists.md
-      - System Architecture Specification: architecture/system-architecture-specification.md
-      - Architecture Summary: architecture/summary.md
-      - Architecture Overview: architecture/overview.md
-      - Design Principles: architecture/design-principles.md
-      - Engineering Philosophy: architecture/engineering-philosophy.md
-      - Components: architecture/components/index.md
-      - Architecture Diagrams: architecture/diagrams/index.md
-      - Internal Architecture: architecture/internal-architecture.md
-      - Architecture Evolution: architecture/evolution.md
-  - Operations:
-      - Operations Index: operations/index.md
-      - Prerequisites: operations/prerequisites.md
-      - Run Locally: operations/run-locally.md
-      - Deploy to Kind: operations/deploy-kind.md
-      - Deploy Overview: operations/deploy.md
-      - Kind Profile: operations/kind-profile.md
-      - Ops Reference: reference/ops/index.md
-      - Releases: operations/release/index.md
-  - Development:
-      - Development Overview: development/index.md
-      - Tooling: development/tooling/index.md
-      - Governance Index: governance/index.md
-      - Control-plane: control-plane/index.md
-      - Developer Internals:
-          - Docs governance: _internal/governance/index.md
-          - Docs Dashboard: _internal/governance/docs-dashboard.md
-      - Reference:
-          - Developer Reference Index: reference/index.md
-          - Docs Entrypoints: reference/docs-entrypoints.md
-          - CLI Reference: cli/index.md
-      - Performance Reference: perf/index.md
-      - API:
-          - API Overview: api/index.md
-          - Errors: api/errors.md
-          - OpenAPI Generation: api/openapi-generation.md
-          - Client Behavior: api/client-behavior.md
-          - Compatibility Test Plan: api/compatibility-test-plan.md
-          - Client Retries and Backoff: api/client-retries-and-backoff.md
-          - Compatibility: api/compatibility.md
-          - Default Field Set: api/default-field-set.md
-          - Deprecation: api/deprecation.md
-          - Caching: api/caching.md
-          - Pagination: api/pagination.md
-          - Performance Expectations: api/performance-expectations.md
-          - Quick Reference: api/quick-reference.md
-          - SDK Strategy: api/sdk-strategy.md
-          - Troubleshooting: api/troubleshooting.md
-          - v1 Surface: api/v1-surface.md
-          - Versioning: api/versioning.md
-      - SDKs:
-          - Rust SDK Tutorial: tutorials/query-via-rust-client.md
-          - Python SDK Tutorial: tutorials/query-via-python-client.md
-      - Evidence and Guarantees:
-          - Contracts Index: reference/contracts/index.md
-          - Checks and Contracts Governance: _internal/governance/checks-and-contracts.md
-      - Releases:
-          - Release Operations: operations/release/index.md
-          - Build Info: reference/build-info.md
-      - Errors and Exit Codes: reference/errors-and-exit-codes.md
-      - Configs Reference: reference/configs/index.md
-  - Reference:
-      - Reference Index: reference/index.md
+  - 01 Introduction:
+      - Overview: 01-introduction/index.md
+      - What Atlas Is: 01-introduction/what-atlas-is.md
+      - Core Concepts: 01-introduction/core-concepts.md
+      - Boundaries and Non-Goals: 01-introduction/boundaries-and-non-goals.md
+      - Guarantees and Stability: 01-introduction/guarantees-and-stability.md
+  - 02 Getting Started:
+      - Overview: 02-getting-started/index.md
+      - Install and Verify: 02-getting-started/install-and-verify.md
+      - Run Atlas Locally: 02-getting-started/run-atlas-locally.md
+      - Load a Sample Dataset: 02-getting-started/load-a-sample-dataset.md
+      - Start the Server: 02-getting-started/start-the-server.md
+      - Run Your First Queries: 02-getting-started/run-your-first-queries.md
+      - Troubleshoot Early Problems: 02-getting-started/troubleshoot-early-problems.md
+  - 03 User Guide:
+      - Overview: 03-user-guide/index.md
+      - Configuration and Output: 03-user-guide/configuration-and-output.md
+      - Catalog Workflows: 03-user-guide/catalog-workflows.md
+      - Dataset Workflows: 03-user-guide/dataset-workflows.md
+      - Ingest Workflows: 03-user-guide/ingest-workflows.md
+      - Query Workflows: 03-user-guide/query-workflows.md
+      - Server Workflows: 03-user-guide/server-workflows.md
+      - OpenAPI and API Usage: 03-user-guide/openapi-and-api-usage.md
+      - Policy Workflows: 03-user-guide/policy-workflows.md
+      - Troubleshooting: 03-user-guide/troubleshooting.md
+  - 04 Operations:
+      - Overview: 04-operations/index.md
+      - Deployment Models: 04-operations/deployment-models.md
+      - Runtime Configuration: 04-operations/runtime-configuration.md
+      - Health, Readiness, and Drain: 04-operations/health-readiness-and-drain.md
+      - Logging, Metrics, and Tracing: 04-operations/logging-metrics-and-tracing.md
+      - Cache and Store Operations: 04-operations/cache-and-store-operations.md
+      - Backup and Recovery: 04-operations/backup-and-recovery.md
+      - Upgrades and Rollback: 04-operations/upgrades-and-rollback.md
+      - Performance and Load: 04-operations/performance-and-load.md
+      - Security Operations: 04-operations/security-operations.md
+      - Incident Response: 04-operations/incident-response.md
+  - 05 Architecture:
+      - Overview: 05-architecture/index.md
+      - System Overview: 05-architecture/system-overview.md
+      - Source Layout and Ownership: 05-architecture/source-layout-and-ownership.md
+      - Request Lifecycle: 05-architecture/request-lifecycle.md
+      - Ingest Architecture: 05-architecture/ingest-architecture.md
+      - Query Architecture: 05-architecture/query-architecture.md
+      - Storage Architecture: 05-architecture/storage-architecture.md
+      - Runtime Composition: 05-architecture/runtime-composition.md
+      - Contracts and Boundaries: 05-architecture/contracts-and-boundaries.md
+  - 06 Development:
+      - Overview: 06-development/index.md
+      - Workspace and Tooling: 06-development/workspace-and-tooling.md
+      - Local Development: 06-development/local-development.md
+      - Testing and Evidence: 06-development/testing-and-evidence.md
+      - Adding CLI Surface: 06-development/adding-cli-surface.md
+      - Adding HTTP Surface: 06-development/adding-http-surface.md
+      - Adding Contracts: 06-development/adding-contracts.md
+      - Change and Compatibility: 06-development/change-and-compatibility.md
+      - Release and Versioning: 06-development/release-and-versioning.md
+      - Documentation Standards: 06-development/documentation-standards.md
+  - 07 Reference:
+      - Overview: 07-reference/index.md
+      - Command Surface: 07-reference/command-surface.md
+      - Environment Variables: 07-reference/environment-variables.md
+      - Runtime Config Reference: 07-reference/runtime-config-reference.md
+      - API Endpoint Index: 07-reference/api-endpoint-index.md
+      - Error Codes and Exit Codes: 07-reference/error-codes-and-exit-codes.md
+      - Feature Flags: 07-reference/feature-flags.md
+      - Artifact Layout: 07-reference/artifact-layout.md
+      - Glossary: 07-reference/glossary.md
+  - 08 Contracts:
+      - Overview: 08-contracts/index.md
+      - API Compatibility: 08-contracts/api-compatibility.md
+      - Structured Output Contracts: 08-contracts/structured-output-contracts.md
+      - Runtime Config Contracts: 08-contracts/runtime-config-contracts.md
+      - Plugin Contracts: 08-contracts/plugin-contracts.md
+      - Artifact and Store Contracts: 08-contracts/artifact-and-store-contracts.md
+      - Operational Contracts: 08-contracts/operational-contracts.md
+      - Ownership and Versioning: 08-contracts/ownership-and-versioning.md
