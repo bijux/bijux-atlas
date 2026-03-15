@@ -14,8 +14,10 @@ tags:
 
 ## Canonical delegation targets
 
-- `checks-all` -> `bijux-dev-atlas checks run --suite deep ...`
-- `contracts-all` -> `bijux-dev-atlas contract run --mode all ...`
+- `suites-all` -> `bijux-dev-atlas suites run --suite deep ...` and `bijux-dev-atlas suites run --suite contracts ...`
+- `ops-fast` -> `bijux-dev-atlas suites run --suite ci_fast ...`
+- `ops-pr` -> `bijux-dev-atlas suites run --suite ci_pr ...`
+- `ops-nightly` -> `bijux-dev-atlas suites run --suite ci_nightly ...`
 - `tests-all` -> `bijux-dev-atlas tests run --mode all ...`
 - `docs-build` -> `bijux-dev-atlas docs build ...`
 - `docs-serve` -> `bijux-dev-atlas docs serve ...`

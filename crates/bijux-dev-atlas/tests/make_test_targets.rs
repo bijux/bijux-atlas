@@ -35,42 +35,31 @@ fn test_all_runs_nextest_once_without_retries() {
 }
 
 #[test]
-fn checks_all_runs_one_human_facing_check_command() {
+fn suites_all_runs_only_suites_surface_commands() {
     let root_mk =
         fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
     let start = root_mk
-        .find("checks-all: ## Run the full non-test quality gates")
-        .expect("checks-all target");
+        .find("suites-all: ## Run the governed validation suites sequentially")
+        .expect("suites-all target");
     let tail = &root_mk[start..];
     let end = tail.find("\n\n").unwrap_or(tail.len());
     let target_block = &tail[..end];
 
     assert_eq!(
-        target_block.matches("$(DEV_ATLAS) checks run").count(),
-        1,
-        "checks-all should execute one direct check run"
+        target_block.matches("$(DEV_ATLAS) suites run").count(),
+        2,
+        "suites-all should execute the deep and contracts suites directly"
     );
     assert!(
-        !target_block.contains("suites run"),
-        "checks-all should not shell through the suite runner"
-    );
-    assert!(target_block.contains("--format $(FORMAT)"));
-    assert!(
-        target_block.contains("--suite deep"),
-        "checks-all should target the full deep checks suite"
+        !target_block.contains("checks run"),
+        "suites-all should not use the retired checks surface"
     );
     assert!(
-        target_block.contains("--include-internal --include-slow"),
-        "checks-all should include internal and slow checks"
+        !target_block.contains("contract run"),
+        "suites-all should not use the retired contract surface"
     );
-    assert!(
-        target_block.contains("--allow-subprocess --allow-git --allow-write --allow-network"),
-        "checks-all should grant the full effects envelope needed for all checks"
-    );
-    assert!(
-        !target_block.contains("--format json"),
-        "checks-all should not emit the legacy json summary by default"
-    );
+    assert!(target_block.contains("--suite deep"));
+    assert!(target_block.contains("--suite contracts"));
 }
 
 #[test]

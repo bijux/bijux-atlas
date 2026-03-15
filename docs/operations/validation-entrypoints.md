@@ -40,43 +40,35 @@ an explicit cap. Use `--fail-fast` when you want the first blocking failure to s
 ## Make Entrypoints
 
 - `make suites-list` prints the governed suite ids.
-- `make checks-all` runs the full checks suite.
-- `make contracts-all` runs the full contracts suite.
-- `make suites-all` runs checks then contracts.
+- `make suites-all` runs the deep validation suite and the contracts suite.
 - `make registry-doctor` validates suite registries and mappings.
-- `make checks-group GROUP=rust` runs one checks group.
-- `make contracts-group GROUP=datasets` runs one contracts group.
-- `make checks-tag TAG=rust` runs one checks tag slice.
-- `make contracts-tag TAG=datasets` runs one contracts tag slice.
-- `make checks-pure` runs only pure checks.
-- `make checks-effect` runs only effectful checks.
-- `make contracts-pure` runs only pure contracts.
-- `make contracts-effect` runs only effectful contracts.
+- `make ops-fast` runs the fast CI validation suite.
+- `make ops-pr` runs the pull-request validation suite.
+- `make ops-nightly` runs the nightly validation suite.
 
 All suite Make entrypoints accept:
 
 - `JOBS=<n|auto>` to override the suite worker count.
 - `FAIL_FAST=1` to stop after the first blocking failure.
 
-`make checks-all` and `make contracts-all` run `registry doctor` before suite execution so
-registry drift fails before the worker pool starts.
+`make registry-doctor` should run before suite execution when you want registry drift to fail
+before the worker pool starts.
 
 ## Effects Boundary
 
 These entrypoints keep effectful work explicit:
 
-- `checks-pure` and `contracts-pure` stay within pure registry entries.
-- `checks-effect` and `contracts-effect` intentionally include effectful entries.
-- `checks-all` and `contracts-all` respect the registry mode metadata and write per-entry artifacts
+- `make suites-all`, `make ops-fast`, `make ops-pr`, and `make ops-nightly` execute through the
+  governed suite runner.
+- `make suites-all` respects the registry mode metadata and writes per-entry artifacts
   under `artifacts/suites/<suite>/<run_id>/`.
-- `checks-all` schedules work across groups while keeping high-memory checks from colliding.
-- `contracts-all` keeps effectful contract work isolated according to the governed concurrency
+- The deep and contracts suites keep effectful work isolated according to the governed concurrency
   policy.
 
 ## When To Use Each
 
-- Use `make checks-all` before pushing implementation, docs, or config changes that affect quality
-  gates.
-- Use `make contracts-all` when touching contracts, governance, schemas, or release surfaces.
 - Use `make suites-all` when you want the full deterministic non-test validation lane locally.
+- Use `make ops-fast` before pushing implementation, docs, or config changes that affect quality
+  gates.
+- Use `make ops-pr` when touching governance, schemas, or release surfaces.
 - Use `make tests-all` when you need executable test coverage in addition to checks and contracts.

@@ -6,19 +6,19 @@ ci: ## Canonical CI entrypoint
 	@$(MAKE) -s dev-doctor && $(MAKE) -s dev-check-ci
 
 ci-fast: ## CI fast lane wrapper
-	@$(DEV_ATLAS) check run --suite ci_fast --format $(FORMAT)
+	@$(DEV_ATLAS) suites run --suite ci_fast --mode all --format $(FORMAT)
 
 ci-pr: ## CI PR lane wrapper
-	@$(DEV_ATLAS) check run --suite ci_pr --format $(FORMAT)
+	@$(DEV_ATLAS) suites run --suite ci_pr --mode all --format $(FORMAT)
 
 ci-nightly: ## CI nightly lane (includes slow checks)
-	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format $(FORMAT)
+	@$(DEV_ATLAS) suites run --suite ci_nightly --mode all --format $(FORMAT)
 
 ci-docs: ## CI docs lane wrapper
-	@$(DEV_ATLAS) check run --domain docs --format $(FORMAT)
+	@$(DEV_ATLAS) suites run --suite docs_required --mode all --format $(FORMAT)
 
 ci-dependency-lock-refresh: ## CI dependency lock refresh wrapper
-	@$(DEV_ATLAS) check run --domain root --tag lint --format $(FORMAT)
+	@$(DEV_ATLAS) suites run --suite repo_required --mode all --tag lint --format $(FORMAT)
 
 ci-help: ## Show CI command help
 	@$(DEV_ATLAS) --help

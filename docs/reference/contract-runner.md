@@ -26,12 +26,9 @@ automation can migrate without a hard cutover.
 
 ## Make Wrappers
 
-- `make contract` delegates to `bijux dev atlas contract run --mode static`
-- `make contract-effect` delegates to `bijux dev atlas contract run --mode effect --effects-policy allow`
-- `make contract-all` delegates to `bijux dev atlas contract run --mode all --effects-policy allow`
-- `make contract-list` delegates to `bijux dev atlas contract list`
-- `make contract-report` delegates to `bijux dev atlas contract report --last`
-- `make contracts`, `make contracts-effect`, and `make contracts-all` remain temporary deprecated wrappers
+- Contract execution no longer has dedicated top-level `make` wrappers.
+- Use `make suites-all` for the governed full validation lane.
+- Use `bijux dev atlas suites run --suite contracts --mode all` for direct suite execution.
 
 ## Compatibility
 

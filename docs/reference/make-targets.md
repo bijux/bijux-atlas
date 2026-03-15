@@ -5,10 +5,6 @@
 - Audience: `operators`
 - Source-of-truth: `configs/ops/make-target-registry.json`
 
-> Canonical contract execution targets are `contract`, `contract-effect`, `contract-all`, and
-> `contract-list`. Legacy `contracts*` targets remain as deprecated thin wrappers during the
-> compatibility window.
-
 ## Targets
 
 | Target | Surface | Description |
@@ -28,12 +24,6 @@
 | `build-release` | `` |  |
 | `build-sdist` | `` |  |
 | `check` | `` |  |
-| `checks` | `` |  |
-| `checks-all` | `` |  |
-| `checks-effect` | `` |  |
-| `checks-group` | `` |  |
-| `checks-pure` | `` |  |
-| `checks-tag` | `` |  |
 | `ci` | `` |  |
 | `ci-dependency-lock-refresh` | `` |  |
 | `ci-docs` | `` |  |
@@ -50,37 +40,6 @@
 | `configs-inventory` | `` |  |
 | `configs-lint` | `` |  |
 | `configs-validate` | `` |  |
-| `contract` | `` |  |
-| `contract-all` | `` |  |
-| `contract-effect` | `` |  |
-| `contract-list` | `` |  |
-| `contract-report` | `` |  |
-| `contracts` | `` |  |
-| `contracts-all` | `` |  |
-| `contracts-changed` | `` |  |
-| `contracts-ci` | `` |  |
-| `contracts-configs` | `` |  |
-| `contracts-configs-required` | `` |  |
-| `contracts-crates` | `` |  |
-| `contracts-docker` | `` |  |
-| `contracts-docs` | `` |  |
-| `contracts-docs-required` | `` |  |
-| `contracts-effect` | `` |  |
-| `contracts-fast` | `` |  |
-| `contracts-group` | `` |  |
-| `contracts-help` | `` |  |
-| `contracts-json` | `` |  |
-| `contracts-make` | `` |  |
-| `contracts-make-required` | `` |  |
-| `contracts-merge` | `` |  |
-| `contracts-ops` | `` |  |
-| `contracts-pr` | `` |  |
-| `contracts-pure` | `` |  |
-| `contracts-release` | `` |  |
-| `contracts-repo` | `` |  |
-| `contracts-root` | `` |  |
-| `contracts-runtime` | `` |  |
-| `contracts-tag` | `` |  |
 | `coverage` | `` |  |
 | `dev-check-ci` | `` |  |
 | `dev-ci` | `` |  |
@@ -88,9 +47,6 @@
 | `dist` | `` |  |
 | `dist-verify` | `` |  |
 | `docker` | `` |  |
-| `docker-contracts` | `` |  |
-| `docker-contracts-effect` | `` |  |
-| `docker-gate` | `` |  |
 | `docs` | `` |  |
 | `docs-build` | `` |  |
 | `docs-clean` | `` |  |
@@ -127,6 +83,7 @@
 | `make-size-budget-check` | `` |  |
 | `make-target-governance-check` | `` |  |
 | `make-target-list` | `` |  |
+| `openapi-generate` | `` |  |
 | `ops` | `` |  |
 | `ops-artifact-root-check` | `` |  |
 | `ops-clean` | `` |  |
@@ -163,6 +120,8 @@
 | `ops-validate` | `` |  |
 | `policies` | `` |  |
 | `registry-doctor` | `` |  |
+| `release-plan` | `` |  |
+| `release-verify` | `` |  |
 | `root-surface-explain` | `` |  |
 | `stack-down` | `` |  |
 | `stack-up` | `` |  |
