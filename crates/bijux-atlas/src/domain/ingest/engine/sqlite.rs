@@ -3,7 +3,7 @@
 use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use super::fai::ContigStats;
 use super::IngestError;
-use crate::domain::{canonical, sha256_hex};
+use crate::domain::canonical::{self, sha256_hex};
 use crate::domain::dataset::manifest::ShardId;
 use crate::domain::dataset::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
 use crate::domain::query::SeqId;

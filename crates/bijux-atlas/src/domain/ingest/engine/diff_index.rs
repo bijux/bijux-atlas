@@ -2,7 +2,7 @@
 
 use super::extract::GeneRecord;
 use super::IngestError;
-use crate::domain::{canonical, sha256_hex};
+use crate::domain::canonical::{self, sha256_hex};
 use crate::domain::dataset::DatasetId;
 use crate::domain::query::{
     GeneId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId,
