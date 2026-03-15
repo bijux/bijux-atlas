@@ -215,7 +215,7 @@ async fn sequence_common(
     let _queue_guard = QueueGuard {
         counter: Arc::clone(&state.queued_requests),
     };
-    let overloaded_early = crate::middleware::shedding::overloaded(&state).await;
+    let overloaded_early = crate::http::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = if overloaded_early {
         state.api.adaptive_rate_limit_factor
     } else {
@@ -272,12 +272,12 @@ async fn sequence_common(
     } else {
         QueryClass::Medium
     };
-    let overloaded = crate::middleware::shedding::overloaded(&state).await;
-    if crate::middleware::shedding::should_shed_noncheap(&state, class).await
+    let overloaded = crate::http::middleware::shedding::overloaded(&state).await;
+    if crate::http::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && class == QueryClass::Heavy && overloaded)
     {
         crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
-        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff = crate::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,

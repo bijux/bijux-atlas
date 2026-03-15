@@ -37,9 +37,7 @@ pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::{error, info, warn, Instrument};
 
 pub mod api;
-pub mod app;
-#[path = "app/cache/mod.rs"]
-mod cache;
+pub mod application;
 mod config;
 pub mod contracts;
 pub mod core;
@@ -51,14 +49,10 @@ pub mod interfaces;
 pub mod model;
 pub mod ports;
 pub mod server;
-#[path = "interfaces/http/middleware/mod.rs"]
-mod middleware;
-#[path = "infrastructure/store/registry/mod.rs"]
-mod server_store;
 pub mod support;
 pub mod types;
 
-pub use crate::app::{
+pub use crate::application::{
     build_router, chrono_like_unix_millis, effective_config_payload,
     effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
     record_shed_reason, route_sli_class, runtime_config_contract_snapshot,

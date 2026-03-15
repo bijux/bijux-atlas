@@ -178,7 +178,7 @@ async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_
         let mut cache = state.hot_query_cache.lock().await;
         cache.insert(
             coalesce_key,
-            crate::cache::hot::HotEntry {
+            crate::application::cache::hot::HotEntry {
                 body: response_bytes,
                 etag: etag.to_string(),
                 created_at: Instant::now(),

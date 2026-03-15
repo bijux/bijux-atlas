@@ -339,7 +339,7 @@ pub fn build_router(state: AppState) -> Router {
     router
         .layer(from_fn_with_state(
             state.clone(),
-            crate::middleware::request_tracing::request_tracing_middleware,
+            crate::http::middleware::request_tracing::request_tracing_middleware,
         ))
         .layer(from_fn_with_state(state.clone(), cors_middleware))
         .layer(from_fn_with_state(state.clone(), security_middleware))
@@ -352,7 +352,7 @@ pub fn build_router(state: AppState) -> Router {
         .with_state(state)
 }
 
-pub use crate::server_store::fake::FakeStore;
+pub use crate::store::registry::fake::FakeStore;
 
 #[cfg(test)]
 mod bulkhead_tests {

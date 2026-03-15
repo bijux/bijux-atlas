@@ -4,7 +4,8 @@
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use crate::api::{ApiError, ApiErrorCode};
-use crate::{cache, http, telemetry};
+use crate::application::cache;
+use crate::{http, telemetry};
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};
@@ -445,7 +446,7 @@ async fn cors_middleware(
     resp
 }
 
-pub use crate::app::runtime_config::{
+pub use crate::application::runtime_config::{
     effective_config_payload, effective_runtime_config_payload, load_runtime_config,
     load_runtime_startup_config, runtime_config_contract_snapshot,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
@@ -454,8 +455,8 @@ pub use crate::app::runtime_config::{
     StoreMode,
 };
 pub use crate::domain::routing::consistent_route_dataset;
-pub use crate::server_store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
-pub use crate::server_store::federated::{FederatedBackend, RegistrySource};
+pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
+pub use crate::store::registry::federated::{FederatedBackend, RegistrySource};
 
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {

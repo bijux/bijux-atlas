@@ -767,7 +767,7 @@ async fn resilience_middleware(
         return (StatusCode::SERVICE_UNAVAILABLE, err).into_response();
     }
     let mut resp = next.run(req).await;
-    if crate::middleware::shedding::overloaded(&state).await {
+    if crate::http::middleware::shedding::overloaded(&state).await {
         resp.headers_mut()
             .insert("x-atlas-system-stress", HeaderValue::from_static("true"));
     }

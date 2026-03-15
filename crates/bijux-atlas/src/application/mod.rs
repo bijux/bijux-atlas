@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+pub(crate) mod cache;
 pub(crate) mod runtime_config;
 mod state;
 

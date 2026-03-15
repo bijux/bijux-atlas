@@ -69,8 +69,8 @@ pub(crate) async fn gene_transcripts_handler(
         cursor: params.get("cursor").cloned(),
     };
     let class = QueryClass::Heavy;
-    if crate::middleware::shedding::should_shed_noncheap(&state, class).await {
-        let backoff = crate::middleware::shedding::heavy_backoff_ms(&state);
+    if crate::http::middleware::shedding::should_shed_noncheap(&state, class).await {
+        let backoff = crate::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -232,7 +232,7 @@ pub(crate) async fn transcript_summary_handler(
         }
     };
     let class = QueryClass::Medium;
-    if crate::middleware::shedding::should_shed_noncheap(&state, class).await {
+    if crate::http::middleware::shedding::should_shed_noncheap(&state, class).await {
         let resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             error_json(
