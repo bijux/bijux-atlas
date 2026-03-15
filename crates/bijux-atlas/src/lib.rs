@@ -60,6 +60,7 @@ pub use crate::application::{
     RegistrySourceHealth, RetryPolicy, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig,
     S3LikeBackend, StoreConfig, StoreMode,
 };
+pub use crate::bootstrap::server::FakeStore;
 pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
