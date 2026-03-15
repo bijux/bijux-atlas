@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::*;
+use crate::AppState;
+use axum::http::HeaderValue;
+use axum::response::Response;
+use std::sync::atomic::Ordering;
 
 pub const METRIC_SUBSYSTEM: &str = crate::telemetry::metrics::METRICS_NAMESPACE;
 pub const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");

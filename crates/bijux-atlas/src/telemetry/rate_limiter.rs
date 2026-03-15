@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::app::RateLimitConfig;
 use crate::telemetry::redis_backend::RedisBackend;
-use crate::*;
+use std::collections::HashMap;
+use std::time::Instant;
+use tokio::sync::Mutex;
 
 #[derive(Debug, Clone)]
 struct Bucket {

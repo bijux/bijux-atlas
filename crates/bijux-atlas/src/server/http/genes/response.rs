@@ -4,7 +4,8 @@
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use crate::http::handlers;
-use crate::*;
+use crate::query::{GeneQueryRequest, QueryClass};
+use crate::DatasetId;
 use serde_json::json;
 
 pub(super) fn build_success_payload(
