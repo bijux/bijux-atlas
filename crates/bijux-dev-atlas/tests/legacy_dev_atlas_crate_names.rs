@@ -4,7 +4,12 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const BANLIST_PATH: &str = "crates/bijux-dev-atlas/merge_banlist.txt";
+const LEGACY_DEV_ATLAS_CRATE_NAMES: &[&str] = &[
+    "bijux-dev-atlas-core",
+    "bijux-dev-atlas-model",
+    "bijux-dev-atlas-adapters",
+    "bijux-dev-atlas-policies",
+];
 
 fn workspace_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -16,12 +21,9 @@ fn workspace_root() -> PathBuf {
 }
 
 fn allowlisted_paths() -> BTreeSet<&'static str> {
-    [
-        BANLIST_PATH,
-        "crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs",
-    ]
-    .into_iter()
-    .collect()
+    ["crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs"]
+        .into_iter()
+        .collect()
 }
 
 fn ignored_subtrees(root: &Path) -> BTreeSet<PathBuf> {
@@ -46,7 +48,7 @@ fn collect_files(root: &Path, ignored: &BTreeSet<PathBuf>, out: &mut Vec<PathBuf
     }
 }
 
-fn no_banlist_strings_appear_outside_allowlist(banlist_entries: &[&str]) {
+fn assert_no_legacy_dev_atlas_crate_names_outside_guard(legacy_names: &[&str]) {
     let root = workspace_root();
     let allowlisted = allowlisted_paths();
     let ignored = ignored_subtrees(&root);
@@ -76,7 +78,7 @@ fn no_banlist_strings_appear_outside_allowlist(banlist_entries: &[&str]) {
         let Ok(text) = fs::read_to_string(&file) else {
             continue;
         };
-        for needle in banlist_entries {
+        for needle in legacy_names {
             if text.contains(needle) {
                 violations.push(format!("{rel}: contains `{needle}`"));
             }
@@ -91,20 +93,12 @@ fn no_banlist_strings_appear_outside_allowlist(banlist_entries: &[&str]) {
 
 #[test]
 fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
-    let root = workspace_root();
-    let banlist_text =
-        fs::read_to_string(root.join(BANLIST_PATH)).expect("merge banlist file must exist");
-    let banlist_entries = banlist_text
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .collect::<Vec<_>>();
     assert_eq!(
-        banlist_entries.len(),
+        LEGACY_DEV_ATLAS_CRATE_NAMES.len(),
         4,
-        "merge banlist must list the four deleted split dev-atlas crate names"
+        "the legacy dev-atlas crate-name guard must list the four removed split crate names"
     );
-    no_banlist_strings_appear_outside_allowlist(&banlist_entries);
+    assert_no_legacy_dev_atlas_crate_names_outside_guard(LEGACY_DEV_ATLAS_CRATE_NAMES);
 }
 
 #[test]
@@ -126,8 +120,7 @@ fn duplicate_migration_surface_roots_are_explicit_and_do_not_expand() {
         present.insert(name);
     }
 
-    // This is a migration-overlap inventory, not a relaxed policy: any new overlap root must be
-    // explicitly reviewed here, and Batch B should drive this set to empty.
+    // Any overlapping source root must be explicitly reviewed here instead of quietly expanding.
     let expected_overlap_roots = BTreeSet::new();
 
     let overlap_roots = present
