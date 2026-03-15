@@ -169,9 +169,9 @@ pub(super) fn run_atlas_command(
             }
             PolicyCommand::Explain { mode } => operations::explain_policy(
                 mode.map(|m| match m {
-                    PolicyModeCli::Strict => crate::policies::PolicyMode::Strict,
-                    PolicyModeCli::Compat => crate::policies::PolicyMode::Compat,
-                    PolicyModeCli::Dev => crate::policies::PolicyMode::Dev,
+                    PolicyModeCli::Strict => crate::domain::policy::PolicyMode::Strict,
+                    PolicyModeCli::Compat => crate::domain::policy::PolicyMode::Compat,
+                    PolicyModeCli::Dev => crate::domain::policy::PolicyMode::Dev,
                 }),
                 output_mode,
             )

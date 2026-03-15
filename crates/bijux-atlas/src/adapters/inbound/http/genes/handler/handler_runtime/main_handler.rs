@@ -3,10 +3,10 @@
 use crate::domain::dataset::ShardCatalog;
 use crate::domain::dataset::artifact_paths;
 use crate::domain::sha256_hex;
-use crate::http::genes::{admission as genes_admission, response as genes_response};
-use crate::http::{genes_support, handlers};
+use crate::adapters::inbound::http::genes::{admission as genes_admission, response as genes_response};
+use crate::adapters::inbound::http::{genes_support, handlers};
 use crate::*;
-use bijux_atlas::query::{
+use bijux_atlas::domain::query::{
     estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,
     query_gene_id_name_json_minimal_fast, query_genes_fanout, select_shards_for_request,
 };
@@ -45,7 +45,7 @@ pub(crate) async fn genes_handler(
         return handlers::with_request_id(resp, &request_id);
     }
     info!(request_id = %request_id, "request start");
-    let overloaded_early = crate::http::middleware::shedding::overloaded(&state).await;
+    let overloaded_early = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = genes_support::adaptive_rl_factor(&state, overloaded_early);
     if let Some(resp) = async {
         genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
@@ -165,10 +165,10 @@ pub(crate) async fn genes_handler(
     genes_support::cap_heavy_limit(&mut req, &state, class, overloaded);
     let (exact_gene_id, redis_cache_key) = genes_support::exact_lookup_cache_keys(&dataset, &req);
     if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
-        || crate::http::middleware::shedding::should_shed_noncheap(&state, class).await
+        || crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await
     {
         crate::record_shed_reason(&state, "bulkhead_shed_heavy").await;
-        let backoff = crate::http::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -485,8 +485,8 @@ pub(crate) async fn genes_handler(
                     {
                         let value: serde_json::Value = serde_json::from_slice(&bytes)
                             .map_err(|e| CacheError(e.to_string()))?;
-                        return Ok(bijux_atlas::query::GeneQueryResponse {
-                            rows: vec![bijux_atlas::query::GeneRow {
+                        return Ok(bijux_atlas::domain::query::GeneQueryResponse {
+                            rows: vec![bijux_atlas::domain::query::GeneRow {
                                 gene_id: value
                                     .get("gene_id")
                                     .and_then(serde_json::Value::as_str)
@@ -509,7 +509,7 @@ pub(crate) async fn genes_handler(
                 }
                 let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
                     .map_err(|e| CacheError(e.to_string()))?;
-                return Ok(bijux_atlas::query::GeneQueryResponse {
+                return Ok(bijux_atlas::domain::query::GeneQueryResponse {
                     rows: row.into_iter().collect(),
                     next_cursor: None,
                 });
@@ -535,7 +535,7 @@ pub(crate) async fn genes_handler(
                 .derived_dir
                 .join("catalog_shards.json");
                 if catalog_path.exists() {
-                    let raw = crate::http::effects_adapters::read_bytes(&catalog_path)?;
+                    let raw = crate::adapters::inbound::http::effects_adapters::read_bytes(&catalog_path)?;
                     if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
                         let selected_rel = select_shards_for_request(&req, &catalog);
                         let selected_all = shard_candidates.clone().unwrap_or_default();
@@ -555,10 +555,10 @@ pub(crate) async fn genes_handler(
                                 tracing::Span::current()
                                     .record("shard_id", tracing::field::display(shard.display()));
                                 permits.push(state.cache.try_acquire_shard_permit()?);
-                                let conn = crate::sqlite::open_readonly_no_mutex(&shard)?;
+                                let conn = crate::adapters::outbound::sqlite::open_readonly_no_mutex(&shard)?;
                                 let (cache_kib, shard_mmap) =
                                     state.cache.sqlite_pragmas_for_shard_open();
-                                let _ = crate::sqlite::apply_readonly_pragmas(
+                                let _ = crate::adapters::outbound::sqlite::apply_readonly_pragmas(
                                     &conn,
                                     cache_kib,
                                     shard_mmap,

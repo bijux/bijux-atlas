@@ -7,8 +7,8 @@ use crate::app::server::state::{
 use crate::adapters::inbound::http::request_policies::{
     cors_middleware, provenance_headers_middleware, resilience_middleware, security_middleware,
 };
-use crate::redis::RedisBackend;
-use crate::telemetry::rate_limiter::RateLimiter;
+use crate::adapters::outbound::redis::RedisBackend;
+use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::runtime::config::ApiConfig;
 use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::{
@@ -16,12 +16,12 @@ use crate::domain::{
     FailureRecoveryRegistry, MembershipPolicy, MembershipRegistry, RecoveryPolicy,
     ReplicaRegistry, ReplicationPolicy, ResilienceGuarantees, ShardRegistry, sha256_hex,
 };
-use crate::http;
+use crate::adapters::inbound::http;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
 use axum::routing::{get, post};
 use axum::Router;
-use bijux_atlas::query::QueryLimits;
+use bijux_atlas::domain::query::QueryLimits;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 use std::sync::Arc;
 use std::time::Duration;
@@ -112,7 +112,7 @@ impl AppState {
         limits: QueryLimits,
     ) -> Self {
         let runtime_policy_hash = Arc::new(Self::derive_runtime_policy_hash(&api, &limits));
-        let redis_policy = crate::redis::RedisPolicy {
+        let redis_policy = crate::adapters::outbound::redis::RedisPolicy {
             timeout: Duration::from_millis(api.redis_timeout_ms),
             retry_attempts: api.redis_retry_attempts.max(1),
             breaker_failure_threshold: api.redis_breaker_failure_threshold,
@@ -341,7 +341,7 @@ pub fn build_router(state: AppState) -> Router {
     router
         .layer(from_fn_with_state(
             state.clone(),
-            crate::http::middleware::request_tracing::request_tracing_middleware,
+            crate::adapters::inbound::http::middleware::request_tracing::request_tracing_middleware,
         ))
         .layer(from_fn_with_state(state.clone(), cors_middleware))
         .layer(from_fn_with_state(state.clone(), security_middleware))

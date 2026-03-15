@@ -2,7 +2,7 @@
 
 use super::OutputMode;
 use crate::domain::canonical;
-use crate::query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
+use crate::domain::query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
 use serde_json::{json, Value};
 use std::path::PathBuf;
 

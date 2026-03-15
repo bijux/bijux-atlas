@@ -2,7 +2,7 @@
 
 use bijux_atlas::api::{list_genes_v1, ApiError, IncludeField, ListGenesParams, QueryAdapter};
 use bijux_atlas::core::ErrorCode;
-use bijux_atlas::query::{GeneQueryResponse, GeneRow};
+use bijux_atlas::domain::query::{GeneQueryResponse, GeneRow};
 
 #[derive(Default)]
 struct FakeAdapter {

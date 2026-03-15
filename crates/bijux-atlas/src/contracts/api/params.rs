@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::errors::ApiError;
-use crate::query::RegionFilter;
+use crate::domain::query::RegionFilter;
 use std::collections::{BTreeMap, BTreeSet};
 
 pub const ALLOWED_INCLUDE: [&str; 4] = ["coords", "biotype", "counts", "length"];

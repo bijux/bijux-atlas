@@ -13,7 +13,7 @@ pub(crate) use axum::extract::State;
 pub(crate) use axum::http::{HeaderMap, HeaderValue, StatusCode};
 pub(crate) use axum::response::{IntoResponse, Response};
 pub(crate) use axum::Json;
-pub(crate) use bijux_atlas::query::{
+pub(crate) use bijux_atlas::domain::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneQueryRequest, OrderMode, QueryClass, RegionFilter, TranscriptFilter,
     TranscriptQueryRequest,
@@ -55,22 +55,11 @@ pub use crate::app::server::{
 };
 pub use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
-pub use crate::domain::ingest;
-pub use crate::domain::policy as policies;
-pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;
-pub(crate) use crate::adapters::outbound::redis;
-pub(crate) use crate::adapters::outbound::sqlite;
-pub use crate::adapters::outbound::store;
-pub(crate) use crate::adapters::outbound::telemetry;
-pub use crate::adapters::inbound::cli;
-pub use crate::adapters::inbound::cli::main_entry;
-pub use crate::adapters::inbound::client;
-pub(crate) use crate::adapters::inbound::http;
-pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
-pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
-pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
-pub use crate::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
+pub use crate::adapters::outbound::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
+pub use crate::adapters::outbound::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
+pub use crate::adapters::outbound::telemetry::logging::{redact_if_needed, LoggingConfig};
+pub use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 
 #[cfg(test)]
 mod registry_tests;

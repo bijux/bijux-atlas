@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use bijux_atlas::domain::dataset::DatasetId;
 use bijux_atlas::domain::policy::StrictnessMode;
-use bijux_atlas::ingest::{ingest_dataset, IngestOptions};
+use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use tempfile::tempdir;
 
 fn fixture(path: &str) -> PathBuf {

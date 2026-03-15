@@ -4,12 +4,12 @@ use bijux_atlas::core::sha256_hex;
 use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use bijux_atlas::store::{
+use bijux_atlas::adapters::outbound::store::{
     dataset_artifact_paths, manifest_lock_path, merge_catalogs, validate_backend_compiled,
     ArtifactStore, BackendKind, LocalFsStore, StoreErrorCode, StoreMetricsCollector,
 };
 #[cfg(feature = "backend-s3")]
-use bijux_atlas::store::{HttpReadonlyStore, S3LikeStore};
+use bijux_atlas::adapters::outbound::store::{HttpReadonlyStore, S3LikeStore};
 use std::fs;
 #[cfg(feature = "backend-s3")]
 use std::sync::atomic::{AtomicUsize, Ordering};

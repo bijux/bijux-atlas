@@ -10,7 +10,7 @@ use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetI
 use crate::domain::{
     FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
 };
-use bijux_atlas::query::QueryLimits;
+use bijux_atlas::domain::query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
@@ -361,8 +361,8 @@ impl RequestMetrics {
     }
 }
 
-pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
-pub use crate::store::registry::federated::{FederatedBackend, RegistrySource};
+pub use crate::adapters::outbound::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
+pub use crate::adapters::outbound::store::registry::federated::{FederatedBackend, RegistrySource};
 
 pub(crate) struct DatasetEntry {
     pub(crate) sqlite_path: PathBuf,
@@ -396,8 +396,8 @@ pub(crate) struct StoreBreakerState {
     pub(crate) open_until: Option<Instant>,
 }
 
-use crate::telemetry::rate_limiter::RateLimiter;
-use crate::redis::RedisBackend;
+use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
+use crate::adapters::outbound::redis::RedisBackend;
 
 pub struct DatasetConnection {
     pub conn: Connection,

@@ -823,7 +823,7 @@ pub(crate) async fn resilience_middleware(
     next: Next,
 ) -> Response {
     let path = req.uri().path().to_string();
-    let request_id = crate::http::handlers::propagated_request_id(req.headers(), &state);
+    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
     if state.api.emergency_global_breaker
         && path != "/healthz"
         && path != "/healthz/overload"
@@ -836,7 +836,7 @@ pub(crate) async fn resilience_middleware(
             serde_json::json!({}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::SERVICE_UNAVAILABLE, err).into_response(),
             &request_id,
         );
@@ -848,13 +848,13 @@ pub(crate) async fn resilience_middleware(
             serde_json::json!({"policy":"disable_heavy_endpoints"}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::SERVICE_UNAVAILABLE, err).into_response(),
             &request_id,
         );
     }
     let mut resp = next.run(req).await;
-    if crate::http::middleware::shedding::overloaded(&state).await {
+    if crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await {
         resp.headers_mut()
             .insert("x-atlas-system-stress", HeaderValue::from_static("true"));
     }
@@ -985,7 +985,7 @@ pub(crate) async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     let route = req.uri().path().to_string();
-    let request_id = crate::http::handlers::propagated_request_id(req.headers(), &state);
+    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
     info!(
         event_id = "authentication_evaluation_started",
         event = "authentication_evaluation_started",
@@ -1010,7 +1010,7 @@ pub(crate) async fn security_middleware(
                 serde_json::json!({"class": "transport", "reason": "https_required"}),
                 request_id.clone(),
             ));
-            return crate::http::handlers::with_request_id(
+            return crate::adapters::inbound::http::handlers::with_request_id(
                 (StatusCode::UPGRADE_REQUIRED, err).into_response(),
                 &request_id,
             );
@@ -1024,7 +1024,7 @@ pub(crate) async fn security_middleware(
             serde_json::json!({}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::NOT_FOUND, err).into_response(),
             &request_id,
         );
@@ -1037,7 +1037,7 @@ pub(crate) async fn security_middleware(
             serde_json::json!({"max_uri_bytes": state.api.max_uri_bytes, "actual": uri_text.len()}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::BAD_REQUEST, err).into_response(),
             &request_id,
         );
@@ -1059,7 +1059,7 @@ pub(crate) async fn security_middleware(
             serde_json::json!({"max_header_bytes": state.api.max_header_bytes, "actual": header_bytes}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::BAD_REQUEST, err).into_response(),
             &request_id,
         );
@@ -1085,7 +1085,7 @@ pub(crate) async fn security_middleware(
             serde_json::json!({}),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::UNAUTHORIZED, err).into_response(),
             &request_id,
         );
@@ -1102,7 +1102,7 @@ pub(crate) async fn security_middleware(
                 serde_json::json!({}),
                 request_id.clone(),
             ));
-            return crate::http::handlers::with_request_id(
+            return crate::adapters::inbound::http::handlers::with_request_id(
                 (StatusCode::UNAUTHORIZED, err).into_response(),
                 &request_id,
             );
@@ -1123,7 +1123,7 @@ pub(crate) async fn security_middleware(
                 serde_json::json!({}),
                 request_id.clone(),
             ));
-            return crate::http::handlers::with_request_id(
+            return crate::adapters::inbound::http::handlers::with_request_id(
                 (StatusCode::UNAUTHORIZED, err).into_response(),
                 &request_id,
             );
@@ -1139,7 +1139,7 @@ pub(crate) async fn security_middleware(
                     serde_json::json!({"class": "authentication", "reason": err.as_code()}),
                     request_id.clone(),
                 ));
-                return crate::http::handlers::with_request_id(
+                return crate::adapters::inbound::http::handlers::with_request_id(
                     (StatusCode::UNAUTHORIZED, err).into_response(),
                     &request_id,
                 );
@@ -1161,7 +1161,7 @@ pub(crate) async fn security_middleware(
                 serde_json::json!({}),
                 request_id.clone(),
             ));
-            return crate::http::handlers::with_request_id(
+            return crate::adapters::inbound::http::handlers::with_request_id(
                 (StatusCode::UNAUTHORIZED, err).into_response(),
                 &request_id,
             );
@@ -1177,7 +1177,7 @@ pub(crate) async fn security_middleware(
                     serde_json::json!({}),
                     request_id.clone(),
                 ));
-                return crate::http::handlers::with_request_id(
+                return crate::adapters::inbound::http::handlers::with_request_id(
                     (StatusCode::UNAUTHORIZED, err).into_response(),
                     &request_id,
                 );
@@ -1192,7 +1192,7 @@ pub(crate) async fn security_middleware(
                     serde_json::json!({"max_skew_secs": state.api.hmac_max_skew_secs}),
                     request_id.clone(),
                 ));
-                return crate::http::handlers::with_request_id(
+                return crate::adapters::inbound::http::handlers::with_request_id(
                     (StatusCode::UNAUTHORIZED, err).into_response(),
                     &request_id,
                 );
@@ -1210,7 +1210,7 @@ pub(crate) async fn security_middleware(
                     serde_json::json!({}),
                     request_id.clone(),
                 ));
-                return crate::http::handlers::with_request_id(
+                return crate::adapters::inbound::http::handlers::with_request_id(
                     (StatusCode::UNAUTHORIZED, err).into_response(),
                     &request_id,
                 );
@@ -1253,7 +1253,7 @@ pub(crate) async fn security_middleware(
                 serde_json::json!({"auth_mode": state.api.auth_mode.as_str()}),
                 request_id.clone(),
             ));
-            return crate::http::handlers::with_request_id(
+            return crate::adapters::inbound::http::handlers::with_request_id(
                 (StatusCode::UNAUTHORIZED, err).into_response(),
                 &request_id,
             );
@@ -1338,7 +1338,7 @@ pub(crate) async fn security_middleware(
             }),
             request_id.clone(),
         ));
-        return crate::http::handlers::with_request_id(
+        return crate::adapters::inbound::http::handlers::with_request_id(
             (StatusCode::FORBIDDEN, err).into_response(),
             &request_id,
         );

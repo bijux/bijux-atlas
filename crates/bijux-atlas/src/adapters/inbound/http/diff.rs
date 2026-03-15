@@ -2,7 +2,7 @@
 
 #![deny(clippy::redundant_clone)]
 
-use crate::http::handlers::{
+use crate::adapters::inbound::http::handlers::{
     api_error_response, dataset_artifact_hash, dataset_etag, error_json, if_none_match,
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
     with_request_id, CachePolicy,
@@ -89,7 +89,7 @@ fn overlaps(entry: &ReleaseGeneIndexEntry, region: &RegionFilter) -> bool {
 }
 
 fn load_index(path: &std::path::Path) -> Result<Vec<ReleaseGeneIndexEntry>, ApiError> {
-    let bytes = crate::http::effects_adapters::read_bytes(path).map_err(|e| {
+    let bytes = crate::adapters::inbound::http::effects_adapters::read_bytes(path).map_err(|e| {
         error_json(
             ApiErrorCode::Internal,
             "release index read failed",
@@ -137,7 +137,7 @@ async fn diff_common(
     scope: DiffScope,
 ) -> Response {
     let started = Instant::now();
-    let request_id = crate::http::handlers::propagated_request_id(&headers, &state);
+    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     let route = match scope {
         DiffScope::Genes => "/v1/diff/genes",
         DiffScope::Region => "/v1/diff/region",
@@ -241,12 +241,12 @@ async fn diff_common(
         .unwrap_or(100)
         .min(state.limits.max_limit);
     let class = QueryClass::Heavy;
-    let overloaded = crate::http::middleware::shedding::overloaded(&state).await;
-    if crate::http::middleware::shedding::should_shed_noncheap(&state, class).await
+    let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await
         || (state.api.shed_load_enabled && overloaded)
     {
         crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
-        let backoff = crate::http::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -461,7 +461,7 @@ async fn diff_common(
                     cursor_version: "v1".to_string(),
                     dataset_id: None,
                     sort_key: Some("gene_id".to_string()),
-                    last_seen: Some(bijux_atlas::query::CursorLastSeen {
+                    last_seen: Some(bijux_atlas::domain::query::CursorLastSeen {
                         gene_id: x.gene_id.as_str().to_string(),
                         seqid: None,
                         start: None,
@@ -513,8 +513,8 @@ async fn diff_common(
         "from_release": from_release,
         "to_release": to_release
     });
-    let provenance = crate::http::handlers::dataset_provenance(&state, &to_dataset).await;
-    let payload = crate::http::handlers::json_envelope(
+    let provenance = crate::adapters::inbound::http::handlers::dataset_provenance(&state, &to_dataset).await;
+    let payload = crate::adapters::inbound::http::handlers::json_envelope(
         Some(json!(to_dataset)),
         Some(json!({ "next_cursor": page.next_cursor.clone() })),
         json!({"diff": page.rows, "qc": qc, "provenance": provenance}),

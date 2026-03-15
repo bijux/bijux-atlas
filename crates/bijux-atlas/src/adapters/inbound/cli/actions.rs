@@ -258,10 +258,10 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         compute_contig_fractions: false,
         compute_transcript_spliced_length: false,
         compute_transcript_cds_length: false,
-        duplicate_transcript_id_policy: crate::query::DuplicateTranscriptIdPolicy::Reject,
-        transcript_id_policy: crate::query::TranscriptIdPolicy::default(),
-        unknown_feature_policy: crate::query::UnknownFeaturePolicy::IgnoreWithWarning,
-        feature_id_uniqueness_policy: crate::query::FeatureIdUniquenessPolicy::Reject,
+        duplicate_transcript_id_policy: crate::domain::query::DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: crate::domain::query::TranscriptIdPolicy::default(),
+        unknown_feature_policy: crate::domain::query::UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: crate::domain::query::FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
         timestamp_policy: TimestampPolicy::DeterministicZero,
     })
@@ -410,7 +410,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
         allow_full_scan: args.allow_full_scan,
     };
     let query_class = classify_query(&req);
-    let cost_units = crate::query::estimate_work_units(&req);
+    let cost_units = crate::domain::query::estimate_work_units(&req);
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
     output::emit_ok(
@@ -458,7 +458,7 @@ pub(super) fn smoke_dataset(
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
         let req = output::query_request_from_json(body)?;
-        let resp = crate::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
+        let resp = crate::domain::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
             return Err("smoke failed: by_gene_id returned zero rows".to_string());

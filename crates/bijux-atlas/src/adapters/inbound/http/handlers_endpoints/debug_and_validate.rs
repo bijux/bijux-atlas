@@ -207,7 +207,7 @@ pub(crate) async fn query_validate_handler(
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
     let (dataset, req) =
-        match crate::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
+        match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
             Ok(v) => v,
             Err(e) => {
                 let resp = api_error_response(StatusCode::BAD_REQUEST, e);

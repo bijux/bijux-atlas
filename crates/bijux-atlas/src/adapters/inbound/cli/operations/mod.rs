@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::OutputMode;
+use crate::adapters::inbound::cli::OutputMode;
 use crate::domain::canonical;
 use crate::domain::dataset::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
 };
 use crate::domain::sha256_hex;
 use crate::domain::query::ReleaseGeneIndex;
-use crate::policies::{
+use crate::domain::policy::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
-use crate::store::{
+use crate::adapters::outbound::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };

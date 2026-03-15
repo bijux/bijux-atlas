@@ -4,7 +4,7 @@ use super::convert::list_genes_response_dto;
 use super::dto::DatasetKeyDto;
 use super::errors::ApiError;
 use super::params::ListGenesParams;
-use crate::query::GeneQueryResponse;
+use crate::domain::query::GeneQueryResponse;
 use serde_json::Value;
 use std::collections::BTreeSet;
 

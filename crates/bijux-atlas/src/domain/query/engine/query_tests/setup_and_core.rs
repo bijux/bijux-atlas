@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::query::*;
+use crate::domain::query::*;
 use rusqlite::Connection;
 
 use super::super::planner::validate_request;

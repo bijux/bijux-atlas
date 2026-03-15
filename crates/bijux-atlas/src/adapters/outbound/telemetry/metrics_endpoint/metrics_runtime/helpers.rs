@@ -5,7 +5,7 @@ use axum::http::HeaderValue;
 use axum::response::Response;
 use std::sync::atomic::Ordering;
 
-pub const METRIC_SUBSYSTEM: &str = crate::telemetry::metrics::METRICS_NAMESPACE;
+pub const METRIC_SUBSYSTEM: &str = crate::adapters::outbound::telemetry::metrics::METRICS_NAMESPACE;
 pub const METRIC_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const METRIC_DATASET_ALL: &str = "all";
 

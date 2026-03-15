@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::contracts::api::{ApiError, ApiErrorCode};
-use crate::http::{genes_support, handlers};
-use crate::query::QueryClass;
+use crate::adapters::inbound::http::{genes_support, handlers};
+use crate::domain::query::QueryClass;
 use crate::AppState;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;

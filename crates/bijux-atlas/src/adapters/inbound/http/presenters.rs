@@ -4,8 +4,8 @@ use crate::*;
 use serde_json::{Value, json};
 use std::sync::atomic::Ordering;
 
-pub(crate) use crate::http::response_contract::api_error as error_json;
-pub(crate) use crate::http::response_contract::api_error_response;
+pub(crate) use crate::adapters::inbound::http::response_contract::api_error as error_json;
+pub(crate) use crate::adapters::inbound::http::response_contract::api_error_response;
 
 pub(crate) fn json_envelope(
     dataset: Option<Value>,

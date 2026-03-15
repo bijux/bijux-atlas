@@ -326,7 +326,7 @@ async fn query_budget_caps_return_expected_status_codes() {
         },
         store,
     );
-    let limits = bijux_atlas::query::QueryLimits {
+    let limits = bijux_atlas::domain::query::QueryLimits {
         max_region_span: 10,
         ..Default::default()
     };

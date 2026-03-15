@@ -1,3 +1,3 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use crate::store::{ArtifactRef, CatalogRef, StoreAdmin, StorePath, StoreRead, StoreWrite};
+pub use crate::adapters::outbound::store::{ArtifactRef, CatalogRef, StoreAdmin, StorePath, StoreRead, StoreWrite};

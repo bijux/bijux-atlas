@@ -101,7 +101,7 @@ pub(crate) async fn health_handler(State(state): State<AppState>) -> impl IntoRe
 pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let overloaded = crate::http::middleware::shedding::overloaded(&state).await;
+    let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
     let status = if overloaded {
         StatusCode::SERVICE_UNAVAILABLE
     } else {

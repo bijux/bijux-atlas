@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::AppState;
-use bijux_atlas::query::QueryClass;
+use bijux_atlas::domain::query::QueryClass;
 
 pub async fn overloaded(state: &AppState) -> bool {
     let latency_overloaded = state

@@ -7,9 +7,9 @@ pub mod api_error_codes {
 pub mod core_error_codes;
 
 pub mod metrics {
-    pub use crate::telemetry::generated::metrics_contract::*;
+    pub use crate::adapters::outbound::telemetry::generated::metrics_contract::*;
 }
 
 pub mod trace_spans {
-    pub use crate::telemetry::generated::trace_spans_contract::*;
+    pub use crate::adapters::outbound::telemetry::generated::trace_spans_contract::*;
 }

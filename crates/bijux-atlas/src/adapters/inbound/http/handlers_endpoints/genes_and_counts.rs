@@ -1,5 +1,5 @@
 use super::*;
-use crate::http::genes;
+use crate::adapters::inbound::http::genes;
 use serde_json::json;
 
 pub(crate) async fn genes_handler(
@@ -35,7 +35,7 @@ pub(crate) async fn genes_count_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let (dataset, req) = match crate::http::genes_support::build_dataset_query(&params, 500) {
+    let (dataset, req) = match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, 500) {
         Ok(v) => v,
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
@@ -113,7 +113,7 @@ pub(crate) async fn genes_count_handler(
 }
 fn query_gene_count_with_filters(
     conn: &rusqlite::Connection,
-    req: &bijux_atlas::query::GeneQueryRequest,
+    req: &bijux_atlas::domain::query::GeneQueryRequest,
 ) -> Result<i64, rusqlite::Error> {
     let mut sql = "SELECT COUNT(*) FROM gene_summary g".to_string();
     let mut where_parts: Vec<String> = Vec::new();
@@ -135,14 +135,14 @@ fn query_gene_count_with_filters(
     if let Some(name) = &req.filter.name {
         where_parts.push("g.name_normalized = ?".to_string());
         params.push(rusqlite::types::Value::Text(
-            bijux_atlas::query::normalize_name_lookup(name),
+            bijux_atlas::domain::query::normalize_name_lookup(name),
         ));
     }
     if let Some(prefix) = &req.filter.name_prefix {
         where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
         params.push(rusqlite::types::Value::Text(format!(
             "{}%",
-            bijux_atlas::query::escape_like_prefix(&bijux_atlas::query::normalize_name_lookup(prefix))
+            bijux_atlas::domain::query::escape_like_prefix(&bijux_atlas::domain::query::normalize_name_lookup(prefix))
         )));
     }
     if let Some(biotype) = &req.filter.biotype {

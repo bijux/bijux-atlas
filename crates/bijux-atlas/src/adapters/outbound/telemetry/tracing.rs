@@ -8,7 +8,7 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
-use crate::telemetry::logging::LoggingConfig;
+use crate::adapters::outbound::telemetry::logging::LoggingConfig;
 
 #[derive(Debug, Clone)]
 pub enum TraceExporterKind {

@@ -20,7 +20,7 @@ pub(crate) fn make_request_id(state: &AppState) -> String {
 }
 
 pub(crate) fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> String {
-    crate::http::request_tracing::extract_request_trace(headers, state).request_id
+    crate::adapters::inbound::http::request_tracing::extract_request_trace(headers, state).request_id
 }
 
 pub(crate) fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {

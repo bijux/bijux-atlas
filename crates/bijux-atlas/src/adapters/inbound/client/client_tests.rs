@@ -2,7 +2,7 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::client::{AtlasClient, ClientConfig, ErrorClass};
+    use crate::adapters::inbound::client::{AtlasClient, ClientConfig, ErrorClass};
 
     #[test]
     fn client_rejects_non_http_base_url() {
