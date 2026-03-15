@@ -131,42 +131,6 @@ async fn db_open_is_cheap_regression_guard() {
 }
 
 #[tokio::test]
-#[ignore]
-async fn mmap_read_only_experiment_baseline() {
-    let (_, _, sqlite) = mk_dataset();
-    let tmp = tempdir().expect("tempdir");
-    let db_path = tmp.path().join("mmap.sqlite");
-    std::fs::write(&db_path, sqlite).expect("write sqlite");
-
-    let run = |mmap_size: i64| -> Duration {
-        let mut samples = Vec::new();
-        for _ in 0..150 {
-            let started = Instant::now();
-            let conn = rusqlite::Connection::open_with_flags(
-                &db_path,
-                rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY
-                    | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
-            )
-            .expect("open");
-            let _ = conn.execute_batch(&format!(
-                "PRAGMA query_only=ON; PRAGMA mmap_size={mmap_size}; PRAGMA temp_store=MEMORY;"
-            ));
-            let _: i64 = conn
-                .query_row("SELECT COUNT(*) FROM gene_summary", [], |r| r.get(0))
-                .expect("count");
-            samples.push(started.elapsed());
-        }
-        samples.sort_unstable();
-        samples[((samples.len() as f64) * 0.95).ceil() as usize - 1]
-    };
-
-    let p95_no_mmap = run(0);
-    let p95_mmap = run(256 * 1024 * 1024);
-    assert!(p95_no_mmap > Duration::from_nanos(0));
-    assert!(p95_mmap > Duration::from_nanos(0));
-}
-
-#[tokio::test]
 async fn shard_open_fd_cap_enforces_safety_under_many_shards() {
     let store = Arc::new(FakeStore::default());
     let cfg = DatasetCacheConfig {
@@ -183,19 +147,4 @@ async fn shard_open_fd_cap_enforces_safety_under_many_shards() {
         "third shard permit should be blocked by cap"
     );
     drop((p1, p2));
-}
-
-#[tokio::test]
-#[ignore]
-async fn large_dataset_simulation_sparse_file_over_5gb() {
-    let tmp = tempdir().expect("tempdir");
-    let path = tmp.path().join("large.sqlite");
-    let file = std::fs::File::create(&path).expect("create sparse file");
-    file.set_len(6_u64 * 1024 * 1024 * 1024)
-        .expect("set sparse file length");
-    let meta = std::fs::metadata(&path).expect("metadata");
-    assert!(
-        meta.len() > 5_u64 * 1024 * 1024 * 1024,
-        "sparse simulation should be larger than 5GB"
-    );
 }
