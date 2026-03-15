@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::DatasetId;
+use bijux_atlas::domain::dataset::DatasetId;
 use bijux_atlas::store::{
     dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
     StorePath,

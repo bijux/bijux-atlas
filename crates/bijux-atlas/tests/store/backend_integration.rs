@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::core::sha256_hex;
-use bijux_atlas::model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::dataset::{
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats,
+};
 #[cfg(feature = "backend-s3")]
 use bijux_atlas::store::HttpReadonlyStore;
 use bijux_atlas::store::{ArtifactStore, LocalFsStore};
