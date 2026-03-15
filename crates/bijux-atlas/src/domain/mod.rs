@@ -1,18 +1,25 @@
 // SPDX-License-Identifier: Apache-2.0
 
+pub mod cache;
 pub mod canonical;
 pub mod cluster_state;
 pub mod config;
+pub mod dataset;
 pub mod distributed;
 pub mod distributed_config;
+pub mod ingest;
 pub mod membership;
+pub mod policy;
+pub mod query;
 pub mod replication;
 pub mod resilience;
+pub mod routing;
 pub mod security_auth;
 pub mod security_authorization;
 pub mod security_data_protection;
 pub mod security_runtime;
 pub mod sharding;
+pub mod telemetry;
 pub mod time;
 
 pub use canonical::{sha256, sha256_hex, Hash256};

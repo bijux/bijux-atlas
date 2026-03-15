@@ -5,24 +5,22 @@
 
 extern crate self as bijux_atlas;
 
-#[path = "core/adapters/mod.rs"]
-mod adapters;
+pub mod adapters;
 pub mod api;
+pub mod app;
 #[path = "server/cache/mod.rs"]
 mod cache;
 pub mod cli;
 pub mod client;
 mod config;
+pub mod contracts;
 pub mod core;
 #[path = "server/cache/shards.rs"]
 mod dataset_shards;
-#[path = "core/domain/mod.rs"]
 pub mod domain;
 #[path = "core/effect_adapters/mod.rs"]
 mod effect_adapters;
-#[path = "core/effects/mod.rs"]
 pub mod effects;
-#[path = "core/errors/mod.rs"]
 pub mod errors;
 #[path = "core/generated/mod.rs"]
 mod generated;
@@ -32,8 +30,9 @@ pub mod ingest;
 #[path = "server/middleware/mod.rs"]
 mod middleware;
 pub mod model;
+#[path = "core/adapters/mod.rs"]
+mod platform_adapters;
 pub mod policies;
-#[path = "core/ports/mod.rs"]
 pub mod ports;
 pub mod query;
 #[path = "server/routing.rs"]
@@ -46,8 +45,8 @@ mod services;
 pub mod store;
 #[path = "server/cache/resilience.rs"]
 mod store_resilience;
+pub mod support;
 mod telemetry;
-#[path = "core/types/mod.rs"]
 pub mod types;
 
 include!("server/runtime/state/mod.rs");

@@ -318,7 +318,8 @@ mod tests {
         let mut checksums = BTreeMap::new();
         checksums.insert("sqlite".to_string(), "abc123".to_string());
         checksums.insert("fasta".to_string(), "fff111".to_string());
-        let manifest_checksum = calculate_manifest_checksum("ops/release/species/assembly", &checksums);
+        let manifest_checksum =
+            calculate_manifest_checksum("ops/release/species/assembly", &checksums);
         let manifest = DatasetManifestIntegrity {
             dataset_id: "ops/release/species/assembly".to_string(),
             artifact_checksums: checksums,

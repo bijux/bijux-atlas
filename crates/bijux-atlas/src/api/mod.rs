@@ -16,7 +16,7 @@ pub mod dto;
 pub mod error_mapping;
 /// Stable API error codes and structures.
 pub mod errors;
-mod generated;
+pub mod generated;
 /// OpenAPI document generation for v1.
 pub mod openapi;
 /// Query parameter parsing and normalization.
@@ -146,14 +146,14 @@ mod tests {
         }
 
         let a = crate::core::canonical::stable_json_bytes(&spec).expect("stable bytes a");
-        let b = crate::core::canonical::stable_json_bytes(&openapi_v1_spec()).expect("stable bytes b");
+        let b =
+            crate::core::canonical::stable_json_bytes(&openapi_v1_spec()).expect("stable bytes b");
         assert_eq!(a, b);
     }
 
     #[test]
     fn error_contract_matches_frozen_registry() {
-        let freeze =
-            include_str!("../../../../docs/bijux-atlas-crate/api/ssot/ERROR_CODES.json");
+        let freeze = include_str!("../../../../docs/bijux-atlas-crate/api/ssot/ERROR_CODES.json");
         let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
         let codes = val["codes"]
             .as_array()
@@ -267,11 +267,10 @@ mod tests {
             .cloned()
             .collect::<std::collections::BTreeSet<_>>();
 
-        let contract: serde_json::Value =
-            serde_json::from_str(include_str!(
-                "../../../../docs/bijux-atlas-crate/api/ssot/API_SURFACE.json"
-            ))
-                .expect("parse api surface");
+        let contract: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../docs/bijux-atlas-crate/api/ssot/API_SURFACE.json"
+        ))
+        .expect("parse api surface");
         let expected = contract
             .get("endpoints")
             .and_then(serde_json::Value::as_array)
