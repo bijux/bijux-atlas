@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::domain::dataset::ShardingPlan;
 use serde_json::json;
 use serde_json::Value;
 use tracing::info;
@@ -265,7 +266,7 @@ pub(crate) async fn dataset_identity_handler(
         },
         "shard_info": {
             "plan": manifest.sharding_plan,
-            "router": manifest.sharding_plan != bijux_atlas_model::ShardingPlan::None
+            "router": manifest.sharding_plan != ShardingPlan::None
         },
         "metadata": {
             "provenance": dataset_provenance(&state, &dataset).await,

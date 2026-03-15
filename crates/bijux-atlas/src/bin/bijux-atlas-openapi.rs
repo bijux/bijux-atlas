@@ -2,7 +2,6 @@
 
 #![forbid(unsafe_code)]
 
-use bijux_atlas::core as bijux_atlas_core;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -18,7 +17,8 @@ fn main() -> Result<(), String> {
     let out = out.ok_or_else(|| "missing --out <path>".to_string())?;
 
     let spec = bijux_atlas::api::openapi_v1_spec();
-    let bytes = bijux_atlas_core::canonical::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+    let bytes =
+        bijux_atlas::core::canonical::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }

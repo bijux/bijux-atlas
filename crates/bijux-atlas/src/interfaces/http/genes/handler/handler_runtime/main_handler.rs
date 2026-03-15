@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::dataset::ShardCatalog;
+use crate::domain::dataset::artifact_paths;
+use crate::domain::sha256_hex;
 use crate::http::genes::{admission as genes_admission, response as genes_response};
 use crate::http::{genes_support, handlers};
 use crate::*;
@@ -234,7 +236,7 @@ pub(crate) async fn genes_handler(
     let normalized = handlers::normalize_query(&params);
     let query_id = {
         let fingerprint = format!("{}|{}", request_id, normalized);
-        let digest = bijux_atlas_core::sha256_hex(fingerprint.as_bytes());
+        let digest = sha256_hex(fingerprint.as_bytes());
         format!("qry-{}", &digest[..12])
     };
     let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
@@ -364,7 +366,7 @@ pub(crate) async fn genes_handler(
         handlers::wants_pretty(&params)
     );
     let dataset_key = {
-        let hash = bijux_atlas_core::sha256_hex(dataset.canonical_string().as_bytes());
+        let hash = sha256_hex(dataset.canonical_string().as_bytes());
         format!("ds-{}", &hash[..12])
     };
     state.metrics.observe_dataset_query(&dataset_key).await;
@@ -526,7 +528,7 @@ pub(crate) async fn genes_handler(
                     dataset_id = %dataset.canonical_string(),
                     "shard routing started"
                 );
-                let catalog_path = bijux_atlas_model::artifact_paths(
+                let catalog_path = artifact_paths(
                     state.cache.disk_root(),
                     &dataset,
                 )

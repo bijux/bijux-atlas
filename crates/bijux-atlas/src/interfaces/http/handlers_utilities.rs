@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
+use crate::domain::{
+    load_cluster_config_from_path, load_node_config_from_path, ClusterStateRegistry,
+    FailureCategory, HeartbeatMessage, NodeDescriptor, NodeIdentity, NodeMetadata, NodeRole,
+    NodeState, ReadinessPolicy, ShutdownPolicy,
+};
 use brotli::CompressorWriter;
 use flate2::{write::GzEncoder, Compression};
 use serde_json::json;
@@ -52,7 +57,7 @@ pub(crate) struct FailureInjectionRequest {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct FailureInjectionPlan {
-    category: bijux_atlas_core::FailureCategory,
+    category: FailureCategory,
     target_id: String,
     detail: &'static str,
 }
@@ -69,17 +74,17 @@ fn resolve_failure_injection_plan(
 ) -> Result<FailureInjectionPlan, &'static str> {
     match req.kind.as_str() {
         "node_crash" => Ok(FailureInjectionPlan {
-            category: bijux_atlas_core::FailureCategory::NodeUnreachable,
+            category: FailureCategory::NodeUnreachable,
             target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
             detail: "simulated node crash",
         }),
         "shard_corruption" => Ok(FailureInjectionPlan {
-            category: bijux_atlas_core::FailureCategory::ShardCorruption,
+            category: FailureCategory::ShardCorruption,
             target_id: required_debug_target(req.shard_id.as_deref(), "shard_id")?,
             detail: "simulated shard corruption",
         }),
         "network_partition" => Ok(FailureInjectionPlan {
-            category: bijux_atlas_core::FailureCategory::NetworkPartition,
+            category: FailureCategory::NetworkPartition,
             target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
             detail: "simulated network partition",
         }),
@@ -619,16 +624,16 @@ pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> imp
     let mut response_status = StatusCode::OK;
     let payload = match (cluster_path.as_deref(), node_path.as_deref()) {
         (Some(cluster_path), Some(node_path)) => match (
-            bijux_atlas_core::load_cluster_config_from_path(std::path::Path::new(cluster_path)),
-            bijux_atlas_core::load_node_config_from_path(std::path::Path::new(node_path)),
+            load_cluster_config_from_path(std::path::Path::new(cluster_path)),
+            load_node_config_from_path(std::path::Path::new(node_path)),
         ) {
         (Ok(cluster_cfg), Ok(node_cfg)) => {
             let cluster = cluster_cfg.to_descriptor();
             let node = node_cfg.to_descriptor();
-            let mut registry = bijux_atlas_core::ClusterStateRegistry::new(cluster.clone());
-            registry.register_node(bijux_atlas_core::NodeMetadata {
+            let mut registry = ClusterStateRegistry::new(cluster.clone());
+            registry.register_node(NodeMetadata {
                 descriptor: node,
-                state: bijux_atlas_core::NodeState::Ready,
+                state: NodeState::Ready,
                 last_heartbeat_unix_ms: chrono_like_unix_millis() as u64,
             });
             let snapshot = registry.snapshot();
@@ -745,12 +750,12 @@ pub(crate) async fn cluster_register_handler(
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let role = match req.role.as_str() {
-        "ingest" => bijux_atlas_core::NodeRole::Ingest,
-        "query" => bijux_atlas_core::NodeRole::Query,
-        _ => bijux_atlas_core::NodeRole::Hybrid,
+        "ingest" => NodeRole::Ingest,
+        "query" => NodeRole::Query,
+        _ => NodeRole::Hybrid,
     };
-    let descriptor = bijux_atlas_core::NodeDescriptor {
-        identity: bijux_atlas_core::NodeIdentity {
+    let descriptor = NodeDescriptor {
+        identity: NodeIdentity {
             cluster_id: req.cluster_id,
             node_id: req.node_id.clone(),
             generation: req.generation.max(1),
@@ -762,12 +767,12 @@ pub(crate) async fn cluster_register_handler(
         } else {
             req.capabilities
         },
-        readiness: bijux_atlas_core::ReadinessPolicy {
+        readiness: ReadinessPolicy {
             require_membership: true,
             require_dataset_registry: true,
             require_health_probes: true,
         },
-        shutdown: bijux_atlas_core::ShutdownPolicy {
+        shutdown: ShutdownPolicy {
             drain_timeout_ms: 10_000,
             publish_exit_state: true,
         },
@@ -811,8 +816,8 @@ pub(crate) async fn cluster_heartbeat_handler(
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let mut membership = state.membership.lock().await;
-    membership.apply_heartbeat(bijux_atlas_core::HeartbeatMessage {
-        identity: bijux_atlas_core::NodeIdentity {
+    membership.apply_heartbeat(HeartbeatMessage {
+        identity: NodeIdentity {
             cluster_id: req.cluster_id,
             node_id: req.node_id.clone(),
             generation: req.generation.max(1),
@@ -1061,7 +1066,7 @@ pub(crate) async fn cluster_recovery_run_handler(
     let mut replica_failovers = 0_u64;
     for node_id in &timed_out_nodes {
         resilience.record_failure(
-            bijux_atlas_core::FailureCategory::NodeUnreachable,
+            FailureCategory::NodeUnreachable,
             node_id,
             now_unix_ms,
             "node heartbeat timeout detected",
@@ -1284,13 +1289,13 @@ pub(crate) async fn chaos_run_handler(
     let now_unix_ms = chrono_like_unix_millis() as u64;
     let mut resilience = state.resilience_registry.lock().await;
     let id1 = resilience.record_failure(
-        bijux_atlas_core::FailureCategory::NodeUnreachable,
+        FailureCategory::NodeUnreachable,
         target_node_id.clone(),
         now_unix_ms,
         "chaos scenario injected node crash",
     );
     let id2 = resilience.record_failure(
-        bijux_atlas_core::FailureCategory::NetworkPartition,
+        FailureCategory::NetworkPartition,
         target_node_id.clone(),
         now_unix_ms.saturating_add(1),
         "chaos scenario injected network partition",
@@ -1456,7 +1461,7 @@ mod tests {
     use super::{
         resolve_chaos_target_node, resolve_failure_injection_plan, FailureInjectionRequest,
     };
-    use bijux_atlas::core as bijux_atlas_core;
+    use crate::domain::FailureCategory;
 
     #[test]
     fn failure_injection_requires_explicit_targets() {
@@ -1499,12 +1504,12 @@ mod tests {
         assert_eq!(node_crash.target_id, "node-prod-1");
         assert_eq!(
             node_crash.category,
-            bijux_atlas_core::FailureCategory::NodeUnreachable
+            FailureCategory::NodeUnreachable
         );
         assert_eq!(shard_corruption.target_id, "shard-prod-9");
         assert_eq!(
             shard_corruption.category,
-            bijux_atlas_core::FailureCategory::ShardCorruption
+            FailureCategory::ShardCorruption
         );
     }
 

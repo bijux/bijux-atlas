@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use bijux_atlas::{
     build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,
     DatasetCacheManager, FederatedBackend, LocalFsBackend, LoggingConfig, RegistrySource,
     S3LikeBackend, TraceConfig, TraceExporterKind,
 };
-use bijux_atlas_core::sha256_hex;
+use bijux_atlas::core::sha256_hex;
+use bijux_atlas::model::DatasetId;
 use clap::Parser;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
@@ -61,7 +59,7 @@ struct WarmupLockLease {
 
 #[derive(Debug, Default)]
 struct WarmupCoordinationPlan {
-    datasets: Vec<bijux_atlas_model::DatasetId>,
+    datasets: Vec<DatasetId>,
     leases: Vec<WarmupLockLease>,
     contention_total: u64,
     expired_total: u64,
@@ -101,7 +99,7 @@ fn warmup_lock_retry_delay_ms(
 }
 
 async fn coordinated_startup_warmup_datasets(
-    datasets: Vec<bijux_atlas_model::DatasetId>,
+    datasets: Vec<DatasetId>,
     redis_url: Option<&str>,
     enabled: bool,
     lock_ttl_secs: u64,
@@ -587,7 +585,7 @@ async fn main() -> Result<(), String> {
         "limits": &query_limits
     });
     let runtime_policy_hash =
-        match bijux_atlas_core::canonical::stable_json_bytes(&runtime_policy_payload) {
+        match bijux_atlas::core::canonical::stable_json_bytes(&runtime_policy_payload) {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         };
