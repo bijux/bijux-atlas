@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-pub use crate::generated::error_codes::{ErrorCode, ERROR_CODES};
+pub use crate::contracts::generated::core_error_codes::{ErrorCode, ERROR_CODES};
 
 pub type Result<T> = std::result::Result<T, Error>;
 

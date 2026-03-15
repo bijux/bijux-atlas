@@ -4,9 +4,7 @@ pub mod api_error_codes {
     pub use crate::api::generated::error_codes::*;
 }
 
-pub mod core_error_codes {
-    pub use crate::generated::error_codes::*;
-}
+pub mod core_error_codes;
 
 pub mod metrics {
     pub use crate::telemetry::generated::metrics_contract::*;

@@ -45,23 +45,15 @@ mod config;
 pub mod contracts;
 pub mod core;
 pub mod domain;
-#[path = "core/effect_adapters/mod.rs"]
-mod effect_adapters;
 pub mod effects;
 pub mod errors;
-#[path = "core/generated/mod.rs"]
-mod generated;
 #[path = "adapters/http/middleware/mod.rs"]
 mod middleware;
 pub mod model;
-#[path = "core/adapters/mod.rs"]
-mod platform_adapters;
 pub mod ports;
 pub mod server;
 #[path = "adapters/store/registry/mod.rs"]
 mod server_store;
-#[path = "core/services/mod.rs"]
-mod services;
 pub mod support;
 pub mod types;
 
