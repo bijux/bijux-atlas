@@ -233,7 +233,7 @@ pub(crate) enum AtlasCommand {
 #[derive(Subcommand)]
 pub(crate) enum OpenapiCommand {
     Generate {
-        #[arg(long, default_value = "configs/sources/runtime/openapi/v1/openapi.generated.json")]
+        #[arg(long, default_value = "configs/generated/openapi/v1/openapi.json")]
         out: CliPathBuf,
     },
 }

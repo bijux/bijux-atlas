@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
-const OPENAPI_GENERATED: &str = "configs/sources/runtime/openapi/v1/openapi.generated.json";
+const OPENAPI_GENERATED: &str = "configs/generated/openapi/v1/openapi.json";
 const API_SURFACE_REGISTRY: &str = "ops/api/surface-registry.json";
 const OPENAPI_VERSION_TRACKING: &str = "ops/api/openapi-version-tracking.json";
 const OPENAPI_VALIDATION_CONTRACT: &str =
@@ -127,7 +127,7 @@ fn ensure_api_docs_generated(root: &Path, spec: &serde_json::Value) -> Result<()
     let contract_lines = [
         "# API Contract Documentation",
         "",
-        "- OpenAPI source: `configs/sources/runtime/openapi/v1/openapi.generated.json`",
+        "- OpenAPI source: `configs/generated/openapi/v1/openapi.json`",
         "- Surface registry: `ops/api/surface-registry.json`",
         "- Validation contract: `ops/api/contracts/openapi-schema-validation-contract.json`",
         "- Version tracking: `ops/api/openapi-version-tracking.json`",

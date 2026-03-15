@@ -18,7 +18,7 @@ OpenAPI is useful, but it is not magic. It describes contract-owned API shape. I
 ```mermaid
 flowchart LR
     Contracts[API contracts] --> Generate[openapi generate]
-    Generate --> File[openapi.generated.json]
+    Generate --> File[openapi.json]
     Runtime[Running server] --> Endpoint[/v1/openapi.json]
     File --> Consumers[Client generation and review]
     Endpoint --> Consumers
@@ -33,7 +33,7 @@ flowchart LR
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas -- openapi generate \
-  --out configs/sources/runtime/openapi/v1/openapi.generated.json
+  --out configs/generated/openapi/v1/openapi.json
 ```
 
 Offline generation is best for review, diffing, and contract validation before a server is even running.

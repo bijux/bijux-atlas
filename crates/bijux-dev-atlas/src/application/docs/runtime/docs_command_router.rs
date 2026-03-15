@@ -1061,7 +1061,7 @@ fn docs_generate_schema_snippets(repo_root: &std::path::Path) -> Result<Vec<Stri
 }
 
 fn build_generated_openapi_snippets_body(repo_root: &std::path::Path) -> Result<String, String> {
-    let openapi_path = repo_root.join("configs/sources/runtime/openapi/v1/openapi.generated.json");
+    let openapi_path = repo_root.join("configs/generated/openapi/v1/openapi.json");
     let openapi_text = fs::read_to_string(&openapi_path)
         .map_err(|e| format!("read {} failed: {e}", openapi_path.display()))?;
     let openapi: serde_json::Value =
@@ -1074,7 +1074,7 @@ fn build_generated_openapi_snippets_body(repo_root: &std::path::Path) -> Result<
     endpoints.sort();
     let sample = endpoints.into_iter().take(25).collect::<Vec<_>>();
     Ok(format!(
-        "# Generated OpenAPI Snippets\n\nOpenAPI source: `configs/sources/runtime/openapi/v1/openapi.generated.json`\n\nSample endpoint paths:\n\n{}\n",
+        "# Generated OpenAPI Snippets\n\nOpenAPI source: `configs/generated/openapi/v1/openapi.json`\n\nSample endpoint paths:\n\n{}\n",
         sample
             .iter()
             .map(|path| format!("- `{path}`"))

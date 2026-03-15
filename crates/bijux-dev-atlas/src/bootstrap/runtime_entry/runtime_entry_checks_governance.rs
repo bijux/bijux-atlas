@@ -481,7 +481,7 @@ pub(crate) fn run_check_repo_doctor(
         "docs_indexes": docs_indexes,
         "config_groups": config_groups
     });
-    let snapshot_rel = Path::new("configs/sources/repository/repo-surface/surface-snapshot.json");
+    let snapshot_rel = Path::new("configs/generated/repo-surface/surface-snapshot.json");
     let mut snapshot_drift_error = serde_json::Value::Null;
     let snapshot_path = root.join(snapshot_rel);
     if snapshot_path.exists() {

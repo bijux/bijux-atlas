@@ -12,7 +12,7 @@ pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Res
         .and_then(|p| p.parent())
         .ok_or_else(|| "failed to resolve workspace root".to_string())?
         .to_path_buf();
-    let openapi_source = workspace_root.join("configs/sources/runtime/openapi/v1/openapi.generated.json");
+    let openapi_source = workspace_root.join("configs/generated/openapi/v1/openapi.json");
     let raw = std::fs::read(&openapi_source)
         .map_err(|e| format!("failed to read {}: {e}", openapi_source.display()))?;
     let spec: Value =

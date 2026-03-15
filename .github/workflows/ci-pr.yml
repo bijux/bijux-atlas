@@ -256,7 +256,7 @@ jobs:
           (report_root / "semantic-drift-summary.json").write_text(json.dumps(reports, indent=2) + "\n")
           PY
           pr_body="$(jq -r '.pull_request.body // \"\"' "${GITHUB_EVENT_PATH}")"
-          if changed_file "configs/sources/runtime/openapi/v1/openapi.snapshot.json"; then
+          if changed_file "configs/generated/openapi/v1/openapi.snapshot.json"; then
             if ! printf '%s' "${pr_body}" | grep -Eq '\[api-compat:(non-breaking|breaking)\]'; then
               echo "OpenAPI snapshot changed but compatibility marker is missing; add [api-compat:non-breaking] or [api-compat:breaking] in PR body" >&2
               exit 1
@@ -265,7 +265,7 @@ jobs:
           endpoints_changed=0
           openapi_changed=0
           if changed_file "docs/reference/contracts/schemas/ENDPOINTS.json"; then endpoints_changed=1; fi
-          if changed_file "configs/sources/runtime/openapi/v1/openapi.snapshot.json"; then openapi_changed=1; fi
+          if changed_file "configs/generated/openapi/v1/openapi.snapshot.json"; then openapi_changed=1; fi
           if [ "${endpoints_changed}" -ne "${openapi_changed}" ]; then
             echo "ENDPOINTS registry diff must match OpenAPI snapshot diff" >&2
             exit 1

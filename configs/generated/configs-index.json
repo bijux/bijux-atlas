@@ -16,13 +16,14 @@
   "groups": [
     {
       "counts": {
-        "covered": 3,
-        "generated": 0,
+        "covered": 4,
+        "generated": 1,
         "internal": 1,
         "public": 2,
         "schemas": 1
       },
       "files": [
+        "configs/generated/repo-surface/surface-snapshot.json",
         "configs/sources/governance/audit/audit-artifact-checklist.json",
         "configs/sources/governance/audit/compliance-matrix-template.json",
         "configs/sources/governance/audit/schemas/audit-bundle.schema.json"
@@ -335,17 +336,16 @@
     },
     {
       "counts": {
-        "covered": 7,
+        "covered": 6,
         "generated": 0,
         "internal": 0,
-        "public": 7,
-        "schemas": 1
+        "public": 6,
+        "schemas": 2
       },
       "files": [
         "configs/sources/repository/repo-surface/generated-path-allowlist.json",
         "configs/sources/repository/repo-surface/root-file-allowlist.json",
         "configs/sources/repository/repo-surface/script-extension-allowlist.json",
-        "configs/sources/repository/repo-surface/surface-snapshot.json",
         "configs/sources/repository/repo-surface/surfaces.json",
         "configs/sources/repository/repo-surface/symlink-allowlist.json",
         "configs/sources/repository/repo-surface/tree-budget-exceptions.json"
@@ -354,7 +354,8 @@
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/schemas/registry/public-surface.schema.json"
+        "configs/schemas/registry/public-surface.schema.json",
+        "configs/schemas/registry/repo-surface-snapshot.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -566,20 +567,20 @@
     {
       "counts": {
         "covered": 2,
-        "generated": 0,
+        "generated": 2,
         "internal": 0,
-        "public": 2,
+        "public": 0,
         "schemas": 1
       },
       "files": [
-        "configs/sources/runtime/openapi/v1/openapi.generated.json",
-        "configs/sources/runtime/openapi/v1/openapi.snapshot.json"
+        "configs/generated/openapi/v1/openapi.json",
+        "configs/generated/openapi/v1/openapi.snapshot.json"
       ],
       "name": "openapi",
       "owner": "api-contracts",
       "schema_owner": "api-contracts",
       "schemas": [
-        "configs/schemas/registry/public-surface.schema.json"
+        "configs/schemas/registry/openapi-document.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [

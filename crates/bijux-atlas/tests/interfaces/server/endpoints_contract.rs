@@ -95,7 +95,7 @@ fn endpoint_params_match_openapi_registry() {
     )
     .expect("parse endpoints");
     let openapi: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(root.join("configs/sources/runtime/openapi/v1/openapi.generated.json"))
+        &std::fs::read(root.join("configs/generated/openapi/v1/openapi.json"))
             .expect("read openapi"),
     )
     .expect("parse openapi");
@@ -132,7 +132,7 @@ fn openapi_marks_legacy_dataset_path_deprecated_and_has_canonical_path() {
         .expect("workspace root")
         .to_path_buf();
     let openapi: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(root.join("configs/sources/runtime/openapi/v1/openapi.generated.json"))
+        &std::fs::read(root.join("configs/generated/openapi/v1/openapi.json"))
             .expect("read openapi"),
     )
     .expect("parse openapi");

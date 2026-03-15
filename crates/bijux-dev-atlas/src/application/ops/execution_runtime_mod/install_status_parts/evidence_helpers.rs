@@ -609,7 +609,7 @@ pub(super) fn observability_contract_checks(
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
     let openapi =
-        std::fs::read_to_string(repo_root.join("configs/sources/runtime/openapi/v1/openapi.snapshot.json"))
+        std::fs::read_to_string(repo_root.join("configs/generated/openapi/v1/openapi.snapshot.json"))
         .map_err(|err| format!("failed to read openapi: {err}"))?;
     let error_registry_aligned = error_registry.contains("NotReady")
         && error_registry.contains("RateLimited")

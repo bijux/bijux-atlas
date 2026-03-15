@@ -20,6 +20,15 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/generated/openapi/v1/*.json": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "configs/generated/repo-surface/surface-snapshot.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/sources/governance/audit/*.json": [
       "bijux-dev-atlas",
       "ci"
@@ -132,10 +141,6 @@
       "ci"
     ],
     "configs/sources/operations/observability/*.yaml": [
-      "bijux-dev-atlas",
-      "runtime"
-    ],
-    "configs/sources/runtime/openapi/**/*.json": [
       "bijux-dev-atlas",
       "runtime"
     ],

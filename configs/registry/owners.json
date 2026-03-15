@@ -5,6 +5,8 @@
     "configs/registry/schemas.json": "platform",
     "configs/registry/schema-versioning-policy.json": "platform",
     "configs/generated/configs-index.json": "platform",
+    "configs/generated/openapi/v1/*.json": "api-contracts",
+    "configs/generated/repo-surface/surface-snapshot.json": "platform",
     "configs/sources/governance/audit/audit-artifact-checklist.json": "atlas-governance",
     "configs/sources/governance/audit/schemas/audit-bundle.schema.json": "atlas-governance",
     "configs/sources/governance/audit/compliance-matrix-template.json": "atlas-governance",
