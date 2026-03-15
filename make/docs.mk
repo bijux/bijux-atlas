@@ -23,10 +23,7 @@ docs-serve: ## Serve docs locally
 	@$(DEV_ATLAS) docs serve --allow-subprocess --allow-network --format $(FORMAT)
 
 docs-clean: ## Clean docs generated outputs
-	@$(DEV_ATLAS) docs inventory --format $(FORMAT) >/dev/null
-
-docs-lock: ## Refresh docs requirements lock deterministically
-	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
+	@$(DEV_ATLAS) docs clean --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-reference-regenerate: ## Regenerate docs operations reference pages from SSOT inputs
 	@$(DEV_ATLAS) docs reference generate --allow-subprocess --allow-write --format $(FORMAT)
@@ -34,4 +31,4 @@ docs-reference-regenerate: ## Regenerate docs operations reference pages from SS
 docs-reference-check: ## Check docs operations reference pages are regenerated
 	@$(DEV_ATLAS) docs reference check --allow-subprocess --format $(FORMAT)
 
-.PHONY: docs docs-doctor docs-validate docs-external-links docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check
+.PHONY: docs docs-doctor docs-validate docs-external-links docs-build docs-serve docs-clean docs-reference-regenerate docs-reference-check

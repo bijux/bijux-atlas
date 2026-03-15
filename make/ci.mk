@@ -20,7 +20,4 @@ ci-docs: ## CI docs lane wrapper
 ci-dependency-lock-refresh: ## CI dependency lock refresh wrapper
 	@$(DEV_ATLAS) suites run --suite repo_required --mode all --tag lint --format $(FORMAT)
 
-ci-help: ## Show CI command help
-	@$(DEV_ATLAS) --help
-
-.PHONY: ci ci-fast ci-pr ci-nightly ci-docs ci-dependency-lock-refresh ci-help
+.PHONY: ci ci-fast ci-pr ci-nightly ci-docs ci-dependency-lock-refresh

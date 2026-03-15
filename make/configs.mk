@@ -21,7 +21,4 @@ configs-lint: ## Run configs lint checks
 configs-inventory: ## List configs inventory (verification smoke target)
 	@$(DEV_ATLAS) configs inventory --format $(FORMAT)
 
-configs-check: ## Back-compat alias to canonical configs doctor wrapper
-	@$(MAKE) -s configs-doctor
-
-.PHONY: configs configs-doctor configs-validate configs-lint configs-inventory configs-check
+.PHONY: configs configs-doctor configs-validate configs-lint configs-inventory

@@ -1,5 +1,5 @@
 # Scope: canonical developer wrappers and invocation SSOT for the Rust control plane.
-# Public targets: dev-doctor, dev-check-ci, dev-ci
+# Public targets: dev-doctor, dev-check-ci, install-local
 SHELL := /bin/sh
 
 BIJUX ?= bijux
@@ -16,16 +16,7 @@ dev-doctor: ## Run dev control-plane doctor suite
 dev-check-ci: ## Run dev control-plane ci suite
 	@$(DEV_ATLAS) suites run --suite ci_fast --mode all --format $(FORMAT)
 
-dev-ci: ## Alias for dev-check-ci
-	@$(MAKE) -s dev-check-ci
-
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
-	@mkdir -p artifacts/bin
-	@cargo build -p bijux-atlas -p bijux-dev-atlas
-	@cp artifacts/target/debug/bijux-atlas artifacts/bin/bijux-atlas
-	@cp artifacts/target/debug/bijux-dev-atlas artifacts/bin/bijux-dev-atlas
-	@chmod +x artifacts/bin/bijux-atlas artifacts/bin/bijux-dev-atlas
-	@echo "installed artifacts/bin/bijux-atlas"
-	@echo "installed artifacts/bin/bijux-dev-atlas"
+	@$(DEV_ATLAS) build install-local --allow-subprocess --allow-write --format $(FORMAT)
 
-.PHONY: dev-doctor dev-check-ci dev-ci install-local
+.PHONY: dev-doctor dev-check-ci install-local

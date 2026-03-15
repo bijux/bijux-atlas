@@ -33,10 +33,10 @@ ops-render: ## Render ops manifests for selected profile
 	@$(DEV_ATLAS) ops render --target kind --check --profile $(PROFILE) --format $(FORMAT)
 
 ops-install-plan: ## Print install plan without applying resources
-	@$(DEV_ATLAS) ops install --kind --apply --plan --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)
+	@$(DEV_ATLAS) ops install-plan --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)
 
 ops-up: ## Bring up full local ops environment
-	@if command -v kind >/dev/null 2>&1 && kind get clusters 2>/dev/null | grep -Eq '^(normal|bijux-atlas-e2e)$$'; then echo "ops-up: local kind cluster already exists"; else $(DEV_ATLAS) ops install --kind --apply --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT); fi
+	@$(DEV_ATLAS) ops up --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)
 
 ops-down: ## Tear down full local ops environment
 	@$(DEV_ATLAS) ops down --profile $(PROFILE) --allow-subprocess --format $(FORMAT)
@@ -48,7 +48,7 @@ ops-reset: ## Delete artifacts for RESET_RUN_ID
 	@$(DEV_ATLAS) ops reset --reset-run-id $(or $(RESET_RUN_ID),$(OPS_RESET_RUN_ID)) --format $(FORMAT)
 
 ops-kind-up: ## Ensure local kind cluster plan is valid
-	@$(DEV_ATLAS) ops install --kind --plan --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)
+	@$(DEV_ATLAS) ops kind up --allow-subprocess --allow-write --format $(FORMAT)
 
 ops-kind-down: ## Delete local kind cluster for selected profile
 	@$(DEV_ATLAS) ops down --profile $(PROFILE) --allow-subprocess --format $(FORMAT)
