@@ -13,5 +13,5 @@ pub use self::runtime::{
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
     validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, AuditConfig,
     AuditSink, AuthMode, CatalogMode, CONFIG_SCHEMA_VERSION, RateLimitConfig, RuntimeConfig,
-    RuntimeConfigError, RuntimeStartupConfig, StoreConfig, StoreMode, StoreRetryConfig,
+    RuntimeConfigError, RuntimeStartupConfig, StoreConfig, StoreMode,
 };

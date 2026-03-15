@@ -10,5 +10,3 @@ pub use self::state::{
     DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource,
     RetryPolicy, S3LikeBackend,
 };
-pub use crate::app::cache::{CacheError, RegistrySourceHealth};
-pub use crate::app::ports::{CatalogFetch, DatasetStoreBackend};

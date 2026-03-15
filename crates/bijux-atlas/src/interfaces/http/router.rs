@@ -10,11 +10,11 @@ use crate::interfaces::http::request_policies::{
 use crate::redis::RedisBackend;
 use crate::telemetry::rate_limiter::RateLimiter;
 use crate::application::config::ApiConfig;
+use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::{
-    canonical, load_cluster_config_from_path, ConsistencyGuarantee, ConsistencyLevel,
-    FailureDetectionPolicy, FailureRecoveryRegistry, MembershipPolicy, MembershipRegistry,
-    RecoveryPolicy, ReplicaRegistry, ReplicationPolicy, ResilienceGuarantees, ShardRegistry,
-    sha256_hex,
+    canonical, ConsistencyGuarantee, ConsistencyLevel, FailureDetectionPolicy,
+    FailureRecoveryRegistry, MembershipPolicy, MembershipRegistry, RecoveryPolicy,
+    ReplicaRegistry, ReplicationPolicy, ResilienceGuarantees, ShardRegistry, sha256_hex,
 };
 use crate::http;
 use axum::extract::DefaultBodyLimit;

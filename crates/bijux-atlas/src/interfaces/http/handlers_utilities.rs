@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
+use crate::domain::cluster::config::{load_cluster_config_from_path, load_node_config_from_path};
 use crate::domain::{
-    load_cluster_config_from_path, load_node_config_from_path, ClusterStateRegistry,
-    FailureCategory, HeartbeatMessage, NodeDescriptor, NodeIdentity, NodeMetadata, NodeRole,
-    NodeState, ReadinessPolicy, ShutdownPolicy,
+    ClusterStateRegistry, FailureCategory, HeartbeatMessage, NodeDescriptor, NodeIdentity,
+    NodeMetadata, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
 };
 use serde_json::json;
 use serde_json::Value;

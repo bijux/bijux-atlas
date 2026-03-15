@@ -137,8 +137,10 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
     assert!(
         !text.contains("resolve_bijux_cache_dir")
             && !text.contains("resolve_bijux_config_path")
-            && !text.contains("crate::application::config"),
-        "domain surface must not depend on runtime config helpers"
+            && !text.contains("crate::application::config")
+            && !text.contains("pub use distributed_config::{\n    default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,")
+            && !text.contains("pub use security_runtime::{\n    load_security_config_from_path, validate_security_config,"),
+        "domain surface must not depend on runtime config or runtime loader helpers"
     );
 }
 
@@ -166,4 +168,41 @@ fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
         text.lines().count() <= 1100,
         "handlers utilities must stay below the compatibility-surface budget"
     );
+}
+
+#[test]
+fn atlas_lib_hides_legacy_ownership_roots() {
+    let root = repo_root();
+    let text =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/lib.rs")).expect("atlas lib surface");
+
+    for expected in [
+        "pub(crate) mod application;",
+        "pub(crate) mod infrastructure;",
+        "pub(crate) mod interfaces;",
+        "pub(crate) use crate::interfaces::http;",
+        "pub(crate) use crate::infrastructure::redis;",
+        "pub(crate) use crate::infrastructure::sqlite;",
+        "pub(crate) use crate::infrastructure::telemetry;",
+    ] {
+        assert!(
+            text.contains(expected),
+            "atlas lib surface must keep legacy ownership roots crate-private"
+        );
+    }
+
+    for forbidden in [
+        "pub mod application;",
+        "pub mod infrastructure;",
+        "pub mod interfaces;",
+        "pub use crate::interfaces::http;",
+        "pub use crate::infrastructure::redis;",
+        "pub use crate::infrastructure::sqlite;",
+        "pub use crate::infrastructure::telemetry;",
+    ] {
+        assert!(
+            !text.contains(forbidden),
+            "atlas lib surface must not re-expose legacy ownership roots publicly"
+        );
+    }
 }

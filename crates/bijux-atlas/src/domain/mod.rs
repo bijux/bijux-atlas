@@ -25,7 +25,6 @@ pub use distributed::{
     NodeState, ReadinessPolicy, ShutdownPolicy, TopologyMode,
 };
 pub use distributed_config::{
-    default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,
     ClusterConfigFile, ClusterDiscoveryConfig, ClusterHealthConfig, ClusterHealthQuorumConfig,
     NodeConfigFile, NodeShutdownConfig,
 };
@@ -64,11 +63,10 @@ pub use security_data_protection::{
     LoadedCertificate, TlsConfig, XorEncryption,
 };
 pub use security_runtime::{
-    load_security_config_from_path, validate_security_config, EnvSecretsProvider, KeyManager,
-    KeyRecord, SecretsProvider, SecurityAuditConfig, SecurityAuthConfig,
-    SecurityAuthorizationConfig, SecurityConfig, SecurityEventConfig, SecurityIdentityConfig,
-    SecurityKeyConfig, SecurityPolicy, SecurityPolicyRegistry, SecuritySecretsConfig,
-    SecurityTransportConfig, StaticSecretsProvider,
+    EnvSecretsProvider, KeyManager, KeyRecord, SecretsProvider, SecurityAuditConfig,
+    SecurityAuthConfig, SecurityAuthorizationConfig, SecurityConfig, SecurityEventConfig,
+    SecurityIdentityConfig, SecurityKeyConfig, SecurityPolicy, SecurityPolicyRegistry,
+    SecuritySecretsConfig, SecurityTransportConfig, StaticSecretsProvider,
 };
 pub use sharding::{
     stable_hash_u64, DatasetShardLayout, ShardHealth, ShardKeyStrategy, ShardMetadata,

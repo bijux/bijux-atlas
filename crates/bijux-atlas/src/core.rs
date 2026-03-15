@@ -3,15 +3,20 @@
 //! Core primitives re-exported through the `bijux-atlas` package.
 
 pub use crate::domain::time;
+pub use crate::domain::cluster::config::{
+    default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,
+};
+pub use crate::domain::security::runtime::{
+    load_security_config_from_path, validate_security_config,
+};
 pub use crate::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub use crate::domain::{
     authentication_context_from_api_key, authentication_context_from_token,
-    calculate_manifest_checksum, canonical, default_metadata_store, detect_tampering,
+    calculate_manifest_checksum, canonical, detect_tampering,
     extract_request_identity, generate_api_key, hash_api_key, https_enforced,
-    load_certificate_bundle, load_cluster_config_from_path, load_node_config_from_path,
-    load_security_config_from_path, mint_signed_token, rotate_api_key, sha256, sha256_hex, stable_hash_u64,
-    tls_handshake_allowed, validate_certificate_bundle, validate_security_config,
-    validate_signed_token, verify_artifact_checksum, verify_artifact_signature,
+    load_certificate_bundle, mint_signed_token, rotate_api_key, sha256, sha256_hex,
+    stable_hash_u64, tls_handshake_allowed, validate_certificate_bundle, validate_signed_token,
+    verify_artifact_checksum, verify_artifact_signature,
     verify_dataset_manifest_integrity, ApiKeyRecord, ApiKeyStore, AuthValidationError,
     AuthenticationContext, AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy,
     AuthorizationPolicyRule, AuthorizationResources, BootstrapPolicy, ClusterConfigFile,
