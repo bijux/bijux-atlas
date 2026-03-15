@@ -80,9 +80,7 @@
       ],
       "name": "clients",
       "owner": "platform",
-      "public_files": [
-        "configs/sources/runtime/clients/*.json"
-      ],
+      "public_files": [],
       "schema_owner": "platform",
       "schemas": [
         "configs/sources/runtime/clients/schemas/*.json",
@@ -123,7 +121,6 @@
         "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
         "configs/sources/repository/docs/.vale.ini",
         "configs/sources/repository/docs/*.json",
-        "configs/sources/repository/docs/*.jsonc",
         "configs/sources/repository/docs/*.txt"
       ],
       "schema_owner": "docs-governance",
@@ -419,8 +416,7 @@
       "public_files": [
         "configs/sources/operations/ops/*.json",
         "configs/sources/operations/ops/*.txt",
-        "configs/sources/operations/ops/*/*.json",
-        "configs/sources/operations/ops/*/*.txt"
+        "configs/sources/operations/ops/*/*.json"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
@@ -519,7 +515,6 @@
         "configs/schemas/registry/generated/*.json"
       ],
       "internal_files": [
-        "configs/schemas/registry/README.md",
         "configs/schemas/registry/configs-ownership.schema.json",
         "configs/schemas/registry/docs-registry.schema.json",
         "configs/schemas/registry/docs-sections.schema.json",

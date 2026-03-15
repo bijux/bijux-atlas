@@ -10,7 +10,6 @@
     "configs/sources/governance/audit/compliance-matrix-template.json": "atlas-governance",
     "configs/sources/runtime/cli/*.toml": "platform",
     "configs/sources/runtime/clients/schemas/*.json": "platform",
-    "configs/sources/runtime/clients/*.json": "platform",
     "configs/registry/contracts.json": "platform",
     "configs/sources/runtime/datasets/manifest.yaml": "data-governance",
     "configs/sources/runtime/datasets/pinned-policy.yaml": "data-governance",

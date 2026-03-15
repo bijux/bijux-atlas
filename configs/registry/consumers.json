@@ -35,10 +35,6 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/sources/runtime/clients/*.json": [
-      "bijux-dev-atlas",
-      "ci"
-    ],
     "configs/registry/contracts.json": [
       "bijux-dev-atlas",
       "ci"
@@ -56,10 +52,6 @@
       "runtime"
     ],
     "configs/sources/repository/docs/*.json": [
-      "docs-build",
-      "ci"
-    ],
-    "configs/sources/repository/docs/*.jsonc": [
       "docs-build",
       "ci"
     ],

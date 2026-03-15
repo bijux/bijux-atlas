@@ -64,8 +64,10 @@
       "touched_paths": [
         "configs/registry/schemas.json",
         "configs/registry/inventory/configs.json",
-        "configs/**.json",
-        "configs/**.jsonc"
+        "configs/*.json",
+        "configs/**/*.json",
+        "configs/*.jsonc",
+        "configs/**/*.jsonc"
       ]
     },
     {
@@ -399,8 +401,10 @@
       "severity": "must",
       "title": "json config surfaces parse cleanly",
       "touched_paths": [
-        "configs/**.json",
-        "configs/**.jsonc"
+        "configs/*.json",
+        "configs/**/*.json",
+        "configs/*.jsonc",
+        "configs/**/*.jsonc"
       ]
     },
     {
@@ -415,8 +419,10 @@
       "severity": "must",
       "title": "yaml config surfaces parse cleanly",
       "touched_paths": [
-        "configs/**.yml",
-        "configs/**.yaml"
+        "configs/*.yml",
+        "configs/**/*.yml",
+        "configs/*.yaml",
+        "configs/**/*.yaml"
       ]
     },
     {
@@ -431,7 +437,8 @@
       "severity": "must",
       "title": "toml config surfaces parse cleanly",
       "touched_paths": [
-        "configs/**.toml"
+        "configs/*.toml",
+        "configs/**/*.toml"
       ]
     },
     {
