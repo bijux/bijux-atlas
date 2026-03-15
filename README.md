@@ -29,7 +29,8 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 > **Quality**
 > Quality status is checked from live maintainer commands and checked-in contracts.
 > `artifacts/` is disposable local output and is not part of the repository contract.
-> The workspace is prepared for `0.2.0`; public registries and tags remain the release source of truth until `v0.2.0` is published.
+> Published artifacts and `v*` git tags define the public release line.
+> Untagged checkout builds stay anchored to the latest real tag while the source tree can still be preparing the next release.
 
 ---
 
@@ -221,11 +222,8 @@ If a surface is planned, internal, or future-facing, it should be described as s
 
 ## Release Line & Stability
 
-The workspace is prepared for version `0.2.0`.
-The active release line for this codebase is `0.2.x`.
-
-Published crates, GitHub releases, and the docs deployment remain the public release source of truth.
-Between tags, the repository can be ahead of the latest published artifact while still documenting the intended next release line clearly.
+Published crates, GitHub releases, docs deployment, and `v*` git tags define the public release line.
+Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
 
 Release expectations live in [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md).
 Compatibility and operational promises live under [`docs/08-contracts/index.md`](docs/08-contracts/index.md).

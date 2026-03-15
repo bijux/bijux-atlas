@@ -2806,7 +2806,7 @@ fn run_release_crates_list(args: ReleaseCratesListArgs) -> Result<(String, i32),
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_crates_list",
-        "release_line": spec.get("release_line").and_then(toml::Value::as_str).unwrap_or("v0.1"),
+        "release_line": release_line_from_spec(&spec, &root),
         "versioning_model": spec.get("versioning_model").and_then(toml::Value::as_str).unwrap_or("workspace-unified"),
         "crates": crate_rows
     });
@@ -3188,10 +3188,7 @@ fn run_release_crates_publish_plan(args: ReleaseCratesListArgs) -> Result<(Strin
         "kind": "release_crates_publish_plan",
         "status": "ok",
         "deterministic_ordering": true,
-        "release_line": spec
-            .get("release_line")
-            .and_then(toml::Value::as_str)
-            .unwrap_or("v0.2"),
+        "release_line": release_line_from_spec(&spec, &root),
         "crates": publishable
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
@@ -4553,6 +4550,12 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
 }
 
 fn default_release_version(root: &Path) -> String {
+    if let Some(version) = env_var_text("GITHUB_REF")
+        .and_then(|value| value.strip_prefix("refs/tags/").map(str::to_string))
+        .and_then(|tag| bijux_versioning::version_from_tag(&tag))
+    {
+        return version;
+    }
     let chart_yaml = root.join("ops/k8s/charts/bijux-atlas/Chart.yaml");
     if let Ok(value) = read_yaml(&chart_yaml) {
         if let Some(version) = value.get("version").and_then(serde_yaml::Value::as_str) {
@@ -4561,7 +4564,23 @@ fn default_release_version(root: &Path) -> String {
             }
         }
     }
+    if let Some(version) =
+        bijux_versioning::latest_version_tag(root).and_then(|tag| bijux_versioning::version_from_tag(&tag))
+    {
+        return version;
+    }
     "0.0.0".to_string()
+}
+
+fn release_line_for_version(version: &str) -> String {
+    bijux_versioning::release_line_from_version(version).unwrap_or_else(|| "unknown".to_string())
+}
+
+fn release_line_from_spec(spec: &toml::Value, root: &Path) -> String {
+    spec.get("release_line")
+        .and_then(toml::Value::as_str)
+        .map(str::to_string)
+        .unwrap_or_else(|| release_line_for_version(&default_release_version(root)))
 }
 
 fn release_root(root: &Path, version: &str) -> std::path::PathBuf {
@@ -4691,7 +4710,7 @@ fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Val
         "version": version,
         "git_sha": git_sha,
         "build_time": build_time,
-        "control_plane_version": env!("CARGO_PKG_VERSION"),
+        "control_plane_version": bijux_dev_atlas::version::runtime_version(),
         "ops_profiles_validated": ops_profiles,
         "docs_build_hash": docs_hash,
         "sbom_digests": sbom_refs,

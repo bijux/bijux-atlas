@@ -119,7 +119,7 @@ fn bundle_generate(
         "checklist": checklist_path(&root).strip_prefix(&root).unwrap_or(&checklist_path(&root)).display().to_string(),
         "metadata": {
             "generator": "bijux-dev-atlas audit bundle generate",
-            "control_plane_version": env!("CARGO_PKG_VERSION"),
+            "control_plane_version": bijux_dev_atlas::version::runtime_version(),
         },
     });
     let hash = sha256_json(&bundle)?;

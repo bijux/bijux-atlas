@@ -96,7 +96,7 @@ fn run_build_bin(
     let manifest = serde_json::json!({
         "schema_version": 1,
         "kind": "build_bin_manifest",
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": bijux_dev_atlas::version::runtime_version(),
         "git_hash": option_env!("BIJUX_GIT_HASH"),
         "profile": "debug",
         "cargo_target_dir": cargo_target_dir.display().to_string(),
@@ -234,7 +234,7 @@ fn run_build_dist(
         .map_err(|e| format!("cannot create {}: {e}", dist_dir.display()))?;
     let archive_name = format!(
         "bijux-atlas-dev-tools_{}_{}_{}.tar.gz",
-        env!("CARGO_PKG_VERSION"),
+        bijux_dev_atlas::version::runtime_semver(),
         std::env::consts::OS,
         std::env::consts::ARCH
     );
@@ -424,7 +424,7 @@ fn run_build_meta(
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "build_metadata",
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": bijux_dev_atlas::version::runtime_version(),
         "git_hash": option_env!("BIJUX_GIT_HASH"),
         "timestamp_policy": "forbidden_by_default",
         "toolchain_pin_file": "rust-toolchain.toml",

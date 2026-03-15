@@ -1716,7 +1716,7 @@ fn run_tutorials_real_data_export_evidence(
         "schema_version": 1,
         "run_id": run.id,
         "dataset": run.dataset,
-        "atlas_version": env!("CARGO_PKG_VERSION"),
+        "atlas_version": bijux_dev_atlas::version::runtime_version(),
         "git_sha": git_sha,
         "runtime_profile": args.profile,
         "environment": {
@@ -1724,7 +1724,7 @@ fn run_tutorials_real_data_export_evidence(
             "arch": std::env::consts::ARCH
         },
         "tool_versions": {
-            "cargo": env!("CARGO_PKG_VERSION"),
+            "cargo": bijux_dev_atlas::version::runtime_version(),
             "git": "detected",
             "curl": "detected"
         },

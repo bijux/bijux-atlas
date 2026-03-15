@@ -313,6 +313,7 @@ dependencies = [
  "base64",
  "bijux-atlas",
  "bijux-cli",
+ "bijux-versioning",
  "clap",
  "criterion",
  "regex",

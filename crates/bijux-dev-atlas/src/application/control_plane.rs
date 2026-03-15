@@ -168,7 +168,9 @@ pub(crate) fn run_version_command(
     let payload = serde_json::json!({
         "schema_version": 1,
         "name": "bijux-dev-atlas",
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": bijux_dev_atlas::version::runtime_version(),
+        "semver": bijux_dev_atlas::version::runtime_semver(),
+        "source": bijux_dev_atlas::version::runtime_version_source(),
         "git_hash": option_env!("BIJUX_GIT_HASH"),
     });
     let rendered = match format {

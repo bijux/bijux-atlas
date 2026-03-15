@@ -102,7 +102,8 @@ pub(crate) fn plugin_metadata_json() -> String {
     serde_json::json!({
         "schema_version": "v1",
         "name": "bijux-dev-atlas",
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": bijux_dev_atlas::version::runtime_semver(),
+        "version_display": bijux_dev_atlas::version::runtime_version(),
         "build_hash": option_env!("BIJUX_GIT_HASH"),
         "compatible_umbrella": format!(">={UMBRELLA_MIN_VERSION},<{UMBRELLA_MAX_EXCLUSIVE_VERSION}"),
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,

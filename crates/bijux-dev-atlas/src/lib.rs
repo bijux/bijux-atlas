@@ -24,6 +24,7 @@ pub mod reference;
 pub mod registry;
 pub(crate) mod schema_support;
 pub mod ui;
+pub mod version;
 
 pub use self::infrastructure::adapters;
 pub use self::infrastructure::runtime;

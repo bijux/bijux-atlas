@@ -1,5 +1,4 @@
 schema_version = 1
-release_line = "v0.2"
 versioning_model = "workspace-unified"
 
 [publish]

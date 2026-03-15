@@ -7,7 +7,7 @@ Security reports for Bijux Atlas should stay private until maintainers have repr
 Atlas currently supports:
 
 - `main`
-- the latest `0.2.x` release line
+- the latest published minor release line
 
 Older versions are unsupported unless the repository explicitly documents an extension in release material or contracts.
 
@@ -58,4 +58,4 @@ Urgency can shorten the path, but it does not remove the need for evidence.
 
 ## Boundaries
 
-This repository does not promise a bug bounty, private consulting, or support for fork-specific modifications. The supported security surface is the one described by the current repository, the numbered docs spine, and the active release line.
+This repository does not promise a bug bounty, private consulting, or support for fork-specific modifications. The supported security surface is the one described by the current repository, the numbered docs spine, and the latest published release line.
