@@ -15,8 +15,8 @@ related:
 # Library getting started
 
 ```rust
-use bijux_atlas::model::DatasetId;
-use bijux_atlas::query::Region;
+use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::domain::query::Region;
 
 fn main() -> Result<(), String> {
     let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38")

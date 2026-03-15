@@ -1,6 +1,6 @@
 # Exit Codes
 
-`bijux-atlas` uses stable process exit codes from `bijux_atlas::core::ExitCode`.
+`bijux-atlas` uses stable process exit codes from `bijux_atlas::contracts::errors::ExitCode`.
 
 - `0` `Success`: command completed successfully.
 - `2` `Usage`: invalid arguments, unsupported command shape, or contract violation reported to caller.

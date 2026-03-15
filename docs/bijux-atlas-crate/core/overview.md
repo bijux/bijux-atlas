@@ -1,28 +1,30 @@
-# bijux-atlas::core
+# bijux-atlas domain and contracts overview
 
 ![Version](https://img.shields.io/badge/version-0.1.0-informational.svg) ![License: Apache-2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg) ![Docs](https://img.shields.io/badge/docs-contract-stable-brightgreen.svg)
 
-Deterministic domain primitives and boundary contracts shared across bijux-atlas crates.
+Deterministic domain primitives and boundary contracts live under the canonical `domain`,
+`contracts`, and `runtime` roots.
 
 ## Stability
 
-This crate defines low-level contracts. Public API changes require deliberate versioning and contract test updates.
+These modules define low-level contracts. Public API changes require deliberate versioning and
+contract test updates.
 
 ## Public entrypoints
 
-- `canonical` module and hashing helpers (`sha256`, `sha256_hex`, `Hash256`)
-- canonical errors (`Error`, `Result<T>`, machine errors, exit codes)
-- invariant identifiers (`DatasetId`, `ShardId`, `RunId`)
-- effect boundary traits (`FsPort`, `ClockPort`, `NetPort`, `ProcessPort`)
+- `bijux_atlas::domain::canonical` hashing helpers (`sha256`, `sha256_hex`, `Hash256`)
+- `bijux_atlas::contracts::errors` for canonical errors and exit codes
+- `bijux_atlas::domain::dataset` for invariant identifiers such as `DatasetId` and `ShardId`
+- `bijux_atlas::runtime::config` for runtime path and config resolution
 
 ## Quick example
 
 ```rust
-use bijux_atlas::core::DatasetId;
+use bijux_atlas::domain::dataset::DatasetId;
 
-let dataset = DatasetId::new("110/homo_sapiens/GRCh38")?;
-assert_eq!(dataset.as_str(), "110/homo_sapiens/GRCh38");
-# Ok::<(), bijux_atlas::core::Error>(())
+let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38")?;
+assert_eq!(dataset.canonical_string(), "110/homo_sapiens/GRCh38");
+# Ok::<(), bijux_atlas::contracts::errors::Error>(())
 ```
 
 ## Do Not
