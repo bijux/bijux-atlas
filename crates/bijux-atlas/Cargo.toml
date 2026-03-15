@@ -118,8 +118,24 @@ name = "interfaces_client"
 path = "tests/interfaces/client.rs"
 
 [[test]]
+name = "interfaces_cli_runtime"
+path = "tests/interfaces/cli_runtime_parity.rs"
+
+[[test]]
+name = "interfaces_cli_surface"
+path = "tests/interfaces/cli_surface.rs"
+
+[[test]]
+name = "interfaces_help_surface"
+path = "tests/interfaces/help_surface.rs"
+
+[[test]]
 name = "interfaces_server"
 path = "tests/interfaces/server.rs"
+
+[[test]]
+name = "interfaces_user_cli_surface"
+path = "tests/interfaces/user_cli_surface.rs"
 
 [[test]]
 name = "workflows_end_to_end"
