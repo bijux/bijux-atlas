@@ -35,6 +35,7 @@ Atlas does not own:
 - external infrastructure guarantees outside documented operational assumptions
 - arbitrary ad hoc data transforms outside supported workflows
 - undocumented helper behavior as a public promise
+- repository-maintenance automation as part of the end-user runtime surface
 
 ## Reader-Facing Boundary Model
 
@@ -53,6 +54,7 @@ The key distinction is between supported surfaces and implementation detail. Atl
 
 - commands, endpoints, and contracts are public-facing
 - helpers, shims, and internal glue are not
+- maintainer control-plane workflows are real, but they are not the same product surface as runtime ingest and query behavior
 
 ## What Atlas Is Not Trying to Be
 
@@ -63,6 +65,7 @@ Atlas is not:
 - a mutable operational database where runtime writes redefine release state
 - a shell-script-first control plane
 - a compatibility promise for every internal Rust path
+- a claim that local shortcuts and production workflows are interchangeable
 
 ## Why These Non-Goals Matter
 
@@ -88,4 +91,3 @@ When a system tries to be everything, documentation, code ownership, and contrac
 4. Would a user or operator reasonably expect this to be stable?
 
 If the answer to the last question is yes, the change probably belongs in a contract-aware path and should be documented as such.
-

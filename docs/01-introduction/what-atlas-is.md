@@ -67,6 +67,24 @@ flowchart LR
 - operators who need a predictable runtime and clear observability
 - maintainers who need a codebase with explicit ownership and compatibility boundaries
 
+## Where Atlas Fits Well
+
+Atlas is a strong fit when you need:
+
+- explicit ingest validation before data becomes serveable
+- durable release artifacts that can be published, cataloged, and rolled back deliberately
+- query and operational surfaces that are easier to reason about than mutable runtime state
+- engineering workflows where documented contracts matter more than convenience shortcuts
+
+## Where Atlas Is a Weak Fit
+
+Atlas is a weak fit when you need:
+
+- a generic data transformation framework for arbitrary pipelines
+- live runtime writes to redefine release content on the fly
+- a minimal tool with almost no governance or compatibility surface
+- every internal helper, fixture, or crate path to be treated like public API
+
 ## What Atlas Optimizes For
 
 - deterministic outputs over accidental convenience
@@ -83,9 +101,14 @@ Atlas is opinionated in ways that matter operationally:
 - it keeps artifact ownership separate from server request handling
 - it tries to make compatibility visible rather than accidental
 
+## Current Limits to Keep in Mind
+
+- Atlas does not claim ownership of upstream data correctness; it validates what crosses supported input boundaries.
+- Atlas does not treat ingest build output as the serving contract. Publication into a serving store is a separate step on purpose.
+- Atlas does not promise that internal Rust module layout, debug-only output, or maintainer-only automation surfaces are stable for downstream consumers.
+
 ## Read Next
 
 - [Core Concepts](core-concepts.md)
 - [Boundaries and Non-Goals](boundaries-and-non-goals.md)
 - [Run Atlas Locally](../02-getting-started/run-atlas-locally.md)
-

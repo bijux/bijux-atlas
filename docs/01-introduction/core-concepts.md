@@ -15,21 +15,34 @@ The rest of the Atlas documentation assumes a small vocabulary. If these concept
 
 ```mermaid
 flowchart TD
-    Input[Source input] --> Dataset[Dataset]
-    Dataset --> Release[Release]
-    Release --> Artifact[Artifact]
+    Input[Source input] --> BuildRoot[Build root]
+    BuildRoot --> Artifact[Artifact]
     Artifact --> Catalog[Catalog]
-    Catalog --> Store[Store]
+    Artifact --> Store[Store]
+    Catalog --> Dataset[Dataset identity]
+    Dataset --> Release[Release]
     Store --> Query[Query surface]
 ```
 
+The most common mistake is to collapse these boundaries into one idea. Atlas works better when you keep them distinct:
+
+- source inputs are not yet release state
+- a build root is validated output, but not yet the serving store
+- published artifacts and catalog state are the durable serving boundary
+
+## Build Root
+
+A build root is the validated output of ingest before publication into a serving store. It exists so Atlas can inspect and verify produced dataset state before the runtime starts depending on it.
+
+Treat the build root as a staging boundary, not as the final public-serving shape.
+
 ## Dataset
 
-A dataset is the logical unit of released data identified by release, species, and assembly. It is the thing you validate, publish, catalog, and later query.
+A dataset is the logical unit of released data. In Atlas docs, dataset identity is usually expressed by release, species, and assembly together. It is the thing you validate, publish, catalog, and later query.
 
 ## Release
 
-A release is a versioned point in time for dataset content. Releases matter because:
+A release is the versioned point in time for dataset content. Releases matter because:
 
 - clients ask for them explicitly
 - compatibility and diff workflows compare them
@@ -49,11 +62,14 @@ flowchart LR
 
 ## Catalog
 
-A catalog is the discoverable inventory of published datasets and their artifact locations or metadata. It tells Atlas what is available and where the durable release state lives.
+A catalog is the discoverable inventory of published datasets and their artifact locations or metadata. It answers two practical questions:
+
+- what published dataset identities exist
+- where the runtime should find their durable release state
 
 ## Store
 
-The store is the persistence layer for immutable artifacts and related content. Atlas can expose different store implementations, but the conceptual role is stable: hold durable artifact state, not transient request state.
+The store is the persistence layer for immutable artifacts and related content. Atlas can expose different store implementations, but the conceptual role is stable: hold durable artifact state, not transient request state and not raw ingest fixtures.
 
 ## Query
 
@@ -93,6 +109,7 @@ A contract is a documented and test-backed promise about some stable surface. At
 Most Atlas confusion comes from mixing these layers:
 
 - treating source inputs as if they were already release artifacts
+- treating a build root as if it were already the serving store
 - treating server memory or cache state as if it were durable product state
 - treating internal helper code as if it were part of the public contract
 
@@ -101,4 +118,3 @@ When in doubt, ask three questions:
 1. Is this source input, validated dataset state, or immutable artifact state?
 2. Is this about runtime behavior or durable release content?
 3. Is this a contract-owned surface or an implementation detail?
-

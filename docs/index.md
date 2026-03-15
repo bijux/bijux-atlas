@@ -11,6 +11,8 @@ last_reviewed: 2026-03-15
 
 Atlas is a contract-governed data platform for validating genomic dataset inputs, producing immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
 
+This site is written as engineering documentation, not product marketing. It aims to be specific about where Atlas is strong, where it is intentionally narrow, and which behaviors are documented contracts versus current implementation.
+
 This site is organized for three reader groups:
 
 - users who need to ingest, validate, query, and serve data
@@ -59,6 +61,22 @@ flowchart LR
     V[Compatibility intent] --> K[Contracts]
 ```
 
+## Before You Invest Time
+
+Atlas is a strong fit when you want:
+
+- explicit validation before data becomes serveable
+- immutable release artifacts instead of mutable runtime truth
+- stable query and operational surfaces around published dataset state
+- contract-owned behavior that can be reviewed and tested
+
+Atlas is a weak fit when you want:
+
+- a generic ETL or workflow orchestration framework
+- a server that mutates live release content as part of normal request handling
+- a low-ceremony tool with minimal policy, validation, or compatibility boundaries
+- undocumented internal behavior to count as a stable integration surface
+
 ## Atlas at a Glance
 
 Atlas turns source inputs such as GFF3, FASTA, and FAI into validated, release-shaped artifacts and exposes those artifacts through stable APIs and deterministic command outputs.
@@ -90,9 +108,14 @@ flowchart LR
 - reader-first organization rather than repo-history organization
 - examples tied to real Atlas commands and real repository fixtures
 
+## Reading Rule
+
+If a behavior is described in `07-reference` or `08-contracts`, it is intended to be relied on more strongly.
+
+If it appears only in examples, source code, or debug output, treat it as current behavior unless the contracts say otherwise.
+
 ## First Three Pages to Read
 
 - [What Atlas Is](01-introduction/what-atlas-is.md)
 - [Run Atlas Locally](02-getting-started/run-atlas-locally.md)
 - [System Overview](05-architecture/system-overview.md)
-

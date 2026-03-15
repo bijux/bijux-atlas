@@ -11,6 +11,8 @@ last_reviewed: 2026-03-15
 
 Atlas is opinionated about stability: it does not promise everything, but what it does promise should be explicit, test-backed, and documented.
 
+The practical reading rule is simple: if a behavior is not documented as a contract-owned surface, treat it as current behavior only and confirm it before you build automation or operational process around it.
+
 ## The Stability Stack
 
 ```mermaid
@@ -26,6 +28,16 @@ Atlas aims to make stability understandable by layer:
 - public commands and options are more stable than internal helper code
 - API schemas and structured output are more stable than ad hoc debug payloads
 - runtime config contracts are more stable than undocumented environment-dependent behavior
+
+## What We Can Honestly Claim
+
+Atlas should earn confidence from three places:
+
+- documented contracts
+- tests and validation that exercise those contracts
+- release or review evidence that shows the current implementation still matches them
+
+Intent by itself is not a guarantee.
 
 ## What Atlas Tries to Guarantee
 
@@ -51,6 +63,12 @@ Atlas tries to provide:
 - all internal fixtures or benchmark helpers are public API
 - every implementation detail remains source-compatible across refactors
 
+## Current Hard Limits
+
+- Atlas validates supported inputs and runtime boundaries, but it does not make upstream data sources inherently correct.
+- Atlas prefers artifact-centric workflows, so shortcuts that skip publication into a serving store are outside the intended serving model.
+- Maintainer automation around `bijux-dev-atlas` is important and tested, but it is not the same stability layer as the user-facing runtime API and CLI.
+
 ## Why Stability Is Evidence-Based
 
 ```mermaid
@@ -70,6 +88,13 @@ Atlas does not treat “we intended this to be stable” as enough. Stability is
 
 ## How to Interpret Stability in Practice
 
+When you need a stronger claim, ask:
+
+1. Is the surface documented?
+2. Is it described in reference or contracts rather than only in examples?
+3. Do tests or checks enforce it?
+4. Would a future release be expected to preserve it intentionally?
+
 If you are a user:
 
 - trust documented commands, config contracts, and query behavior
@@ -87,4 +112,3 @@ If you are a maintainer:
 - [Run Atlas Locally](../02-getting-started/run-atlas-locally.md)
 - [Contracts and Boundaries](../05-architecture/contracts-and-boundaries.md)
 - [Ownership and Versioning](../08-contracts/ownership-and-versioning.md)
-
