@@ -455,7 +455,7 @@ pub use crate::config::{
     RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
     StoreMode,
 };
-pub use crate::routing_hash::consistent_route_dataset;
+pub use crate::domain::routing::consistent_route_dataset;
 pub use crate::server_store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 pub use crate::server_store::federated::{FederatedBackend, RegistrySource};
 
