@@ -37,10 +37,31 @@ flowchart TD
 ```bash
 cargo test -p bijux-atlas
 cargo test -p bijux-dev-atlas
+cargo bench -p bijux-dev-atlas
+cargo run -q -p bijux-dev-atlas -- perf run --scenario gene-lookup --format json
 make test
 ```
+
+## Evidence Quality Rules
+
+- state exactly what failed or changed
+- include one rerun command a reviewer can copy and paste
+- name the artifact or report path when output matters
+- prefer structured evidence when a lane already consumes JSON
+
+## Performance and Benchmark Discipline
+
+Performance evidence is part of the quality story when a change touches expensive paths, control-plane throughput, or report-heavy flows.
+
+- keep benchmarks deterministic
+- keep benchmark artifacts under approved workspace roots
+- do not hide expensive validation behind fast local commands
+- use broader lanes for slow or environment-sensitive evidence
+
+## Cost Awareness
+
+Fast feedback matters. Run the smallest targeted command that proves the change is safe, then escalate to broader suites only when the change scope requires it.
 
 ## Maintainer Rule
 
 If you change a public or contract-owned surface, the test story should show why the change is safe or intentionally breaking.
-

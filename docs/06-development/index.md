@@ -41,6 +41,7 @@ flowchart LR
 - [Local Development](local-development.md)
 - [Contributor Workflow](contributor-workflow.md)
 - [Automation Control Plane](automation-control-plane.md)
+- [Decision Records and Ownership](decision-records-and-ownership.md)
 - [Testing and Evidence](testing-and-evidence.md)
 - [Adding CLI Surface](adding-cli-surface.md)
 - [Adding HTTP Surface](adding-http-surface.md)

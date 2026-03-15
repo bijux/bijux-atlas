@@ -33,6 +33,8 @@ flowchart TD
 ## Pages in This Section
 
 - [Command Surface](command-surface.md)
+- [Automation Command Surface](automation-command-surface.md)
+- [Automation Reports Reference](automation-reports-reference.md)
 - [Environment Variables](environment-variables.md)
 - [Runtime Config Reference](runtime-config-reference.md)
 - [API Endpoint Index](api-endpoint-index.md)
@@ -40,4 +42,3 @@ flowchart TD
 - [Feature Flags](feature-flags.md)
 - [Artifact Layout](artifact-layout.md)
 - [Glossary](glossary.md)
-

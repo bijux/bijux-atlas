@@ -145,6 +145,7 @@ nav:
       - Local Development: 06-development/local-development.md
       - Contributor Workflow: 06-development/contributor-workflow.md
       - Automation Control Plane: 06-development/automation-control-plane.md
+      - Decision Records and Ownership: 06-development/decision-records-and-ownership.md
       - Testing and Evidence: 06-development/testing-and-evidence.md
       - Adding CLI Surface: 06-development/adding-cli-surface.md
       - Adding HTTP Surface: 06-development/adding-http-surface.md
@@ -155,6 +156,8 @@ nav:
   - 07 Reference:
       - Overview: 07-reference/index.md
       - Command Surface: 07-reference/command-surface.md
+      - Automation Command Surface: 07-reference/automation-command-surface.md
+      - Automation Reports Reference: 07-reference/automation-reports-reference.md
       - Environment Variables: 07-reference/environment-variables.md
       - Runtime Config Reference: 07-reference/runtime-config-reference.md
       - API Endpoint Index: 07-reference/api-endpoint-index.md
@@ -165,6 +168,7 @@ nav:
   - 08 Contracts:
       - Overview: 08-contracts/index.md
       - API Compatibility: 08-contracts/api-compatibility.md
+      - Automation Contracts: 08-contracts/automation-contracts.md
       - Structured Output Contracts: 08-contracts/structured-output-contracts.md
       - Runtime Config Contracts: 08-contracts/runtime-config-contracts.md
       - Plugin Contracts: 08-contracts/plugin-contracts.md
