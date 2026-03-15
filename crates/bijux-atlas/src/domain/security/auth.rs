@@ -287,7 +287,22 @@ pub fn extract_request_identity(headers: &BTreeMap<String, String>) -> RequestId
     let request_id = headers
         .get("x-request-id")
         .cloned()
-        .unwrap_or_else(|| "req-unknown".to_string());
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| {
+            let client_ip = headers
+                .get("x-forwarded-for")
+                .and_then(|value| value.split(',').next())
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .unwrap_or("unknown-client");
+            let user_agent = headers
+                .get("user-agent")
+                .map(String::as_str)
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or("unknown-agent");
+            let fingerprint = sha256_hex(format!("{client_ip}\n{user_agent}").as_bytes());
+            format!("req-{}", &fingerprint[..16])
+        });
     let client_ip = headers
         .get("x-forwarded-for")
         .and_then(|value| value.split(',').next())
@@ -426,5 +441,23 @@ mod tests {
         assert_eq!(context.subject, "user:alice");
         assert_eq!(context.method, "token");
         assert_eq!(context.scopes, vec!["dataset.read".to_string()]);
+    }
+
+    #[test]
+    fn request_identity_derives_a_concrete_id_when_header_is_missing() {
+        let mut headers = BTreeMap::new();
+        headers.insert(
+            "x-forwarded-for".to_string(),
+            "203.0.113.9, 198.51.100.10".to_string(),
+        );
+        headers.insert("user-agent".to_string(), "atlas-client/2.0".to_string());
+
+        let first = extract_request_identity(&headers);
+        let second = extract_request_identity(&headers);
+
+        assert!(first.request_id.starts_with("req-"));
+        assert_eq!(first.request_id, second.request_id);
+        assert_eq!(first.client_ip, "203.0.113.9");
+        assert_eq!(first.user_agent, "atlas-client/2.0");
     }
 }

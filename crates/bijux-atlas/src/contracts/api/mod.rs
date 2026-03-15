@@ -29,6 +29,7 @@ pub mod responses;
 pub mod wire;
 
 pub use dto::DatasetKeyDto;
+pub(crate) use errors::fallback_request_id;
 pub use errors::{ApiError, ApiErrorCode};
 pub use openapi::openapi_v1_spec;
 pub use params::{
@@ -174,11 +175,22 @@ mod tests {
 
     #[test]
     fn api_error_json_field_order_is_stable() {
-        let err = ApiError::invalid_param("limit", "bad");
+        let err = ApiError::new(
+            ApiErrorCode::InvalidQueryParameter,
+            "invalid query parameter: limit",
+            serde_json::json!({
+                "field_errors": [{
+                    "parameter": "limit",
+                    "reason": "invalid",
+                    "value": "bad"
+                }]
+            }),
+            "req-contract",
+        );
         let encoded = serde_json::to_string(&err).expect("encode");
         assert_eq!(
             encoded,
-            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"field_errors\":[{\"parameter\":\"limit\",\"reason\":\"invalid\",\"value\":\"bad\"}]},\"request_id\":\"req-unknown\"}"
+            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"field_errors\":[{\"parameter\":\"limit\",\"reason\":\"invalid\",\"value\":\"bad\"}]},\"request_id\":\"req-contract\"}"
         );
     }
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::contracts::api::{ApiError, ApiErrorCode};
+use crate::contracts::api::{fallback_request_id, ApiError, ApiErrorCode};
 use axum::http::{HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::Json;
@@ -52,7 +52,7 @@ pub(crate) fn api_error(code: ApiErrorCode, message: &str, details: Value) -> Ap
         code,
         message: message.to_string(),
         details,
-        request_id: "req-unknown".to_string(),
+        request_id: fallback_request_id(),
     }
 }
 

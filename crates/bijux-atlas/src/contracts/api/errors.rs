@@ -2,8 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::sync::atomic::{AtomicU64, Ordering};
 
 pub use super::generated::error_codes::ApiErrorCode;
+
+static FALLBACK_REQUEST_ID_SEED: AtomicU64 = AtomicU64::new(1);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -36,7 +39,7 @@ impl ApiError {
             ApiErrorCode::InvalidQueryParameter,
             format!("invalid query parameter: {name}"),
             json!({"field_errors":[{"parameter": name, "reason": "invalid", "value": value}]}),
-            "req-unknown",
+            fallback_request_id(),
         )
     }
 
@@ -46,7 +49,7 @@ impl ApiError {
             ApiErrorCode::ValidationFailed,
             "validation failed",
             json!({"field_errors": field_errors}),
-            "req-unknown",
+            fallback_request_id(),
         )
     }
 
@@ -56,7 +59,7 @@ impl ApiError {
             ApiErrorCode::MissingDatasetDimension,
             format!("missing dataset dimension: {name}"),
             json!({"dimension": name}),
-            "req-unknown",
+            fallback_request_id(),
         )
     }
 
@@ -66,9 +69,15 @@ impl ApiError {
             ApiErrorCode::InvalidCursor,
             "invalid cursor",
             json!({"cursor": value}),
-            "req-unknown",
+            fallback_request_id(),
         )
     }
+}
+
+#[must_use]
+pub(crate) fn fallback_request_id() -> String {
+    let id = FALLBACK_REQUEST_ID_SEED.fetch_add(1, Ordering::Relaxed);
+    format!("req-{id:016x}")
 }
 
 const _: fn() = || {

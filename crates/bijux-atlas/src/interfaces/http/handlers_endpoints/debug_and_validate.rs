@@ -339,7 +339,7 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
         "version": {
             "crate": env!("CARGO_PKG_NAME"),
             "version": env!("CARGO_PKG_VERSION"),
-            "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev")
+            "build_hash": crate::runtime_build_hash()
         },
         "runtime_stats": runtime_stats,
         "cache_stats": cache_stats

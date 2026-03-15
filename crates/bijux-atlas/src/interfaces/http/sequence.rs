@@ -591,12 +591,13 @@ pub(crate) async fn sequence_region_handler(
     headers: HeaderMap,
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
+    let request_id = crate::http::handlers::propagated_request_id(&headers, &state);
     let Some(region) = params.get("region").cloned() else {
         let resp = api_error_response(
             StatusCode::BAD_REQUEST,
             ApiError::invalid_param("region", "missing"),
         );
-        return with_request_id(resp, "req-missing-region");
+        return with_request_id(resp, &request_id);
     };
     sequence_common(state, headers, params, "/v1/sequence/region", region).await
 }
