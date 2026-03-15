@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use super::*;
 use crate::application::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
+use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
 use crate::infrastructure::store::registry::fake::FakeStore;
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;
@@ -37,13 +35,13 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        bijux_atlas_model::ArtifactChecksums::new(
+        ArtifactChecksums::new(
             "a".repeat(64),
             "b".repeat(64),
             "c".repeat(64),
             sqlite_sha,
         ),
-        bijux_atlas_model::ManifestStats::new(1, 1, 1),
+        ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)
 }
@@ -56,13 +54,13 @@ fn mk_dataset_for(release: &str) -> (DatasetId, ArtifactManifest, Vec<u8>) {
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        bijux_atlas_model::ArtifactChecksums::new(
+        ArtifactChecksums::new(
             "a".repeat(64),
             "b".repeat(64),
             "c".repeat(64),
             sqlite_sha,
         ),
-        bijux_atlas_model::ManifestStats::new(1, 1, 1),
+        ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)
 }
