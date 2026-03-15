@@ -258,10 +258,10 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         compute_contig_fractions: false,
         compute_transcript_spliced_length: false,
         compute_transcript_cds_length: false,
-        duplicate_transcript_id_policy: crate::model::DuplicateTranscriptIdPolicy::Reject,
-        transcript_id_policy: crate::model::TranscriptIdPolicy::default(),
-        unknown_feature_policy: crate::model::UnknownFeaturePolicy::IgnoreWithWarning,
-        feature_id_uniqueness_policy: crate::model::FeatureIdUniquenessPolicy::Reject,
+        duplicate_transcript_id_policy: crate::query::DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: crate::query::TranscriptIdPolicy::default(),
+        unknown_feature_policy: crate::query::UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: crate::query::FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
         timestamp_policy: TimestampPolicy::DeterministicZero,
     })
@@ -435,7 +435,7 @@ pub(super) fn smoke_dataset(
 ) -> Result<(), String> {
     let (release, species, assembly) = output::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::artifact_paths(&root, &id);
+    let paths = crate::domain::dataset::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
 
     let count: i64 = conn

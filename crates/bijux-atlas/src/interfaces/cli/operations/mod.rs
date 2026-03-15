@@ -2,11 +2,11 @@
 
 use crate::cli::OutputMode;
 use crate::domain::canonical;
-use crate::domain::sha256_hex;
-use crate::model::{
-    parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
-    ShardCatalog,
+use crate::domain::dataset::{
+    parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
 };
+use crate::domain::sha256_hex;
+use crate::domain::query::ReleaseGeneIndex;
 use crate::policies::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
@@ -183,7 +183,7 @@ pub(crate) fn promote_catalog(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::artifact_paths(&store_root, &dataset);
+    let paths = crate::domain::dataset::artifact_paths(&store_root, &dataset);
     if !paths.manifest.exists() || !paths.sqlite.exists() {
         return Err(format!(
             "promote requires published artifact first: missing {} or {}",
@@ -276,7 +276,7 @@ pub(crate) fn pack_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::artifact_paths(&root, &dataset);
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
     let manifest = fs::read(&paths.manifest).map_err(|e| e.to_string())?;
     let sqlite = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
     let lock = ManifestLock::from_bytes(&manifest, &sqlite);

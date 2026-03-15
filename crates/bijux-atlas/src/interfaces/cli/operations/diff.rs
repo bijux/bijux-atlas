@@ -20,8 +20,8 @@ pub(crate) fn build_release_diff(
         .map_err(|e| e.to_string())?;
     let to = DatasetId::new(&args.to_release, &args.species, &args.assembly)
         .map_err(|e| e.to_string())?;
-    let from_paths = crate::model::artifact_paths(&args.root, &from);
-    let to_paths = crate::model::artifact_paths(&args.root, &to);
+    let from_paths = crate::domain::dataset::artifact_paths(&args.root, &from);
+    let to_paths = crate::domain::dataset::artifact_paths(&args.root, &to);
     let from_index = read_release_index(&from_paths.release_gene_index)?;
     let to_index = read_release_index(&to_paths.release_gene_index)?;
     let from_biotype = read_gene_biotypes(&from_paths.sqlite)?;
@@ -188,8 +188,8 @@ fn read_gene_biotypes(sqlite: &Path) -> Result<HashMap<String, String>, String> 
 }
 
 fn index_by_identity(
-    entries: &[crate::model::ReleaseGeneIndexEntry],
-) -> HashMap<String, crate::model::ReleaseGeneIndexEntry> {
+    entries: &[crate::domain::query::ReleaseGeneIndexEntry],
+) -> HashMap<String, crate::domain::query::ReleaseGeneIndexEntry> {
     let mut out = HashMap::with_capacity(entries.len());
     for e in entries {
         out.insert(stable_gene_identity(e), e.clone());
@@ -197,7 +197,7 @@ fn index_by_identity(
     out
 }
 
-fn stable_gene_identity(entry: &crate::model::ReleaseGeneIndexEntry) -> String {
+fn stable_gene_identity(entry: &crate::domain::query::ReleaseGeneIndexEntry) -> String {
     if !entry.gene_id.as_str().trim().is_empty() {
         return entry.gene_id.as_str().to_string();
     }

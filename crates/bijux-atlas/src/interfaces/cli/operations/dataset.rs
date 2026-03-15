@@ -11,7 +11,7 @@ pub(crate) fn validate_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::artifact_paths(&root, &dataset);
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
 
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
@@ -84,7 +84,7 @@ pub(crate) fn validate_dataset(
 fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
     let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
     let thresholds_path = workspace.join("configs/ops/dataset-qc-thresholds.v1.json");
-    let paths = crate::model::artifact_paths(root, dataset);
+    let paths = crate::domain::dataset::artifact_paths(root, dataset);
     let qc_report = paths.derived_dir.join("qc.json");
     let qc_raw = fs::read_to_string(&qc_report)
         .map_err(|e| format!("dataset validate failed: {}: {e}", qc_report.display()))?;
@@ -235,7 +235,7 @@ pub(crate) fn publish_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let source_paths = crate::model::artifact_paths(&source_root, &dataset);
+    let source_paths = crate::domain::dataset::artifact_paths(&source_root, &dataset);
     let manifest_bytes = fs::read(&source_paths.manifest).map_err(|e| e.to_string())?;
     let sqlite_bytes = fs::read(&source_paths.sqlite).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
@@ -278,9 +278,9 @@ fn enforce_publish_gates(
             manifest.stats.gene_count, policy.publish_gates.min_gene_count
         ));
     }
-    let paths = crate::model::artifact_paths(source_root, dataset);
+    let paths = crate::domain::dataset::artifact_paths(source_root, dataset);
     let anomaly_raw = fs::read_to_string(paths.anomaly_report).map_err(|e| e.to_string())?;
-    let anomaly: crate::model::IngestAnomalyReport =
+    let anomaly: crate::domain::dataset::IngestAnomalyReport =
         serde_json::from_str(&anomaly_raw).map_err(|e| e.to_string())?;
     if (anomaly.missing_parents.len() as u64) > policy.publish_gates.max_missing_parents {
         return Err(format!(

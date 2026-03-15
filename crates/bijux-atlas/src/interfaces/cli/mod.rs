@@ -13,14 +13,13 @@ use crate::errors::{ConfigPathScope, ExitCode, MachineError};
 use crate::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
-use crate::model::{
-    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
-    SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
-};
 use crate::query::{
-    classify_query, explain_query_plan, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
-    RegionFilter,
+    classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
+    GeneFilter, GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter,
+    SeqidNormalizationPolicy, TranscriptTypePolicy,
 };
+use crate::domain::dataset::{DatasetId, ShardingPlan};
+use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use clap::{error::ErrorKind, CommandFactory, Parser};
 use clap_complete::{generate, Generator};
 use commands::{CatalogCommand, DatasetCommand, DiffCommand, GcCommand};
