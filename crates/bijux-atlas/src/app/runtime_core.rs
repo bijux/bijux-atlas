@@ -4,7 +4,7 @@
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use crate::api::{ApiError, ApiErrorCode};
-use crate::{cache, dataset_shards, http, telemetry};
+use crate::{cache, http, telemetry};
 use async_trait::async_trait;
 use axum::body::Body;
 use axum::extract::{DefaultBodyLimit, State};

@@ -17,7 +17,7 @@ impl DatasetCacheManager {
         self.cfg.pinned_datasets.contains(dataset)
     }
 
-    pub(super) async fn check_store_breaker(&self) -> Result<(), CacheError> {
+    pub(crate) async fn check_store_breaker(&self) -> Result<(), CacheError> {
         let mut lock = self.store_breaker.lock().await;
         if let Some(until) = lock.open_until {
             if Instant::now() < until {
@@ -38,7 +38,7 @@ impl DatasetCacheManager {
             .unwrap_or(false)
     }
 
-    pub(super) async fn record_store_download_failure(&self, backend: &str, reason: &str) {
+    pub(crate) async fn record_store_download_failure(&self, backend: &str, reason: &str) {
         self.metrics
             .store_download_failures
             .fetch_add(1, Ordering::Relaxed);
@@ -85,7 +85,7 @@ impl DatasetCacheManager {
         }
     }
 
-    pub(super) async fn reset_store_breaker(&self) {
+    pub(crate) async fn reset_store_breaker(&self) {
         let mut lock = self.store_breaker.lock().await;
         lock.failure_count = 0;
         lock.open_until = None;

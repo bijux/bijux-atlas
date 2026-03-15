@@ -39,14 +39,12 @@ use tracing::{error, info, warn, Instrument};
 pub mod adapters;
 pub mod api;
 pub mod app;
-#[path = "server/cache/mod.rs"]
+#[path = "app/cache/mod.rs"]
 mod cache;
 pub mod cli;
 mod config;
 pub mod contracts;
 pub mod core;
-#[path = "server/cache/shards.rs"]
-mod dataset_shards;
 pub mod domain;
 #[path = "core/effect_adapters/mod.rs"]
 mod effect_adapters;
@@ -66,8 +64,6 @@ pub mod server;
 mod server_store;
 #[path = "core/services/mod.rs"]
 mod services;
-#[path = "server/cache/resilience.rs"]
-mod store_resilience;
 pub mod support;
 pub mod types;
 
