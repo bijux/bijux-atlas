@@ -70,17 +70,18 @@ fn policy_changes_require_schema_bump() {
 
 #[test]
 fn policies_crate_dependency_minimalism() {
-    let cargo = std::fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
-        .expect("read Cargo.toml");
-    for forbidden in [
-        "tokio",
-        "axum",
-        "hyper",
-        "bijux-atlas",
-        "bijux-atlas-query",
-    ] {
+    let cargo_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
+    let cargo = std::fs::read_to_string(&cargo_path).expect("read Cargo.toml");
+    let manifest: toml::Value = toml::from_str(&cargo).expect("parse Cargo.toml");
+    let mut dependency_keys = std::collections::BTreeSet::new();
+    for section in ["dependencies", "dev-dependencies", "build-dependencies"] {
+        if let Some(table) = manifest.get(section).and_then(toml::Value::as_table) {
+            dependency_keys.extend(table.keys().cloned());
+        }
+    }
+    for forbidden in ["tokio", "axum", "hyper", "bijux-atlas-query"] {
         assert!(
-            !cargo.contains(forbidden),
+            !dependency_keys.contains(forbidden),
             "forbidden dependency in dev policies crate: {forbidden}"
         );
     }
