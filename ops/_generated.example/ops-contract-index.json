@@ -1,7 +1,7 @@
 {
   "contracts": [
     {
-      "command": "bijux dev atlas ops profiles validate",
+      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -18,7 +18,7 @@
       "title": "pinned datasets manifest subset contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -33,7 +33,7 @@
       "title": "datasets manifest lock contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -48,7 +48,7 @@
       "title": "datasets fixture inventory contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -63,7 +63,7 @@
       "title": "datasets fixture drift promotion contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -78,7 +78,7 @@
       "title": "datasets release diff determinism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -93,7 +93,7 @@
       "title": "datasets qc metadata summary contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -108,7 +108,7 @@
       "title": "datasets rollback policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -123,7 +123,7 @@
       "title": "datasets promotion rules contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -138,7 +138,7 @@
       "title": "datasets consumer interface contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -153,7 +153,7 @@
       "title": "datasets freeze policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -168,7 +168,7 @@
       "title": "datasets store layout contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -183,7 +183,7 @@
       "title": "datasets fixture archive lock contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -198,7 +198,7 @@
       "title": "datasets provenance fields contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
@@ -213,7 +213,7 @@
       "title": "datasets file type boundary contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -228,7 +228,7 @@
       "title": "e2e suites reference contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -243,7 +243,7 @@
       "title": "e2e smoke manifest contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -258,7 +258,7 @@
       "title": "e2e fixtures lock contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -273,7 +273,7 @@
       "title": "e2e realdata snapshot contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -288,7 +288,7 @@
       "title": "e2e taxonomy coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -303,7 +303,7 @@
       "title": "e2e reproducibility enforcement contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -318,7 +318,7 @@
       "title": "e2e coverage matrix determinism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -333,7 +333,7 @@
       "title": "e2e realdata scenario registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -348,7 +348,7 @@
       "title": "e2e surface artifact boundary contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -363,7 +363,7 @@
       "title": "e2e summary schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -378,7 +378,7 @@
       "title": "scenario runner compatibility registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -393,7 +393,7 @@
       "title": "scenario golden snapshots contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -408,7 +408,7 @@
       "title": "scenario output contract fields"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -423,7 +423,7 @@
       "title": "scenario prerequisite guard contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -438,7 +438,7 @@
       "title": "scenario tools registry coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -453,7 +453,7 @@
       "title": "upgrade contracts and specs presence"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -468,7 +468,7 @@
       "title": "upgrade compatibility table contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -483,7 +483,7 @@
       "title": "upgrade and rollback evidence contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -498,7 +498,7 @@
       "title": "upgrade compatibility lint policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -513,7 +513,7 @@
       "title": "schema evolution policy fixture contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -528,7 +528,7 @@
       "title": "api evolution policy fixture contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -543,7 +543,7 @@
       "title": "upgrade rollback baseline fixture contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -558,7 +558,7 @@
       "title": "failure injection catalog contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -573,7 +573,7 @@
       "title": "failure scenario specification contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -588,7 +588,7 @@
       "title": "failure evidence output contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -603,7 +603,7 @@
       "title": "failure contracts policy linkage"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -618,7 +618,7 @@
       "title": "failure evidence completeness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -633,7 +633,7 @@
       "title": "diagnose schema and redaction contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -648,7 +648,7 @@
       "title": "failure fixture catalog contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -665,7 +665,7 @@
       "title": "e2e effect smoke suite contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -682,7 +682,7 @@
       "title": "e2e effect realdata suite contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -697,7 +697,7 @@
       "title": "environment overlay schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -712,7 +712,7 @@
       "title": "environment profile completeness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -727,7 +727,7 @@
       "title": "environment key strictness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -742,7 +742,7 @@
       "title": "environment overlay merge determinism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -757,7 +757,7 @@
       "title": "environment prod safety toggles contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -772,7 +772,7 @@
       "title": "environment ci effect restriction contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -787,7 +787,7 @@
       "title": "environment base defaults contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -802,7 +802,7 @@
       "title": "environment overlay key stability contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -817,7 +817,7 @@
       "title": "environment overlays directory boundary contract"
     },
     {
-      "command": "bijux dev atlas ops helm-env",
+      "command": "bijux-dev-atlas ops helm-env --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -834,7 +834,7 @@
       "title": "helm env allowlist subset contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -849,7 +849,7 @@
       "title": "inventory completeness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -864,7 +864,7 @@
       "title": "inventory orphan files contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -879,7 +879,7 @@
       "title": "inventory duplicate source contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -894,7 +894,7 @@
       "title": "inventory authority tier contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -909,7 +909,7 @@
       "title": "inventory control graph contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -924,7 +924,7 @@
       "title": "inventory contract id format contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.doctor",
@@ -977,7 +977,7 @@
       "title": "inventory gates registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -992,7 +992,7 @@
       "title": "inventory drills registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1007,7 +1007,7 @@
       "title": "inventory owners registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1022,7 +1022,7 @@
       "title": "inventory schema coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1037,7 +1037,7 @@
       "title": "inventory contracts listing pillar coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.directory-completeness"
@@ -1052,7 +1052,7 @@
       "title": "inventory contract debt registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1067,7 +1067,7 @@
       "title": "inventory contract gate map coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1082,7 +1082,7 @@
       "title": "inventory contract gate map gate reference contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1097,7 +1097,7 @@
       "title": "inventory contract gate map command surface contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1112,7 +1112,7 @@
       "title": "inventory contract gate map effects annotation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1127,7 +1127,7 @@
       "title": "inventory contract gate map orphan gate contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1142,7 +1142,7 @@
       "title": "inventory contract gate map orphan contract contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1157,7 +1157,7 @@
       "title": "inventory contract gate map static purity contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -1172,7 +1172,7 @@
       "title": "inventory contract gate map effect kind contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -1187,7 +1187,7 @@
       "title": "inventory contract gate map explain coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -1202,7 +1202,7 @@
       "title": "inventory contract gate map canonical order contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -1217,7 +1217,7 @@
       "title": "inventory contract gate map effect metadata contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1232,7 +1232,7 @@
       "title": "inventory pillars registry contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1247,7 +1247,7 @@
       "title": "inventory pillar directory contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1262,7 +1262,7 @@
       "title": "inventory pillar strictness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1277,7 +1277,7 @@
       "title": "k8s static chart render contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1292,7 +1292,7 @@
       "title": "k8s values schema validation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1307,7 +1307,7 @@
       "title": "k8s install matrix completeness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1322,7 +1322,7 @@
       "title": "k8s forbidden object policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1337,7 +1337,7 @@
       "title": "k8s rbac minimalism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1352,7 +1352,7 @@
       "title": "k8s pod security and probes contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1367,7 +1367,7 @@
       "title": "k8s rollout safety contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1382,7 +1382,7 @@
       "title": "k8s conformance suite contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1397,7 +1397,7 @@
       "title": "k8s install matrix generated consistency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1412,7 +1412,7 @@
       "title": "k8s generated index determinism contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1429,7 +1429,7 @@
       "title": "k8s effect chart defaults render contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1446,7 +1446,7 @@
       "title": "k8s effect minimal values render contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1463,7 +1463,7 @@
       "title": "k8s effect kubeconform contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1480,7 +1480,7 @@
       "title": "k8s effect install matrix contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1497,7 +1497,7 @@
       "title": "k8s effect rollout safety contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1514,7 +1514,7 @@
       "title": "k8s effect tool versions contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1529,7 +1529,7 @@
       "title": "load scenario schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1544,7 +1544,7 @@
       "title": "load thresholds coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1559,7 +1559,7 @@
       "title": "load pinned query lock contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1574,7 +1574,7 @@
       "title": "load baseline schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1589,7 +1589,7 @@
       "title": "load scenario to slo mapping contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1604,7 +1604,7 @@
       "title": "load drift report schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1619,7 +1619,7 @@
       "title": "load result schema sample contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1634,7 +1634,7 @@
       "title": "load cheap survival suite gate contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1649,7 +1649,7 @@
       "title": "load cold start p99 suite gate contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.validate"
@@ -1664,7 +1664,7 @@
       "title": "load scenario slo impact mapping contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1681,7 +1681,7 @@
       "title": "load effect k6 execution contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1698,7 +1698,7 @@
       "title": "load effect thresholds report contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1715,7 +1715,7 @@
       "title": "load effect baseline comparison contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1730,7 +1730,7 @@
       "title": "ops contracts map each contract id to a source file path"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.inventory"
@@ -1745,7 +1745,7 @@
       "title": "ops contracts enforce io locality to ops surfaces"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1760,7 +1760,7 @@
       "title": "observability alert rules contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1775,7 +1775,7 @@
       "title": "observability dashboard golden contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1790,7 +1790,7 @@
       "title": "observability telemetry golden profile contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1805,7 +1805,7 @@
       "title": "observability readiness schema contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1820,7 +1820,7 @@
       "title": "observability alert catalog generation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1835,7 +1835,7 @@
       "title": "observability slo burn-rate consistency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1850,7 +1850,7 @@
       "title": "observability public surface coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1865,7 +1865,7 @@
       "title": "observability telemetry index determinism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1880,7 +1880,7 @@
       "title": "observability drills manifest contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -1895,7 +1895,7 @@
       "title": "observability overload behavior contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-network --format json",
       "effects_required": [
         "network"
       ],
@@ -1912,7 +1912,7 @@
       "title": "observe effect metrics scrape contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-network --format json",
       "effects_required": [
         "network"
       ],
@@ -1929,7 +1929,7 @@
       "title": "observe effect trace structure contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-network --format json",
       "effects_required": [
         "network"
       ],
@@ -1946,7 +1946,7 @@
       "title": "observe effect alerts load contract"
     },
     {
-      "command": "bijux dev atlas ops profiles validate",
+      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1963,7 +1963,7 @@
       "title": "profiles render success contract"
     },
     {
-      "command": "bijux dev atlas ops profiles validate",
+      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1980,7 +1980,7 @@
       "title": "profiles values schema contract"
     },
     {
-      "command": "bijux dev atlas ops profiles validate",
+      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -1997,7 +1997,7 @@
       "title": "profiles kubeconform contract"
     },
     {
-      "command": "bijux dev atlas ops profiles validate",
+      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -2014,7 +2014,7 @@
       "title": "rollout safety profile set contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2029,7 +2029,7 @@
       "title": "report schema ssot contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2044,7 +2044,7 @@
       "title": "report generated payload contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2059,7 +2059,7 @@
       "title": "report evidence levels contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2074,7 +2074,7 @@
       "title": "report diff structure contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2089,7 +2089,7 @@
       "title": "report readiness score determinism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2104,7 +2104,7 @@
       "title": "report release evidence bundle contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2119,7 +2119,7 @@
       "title": "report historical comparison contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2134,7 +2134,7 @@
       "title": "report unified example contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2149,7 +2149,7 @@
       "title": "report canonical json output contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2164,7 +2164,7 @@
       "title": "report lane aggregation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.observe-coverage"
@@ -2179,7 +2179,7 @@
       "title": "report ops bundle reproducibility policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2194,7 +2194,7 @@
       "title": "ops root allowed surface contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2209,7 +2209,7 @@
       "title": "ops root markdown contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2224,7 +2224,7 @@
       "title": "ops no shell scripts contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2239,7 +2239,7 @@
       "title": "ops max directory depth contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2254,7 +2254,7 @@
       "title": "ops filename policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2269,7 +2269,7 @@
       "title": "ops generated gitignore policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2284,7 +2284,7 @@
       "title": "ops generated example secret guard contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2299,7 +2299,7 @@
       "title": "ops placeholder directory contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2314,7 +2314,7 @@
       "title": "ops policy inventory coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2329,7 +2329,7 @@
       "title": "ops deleted doc name guard contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2344,7 +2344,7 @@
       "title": "ops markdown allowlist contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2359,7 +2359,7 @@
       "title": "ops pillar readme cardinality contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2374,7 +2374,7 @@
       "title": "ops markdown allowlist inventory contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2389,7 +2389,7 @@
       "title": "ops procedure text contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2404,7 +2404,7 @@
       "title": "ops pillar markdown minimalism contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2419,7 +2419,7 @@
       "title": "ops deleted markdown denylist contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2437,7 +2437,7 @@
       "title": "ops directory contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2454,7 +2454,7 @@
       "title": "ops generated lifecycle contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2470,7 +2470,7 @@
       "title": "ops required domain files contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2486,7 +2486,7 @@
       "title": "ops markdown budget contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2501,7 +2501,7 @@
       "title": "ops docs ssot boundary contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2516,7 +2516,7 @@
       "title": "ops contract document generation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2532,7 +2532,7 @@
       "title": "operations docs policy linkage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2547,7 +2547,7 @@
       "title": "ops root command surface required commands contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2562,7 +2562,7 @@
       "title": "ops root command surface no hidden commands contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2577,7 +2577,7 @@
       "title": "ops root command surface deterministic ordering contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2592,7 +2592,7 @@
       "title": "ops root command surface effects declaration contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2607,7 +2607,7 @@
       "title": "ops root command surface pillar grouping contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2622,7 +2622,7 @@
       "title": "ops root command surface ad-hoc group guard contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2637,7 +2637,7 @@
       "title": "ops root command surface purpose contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2652,7 +2652,7 @@
       "title": "ops root command surface json output contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2667,7 +2667,7 @@
       "title": "ops root command surface dry-run policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
@@ -2682,7 +2682,7 @@
       "title": "ops root command surface artifacts policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2697,7 +2697,7 @@
       "title": "schema parseability contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2712,7 +2712,7 @@
       "title": "schema index completeness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2727,7 +2727,7 @@
       "title": "schema naming contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2742,7 +2742,7 @@
       "title": "schema budget contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2757,7 +2757,7 @@
       "title": "schema evolution lock contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2772,7 +2772,7 @@
       "title": "schema id consistency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2787,7 +2787,7 @@
       "title": "schema example validation contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2802,7 +2802,7 @@
       "title": "schema intent uniqueness contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2817,7 +2817,7 @@
       "title": "schema canonical formatting contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.schema"
@@ -2832,7 +2832,7 @@
       "title": "schema example coverage contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2847,7 +2847,7 @@
       "title": "stack toml profile contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2862,7 +2862,7 @@
       "title": "stack service dependency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2877,7 +2877,7 @@
       "title": "stack version manifest contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2892,7 +2892,7 @@
       "title": "stack dependency graph contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2907,7 +2907,7 @@
       "title": "stack kind profile consistency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2922,7 +2922,7 @@
       "title": "stack ports inventory consistency contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2937,7 +2937,7 @@
       "title": "stack health report generator contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2952,7 +2952,7 @@
       "title": "stack command surface contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2967,7 +2967,7 @@
       "title": "stack offline profile policy contract"
     },
     {
-      "command": "bijux dev atlas ops check",
+      "command": "bijux-dev-atlas ops validate --format json",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.stack-reproducibility"
@@ -2982,7 +2982,7 @@
       "title": "stack profile intent registry contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -2999,7 +2999,7 @@
       "title": "stack effect kind cluster contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -3016,7 +3016,7 @@
       "title": "stack effect component rollout contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -3033,7 +3033,7 @@
       "title": "stack effect ports inventory contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -3050,7 +3050,7 @@
       "title": "stack effect health report contract"
     },
     {
-      "command": "bijux dev atlas ops run",
+      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
       "effects_required": [
         "subprocess"
       ],
@@ -3068,6 +3068,6 @@
     }
   ],
   "domain": "ops",
-  "generated_by": "bijux dev atlas ops contracts-index",
+  "generated_by": "manual+curated-example",
   "schema_version": 1
 }

@@ -118,16 +118,11 @@
       "lifecycle": "authoritative"
     },
     {
-      "id": "action.ops.root.check",
+      "id": "action.ops.root.validate",
       "type": "action",
-      "consumer": "ops.checks.inventory_contract_integrity",
-      "lifecycle": "declared"
-    },
-    {
-      "id": "action.ops.root.contracts-check",
-      "type": "action",
-      "consumer": "ops.checks.inventory_contract_integrity",
-      "lifecycle": "declared"
+      "consumer": "ops.validate",
+      "lifecycle": "declared",
+      "label": "ops.root.validate"
     },
     {
       "id": "action.ops.root.schema-check",
@@ -222,7 +217,7 @@
     },
     {
       "from": "artifact.gates",
-      "to": "action.ops.root.contracts-check",
+      "to": "action.ops.root.validate",
       "kind": "consumer"
     },
     {
@@ -231,13 +226,8 @@
       "kind": "consumer"
     },
     {
-      "from": "artifact.gates",
-      "to": "action.ops.root.check",
-      "kind": "consumer"
-    },
-    {
       "from": "gate.ops.gate.inventory",
-      "to": "action.ops.root.contracts-check",
+      "to": "action.ops.root.validate",
       "kind": "consumer"
     },
     {
@@ -247,7 +237,7 @@
     },
     {
       "from": "gate.ops.gate.generated",
-      "to": "action.ops.root.check",
+      "to": "action.ops.root.validate",
       "kind": "consumer"
     },
     {
