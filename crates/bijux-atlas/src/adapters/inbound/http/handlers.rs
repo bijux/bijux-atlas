@@ -2,8 +2,8 @@
 
 #![deny(clippy::redundant_clone)]
 
-pub(crate) use crate::interfaces::http::handlers_endpoints::*;
-pub(crate) use crate::interfaces::http::handlers_utilities::*;
+pub(crate) use crate::adapters::inbound::http::handlers_endpoints::*;
+pub(crate) use crate::adapters::inbound::http::handlers_utilities::*;
 
 #[cfg(test)]
 mod tests {

@@ -1,4 +1,4 @@
-use crate::application::server::cache::hot::HotEntry;
+use crate::app::server::cache::hot::HotEntry;
 use crate::http::handlers;
 use crate::*;
 use serde_json::json;

@@ -355,7 +355,7 @@ pub(super) fn check_crates_bijux_atlas_help_excludes_dev_commands(
 pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let src = ctx.repo_root.join("crates/bijux-atlas/src/interfaces/cli/mod.rs");
+    let src = ctx.repo_root.join("crates/bijux-atlas/src/adapters/inbound/cli/mod.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("bijux dev atlas <command>") {
         Ok(Vec::new())
@@ -364,7 +364,7 @@ pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
             "CRATES_DEV_ATLAS_DISPATCH_HINT_MISSING",
             "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
             "restore dev atlas dispatch hint in bijux-atlas help routing",
-            Some(Path::new("crates/bijux-atlas/src/interfaces/cli/mod.rs")),
+            Some(Path::new("crates/bijux-atlas/src/adapters/inbound/cli/mod.rs")),
         )])
     }
 }

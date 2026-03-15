@@ -41,8 +41,8 @@ pub(crate) async fn request_tracing_middleware(
     }
     info!(
         event_id = "request_handled",
-        release_id = %crate::application::config::runtime_release_id(),
-        governance_version = %crate::application::config::runtime_governance_version(),
+        release_id = %crate::runtime::config::runtime_release_id(),
+        governance_version = %crate::runtime::config::runtime_governance_version(),
         request_id = %trace.request_id,
         route = %route,
         status = status_code,

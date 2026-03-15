@@ -110,11 +110,11 @@ fn atlas_application_server_shims_stay_thin() {
     for (path, expected) in [
         (
             "crates/bijux-atlas/src/app/server/state/router.rs",
-            "pub use crate::interfaces::http::router::*;",
+            "pub use crate::adapters::inbound::http::router::*;",
         ),
         (
             "crates/bijux-atlas/src/app/server/state/request_utils.rs",
-            "pub use crate::interfaces::http::request_policies::*;",
+            "pub use crate::adapters::inbound::http::request_policies::*;",
         ),
     ] {
         let text = fs::read_to_string(root.join(path)).expect("shim source");
@@ -148,16 +148,16 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
 fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
     let root = repo_root();
     let text = fs::read_to_string(root.join(
-        "crates/bijux-atlas/src/interfaces/http/handlers_utilities.rs",
+        "crates/bijux-atlas/src/adapters/inbound/http/handlers_utilities.rs",
     ))
     .expect("handlers utilities surface");
 
     for expected in [
-        "pub(crate) use crate::interfaces::http::cache_headers::*;",
-        "pub(crate) use crate::interfaces::http::dto::*;",
-        "pub(crate) use crate::interfaces::http::presenters::*;",
-        "pub(crate) use crate::interfaces::http::request_identity::*;",
-        "pub(crate) use crate::interfaces::http::response_encoding::*;",
+        "pub(crate) use crate::adapters::inbound::http::cache_headers::*;",
+        "pub(crate) use crate::adapters::inbound::http::dto::*;",
+        "pub(crate) use crate::adapters::inbound::http::presenters::*;",
+        "pub(crate) use crate::adapters::inbound::http::request_identity::*;",
+        "pub(crate) use crate::adapters::inbound::http::response_encoding::*;",
     ] {
         assert!(
             text.contains(expected),
@@ -180,7 +180,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod adapters;",
         "pub mod app;",
         "pub(crate) mod infrastructure;",
-        "pub(crate) mod interfaces;",
         "pub use crate::app::server::{",
         "pub use crate::adapters::inbound::cli;",
         "pub use crate::adapters::inbound::client;",
@@ -219,7 +218,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 fn atlas_legacy_root_modules_stay_compatibility_only() {
     let root = repo_root();
     for path in [
-        "crates/bijux-atlas/src/interfaces/mod.rs",
         "crates/bijux-atlas/src/infrastructure/mod.rs",
         "crates/bijux-atlas/src/bootstrap/mod.rs",
     ] {

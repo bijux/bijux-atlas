@@ -54,7 +54,7 @@ pub(crate) fn serialize_payload_with_capacity(
     let mut out = Vec::with_capacity(capacity_hint);
     if pretty {
         serde_json::to_writer_pretty(&mut out, payload).map_err(|e| {
-            crate::interfaces::http::presenters::error_json(
+            crate::adapters::inbound::http::presenters::error_json(
                 ApiErrorCode::Internal,
                 "json serialization failed",
                 json!({"message": e.to_string()}),
@@ -62,7 +62,7 @@ pub(crate) fn serialize_payload_with_capacity(
         })?;
     } else {
         serde_json::to_writer(&mut out, payload).map_err(|e| {
-            crate::interfaces::http::presenters::error_json(
+            crate::adapters::inbound::http::presenters::error_json(
                 ApiErrorCode::Internal,
                 "json serialization failed",
                 json!({"message": e.to_string()}),
@@ -87,14 +87,14 @@ pub(crate) fn maybe_compress_response(
                 Compression::fast(),
             );
             encoder.write_all(&bytes).map_err(|e| {
-                crate::interfaces::http::presenters::error_json(
+                crate::adapters::inbound::http::presenters::error_json(
                     ApiErrorCode::Internal,
                     "gzip encoding failed",
                     json!({"message": e.to_string()}),
                 )
             })?;
             let compressed = encoder.finish().map_err(|e| {
-                crate::interfaces::http::presenters::error_json(
+                crate::adapters::inbound::http::presenters::error_json(
                     ApiErrorCode::Internal,
                     "gzip finalize failed",
                     json!({"message": e.to_string()}),
@@ -107,7 +107,7 @@ pub(crate) fn maybe_compress_response(
             {
                 let mut writer = CompressorWriter::new(&mut compressed, 4096, 4, 22);
                 writer.write_all(&bytes).map_err(|e| {
-                    crate::interfaces::http::presenters::error_json(
+                    crate::adapters::inbound::http::presenters::error_json(
                         ApiErrorCode::Internal,
                         "brotli encoding failed",
                         json!({"message": e.to_string()}),

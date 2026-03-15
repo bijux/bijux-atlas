@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::application::server::state::AppState;
+use crate::app::server::state::AppState;
 use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::dataset::DatasetId;
 use crate::domain::{
@@ -203,7 +203,7 @@ fn token_header_value(headers: &HeaderMap) -> Option<String> {
 
 fn validate_signed_token(
     token: &str,
-    api: &crate::application::config::ApiConfig,
+    api: &crate::runtime::config::ApiConfig,
 ) -> Result<AuthenticationContext, TokenValidationError> {
     let Some(secret) = api.token_signing_secret.as_deref() else {
         return Err(TokenValidationError::Malformed);
@@ -519,7 +519,7 @@ fn embedded_authorization_allows(
 }
 
 fn emit_auth_policy_decision(
-    auth_mode: crate::application::config::AuthMode,
+    auth_mode: crate::runtime::config::AuthMode,
     principal: &str,
     route: &str,
     allowed: bool,
@@ -594,7 +594,7 @@ fn build_audit_event(
     action: &str,
     resource_kind: &str,
     resource_id: &str,
-    sink: crate::application::config::AuditSink,
+    sink: crate::runtime::config::AuditSink,
     fields: &[(&str, &str)],
 ) -> serde_json::Value {
     let mut object = serde_json::Map::new();
@@ -649,7 +649,7 @@ fn build_audit_event(
 }
 
 fn emit_audit_event(
-    audit: &crate::application::config::AuditConfig,
+    audit: &crate::runtime::config::AuditConfig,
     event_name: &str,
     principal: Option<&str>,
     action: &str,
@@ -666,7 +666,7 @@ fn emit_audit_event(
         audit.sink,
         fields,
     );
-    if matches!(audit.sink, crate::application::config::AuditSink::File) {
+    if matches!(audit.sink, crate::runtime::config::AuditSink::File) {
         let _ = crate::adapters::outbound::fs::write_audit_file_record(
             &audit.file_path,
             audit.max_bytes,
@@ -899,15 +899,15 @@ fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
 
 fn proxy_authenticated_principal(
     headers: &HeaderMap,
-    auth_mode: crate::application::config::AuthMode,
+    auth_mode: crate::runtime::config::AuthMode,
 ) -> Option<&'static str> {
     match auth_mode {
-        crate::application::config::AuthMode::Oidc => {
+        crate::runtime::config::AuthMode::Oidc => {
             normalized_header_value(headers, "x-forwarded-user", 256)
         }
             .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
             .map(|_| "user"),
-        crate::application::config::AuthMode::Mtls => {
+        crate::runtime::config::AuthMode::Mtls => {
             normalized_header_value(headers, "x-forwarded-client-cert", 512)
                 .or_else(|| normalized_header_value(headers, "x-atlas-mtls-subject", 256))
                 .map(|_| "service-account")
@@ -1112,7 +1112,7 @@ pub(crate) async fn security_middleware(
     let token = token_header_value(req.headers());
     let token_context = if matches!(
         state.api.auth_mode,
-        crate::application::config::AuthMode::Token
+        crate::runtime::config::AuthMode::Token
     ) {
         let Some(raw_token) = token.as_deref() else {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
@@ -1227,7 +1227,7 @@ pub(crate) async fn security_middleware(
             scopes: Vec::new(),
         }
     } else if auth_exempt
-        || state.api.auth_mode == crate::application::config::AuthMode::Disabled
+        || state.api.auth_mode == crate::runtime::config::AuthMode::Disabled
     {
         AuthenticationContext {
             principal: "user",
@@ -1240,8 +1240,8 @@ pub(crate) async fn security_middleware(
         context
     } else if matches!(
         state.api.auth_mode,
-        crate::application::config::AuthMode::Oidc
-            | crate::application::config::AuthMode::Mtls
+        crate::runtime::config::AuthMode::Oidc
+            | crate::runtime::config::AuthMode::Mtls
     ) {
         let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
         else {
@@ -1385,7 +1385,7 @@ pub(crate) async fn security_middleware(
 mod tests {
     use super::*;
     use std::time::Duration;
-    use crate::application::config::AuthMode;
+    use crate::runtime::config::AuthMode;
 
     #[test]
     fn health_endpoints_stay_auth_exempt_in_all_modes() {
@@ -1458,7 +1458,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::application::config::AuditSink::Stdout,
+            crate::runtime::config::AuditSink::Stdout,
             &[("status", "200")],
         );
         assert_eq!(event["event_id"].as_str(), Some("audit_query_executed"));
@@ -1481,7 +1481,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::application::config::AuditSink::Stdout,
+            crate::runtime::config::AuditSink::Stdout,
             &[
                 ("status", "200"),
                 ("authorization", "Bearer topsecret"),
@@ -1612,12 +1612,12 @@ mod tests {
     #[test]
     fn token_validation_enforces_expiry_scope_issuer_audience_and_revocation() {
         let now = chrono_like_unix_secs();
-        let mut api = crate::application::config::ApiConfig {
+        let mut api = crate::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
             token_required_issuer: Some("atlas-auth".to_string()),
             token_required_audience: Some("atlas-api".to_string()),
             token_required_scopes: vec!["dataset.read".to_string()],
-            ..crate::application::config::ApiConfig::default()
+            ..crate::runtime::config::ApiConfig::default()
         };
         let token = signed_token(
             serde_json::json!({
@@ -1656,9 +1656,9 @@ mod tests {
 
     #[test]
     fn token_validation_rejects_malformed_tokens() {
-        let api = crate::application::config::ApiConfig {
+        let api = crate::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
-            ..crate::application::config::ApiConfig::default()
+            ..crate::runtime::config::ApiConfig::default()
         };
         assert_eq!(
             validate_signed_token("not.a.jwt", &api),
@@ -1669,9 +1669,9 @@ mod tests {
     #[test]
     fn token_validation_requires_a_non_empty_subject() {
         let now = chrono_like_unix_secs();
-        let api = crate::application::config::ApiConfig {
+        let api = crate::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
-            ..crate::application::config::ApiConfig::default()
+            ..crate::runtime::config::ApiConfig::default()
         };
         let missing_subject = signed_token(
             serde_json::json!({

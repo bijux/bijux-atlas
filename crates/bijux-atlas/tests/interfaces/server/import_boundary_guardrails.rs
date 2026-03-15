@@ -2,7 +2,7 @@
 
 #[test]
 fn http_layer_does_not_import_runtime_effect_internals() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/interfaces/http");
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/adapters/inbound/http");
     let forbidden = [
         "runtime::dataset_cache_manager_storage",
         "crate::runtime::dataset_cache_manager_storage",
@@ -13,7 +13,7 @@ fn http_layer_does_not_import_runtime_effect_internals() {
         "reqwest::",
     ];
 
-    for entry in std::fs::read_dir(&root).expect("read src/interfaces/http") {
+    for entry in std::fs::read_dir(&root).expect("read src/adapters/inbound/http") {
         let path = entry.expect("entry").path();
         if path.extension().and_then(|ext| ext.to_str()) != Some("rs") {
             continue;
@@ -44,8 +44,8 @@ fn runtime_layer_does_not_import_http_protocol_modules() {
     let forbidden = [
         "crate::http::",
         "super::http::",
-        "crate::interfaces::http::",
-        "super::interfaces::http::",
+        "crate::adapters::inbound::http::",
+        "super::adapters::inbound::http::",
         "axum::",
         "hyper::",
     ];
@@ -90,7 +90,7 @@ fn effects_layer_avoids_http_server_framework_deps() {
 #[test]
 fn support_modules_remain_non_entrypoint() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let support_files = ["src/interfaces/http/genes_support.rs"];
+    let support_files = ["src/adapters/inbound/http/genes_support.rs"];
     let forbidden_tokens = [
         "pub async fn",
         "route(",

@@ -8,11 +8,11 @@ use crate::domain::{
 };
 use serde_json::json;
 use serde_json::Value;
-pub(crate) use crate::interfaces::http::cache_headers::*;
-pub(crate) use crate::interfaces::http::dto::*;
-pub(crate) use crate::interfaces::http::presenters::*;
-pub(crate) use crate::interfaces::http::request_identity::*;
-pub(crate) use crate::interfaces::http::response_encoding::*;
+pub(crate) use crate::adapters::inbound::http::cache_headers::*;
+pub(crate) use crate::adapters::inbound::http::dto::*;
+pub(crate) use crate::adapters::inbound::http::presenters::*;
+pub(crate) use crate::adapters::inbound::http::request_identity::*;
+pub(crate) use crate::adapters::inbound::http::response_encoding::*;
 
 pub(crate) async fn landing_handler(
     State(state): State<AppState>,
@@ -139,11 +139,11 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
             "name": "bijux-atlas",
             "version": env!("CARGO_PKG_VERSION"),
             "compatible_umbrella": ">=0.3.0,<0.4.0",
-            "build_hash": crate::application::config::runtime_build_hash(),
+            "build_hash": crate::runtime::config::runtime_build_hash(),
         },
         "server": {
             "crate": CRATE_NAME,
-            "config_schema_version": crate::application::config::CONFIG_SCHEMA_VERSION,
+            "config_schema_version": crate::runtime::config::CONFIG_SCHEMA_VERSION,
             "api_version": "v1",
             "api_contract_version": "v1",
             "runtime_policy_hash": &*state.runtime_policy_hash,
@@ -892,7 +892,7 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
     {
         info.insert(
             "x-build-id".to_string(),
-            serde_json::Value::String(crate::application::config::runtime_build_hash().to_string()),
+            serde_json::Value::String(crate::runtime::config::runtime_build_hash().to_string()),
         );
     }
     let mut response = Json(spec).into_response();

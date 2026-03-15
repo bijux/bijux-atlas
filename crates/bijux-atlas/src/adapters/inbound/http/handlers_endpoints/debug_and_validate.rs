@@ -402,7 +402,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
         "version": env!("CARGO_PKG_VERSION"),
         "os": std::env::consts::OS,
         "arch": std::env::consts::ARCH,
-        "hostname": crate::application::config::default_runtime_pod_id()
+        "hostname": crate::runtime::config::default_runtime_pod_id()
     }))
     .into_response();
     state
@@ -431,9 +431,9 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
         return with_request_id(resp, &request_id);
     }
     let response = Json(json!({
-        "build_hash": crate::application::config::runtime_build_hash(),
-        "release_id": crate::application::config::runtime_release_id(),
-        "governance_version": crate::application::config::runtime_governance_version()
+        "build_hash": crate::runtime::config::runtime_build_hash(),
+        "release_id": crate::runtime::config::runtime_release_id(),
+        "governance_version": crate::runtime::config::runtime_governance_version()
     }))
     .into_response();
     state

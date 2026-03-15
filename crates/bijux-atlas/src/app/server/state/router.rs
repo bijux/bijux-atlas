@@ -1,3 +1,3 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use crate::interfaces::http::router::*;
+pub use crate::adapters::inbound::http::router::*;

@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::application::server::cache;
-use crate::application::server::state::{
+use crate::app::server::cache;
+use crate::app::server::state::{
     AppState, DatasetCacheManager, RequestMetrics,
 };
-use crate::interfaces::http::request_policies::{
+use crate::adapters::inbound::http::request_policies::{
     cors_middleware, provenance_headers_middleware, resilience_middleware, security_middleware,
 };
 use crate::redis::RedisBackend;
 use crate::telemetry::rate_limiter::RateLimiter;
-use crate::application::config::ApiConfig;
+use crate::runtime::config::ApiConfig;
 use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::{
     canonical, ConsistencyGuarantee, ConsistencyLevel, FailureDetectionPolicy,
@@ -359,7 +359,7 @@ pub fn build_router(state: AppState) -> Router {
 mod bulkhead_tests {
     use super::*;
     use crate::infrastructure::store::registry::fake::FakeStore;
-    use crate::application::server::state::DatasetCacheConfig;
+    use crate::app::server::state::DatasetCacheConfig;
 
     #[tokio::test]
     async fn heavy_bulkhead_saturation_does_not_block_cheap_permits() {

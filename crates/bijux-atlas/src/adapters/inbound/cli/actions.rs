@@ -89,7 +89,7 @@ pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<()
                 "plugin": {
                     "name": "bijux-atlas",
                     "version": env!("CARGO_PKG_VERSION"),
-                    "build_hash": crate::application::config::runtime_build_hash(),
+                    "build_hash": crate::runtime::config::runtime_build_hash(),
                     "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
                 },
             "schemas": {
@@ -112,7 +112,7 @@ fn plugin_metadata_payload() -> Value {
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
         "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
         "compatible_umbrella": ">=0.3.0,<0.4.0",
-        "build_hash": crate::application::config::runtime_build_hash(),
+        "build_hash": crate::runtime::config::runtime_build_hash(),
     })
 }
 
