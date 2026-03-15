@@ -110,6 +110,14 @@ name = "contracts_api"
 path = "tests/contracts/api.rs"
 
 [[test]]
+name = "contracts_plugin"
+path = "tests/contracts/plugin.rs"
+
+[[test]]
+name = "governance_no_network"
+path = "tests/governance/no_network.rs"
+
+[[test]]
 name = "infrastructure_store"
 path = "tests/infrastructure/store.rs"
 
