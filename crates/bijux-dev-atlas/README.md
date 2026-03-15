@@ -1,55 +1,102 @@
 # bijux-dev-atlas
 
-![Version](https://img.shields.io/badge/version-0.1.0-informational.svg) ![License: Apache-2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg) ![Docs](https://img.shields.io/badge/docs-contract-stable-brightgreen.svg)
+`bijux-dev-atlas` is the repository control-plane crate for the Bijux workspace. It turns governance, documentation, policy, validation, reporting, and operational checks into a Rust command surface instead of a shell-script control plane.
 
-Control-plane binary for repository governance under `bijux dev atlas ...`.
+This crate is for:
 
-## Control Plane Philosophy
+- maintainers running repository checks, report generation, and release validation
+- CI jobs that need deterministic, contract-driven control-plane behavior
+- contributors extending docs, policy, registry, ops, security, tutorial, or audit workflows
 
-- No scripts as control-plane SSOT.
-- Command behavior flows through crate APIs, not shell orchestration.
-- Outputs are deterministic and contract-driven.
-- Execution is hermetic by default: network/subprocess/write/git are opt-in.
+This crate is repo-local infrastructure. It is intentionally `publish = false`, and its primary supported interface is the `bijux-dev-atlas` CLI rather than an external Rust SDK.
 
-## Stable Families
+## What This Crate Owns
 
-- `ops`
-- `docs`
-- `configs`
-- `policies`
-- `check`
+- repository governance and invariant checks
+- documentation and reference generation
+- policy loading, validation, and report emission
+- operational inventory and install-status validation
+- registry, report, release, load, security, and tutorial control-plane workflows
 
-## Common Flags
+## Command Surface
 
-- `--json`
-- `--quiet`
-- `--fail-fast`
-- `--repo-root`
+The CLI is broad because it is the workspace control plane. The top-level families include:
 
-## Contracts
+- repository and policy workflows: `check`, `checks`, `audit`, `governance`, `policies`, `invariants`, `security`, `ci`
+- docs and reference workflows: `docs`, `configs`, `registry`, `reports`
+- runtime and ops workflows: `ops`, `system`, `runtime`, `observe`, `load`, `perf`
+- support workflows: `tutorials`, `migrations`, `datasets`, `ingest`, `suites`, `tests`
+- discovery and execution helpers: `list`, `describe`, `run`, `validate`
 
-- Command surface: `docs/cli-command-list.md`
-- Examples and behavior: `docs/commands.md`
-- Exit codes: `docs/exit-codes.md`
-- Control-plane contract: `docs/contract.md`
+For the exact command registry, use the generated command reference linked below.
 
-## Crate Governance Docs
+## Control-Plane Rules
 
-- `crates/bijux-dev-atlas/docs/architecture.md`
-- `crates/bijux-dev-atlas/docs/benchmarks/index.md`
-- `crates/bijux-dev-atlas/CONTRACT.md`
-- `crates/bijux-dev-atlas/docs/errors.md`
-- `crates/bijux-dev-atlas/docs/testing.md`
-- `crates/bijux-dev-atlas/docs/benchmarks.md`
+- repository automation should flow through crate commands, not shell scripts as the source of truth
+- outputs should be deterministic and suitable for contract checks and CI snapshots
+- network, subprocess, filesystem mutation, and git-sensitive behavior should be explicit, auditable choices
+- contracts, registries, and policy documents should have one obvious owner path
 
-## Purpose
-- Describe the crate responsibility and stable boundaries.
+## Source Layout
 
-## How to use
-- Read `docs/index.md` for workflows and examples.
-- Use the crate through its documented public API only.
+This crate contains several large internal areas, but contributors should think about it in terms of ownership:
 
-## Where docs live
-- Crate docs index: `docs/index.md`
-- Benchmark docs index: `docs/benchmarks/index.md`
-- Contract: `CONTRACT.md`
+- `src/core`: foundational validation, checks, governance objects, and inventory logic
+- `src/domains`: domain-specific control-plane workflows such as docs, ops, release, security, tutorials, and configs
+- `src/engine`: shared execution and reporting machinery
+- `src/registry`: command, config, and report registries
+- `src/reference`: canonical workspace paths and structural references used by checks
+- `src/docs`, `src/policies`, `src/ui`: support surfaces for documentation, policy modeling, and terminal presentation
+
+Some legacy internal layout remains in the source tree because this crate is still converging, but the supported entrypoint for maintainers is the CLI and the documented contracts, not arbitrary module barrels.
+
+## Quick Start
+
+Show the control-plane surface:
+
+```bash
+cargo run -p bijux-dev-atlas -- --help
+```
+
+List registered commands:
+
+```bash
+cargo run -p bijux-dev-atlas -- list
+```
+
+Inspect the docs command family:
+
+```bash
+cargo run -p bijux-dev-atlas -- docs --help
+```
+
+## Stable Guarantees
+
+- machine-readable output is designed to be deterministic
+- command behavior is driven by Rust code, contracts, registries, and policy documents
+- report shapes and validation rules are expected to remain explicit and test-covered
+- repository checks should point at canonical workspace owners rather than historical compatibility paths
+
+## Documentation Map
+
+- crate docs index: [../../docs/bijux-dev-atlas-docs/index.md](../../docs/bijux-dev-atlas-docs/index.md)
+- command surface: [../../docs/bijux-dev-atlas-docs/cli-command-list.md](../../docs/bijux-dev-atlas-docs/cli-command-list.md)
+- commands and usage: [../../docs/bijux-dev-atlas-docs/commands.md](../../docs/bijux-dev-atlas-docs/commands.md)
+- control-plane contract: [../../docs/bijux-dev-atlas-docs/contract.md](../../docs/bijux-dev-atlas-docs/contract.md)
+- control-plane contracts: [../../docs/bijux-dev-atlas-docs/control-plane-contracts.md](../../docs/bijux-dev-atlas-docs/control-plane-contracts.md)
+- registry contract: [../../docs/bijux-dev-atlas-docs/registry-contract.md](../../docs/bijux-dev-atlas-docs/registry-contract.md)
+- errors and exit codes: [../../docs/bijux-dev-atlas-docs/errors-and-exit-codes.md](../../docs/bijux-dev-atlas-docs/errors-and-exit-codes.md)
+- architecture: [../../docs/bijux-dev-atlas-docs/architecture.md](../../docs/bijux-dev-atlas-docs/architecture.md)
+- testing: [../../docs/bijux-dev-atlas-docs/testing.md](../../docs/bijux-dev-atlas-docs/testing.md)
+- benchmark docs: [../../docs/bijux-dev-atlas-docs/benchmarks/index.md](../../docs/bijux-dev-atlas-docs/benchmarks/index.md)
+
+## How To Work With This Crate
+
+- prefer adding or extending commands in Rust instead of adding new control-plane shell scripts
+- keep new output formats contract-owned and documented
+- treat registries and workspace path references as single sources of truth
+- prefer the CLI, report contracts, and generated references over ad hoc local conventions
+
+## Relationship To `bijux-atlas`
+
+`bijux-atlas` is the product-facing Atlas crate. `bijux-dev-atlas` is the workspace-facing control-plane crate that validates, documents, audits, and governs the repository around it.
