@@ -2097,7 +2097,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "run_id": ctx.run_id.as_str(),
                     "text": "docs deploy plan",
                     "rows": [{
-                        "workflow": ".github/workflows/docs-deploy.yml",
+                        "workflow": ".github/workflows/deploy-docs.yml",
                         "build_command": "bijux-dev-atlas docs build --allow-subprocess --allow-write --strict",
                         "site_dir": site_paths.site_dir.display().to_string(),
                         "pages_url": std::env::var("BIJUX_DOCS_SITE_URL").unwrap_or_else(|_| "https://bijux.github.io/bijux-atlas/".to_string()),

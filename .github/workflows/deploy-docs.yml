@@ -1,12 +1,9 @@
-name: docs-deploy
+name: Deploy Docs
 
 on:
   push:
-    branches: [main]
     tags:
       - "v*"
-  release:
-    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -15,41 +12,43 @@ permissions:
   id-token: write
 
 concurrency:
-  group: docs-deploy-${{ github.ref }}
+  group: deploy-docs-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  CARGO_TERM_COLOR: always
+  RUST_TOOLCHAIN_VERSION: "1.85.0"
 
 jobs:
   build:
+    name: Build docs site
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
-          toolchain: 1.85.0
+          toolchain: ${{ env.RUST_TOOLCHAIN_VERSION }}
 
       - name: Setup Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: configs/sources/repository/docs/requirements.lock.txt
 
-      - name: Configure Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+      - name: Restore the Rust cache
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
       - name: Install docs toolchain
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
-          npm ci --prefix configs/sources/repository/docs
+        run: make gh-docs-install
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
 
       - name: Validate docs output directory contract
         shell: bash
@@ -68,11 +67,7 @@ jobs:
           PY
 
       - name: Build docs site
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdocs build --strict
-          test -f artifacts/docs/site/index.html
+        run: make docs-check
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
@@ -81,7 +76,6 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

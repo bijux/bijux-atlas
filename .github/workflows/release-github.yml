@@ -1,0 +1,107 @@
+name: Release GitHub
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: release-github-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  RUST_TOOLCHAIN_VERSION: "1.85.0"
+
+jobs:
+  publish-github-release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Wait for CI to pass on the tagged commit
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ github.sha }}
+          TARGET_REF_NAME: ${{ github.ref_name }}
+        run: |
+          CI_WAIT_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          export CI_WAIT_STARTED_AT
+          make gh-release-wait-for-ci
+
+      - name: Decide whether to publish a GitHub Release
+        id: release
+        env:
+          TARGET_SHA: ${{ github.sha }}
+        run: make gh-release-plan-github
+
+      - name: Set up Rust
+        if: ${{ steps.release.outputs.publish == 'true' }}
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN_VERSION }}
+
+      - name: Restore the Rust cache
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        if: ${{ steps.release.outputs.publish == 'true' }}
+
+      - name: Build release bundle
+        if: ${{ steps.release.outputs.publish == 'true' }}
+        run: make dist
+
+      - name: Prepare release assets
+        if: ${{ steps.release.outputs.publish == 'true' }}
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          assets_dir="artifacts/github-release"
+          rm -rf "${assets_dir}"
+          mkdir -p "${assets_dir}"
+          cp artifacts/dist/release/sha256sum.txt "${assets_dir}/sha256sums.txt"
+          cp ops/release/crates-release.toml "${assets_dir}/crates-release.toml"
+          cp ops/release/images-release.toml "${assets_dir}/images-release.toml"
+          cp ops/release/ops-release.toml "${assets_dir}/ops-release.toml"
+          cat > "${assets_dir}/release-notes.md" <<EOF
+          Atlas release ${RELEASE_TAG}
+
+          Release version: ${RELEASE_VERSION}
+          Tag: ${RELEASE_TAG}
+
+          Published package surfaces:
+          - crates.io: https://crates.io/crates/bijux-atlas/${RELEASE_VERSION}
+          - docs site: https://bijux.github.io/bijux-atlas/
+          - Rust docs: https://docs.rs/bijux-atlas/latest/bijux_atlas/
+
+          Attached assets:
+          - release tarball built from \`make dist\`
+          - SHA-256 checksums for the attached files
+          - stable release specifications for crates, images, and ops packaging
+          EOF
+
+      - name: Publish GitHub Release
+        if: ${{ steps.release.outputs.publish == 'true' }}
+        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2.3.3
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ${{ steps.release.outputs.tag }}
+          body_path: artifacts/github-release/release-notes.md
+          files: |
+            artifacts/dist/release/*.tar.gz
+            artifacts/github-release/sha256sums.txt
+            artifacts/github-release/crates-release.toml
+            artifacts/github-release/images-release.toml
+            artifacts/github-release/ops-release.toml
+          fail_on_unmatched_files: true
+          preserve_order: true
