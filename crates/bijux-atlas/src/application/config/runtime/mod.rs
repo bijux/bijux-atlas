@@ -451,6 +451,22 @@ const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8080";
 const DEFAULT_STORE_ROOT: &str = "artifacts/server-store";
 const DEFAULT_CACHE_ROOT: &str = "artifacts/server-cache";
 
+fn repo_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("bijux-atlas workspace root")
+        .to_path_buf()
+}
+
+fn resolve_runtime_path(path: PathBuf) -> PathBuf {
+    if path.is_absolute() {
+        path
+    } else {
+        repo_root().join(path)
+    }
+}
+
 fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,
@@ -484,6 +500,8 @@ fn resolve_runtime_startup_config(
     if store_root.as_os_str().is_empty() || cache_root.as_os_str().is_empty() {
         return Err("runtime config store_root/cache_root must not be empty".to_string());
     }
+    let store_root = resolve_runtime_path(store_root);
+    let cache_root = resolve_runtime_path(cache_root);
 
     Ok(RuntimeStartupConfig {
         bind_addr,

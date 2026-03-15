@@ -16,6 +16,14 @@ fn generated_docs_dir() -> PathBuf {
         .join("generated")
 }
 
+fn atlas_repo_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf()
+}
+
 fn env_lock() -> &'static Mutex<()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(()))
@@ -98,8 +106,8 @@ fn runtime_startup_config_cli_overrides_env_and_file() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, "127.0.0.1:9200");
-    assert_eq!(resolved.store_root, PathBuf::from("from-cli-store"));
-    assert_eq!(resolved.cache_root, PathBuf::from("from-cli-cache"));
+    assert_eq!(resolved.store_root, atlas_repo_root().join("from-cli-store"));
+    assert_eq!(resolved.cache_root, atlas_repo_root().join("from-cli-cache"));
 }
 
 #[test]
@@ -119,8 +127,8 @@ fn runtime_startup_config_env_overrides_file() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, "127.0.0.1:9100");
-    assert_eq!(resolved.store_root, PathBuf::from("from-env-store"));
-    assert_eq!(resolved.cache_root, PathBuf::from("from-env-cache"));
+    assert_eq!(resolved.store_root, atlas_repo_root().join("from-env-store"));
+    assert_eq!(resolved.cache_root, atlas_repo_root().join("from-env-cache"));
 }
 
 #[test]
@@ -136,8 +144,24 @@ fn runtime_startup_config_uses_defaults_without_sources() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, DEFAULT_BIND_ADDR);
-    assert_eq!(resolved.store_root, PathBuf::from(DEFAULT_STORE_ROOT));
-    assert_eq!(resolved.cache_root, PathBuf::from(DEFAULT_CACHE_ROOT));
+    assert_eq!(resolved.store_root, atlas_repo_root().join(DEFAULT_STORE_ROOT));
+    assert_eq!(resolved.cache_root, atlas_repo_root().join(DEFAULT_CACHE_ROOT));
+}
+
+#[test]
+fn runtime_startup_config_preserves_absolute_paths() {
+    let resolved = resolve_runtime_startup_config(
+        RuntimeStartupConfigFile::default(),
+        None,
+        Some(Path::new("/tmp/atlas-store")),
+        Some(Path::new("/tmp/atlas-cache")),
+        None,
+        None,
+        None,
+    )
+    .expect("load");
+    assert_eq!(resolved.store_root, PathBuf::from("/tmp/atlas-store"));
+    assert_eq!(resolved.cache_root, PathBuf::from("/tmp/atlas-cache"));
 }
 
 #[test]
