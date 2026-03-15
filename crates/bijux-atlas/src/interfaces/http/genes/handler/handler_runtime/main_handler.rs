@@ -539,10 +539,10 @@ pub(crate) async fn genes_handler(
                                 tracing::Span::current()
                                     .record("shard_id", tracing::field::display(shard.display()));
                                 permits.push(state.cache.try_acquire_shard_permit()?);
-                                let conn = crate::support::effects::sqlite::open_readonly_no_mutex(&shard)?;
+                                let conn = crate::sqlite::open_readonly_no_mutex(&shard)?;
                                 let (cache_kib, shard_mmap) =
                                     state.cache.sqlite_pragmas_for_shard_open();
-                                let _ = crate::support::effects::sqlite::apply_readonly_pragmas(
+                                let _ = crate::sqlite::apply_readonly_pragmas(
                                     &conn,
                                     cache_kib,
                                     shard_mmap,

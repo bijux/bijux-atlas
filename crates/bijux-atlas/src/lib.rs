@@ -69,6 +69,7 @@ pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;
 pub use crate::infrastructure::redis;
+pub use crate::infrastructure::sqlite;
 pub use crate::infrastructure::store;
 pub use crate::infrastructure::telemetry;
 pub use crate::interfaces::cli;
