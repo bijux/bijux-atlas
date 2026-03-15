@@ -41,7 +41,14 @@ fn http_layer_does_not_import_runtime_effect_internals() {
 #[test]
 fn runtime_layer_does_not_import_http_protocol_modules() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/app");
-    let forbidden = ["crate::http::", "super::http::", "hyper::"];
+    let forbidden = [
+        "crate::http::",
+        "super::http::",
+        "crate::interfaces::http::",
+        "super::interfaces::http::",
+        "axum::",
+        "hyper::",
+    ];
 
     for path in rust_files_under(&root) {
         if path.extension().and_then(|ext| ext.to_str()) != Some("rs") {
