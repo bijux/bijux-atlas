@@ -42,7 +42,6 @@ pub mod app;
 #[path = "server/cache/mod.rs"]
 mod cache;
 pub mod cli;
-pub mod client;
 mod config;
 pub mod contracts;
 pub mod core;
@@ -73,13 +72,14 @@ pub mod server;
 mod server_store;
 #[path = "core/services/mod.rs"]
 mod services;
-pub mod store;
 #[path = "server/cache/resilience.rs"]
 mod store_resilience;
 pub mod support;
-mod telemetry;
 pub mod types;
 
+pub use crate::adapters::client;
+pub use crate::adapters::store;
+pub use crate::adapters::telemetry;
 pub use crate::app::{
     build_router, chrono_like_unix_millis, effective_config_payload,
     effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
