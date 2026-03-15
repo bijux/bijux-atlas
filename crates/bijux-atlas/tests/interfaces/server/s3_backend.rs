@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
 use bijux_atlas::{CatalogFetch, DatasetStoreBackend, LocalFsBackend, RetryPolicy, S3LikeBackend};
-use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{
+use bijux_atlas::core::sha256_hex;
+use bijux_atlas::model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -282,7 +279,7 @@ async fn local_fs_backend_blocks_symlink_path_traversal() {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
     let tmp = tempfile::tempdir().expect("tmp");
     let outside = tempfile::tempdir().expect("outside");
-    let paths = bijux_atlas_model::artifact_paths(tmp.path(), &ds);
+    let paths = bijux_atlas::model::artifact_paths(tmp.path(), &ds);
     std::fs::create_dir_all(paths.dataset_root.parent().expect("dataset parent"))
         .expect("create parent");
     symlink(outside.path(), &paths.dataset_root).expect("symlink dataset root");

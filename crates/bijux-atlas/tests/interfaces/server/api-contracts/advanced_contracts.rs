@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[allow(unused_imports)]
-use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
-
 use super::*;
+use bijux_atlas::model::{Catalog, CatalogEntry};
 
 #[tokio::test]
 async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {
@@ -68,9 +66,9 @@ async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() 
             ],
         ),
     );
-    let catalog = bijux_atlas_model::Catalog::new(vec![
-        bijux_atlas_model::CatalogEntry::new(ds_from.clone(), "m1".to_string(), "s1".to_string()),
-        bijux_atlas_model::CatalogEntry::new(ds_to.clone(), "m2".to_string(), "s2".to_string()),
+    let catalog = Catalog::new(vec![
+        CatalogEntry::new(ds_from.clone(), "m1".to_string(), "s1".to_string()),
+        CatalogEntry::new(ds_to.clone(), "m2".to_string(), "s2".to_string()),
     ]);
     *store.catalog.lock().await = catalog;
     *store.etag.lock().await = "catalog-diff".to_string();
@@ -462,7 +460,7 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
     store.manifest.lock().await.insert(ds.clone(), manifest);
     store.sqlite.lock().await.insert(ds.clone(), sqlite);
     *store.etag.lock().await = "v1".to_string();
-    store.catalog.lock().await.datasets = vec![bijux_atlas_model::CatalogEntry::new(
+    store.catalog.lock().await.datasets = vec![CatalogEntry::new(
         ds.clone(),
         "manifest.json".to_string(),
         "gene_summary.sqlite".to_string(),
@@ -626,17 +624,17 @@ async fn datasets_endpoint_supports_dimension_filters_and_cursor_pagination() {
     store.sqlite.lock().await.insert(ds3.clone(), sqlite);
     *store.etag.lock().await = "v1".to_string();
     store.catalog.lock().await.datasets = vec![
-        bijux_atlas_model::CatalogEntry::new(
+        CatalogEntry::new(
             ds,
             "manifest-1.json".to_string(),
             "gene_summary-1.sqlite".to_string(),
         ),
-        bijux_atlas_model::CatalogEntry::new(
+        CatalogEntry::new(
             ds2,
             "manifest-2.json".to_string(),
             "gene_summary-2.sqlite".to_string(),
         ),
-        bijux_atlas_model::CatalogEntry::new(
+        CatalogEntry::new(
             ds3,
             "manifest-3.json".to_string(),
             "gene_summary-3.sqlite".to_string(),
