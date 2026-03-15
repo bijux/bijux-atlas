@@ -2,7 +2,7 @@
 
 #[test]
 fn http_layer_does_not_import_runtime_effect_internals() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/server/http");
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/adapters/http");
     let forbidden = [
         "runtime::dataset_cache_manager_storage",
         "crate::runtime::dataset_cache_manager_storage",
@@ -13,7 +13,7 @@ fn http_layer_does_not_import_runtime_effect_internals() {
         "reqwest::",
     ];
 
-    for entry in std::fs::read_dir(&root).expect("read src/server/http") {
+    for entry in std::fs::read_dir(&root).expect("read src/adapters/http") {
         let path = entry.expect("entry").path();
         if path.extension().and_then(|ext| ext.to_str()) != Some("rs") {
             continue;
@@ -40,7 +40,7 @@ fn http_layer_does_not_import_runtime_effect_internals() {
 
 #[test]
 fn runtime_layer_does_not_import_http_protocol_modules() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/server/runtime");
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/app");
     let forbidden = ["crate::http::", "super::http::", "hyper::"];
 
     for path in rust_files_under(&root) {
@@ -61,7 +61,7 @@ fn runtime_layer_does_not_import_http_protocol_modules() {
 
 #[test]
 fn effects_layer_avoids_http_server_framework_deps() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/server/runtime/effects");
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/effects");
     let forbidden = ["crate::http::", "axum::", "hyper::"];
 
     for path in rust_files_under(&root) {
@@ -83,7 +83,7 @@ fn effects_layer_avoids_http_server_framework_deps() {
 #[test]
 fn support_modules_remain_non_entrypoint() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let support_files = ["src/server/http/genes_support.rs"];
+    let support_files = ["src/adapters/http/genes_support.rs"];
     let forbidden_tokens = [
         "pub async fn",
         "route(",

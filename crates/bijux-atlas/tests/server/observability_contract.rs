@@ -6,11 +6,9 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 use std::collections::HashMap;
 use std::sync::Arc;
 
+use bijux_atlas::{build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore};
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
-use bijux_atlas::{
-    build_router, AppState, DatasetCacheConfig, DatasetCacheManager, FakeStore,
-};
 use rusqlite::Connection;
 use serde::Deserialize;
 use tempfile::tempdir;
@@ -198,14 +196,14 @@ async fn metrics_endpoint_matches_metrics_contract() {
     )
     .expect("parse endpoints");
     let server_sources = [
-        root.join("crates/bijux-atlas/src/server/runtime/server_runtime_app.rs"),
-        root.join("crates/bijux-atlas/src/server/http/genes.rs"),
-        root.join("crates/bijux-atlas/src/server/http/handlers.rs"),
-        root.join("crates/bijux-atlas/src/server/http/diff.rs"),
-        root.join("crates/bijux-atlas/src/server/http/sequence.rs"),
-        root.join("crates/bijux-atlas/src/server/http/transcript_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/server/http/handlers_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/server/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas/src/app/bootstrap_impl.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/genes.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/handlers.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/diff.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/sequence.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/transcript_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/handlers_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/adapters/http/handlers_utilities.rs"),
     ];
     let source_concat = server_sources
         .iter()
@@ -230,7 +228,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     );
 
     let trace_generated = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/telemetry/generated/trace_spans_contract.rs"),
+        root.join("crates/bijux-atlas/src/adapters/telemetry/generated/trace_spans_contract.rs"),
     )
     .expect("read generated spans");
     for span in contract.required_spans {

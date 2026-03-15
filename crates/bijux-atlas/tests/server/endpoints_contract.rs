@@ -36,10 +36,9 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
         serde_json::from_slice(&std::fs::read(contract_path).expect("read endpoints contract"))
             .expect("parse endpoints contract");
 
-    let server_src = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/server/runtime/server_runtime_app.rs"),
-    )
-    .expect("read server routing source");
+    let server_src =
+        std::fs::read_to_string(root.join("crates/bijux-atlas/src/app/bootstrap_impl.rs"))
+            .expect("read server routing source");
 
     let mut route_set = std::collections::BTreeSet::new();
     let param_re = regex::Regex::new(r":([A-Za-z_][A-Za-z0-9_]*)").expect("param regex");
