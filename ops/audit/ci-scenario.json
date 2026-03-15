@@ -8,7 +8,6 @@
     "bijux-dev-atlas audit explain --format json"
   ],
   "expected_artifacts": [
-    "artifacts/audit/run-report.json",
-    "ops/audit/summary-table.md"
+    "artifacts/audit/run-report.json"
   ]
 }

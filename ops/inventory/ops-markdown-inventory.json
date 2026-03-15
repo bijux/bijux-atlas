@@ -3,13 +3,12 @@
   "owner": "bijux-atlas-operations",
   "description": "Current markdown inventory under ops/ with SSOT class assignment.",
   "totals": {
-    "markdown_files": 63,
+    "markdown_files": 58,
     "by_class": {
-      "spec": 53,
-      "runbook": 2,
       "evidence": 4,
-      "policy": 3,
-      "stub": 1
+      "policy": 2,
+      "runbook": 1,
+      "spec": 51
     }
   },
   "entries": [
@@ -56,26 +55,6 @@
     {
       "path": "ops/_generated.example/control-plane.snapshot.md",
       "class": "evidence"
-    },
-    {
-      "path": "ops/_templates/evidence.md",
-      "class": "spec"
-    },
-    {
-      "path": "ops/_templates/policy.md",
-      "class": "policy"
-    },
-    {
-      "path": "ops/_templates/runbook.md",
-      "class": "runbook"
-    },
-    {
-      "path": "ops/_templates/spec.md",
-      "class": "spec"
-    },
-    {
-      "path": "ops/_templates/stub.md",
-      "class": "stub"
     },
     {
       "path": "ops/datasets/CONTRACT.md",

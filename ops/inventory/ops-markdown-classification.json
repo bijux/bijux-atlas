@@ -48,26 +48,6 @@
       "class": "evidence"
     },
     {
-      "path": "ops/_templates/evidence.md",
-      "class": "spec"
-    },
-    {
-      "path": "ops/_templates/policy.md",
-      "class": "policy"
-    },
-    {
-      "path": "ops/_templates/runbook.md",
-      "class": "runbook"
-    },
-    {
-      "path": "ops/_templates/spec.md",
-      "class": "spec"
-    },
-    {
-      "path": "ops/_templates/stub.md",
-      "class": "stub"
-    },
-    {
       "path": "ops/datasets/CONTRACT.md",
       "class": "spec"
     },
