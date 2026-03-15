@@ -117,6 +117,7 @@ fn validate_surface_and_filesystem_policies(
         "DIRECTORY_NECESSITY.md",
         "DIRECTORY_BUDGET_POLICY.md",
         "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "docker",
         "DRIFT.md",
         "ERRORS.md",
         "EVIDENCE_SIGNOFF_WORKFLOW.md",
@@ -136,6 +137,7 @@ fn validate_surface_and_filesystem_policies(
         "PORTABILITY_MATRIX.md",
         "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
         "README.md",
+        "release",
         "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
         "SCHEMA_EVOLUTION_WORKFLOW.md",
         "RUNBOOK_GENERATION_FROM_GRAPH.md",
@@ -144,6 +146,7 @@ fn validate_surface_and_filesystem_policies(
         "SUPPLY_CHAIN_MODEL.md",
         "THREAT_MODEL.md",
         "TIER1_ROOT_SURFACE.md",
+        "tutorials",
         "WHAT_FAILS_WHEN.md",
         "SSOT.md",
     ]

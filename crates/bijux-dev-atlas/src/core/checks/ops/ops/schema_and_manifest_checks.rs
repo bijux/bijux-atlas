@@ -62,7 +62,13 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/load/contracts/load-summary.schema.json".to_string(),
     ]);
     let embedded_schema_prefix_allowlist =
-        ["ops/evidence/schema/", "ops/observe/", "ops/reproducibility/"];
+        [
+            "ops/docker/schema/",
+            "ops/evidence/schema/",
+            "ops/observe/",
+            "ops/release/",
+            "ops/reproducibility/",
+        ];
     for file in walk_files(&ctx.repo_root.join("ops"))
         .into_iter()
         .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
