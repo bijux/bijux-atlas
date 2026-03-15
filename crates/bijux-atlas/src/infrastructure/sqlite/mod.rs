@@ -39,8 +39,6 @@ pub(crate) fn apply_readonly_pragmas(
     .map_err(|e| CacheError(e.to_string()))
 }
 
-pub const SCHEMA_V4_SQL: &str = include_str!("../../sql/schema_v4.sql");
-
 #[cfg(test)]
 mod tests {
     use super::*;
