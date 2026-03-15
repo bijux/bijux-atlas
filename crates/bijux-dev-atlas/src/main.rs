@@ -14,9 +14,7 @@ mod artifacts_commands;
 mod audit_commands;
 #[path = "commands/build.rs"]
 mod build_commands;
-mod cli;
-#[path = "commands/clients.rs"]
-mod clients_commands;
+mod interfaces;
 #[path = "commands/data.rs"]
 mod commands_data;
 #[path = "commands/configs.rs"]
@@ -48,8 +46,6 @@ mod ops_commands;
 mod ops_execution_runtime;
 #[path = "commands/ops/support.rs"]
 mod ops_support;
-#[path = "commands/packages.rs"]
-mod packages_commands;
 #[path = "commands/perf.rs"]
 mod perf_commands;
 #[path = "commands/release.rs"]
@@ -68,6 +64,8 @@ mod system_commands;
 mod tutorials_commands;
 
 include!("runtime_entry.rs");
+
+pub(crate) use self::interfaces::cli;
 
 #[allow(dead_code)]
 fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {
