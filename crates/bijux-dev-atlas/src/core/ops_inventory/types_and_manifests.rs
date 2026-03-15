@@ -1,4 +1,3 @@
-
 use std::collections::HashMap;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -425,6 +424,7 @@ struct E2eScenariosManifest {
 struct E2eScenario {
     pub id: String,
     pub action_id: Option<String>,
+    pub entrypoint: Option<String>,
     #[serde(default)]
     pub compose: BTreeMap<String, bool>,
 }
@@ -534,4 +534,3 @@ struct ReportReleaseEvidenceBundle {
     #[serde(default)]
     pub bundle_paths: Vec<String>,
 }
-

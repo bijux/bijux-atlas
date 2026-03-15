@@ -1,3 +1,26 @@
+fn make_target_exists(repo_root: &Path, target: &str) -> bool {
+    let Ok(entries) = std::fs::read_dir(repo_root.join("makes")) else {
+        return false;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.extension().and_then(|ext| ext.to_str()) != Some("mk") {
+            continue;
+        }
+        let Ok(text) = std::fs::read_to_string(&path) else {
+            continue;
+        };
+        let needle = format!("{target}:");
+        if text
+            .lines()
+            .any(|line| line.trim_start().starts_with(&needle))
+        {
+            return true;
+        }
+    }
+    false
+}
+
 fn validate_datasets_and_e2e_manifests(
     repo_root: &Path,
     inputs: &LoadedOpsInventoryValidationInputs,
@@ -288,6 +311,40 @@ fn validate_datasets_and_e2e_manifests(
         {
             errors.push(format!(
                 "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` must define action_id",
+                scenario.id
+            ));
+        }
+        let Some(entrypoint) = scenario.entrypoint.as_deref().map(str::trim) else {
+            errors.push(format!(
+                "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` must define entrypoint",
+                scenario.id
+            ));
+            continue;
+        };
+        if entrypoint.is_empty() {
+            errors.push(format!(
+                "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` entrypoint must not be empty",
+                scenario.id
+            ));
+            continue;
+        }
+        if let Some(rest) = entrypoint.strip_prefix("make ") {
+            let Some(target) = rest.split_whitespace().next() else {
+                errors.push(format!(
+                    "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` make entrypoint is missing a target",
+                    scenario.id
+                ));
+                continue;
+            };
+            if !make_target_exists(repo_root, target) {
+                errors.push(format!(
+                    "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` references unknown makes target `{target}`",
+                    scenario.id
+                ));
+            }
+        } else if !entrypoint.starts_with("bijux dev atlas ") {
+            errors.push(format!(
+                "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` entrypoint must start with `bijux dev atlas` or `make`",
                 scenario.id
             ));
         }

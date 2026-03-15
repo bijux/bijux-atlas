@@ -145,7 +145,7 @@
       "id": "k8s-suite",
       "description": "Kubernetes invariant suite composed with stack and observability dependencies.",
       "action_id": "ops.e2e.run",
-      "entrypoint": "make ops-k8s-suite",
+      "entrypoint": "make k8s-validate",
       "compose": {
         "stack": true,
         "observe": true,
@@ -271,7 +271,7 @@
       "id": "perf-e2e",
       "description": "Perf-oriented end-to-end scenario composing load suites with stack and datasets.",
       "action_id": "ops.load.run",
-      "entrypoint": "make ops-up",
+      "entrypoint": "make ops-load-run SUITE=mixed",
       "compose": {
         "stack": true,
         "observe": true,
@@ -341,7 +341,7 @@
       "id": "realdata",
       "description": "Realdata regression scenarios with dataset and observability checks.",
       "action_id": "ops.e2e.run",
-      "entrypoint": "make ops-realdata",
+      "entrypoint": "bijux dev atlas ops e2e realdata",
       "compose": {
         "stack": true,
         "observe": true,
@@ -453,7 +453,7 @@
       "id": "smoke",
       "description": "Local e2e smoke composition using stack, observability, datasets, and load smoke checks.",
       "action_id": "ops.root.smoke",
-      "entrypoint": "make ops-e2e-smoke",
+      "entrypoint": "bijux dev atlas ops e2e smoke",
       "compose": {
         "stack": true,
         "observe": true,
