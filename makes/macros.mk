@@ -1,4 +1,4 @@
-# Scope: shared make macros for guardrails and reusable shell snippets.
+# Scope: shared makes macros for guardrails and reusable shell snippets.
 # Public targets: none
 require_tool = command -v $(1) >/dev/null 2>&1 || { echo "$(1) is required" >&2; exit 1; }
 require_file = test -f "$(1)" || { echo "required file missing: $(1)" >&2; exit 1; }

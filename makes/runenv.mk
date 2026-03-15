@@ -1,8 +1,8 @@
-# Scope: shared deterministic environment defaults for make.
+# Scope: shared deterministic environment defaults for makes.
 # Public targets: none
 SHELL := /bin/sh
 
-# Shared environment defaults for deterministic make runs.
+# Shared environment defaults for deterministic makes runs.
 MAKE_PRIMARY_GOAL ?= $(if $(MAKECMDGOALS),$(firstword $(MAKECMDGOALS)),help)
 MAKE_RUN_TS ?= $(shell date -u +%Y%m%dT%H%M%SZ)
 MAKE_RUN_ID ?= $(MAKE_PRIMARY_GOAL)-$(MAKE_RUN_TS)-$(shell sh -c 'echo $$PPID')

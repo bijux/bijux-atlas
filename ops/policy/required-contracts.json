@@ -34,7 +34,7 @@
       "contract_id": "MAKE-001",
       "lanes": ["pr", "merge", "release"],
       "owner": "atlas-maintainers",
-      "rationale": "Keep public make entrypoints deterministic and documented."
+      "rationale": "Keep public makes entrypoints deterministic and documented."
     },
     {
       "domain": "configs",

@@ -43,7 +43,7 @@ contracts-docs-required: ## Run PR-required docs suite in static mode
 	@printf '%s\n' "run: $(DEV_ATLAS) checks run --suite docs_required --include-internal --include-slow --format $(FORMAT)"
 	@$(DEV_ATLAS) checks run --suite docs_required --include-internal --include-slow --format $(FORMAT)
 
-contracts-make-required: ## Run PR-required make suite in static mode
+contracts-make-required: ## Run PR-required makes suite in static mode
 	@printf '%s\n' "run: $(DEV_ATLAS) checks run --suite make_required --include-internal --include-slow --format $(FORMAT)"
 	@$(DEV_ATLAS) checks run --suite make_required --include-internal --include-slow --format $(FORMAT)
 

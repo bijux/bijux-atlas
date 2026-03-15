@@ -218,7 +218,7 @@
     },
     {
       "name": "help",
-      "description": "Show curated public make targets grouped by namespace",
+      "description": "Show curated public makes targets grouped by namespace",
       "lanes": [
         "dev",
         "ci",

@@ -94,7 +94,7 @@ fn run_explain(args: MakesExplainArgs, started: Instant) -> Result<(String, i32)
             "action": "explain",
             "target": target,
             "known": true,
-            "text": format!("{target} is a curated make wrapper target"),
+            "text": format!("{target} is a curated makes wrapper target"),
             "guidance": "This target is a thin dispatcher. Keep orchestration in bijux dev atlas commands.",
             "what_it_runs": recipe_lines,
             "artifacts": artifact_paths,
@@ -152,7 +152,7 @@ fn run_target_list(
     let envelope = serde_json::json!({
         "schema_version": 1,
         "action": "target-list",
-        "text": "make target list regenerated",
+        "text": "makes target list regenerated",
         "output_path": output_path.display().to_string(),
         "public_target_count": payload["public_targets"].as_array().map(|rows| rows.len()).unwrap_or(0),
         "duration_ms": started.elapsed().as_millis() as u64,
@@ -236,13 +236,13 @@ fn run_wrappers_verify(
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
-        .map_err(|e| format!("failed to execute make wrapper contract verification: {e}"))?;
+        .map_err(|e| format!("failed to execute makes wrapper contract verification: {e}"))?;
     let code = status.code().unwrap_or(1);
     let payload = serde_json::json!({
         "schema_version": 1,
         "action": "wrappers_verify",
         "kind": "make_wrappers_verify",
-        "text": if code == 0 { "make wrapper verification passed" } else { "make wrapper verification failed" },
+        "text": if code == 0 { "makes wrapper verification passed" } else { "makes wrapper verification failed" },
         "status": if code == 0 { "ok" } else { "failed" },
         "verification_command": "cargo run -p bijux-dev-atlas -- check run --suite make_required --include-internal --include-slow --format json",
         "duration_ms": started.elapsed().as_millis() as u64,
@@ -298,9 +298,9 @@ fn run_verify_module(args: MakesVerifyArgs, started: Instant) -> Result<(String,
         "module": module,
         "makefile": makefile.display().to_string(),
         "text": if failed == 0 {
-            "make module verification passed"
+            "makes module verification passed"
         } else {
-            "make module verification failed"
+            "makes module verification failed"
         },
         "rows": rows,
         "counts": {

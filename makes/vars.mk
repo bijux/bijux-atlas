@@ -1,4 +1,4 @@
-# Scope: shared variable defaults for the make wrapper surface.
+# Scope: shared variable defaults for the makes wrapper surface.
 # Public targets: none
 ARTIFACT_ROOT ?= artifacts
 FORMAT ?= text

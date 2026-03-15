@@ -37,10 +37,10 @@ clean: ## Clean ephemeral artifacts through the control plane
 lint-make: ## Run the governed make-required check suite
 	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)
 
-_internal-lint-make: ## Run make domain checks via control-plane registry
+_internal-lint-make: ## Run makes domain checks via control-plane registry
 	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT)
 
-_internal-make-drift-report: ## Generate make drift report artifact from make-domain checks
+_internal-make-drift-report: ## Generate makes drift report artifact from makes-domain checks
 	@mkdir -p $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
