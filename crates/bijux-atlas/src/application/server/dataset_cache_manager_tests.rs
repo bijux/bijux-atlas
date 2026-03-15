@@ -6,6 +6,10 @@ use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 use super::*;
 use crate::application::server::state::{dataset_index_path, local_cache_paths};
 use crate::infrastructure::store::registry::fake::FakeStore;
+use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
+use std::collections::HashSet;
+use std::sync::Arc;
+use std::time::Duration;
 use tempfile::tempdir;
 
 fn fixture_sqlite() -> Vec<u8> {

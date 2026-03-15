@@ -79,8 +79,6 @@ pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
 pub use crate::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 
 #[cfg(test)]
-mod cache_manager_tests;
-#[cfg(test)]
 mod registry_tests;
 
 pub const CRATE_NAME: &str = "bijux-atlas";

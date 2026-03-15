@@ -2,6 +2,8 @@
 
 pub(crate) mod cache;
 pub(crate) mod state;
+#[cfg(test)]
+mod dataset_cache_manager_tests;
 
 pub use self::state::{
     build_router, chrono_like_unix_millis, effective_config_payload,
