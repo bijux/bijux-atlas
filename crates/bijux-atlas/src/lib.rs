@@ -36,7 +36,6 @@ pub(crate) use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::{error, info, warn, Instrument};
 
-pub mod api;
 pub mod application;
 pub mod bootstrap;
 pub mod contracts;
@@ -49,6 +48,7 @@ pub mod model;
 pub mod ports;
 pub mod types;
 
+pub use crate::contracts::api;
 pub use crate::application::{
     build_router, chrono_like_unix_millis, effective_config_payload,
     effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
