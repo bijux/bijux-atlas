@@ -8,12 +8,12 @@
 use clap as _;
 use regex as _;
 
-pub mod adapters;
 pub(crate) mod application;
 pub mod core;
 pub mod docs;
 pub mod domains;
 pub mod engine;
+pub mod infrastructure;
 pub mod model;
 pub mod ops;
 pub mod performance;
@@ -22,8 +22,9 @@ pub(crate) mod ports;
 pub mod prelude;
 pub mod reference;
 pub mod registry;
-pub mod runtime;
 pub(crate) mod schema_support;
 pub mod ui;
 
+pub use self::infrastructure::adapters;
+pub use self::infrastructure::runtime;
 pub use crate::model::governance as governance_objects;
