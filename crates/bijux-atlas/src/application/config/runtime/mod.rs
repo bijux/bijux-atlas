@@ -477,6 +477,11 @@ pub fn default_runtime_cache_root() -> PathBuf {
     resolve_runtime_path(PathBuf::from(DEFAULT_CACHE_ROOT))
 }
 
+#[must_use]
+pub fn default_runtime_policy_mode() -> String {
+    std::env::var("ATLAS_POLICY_MODE").unwrap_or_else(|_| "strict".to_string())
+}
+
 fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,
@@ -999,8 +1004,7 @@ impl RuntimeConfig {
             warm_coordination_retry_budget: env_usize("ATLAS_WARM_COORDINATION_RETRY_BUDGET", 3)?,
             warm_coordination_retry_base_ms: env_u64("ATLAS_WARM_COORDINATION_RETRY_BASE_MS", 250)?,
             pod_id: std::env::var("HOSTNAME").unwrap_or_else(|_| "atlas-pod".to_string()),
-            policy_mode: std::env::var("ATLAS_POLICY_MODE")
-                .unwrap_or_else(|_| "strict".to_string()),
+            policy_mode: default_runtime_policy_mode(),
             shutdown_drain_ms: env_u64("ATLAS_SHUTDOWN_DRAIN_MS", 5000)?,
             tcp_keepalive_enabled: env_bool("ATLAS_TCP_KEEPALIVE_ENABLED", true)?,
             startup,

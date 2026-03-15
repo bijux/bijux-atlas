@@ -37,17 +37,11 @@ impl AppState {
     }
 
     fn init_shard_registry() -> bijux_atlas_core::ShardRegistry {
-        let mut registry = bijux_atlas_core::ShardRegistry::new();
-        let owners = vec!["node-a".to_string(), "node-b".to_string()];
-        let assigned = registry.assign_round_robin("atlas-default", 4, &owners);
-        for (idx, shard_id) in assigned.iter().enumerate() {
-            registry.record_access(shard_id, 10 + idx as u64, idx % 2 == 0);
-        }
-        registry
+        bijux_atlas_core::ShardRegistry::new()
     }
 
     fn init_replica_registry() -> bijux_atlas_core::ReplicaRegistry {
-        let mut registry = bijux_atlas_core::ReplicaRegistry::new(
+        bijux_atlas_core::ReplicaRegistry::new(
             bijux_atlas_core::ReplicationPolicy {
                 replication_factor: 2,
                 primary_required: true,
@@ -57,27 +51,7 @@ impl AppState {
                 read_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
                 write_consistency: bijux_atlas_core::ConsistencyLevel::Quorum,
             },
-        );
-        registry.upsert_replica(bijux_atlas_core::ReplicaRecord {
-            metadata: bijux_atlas_core::ReplicaMetadata {
-                dataset_id: "atlas-default".to_string(),
-                shard_id: "atlas-default-s001".to_string(),
-                primary_node_id: "node-a".to_string(),
-                replica_node_ids: vec!["node-b".to_string()],
-            },
-            sync: bijux_atlas_core::ReplicaSyncState {
-                last_applied_lsn: 1_000,
-                primary_lsn: 1_020,
-                lag_ms: 15,
-                sync_throughput_rows_per_second: 12_000,
-            },
-            health: bijux_atlas_core::ReplicaHealth {
-                healthy: true,
-                failed_checks: 0,
-                last_failure_reason: None,
-            },
-        });
-        registry
+        )
     }
 
     fn init_resilience_registry() -> bijux_atlas_core::FailureRecoveryRegistry {
@@ -178,7 +152,7 @@ impl AppState {
             replica_registry: Arc::new(Mutex::new(Self::init_replica_registry())),
             resilience_registry: Arc::new(Mutex::new(Self::init_resilience_registry())),
             runtime_policy_hash,
-            runtime_policy_mode: Arc::new("strict".to_string()),
+            runtime_policy_mode: Arc::new(crate::application::config::default_runtime_policy_mode()),
             api,
             limits,
         }
@@ -415,5 +389,30 @@ mod bulkhead_tests {
             .try_acquire_owned()
             .expect("cheap should remain available while draining heavy");
         drop(cheap);
+    }
+
+    #[tokio::test]
+    async fn app_state_boots_without_demo_shards_or_replicas() {
+        let store = Arc::new(FakeStore::default());
+        let cache = DatasetCacheManager::new(DatasetCacheConfig::default(), store);
+        let state = AppState::with_config(cache, ApiConfig::default(), QueryLimits::default());
+
+        let shard_count = state.shard_registry.lock().await.metrics().shard_count;
+        let replica_groups = state.replica_registry.lock().await.metrics().replica_groups_total;
+
+        assert_eq!(shard_count, 0, "runtime must not fabricate shard ownership");
+        assert_eq!(replica_groups, 0, "runtime must not fabricate replica groups");
+    }
+
+    #[tokio::test]
+    async fn app_state_uses_runtime_policy_mode_default_owner() {
+        let store = Arc::new(FakeStore::default());
+        let cache = DatasetCacheManager::new(DatasetCacheConfig::default(), store);
+        let state = AppState::with_config(cache, ApiConfig::default(), QueryLimits::default());
+
+        assert_eq!(
+            state.runtime_policy_mode.as_str(),
+            crate::application::config::default_runtime_policy_mode()
+        );
     }
 }
