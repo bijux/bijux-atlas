@@ -57,7 +57,6 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
         ));
     }
-    validate_docs_consolidation_inventory(ctx, &mut issues)?;
     let has_navigation_path = yaml
         .get("theme")
         .and_then(|theme| theme.get("features"))
@@ -184,10 +183,6 @@ pub(crate) fn docs_validate_payload(
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
     let mut docs_pages = BTreeSet::<String>::new();
     let mut indexed_links = BTreeSet::<String>::new();
-    let enforce_frontmatter_metadata = ctx
-        .repo_root
-        .join("docs/_internal/governance/metadata/front-matter.index.json")
-        .exists();
     let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
@@ -204,19 +199,6 @@ pub(crate) fn docs_validate_payload(
         }
         let text = fs::read_to_string(&file).unwrap_or_default();
         let frontmatter = extract_frontmatter_map(&text);
-        if enforce_frontmatter_metadata
-            && !rel.starts_with("_internal/")
-            && !rel.starts_with("_drafts/")
-            && !rel.starts_with("_assets/")
-        {
-            for key in ["owner", "stability", "last_reviewed"] {
-                if !frontmatter.contains_key(key) {
-                    issues.warnings.push(format!(
-                        "DOCS_METADATA_ERROR: `{rel}` is missing required front matter key `{key}`"
-                    ));
-                }
-            }
-        }
         if let Some(stability) = frontmatter.get("stability").map(String::as_str) {
             if !matches!(
                 stability,
@@ -398,7 +380,6 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
-    let registry_checks = registry_validate_payload(ctx)?;
     if common.strict {
         issues.errors.append(&mut issues.warnings);
     }
@@ -418,137 +399,10 @@ pub(crate) fn docs_validate_payload(
         "errors": issues.errors,
         "warnings": issues.warnings,
         "rows": inv["nav"].as_array().cloned().unwrap_or_default(),
-        "registry": registry_checks,
         "summary": {"total": inv["nav"].as_array().map(|v| v.len()).unwrap_or(0), "errors": inv["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": inv["warnings"].as_array().map(|v| v.len()).unwrap_or(0), "nav_max_depth": nav_max_depth},
         "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
         "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }))
-}
-
-fn validate_docs_consolidation_inventory(
-    ctx: &DocsContext,
-    issues: &mut DocsIssues,
-) -> Result<(), String> {
-    let quality_policy_path = ctx.repo_root.join("configs/docs/quality-policy.json");
-    let quality_policy: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&quality_policy_path)
-            .map_err(|e| format!("failed to read {}: {e}", quality_policy_path.display()))?,
-    )
-    .map_err(|e| format!("failed to parse {}: {e}", quality_policy_path.display()))?;
-    let default_area_budget = quality_policy
-        .get("default_area_budget")
-        .and_then(|v| v.as_u64())
-        .unwrap_or(20);
-    let mut area_budgets = std::collections::BTreeMap::<String, u64>::new();
-    if let Some(map) = quality_policy.get("area_budgets").and_then(|v| v.as_object()) {
-        for (key, value) in map {
-            if let Some(limit) = value.as_u64() {
-                area_budgets.insert(key.to_string(), limit);
-            }
-        }
-    }
-    let inventory_path = ctx
-        .repo_root
-        .join("docs/_internal/governance/docs-consolidation-inventory.json");
-    if !inventory_path.exists() {
-        issues.warnings.push(format!(
-            "DOCS_CONSOLIDATION_WARN: missing {}",
-            inventory_path.display()
-        ));
-        return Ok(());
-    }
-    let redirects_path = ctx.repo_root.join("docs/redirects.json");
-    let redirects_value: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&redirects_path)
-            .map_err(|e| format!("failed to read {}: {e}", redirects_path.display()))?,
-    )
-    .map_err(|e| format!("failed to parse {}: {e}", redirects_path.display()))?;
-    let redirects = redirects_value
-        .as_object()
-        .ok_or_else(|| format!("{} must be a JSON object", redirects_path.display()))?;
-    let inventory_value: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(&inventory_path)
-            .map_err(|e| format!("failed to read {}: {e}", inventory_path.display()))?,
-    )
-    .map_err(|e| format!("failed to parse {}: {e}", inventory_path.display()))?;
-    let rows = inventory_value
-        .get("entries")
-        .and_then(|v| v.as_array())
-        .ok_or_else(|| format!("{} must contain `entries[]`", inventory_path.display()))?;
-    let allowed = [
-        "canonical",
-        "supporting",
-        "redundant",
-        "obsolete",
-        "internal-only",
-    ];
-    let mut area_counts = std::collections::BTreeMap::<String, u64>::new();
-    for row in rows {
-        let path = row
-            .get("path")
-            .and_then(|v| v.as_str())
-            .unwrap_or_default()
-            .to_string();
-        let classification = row
-            .get("classification")
-            .and_then(|v| v.as_str())
-            .unwrap_or_default()
-            .to_string();
-        if path.is_empty() || classification.is_empty() {
-            issues.errors.push(format!(
-                "DOCS_CONSOLIDATION_ERROR: inventory entries require `path` and `classification` ({})",
-                inventory_path.display()
-            ));
-            continue;
-        }
-        if !allowed.contains(&classification.as_str()) {
-            issues.errors.push(format!(
-                "DOCS_CONSOLIDATION_ERROR: `{path}` has invalid classification `{classification}`"
-            ));
-            continue;
-        }
-        let area = if path == "docs/index.md" || path == "docs/start-here.md" {
-            "docs-root".to_string()
-        } else if let Some(rest) = path.strip_prefix("docs/") {
-            rest.split('/').next().unwrap_or("docs-root").to_string()
-        } else {
-            "docs-root".to_string()
-        };
-        *area_counts.entry(area).or_insert(0) += 1;
-        if classification == "redundant" || classification == "obsolete" {
-            let canonical_target = row
-                .get("canonical_target")
-                .and_then(|v| v.as_str())
-                .unwrap_or_default()
-                .to_string();
-            if canonical_target.is_empty() {
-                issues.errors.push(format!(
-                    "DOCS_CONSOLIDATION_ERROR: `{path}` ({classification}) requires `canonical_target`"
-                ));
-                continue;
-            }
-            let redirect_key = path.strip_prefix("docs/").unwrap_or(&path).to_string();
-            let redirect_value = redirects
-                .get(&redirect_key)
-                .and_then(|v| v.as_str())
-                .unwrap_or_default()
-                .to_string();
-            if redirect_value != canonical_target {
-                issues.errors.push(format!(
-                    "DOCS_CONSOLIDATION_ERROR: redirects.json must map `{redirect_key}` -> `{canonical_target}`"
-                ));
-            }
-        }
-    }
-    for (area, count) in area_counts {
-        let budget = area_budgets.get(&area).copied().unwrap_or(default_area_budget);
-        if count > budget {
-            issues.warnings.push(format!(
-                "DOCS_BUDGET_WARN: area `{area}` has `{count}` pages, soft budget is `{budget}`"
-            ));
-        }
-    }
-    Ok(())
 }
 
 fn extract_frontmatter_map(text: &str) -> BTreeMap<String, String> {

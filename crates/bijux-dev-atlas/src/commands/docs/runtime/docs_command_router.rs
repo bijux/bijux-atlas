@@ -30,19 +30,6 @@ fn write_docs_gate_artifact(
     .map_err(|e| format!("write {} failed: {e}", path.display()))
 }
 
-#[derive(serde::Deserialize)]
-struct DocsConceptRegistry {
-    concepts: Vec<DocsConceptRow>,
-}
-
-#[derive(serde::Deserialize)]
-struct DocsConceptRow {
-    id: String,
-    canonical: String,
-    #[serde(default)]
-    pointers: Vec<String>,
-}
-
 #[derive(Debug, Clone, serde::Deserialize)]
 struct DocsRealDataCatalog {
     runs: Vec<DocsRealDataRun>,
@@ -70,37 +57,6 @@ struct DocsRealDataProvenance {
     url: String,
     retrieval_method: String,
     license_note: String,
-}
-
-fn load_docs_concepts(repo_root: &std::path::Path) -> Result<Vec<DocsConceptRow>, String> {
-    let path = repo_root.join("docs/_internal/style/concepts.yml");
-    let text =
-        fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
-    let payload: DocsConceptRegistry = serde_yaml::from_str(&text)
-        .map_err(|e| format!("failed to parse {}: {e}", path.display()))?;
-    Ok(payload.concepts)
-}
-
-fn render_concept_registry_markdown(rows: &[DocsConceptRow]) -> String {
-    let mut out = String::from("# Concept Registry\n\n");
-    out.push_str("Generated from `docs/_internal/style/concepts.yml`.\n\n");
-    out.push_str("| Concept ID | Canonical Page | Pointer Pages |\n|---|---|---|\n");
-    for row in rows {
-        let pointers = if row.pointers.is_empty() {
-            "`none`".to_string()
-        } else {
-            row.pointers
-                .iter()
-                .map(|pointer| format!("`{pointer}`"))
-                .collect::<Vec<_>>()
-                .join(", ")
-        };
-        out.push_str(&format!(
-            "| `{}` | `{}` | {} |\n",
-            row.id, row.canonical, pointers
-        ));
-    }
-    out
 }
 
 fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
@@ -1014,8 +970,6 @@ fn load_orphan_allowlist(path: &std::path::Path) -> Result<Vec<OrphanAllowlistEn
         Err(errors.join("; "))
     }
 }
-
-include!("docs_command_router_registry.inc.rs");
 
 fn write_generated_docs_file(
     repo_root: &std::path::Path,
@@ -2027,7 +1981,6 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     Ok((emit_payload(common.format, common.out, &payload)?, code))
                 }
             },
-            DocsCommand::Registry { command } => run_docs_registry_command(&started, command),
             DocsCommand::Toc { command } => match command {
                 crate::cli::DocsTocCommand::Verify(common) => {
                     let ctx = docs_context(&common)?;
@@ -2070,10 +2023,6 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 };
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
-            DocsCommand::SitemapRegenerate(common) => run_docs_registry_command(
-                &started,
-                crate::cli::DocsRegistryCommand::Build(common),
-            ),
             DocsCommand::ExternalLinks(args) => {
                 let ctx = docs_context(&args.common)?;
                 let mut payload =

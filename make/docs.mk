@@ -16,12 +16,6 @@ docs-validate: ## Run docs validation checks
 docs-external-links: ## Run docs external link checks
 	@$(DEV_ATLAS) docs external-links --allow-network --format $(FORMAT)
 
-docs-registry: ## Build docs registry and generated docs indexes
-	@$(DEV_ATLAS) docs registry build --allow-write --format $(FORMAT)
-
-docs-registry-validate: ## Validate docs registry coverage and contracts
-	@$(DEV_ATLAS) docs registry validate --format $(FORMAT)
-
 docs-build: ## Build docs into artifacts
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
 
@@ -40,4 +34,4 @@ docs-reference-regenerate: ## Regenerate docs operations reference pages from SS
 docs-reference-check: ## Check docs operations reference pages are regenerated
 	@$(DEV_ATLAS) docs reference check --allow-subprocess --format $(FORMAT)
 
-.PHONY: docs docs-doctor docs-validate docs-external-links docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check
+.PHONY: docs docs-doctor docs-validate docs-external-links docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check

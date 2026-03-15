@@ -1,18 +1,8 @@
 
 #[derive(Debug, Clone, serde::Deserialize)]
 pub(crate) struct DocsQualityPolicy {
-    #[serde(default = "default_stale_days")]
-    pub(crate) stale_days: i64,
-    #[serde(default = "default_stale_fail_grace_days")]
-    pub(crate) stale_fail_grace_days: i64,
     #[serde(default = "default_reference_date")]
     pub(crate) reference_date: String,
-    #[serde(default = "default_stale_override_policy_path")]
-    pub(crate) stale_override_policy_path: String,
-    #[serde(default = "default_area_budget")]
-    pub(crate) default_area_budget: usize,
-    #[serde(default)]
-    pub(crate) area_budgets: BTreeMap<String, usize>,
     #[serde(default)]
     pub(crate) naming: NamingPolicy,
     #[serde(default)]
@@ -63,24 +53,8 @@ pub(crate) struct DiagramPolicy {
     pub(crate) roots: Vec<String>,
 }
 
-fn default_stale_days() -> i64 {
-    90
-}
-
-fn default_stale_fail_grace_days() -> i64 {
-    30
-}
-
 fn default_reference_date() -> String {
     "2026-02-25".to_string()
-}
-
-fn default_stale_override_policy_path() -> String {
-    "docs/_internal/policies/stale-page-overrides.json".to_string()
-}
-
-fn default_area_budget() -> usize {
-    10
 }
 
 fn default_max_line_length() -> usize {
@@ -94,12 +68,7 @@ fn default_require_h1() -> bool {
 impl Default for DocsQualityPolicy {
     fn default() -> Self {
         Self {
-            stale_days: default_stale_days(),
-            stale_fail_grace_days: default_stale_fail_grace_days(),
             reference_date: default_reference_date(),
-            stale_override_policy_path: default_stale_override_policy_path(),
-            default_area_budget: default_area_budget(),
-            area_budgets: BTreeMap::new(),
             naming: NamingPolicy::default(),
             terminology: TerminologyPolicy::default(),
             markdown: MarkdownPolicy::default(),
@@ -345,139 +314,3 @@ fn extract_frontmatter_docs_metadata(
 }
 
 type FrontmatterDocsMetadata = (Option<String>, Option<String>, Option<String>);
-
-fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
-    let mut files = Vec::new();
-    for file in walk_files_local(repo_root) {
-        if file.extension().and_then(|v| v.to_str()) != Some("md") {
-            continue;
-        }
-        let Ok(rel) = file.strip_prefix(repo_root) else {
-            continue;
-        };
-        let rels = rel.to_string_lossy();
-        if rels.starts_with("artifacts/") || rels.contains("/target/") {
-            continue;
-        }
-        if rels == "docs/_internal/generated/make-targets.md" {
-            continue;
-        }
-        if !is_allowed_doc_location(&rels) {
-            continue;
-        }
-        if rels.starts_with("docs/_internal/generated/") || rels.starts_with("docs/_drafts/") {
-            continue;
-        }
-        files.push(file);
-    }
-    files.sort();
-    files
-}
-
-fn is_allowed_doc_location(path: &str) -> bool {
-    matches!(path, "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md")
-        || path.starts_with("docs/")
-        || path.starts_with("crates/")
-        || path.starts_with("ops/")
-        || path.starts_with("configs/")
-        || path.starts_with("ops/docker/")
-        || path == "make/README.md"
-        || path == "make/CONTRACT.md"
-        || path.starts_with("make/")
-        || path.starts_with(".github/")
-}
-
-fn read_dir_entries(path: &Path) -> Vec<PathBuf> {
-    match fs::read_dir(path) {
-        Ok(entries) => entries.filter_map(Result::ok).map(|e| e.path()).collect(),
-        Err(_) => Vec::new(),
-    }
-}
-
-fn infer_doc_type(path: &str) -> &'static str {
-    if path.contains("/runbooks/") {
-        "runbook"
-    } else if path.contains("/contracts/") || path.contains("SCHEMA") || path.contains("OPENAPI") {
-        "spec"
-    } else if path.contains("/quickstart/") || path.contains("how-to") {
-        "how-to"
-    } else if path.contains("/reference/") {
-        "reference"
-    } else {
-        "concept"
-    }
-}
-
-fn infer_lifecycle(path: &str) -> &'static str {
-    if path.contains("/_drafts/") {
-        "draft"
-    } else if path.contains("/_style/") || path.contains("/_lint/") || path.contains("/_nav/") {
-        "internal"
-    } else {
-        "stable"
-    }
-}
-
-fn parse_owner_and_stability(file: &Path) -> (String, String) {
-    let Ok(text) = fs::read_to_string(file) else {
-        return ("docs-governance".to_string(), "stable".to_string());
-    };
-    let mut owner = None;
-    let mut stability = None;
-    for line in text.lines().take(40) {
-        let trimmed = line.trim();
-        if owner.is_none() && trimmed.starts_with("- Owner:") {
-            owner = Some(
-                trimmed
-                    .trim_start_matches("- Owner:")
-                    .trim()
-                    .trim_matches('`')
-                    .to_string(),
-            );
-        }
-        if stability.is_none() && trimmed.starts_with("- Stability:") {
-            stability = Some(
-                trimmed
-                    .trim_start_matches("- Stability:")
-                    .trim()
-                    .trim_matches('`')
-                    .to_string(),
-            );
-        }
-    }
-    (
-        owner
-            .filter(|value| !value.trim().is_empty())
-            .unwrap_or_else(|| "docs-governance".to_string()),
-        stability
-            .filter(|value| !value.trim().is_empty())
-            .unwrap_or_else(|| "stable".to_string()),
-    )
-}
-
-fn crate_association(path: &str) -> Option<String> {
-    let parts = path.split('/').collect::<Vec<_>>();
-    if parts.len() >= 3 && parts[0] == "crates" && parts[2] == "docs" {
-        Some(parts[1].to_string())
-    } else {
-        None
-    }
-}
-
-pub(crate) fn workspace_crate_roots(repo_root: &Path) -> Vec<PathBuf> {
-    let mut roots = Vec::new();
-    let crates_dir = repo_root.join("crates");
-    if !crates_dir.exists() {
-        return roots;
-    }
-    for entry in read_dir_entries(&crates_dir) {
-        if !entry.is_dir() {
-            continue;
-        }
-        if entry.join("Cargo.toml").exists() {
-            roots.push(entry);
-        }
-    }
-    roots.sort();
-    roots
-}

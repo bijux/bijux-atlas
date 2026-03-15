@@ -25,7 +25,6 @@ use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
 use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
 pub(crate) use build_commands::run_build_command;
-pub(crate) use clients_commands::run_clients_command;
 pub(crate) use commands_data::run_data_command;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;
@@ -34,9 +33,9 @@ pub(crate) use configs_commands::{
     run_configs_command,
 };
 pub(crate) use control_plane_commands::{
-    help_inventory_payload, run_capabilities_command, run_docker_command,
-    run_help_inventory_command, run_policies_command, run_print_boundaries_command,
-    run_print_policies, run_version_command,
+    run_capabilities_command, run_docker_command, run_help_inventory_command,
+    run_policies_command, run_print_boundaries_command, run_print_policies,
+    run_version_command,
 };
 #[cfg(test)]
 pub(crate) use docs_commands::mkdocs_nav_refs;
@@ -57,7 +56,6 @@ pub(crate) use ops_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
     ToolDefinition, ToolchainInventory,
 };
-pub(crate) use packages_commands::run_packages_command;
 pub(crate) use perf_commands::run_perf_command;
 use regex::Regex;
 pub(crate) use release_commands::run_release_command;

@@ -1,3 +1,35 @@
+fn has_required_section(text: &str, section: &str) -> bool {
+    let needle = format!("## {section}");
+    text.lines().any(|line| line.trim() == needle)
+}
+
+fn parse_ymd_date(s: &str) -> Option<(i32, i32, i32)> {
+    let parts: Vec<_> = s.split('-').collect();
+    if parts.len() != 3 {
+        return None;
+    }
+    let y = parts[0].parse().ok()?;
+    let m = parts[1].parse().ok()?;
+    let d = parts[2].parse().ok()?;
+    Some((y, m, d))
+}
+
+fn days_from_civil(y: i32, m: i32, d: i32) -> i64 {
+    let y = y - i32::from(m <= 2);
+    let era = if y >= 0 { y } else { y - 399 } / 400;
+    let yoe = y - era * 400;
+    let mp = m + if m > 2 { -3 } else { 9 };
+    let doy = (153 * mp + 2) / 5 + d - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    (era * 146_097 + doe - 719_468) as i64
+}
+
+fn date_diff_days(older: &str, newer: &str) -> Option<i64> {
+    let (y1, m1, d1) = parse_ymd_date(older)?;
+    let (y2, m2, d2) = parse_ymd_date(newer)?;
+    Some(days_from_civil(y2, m2, d2) - days_from_civil(y1, m1, d1))
+}
+
 fn docs_verify_contracts_payload(
     ctx: &DocsContext,
     common: &DocsCommonArgs,

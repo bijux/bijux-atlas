@@ -236,30 +236,24 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
     Ok(out)
 }
 
-fn render_docs_reference_repo_map(repo_root: &std::path::Path) -> Result<String, String> {
-    let inventory_path = repo_root.join("docs/_internal/generated/docs-inventory.md");
-    if !inventory_path.exists() {
-        return Err(format!(
-            "missing canonical docs inventory at {}",
-            inventory_path.display()
-        ));
-    }
+fn render_docs_reference_repo_map(_repo_root: &std::path::Path) -> Result<String, String> {
     Ok(
         "# Repository Map\n\n\
 - Owner: `bijux-atlas-operations`\n\
 - Type: `reference`\n\
 - Audience: `operator`\n\
 - Stability: `stable`\n\
-- Source-of-truth: `docs/_internal/generated/docs-inventory.md`\n\n\
+- Source-of-truth: repo layout and checked-in docs entrypoints\n\n\
 ## Purpose\n\n\
-This page is the stable reader entrypoint for repository layout. Use the generated inventory for exhaustive listings and\n\
-the curated layout guide for narrative structure.\n\n\
+This page is the stable reader entrypoint for repository layout. Use the curated layout guide and section entrypoints to\n\
+understand ownership, boundaries, and where material lives.\n\n\
 ## Canonical Inputs\n\n\
-- [Docs Inventory](../_internal/generated/docs-inventory.md)\n\
 - [Repository Layout](../development/repo-layout.md)\n\n\
+- [Start Here](../start-here.md)\n\
+- [Operations Reference](../operations/reference/commands.md)\n\n\
 ## Reader Guidance\n\n\
-Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Use the generated\n\
-inventory when you need a complete file-level listing.\n"
+Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Follow the nearest\n\
+checked-in index page in the area you are working in rather than relying on generated inventory artifacts.\n"
             .to_string(),
     )
 }

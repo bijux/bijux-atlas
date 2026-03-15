@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ApiCommand, ArtifactsCommand, AuditCommand, CheckCommand, CheckRegistryCommand, ChecksCommand,
-    Command, ConfigsCommand, DatasetsCommand, DocsCommand, DriftCommand, FormatArg,
-    IngestCommand, InvariantsCommand, LoadCommand, MakeCommand, MigrationsCommand, ObserveCommand,
-    OpsCommand, PackagesCommand, PerfCommand, PoliciesCommand, RegistryCommand,
-    ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand, ReleaseCratesCommand,
-    ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand, ReleaseSemverCommand,
-    ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
+    ApiCommand, ArtifactsCommand, AuditCommand, Command, ConfigsCommand, DatasetsCommand,
+    DocsCommand, DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand,
+    MakeCommand, MigrationsCommand, ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand,
+    RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand,
+    ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand,
+    ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -51,8 +50,6 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Security { command } => force_json_security(command),
         Command::Runtime { command } => force_json_runtime(command),
         Command::Tutorials { command } => force_json_tutorials(command),
-        Command::Packages { command } => force_json_packages(command),
-        Command::Clients { command } => force_json_clients(command),
         Command::Migrations { command } => force_json_migrations(command),
         Command::System { command } => force_json_system(command),
         Command::Audit { command } => force_json_audit(command),
@@ -66,8 +63,6 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Ingest { command } => force_json_ingest(command),
         Command::Perf { command } => force_json_perf(command),
         Command::Policies { command } => force_json_policies(command),
-        Command::Check { command } => force_json_check(command),
-        Command::Checks { command } => force_json_checks(command),
         Command::Docker { command } => force_json_docker(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Release { command } => match command {
@@ -528,7 +523,6 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::IncludesCheck(common)
         | DocsCommand::Links(common)
         | DocsCommand::NavIntegrity(common)
-        | DocsCommand::SitemapRegenerate(common)
         | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
         | DocsCommand::Inventory(common)
         | DocsCommand::Graph(common)
@@ -555,10 +549,6 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Spine { command } => match command {
             crate::cli::DocsSpineCommand::Validate(common)
             | crate::cli::DocsSpineCommand::Report(common) => common.format = FormatArg::Json,
-        },
-        DocsCommand::Registry { command } => match command {
-            crate::cli::DocsRegistryCommand::Build(common)
-            | crate::cli::DocsRegistryCommand::Validate(common) => common.format = FormatArg::Json,
         },
         DocsCommand::Toc { command } => match command {
             crate::cli::DocsTocCommand::Verify(common) => common.format = FormatArg::Json,
@@ -761,35 +751,9 @@ fn force_json_tutorials(command: &mut crate::cli::TutorialsCommand) {
     }
 }
 
-fn force_json_clients(command: &mut crate::cli::ClientsCommand) {
-    match command {
-        crate::cli::ClientsCommand::List(args)
-        | crate::cli::ClientsCommand::Verify(args)
-        | crate::cli::ClientsCommand::DocsGenerate(args)
-        | crate::cli::ClientsCommand::DocsVerify(args)
-        | crate::cli::ClientsCommand::ExamplesVerify(args)
-        | crate::cli::ClientsCommand::ExamplesRun(args)
-        | crate::cli::ClientsCommand::SchemaVerify(args) => args.format = FormatArg::Json,
-        crate::cli::ClientsCommand::CompatMatrix { command } => match command {
-            crate::cli::ClientsCompatMatrixCommand::Verify(args) => args.format = FormatArg::Json,
-        },
-        crate::cli::ClientsCommand::Python { command } => match command {
-            crate::cli::ClientsPythonCommand::Test(args) => args.common.format = FormatArg::Json,
-        },
-    }
-}
-
 fn force_json_migrations(command: &mut MigrationsCommand) {
     match command {
         MigrationsCommand::Status { format, .. } => *format = FormatArg::Json,
-    }
-}
-
-fn force_json_packages(command: &mut PackagesCommand) {
-    match command {
-        PackagesCommand::List(args) | PackagesCommand::Verify(args) => {
-            args.format = FormatArg::Json
-        }
     }
 }
 
@@ -940,43 +904,8 @@ fn force_json_ingest(command: &mut IngestCommand) {
     }
 }
 
-fn force_json_check(command: &mut CheckCommand) {
-    match command {
-        CheckCommand::Registry { command } => match command {
-            CheckRegistryCommand::Doctor { format, .. } => *format = FormatArg::Json,
-        },
-        CheckCommand::List { format, json, .. } => {
-            *format = FormatArg::Json;
-            *json = true;
-        }
-        CheckCommand::Explain { format, .. }
-        | CheckCommand::Doctor { format, .. }
-        | CheckCommand::Run { format, .. }
-        | CheckCommand::TreeBudgets { format, .. }
-        | CheckCommand::RepoDoctor { format, .. }
-        | CheckCommand::RootSurfaceExplain { format, .. } => *format = FormatArg::Json,
-    }
-}
-
-fn force_json_checks(command: &mut ChecksCommand) {
-    match command {
-        ChecksCommand::List { format, .. }
-        | ChecksCommand::Explain { format, .. }
-        | ChecksCommand::Doctor { format, .. }
-        | ChecksCommand::Run { format, .. }
-        | ChecksCommand::AutomationBoundaries { format, .. } => *format = FormatArg::Json,
-    }
-}
-
 pub(super) fn apply_fail_fast(command: &mut Command) {
     match command {
-        Command::Check {
-            command: CheckCommand::Run { fail_fast, .. },
-        } => *fail_fast = true,
-        Command::Checks {
-            command: ChecksCommand::Run { fail_fast, .. },
-        } => *fail_fast = true,
-        Command::Checks { .. } => {}
         Command::Tests {
             command: TestsCommand::Run { fail_fast, .. },
         } => *fail_fast = true,
@@ -1002,7 +931,6 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::IncludesCheck(common)
             | DocsCommand::Links(common)
             | DocsCommand::NavIntegrity(common)
-            | DocsCommand::SitemapRegenerate(common)
             | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::Graph(common)
             | DocsCommand::Dead(common)
@@ -1033,10 +961,6 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             DocsCommand::Spine { command } => match command {
                 crate::cli::DocsSpineCommand::Validate(_)
                 | crate::cli::DocsSpineCommand::Report(_) => {}
-            },
-            DocsCommand::Registry { command } => match command {
-                crate::cli::DocsRegistryCommand::Build(_)
-                | crate::cli::DocsRegistryCommand::Validate(_) => {}
             },
             DocsCommand::Toc { command } => match command {
                 crate::cli::DocsTocCommand::Verify(_) => {}
@@ -1471,7 +1395,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | DocsCommand::IncludesCheck(common)
             | DocsCommand::Links(common)
             | DocsCommand::NavIntegrity(common)
-            | DocsCommand::SitemapRegenerate(common)
             | DocsCommand::ExternalLinks(crate::cli::DocsExternalLinksArgs { common, .. })
             | DocsCommand::Inventory(common)
             | DocsCommand::Graph(common)
@@ -1502,12 +1425,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             DocsCommand::Spine { command } => match command {
                 crate::cli::DocsSpineCommand::Validate(common)
                 | crate::cli::DocsSpineCommand::Report(common) => {
-                    common.repo_root = Some(root.clone())
-                }
-            },
-            DocsCommand::Registry { command } => match command {
-                crate::cli::DocsRegistryCommand::Build(common)
-                | crate::cli::DocsRegistryCommand::Validate(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
@@ -1697,30 +1614,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
                 }
             },
         },
-        Command::Packages { command } => match command {
-            crate::cli::PackagesCommand::List(args) | crate::cli::PackagesCommand::Verify(args) => {
-                args.repo_root = Some(root.clone())
-            }
-        },
-        Command::Clients { command } => match command {
-            crate::cli::ClientsCommand::List(args)
-            | crate::cli::ClientsCommand::Verify(args)
-            | crate::cli::ClientsCommand::DocsGenerate(args)
-            | crate::cli::ClientsCommand::DocsVerify(args)
-            | crate::cli::ClientsCommand::ExamplesVerify(args)
-            | crate::cli::ClientsCommand::ExamplesRun(args)
-            | crate::cli::ClientsCommand::SchemaVerify(args) => args.repo_root = Some(root.clone()),
-            crate::cli::ClientsCommand::CompatMatrix { command } => match command {
-                crate::cli::ClientsCompatMatrixCommand::Verify(args) => {
-                    args.repo_root = Some(root.clone())
-                }
-            },
-            crate::cli::ClientsCommand::Python { command } => match command {
-                crate::cli::ClientsPythonCommand::Test(args) => {
-                    args.common.repo_root = Some(root.clone())
-                }
-            },
-        },
         Command::Migrations { command } => match command {
             MigrationsCommand::Status { repo_root, .. } => *repo_root = Some(root.clone()),
         },
@@ -1897,27 +1790,6 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | PoliciesCommand::Report { repo_root, .. }
             | PoliciesCommand::Print { repo_root, .. }
             | PoliciesCommand::Validate { repo_root, .. } => *repo_root = Some(root.clone()),
-        },
-        Command::Check { command } => match command {
-            CheckCommand::Registry { command } => match command {
-                CheckRegistryCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
-            },
-            CheckCommand::List { repo_root, .. }
-            | CheckCommand::Explain { repo_root, .. }
-            | CheckCommand::Doctor { repo_root, .. }
-            | CheckCommand::Run { repo_root, .. }
-            | CheckCommand::TreeBudgets { repo_root, .. }
-            | CheckCommand::RepoDoctor { repo_root, .. }
-            | CheckCommand::RootSurfaceExplain { repo_root, .. } => *repo_root = Some(root.clone()),
-        },
-        Command::Checks { command } => match command {
-            ChecksCommand::List { repo_root, .. }
-            | ChecksCommand::Explain { repo_root, .. }
-            | ChecksCommand::Doctor { repo_root, .. }
-            | ChecksCommand::Run { repo_root, .. }
-            | ChecksCommand::AutomationBoundaries { repo_root, .. } => {
-                *repo_root = Some(root.clone())
-            }
         },
         Command::Suites { command } => match command {
             crate::cli::SuitesCommand::Run { repo_root, .. }

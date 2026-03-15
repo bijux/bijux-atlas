@@ -1,9 +1,0 @@
-{
-  "client": "atlas-client",
-  "signing": {
-    "required": false,
-    "recommended": true,
-    "method": "sigstore",
-    "note": "optional package signing policy for Python artifact publishing"
-  }
-}

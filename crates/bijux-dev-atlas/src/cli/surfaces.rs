@@ -137,7 +137,6 @@ pub enum DocsCommand {
     IncludesCheck(DocsCommonArgs),
     Links(DocsCommonArgs),
     NavIntegrity(DocsCommonArgs),
-    SitemapRegenerate(DocsCommonArgs),
     ExternalLinks(DocsExternalLinksArgs),
     Inventory(DocsCommonArgs),
     Graph(DocsCommonArgs),
@@ -171,10 +170,6 @@ pub enum DocsCommand {
         #[command(subcommand)]
         command: DocsSpineCommand,
     },
-    Registry {
-        #[command(subcommand)]
-        command: DocsRegistryCommand,
-    },
     Toc {
         #[command(subcommand)]
         command: DocsTocCommand,
@@ -186,12 +181,6 @@ pub enum DocsCommand {
 pub enum DocsSpineCommand {
     Validate(DocsCommonArgs),
     Report(DocsCommonArgs),
-}
-
-#[derive(Subcommand, Debug)]
-pub enum DocsRegistryCommand {
-    Build(DocsCommonArgs),
-    Validate(DocsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
