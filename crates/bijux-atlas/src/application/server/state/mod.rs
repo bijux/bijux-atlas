@@ -30,11 +30,8 @@ use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
-#[path = "cache_runtime.rs"]
 pub(crate) mod cache_runtime;
-#[path = "request_utils.rs"]
 mod request_utils;
-#[path = "router.rs"]
 mod router;
 
 use self::request_utils::*;
