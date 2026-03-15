@@ -40,11 +40,14 @@ Readiness answers “should this instance currently receive normal traffic?”
 
 Drain or overload state answers “is the instance reducing or refusing certain work classes?”
 
+Operators get into trouble when they collapse those into a single success signal. Atlas exposes separate endpoints because a process can be alive, not yet ready, and already overloaded in meaningfully different combinations.
+
 ## Operational Usage
 
 - use liveness checks to detect dead processes
 - use readiness checks to gate traffic
 - use overload or drain signals to avoid making a bad situation worse
+- decide traffic routing from readiness and overload, not from liveness alone
 
 ## Practical Checks
 
@@ -59,4 +62,4 @@ curl -s http://127.0.0.1:8080/healthz/overload
 - do not route normal traffic based only on liveness
 - treat readiness regression as a first-class operational signal
 - observe overload behavior under stress before calling a deployment “ready for production”
-
+- do not declare an incident resolved just because `/healthz` came back

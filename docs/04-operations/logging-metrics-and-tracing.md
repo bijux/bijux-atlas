@@ -11,6 +11,8 @@ last_reviewed: 2026-03-15
 
 Observability is what turns Atlas from a black box into an operable service.
 
+It is also easy to overclaim here. Telemetry helps you understand runtime behavior, but it does not replace clear contracts, explicit store state, or careful incident analysis.
+
 ## Observability Layers
 
 ```mermaid
@@ -28,6 +30,12 @@ flowchart LR
 - logs explain events and failures in context
 - metrics show aggregate runtime behavior and saturation trends
 - traces help follow a request path across internal work
+
+Each signal also has limits:
+
+- logs can be noisy or too local without correlation identifiers
+- metrics can hide per-request pathologies behind aggregates
+- traces can explain one path well while missing store-level or publication mistakes
 
 ## Metrics Surface
 
@@ -47,6 +55,8 @@ When observing Atlas, pay closest attention to:
 - cache and store latency patterns
 - request rate, concurrency, and error trends
 
+Those priorities are runtime questions. They do not tell you by themselves whether the expected release was published or whether the wrong dataset identity was requested.
+
 ## Logging Practice
 
 - keep logs structured and machine-parseable where possible
@@ -58,3 +68,6 @@ When observing Atlas, pay closest attention to:
 - use traces when request-level latency or path ambiguity matters
 - correlate tracing with metrics rather than treating either as sufficient alone
 
+## Honest Limit
+
+Good telemetry shortens diagnosis. It does not remove the need to ask whether the problem is runtime health, store state, catalog state, request shape, or contract drift.

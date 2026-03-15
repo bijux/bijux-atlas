@@ -11,6 +11,8 @@ last_reviewed: 2026-03-15
 
 Atlas exposes its HTTP surface both as running endpoints and as a generated OpenAPI document. Those two views should reinforce each other.
 
+OpenAPI is useful, but it is not magic. It describes contract-owned API shape. It does not replace testing real requests against real published dataset state.
+
 ## OpenAPI Relationship
 
 ```mermaid
@@ -34,11 +36,15 @@ cargo run -p bijux-atlas --bin bijux-atlas -- openapi generate \
   --out configs/openapi/v1/openapi.generated.json
 ```
 
+Offline generation is best for review, diffing, and contract validation before a server is even running.
+
 ## Read OpenAPI from a Running Server
 
 ```bash
 curl -s http://127.0.0.1:8080/v1/openapi.json
 ```
+
+Runtime retrieval is best for answering, “What is this environment exposing right now?”
 
 ## Why Both Matter
 
@@ -52,14 +58,16 @@ flowchart TD
 
 The generated file is useful during code review, CI, and contract validation. The runtime endpoint is useful for confirming what a live server is exposing.
 
+If the two disagree, treat that as a real problem. Either the environment is not running what you think it is, or the contract-generation path has drifted.
+
 ## API Usage Guidance
 
 - treat OpenAPI as a description of the contract-owned surface, not as a substitute for operational understanding
 - pair endpoint usage with explicit dataset identity fields
 - use the generated contract during integration work and the runtime endpoint during environment verification
+- do not assume a documented route guarantees the requested dataset is actually published in your current store
 
 ## Where to Read More
 
 - [API Endpoint Index](../07-reference/api-endpoint-index.md)
 - [API Compatibility](../08-contracts/api-compatibility.md)
-
