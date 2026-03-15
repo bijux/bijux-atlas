@@ -3,11 +3,12 @@
 ## Scope
 
 - Governed surface: `configs/` and `configs/CONTRACT.md`.
-- SSOT = bijux-dev-atlas contracts runner.
+- Enforcement runner: `bijux dev atlas contracts configs`.
+- Registry authorities: `configs/registry/inventory/configs.json`, `configs/registry/owners.json`, `configs/registry/consumers.json`, `configs/registry/schemas.json`, and `configs/registry/contracts.json`.
 - Effects boundary: this group runs static contracts only.
 - Non-goals:
-- This document does not replace executable contract checks.
-- This document does not grant manual exception authority.
+  - This document does not replace executable contract checks.
+  - This document does not grant manual exception authority.
 
 ## Contract IDs
 
