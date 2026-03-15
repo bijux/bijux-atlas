@@ -4,7 +4,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
-publish = false
+description = "Shared version-derivation helpers for Bijux Rust binaries"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-versioning"
+readme = "README.md"
+categories = ["development-tools"]
+keywords = ["bijux", "versioning", "git", "release"]
 
 [dependencies]
 semver = "1"
