@@ -8,28 +8,26 @@
 
 `ops/` is the operational source of truth for executable operations content.
 
-## Allowed Operational Content
+## Allowed Root Markdown
 
-- specifications
-- runbooks
-- policies
-- evidence references
-- canonical stubs
+- `ops/README.md`
+- `ops/CONTRACT.md`
+- `ops/INDEX.md`
+- `ops/ERRORS.md`
+- `ops/SSOT.md`
 
-## Forbidden Content
+## Forbidden Markdown Shape
 
-- narrative documentation
-- onboarding guides
-
-Narrative and onboarding content must live in `docs/`.
-
-## Required Front Matter
-
-Every `ops/*.md` document must declare `Doc-Class` front matter.
-Allowed values are `spec`, `runbook`, `policy`, `evidence`, and `stub`.
+- Nested markdown under `ops/**`
+- Runbooks, onboarding guides, templates, and narrative walkthroughs inside domain subtrees
+- Markdown mirrors for data that already has a JSON, YAML, TOML, or schema authority
 
 ## Linking Boundaries
 
-- `docs/` may reference stable operational specs in `ops/`.
+- `docs/` may reference stable operational specs in the five root docs or machine-readable ops authorities.
 - `ops/` may reference stable public docs pages when necessary.
 - `ops/` must not use `docs/_internal/` as canonical user guidance.
+
+## Rationale
+
+Nested markdown in `ops/` made the tree hard to trust by path. Root docs now explain the system once, and the rest of `ops/` stays machine-readable so ownership and SSOT are obvious from the tree.

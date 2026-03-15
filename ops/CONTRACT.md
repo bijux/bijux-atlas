@@ -12,9 +12,11 @@
 
 - Authored truth lives under domain directories and `ops/inventory/`; generated examples live under `ops/_generated.example/`.
 - Inventory files describe authorities, consumers, schemas, and command surfaces. They must not claim commands that the CLI does not expose.
-- Schema files under `ops/schema/` validate operational inputs and generated reports. They must match current file paths and current runtime producers.
+- Schema files under `ops/schema/` validate operational inputs and generated reports. `ops/schema/generated/schema-index.json` is the authoritative schema index.
 - Effectful operations require explicit opt-in flags such as `--allow-subprocess`, `--allow-network`, or `--allow-write`.
 - Human walkthroughs belong in `docs/operations/`; `ops/` stores operational data, contracts, inventories, schemas, fixtures, and generated examples.
+- Markdown inside `ops/` is limited to five root documents. Deep directories must stay boring and machine-readable.
+- Release readiness and runbook generation are proved by data authorities, not by nested prose files.
 
 ## Machine Authorities
 
@@ -27,6 +29,7 @@
 | Inventory authority hierarchy | `ops/inventory/authority-index.json` |
 | Authoritative path list | `ops/inventory/authoritative-file-list.json` |
 | Schema coverage | `ops/schema/generated/schema-index.json` |
+| Breaking release notes | `ops/release/notes/breaking.json` |
 
 ## Evidence
 
@@ -34,3 +37,13 @@
 - Profile validation report: `bijux-dev-atlas ops profiles validate --allow-subprocess --format json`
 - Generated example registry snapshot: `ops/_generated.example/contracts-registry-snapshot.json`
 - Generated example inventory index: `ops/_generated.example/inventory-index.json`
+
+## Minimal Release Surface
+
+- `ops/inventory/contracts-map.json`
+- `ops/inventory/authority-index.json`
+- `ops/load/suites/suites.json`
+- `ops/observe/drills.json`
+- `ops/report/generated/readiness-score.json`
+
+Removing or renaming any of these files is a release-surface change and must update the same commit's inventories and validators.

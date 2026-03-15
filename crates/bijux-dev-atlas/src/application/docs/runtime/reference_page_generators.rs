@@ -535,7 +535,7 @@ fn render_docs_reference_drills(repo_root: &std::path::Path) -> Result<String, S
 }
 
 fn render_docs_reference_schema_index() -> String {
-    "# Schema Index Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/schema/generated/schema-index.md`\n\n## Canonical Source\n\n- `ops/schema/generated/schema-index.md` is the authoritative generated schema index.\n- This page is a docs-site reference pointer to avoid duplicating the schema table.\n".to_string()
+    "# Schema Index Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/schema/generated/schema-index.json`\n\n## Canonical Source\n\n- `ops/schema/generated/schema-index.json` is the authoritative generated schema index.\n- This page is a docs-site reference pointer to avoid duplicating the schema table.\n".to_string()
 }
 
 fn render_docs_reference_evidence_model(repo_root: &std::path::Path) -> Result<String, String> {

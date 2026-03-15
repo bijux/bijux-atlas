@@ -131,7 +131,7 @@ fn load_scenario_manifest(repo_root: &std::path::Path) -> Result<ScenarioManifes
 }
 
 fn ops_runbook_source_rel() -> &'static str {
-    "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+    "ops/README.md"
 }
 
 fn load_ops_runbook_rows(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {

@@ -2480,28 +2480,11 @@ fn semver_major(version: &str) -> Option<u64> {
 }
 
 fn release_breaking_notes_meta_path(root: &Path) -> PathBuf {
-    root.join("ops/release/notes/breaking.md")
+    root.join("ops/release/notes/breaking.json")
 }
 
 fn release_breaking_notes_schema_path(root: &Path) -> PathBuf {
     root.join("ops/release/notes/breaking.schema.json")
-}
-
-fn parse_front_matter(text: &str) -> Result<serde_yaml::Value, String> {
-    let mut lines = text.lines();
-    if lines.next() != Some("---") {
-        return Err("markdown file must start with front matter".to_string());
-    }
-    let mut front_matter = String::new();
-    for line in lines {
-        if line == "---" {
-            return serde_yaml::from_str(&front_matter)
-                .map_err(|err| format!("front matter parse failed: {err}"));
-        }
-        front_matter.push_str(line);
-        front_matter.push('\n');
-    }
-    Err("markdown front matter missing closing delimiter".to_string())
 }
 
 fn load_breaking_notes_meta(root: &Path) -> Result<serde_json::Value, String> {
@@ -2509,9 +2492,8 @@ fn load_breaking_notes_meta(root: &Path) -> Result<serde_json::Value, String> {
     let schema_path = release_breaking_notes_schema_path(root);
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("read {} failed: {err}", path.display()))?;
-    let front_matter = parse_front_matter(&text)?;
-    let value = serde_json::to_value(front_matter)
-        .map_err(|err| format!("front matter encode failed: {err}"))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
     let schema = read_json_value(&schema_path)?;
     if schema
         .get("properties")
@@ -4116,7 +4098,7 @@ pub(crate) fn run_governance_command(
                 let notes_cover_breaks = rows.is_empty() || !notes_entries.is_empty();
                 if !notes_cover_breaks {
                     errors.push(
-                        "breaking changes exist but ops/release/notes/breaking.md has no entries"
+                        "breaking changes exist but ops/release/notes/breaking.json has no entries"
                             .to_string(),
                     );
                 }
@@ -4138,7 +4120,7 @@ pub(crate) fn run_governance_command(
                             "artifacts/governance/compat-warnings.json",
                             "docs/redirects.json",
                             "ops/k8s/charts/bijux-atlas/Chart.yaml",
-                            "ops/release/notes/breaking.md"
+                            "ops/release/notes/breaking.json"
                         ]
                     },
                     "status": if errors.is_empty() { "ok" } else { "failed" },

@@ -1,6 +1,6 @@
 # Ops Index
 
-Operational specifications and runbooks are organized by pillar:
+Canonical ops pillars:
 
 - `ops/inventory/`
 - `ops/schema/`
@@ -13,6 +13,13 @@ Operational specifications and runbooks are organized by pillar:
 - `ops/e2e/`
 - `ops/report/`
 
-Generated directories (`ops/_generated/` and `ops/_generated.example/`) are evidence surfaces and are not canonical narrative documentation.
+Generated directories (`ops/_generated/` and `ops/_generated.example/`) are evidence surfaces and are not canonical authored truth.
 
-Schema policy: `ops/schema/VERSIONING_POLICY.md`
+Root docs:
+
+- `ops/README.md`
+- `ops/CONTRACT.md`
+- `ops/ERRORS.md`
+- `ops/SSOT.md`
+
+Schema registry: `ops/schema/generated/schema-index.json`

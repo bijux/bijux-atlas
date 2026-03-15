@@ -1,0 +1,3 @@
+Image Release Notes 0.1.0
+
+- Initial tracked image notes placeholder.

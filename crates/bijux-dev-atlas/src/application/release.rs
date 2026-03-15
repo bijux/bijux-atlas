@@ -1156,8 +1156,8 @@ fn run_release_images_release_notes_check(
     let version = args
         .version
         .unwrap_or_else(|| workspace_version(&root).unwrap_or_else(|_| "0.1.0".to_string()));
-    let template_path = root.join("ops/release/notes/image-release-notes-template.md");
-    let notes_path = root.join(format!("ops/release/notes/images/{version}.md"));
+    let template_path = root.join("ops/release/notes/image-release-notes-template.txt");
+    let notes_path = root.join(format!("ops/release/notes/images/{version}.txt"));
     let mut errors = Vec::<String>::new();
     if !template_path.exists() {
         errors.push("image release notes template is missing".to_string());
@@ -1216,13 +1216,13 @@ fn run_release_images_changelog_extract(
         .filter(|line| !line.is_empty())
         .map(ToOwned::to_owned)
         .collect::<Vec<_>>();
-    let out_path = root.join(format!("ops/release/notes/images/changelog-{version}.md"));
+    let out_path = root.join(format!("ops/release/notes/images/changelog-{version}.txt"));
     if args.allow_write {
         if let Some(parent) = out_path.parent() {
             fs::create_dir_all(parent)
                 .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
         }
-        let mut body = format!("# Image Changelog {version}\n\n");
+        let mut body = format!("Image Changelog {version}\n\n");
         for line in &lines {
             body.push_str("- ");
             body.push_str(line);

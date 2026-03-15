@@ -1,6 +1,5 @@
 fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let required = [
-        "ops/schema/README.md",
         "ops/schema/inventory/gates.schema.json",
         "ops/schema/inventory/pin-freeze.schema.json",
         "ops/schema/inventory/pins.schema.json",
@@ -36,7 +35,6 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/stack/dependency-graph.schema.json",
         "ops/schema/stack/profile-manifest.schema.json",
         "ops/schema/generated/schema-index.json",
-        "ops/schema/generated/schema-index.md",
         "ops/schema/generated/compatibility-lock.json",
     ];
     let mut violations = Vec::new();
@@ -234,48 +232,9 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
                     format!(
                         "schema index drift detected: expected={expected_files:?} actual={actual_schema_files:?}"
                     ),
-                    "regenerate ops/schema/generated/schema-index.json and schema-index.md",
+                    "regenerate ops/schema/generated/schema-index.json",
                     Some(index_rel),
                 ));
-            }
-
-            let index_md_rel = Path::new("ops/schema/generated/schema-index.md");
-            let index_md_text = fs::read_to_string(ctx.repo_root.join(index_md_rel))
-                .map_err(|err| CheckError::Failed(err.to_string()))?;
-            let mut markdown_paths = Vec::new();
-            for line in index_md_text.lines() {
-                let trimmed = line.trim();
-                if !trimmed.starts_with("| `ops/schema/") {
-                    continue;
-                }
-                let Some(path) = trimmed
-                    .strip_prefix("| `")
-                    .and_then(|v| v.split("` |").next())
-                    .map(ToString::to_string)
-                else {
-                    continue;
-                };
-                markdown_paths.push(path);
-            }
-            if markdown_paths != expected_files {
-                violations.push(violation(
-                    "OPS_SCHEMA_INDEX_MARKDOWN_DRIFT",
-                    "ops/schema/generated/schema-index.md does not match schema-index.json entries"
-                        .to_string(),
-                    "regenerate schema-index.md from schema-index.json",
-                    Some(index_md_rel),
-                ));
-            }
-            for path in &markdown_paths {
-                let rel = Path::new(path);
-                if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
-                    violations.push(violation(
-                        "OPS_SCHEMA_INDEX_MARKDOWN_BROKEN_LINK",
-                        format!("schema-index.md references missing schema `{path}`"),
-                        "remove broken markdown entry or restore missing schema file",
-                        Some(index_md_rel),
-                    ));
-                }
             }
         }
     }
@@ -353,116 +312,28 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         }
     }
 
-    let schema_readme_rel = Path::new("ops/schema/README.md");
-    let schema_readme = fs::read_to_string(ctx.repo_root.join(schema_readme_rel))
+    let contract_rel = Path::new("ops/CONTRACT.md");
+    let contract_text = fs::read_to_string(ctx.repo_root.join(contract_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    for required_link in [
-        "ops/schema/VERSIONING_POLICY.md",
-        "ops/schema/BUDGET_POLICY.md",
-        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
-        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
-    ] {
-        if !schema_readme.contains(required_link) {
-            violations.push(violation(
-                "OPS_SCHEMA_GOVERNANCE_LINK_MISSING",
-                format!("ops/schema/README.md must link `{required_link}`"),
-                "add required governance policy links to ops/schema/README.md",
-                Some(schema_readme_rel),
-            ));
-        }
+    if !contract_text.contains("ops/schema/generated/schema-index.json") {
+        violations.push(violation(
+            "OPS_SCHEMA_INDEX_NOT_LINKED_FROM_CONTRACT",
+            "ops/CONTRACT.md must link ops/schema/generated/schema-index.json".to_string(),
+            "link the schema index JSON from the root ops contract",
+            Some(contract_rel),
+        ));
     }
     let ops_index_rel = Path::new("ops/INDEX.md");
     let ops_index_text = fs::read_to_string(ctx.repo_root.join(ops_index_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if !ops_index_text.contains("ops/schema/VERSIONING_POLICY.md") {
+    if !ops_index_text.contains("ops/schema/generated/schema-index.json") {
         violations.push(violation(
-            "OPS_SCHEMA_VERSIONING_POLICY_NOT_LINKED",
-            "ops/INDEX.md must link ops/schema/VERSIONING_POLICY.md".to_string(),
-            "add schema versioning policy link to ops/INDEX.md",
+            "OPS_SCHEMA_INDEX_NOT_LINKED_FROM_INDEX",
+            "ops/INDEX.md must link ops/schema/generated/schema-index.json".to_string(),
+            "add schema index link to ops/INDEX.md",
             Some(ops_index_rel),
         ));
     }
-
-    const SCHEMA_BUDGET_CAP: usize = 90;
-    if actual_schema_files.len() > SCHEMA_BUDGET_CAP {
-        let exceptions_rel = Path::new("ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md");
-        let exceptions_text = fs::read_to_string(ctx.repo_root.join(exceptions_rel))
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
-        if !exceptions_text.contains("- ") {
-            violations.push(violation(
-                "OPS_SCHEMA_BUDGET_CAP_EXCEEDED",
-                format!(
-                    "schema count {} exceeds budget cap {} without approved exceptions",
-                    actual_schema_files.len(),
-                    SCHEMA_BUDGET_CAP
-                ),
-                "document approved exceptions in ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
-                Some(exceptions_rel),
-            ));
-        }
-    }
-
-    let allowlist_rel = Path::new("ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md");
-    let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
-    for line in allowlist_text.lines() {
-        let trimmed = line.trim();
-        if !trimmed.starts_with("- ") {
-            continue;
-        }
-        let Some(path) = trimmed.split('`').nth(1) else {
-            violations.push(violation(
-                "OPS_SCHEMA_REFERENCE_ALLOWLIST_LINE_INVALID",
-                format!("allowlist entry must contain backtick path and reason: `{trimmed}`"),
-                "format entries as `- `ops/schema/...`: reason`",
-                Some(allowlist_rel),
-            ));
-            continue;
-        };
-        if !path.starts_with("ops/schema/") {
-            violations.push(violation(
-                "OPS_SCHEMA_REFERENCE_ALLOWLIST_PATH_INVALID",
-                format!("allowlist schema path must start with ops/schema/: `{path}`"),
-                "keep schema allowlist scoped to ops/schema/**",
-                Some(allowlist_rel),
-            ));
-        }
-        if !trimmed.contains(":") {
-            violations.push(violation(
-                "OPS_SCHEMA_REFERENCE_ALLOWLIST_REASON_MISSING",
-                format!("allowlist entry is missing rationale: `{trimmed}`"),
-                "append a rationale after `:` for every allowlist entry",
-                Some(allowlist_rel),
-            ));
-        }
-    }
-    let allowed_unreferenced = allowlist_text
-        .lines()
-        .filter_map(|line| line.split('`').nth(1))
-        .map(ToString::to_string)
-        .collect::<BTreeSet<_>>();
-    for schema_path in &actual_schema_files {
-        let references = walk_files(&ctx.repo_root.join("ops"))
-            .into_iter()
-            .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
-            .filter(|rel| !rel.starts_with("ops/schema"))
-            .filter(|rel| rel.extension().and_then(|ext| ext.to_str()) != Some("lock"))
-            .filter_map(|rel| {
-                fs::read_to_string(ctx.repo_root.join(&rel))
-                    .ok()
-                    .map(|text| (rel, text))
-            })
-            .any(|(_rel, text)| text.contains(schema_path));
-        if !references && !allowed_unreferenced.contains(schema_path) {
-            violations.push(violation(
-                "OPS_SCHEMA_UNREFERENCED",
-                format!("schema `{schema_path}` is unreferenced outside ops/schema"),
-                "reference schema from contract/config or add a reason in SCHEMA_REFERENCE_ALLOWLIST.md",
-                Some(Path::new(schema_path)),
-            ));
-        }
-    }
-
     let required_files_schema_rel =
         Path::new("ops/schema/meta/required-files-contract.schema.json");
     let required_files_schema_text =

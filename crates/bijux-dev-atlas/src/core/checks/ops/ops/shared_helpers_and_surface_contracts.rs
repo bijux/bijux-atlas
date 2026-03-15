@@ -73,6 +73,7 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "ops/INDEX.md",
         "ops/ERRORS.md",
         "ops/README.md",
+        "ops/SSOT.md",
     ];
     let mut violations = Vec::new();
     for path in required {
@@ -111,23 +112,6 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
             ));
             continue;
         }
-        let requires_committed_markers = dir != "_generated";
-        if requires_committed_markers {
-            for required_file in ["README.md", "OWNER.md", "REQUIRED_FILES.md"] {
-                let target = rel.join(required_file);
-                if !ctx.adapters.fs.exists(ctx.repo_root, &target) {
-                    violations.push(violation(
-                        "OPS_CANONICAL_DIRECTORY_REQUIRED_FILE_MISSING",
-                        format!(
-                            "missing required file `{}` in canonical ops directory",
-                            target.display()
-                        ),
-                        "add required README/OWNER/REQUIRED_FILES marker files for canonical ops directories",
-                        Some(&target),
-                    ));
-                }
-            }
-        }
         let full = ctx.repo_root.join(&rel);
         let has_any_entry = fs::read_dir(&full)
             .ok()
@@ -145,38 +129,85 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
     let allowed_top_level_dirs = BTreeSet::from([
         "_generated",
         "_generated.example",
-        "_meta",
-        "atlas-dev",
+        "api",
+        "audit",
+        "cli",
         "datasets",
-        "contracts",
-        "docs",
+        "docker",
+        "drift",
         "e2e",
         "env",
-        "fixtures",
+        "evidence",
+        "governance",
+        "invariants",
         "inventory",
         "k8s",
         "load",
         "observe",
         "policy",
         "report",
+        "release",
+        "reproducibility",
         "schema",
+        "security",
         "stack",
-        "tools",
+        "tutorials",
+    ]);
+    let allowed_root_docs = BTreeSet::from([
+        "CONTRACT.md",
+        "ERRORS.md",
+        "INDEX.md",
+        "README.md",
+        "SSOT.md",
     ]);
     for entry in read_dir_entries(&ctx.repo_root.join("ops")) {
-        if !entry.is_dir() {
+        if entry.is_dir() {
+            let Some(name) = entry.file_name().and_then(|v| v.to_str()) else {
+                continue;
+            };
+            if !allowed_top_level_dirs.contains(name) {
+                let rel = Path::new("ops").join(name);
+                violations.push(violation(
+                    "OPS_TOP_LEVEL_DIRECTORY_FORBIDDEN",
+                    format!("non-canonical top-level ops directory found: `{}`", rel.display()),
+                    "remove stray directories or update contract and checks if the directory is intentional",
+                    Some(&rel),
+                ));
+            }
             continue;
         }
         let Some(name) = entry.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if !allowed_top_level_dirs.contains(name) {
+        if !allowed_root_docs.contains(name) {
             let rel = Path::new("ops").join(name);
             violations.push(violation(
-                "OPS_TOP_LEVEL_DIRECTORY_FORBIDDEN",
-                format!("non-canonical top-level ops directory found: `{}`", rel.display()),
-                "remove stray directories or update contract and checks if the directory is intentional",
+                "OPS_ROOT_FILE_FORBIDDEN",
+                format!("non-canonical ops root file found: `{}`", rel.display()),
+                "keep only the five canonical markdown files at the root of ops/",
                 Some(&rel),
+            ));
+        }
+    }
+    let allowed_markdown = BTreeSet::from([
+        "ops/CONTRACT.md",
+        "ops/ERRORS.md",
+        "ops/INDEX.md",
+        "ops/README.md",
+        "ops/SSOT.md",
+    ]);
+    for file in walk_files(&ctx.repo_root.join("ops")) {
+        if file.extension().and_then(|ext| ext.to_str()) != Some("md") {
+            continue;
+        }
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        let rel_str = rel.display().to_string();
+        if !allowed_markdown.contains(rel_str.as_str()) {
+            violations.push(violation(
+                "OPS_NESTED_MARKDOWN_FORBIDDEN",
+                format!("nested ops markdown is forbidden: `{}`", rel.display()),
+                "move essential prose into the five root docs and keep ops subtrees machine-readable",
+                Some(rel),
             ));
         }
     }

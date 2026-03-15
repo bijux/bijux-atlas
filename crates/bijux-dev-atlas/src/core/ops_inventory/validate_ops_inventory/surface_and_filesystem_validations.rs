@@ -105,49 +105,14 @@ fn validate_surface_and_filesystem_policies(
         "stack",
         "tools",
         "vendor",
-        "ARTIFACTS.md",
-        "AUTHORITY_TIERS.md",
         "CONTRACT.md",
-        "CONTROL_PLANE.md",
-        "BREAKING_CHANGE_TEMPLATE.md",
-        "DETERMINISM_PROOF.md",
-        "DELETE_HALF_OPS_SIMULATION_REPORT.md",
-        "DOC_NECESSITY_CHECKLIST.md",
-        "DIRECTORY_NECESSITY.md",
-        "DIRECTORY_BUDGET_POLICY.md",
-        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
         "docker",
-        "DRIFT.md",
         "ERRORS.md",
-        "EVIDENCE_SIGNOFF_WORKFLOW.md",
-        "EMERGENCY_OVERRIDE_WORKFLOW.md",
-        "GENERATED_LIFECYCLE.md",
-        "GOLDEN_REFRESH_POLICY.md",
         "INDEX.md",
-        "INCIDENT_PLAYBOOK_GENERATION.md",
-        "MATURITY_SCORECARD.md",
-        "MINIMAL_RELEASE_SURFACE.md",
-        "NAMING.md",
-        "OPS_FREEZE_WORKFLOW.md",
-        "OPS_CHANGE_REVIEW_CHECKLIST.md",
-        "OPS_ADR_TEMPLATE.md",
-        "OPS_INVARIANTS.md",
-        "OWNERSHIP_ROTATION_POLICY.md",
-        "PORTABILITY_MATRIX.md",
-        "PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
         "README.md",
         "release",
-        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
-        "SCHEMA_EVOLUTION_WORKFLOW.md",
-        "RUNBOOK_GENERATION_FROM_GRAPH.md",
-        "DEPRECATION_WORKFLOW.md",
-        "ESCALATION_MAPPING.md",
-        "SUPPLY_CHAIN_MODEL.md",
-        "THREAT_MODEL.md",
-        "TIER1_ROOT_SURFACE.md",
-        "tutorials",
-        "WHAT_FAILS_WHEN.md",
         "SSOT.md",
+        "tutorials",
     ]
     .into_iter()
     .collect();
@@ -158,6 +123,29 @@ fn validate_surface_and_filesystem_policies(
             if !allowed_top_level.contains(name.as_ref()) {
                 errors.push(format!("unexpected ops top-level entry `ops/{name}`"));
             }
+        }
+    }
+
+    let allowed_markdown = BTreeSet::from([
+        "ops/CONTRACT.md",
+        "ops/ERRORS.md",
+        "ops/INDEX.md",
+        "ops/README.md",
+        "ops/SSOT.md",
+    ]);
+    for path in collect_files_recursive(repo_root.join("ops")) {
+        if path.extension().and_then(|ext| ext.to_str()) != Some("md") {
+            continue;
+        }
+        let rel = path
+            .strip_prefix(repo_root)
+            .unwrap_or(path.as_path())
+            .display()
+            .to_string();
+        if !allowed_markdown.contains(rel.as_str()) {
+            errors.push(format!(
+                "nested ops markdown is forbidden; keep markdown only in the ops root: `{rel}`"
+            ));
         }
     }
 

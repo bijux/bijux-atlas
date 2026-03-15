@@ -1,0 +1,6 @@
+Image Release Notes
+
+- version:
+- image digests:
+- rollout impact:
+- rollback notes:
