@@ -1,27 +1,25 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod canonical;
-pub mod cluster_state;
+pub mod cluster;
 pub mod config;
 pub mod dataset;
-pub mod distributed;
-pub mod distributed_config;
 pub mod ingest;
-pub mod membership;
 pub mod policy;
 pub mod query;
-pub mod replication;
-pub mod resilience;
-pub mod routing;
-pub mod security_auth;
-pub mod security_authorization;
-pub mod security_data_protection;
-pub mod security_runtime;
-pub mod sharding;
+pub mod security;
 pub mod time;
 
 pub use canonical::{sha256, sha256_hex, Hash256};
-pub use cluster_state::{ClusterStateRegistry, ClusterStatusSnapshot, NodeMetadata};
+pub use cluster::config as distributed_config;
+pub use cluster::distributed;
+pub use cluster::membership;
+pub use cluster::replication;
+pub use cluster::resilience;
+pub use cluster::routing;
+pub use cluster::sharding;
+pub use cluster::state as cluster_state;
+pub use cluster::state::{ClusterStateRegistry, ClusterStatusSnapshot, NodeMetadata};
 pub use config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub use distributed::{
     BootstrapPolicy, ClusterDescriptor, ClusterHealth, ClusterMetadataStore, CompatibilityPolicy,
@@ -45,6 +43,10 @@ pub use resilience::{
     FailureCategory, FailureDetectionPolicy, FailureEvent, FailureRecoveryRegistry,
     RecoveryDiagnostics, RecoveryEvent, RecoveryPolicy, ResilienceGuarantees, ResilienceMetrics,
 };
+pub use security::auth as security_auth;
+pub use security::authorization as security_authorization;
+pub use security::data_protection as security_data_protection;
+pub use security::runtime as security_runtime;
 pub use security_auth::{
     authentication_context_from_api_key, authentication_context_from_token,
     extract_request_identity, generate_api_key, hash_api_key, mint_signed_token, rotate_api_key,

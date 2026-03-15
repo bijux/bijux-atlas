@@ -39,6 +39,8 @@ pub use crate::errors::{
     ConfigPathScope, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result, ResultExt,
     ERROR_CODES,
 };
-pub use crate::ports::{ClockPort, FsPort, NetPort, ProcessPort, ProcessResult};
+pub use crate::ports::{
+    AuthPort, ClockPort, FsPort, MetricsPort, NetPort, ProcessPort, ProcessResult, TracingPort,
+};
 pub use crate::types::{DatasetId, RunId, ShardId};
 pub use crate::{domain, effects, errors, ports, types};
