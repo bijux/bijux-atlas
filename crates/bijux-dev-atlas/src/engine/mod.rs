@@ -11,13 +11,15 @@ use crate::model::engine::*;
 mod executor;
 mod report_codec;
 mod reporting;
+mod rendering;
+mod runner;
+mod selection;
 
 pub use executor::*;
 pub use report_codec::*;
 pub use reporting::*;
-
-include!("selection.rs");
-include!("runner.rs");
-include!("rendering.rs");
+pub use rendering::*;
+pub use runner::*;
+pub use selection::*;
 #[cfg(test)]
 include!("tests.rs");

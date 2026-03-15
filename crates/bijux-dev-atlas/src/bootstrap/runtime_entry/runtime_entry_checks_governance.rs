@@ -1,3 +1,5 @@
+use super::*;
+
 #[allow(dead_code)]
 pub(crate) fn run_check_tree_budgets(
     repo_root: Option<PathBuf>,

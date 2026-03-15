@@ -1,3 +1,5 @@
+use super::*;
+
 use std::cmp::Ordering;
 
 pub fn validate_wildcard_pattern(pattern: &str) -> Result<(), String> {
@@ -79,7 +81,7 @@ fn derived_contract_tags(contract: &Contract) -> BTreeSet<&'static str> {
     tags
 }
 
-fn matches_tags(filters: &[String], contract: &Contract) -> bool {
+pub(crate) fn matches_tags(filters: &[String], contract: &Contract) -> bool {
     if filters.is_empty() {
         return true;
     }
@@ -162,7 +164,7 @@ pub fn matches_filter(filter: &Option<String>, value: &str) -> bool {
         .unwrap_or(true)
 }
 
-fn case_status_from_result(result: &TestResult) -> CaseStatus {
+pub(crate) fn case_status_from_result(result: &TestResult) -> CaseStatus {
     match result {
         TestResult::Pass => CaseStatus::Pass,
         TestResult::Fail(_) => CaseStatus::Fail,
@@ -171,7 +173,7 @@ fn case_status_from_result(result: &TestResult) -> CaseStatus {
     }
 }
 
-fn worst_status(current: CaseStatus, next: CaseStatus) -> CaseStatus {
+pub(crate) fn worst_status(current: CaseStatus, next: CaseStatus) -> CaseStatus {
     fn rank(s: CaseStatus) -> u8 {
         match s {
             CaseStatus::Pass => 0,

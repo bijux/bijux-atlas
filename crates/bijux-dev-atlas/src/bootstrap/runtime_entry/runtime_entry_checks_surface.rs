@@ -1,4 +1,6 @@
-fn normalize_suite_name(raw: &str) -> Result<&str, String> {
+use super::*;
+
+pub(crate) fn normalize_suite_name(raw: &str) -> Result<&str, String> {
     match raw {
         "ci-fast" => Ok("ci_fast"),
         "ci" => Ok("ci"),

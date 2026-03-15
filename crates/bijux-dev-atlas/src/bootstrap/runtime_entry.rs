@@ -172,9 +172,9 @@ fn validate_id_glob_pattern(pattern: &str) -> Result<(), String> {
     Ok(())
 }
 
-include!("runtime_entry_checks_surface.rs");
-include!("runtime_entry_checks_governance.rs");
-
+mod runtime_entry_checks_governance;
+mod runtime_entry_checks_surface;
+pub(crate) use runtime_entry_checks_surface::*;
 pub(crate) fn run() -> i32 {
     crate::cli::run()
 }

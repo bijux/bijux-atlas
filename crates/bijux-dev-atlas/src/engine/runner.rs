@@ -1,3 +1,5 @@
+use super::*;
+
 use std::time::Instant;
 
 fn panic_payload_to_string(payload: &(dyn std::any::Any + Send)) -> String {

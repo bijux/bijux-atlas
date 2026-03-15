@@ -1,3 +1,5 @@
+use super::*;
+
 pub fn to_pretty(report: &RunReport) -> String {
     fn status_with_timing(
         status: CaseStatus,
