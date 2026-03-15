@@ -1033,5 +1033,5 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
-#[path = "../application/runtime_entry_checks_surface_ci.rs"]
+#[path = "ci_surface.rs"]
 mod ci;
