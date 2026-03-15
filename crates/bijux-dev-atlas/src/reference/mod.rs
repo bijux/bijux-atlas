@@ -7,3 +7,4 @@ pub mod metrics_registry;
 pub mod reproducibility;
 pub mod system_invariants;
 pub mod tracing_registry;
+pub mod workspace_layout;

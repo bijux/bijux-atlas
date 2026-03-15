@@ -65,6 +65,7 @@ mod tutorials_commands;
 
 pub(crate) use self::bootstrap::*;
 pub(crate) use self::interfaces::cli;
+pub(crate) use bijux_dev_atlas::reference;
 
 #[allow(dead_code)]
 fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {

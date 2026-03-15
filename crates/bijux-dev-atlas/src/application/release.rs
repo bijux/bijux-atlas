@@ -990,8 +990,8 @@ fn run_release_images_runtime_command_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let dev_cli_dispatch = root.join("crates/bijux-dev-atlas/src/cli/dispatch.rs");
-    let dev_cli_mod = root.join("crates/bijux-dev-atlas/src/cli/mod.rs");
+    let dev_cli_dispatch = crate::reference::workspace_layout::dev_atlas_cli_dispatch_source(&root);
+    let dev_cli_mod = crate::reference::workspace_layout::dev_atlas_cli_mod_source(&root);
     let schema_path =
         root.join("docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json");
     let dispatch_text = fs::read_to_string(&dev_cli_dispatch)
@@ -5994,5 +5994,21 @@ mod tests {
         let (_, exit_code) = run_release_version_check(args).expect("version check should run");
         assert_eq!(exit_code, 1, "version progression must be monotonic");
         cleanup_release_test_repo(&root);
+    }
+
+    #[test]
+    fn release_runtime_command_verify_uses_current_cli_sources() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf();
+        let (_, exit_code) = run_release_images_runtime_command_verify(ReleaseImagesValidateArgs {
+            repo_root: Some(root),
+            format: FormatArg::Json,
+            out: None,
+        })
+        .expect("runtime command verify");
+        assert_eq!(exit_code, 0);
     }
 }

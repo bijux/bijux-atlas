@@ -1568,9 +1568,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .all(|id| data_class_ids.contains(id.as_str()));
 
     let request_utils_source = fs::read_to_string(
-        root.join("crates/bijux-atlas/src/application/server/request_utils.rs"),
+        crate::reference::workspace_layout::atlas_request_utils_source(&root),
     )
-            .map_err(|err| format!("failed to read request utils source: {err}"))?;
+    .map_err(|err| format!("failed to read request utils source: {err}"))?;
     let data_command_source =
         fs::read_to_string(root.join("crates/bijux-dev-atlas/src/application/data.rs"))
             .map_err(|err| format!("failed to read data command source: {err}"))?;
