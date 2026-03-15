@@ -183,7 +183,7 @@ fn token_header_value(headers: &HeaderMap) -> Option<String> {
 
 fn validate_signed_token(
     token: &str,
-    api: &crate::config::ApiConfig,
+    api: &crate::application::config::ApiConfig,
 ) -> Result<AuthenticationContext, TokenValidationError> {
     let Some(secret) = api.token_signing_secret.as_deref() else {
         return Err(TokenValidationError::Malformed);
@@ -467,7 +467,7 @@ fn embedded_authorization_allows(
 }
 
 fn emit_auth_policy_decision(
-    auth_mode: crate::config::AuthMode,
+    auth_mode: crate::application::config::AuthMode,
     principal: &str,
     route: &str,
     allowed: bool,
@@ -542,7 +542,7 @@ fn build_audit_event(
     action: &str,
     resource_kind: &str,
     resource_id: &str,
-    sink: crate::config::AuditSink,
+    sink: crate::application::config::AuditSink,
     fields: &[(&str, &str)],
 ) -> serde_json::Value {
     let mut object = serde_json::Map::new();
@@ -597,7 +597,7 @@ fn build_audit_event(
 }
 
 fn emit_audit_event(
-    audit: &crate::config::AuditConfig,
+    audit: &crate::application::config::AuditConfig,
     event_name: &str,
     principal: Option<&str>,
     action: &str,
@@ -614,7 +614,7 @@ fn emit_audit_event(
         audit.sink,
         fields,
     );
-    if matches!(audit.sink, crate::config::AuditSink::File) {
+    if matches!(audit.sink, crate::application::config::AuditSink::File) {
         let _ = write_audit_file_record(&audit.file_path, audit.max_bytes, &payload);
     }
     info!(
@@ -808,13 +808,15 @@ fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
 
 fn proxy_authenticated_principal(
     headers: &HeaderMap,
-    auth_mode: crate::config::AuthMode,
+    auth_mode: crate::application::config::AuthMode,
 ) -> Option<&'static str> {
     match auth_mode {
-        crate::config::AuthMode::Oidc => normalized_header_value(headers, "x-forwarded-user", 256)
+        crate::application::config::AuthMode::Oidc => {
+            normalized_header_value(headers, "x-forwarded-user", 256)
+        }
             .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
             .map(|_| "user"),
-        crate::config::AuthMode::Mtls => {
+        crate::application::config::AuthMode::Mtls => {
             normalized_header_value(headers, "x-forwarded-client-cert", 512)
                 .or_else(|| normalized_header_value(headers, "x-atlas-mtls-subject", 256))
                 .map(|_| "service-account")
@@ -998,7 +1000,10 @@ async fn security_middleware(
     }
 
     let token = token_header_value(req.headers());
-    let token_context = if matches!(state.api.auth_mode, crate::config::AuthMode::Token) {
+    let token_context = if matches!(
+        state.api.auth_mode,
+        crate::application::config::AuthMode::Token
+    ) {
         let Some(raw_token) = token.as_deref() else {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_auth_failure(&state, "token_missing", &route).await;
@@ -1093,7 +1098,9 @@ async fn security_middleware(
             issuer: None,
             scopes: Vec::new(),
         }
-    } else if auth_exempt || state.api.auth_mode == crate::config::AuthMode::Disabled {
+    } else if auth_exempt
+        || state.api.auth_mode == crate::application::config::AuthMode::Disabled
+    {
         AuthenticationContext {
             principal: "user",
             mechanism: "none",
@@ -1105,7 +1112,8 @@ async fn security_middleware(
         context
     } else if matches!(
         state.api.auth_mode,
-        crate::config::AuthMode::Oidc | crate::config::AuthMode::Mtls
+        crate::application::config::AuthMode::Oidc
+            | crate::application::config::AuthMode::Mtls
     ) {
         let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
         else {
@@ -1239,7 +1247,7 @@ async fn security_middleware(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::AuthMode;
+    use crate::application::config::AuthMode;
 
     #[test]
     fn health_endpoints_stay_auth_exempt_in_all_modes() {
@@ -1312,7 +1320,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::config::AuditSink::Stdout,
+            crate::application::config::AuditSink::Stdout,
             &[("status", "200")],
         );
         assert_eq!(event["event_id"].as_str(), Some("audit_query_executed"));
@@ -1364,7 +1372,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::config::AuditSink::Stdout,
+            crate::application::config::AuditSink::Stdout,
             &[
                 ("status", "200"),
                 ("authorization", "Bearer topsecret"),
@@ -1459,12 +1467,12 @@ mod tests {
     #[test]
     fn token_validation_enforces_expiry_scope_issuer_audience_and_revocation() {
         let now = chrono_like_unix_secs();
-        let mut api = crate::config::ApiConfig {
+        let mut api = crate::application::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
             token_required_issuer: Some("atlas-auth".to_string()),
             token_required_audience: Some("atlas-api".to_string()),
             token_required_scopes: vec!["dataset.read".to_string()],
-            ..crate::config::ApiConfig::default()
+            ..crate::application::config::ApiConfig::default()
         };
         let token = signed_token(
             serde_json::json!({
@@ -1502,9 +1510,9 @@ mod tests {
 
     #[test]
     fn token_validation_rejects_malformed_tokens() {
-        let api = crate::config::ApiConfig {
+        let api = crate::application::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
-            ..crate::config::ApiConfig::default()
+            ..crate::application::config::ApiConfig::default()
         };
         assert_eq!(
             validate_signed_token("not.a.jwt", &api),

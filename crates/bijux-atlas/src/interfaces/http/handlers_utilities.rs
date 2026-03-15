@@ -551,7 +551,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         },
         "server": {
             "crate": CRATE_NAME,
-            "config_schema_version": crate::config::CONFIG_SCHEMA_VERSION,
+            "config_schema_version": crate::application::config::CONFIG_SCHEMA_VERSION,
             "api_version": "v1",
             "api_contract_version": "v1",
             "runtime_policy_hash": &*state.runtime_policy_hash,
@@ -1247,7 +1247,7 @@ pub(crate) async fn chaos_run_handler(
 pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let mut spec = crate::api::openapi_v1_spec();
+    let mut spec = crate::contracts::api::openapi_v1_spec();
     if let Some(info) = spec
         .get_mut("info")
         .and_then(serde_json::Value::as_object_mut)

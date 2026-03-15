@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::api::params::{IncludeField, SortKey};
-use crate::api::{ApiError, ApiErrorCode};
+use crate::contracts::api::params::{IncludeField, SortKey};
+use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::model::DatasetId;
 use crate::query::{
     GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, RegionFilter,
@@ -174,7 +174,9 @@ pub(super) fn build_dataset_query(
     let parse_map: std::collections::BTreeMap<String, String> =
         params.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
     let parsed =
-        crate::api::params::parse_list_genes_params_with_limit(&parse_map, 100, max_limit)?;
+        crate::contracts::api::params::parse_list_genes_params_with_limit(
+            &parse_map, 100, max_limit,
+        )?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {

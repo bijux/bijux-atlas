@@ -3,8 +3,8 @@
 #[allow(unused_imports)]
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
-use crate::api::{ApiError, ApiErrorCode};
 use crate::application::server::cache;
+use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::http;
 use async_trait::async_trait;
 use axum::body::Body;

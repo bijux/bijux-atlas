@@ -8,7 +8,7 @@ extern crate self as bijux_atlas;
 #[allow(unused_imports)]
 pub(crate) use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
-pub(crate) use crate::api::{ApiError, ApiErrorCode};
+pub(crate) use crate::contracts::api::{ApiError, ApiErrorCode};
 pub(crate) use async_trait::async_trait;
 pub(crate) use axum::body::Body;
 pub(crate) use axum::extract::{DefaultBodyLimit, State};

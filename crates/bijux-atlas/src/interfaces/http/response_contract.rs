@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::api::{ApiError, ApiErrorCode};
+use crate::contracts::api::{ApiError, ApiErrorCode};
 use axum::http::{HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::Json;
@@ -59,7 +59,7 @@ pub(crate) fn api_error(code: ApiErrorCode, message: &str, details: Value) -> Ap
 #[cfg(test)]
 mod tests {
     use super::api_error_status;
-    use crate::api::ApiErrorCode;
+    use crate::contracts::api::ApiErrorCode;
     use axum::http::StatusCode;
 
     #[test]
@@ -68,7 +68,7 @@ mod tests {
             "../../../../../configs/contracts/observability/error-codes.json"
         ))
         .unwrap_or_else(|err| panic!("error registry: {err}"));
-        let spec = crate::api::openapi_v1_spec().to_string();
+        let spec = crate::contracts::api::openapi_v1_spec().to_string();
         let expected = [
             (
                 "AccessForbidden",

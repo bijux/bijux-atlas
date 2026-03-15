@@ -356,7 +356,7 @@ pub fn build_router(state: AppState) -> Router {
 #[cfg(test)]
 mod bulkhead_tests {
     use super::*;
-    use crate::server::FakeStore;
+    use crate::infrastructure::store::registry::fake::FakeStore;
 
     #[tokio::test]
     async fn heavy_bulkhead_saturation_does_not_block_cheap_permits() {
