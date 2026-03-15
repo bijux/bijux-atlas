@@ -18,22 +18,49 @@ pub fn render_checks(report: &ChecksRunReport) -> String {
 
 pub fn render_suite_summary(summary: &serde_json::Value) -> String {
     let totals = &summary["summary"];
+    let suite = summary["suite"].as_str().unwrap_or_default();
+    let run_id = summary["run_id"].as_str().unwrap_or_default();
     let failed_ids = summary["failures"]
         .as_array()
         .into_iter()
         .flatten()
         .filter_map(|row| row.get("id").and_then(serde_json::Value::as_str))
         .collect::<Vec<_>>();
-    let mut lines = vec![format!(
-        "Suite {} run {}: pass={} fail={} warn={} skip={} total={}",
-        summary["suite"].as_str().unwrap_or("unknown"),
-        summary["run_id"].as_str().unwrap_or("unknown"),
-        totals["pass"].as_u64().unwrap_or(0),
-        totals["fail"].as_u64().unwrap_or(0),
-        totals["warn"].as_u64().unwrap_or(0),
-        totals["skip"].as_u64().unwrap_or(0),
-        totals["total"].as_u64().unwrap_or(0)
-    )];
+    let summary_line = match (suite.is_empty(), run_id.is_empty()) {
+        (false, false) => format!(
+            "Suite {suite} run {run_id}: pass={} fail={} warn={} skip={} total={}",
+            totals["pass"].as_u64().unwrap_or(0),
+            totals["fail"].as_u64().unwrap_or(0),
+            totals["warn"].as_u64().unwrap_or(0),
+            totals["skip"].as_u64().unwrap_or(0),
+            totals["total"].as_u64().unwrap_or(0)
+        ),
+        (false, true) => format!(
+            "Suite {suite}: pass={} fail={} warn={} skip={} total={}",
+            totals["pass"].as_u64().unwrap_or(0),
+            totals["fail"].as_u64().unwrap_or(0),
+            totals["warn"].as_u64().unwrap_or(0),
+            totals["skip"].as_u64().unwrap_or(0),
+            totals["total"].as_u64().unwrap_or(0)
+        ),
+        (true, false) => format!(
+            "Run {run_id}: pass={} fail={} warn={} skip={} total={}",
+            totals["pass"].as_u64().unwrap_or(0),
+            totals["fail"].as_u64().unwrap_or(0),
+            totals["warn"].as_u64().unwrap_or(0),
+            totals["skip"].as_u64().unwrap_or(0),
+            totals["total"].as_u64().unwrap_or(0)
+        ),
+        (true, true) => format!(
+            "Suite summary: pass={} fail={} warn={} skip={} total={}",
+            totals["pass"].as_u64().unwrap_or(0),
+            totals["fail"].as_u64().unwrap_or(0),
+            totals["warn"].as_u64().unwrap_or(0),
+            totals["skip"].as_u64().unwrap_or(0),
+            totals["total"].as_u64().unwrap_or(0)
+        ),
+    };
+    let mut lines = vec![summary_line];
     if !failed_ids.is_empty() {
         lines.push(format!("Failed IDs: {}", failed_ids.join(", ")));
     }
@@ -75,5 +102,22 @@ pub fn failure_hint(code: &str) -> &'static str {
         "schema_mismatch" => "compare the emitted report version to the registry schema version",
         "missing_tool" => "install the required tool or allow the engine to skip it explicitly",
         _ => "inspect the generated artifact and rerun with --debug for command details",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::render_suite_summary;
+
+    #[test]
+    fn suite_summary_uses_descriptive_headline_when_identifiers_are_missing() {
+        let summary = serde_json::json!({
+            "summary": {"pass": 1, "fail": 0, "warn": 0, "skip": 0, "total": 1},
+            "failures": [],
+            "artifacts_root": ""
+        });
+        let rendered = render_suite_summary(&summary);
+        assert!(rendered.starts_with("Suite summary:"));
+        assert!(!rendered.contains("unknown"));
     }
 }

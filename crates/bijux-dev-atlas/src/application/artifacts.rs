@@ -167,7 +167,7 @@ fn run_artifacts_report_read(args: ArtifactsReportReadArgs) -> Result<(String, i
             "report_path": relative_or_absolute(&repo_root, &target)
         },
         "summary": {
-            "payload_report_id": value.get("report_id").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "payload_report_id": value.get("report_id").cloned().unwrap_or(serde_json::Value::Null),
             "payload_version": value.get("version").and_then(serde_json::Value::as_u64).unwrap_or(0)
         },
         "evidence": {

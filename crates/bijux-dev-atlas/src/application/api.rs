@@ -205,16 +205,18 @@ fn compatibility_report(
     let current_version = spec
         .get("info")
         .and_then(|v| v.get("version"))
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("unknown");
+        .and_then(serde_json::Value::as_str);
     let expected = tracked
         .get("active_openapi_version")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("unknown");
+        .and_then(serde_json::Value::as_str);
     let report = serde_json::json!({
         "schema_version": 1,
         "kind": "api_compatibility_report",
-        "status": if current_version == expected { "ok" } else { "failed" },
+        "status": if current_version.zip(expected).is_some_and(|(current, wanted)| current == wanted) {
+            "ok"
+        } else {
+            "failed"
+        },
         "harness": harness,
         "current_version": current_version,
         "expected_version": expected
@@ -320,12 +322,10 @@ fn verify_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
     let version = spec
         .get("info")
         .and_then(|v| v.get("version"))
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("unknown");
+        .and_then(serde_json::Value::as_str);
     let expected = tracking
         .get("active_openapi_version")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("unknown");
+        .and_then(serde_json::Value::as_str);
     let endpoints = openapi_paths(&spec);
     let coverage = serde_json::json!({
         "schema_version": 1,
@@ -335,7 +335,11 @@ fn verify_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
     });
     write_json(&root.join(API_COVERAGE_ARTIFACT), &coverage)?;
     let compatibility = compatibility_report(&root, &spec)?;
-    let status = if version == expected { "ok" } else { "failed" };
+    let status = if version.zip(expected).is_some_and(|(current, wanted)| current == wanted) {
+        "ok"
+    } else {
+        "failed"
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "api_verify",

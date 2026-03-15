@@ -192,10 +192,7 @@ pub fn summarize_classes(records: &[serde_json::Value]) -> BTreeMap<String, usiz
     for record in records {
         if let Some(event_name) = record.get("event_name").and_then(serde_json::Value::as_str) {
             let class = classify_event_name(event_name);
-            let key = serde_json::to_value(class)
-                .ok()
-                .and_then(|value| value.as_str().map(str::to_string))
-                .unwrap_or_else(|| "unknown".to_string());
+            let key = format!("{:?}", class).to_ascii_lowercase();
             *counts.entry(key).or_insert(0) += 1;
         }
     }

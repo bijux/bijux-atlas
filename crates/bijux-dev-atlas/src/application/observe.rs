@@ -21,7 +21,7 @@ const TRACE_COVERAGE_SUMMARY_ARTIFACT: &str = "artifacts/observe/trace-coverage-
 const TRACE_TOPOLOGY_ARTIFACT: &str = "artifacts/observe/trace-topology-diagram.mmd";
 const LOG_FORMAT_VALIDATOR_CONTRACT: &str = "ops/observe/logging/format-validator-contract.json";
 const LOG_FIELDS_CONTRACT: &str = "ops/observe/contracts/logs-fields-contract.json";
-const LOG_EXAMPLES_CONTRACT: &str = "ops/observe/contracts/logs.example.jsonl";
+const LOG_SAMPLE_CONTRACT: &str = "ops/observe/contracts/logs-sample.jsonl";
 const DASHBOARD_REGISTRY: &str = "ops/observe/dashboard-registry.json";
 const DASHBOARD_METADATA_SCHEMA: &str = "ops/observe/dashboard-metadata.schema.json";
 const DASHBOARD_VALIDATION_CONTRACT: &str =
@@ -427,8 +427,8 @@ fn explain_logs(common: ObserveLogsCommonArgs) -> Result<(String, i32), String> 
     let root = resolve_repo_root(common.repo_root)?;
     let fields_contract = read_json(&root.join(LOG_FIELDS_CONTRACT))?;
     let format_validator = read_json(&root.join(LOG_FORMAT_VALIDATOR_CONTRACT))?;
-    let sample_rows = fs::read_to_string(root.join(LOG_EXAMPLES_CONTRACT))
-        .map_err(|err| format!("failed to read {LOG_EXAMPLES_CONTRACT}: {err}"))?
+    let sample_rows = fs::read_to_string(root.join(LOG_SAMPLE_CONTRACT))
+        .map_err(|err| format!("failed to read {LOG_SAMPLE_CONTRACT}: {err}"))?
         .lines()
         .take(3)
         .filter(|line| !line.trim().is_empty())

@@ -14,25 +14,27 @@ pub fn plugin() -> DockerDomain {
     DockerDomain
 }
 
-fn parse_runnable_id(value: &str) -> RunnableId {
-    match RunnableId::parse(value) {
-        Ok(id) => id,
-        Err(err) => panic!("invalid docker route id `{value}`: {err}"),
-    }
-}
-
-fn checks_suite_id() -> SuiteId {
-    match SuiteId::parse("checks") {
-        Ok(id) => id,
-        Err(err) => panic!("invalid checks suite id: {err}"),
-    }
-}
-
-fn docker_tag() -> Tag {
-    match Tag::parse("docker") {
-        Ok(tag) => tag,
-        Err(err) => panic!("invalid docker tag: {err}"),
-    }
+fn fallback_runnable(
+    owner: &str,
+    required_tools: &[&str],
+    route: CommandRoute,
+) -> Option<RunnableEntry> {
+    Some(RunnableEntry {
+        id: RunnableId::parse(route.id).ok()?,
+        suite: SuiteId::parse("checks").ok()?,
+        kind: RunnableKind::Check,
+        mode: RunnableMode::Pure,
+        summary: route.purpose.to_string(),
+        owner: owner.to_string(),
+        group: owner.to_string(),
+        tags: vec![Tag::parse("docker").ok()?],
+        commands: vec![route.name.to_string()],
+        report_ids: vec![],
+        reports: vec![],
+        required_tools: required_tools.iter().map(|tool| (*tool).to_string()).collect(),
+        missing_tools_policy: "warn".to_string(),
+        effects_required: vec![Effect::FsRead],
+    })
 }
 
 pub fn routes() -> Vec<CommandRoute> {
@@ -67,26 +69,7 @@ impl Domain for DockerDomain {
 
         routes()
             .into_iter()
-            .map(|route| RunnableEntry {
-                id: parse_runnable_id(route.id),
-                suite: checks_suite_id(),
-                kind: RunnableKind::Check,
-                mode: RunnableMode::Pure,
-                summary: route.purpose.to_string(),
-                owner: self.name().to_string(),
-                group: self.name().to_string(),
-                tags: vec![docker_tag()],
-                commands: vec![route.name.to_string()],
-                report_ids: vec![],
-                reports: vec![],
-                required_tools: self
-                    .required_tools()
-                    .iter()
-                    .map(|tool| (*tool).to_string())
-                    .collect(),
-                missing_tools_policy: "warn".to_string(),
-                effects_required: vec![Effect::FsRead],
-            })
+            .filter_map(|route| fallback_runnable(self.name(), self.required_tools(), route))
             .collect()
     }
 }

@@ -2346,10 +2346,17 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     build_status = if code == 0 { "ok" } else { "failed" };
                     site_output = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
                 }
+                let site_output_status = site_output["status"].as_str().unwrap_or(
+                    if build_status == "skipped" {
+                        "skipped"
+                    } else {
+                        "missing"
+                    },
+                );
                 rows.push(serde_json::json!({"name":"build","status":build_status}));
                 rows.push(serde_json::json!({
                     "name":"site_output",
-                    "status": site_output["status"].as_str().unwrap_or("unknown"),
+                    "status": site_output_status,
                     "file_count": site_output["counts"]["file_count"].as_u64().unwrap_or(0),
                     "minimum_file_count": site_output["counts"]["minimum_file_count"].as_u64().unwrap_or(0)
                 }));
@@ -2357,7 +2364,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + usize::from(build_status == "failed")
-                    + usize::from(site_output["status"].as_str() == Some("fail"));
+                    + usize::from(site_output_status == "fail");
                 let closure_summary = serde_json::json!({
                     "report_id": "docs-build-closure-summary",
                     "version": 1,
@@ -2371,14 +2378,14 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     },
                     "evidence": {
                         "links_errors": links["errors"].as_array().map(|v| v.len()).unwrap_or(0),
-                        "site_output_status": site_output["status"].as_str().unwrap_or("unknown")
+                        "site_output_status": site_output_status
                     },
                     "checks": [
                         {"name": "links", "status": if links["errors"].as_array().is_some_and(|v| v.is_empty()) { "pass" } else { "fail" }},
-                        {"name": "site_output", "status": site_output["status"].as_str().unwrap_or("skipped")}
+                        {"name": "site_output", "status": site_output_status}
                     ],
                     "status": if links["errors"].as_array().is_some_and(|v| v.is_empty())
-                        && site_output["status"].as_str() != Some("fail")
+                        && site_output_status != "fail"
                     {
                         "pass"
                     } else {
