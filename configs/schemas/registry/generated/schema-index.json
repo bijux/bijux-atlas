@@ -70,9 +70,9 @@
     "configs/sources/governance/governance/enforcement/*.json",
     "configs/sources/governance/governance/governance-version-history.json",
     "configs/sources/governance/governance/governance.json",
-    "configs/sources/governance/governance/governance.schema.json",
     "configs/sources/governance/governance/perf-budgets.json",
     "configs/sources/governance/governance/registry-completeness-policy.json",
+    "configs/sources/governance/governance/schemas/governance.schema.json",
     "configs/sources/governance/governance/suites/*.suite.json",
     "configs/sources/governance/governance/suites/baseline.json",
     "configs/sources/governance/governance/suites/default-jobs.json",
@@ -287,9 +287,9 @@
     "configs/schemas/registry/reports/reports.registry.schema.json",
     "configs/schemas/registry/reports/schema-registry.schema.json",
     "configs/schemas/registry/schema-versioning-policy.schema.json",
-    "configs/sources/governance/governance/governance.schema.json",
-    "configs/sources/governance/policy/policy.schema.json",
-    "configs/sources/runtime/product/artifact-manifest.schema.json"
+    "configs/sources/governance/governance/schemas/governance.schema.json",
+    "configs/sources/governance/policy/schemas/policy.schema.json",
+    "configs/sources/runtime/product/schemas/artifact-manifest.schema.json"
   ],
   "schema_map_path": "configs/registry/schemas.json",
   "schema_version": 1

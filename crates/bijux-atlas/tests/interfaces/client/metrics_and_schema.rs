@@ -38,7 +38,7 @@ fn metrics_export_emits_expected_shape() {
 
 #[test]
 fn client_config_schema_is_parseable() {
-    let path = repo_root().join("configs/sources/runtime/clients/atlas-rust-client-config.schema.json");
+    let path = repo_root().join("configs/sources/runtime/clients/schemas/atlas-rust-client-config.schema.json");
     let schema = match fs::read_to_string(&path) {
         Ok(value) => value,
         Err(error) => panic!("failed to read schema {}: {error}", path.display()),

@@ -11,7 +11,7 @@ fn checklist_path(root: &Path) -> PathBuf {
 }
 
 fn schema_path(root: &Path) -> PathBuf {
-    root.join("configs/sources/governance/audit/audit-bundle.schema.json")
+    root.join("configs/sources/governance/audit/schemas/audit-bundle.schema.json")
 }
 
 fn bundle_path(root: &Path) -> PathBuf {

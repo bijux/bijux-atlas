@@ -58,11 +58,11 @@ fn simulation_root(root: &Path) -> PathBuf {
 }
 
 fn simulation_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/sources/operations/system/system-simulation-report.schema.json")
+    root.join("configs/sources/operations/system/schemas/system-simulation-report.schema.json")
 }
 
 fn diagnostics_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/sources/operations/system/system-diagnostics-report.schema.json")
+    root.join("configs/sources/operations/system/schemas/system-diagnostics-report.schema.json")
 }
 
 fn simulation_scenario_dir(root: &Path, scenario_id: &str) -> PathBuf {

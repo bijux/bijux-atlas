@@ -4,4 +4,5 @@ Machine-readable observability policy for audit logging, safe log fields, retent
 
 Rules:
 - Authored observability inputs stay in this directory.
-- Schemas that validate observability inputs live under `configs/schemas/contracts/observability/`.
+- Contract schemas that validate observability outputs live under `configs/schemas/contracts/observability/`.
+- Local schemas for observability-owned inputs live under `schemas/`.

@@ -977,7 +977,7 @@ pub(super) fn build_release_evidence_tarball(
     }
     files.push("configs/sources/security/auth-model.yaml".to_string());
     files.push("configs/sources/security/policy.yaml".to_string());
-    files.push("configs/sources/operations/observability/audit-log.schema.json".to_string());
+    files.push("configs/sources/operations/observability/schemas/audit-log.schema.json".to_string());
     files.push("configs/sources/operations/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
     files.push("configs/sources/repository/docs/package-lock.json".to_string());

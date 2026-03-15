@@ -379,7 +379,7 @@ fn governance_registry_path(root: &Path) -> PathBuf {
 }
 
 fn governance_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/sources/governance/governance/governance.schema.json")
+    root.join("configs/sources/governance/governance/schemas/governance.schema.json")
 }
 
 fn governance_version_history_path(root: &Path) -> PathBuf {

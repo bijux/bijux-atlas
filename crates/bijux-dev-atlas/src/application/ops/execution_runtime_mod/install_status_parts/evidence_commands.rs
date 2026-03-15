@@ -213,7 +213,7 @@ pub(crate) fn run_ops_evidence_collect(
     let toolchain_inventory = repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
     let auth_model = repo_root.join("configs/sources/security/auth-model.yaml");
     let access_policy = repo_root.join("configs/sources/security/policy.yaml");
-    let audit_schema = repo_root.join("configs/sources/operations/observability/audit-log.schema.json");
+    let audit_schema = repo_root.join("configs/sources/operations/observability/schemas/audit-log.schema.json");
     let retention_policy = repo_root.join("configs/sources/operations/observability/retention.yaml");
     let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
     let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");

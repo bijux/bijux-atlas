@@ -13,7 +13,7 @@
       "sha256": "f6a6ecf0538a79263603546d17549dafe93d06145d74ae6cc413c5a1872f7ae2"
     },
     "schema": {
-      "path": "configs/sources/operations/observability/audit-log.schema.json",
+      "path": "configs/sources/operations/observability/schemas/audit-log.schema.json",
       "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
     },
     "verification_report": {

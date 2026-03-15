@@ -160,11 +160,6 @@
       "runtime",
       "ci"
     ],
-    "configs/sources/operations/ops/*.schema.json": [
-      "bijux-dev-atlas",
-      "runtime",
-      "ci"
-    ],
     "configs/sources/operations/ops/*.txt": [
       "bijux-dev-atlas",
       "runtime",

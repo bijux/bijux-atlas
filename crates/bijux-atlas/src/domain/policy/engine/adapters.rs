@@ -8,7 +8,7 @@ use super::schema::PolicySet;
 use super::validate::PolicyValidationError;
 
 const POLICY_CONFIG_PATH: &str = "configs/sources/governance/policy/policy.json";
-const POLICY_SCHEMA_PATH: &str = "configs/sources/governance/policy/policy.schema.json";
+const POLICY_SCHEMA_PATH: &str = "configs/sources/governance/policy/schemas/policy.schema.json";
 
 #[must_use]
 pub fn policy_config_path(root: &Path) -> PathBuf {

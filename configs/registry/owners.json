@@ -6,9 +6,10 @@
     "configs/registry/schema-versioning-policy.json": "platform",
     "configs/generated/configs-index.json": "platform",
     "configs/sources/governance/audit/audit-artifact-checklist.json": "atlas-governance",
-    "configs/sources/governance/audit/audit-bundle.schema.json": "atlas-governance",
+    "configs/sources/governance/audit/schemas/audit-bundle.schema.json": "atlas-governance",
     "configs/sources/governance/audit/compliance-matrix-template.json": "atlas-governance",
     "configs/sources/runtime/cli/*.toml": "platform",
+    "configs/sources/runtime/clients/schemas/*.json": "platform",
     "configs/sources/runtime/clients/*.json": "platform",
     "configs/registry/contracts.json": "platform",
     "configs/sources/runtime/datasets/manifest.yaml": "data-governance",
@@ -23,6 +24,7 @@
     "configs/sources/operations/observability/*.json": "bijux-atlas-operations",
     "configs/sources/operations/perf/budgets.yaml": "bijux-atlas-performance",
     "configs/sources/operations/perf/slo.yaml": "bijux-atlas-performance",
+    "configs/sources/runtime/product/schemas/*.json": "product",
     "configs/sources/release/*.json": "platform",
     "configs/sources/release/reproducibility-policy.json": "platform",
     "configs/sources/release/version-policy.json": "platform",
@@ -32,7 +34,7 @@
     "configs/sources/security/secrets.json": "security",
     "configs/sources/operations/system/failure-injection.json": "bijux-atlas-operations",
     "configs/sources/operations/system/simulation-scenarios.json": "bijux-atlas-operations",
-    "configs/sources/operations/system/system-simulation-report.schema.json": "bijux-atlas-operations",
+    "configs/sources/operations/system/schemas/system-simulation-report.schema.json": "bijux-atlas-operations",
     "configs/sources/tutorials/*.json": "platform"
   },
   "groups": {

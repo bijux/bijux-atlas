@@ -12,7 +12,7 @@
     "slis": {
       "type": "array",
       "minItems": 1,
-      "items": {"$ref": "configs/sources/operations/ops/slo/sli.schema.json"}
+      "items": {"$ref": "configs/sources/operations/ops/slo/schemas/sli.schema.json"}
     },
     "slos": {
       "type": "array",

@@ -79,7 +79,7 @@
     },
     {
       "kind": "audit-schema",
-      "path": "configs/sources/operations/observability/audit-log.schema.json",
+      "path": "configs/sources/operations/observability/schemas/audit-log.schema.json",
       "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
     },
     {

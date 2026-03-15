@@ -18,20 +18,20 @@
       "counts": {
         "covered": 3,
         "generated": 0,
-        "internal": 0,
-        "public": 3,
+        "internal": 1,
+        "public": 2,
         "schemas": 1
       },
       "files": [
         "configs/sources/governance/audit/audit-artifact-checklist.json",
-        "configs/sources/governance/audit/audit-bundle.schema.json",
-        "configs/sources/governance/audit/compliance-matrix-template.json"
+        "configs/sources/governance/audit/compliance-matrix-template.json",
+        "configs/sources/governance/audit/schemas/audit-bundle.schema.json"
       ],
       "name": "audit",
       "owner": "atlas-governance",
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/sources/governance/audit/audit-bundle.schema.json"
+        "configs/sources/governance/audit/schemas/audit-bundle.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -72,14 +72,14 @@
       "counts": {
         "covered": 3,
         "generated": 0,
-        "internal": 0,
-        "public": 3,
+        "internal": 1,
+        "public": 2,
         "schemas": 1
       },
       "files": [
         "configs/sources/runtime/cli/config.example.toml",
-        "configs/sources/runtime/cli/config.schema.json",
-        "configs/sources/runtime/cli/hidden-command-allowlist.json"
+        "configs/sources/runtime/cli/hidden-command-allowlist.json",
+        "configs/sources/runtime/cli/schemas/config.schema.json"
       ],
       "name": "cli",
       "owner": "platform",
@@ -97,18 +97,18 @@
       "counts": {
         "covered": 1,
         "generated": 0,
-        "internal": 0,
-        "public": 1,
+        "internal": 1,
+        "public": 0,
         "schemas": 2
       },
       "files": [
-        "configs/sources/runtime/clients/atlas-rust-client-config.schema.json"
+        "configs/sources/runtime/clients/schemas/atlas-rust-client-config.schema.json"
       ],
       "name": "clients",
       "owner": "platform",
       "schema_owner": "platform",
       "schemas": [
-        "configs/sources/runtime/clients/*.schema.json",
+        "configs/sources/runtime/clients/schemas/*.json",
         "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
@@ -145,8 +145,8 @@
       "counts": {
         "covered": 17,
         "generated": 0,
-        "internal": 0,
-        "public": 17,
+        "internal": 1,
+        "public": 16,
         "schemas": 3
       },
       "files": [
@@ -157,7 +157,6 @@
         "configs/sources/repository/docs/cspell.config.json",
         "configs/sources/repository/docs/depth-budget.json",
         "configs/sources/repository/docs/external-link-allowlist.json",
-        "configs/sources/repository/docs/frontmatter.schema.json",
         "configs/sources/repository/docs/generated-files-freshness-policy.json",
         "configs/sources/repository/docs/generated-files-registry.json",
         "configs/sources/repository/docs/package-lock.json",
@@ -165,6 +164,7 @@
         "configs/sources/repository/docs/quality-policy.json",
         "configs/sources/repository/docs/requirements.lock.txt",
         "configs/sources/repository/docs/requirements.txt",
+        "configs/sources/repository/docs/schemas/frontmatter.schema.json",
         "configs/sources/repository/docs/site-output-contract.json",
         "configs/sources/repository/docs/tag-vocabulary.json"
       ],
@@ -224,8 +224,8 @@
       "counts": {
         "covered": 31,
         "generated": 0,
-        "internal": 0,
-        "public": 31,
+        "internal": 2,
+        "public": 29,
         "schemas": 1
       },
       "files": [
@@ -242,16 +242,16 @@
         "configs/sources/governance/governance/deprecations.yaml",
         "configs/sources/governance/governance/enforcement/repo-layout-contract.json",
         "configs/sources/governance/governance/enforcement/rules.json",
-        "configs/sources/governance/governance/enforcement/rules.schema.json",
+        "configs/sources/governance/governance/enforcement/schemas/rules.schema.json",
         "configs/sources/governance/governance/exceptions-archive.yaml",
         "configs/sources/governance/governance/exceptions.yaml",
         "configs/sources/governance/governance/governance-version-history.json",
         "configs/sources/governance/governance/governance.json",
-        "configs/sources/governance/governance/governance.schema.json",
         "configs/sources/governance/governance/perf-budgets.json",
         "configs/sources/governance/governance/registry-completeness-policy.json",
         "configs/sources/governance/governance/repo-bin-allowlist.txt",
         "configs/sources/governance/governance/repo-executable-allowlist.txt",
+        "configs/sources/governance/governance/schemas/governance.schema.json",
         "configs/sources/governance/governance/suites/baseline.json",
         "configs/sources/governance/governance/suites/checks.suite.json",
         "configs/sources/governance/governance/suites/contracts.suite.json",
@@ -412,20 +412,20 @@
       "counts": {
         "covered": 3,
         "generated": 0,
-        "internal": 0,
-        "public": 3,
+        "internal": 1,
+        "public": 2,
         "schemas": 1
       },
       "files": [
         "configs/sources/runtime/product/README.md",
-        "configs/sources/runtime/product/artifact-manifest.schema.json",
-        "configs/sources/runtime/product/external-tools-manifest.json"
+        "configs/sources/runtime/product/external-tools-manifest.json",
+        "configs/sources/runtime/product/schemas/artifact-manifest.schema.json"
       ],
       "name": "product",
       "owner": "product",
       "schema_owner": "product",
       "schemas": [
-        "configs/sources/runtime/product/artifact-manifest.schema.json"
+        "configs/sources/runtime/product/schemas/artifact-manifest.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -542,19 +542,19 @@
       "counts": {
         "covered": 8,
         "generated": 0,
-        "internal": 0,
-        "public": 8,
+        "internal": 4,
+        "public": 4,
         "schemas": 1
       },
       "files": [
-        "configs/sources/operations/observability/audit-log.schema.json",
         "configs/sources/operations/observability/error-codes.json",
         "configs/sources/operations/observability/label-policy.json",
-        "configs/sources/operations/observability/log-field-inventory.schema.json",
-        "configs/sources/operations/observability/log-safe-fields.schema.json",
         "configs/sources/operations/observability/log-safe-fields.yaml",
-        "configs/sources/operations/observability/retention.schema.json",
-        "configs/sources/operations/observability/retention.yaml"
+        "configs/sources/operations/observability/retention.yaml",
+        "configs/sources/operations/observability/schemas/audit-log.schema.json",
+        "configs/sources/operations/observability/schemas/log-field-inventory.schema.json",
+        "configs/sources/operations/observability/schemas/log-safe-fields.schema.json",
+        "configs/sources/operations/observability/schemas/retention.schema.json"
       ],
       "name": "observability",
       "owner": "bijux-atlas-operations",
@@ -596,8 +596,8 @@
       "counts": {
         "covered": 50,
         "generated": 0,
-        "internal": 0,
-        "public": 50,
+        "internal": 5,
+        "public": 47,
         "schemas": 3
       },
       "files": [
@@ -609,12 +609,11 @@
         "configs/sources/operations/ops/command-capabilities.json",
         "configs/sources/operations/ops/config-sources.json",
         "configs/sources/operations/ops/dataset-qc-thresholds.v1.json",
-        "configs/sources/operations/ops/env.schema.json",
         "configs/sources/operations/ops/external-tools-allowlist.json",
         "configs/sources/operations/ops/hpa-safety-caps.json",
         "configs/sources/operations/ops/internal-config-keys.txt",
+        "configs/sources/operations/ops/load/schemas/suite-baselines.schema.json",
         "configs/sources/operations/ops/load/suite-baselines.json",
-        "configs/sources/operations/ops/load/suite-baselines.schema.json",
         "configs/sources/operations/ops/make-target-registry.json",
         "configs/sources/operations/ops/manifests-registry.json",
         "configs/sources/operations/ops/namespaces.json",
@@ -638,14 +637,15 @@
         "configs/sources/operations/ops/runtime/node-config.example.json",
         "configs/sources/operations/ops/runtime/replication-metadata.example.json",
         "configs/sources/operations/ops/runtime/shard-metadata.example.json",
-        "configs/sources/operations/ops/scenarios.schema.json",
         "configs/sources/operations/ops/schema-contracts.json",
+        "configs/sources/operations/ops/schemas/env.schema.json",
+        "configs/sources/operations/ops/schemas/scenarios.schema.json",
         "configs/sources/operations/ops/sharding-policy.json",
         "configs/sources/operations/ops/slo/classes.json",
         "configs/sources/operations/ops/slo/loosening-approval.json",
-        "configs/sources/operations/ops/slo/sli.schema.json",
+        "configs/sources/operations/ops/slo/schemas/sli.schema.json",
+        "configs/sources/operations/ops/slo/schemas/slo.schema.json",
         "configs/sources/operations/ops/slo/slis.v1.json",
-        "configs/sources/operations/ops/slo/slo.schema.json",
         "configs/sources/operations/ops/slo/slo.v1.json",
         "configs/sources/operations/ops/suites.json",
         "configs/sources/operations/ops/target-renames.json",
@@ -657,8 +657,8 @@
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
         "configs/schemas/contracts/inventory-ops.schema.json",
-        "configs/sources/operations/ops/env.schema.json",
-        "configs/sources/operations/ops/scenarios.schema.json"
+        "configs/sources/operations/ops/schemas/env.schema.json",
+        "configs/sources/operations/ops/schemas/scenarios.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -705,8 +705,8 @@
       "counts": {
         "covered": 29,
         "generated": 0,
-        "internal": 0,
-        "public": 29,
+        "internal": 1,
+        "public": 28,
         "schemas": 2
       },
       "files": [
@@ -734,8 +734,8 @@
         "configs/sources/governance/policy/pin-relaxations.json",
         "configs/sources/governance/policy/policy-relaxations.json",
         "configs/sources/governance/policy/policy.json",
-        "configs/sources/governance/policy/policy.schema.json",
         "configs/sources/governance/policy/retired-surface-budget.json",
+        "configs/sources/governance/policy/schemas/policy.schema.json",
         "configs/sources/governance/policy/shell-network-fetch-allowlist.txt",
         "configs/sources/governance/policy/shell-probes-allowlist.txt",
         "configs/sources/governance/policy/slow-checks-ratchet.json"
@@ -744,7 +744,7 @@
       "owner": "atlas-governance",
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/sources/governance/policy/policy.schema.json",
+        "configs/sources/governance/policy/schemas/policy.schema.json",
         "configs/schemas/registry/policy-relaxations.schema.json"
       ],
       "stability": "stable",
@@ -1045,23 +1045,23 @@
       "counts": {
         "covered": 6,
         "generated": 0,
-        "internal": 0,
-        "public": 6,
+        "internal": 2,
+        "public": 4,
         "schemas": 1
       },
       "files": [
         "configs/sources/operations/system/chaos-scenarios.json",
         "configs/sources/operations/system/failure-injection.json",
         "configs/sources/operations/system/resilience-policy.example.json",
-        "configs/sources/operations/system/simulation-scenarios.json",
-        "configs/sources/operations/system/system-diagnostics-report.schema.json",
-        "configs/sources/operations/system/system-simulation-report.schema.json"
+        "configs/sources/operations/system/schemas/system-diagnostics-report.schema.json",
+        "configs/sources/operations/system/schemas/system-simulation-report.schema.json",
+        "configs/sources/operations/system/simulation-scenarios.json"
       ],
       "name": "system",
       "owner": "bijux-atlas-operations",
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/sources/operations/system/system-simulation-report.schema.json"
+        "configs/sources/operations/system/schemas/system-simulation-report.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [

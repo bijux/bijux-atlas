@@ -55,7 +55,7 @@ signed_items:
   - path: configs/sources/security/policy.yaml
     kind: auth-policy-snapshot
     required: true
-  - path: configs/sources/operations/observability/audit-log.schema.json
+  - path: configs/sources/operations/observability/schemas/audit-log.schema.json
     kind: audit-schema
     required: true
   - path: configs/sources/operations/observability/retention.yaml

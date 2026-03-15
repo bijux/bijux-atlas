@@ -16,7 +16,9 @@
   "groups": [
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/governance/audit/schemas/*.json"
+      ],
       "name": "audit",
       "owner": "atlas-governance",
       "public_files": [
@@ -24,7 +26,7 @@
       ],
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/sources/governance/audit/audit-bundle.schema.json"
+        "configs/sources/governance/audit/schemas/audit-bundle.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -52,7 +54,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/runtime/cli/schemas/*.json"
+      ],
       "name": "cli",
       "owner": "platform",
       "public_files": [
@@ -71,7 +75,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/runtime/clients/schemas/*.json"
+      ],
       "name": "clients",
       "owner": "platform",
       "public_files": [
@@ -79,7 +85,7 @@
       ],
       "schema_owner": "platform",
       "schemas": [
-        "configs/sources/runtime/clients/*.schema.json",
+        "configs/sources/runtime/clients/schemas/*.json",
         "configs/schemas/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
@@ -108,7 +114,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/repository/docs/schemas/*.json"
+      ],
       "name": "docs",
       "owner": "docs-governance",
       "public_files": [
@@ -154,7 +162,10 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/governance/governance/schemas/*.json",
+        "configs/sources/governance/governance/enforcement/schemas/*.json"
+      ],
       "name": "governance",
       "owner": "atlas-governance",
       "public_files": [
@@ -269,7 +280,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/runtime/product/schemas/*.json"
+      ],
       "name": "product",
       "owner": "product",
       "public_files": [
@@ -277,7 +290,7 @@
       ],
       "schema_owner": "product",
       "schemas": [
-        "configs/sources/runtime/product/artifact-manifest.schema.json"
+        "configs/sources/runtime/product/schemas/artifact-manifest.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -358,7 +371,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/operations/observability/schemas/*.json"
+      ],
       "name": "observability",
       "owner": "bijux-atlas-operations",
       "public_files": [
@@ -395,21 +410,24 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/operations/ops/schemas/*.json",
+        "configs/sources/operations/ops/load/schemas/*.json",
+        "configs/sources/operations/ops/slo/schemas/*.json"
+      ],
       "name": "ops",
       "owner": "bijux-atlas-operations",
       "public_files": [
         "configs/sources/operations/ops/*.json",
         "configs/sources/operations/ops/*.txt",
-        "configs/sources/operations/ops/*.schema.json",
         "configs/sources/operations/ops/*/*.json",
         "configs/sources/operations/ops/*/*.txt"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
         "configs/schemas/contracts/inventory-ops.schema.json",
-        "configs/sources/operations/ops/env.schema.json",
-        "configs/sources/operations/ops/scenarios.schema.json"
+        "configs/sources/operations/ops/schemas/env.schema.json",
+        "configs/sources/operations/ops/schemas/scenarios.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -439,7 +457,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/governance/policy/schemas/*.json"
+      ],
       "name": "policy",
       "owner": "atlas-governance",
       "public_files": [
@@ -449,7 +469,7 @@
       ],
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/sources/governance/policy/policy.schema.json",
+        "configs/sources/governance/policy/schemas/policy.schema.json",
         "configs/schemas/registry/policy-relaxations.schema.json"
       ],
       "stability": "stable",
@@ -602,7 +622,9 @@
     },
     {
       "generated_files": [],
-      "internal_files": [],
+      "internal_files": [
+        "configs/sources/operations/system/schemas/*.json"
+      ],
       "name": "system",
       "owner": "bijux-atlas-operations",
       "public_files": [
@@ -610,7 +632,7 @@
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/sources/operations/system/system-simulation-report.schema.json"
+        "configs/sources/operations/system/schemas/system-simulation-report.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
