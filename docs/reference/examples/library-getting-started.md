@@ -9,7 +9,7 @@ tags:
   - reference
   - examples
 related:
-  - crates/bijux-atlas/examples/core_contract.rs
+  - crates/bijux-atlas/examples/library/crate_basics.rs
 ---
 
 # Library getting started

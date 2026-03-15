@@ -1,5 +1,5 @@
 fn main() {
-    let dataset = bijux_atlas::types::DatasetId::new("110/homo_sapiens/GRCh38")
+    let dataset = bijux_atlas::types::DatasetId::new("110_homo_sapiens_grch38")
         .expect("dataset id should be valid");
     println!(
         "dataset={} policy={}",
