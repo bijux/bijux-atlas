@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "rust_toolchain_toml": "rust-toolchain.toml",
-  "channel": "1.84.1",
+  "channel": "1.85.0",
   "consumers": [
     ".github/workflows/ci-pr.yml",
     ".github/workflows/ci-nightly.yml",

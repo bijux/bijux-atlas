@@ -7,6 +7,12 @@ mod tests {
     use std::fs;
     use std::path::PathBuf;
 
+    fn test_fixture_root(name: &str) -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures")
+            .join(name)
+    }
+
     #[test]
     fn ops_subcommands_parse() {
         let commands = [
@@ -232,23 +238,23 @@ mod tests {
     #[test]
     fn check_subcommands_parse() {
         let commands = [
-            vec!["bijux-dev-atlas", "check", "registry", "doctor"],
-            vec!["bijux-dev-atlas", "check", "list"],
-            vec!["bijux-dev-atlas", "check", "list", "--json"],
-            vec![
-                "bijux-dev-atlas",
-                "check",
-                "explain",
-                "checks_ops_surface_manifest",
-            ],
-            vec!["bijux-dev-atlas", "check", "doctor"],
-            vec!["bijux-dev-atlas", "check", "run", "--suite", "ci_fast"],
+            vec!["bijux-dev-atlas", "registry", "doctor"],
+            vec!["bijux-dev-atlas", "list"],
+            vec!["bijux-dev-atlas", "list", "--format", "json"],
+            vec!["bijux-dev-atlas", "describe", "checks_ops_surface_manifest"],
+            vec!["bijux-dev-atlas", "registry", "status"],
+            vec!["bijux-dev-atlas", "run", "checks_ops_surface_manifest"],
         ];
         for argv in commands {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                Some(crate::cli::Command::Check { .. }) => {}
-                _ => panic!("expected check command"),
+                Some(
+                    crate::cli::Command::Registry { .. }
+                    | crate::cli::Command::List { .. }
+                    | crate::cli::Command::Describe { .. }
+                    | crate::cli::Command::Run { .. },
+                ) => {}
+                _ => panic!("expected registry/list/describe/run command"),
             }
         }
     }
@@ -256,29 +262,24 @@ mod tests {
     #[test]
     fn checks_subcommands_parse() {
         let commands = [
-            vec!["bijux-dev-atlas", "checks", "list"],
+            vec!["bijux-dev-atlas", "suites", "list"],
             vec![
                 "bijux-dev-atlas",
-                "checks",
-                "list",
-                "--domain",
-                "ops",
+                "suites",
+                "describe",
+                "--suite",
+                "deep",
                 "--format",
                 "json",
             ],
-            vec![
-                "bijux-dev-atlas",
-                "checks",
-                "explain",
-                "CHECK-DOCS-VALIDATE-001",
-            ],
-            vec!["bijux-dev-atlas", "checks", "automation-boundaries"],
+            vec!["bijux-dev-atlas", "suites", "run", "--suite", "ci_fast"],
+            vec!["bijux-dev-atlas", "suites", "lint"],
         ];
         for argv in commands {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                Some(crate::cli::Command::Checks { .. }) => {}
-                _ => panic!("expected checks command"),
+                Some(crate::cli::Command::Suites { .. }) => {}
+                _ => panic!("expected suites command"),
             }
         }
     }
@@ -362,7 +363,7 @@ mod tests {
     #[test]
     #[ignore = "mkdocs nav legacy parser pending rewrite"]
     fn mkdocs_nav_parser_extracts_refs() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/docs-mini");
+        let root = test_fixture_root("docs-mini");
         let refs = crate::mkdocs_nav_refs(&root).expect("mkdocs nav");
         let paths = refs.into_iter().map(|(_, p)| p).collect::<Vec<_>>();
         assert_eq!(
@@ -381,7 +382,7 @@ mod tests {
 
     #[test]
     fn docs_link_resolver_accepts_fixture_links() {
-        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/docs-mini");
+        let repo_root = test_fixture_root("docs-mini");
         let ctx = crate::DocsContext {
             docs_root: repo_root.join("docs"),
             artifacts_root: repo_root.join("artifacts"),
