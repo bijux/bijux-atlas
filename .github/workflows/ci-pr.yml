@@ -1074,18 +1074,11 @@ jobs:
           rename_policy = json.loads((root / "configs/sources/governance/policy/config-key-renames.json").read_text())
           allowed_groups = set(groups.get("allowed_groups", []))
           root_file_allow = {
-              "CONSUMERS.json",
               "CONTRACT.md",
               "INDEX.md",
-              "OWNERS.json",
+              "NAMING.md",
+              "OWNERS.md",
               "README.md",
-              "SCHEMAS.json",
-              "configs.contracts.json",
-              "consumers-registry.json",
-              "inventory.json",
-              "inventory/no-schema-justifications.json",
-              "owners-registry.json",
-              "schema-map.json",
           }
           exclusion_prefixes = [
               "configs/sources/repository/docs/.vale/styles/",

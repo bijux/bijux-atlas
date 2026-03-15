@@ -4,6 +4,10 @@ This index anchors the `configs/` control surface for static governance checks.
 
 - [README](README.md)
 - [Contract](CONTRACT.md)
-- [Owners](owners-registry.json)
-- [Consumers](consumers-registry.json)
-- [Schemas](schema-map.json)
+- [Naming](NAMING.md)
+- [Owners Guide](OWNERS.md)
+- [Owner Registry](registry/owners.json)
+- [Consumer Registry](registry/consumers.json)
+- [Schema Registry](registry/schemas.json)
+- [Inventory Registry](registry/inventory/configs.json)
+- [Contracts Registry](registry/contracts.json)
