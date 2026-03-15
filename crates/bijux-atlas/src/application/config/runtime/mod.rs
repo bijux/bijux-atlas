@@ -457,7 +457,7 @@ fn repo_root() -> PathBuf {
         .unwrap_or(manifest_dir)
 }
 
-fn resolve_runtime_path(path: PathBuf) -> PathBuf {
+pub(crate) fn resolve_runtime_path(path: PathBuf) -> PathBuf {
     if path.is_absolute() {
         path
     } else {

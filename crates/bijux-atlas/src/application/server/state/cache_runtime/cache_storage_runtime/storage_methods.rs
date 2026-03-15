@@ -2,6 +2,10 @@ use super::*;
 
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
+        let disk_root = crate::application::config::runtime::resolve_runtime_path(
+            cfg.disk_root.clone(),
+        );
+        let cfg = DatasetCacheConfig { disk_root, ..cfg };
         let max_concurrent_downloads = cfg
             .max_concurrent_downloads_node
             .map(|node| node.min(cfg.max_concurrent_downloads))

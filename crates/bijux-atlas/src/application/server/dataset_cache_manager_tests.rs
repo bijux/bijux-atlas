@@ -690,3 +690,27 @@ async fn cache_root_permissions_are_hardened() {
         .mode();
     assert_eq!(mode & 0o002, 0, "cache root must not remain world-writable");
 }
+
+#[tokio::test]
+async fn relative_cache_root_is_anchored_to_the_workspace_artifacts_root() {
+    let crate_local_cache_root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("artifacts")
+        .join("server-cache");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: std::path::PathBuf::from("artifacts/server-cache"),
+            ..Default::default()
+        },
+        Arc::new(FakeStore::default()),
+    );
+
+    assert_eq!(
+        mgr.disk_root(),
+        crate::application::config::default_runtime_cache_root().as_path()
+    );
+    assert!(
+        !crate_local_cache_root.exists(),
+        "relative cache roots must never create crate-local artifacts: {}",
+        crate_local_cache_root.display()
+    );
+}
