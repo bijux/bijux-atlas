@@ -3,8 +3,6 @@
 use super::*;
 
 mod cache_paths_and_io;
-
-#[path = "cache_lifecycle.rs"]
 mod cache_lifecycle;
 
 mod sqlite_statement_warmup;
