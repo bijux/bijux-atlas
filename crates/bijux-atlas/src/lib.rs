@@ -47,7 +47,6 @@ pub mod infrastructure;
 pub mod interfaces;
 pub mod model;
 pub mod ports;
-pub mod support;
 pub mod types;
 
 pub use crate::application::{
