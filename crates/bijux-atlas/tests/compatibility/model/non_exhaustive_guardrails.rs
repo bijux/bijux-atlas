@@ -4,17 +4,17 @@ use std::path::PathBuf;
 
 #[test]
 fn public_enums_are_non_exhaustive() {
-    let src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/model");
     let files = [
-        "diff.rs",
-        "gene.rs",
-        "manifest.rs",
-        "policy.rs",
-        "dataset.rs",
+        "src/domain/query/diff.rs",
+        "src/domain/query/gene.rs",
+        "src/domain/dataset/manifest.rs",
+        "src/domain/dataset/keys.rs",
+        "src/domain/dataset/version.rs",
+        "src/domain/policy/model.rs",
     ];
 
     for file in files {
-        let path = src_root.join(file);
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(file);
         let text = std::fs::read_to_string(&path).expect("read source");
         for line in text.lines() {
             if !line.contains("pub enum ") {

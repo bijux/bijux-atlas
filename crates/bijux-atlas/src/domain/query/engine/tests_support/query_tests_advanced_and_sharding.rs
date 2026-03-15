@@ -377,6 +377,13 @@ fn query_sources_do_not_reference_retired_split_crates() {
         std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"),
     )
     .expect("read Cargo.toml");
+    let manifest: toml::Value = toml::from_str(&cargo).expect("parse Cargo.toml");
+    let mut dependency_keys = std::collections::BTreeSet::new();
+    for section in ["dependencies", "dev-dependencies", "build-dependencies"] {
+        if let Some(table) = manifest.get(section).and_then(toml::Value::as_table) {
+            dependency_keys.extend(table.keys().cloned());
+        }
+    }
     for forbidden in [
         "bijux-atlas-api",
         "bijux-atlas-client",
@@ -384,7 +391,7 @@ fn query_sources_do_not_reference_retired_split_crates() {
         "bijux-atlas-server",
     ] {
         assert!(
-            !cargo.contains(forbidden),
+            !dependency_keys.contains(forbidden),
             "retired split crate dependency found in merged atlas crate: {forbidden}"
         );
     }

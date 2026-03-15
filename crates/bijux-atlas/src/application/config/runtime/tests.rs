@@ -5,6 +5,17 @@ use std::sync::{Mutex, OnceLock};
 
 use super::*;
 
+fn generated_docs_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .join("docs")
+        .join("bijux-atlas-crate")
+        .join("server")
+        .join("generated")
+}
+
 fn env_lock() -> &'static Mutex<()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(()))
@@ -131,9 +142,9 @@ fn runtime_startup_config_uses_defaults_without_sources() {
 
 #[test]
 fn runtime_startup_config_contract_artifacts_match_generated() {
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let schema_path = root.join("docs/generated/runtime-startup-config.schema.json");
-    let docs_path = root.join("docs/generated/runtime-startup-config.md");
+    let generated_docs = generated_docs_dir();
+    let schema_path = generated_docs.join("runtime-startup-config.schema.json");
+    let docs_path = generated_docs.join("runtime-startup-config.md");
     let expected_schema = std::fs::read_to_string(schema_path).expect("schema file");
     let expected_docs = std::fs::read_to_string(docs_path).expect("docs file");
 
@@ -144,11 +155,11 @@ fn runtime_startup_config_contract_artifacts_match_generated() {
 
     assert_eq!(
         generated_schema, expected_schema,
-        "runtime startup config schema drift; regenerate docs/generated/runtime-startup-config.schema.json"
+        "runtime startup config schema drift; regenerate docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json"
     );
     assert_eq!(
         generated_docs, expected_docs,
-        "runtime startup config docs drift; regenerate docs/generated/runtime-startup-config.md"
+        "runtime startup config docs drift; regenerate docs/bijux-atlas-crate/server/generated/runtime-startup-config.md"
     );
 }
 
@@ -166,8 +177,7 @@ fn effective_config_snapshot_matches_generated() {
     )
     .expect("effective config payload");
 
-    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let snapshot_path = root.join("docs/generated/effective-config.snapshot.json");
+    let snapshot_path = generated_docs_dir().join("effective-config.snapshot.json");
     if std::env::var_os("UPDATE_GOLDEN").is_some() {
         let encoded =
             serde_json::to_string_pretty(&payload).expect("encode effective config snapshot");
@@ -181,7 +191,7 @@ fn effective_config_snapshot_matches_generated() {
     .expect("parse effective config snapshot");
     assert_eq!(
         payload, expected,
-        "effective config snapshot drift; regenerate docs/generated/effective-config.snapshot.json"
+        "effective config snapshot drift; regenerate docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json"
     );
 }
 

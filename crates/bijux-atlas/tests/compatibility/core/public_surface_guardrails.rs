@@ -50,7 +50,7 @@ fn error_code_enum_is_defined_only_in_core_generated_module() {
     }
 
     let expected = root
-        .join("crates/bijux-atlas/src/generated/error_codes.rs")
+        .join("crates/bijux-atlas/src/contracts/generated/core_error_codes.rs")
         .to_string_lossy()
         .to_string();
     assert_eq!(definitions, vec![expected]);

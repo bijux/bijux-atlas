@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[test]
 fn api_module_dependency_guardrails() {
-    let api_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/api");
+    let api_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/contracts/api");
     let mut sources = Vec::new();
     for entry in std::fs::read_dir(&api_root).expect("read src/api") {
         let entry = entry.expect("api source entry");

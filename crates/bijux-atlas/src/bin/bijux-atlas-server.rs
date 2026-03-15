@@ -3,12 +3,12 @@
 #[allow(unused_imports)]
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
-use bijux_atlas_core::sha256_hex;
 use bijux_atlas::{
     build_router, effective_runtime_config_payload, init_tracing, load_runtime_config, AppState,
     DatasetCacheManager, FederatedBackend, LocalFsBackend, LoggingConfig, RegistrySource,
     S3LikeBackend, TraceConfig, TraceExporterKind,
 };
+use bijux_atlas_core::sha256_hex;
 use clap::Parser;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
@@ -729,9 +729,9 @@ mod tests {
     fn startup_lock_uses_atomic_set_command_shape() {
         let _ = try_claim_startup_warmup_lock;
         let source = std::fs::read_to_string(
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/main.rs"),
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/bin/bijux-atlas-server.rs"),
         )
-        .expect("read main.rs");
+        .expect("read server bin");
         assert!(source.contains("redis::cmd(\"SET\")"));
         assert!(source.contains(".arg(\"NX\")"));
         assert!(source.contains(".arg(\"EX\")"));
