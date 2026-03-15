@@ -1,52 +1,28 @@
 {
   "files": [
     {
-      "kind": "txt",
-      "path": "configs/sources/repository/layout/make-command-allowlist.txt",
-      "requires_metadata": false,
-      "type": "make"
-    },
-    {
-      "kind": "json",
-      "path": "configs/sources/operations/ops/temporary-shims.json",
-      "requires_metadata": true,
-      "subtype": "shim",
-      "type": "ops"
-    },
-    {
       "kind": "json",
       "path": "configs/sources/governance/policy/budget-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {
       "kind": "json",
       "path": "configs/sources/governance/policy/check-filename-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "json",
-      "path": "configs/sources/governance/policy/dead-modules-allowlist.json",
+      "path": "configs/sources/governance/policy/check-registry-exceptions.json",
       "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
-      "type": "retired"
+      "type": "policy"
     },
     {
       "kind": "json",
       "path": "configs/sources/governance/policy/dependency-exceptions.json",
       "requires_metadata": true,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "tools"
-    },
-    {
-      "kind": "json",
-      "path": "configs/sources/governance/policy/effect-boundary-exceptions.json",
-      "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
-      "type": "effects"
     },
     {
       "kind": "txt",
@@ -56,24 +32,10 @@
     },
     {
       "kind": "json",
-      "path": "configs/sources/governance/policy/json-dumps-determinism-allowlist.json",
-      "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
-      "type": "allowlist"
-    },
-    {
-      "kind": "json",
       "path": "configs/sources/governance/policy/layer-live-diff-allowlist.json",
       "requires_metadata": false,
       "schema": "configs/schemas/registry/layer-live-diff-allowlist.schema.json",
       "type": "allowlist"
-    },
-    {
-      "kind": "json",
-      "path": "configs/sources/governance/policy/layer-relaxations.json",
-      "requires_metadata": true,
-      "schema": "configs/schemas/registry/layer-relaxations.schema.json",
-      "type": "layer"
     },
     {
       "kind": "json",
@@ -86,14 +48,12 @@
       "kind": "json",
       "path": "configs/sources/governance/policy/ops-smoke-budget-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {
       "kind": "json",
       "path": "configs/sources/governance/policy/pin-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "tools"
     },
     {
@@ -105,16 +65,9 @@
     },
     {
       "kind": "json",
-      "path": "configs/sources/governance/policy/runtime-access-retired-allowlist.json",
+      "path": "configs/sources/governance/policy/retired-surface-budget.json",
       "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
-      "type": "allowlist"
-    },
-    {
-      "kind": "txt",
-      "path": "configs/sources/governance/policy/shell-location-allowlist.txt",
-      "requires_metadata": false,
-      "type": "tools"
+      "type": "retired"
     },
     {
       "kind": "txt",
@@ -132,7 +85,6 @@
       "kind": "json",
       "path": "configs/sources/governance/policy/slow-checks-ratchet.json",
       "requires_metadata": false,
-      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {
@@ -140,41 +92,6 @@
       "path": "configs/sources/security/audit-allowlist.toml",
       "requires_metadata": false,
       "type": "security"
-    },
-    {
-      "kind": "json",
-      "path": "ops/_artifacts/policy/budget-relaxations-audit.json",
-      "requires_metadata": false,
-      "subtype": "budget-audit",
-      "type": "ops"
-    },
-    {
-      "kind": "json",
-      "path": "ops/_meta/bypass-ledger.json",
-      "requires_metadata": false,
-      "subtype": "ledger",
-      "type": "ops"
-    },
-    {
-      "kind": "json",
-      "path": "ops/_meta/cross-area-script-refs-allowlist.json",
-      "requires_metadata": true,
-      "subtype": "allowlist",
-      "type": "ops"
-    },
-    {
-      "kind": "json",
-      "path": "ops/_meta/layer-contract-literal-allowlist.json",
-      "requires_metadata": true,
-      "subtype": "allowlist",
-      "type": "ops"
-    },
-    {
-      "kind": "json",
-      "path": "ops/_meta/stack-layer-literal-allowlist.json",
-      "requires_metadata": true,
-      "subtype": "allowlist",
-      "type": "ops"
     }
   ],
   "kind": "bypass-files-registry",

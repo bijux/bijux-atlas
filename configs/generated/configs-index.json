@@ -4,13 +4,13 @@
       "approved_by": "docs-governance",
       "expires_on": "2027-12-31",
       "pattern": "configs/sources/repository/docs/.vale/styles/**",
-      "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
+      "reason": "Vale vendor bundles stay excluded because the upstream style bundle layout is tool-defined and not curated as first-class atlas config inputs."
     },
     {
       "approved_by": "perf-governance",
       "expires_on": "2027-12-31",
       "pattern": "configs/sources/operations/ops/perf/baselines/**",
-      "reason": "legacy deep perf baselines stay explicit until perf config flattening"
+      "reason": "Perf baselines stay excluded because the deep baseline bundle is maintained as scenario evidence, not as a standalone governed config surface."
     }
   ],
   "groups": [
@@ -309,10 +309,10 @@
     },
     {
       "counts": {
-        "covered": 35,
+        "covered": 34,
         "generated": 0,
         "internal": 0,
-        "public": 35,
+        "public": 34,
         "schemas": 1
       },
       "files": [
@@ -338,7 +338,6 @@
         "configs/sources/repository/layout/inventory-budgets.json",
         "configs/sources/repository/layout/ops-markdown-naming-policy.json",
         "configs/sources/repository/layout/root-markdown-allowlist.json",
-        "configs/sources/repository/layout/root_markdown_allowlist.json",
         "configs/sources/repository/repo-surface/generated-path-allowlist.json",
         "configs/sources/repository/repo-surface/root-file-allowlist.json",
         "configs/sources/repository/repo-surface/script-extension-allowlist.json",
@@ -595,10 +594,10 @@
     },
     {
       "counts": {
-        "covered": 32,
+        "covered": 31,
         "generated": 0,
         "internal": 0,
-        "public": 32,
+        "public": 31,
         "schemas": 2
       },
       "files": [
@@ -614,23 +613,22 @@
         "configs/sources/governance/policy/bypass-types.json",
         "configs/sources/governance/policy/check-filename-allowlist.json",
         "configs/sources/governance/policy/check-id-migration.json",
+        "configs/sources/governance/policy/check-registry-exceptions.json",
         "configs/sources/governance/policy/check_speed_approvals.json",
-        "configs/sources/governance/policy/checks-registry-transition.json",
         "configs/sources/governance/policy/config-key-renames.json",
         "configs/sources/governance/policy/dependency-exceptions.json",
         "configs/sources/governance/policy/forbidden-adjectives-allowlist.txt",
         "configs/sources/governance/policy/forbidden-adjectives-approvals.json",
         "configs/sources/governance/policy/forbidden-adjectives-migration-map.json",
         "configs/sources/governance/policy/layer-live-diff-allowlist.json",
-        "configs/sources/governance/policy/migration-progress-baseline.json",
         "configs/sources/governance/policy/ops-image-digest-policy.json",
         "configs/sources/governance/policy/ops-lint-relaxations.json",
-        "configs/sources/governance/policy/ops-run-temp-script-approvals.json",
         "configs/sources/governance/policy/ops-smoke-budget-relaxations.json",
         "configs/sources/governance/policy/pin-relaxations.json",
         "configs/sources/governance/policy/policy-relaxations.json",
         "configs/sources/governance/policy/policy.json",
         "configs/sources/governance/policy/policy.schema.json",
+        "configs/sources/governance/policy/retired-surface-budget.json",
         "configs/sources/governance/policy/shell-network-fetch-allowlist.txt",
         "configs/sources/governance/policy/shell-probes-allowlist.txt",
         "configs/sources/governance/policy/slow-checks-ratchet.json"

@@ -4,13 +4,13 @@
       "approved_by": "docs-governance",
       "expires_on": "2027-12-31",
       "pattern": "configs/sources/repository/docs/.vale/styles/**",
-      "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
+      "reason": "Vale vendor bundles stay excluded because the upstream style bundle layout is tool-defined and not curated as first-class atlas config inputs."
     },
     {
       "approved_by": "perf-governance",
       "expires_on": "2027-12-31",
       "pattern": "configs/sources/operations/ops/perf/baselines/**",
-      "reason": "legacy deep perf baselines stay explicit until perf config flattening"
+      "reason": "Perf baselines stay excluded because the deep baseline bundle is maintained as scenario evidence, not as a standalone governed config surface."
     }
   ],
   "groups": [
