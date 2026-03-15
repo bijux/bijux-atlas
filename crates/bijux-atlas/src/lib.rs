@@ -41,7 +41,6 @@ pub mod api;
 pub mod app;
 #[path = "app/cache/mod.rs"]
 mod cache;
-pub mod cli;
 mod config;
 pub mod contracts;
 pub mod core;
@@ -67,6 +66,7 @@ mod services;
 pub mod support;
 pub mod types;
 
+pub use crate::adapters::cli;
 pub use crate::adapters::client;
 pub use crate::adapters::http;
 pub use crate::adapters::store;
@@ -82,7 +82,7 @@ pub use crate::app::{
     RegistrySourceHealth, RetryPolicy, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig,
     S3LikeBackend, StoreConfig, StoreMode,
 };
-pub use crate::cli::main_entry;
+pub use crate::adapters::cli::main_entry;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;

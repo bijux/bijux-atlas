@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::cli::OutputMode;
 use crate::domain::canonical;
+use crate::domain::sha256_hex;
 use crate::model::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ReleaseGeneIndex,
     ShardCatalog,
@@ -12,8 +14,6 @@ use crate::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
-use crate::cli::OutputMode;
-use crate::domain::sha256_hex;
 use serde_json::json;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;

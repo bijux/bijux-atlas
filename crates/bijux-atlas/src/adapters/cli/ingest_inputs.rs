@@ -194,71 +194,70 @@ fn resolve_single_input(
     quarantine_dir: &std::path::Path,
     allow_network_inputs: bool,
 ) -> Result<(PathBuf, InputLockSource), String> {
-    let (resolved_url, source_bytes, original_filename) = if original.starts_with("http://")
-        || original.starts_with("https://")
-    {
-        if !allow_network_inputs {
-            return Err(format!(
+    let (resolved_url, source_bytes, original_filename) =
+        if original.starts_with("http://") || original.starts_with("https://") {
+            if !allow_network_inputs {
+                return Err(format!(
                 "network input forbidden by policy for {kind}; rerun with --allow-network-inputs"
             ));
-        }
-        let resp = reqwest::blocking::get(original).map_err(|e| e.to_string())?;
-        if !resp.status().is_success() {
-            return Err(format!("download failed for {kind}: {}", resp.status()));
-        }
-        let bytes = resp.bytes().map_err(|e| e.to_string())?.to_vec();
-        let filename = original.rsplit('/').next().unwrap_or(kind).to_string();
-        (original.to_string(), bytes, filename)
-    } else if original.starts_with("s3://") {
-        if !allow_network_inputs {
-            return Err(format!(
+            }
+            let resp = reqwest::blocking::get(original).map_err(|e| e.to_string())?;
+            if !resp.status().is_success() {
+                return Err(format!("download failed for {kind}: {}", resp.status()));
+            }
+            let bytes = resp.bytes().map_err(|e| e.to_string())?.to_vec();
+            let filename = original.rsplit('/').next().unwrap_or(kind).to_string();
+            (original.to_string(), bytes, filename)
+        } else if original.starts_with("s3://") {
+            if !allow_network_inputs {
+                return Err(format!(
                 "network input forbidden by policy for {kind}; rerun with --allow-network-inputs"
             ));
-        }
-        let endpoint = std::env::var("ATLAS_S3_ENDPOINT")
-            .unwrap_or_else(|_| "http://127.0.0.1:9000".to_string());
-        let key = original.trim_start_matches("s3://");
-        let url = format!("{}/{}", endpoint.trim_end_matches('/'), key);
-        let resp = reqwest::blocking::get(&url).map_err(|e| e.to_string())?;
-        if !resp.status().is_success() {
-            return Err(format!("download failed for {kind}: {}", resp.status()));
-        }
-        let bytes = resp.bytes().map_err(|e| e.to_string())?.to_vec();
-        let filename = key.rsplit('/').next().unwrap_or(kind).to_string();
-        (url, bytes, filename)
-    } else {
-        let path = if let Some(p) = original.strip_prefix("file://") {
-            PathBuf::from(p)
+            }
+            let endpoint = std::env::var("ATLAS_S3_ENDPOINT")
+                .unwrap_or_else(|_| "http://127.0.0.1:9000".to_string());
+            let key = original.trim_start_matches("s3://");
+            let url = format!("{}/{}", endpoint.trim_end_matches('/'), key);
+            let resp = reqwest::blocking::get(&url).map_err(|e| e.to_string())?;
+            if !resp.status().is_success() {
+                return Err(format!("download failed for {kind}: {}", resp.status()));
+            }
+            let bytes = resp.bytes().map_err(|e| e.to_string())?.to_vec();
+            let filename = key.rsplit('/').next().unwrap_or(kind).to_string();
+            (url, bytes, filename)
         } else {
-            PathBuf::from(original)
+            let path = if let Some(p) = original.strip_prefix("file://") {
+                PathBuf::from(p)
+            } else {
+                PathBuf::from(original)
+            };
+            let bytes = fs::read(&path).map_err(|e| format!("read local input failed: {e}"))?;
+            let filename = path
+                .file_name()
+                .and_then(|x| x.to_str())
+                .unwrap_or(kind)
+                .to_string();
+            (path.display().to_string(), bytes, filename)
         };
-        let bytes = fs::read(&path).map_err(|e| format!("read local input failed: {e}"))?;
-        let filename = path
-            .file_name()
-            .and_then(|x| x.to_str())
-            .unwrap_or(kind)
-            .to_string();
-        (path.display().to_string(), bytes, filename)
-    };
 
-    let (normalized_bytes, final_name) = match decompress_if_needed(original_filename, &source_bytes)
-    {
-        Ok(v) => v,
-        Err(e) => {
-            let q = quarantine_dir.join(format!(
-                "{kind}-decode-{}.bad",
-                std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .map_err(|x| x.to_string())?
-                    .as_secs()
-            ));
-            fs::write(&q, &source_bytes).map_err(|x| x.to_string())?;
-            return Err(format!(
-                "decompression failed for {kind}: {e}; quarantined at {}",
-                q.display()
-            ));
-        }
-    };
+    let (normalized_bytes, final_name) =
+        match decompress_if_needed(original_filename, &source_bytes) {
+            Ok(v) => v,
+            Err(e) => {
+                let q = quarantine_dir.join(format!(
+                    "{kind}-decode-{}.bad",
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .map_err(|x| x.to_string())?
+                        .as_secs()
+                ));
+                fs::write(&q, &source_bytes).map_err(|x| x.to_string())?;
+                return Err(format!(
+                    "decompression failed for {kind}: {e}; quarantined at {}",
+                    q.display()
+                ));
+            }
+        };
     let final_path = ingest_inputs_dir.join(format!("{kind}-{final_name}"));
     let tmp_path = tmp_dir.join(format!("{kind}-{final_name}.part"));
     fs::write(&tmp_path, &normalized_bytes).map_err(|e| e.to_string())?;
@@ -300,8 +299,8 @@ fn decompress_if_needed(filename: String, bytes: &[u8]) -> Result<(Vec<u8>, Stri
         return Ok((out, filename.trim_end_matches(".gz").to_string()));
     }
     if filename.ends_with(".zst") {
-        let mut decoder =
-            zstd::stream::read::Decoder::new(std::io::Cursor::new(bytes)).map_err(|e| e.to_string())?;
+        let mut decoder = zstd::stream::read::Decoder::new(std::io::Cursor::new(bytes))
+            .map_err(|e| e.to_string())?;
         let mut out = Vec::new();
         std::io::Read::read_to_end(&mut decoder, &mut out).map_err(|e| e.to_string())?;
         return Ok((out, filename.trim_end_matches(".zst").to_string()));
@@ -329,8 +328,8 @@ mod tests {
         let first = resolve_verify_and_lock_inputs(&src, &fasta, &fai, &root, false, false)
             .expect("initial lock");
         fs::write(&first.gff3_path, "tampered").expect("tamper");
-        let err =
-            resolve_verify_and_lock_inputs(&src, &fasta, &fai, &root, false, true).expect_err(
+        let err = resolve_verify_and_lock_inputs(&src, &fasta, &fai, &root, false, true)
+            .expect_err(
                 "resume must fail when file hash diverges from lockfile (TOCTOU protection)",
             );
         assert!(err.contains("TOCTOU mismatch"));

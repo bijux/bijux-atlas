@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
 use super::actions::{
     explain_query, explain_query_from_query_text, inspect_db, print_completion, print_config,
     print_version, run_ingest, smoke_dataset, ExplainQueryArgs,
 };
 use super::ingest_inputs::verify_ingest_inputs;
 use super::operations;
+use super::*;
 
 pub(super) fn run_atlas_command(
     command: AtlasCommand,
@@ -20,15 +20,8 @@ pub(super) fn run_atlas_command(
             species,
             assembly,
             deep,
-        } => operations::validate_dataset(
-            root,
-            &release,
-            &species,
-            &assembly,
-            deep,
-            output_mode,
-        )
-        .map_err(CliError::internal),
+        } => operations::validate_dataset(root, &release, &species, &assembly, deep, output_mode)
+            .map_err(CliError::internal),
         AtlasCommand::Version => {
             print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal)
         }
@@ -53,27 +46,19 @@ pub(super) fn run_atlas_command(
                 release,
                 species,
                 assembly,
-            } => operations::rollback_catalog(
-                store_root,
-                &release,
-                &species,
-                &assembly,
-                output_mode,
-            )
-            .map_err(CliError::internal),
+            } => {
+                operations::rollback_catalog(store_root, &release, &species, &assembly, output_mode)
+                    .map_err(CliError::internal)
+            }
             CatalogCommand::Promote {
                 store_root,
                 release,
                 species,
                 assembly,
-            } => operations::promote_catalog(
-                store_root,
-                &release,
-                &species,
-                &assembly,
-                output_mode,
-            )
-            .map_err(CliError::internal),
+            } => {
+                operations::promote_catalog(store_root, &release, &species, &assembly, output_mode)
+                    .map_err(CliError::internal)
+            }
             CatalogCommand::LatestAliasUpdate {
                 store_root,
                 release,
@@ -95,15 +80,10 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 deep,
-            } => operations::validate_dataset(
-                root,
-                &release,
-                &species,
-                &assembly,
-                deep,
-                output_mode,
-            )
-            .map_err(CliError::internal),
+            } => {
+                operations::validate_dataset(root, &release, &species, &assembly, deep, output_mode)
+                    .map_err(CliError::internal)
+            }
             DatasetCommand::Validate {
                 root,
                 release,
@@ -139,15 +119,8 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 out,
-            } => operations::pack_dataset(
-                root,
-                &release,
-                &species,
-                &assembly,
-                out,
-                output_mode,
-            )
-            .map_err(CliError::internal),
+            } => operations::pack_dataset(root, &release, &species, &assembly, out, output_mode)
+                .map_err(CliError::internal),
             DatasetCommand::VerifyPack { pack } => {
                 operations::verify_pack(pack, output_mode).map_err(CliError::internal)
             }
@@ -374,9 +347,7 @@ pub(super) fn run_atlas_command(
         )
         .map_err(CliError::internal),
         AtlasCommand::Openapi { command } => match command {
-            OpenapiCommand::Generate { out } => {
-                output::run_openapi_generate(out, output_mode)
-            }
+            OpenapiCommand::Generate { out } => output::run_openapi_generate(out, output_mode),
         }
         .map_err(CliError::internal),
     }
