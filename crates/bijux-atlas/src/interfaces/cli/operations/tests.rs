@@ -4,8 +4,12 @@ use super::{
     build_release_diff, compute_gc_plan, gc_apply, promote_catalog, update_latest_alias,
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
+use crate::domain::dataset::{
+    artifact_paths, ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId,
+    ManifestStats, ShardCatalog, ShardEntry, ShardId,
+};
+use crate::domain::query::SeqId;
 use crate::domain::sha256_hex;
-use crate::model::{Catalog, CatalogEntry, DatasetId, SeqId, ShardCatalog, ShardEntry, ShardId};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -155,20 +159,20 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
     let pinned = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
     let candidate = DatasetId::new("112", "homo_sapiens", "GRCh38").expect("dataset");
     for d in [&reachable, &pinned, &candidate] {
-        let p = crate::model::artifact_paths(&root, d);
+        let p = artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir derived");
         fs::write(&p.sqlite, b"sqlite").expect("write sqlite");
     }
 
     let catalog = Catalog::new(vec![CatalogEntry::new(
         reachable.clone(),
-        crate::model::artifact_paths(&root, &reachable)
+        artifact_paths(&root, &reachable)
             .manifest
             .strip_prefix(&root)
             .expect("strip")
             .display()
             .to_string(),
-        crate::model::artifact_paths(&root, &reachable)
+        artifact_paths(&root, &reachable)
             .sqlite
             .strip_prefix(&root)
             .expect("strip")
@@ -197,7 +201,7 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
 
     let report = compute_gc_plan(&root, &[catalog_path], &pins_path).expect("gc plan");
     assert_eq!(report.candidates.dataset_roots.len(), 1);
-    let expected_paths = crate::model::artifact_paths(&root, &candidate);
+    let expected_paths = artifact_paths(&root, &candidate);
     let expected_root = expected_paths
         .manifest
         .parent()
@@ -219,7 +223,7 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
     let d1 = DatasetId::new("200", "homo_sapiens", "GRCh38").expect("dataset");
     let d2 = DatasetId::new("201", "homo_sapiens", "GRCh38").expect("dataset");
     for d in [&d1, &d2] {
-        let p = crate::model::artifact_paths(&root, d);
+        let p = artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir derived");
         fs::write(&p.sqlite, b"sqlite").expect("write sqlite");
     }
@@ -227,13 +231,13 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
     let write_catalog = |name: &str, dataset: &DatasetId| -> PathBuf {
         let c = Catalog::new(vec![CatalogEntry::new(
             dataset.clone(),
-            crate::model::artifact_paths(&root, dataset)
+            artifact_paths(&root, dataset)
                 .manifest
                 .strip_prefix(&root)
                 .expect("strip")
                 .display()
                 .to_string(),
-            crate::model::artifact_paths(&root, dataset)
+            artifact_paths(&root, dataset)
                 .sqlite
                 .strip_prefix(&root)
                 .expect("strip")
@@ -269,21 +273,21 @@ fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
     let stale = DatasetId::new("111", "homo_sapiens", "GRCh38").expect("dataset");
 
     for d in [&pinned, &stale] {
-        let p = crate::model::artifact_paths(&root, d);
+        let p = artifact_paths(&root, d);
         fs::create_dir_all(p.sqlite.parent().expect("parent")).expect("mkdir");
         let sqlite = b"sqlite".to_vec();
         fs::write(&p.sqlite, &sqlite).expect("sqlite");
-        let manifest = crate::model::ArtifactManifest::new(
+        let manifest = ArtifactManifest::new(
             "1".to_string(),
             "1".to_string(),
             (*d).clone(),
-            crate::model::ArtifactChecksums::new(
+            ArtifactChecksums::new(
                 "a".repeat(64),
                 "b".repeat(64),
                 "c".repeat(64),
                 sha256_hex(&sqlite),
             ),
-            crate::model::ManifestStats::new(1, 1, 1),
+            ManifestStats::new(1, 1, 1),
         );
         fs::write(
             &p.manifest,
@@ -323,13 +327,13 @@ fn gc_apply_deletes_unreachable_and_keeps_pinned_dataset() {
     .expect("gc apply");
 
     assert!(
-        crate::model::artifact_paths(&root, &pinned)
+        artifact_paths(&root, &pinned)
             .dataset_root
             .exists(),
         "pinned dataset must survive gc apply"
     );
     assert!(
-        !crate::model::artifact_paths(&root, &stale)
+        !artifact_paths(&root, &stale)
             .dataset_root
             .exists(),
         "unreachable dataset must be removed by gc apply"

@@ -12,6 +12,6 @@ pub use keys::{
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
     IngestAnomalyReport, IngestRejection, ManifestInputHashes, ManifestStats, OptionalFieldPolicy,
-    QcSeverity, ShardCatalog, ShardEntry, ShardingPlan,
+    QcSeverity, ShardCatalog, ShardEntry, ShardId, ShardingPlan,
 };
 pub use version::ModelVersion;
