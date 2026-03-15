@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #[cfg(feature = "backend-s3")]
-use crate::ports::store::{
+use crate::app::ports::store::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
 };

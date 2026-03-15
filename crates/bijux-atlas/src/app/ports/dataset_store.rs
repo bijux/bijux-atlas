@@ -7,7 +7,7 @@ use async_trait::async_trait;
 /// Runtime read port used by the server cache and query-serving path.
 ///
 /// This port is intentionally narrower than the repository-wide artifact publishing
-/// interfaces under [`crate::ports::store`]: it models only the read operations
+/// interfaces under [`crate::app::ports::store`]: it models only the read operations
 /// required by a running Atlas node to discover catalogs and hydrate cached datasets.
 #[non_exhaustive]
 pub enum CatalogFetch {

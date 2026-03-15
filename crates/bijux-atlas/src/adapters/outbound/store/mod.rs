@@ -20,7 +20,7 @@ pub use backend_capabilities::{validate_backend_compiled, BackendKind};
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
 };
-pub use crate::ports::store::{
+pub use crate::app::ports::store::{
     ArtifactRef, ArtifactStore, CatalogRef, NoopInstrumentation, PublishLockGuard, StoreAdmin,
     StoreError, StoreErrorCode, StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
     StorePath, StoreRead, StoreWrite,

@@ -2,7 +2,6 @@
 
 //! Core primitives re-exported through the `bijux-atlas` package.
 
-pub use crate::domain::time;
 pub use crate::domain::cluster::config::{
     default_metadata_store, load_cluster_config_from_path, load_node_config_from_path,
 };
@@ -40,12 +39,12 @@ pub use crate::domain::{
     ShardRegistryMetrics, ShardRuntimeStats, ShutdownPolicy, StaticSecretsProvider, TlsConfig,
     TokenClaims, TokenValidationPolicy, TopologyMode, XorEncryption,
 };
-pub use crate::errors::{
+pub use crate::contracts::errors::{
     ConfigPathScope, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result, ResultExt,
     ERROR_CODES,
 };
-pub use crate::ports::{
+pub use crate::app::ports::{
     AuthPort, ClockPort, FsPort, MetricsPort, NetPort, ProcessPort, ProcessResult, TracingPort,
 };
-pub use crate::types::{DatasetId, RunId, ShardId};
-pub use crate::{domain, errors, ports, runtime, types};
+pub use crate::foundation::{DatasetId, RunId, ShardId};
+pub use crate::{app, contracts, domain, foundation, runtime};

@@ -28,14 +28,12 @@ pub(crate) use tracing::Instrument;
 
 pub mod adapters;
 pub mod app;
-pub mod runtime;
 pub mod contracts;
 pub mod core;
 pub mod domain;
-pub mod errors;
+pub mod foundation;
 pub mod model;
-pub mod ports;
-pub mod types;
+pub mod runtime;
 
 pub use crate::contracts::api;
 pub use crate::runtime::config::{
@@ -47,10 +45,13 @@ pub use crate::runtime::config::{
     RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
     StoreMode,
 };
+pub use crate::adapters::inbound::http::request_policies::{
+    chrono_like_unix_millis, record_shed_reason, route_sli_class,
+};
+pub use crate::adapters::inbound::http::router::build_router;
 pub use crate::app::server::{
-    build_router, chrono_like_unix_millis, record_shed_reason, route_sli_class, AppState,
-    DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource,
-    RetryPolicy, S3LikeBackend,
+    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
+    RegistrySource, RetryPolicy, S3LikeBackend,
 };
 pub use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
