@@ -2,4 +2,4 @@
 
 #![allow(unused_imports)]
 
-pub use crate::interfaces::cli::*;
+pub use crate::interfaces::client::*;

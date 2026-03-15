@@ -2,3 +2,4 @@
 
 pub mod cache;
 pub mod ports;
+pub mod server;

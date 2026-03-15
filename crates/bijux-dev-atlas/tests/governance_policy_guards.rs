@@ -177,17 +177,23 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         fs::read_to_string(root.join("crates/bijux-atlas/src/lib.rs")).expect("atlas lib surface");
 
     for expected in [
+        "pub mod adapters;",
+        "pub mod app;",
         "pub(crate) mod application;",
         "pub(crate) mod infrastructure;",
         "pub(crate) mod interfaces;",
-        "pub(crate) use crate::interfaces::http;",
-        "pub(crate) use crate::infrastructure::redis;",
-        "pub(crate) use crate::infrastructure::sqlite;",
-        "pub(crate) use crate::infrastructure::telemetry;",
+        "pub use crate::app::server::{",
+        "pub use crate::adapters::inbound::cli;",
+        "pub use crate::adapters::inbound::client;",
+        "pub use crate::adapters::outbound::store;",
+        "pub(crate) use crate::adapters::inbound::http;",
+        "pub(crate) use crate::adapters::outbound::redis;",
+        "pub(crate) use crate::adapters::outbound::sqlite;",
+        "pub(crate) use crate::adapters::outbound::telemetry;",
     ] {
         assert!(
             text.contains(expected),
-            "atlas lib surface must keep legacy ownership roots crate-private"
+            "atlas lib surface must prefer canonical architecture roots"
         );
     }
 
@@ -195,6 +201,10 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod application;",
         "pub mod infrastructure;",
         "pub mod interfaces;",
+        "pub use crate::application::server::{",
+        "pub use crate::interfaces::cli;",
+        "pub use crate::interfaces::client;",
+        "pub use crate::infrastructure::store;",
         "pub use crate::interfaces::http;",
         "pub use crate::infrastructure::redis;",
         "pub use crate::infrastructure::sqlite;",

@@ -2,4 +2,4 @@
 
 #![allow(unused_imports)]
 
-pub(crate) use crate::infrastructure::store::*;
+pub use crate::infrastructure::store::*;

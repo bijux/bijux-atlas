@@ -26,8 +26,8 @@ pub(crate) use std::time::{Duration, Instant};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::Instrument;
 
-pub(crate) mod adapters;
-pub(crate) mod app;
+pub mod adapters;
+pub mod app;
 pub(crate) mod application;
 pub mod runtime;
 pub mod bootstrap;
@@ -51,7 +51,7 @@ pub use crate::runtime::config::{
     RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
     StoreMode,
 };
-pub use crate::application::server::{
+pub use crate::app::server::{
     build_router, chrono_like_unix_millis, record_shed_reason, route_sli_class, AppState,
     DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource,
     RetryPolicy, S3LikeBackend,
@@ -62,14 +62,14 @@ pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;
-pub(crate) use crate::infrastructure::redis;
-pub(crate) use crate::infrastructure::sqlite;
-pub use crate::infrastructure::store;
-pub(crate) use crate::infrastructure::telemetry;
-pub use crate::interfaces::cli;
-pub use crate::interfaces::cli::main_entry;
-pub use crate::interfaces::client;
-pub(crate) use crate::interfaces::http;
+pub(crate) use crate::adapters::outbound::redis;
+pub(crate) use crate::adapters::outbound::sqlite;
+pub use crate::adapters::outbound::store;
+pub(crate) use crate::adapters::outbound::telemetry;
+pub use crate::adapters::inbound::cli;
+pub use crate::adapters::inbound::cli::main_entry;
+pub use crate::adapters::inbound::client;
+pub(crate) use crate::adapters::inbound::http;
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
 pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
 pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
