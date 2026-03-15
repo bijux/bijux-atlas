@@ -1,5 +1,5 @@
 schema_version = 1
-release_line = "v0.1"
+release_line = "v0.2"
 
 [[images]]
 name = "ghcr.io/bijux/bijux-atlas-server"

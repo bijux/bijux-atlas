@@ -2,6 +2,23 @@
 
 All notable changes are documented in this file.
 
+## v0.2.0
+
+### Added
+- Added public release-facing workflow parity for CI, docs deployment, crates.io publishing, and GitHub releases.
+- Added a GitHub helper surface in `makes/` so release automation can stay thin and deterministic.
+
+### Changed
+- Changed the root release story to align the README, chart version, workspace version, and release metadata around `v0.2.0`.
+- Changed release specification filenames from version-shaped names to stable names under `ops/release/`.
+
+### Fixed
+- Fixed release validation to read the live docs spine for MSRV and feature-flag documentation.
+- Fixed the runtime CLI config example so it satisfies the current runtime configuration contract.
+
+### Breaking Changes
+- Renamed `ops/release/crates-v0.1.toml`, `ops/release/images-v0.1.toml`, and `ops/release/ops-v0.1.toml` to stable filenames. Any automation that referenced the old paths must switch to `crates-release.toml`, `images-release.toml`, and `ops-release.toml`.
+
 ## v0.1.1
 
 ### Added

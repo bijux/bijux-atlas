@@ -3152,8 +3152,8 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
         .and_then(toml::Value::as_str)
         .unwrap_or_default()
         .to_string();
-    let msrv_doc = fs::read_to_string(root.join("docs/reference/msrv-policy.md"))
-        .map_err(|err| format!("failed to read docs/reference/msrv-policy.md: {err}"))?;
+    let msrv_doc = fs::read_to_string(root.join("docs/06-development/workspace-and-tooling.md"))
+        .map_err(|err| format!("failed to read docs/06-development/workspace-and-tooling.md: {err}"))?;
     let mut errors = Vec::<String>::new();
     if workspace_msrv != toolchain_channel {
         errors.push(format!(
@@ -3162,7 +3162,7 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
     }
     if !msrv_doc.contains(&workspace_msrv) {
         errors.push(format!(
-            "docs/reference/msrv-policy.md does not mention workspace MSRV `{workspace_msrv}`"
+            "docs/06-development/workspace-and-tooling.md does not mention workspace MSRV `{workspace_msrv}`"
         ));
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
@@ -3188,7 +3188,10 @@ fn run_release_crates_publish_plan(args: ReleaseCratesListArgs) -> Result<(Strin
         "kind": "release_crates_publish_plan",
         "status": "ok",
         "deterministic_ordering": true,
-        "release_line": spec.get("release_line").and_then(toml::Value::as_str).unwrap_or("v0.1"),
+        "release_line": spec
+            .get("release_line")
+            .and_then(toml::Value::as_str)
+            .unwrap_or("v0.2"),
         "crates": publishable
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
@@ -3497,8 +3500,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let feature_policy = read_json(&root.join("configs/sources/release/feature-policy.json"))?;
     let missing_docs_policy = read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
     let dependency_policy = dependency_policy(&root)?;
-    let feature_doc = fs::read_to_string(root.join("docs/reference/crate-feature-flags.md"))
-        .map_err(|err| format!("failed to read docs/reference/crate-feature-flags.md: {err}"))?;
+    let feature_doc = fs::read_to_string(root.join("docs/07-reference/feature-flags.md"))
+        .map_err(|err| format!("failed to read docs/07-reference/feature-flags.md: {err}"))?;
     let workspace_manifest: toml::Value = toml::from_str(
         &fs::read_to_string(root.join("Cargo.toml"))
             .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
@@ -3678,7 +3681,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                 || !feature_doc.contains(&format!("`{feature_name}`"))
             {
                 errors.push(format!(
-                    "crate `{crate_name}` feature `{feature_name}` is not documented in docs/reference/crate-feature-flags.md"
+                    "crate `{crate_name}` feature `{feature_name}` is not documented in docs/07-reference/feature-flags.md"
                 ));
             }
         }

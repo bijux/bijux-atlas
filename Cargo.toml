@@ -2,13 +2,12 @@
 members = [
   "crates/bijux-dev-atlas",
   "crates/bijux-atlas",
-  "crates/bijux-atlas-python",
 ]
 resolver = "2"
 
 [workspace.package]
 edition = "2021"
-version = "0.1.1"
+version = "0.2.0"
 license = "Apache-2.0"
 rust-version = "1.85.0"
 description = "Deterministic atlas data platform and Rust control-plane"
@@ -33,7 +32,6 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-bijux-atlas = { version = "=0.1.1", path = "crates/bijux-atlas" }
-bijux-atlas-python = { version = "=0.1.1", path = "crates/bijux-atlas-python" }
-bijux-dev-atlas = { version = "=0.1.1", path = "crates/bijux-dev-atlas" }
+bijux-atlas = { version = "=0.2.0", path = "crates/bijux-atlas" }
+bijux-dev-atlas = { version = "=0.2.0", path = "crates/bijux-dev-atlas" }
 bijux-cli = "0.3.2"

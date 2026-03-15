@@ -1,4 +1,9 @@
-repo_root = "/Users/example/work/bijux-atlas"
-output_format = "human"
-quiet = false
-profile = "kind"
+[server]
+host = "127.0.0.1"
+port = 8080
+
+[data]
+root = "./data"
+
+[telemetry]
+mode = "stdout"

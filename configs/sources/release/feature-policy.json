@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "allow_empty_features": [
+    "serde",
     "backend-local",
     "bench-ingest-throughput"
   ],
