@@ -3,13 +3,13 @@
 //! Core primitives re-exported through the `bijux-atlas` package.
 
 pub use crate::domain::time;
+pub use crate::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub use crate::domain::{
     authentication_context_from_api_key, authentication_context_from_token,
     calculate_manifest_checksum, canonical, default_metadata_store, detect_tampering,
     extract_request_identity, generate_api_key, hash_api_key, https_enforced,
     load_certificate_bundle, load_cluster_config_from_path, load_node_config_from_path,
-    load_security_config_from_path, mint_signed_token, resolve_bijux_cache_dir,
-    resolve_bijux_config_path, rotate_api_key, sha256, sha256_hex, stable_hash_u64,
+    load_security_config_from_path, mint_signed_token, rotate_api_key, sha256, sha256_hex, stable_hash_u64,
     tls_handshake_allowed, validate_certificate_bundle, validate_security_config,
     validate_signed_token, verify_artifact_checksum, verify_artifact_signature,
     verify_dataset_manifest_integrity, ApiKeyRecord, ApiKeyStore, AuthValidationError,
@@ -43,4 +43,4 @@ pub use crate::ports::{
     AuthPort, ClockPort, FsPort, MetricsPort, NetPort, ProcessPort, ProcessResult, TracingPort,
 };
 pub use crate::types::{DatasetId, RunId, ShardId};
-pub use crate::{domain, errors, ports, types};
+pub use crate::{domain, errors, ports, runtime, types};

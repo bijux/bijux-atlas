@@ -26,6 +26,7 @@ pub(crate) use std::time::{Duration, Instant};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::Instrument;
 
+pub mod adapters;
 pub mod app;
 pub mod application;
 pub mod runtime;

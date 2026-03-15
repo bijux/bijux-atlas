@@ -103,3 +103,41 @@ fn crate_roots_do_not_accumulate_local_artifacts_directories() {
         forbidden.join(", ")
     );
 }
+
+#[test]
+fn atlas_application_server_shims_stay_thin() {
+    let root = repo_root();
+    for (path, expected) in [
+        (
+            "crates/bijux-atlas/src/application/server/state/router.rs",
+            "pub use crate::interfaces::http::router::*;",
+        ),
+        (
+            "crates/bijux-atlas/src/application/server/state/request_utils.rs",
+            "pub use crate::interfaces::http::request_policies::*;",
+        ),
+    ] {
+        let text = fs::read_to_string(root.join(path)).expect("shim source");
+        assert!(
+            text.contains(expected),
+            "shim must delegate to the canonical interface owner: {path}"
+        );
+        assert!(
+            text.lines().count() <= 4,
+            "shim must stay minimal and must not regain implementation logic: {path}"
+        );
+    }
+}
+
+#[test]
+fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
+    let root = repo_root();
+    let text = fs::read_to_string(root.join("crates/bijux-atlas/src/domain/mod.rs"))
+        .expect("domain surface");
+    assert!(
+        !text.contains("resolve_bijux_cache_dir")
+            && !text.contains("resolve_bijux_config_path")
+            && !text.contains("crate::application::config"),
+        "domain surface must not depend on runtime config helpers"
+    );
+}
