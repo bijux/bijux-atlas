@@ -84,7 +84,7 @@
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas docs client-index",
+        "bijux dev atlas docs build",
         "bijux dev atlas release verify"
       ]
     },
@@ -319,8 +319,8 @@
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas contracts make",
-        "make contracts"
+        "bijux dev atlas configs validate",
+        "make"
       ]
     },
     {
@@ -389,7 +389,8 @@
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas check registry doctor"
+        "bijux dev atlas api validate",
+        "bijux dev atlas registry doctor"
       ]
     },
     {
@@ -412,7 +413,7 @@
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas contracts ops",
+        "bijux dev atlas ops validate",
         "bijux dev atlas ops list"
       ]
     },
@@ -559,7 +560,7 @@
       "stability": "stable",
       "tool_entrypoints": [
         "bijux dev atlas configs validate",
-        "bijux dev atlas contracts configs"
+        "bijux dev atlas configs list --allow-write"
       ]
     },
     {

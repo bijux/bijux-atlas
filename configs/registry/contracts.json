@@ -3,7 +3,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.root.only_root_docs"
       },
       "evidence_artifact": null,
@@ -20,7 +20,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.layout.depth_budget"
       },
       "evidence_artifact": null,
@@ -35,7 +35,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.no_undocumented_files"
       },
       "evidence_artifact": null,
@@ -51,7 +51,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schemas.file_coverage"
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json",
@@ -69,7 +69,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.owner_complete"
       },
       "evidence_artifact": null,
@@ -84,7 +84,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schema.coverage"
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json",
@@ -101,7 +101,7 @@
     {
       "contract_type": "supplychain",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.lockfiles.required_pairs"
       },
       "evidence_artifact": null,
@@ -119,7 +119,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.no_overlap"
       },
       "evidence_artifact": null,
@@ -135,7 +135,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.generated.authored_boundary"
       },
       "evidence_artifact": null,
@@ -152,7 +152,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.consumers.file_coverage"
       },
       "evidence_artifact": null,
@@ -168,7 +168,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.group_budget"
       },
       "evidence_artifact": null,
@@ -183,7 +183,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.no_orphans"
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.touched-paths.json",
@@ -199,7 +199,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.no_dead_entries"
       },
       "evidence_artifact": null,
@@ -215,7 +215,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.generated_index.committed_match"
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/status.json",
@@ -231,7 +231,7 @@
     {
       "contract_type": "supplychain",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.consumers.group_alignment"
       },
       "evidence_artifact": null,
@@ -247,7 +247,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.visibility_classification"
       },
       "evidence_artifact": null,
@@ -263,7 +263,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.complete_surface"
       },
       "evidence_artifact": null,
@@ -279,7 +279,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.generated_index.deterministic"
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json",
@@ -295,7 +295,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.lifecycle"
       },
       "evidence_artifact": null,
@@ -310,7 +310,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.tool_entrypoints"
       },
       "evidence_artifact": null,
@@ -325,7 +325,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.schema_owner"
       },
       "evidence_artifact": null,
@@ -341,7 +341,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.no_undocumented_files"
       },
       "evidence_artifact": null,
@@ -357,7 +357,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.naming.internal_surface"
       },
       "evidence_artifact": null,
@@ -372,7 +372,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.generated.authored_boundary"
       },
       "evidence_artifact": null,
@@ -388,7 +388,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.parse.json"
       },
       "evidence_artifact": null,
@@ -404,7 +404,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.parse.yaml"
       },
       "evidence_artifact": null,
@@ -420,7 +420,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.parse.toml"
       },
       "evidence_artifact": null,
@@ -435,7 +435,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.text.hygiene"
       },
       "evidence_artifact": null,
@@ -450,7 +450,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.docs.no_nested_markdown"
       },
       "evidence_artifact": null,
@@ -465,7 +465,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.docs.tooling_surface"
       },
       "evidence_artifact": null,
@@ -481,7 +481,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.owners.group_alignment"
       },
       "evidence_artifact": null,
@@ -497,7 +497,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.contracts.no_policy_theater"
       },
       "evidence_artifact": "artifacts/atlas-dev/configs/<run_id>/cfg-contract-coverage.json",
@@ -514,7 +514,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.owner_complete"
       },
       "evidence_artifact": null,
@@ -529,7 +529,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schema.coverage"
       },
       "evidence_artifact": null,
@@ -546,7 +546,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.registry.group_depth_budget"
       },
       "evidence_artifact": null,
@@ -562,7 +562,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.json.canonical_root_surface"
       },
       "evidence_artifact": null,
@@ -582,7 +582,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schema.index_committed_match"
       },
       "evidence_artifact": null,
@@ -600,7 +600,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schema.no_orphan_inputs"
       },
       "evidence_artifact": null,
@@ -616,7 +616,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schema.versioning_policy"
       },
       "evidence_artifact": null,
@@ -633,7 +633,7 @@
     {
       "contract_type": "supplychain",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.exclusions.governed_metadata"
       },
       "evidence_artifact": null,
@@ -648,7 +648,7 @@
     {
       "contract_type": "supplychain",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.supplychain.no_latest"
       },
       "evidence_artifact": null,
@@ -663,7 +663,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.docs.domain_landing_files"
       },
       "evidence_artifact": null,
@@ -680,7 +680,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.layout.top_level_domain_policy"
       },
       "evidence_artifact": null,
@@ -696,7 +696,7 @@
     {
       "contract_type": "filelayout",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.naming.unique_domain_filenames"
       },
       "evidence_artifact": null,
@@ -711,7 +711,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.owners.schema_validation"
       },
       "evidence_artifact": null,
@@ -727,7 +727,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.consumers.schema_validation"
       },
       "evidence_artifact": null,
@@ -743,7 +743,7 @@
     {
       "contract_type": "schema",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.schemas.registry_schema_validation"
       },
       "evidence_artifact": null,
@@ -759,7 +759,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.owners.root_file_coverage"
       },
       "evidence_artifact": null,
@@ -779,7 +779,7 @@
     {
       "contract_type": "drift",
       "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
+        "command": "bijux dev atlas configs validate",
         "test_id": "configs.consumers.root_file_coverage"
       },
       "evidence_artifact": null,

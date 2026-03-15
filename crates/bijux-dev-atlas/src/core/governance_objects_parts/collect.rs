@@ -160,7 +160,7 @@ pub(super) fn collect_governance_objects(
                 id: format!("ops:contract:{}", contract_id.to_ascii_lowercase()),
                 domain: "ops".to_string(),
                 owner: "bijux-atlas-operations".to_string(),
-                consumers: vec!["bijux dev atlas contract run --domain ops".to_string()],
+                consumers: vec!["bijux dev atlas ops validate".to_string()],
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/ops/contracts.json".to_string()],
                 links: ops_contract_paths.clone(),

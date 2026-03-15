@@ -15,12 +15,13 @@ Machine-readable authorities:
 - `configs/registry/owners.json` declares file-level and group-level ownership.
 - `configs/registry/consumers.json` declares file-level consumer coverage.
 - `configs/registry/schemas.json` declares file-level schema coverage.
-- `configs/registry/contracts.json` declares the executable contracts that govern this tree.
+- `configs/registry/contracts.json` declares the contract catalog that `configs validate` and `configs doctor` are expected to uphold.
 - `configs/registry/schema-versioning-policy.json` declares compatibility expectations for governed public schemas.
 
 Common commands:
-- `bijux dev atlas contracts configs --format table`
-- `bijux dev atlas configs list --format json`
+- `bijux dev atlas configs validate --format json`
+- `bijux dev atlas configs doctor --format json`
+- `bijux dev atlas configs list --allow-write --format json`
 
 Example config files are allowed only under `configs/examples/`.
 - Runtime server examples:

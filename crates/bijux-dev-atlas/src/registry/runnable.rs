@@ -141,6 +141,7 @@ struct ContractRegistryEntry {
     contract_id: String,
     summary: String,
     group: String,
+    mode: String,
     runner: String,
     reports: Vec<String>,
     tags: Option<Vec<String>>,
@@ -237,10 +238,10 @@ fn load_contracts(repo_root: &Path) -> Result<Vec<RunnableEntry>, String> {
         .contracts
         .into_iter()
         .map(|entry| {
-            let mode = if entry.runner.contains("--mode effect") {
-                RunnableMode::Effect
-            } else {
-                RunnableMode::Pure
+            let mode = match entry.mode.as_str() {
+                "effect" => RunnableMode::Effect,
+                "pure" => RunnableMode::Pure,
+                other => return Err(format!("unsupported contract mode `{other}`")),
             };
             let effects_required = if mode == RunnableMode::Effect {
                 vec![Effect::Subprocess, Effect::FsWrite]

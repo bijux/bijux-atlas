@@ -10,4 +10,4 @@ This index anchors the `configs/` control surface for static governance checks.
 - [Consumer Registry](registry/consumers.json)
 - [Schema Registry](registry/schemas.json)
 - [Inventory Registry](registry/inventory/configs.json)
-- [Contracts Registry](registry/contracts.json)
+- [Contract Catalog](registry/contracts.json)
