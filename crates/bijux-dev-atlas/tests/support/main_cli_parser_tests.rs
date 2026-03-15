@@ -373,7 +373,7 @@ mod tests {
                 "reference/configs.md".to_string(),
                 "index.md".to_string(),
                 "sub/intro.md".to_string(),
-                "reference/make-targets.md".to_string(),
+                "reference/makes-targets.md".to_string(),
                 "reference/schemas.md".to_string(),
                 "start-here.md".to_string(),
             ]

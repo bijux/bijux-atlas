@@ -90,7 +90,7 @@ lint: ## Run cargo clippy with warnings denied
 	} 2>&1 | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt
 
 lint-policy-report: ## Emit effective lint policy report artifact
-	@$(DEV_ATLAS) make lint-policy-report --allow-write --format $(FORMAT)
+	@$(DEV_ATLAS) makes lint-policy-report --allow-write --format $(FORMAT)
 
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates

@@ -8,36 +8,36 @@ ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 SUITE_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
 
-include make/build.mk
-include make/cargo.mk
-include make/ci.mk
-include make/configs.mk
-include make/dev.mk
-include make/docker.mk
-include make/docs.mk
-include make/k8s.mk
-include make/ops.mk
-include make/policies.mk
-include make/runenv.mk
-include make/verification.mk
+include makes/build.mk
+include makes/cargo.mk
+include makes/ci.mk
+include makes/configs.mk
+include makes/dev.mk
+include makes/docker.mk
+include makes/docs.mk
+include makes/k8s.mk
+include makes/ops.mk
+include makes/policies.mk
+include makes/runenv.mk
+include makes/verification.mk
 
 CURATED_TARGETS := \
 	build ci-fast ci-nightly ci-pr clean docker doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make openapi-generate ops-contracts ops-contracts-effect registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-list tests-all
 
-help: ## Show curated make targets owned by Rust control-plane wrappers
-	@$(DEV_ATLAS) make surface --format $(FORMAT)
-	@printf '%s\n' "guide: docs/06-development/automation-control-plane.md" "reference: docs/07-reference/automation-command-surface.md" "make: make/README.md"
+help: ## Show curated makes targets owned by Rust control-plane wrappers
+	@$(DEV_ATLAS) makes surface --format $(FORMAT)
+	@printf '%s\n' "guide: docs/06-development/automation-control-plane.md" "reference: docs/07-reference/automation-command-surface.md" "makes: makes/README.md"
 
-_internal-list: ## Print curated make target names
-	@$(DEV_ATLAS) make list --format $(FORMAT)
+_internal-list: ## Print curated makes target names
+	@$(DEV_ATLAS) makes list --format $(FORMAT)
 
 _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
-	@$(DEV_ATLAS) make explain "$${TARGET}" --format $(FORMAT)
+	@$(DEV_ATLAS) makes explain "$${TARGET}" --format $(FORMAT)
 
-_internal-surface: ## Print make surface and docs pointers for Rust control plane
+_internal-surface: ## Print the makes surface and docs pointers for Rust control plane
 	@$(MAKE) -s help
-	@printf '%s\n' "Docs: docs/06-development/automation-control-plane.md docs/07-reference/automation-command-surface.md make/README.md"
+	@printf '%s\n' "Docs: docs/06-development/automation-control-plane.md docs/07-reference/automation-command-surface.md makes/README.md"
 
 doctor: ## Run Rust control-plane doctor suite as JSON
 	@printf '%s\n' "run: $(DEV_ATLAS) registry doctor --format $(FORMAT)"

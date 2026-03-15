@@ -1,0 +1,28 @@
+# Makes Help
+
+- build: Build the repository through the governed control plane.
+- ci-fast: Run the fast CI lane.
+- ci-nightly: Run the nightly CI lane.
+- ci-pr: Run the pull-request CI lane.
+- clean: Remove ephemeral artifacts through the control plane.
+- docker: Run the Docker verification lane.
+- doctor: Generate repository diagnostics.
+- help: Print the curated makes surface.
+- k8s-render: Render Kubernetes manifests through the control plane.
+- k8s-validate: Validate Kubernetes manifests through the control plane.
+- kind-down: Delete the deterministic kind cluster.
+- kind-reset: Recreate the deterministic kind cluster.
+- kind-status: Report kind cluster readiness.
+- kind-up: Create or verify the deterministic kind cluster.
+- lint-make: Run the governed make-required check suite.
+- openapi-generate: Regenerate the OpenAPI contract.
+- ops-contracts: Validate ops contracts.
+- ops-contracts-effect: Run effectful ops contract validation.
+- registry-doctor: Validate governed suite registries and mappings.
+- release-plan: Generate the release readiness plan.
+- release-verify: Verify a release evidence tarball.
+- root-surface-explain: Explain the root surface contract.
+- stack-down: Stop the local ops stack.
+- stack-up: Start the local ops stack.
+- suites-list: List the available suite identifiers.
+- tests-all: Run the deterministic test suite.

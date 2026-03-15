@@ -5,7 +5,7 @@ on:
     paths:
       - 'ops/**'
       - 'crates/bijux-dev-atlas/**'
-      - 'make/_ops.mk'
+      - 'makes/_ops.mk'
       - '.github/workflows/ops-validate.yml'
 
 permissions:
@@ -70,8 +70,8 @@ jobs:
           make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
-          make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
-          cp make/target-list.json "${report_root}/make-target-list.json"
+          make makes-target-list > "${logs_root}/makes-target-list.stdout.log" 2> "${logs_root}/makes-target-list.stderr.log"
+          cp makes/target-list.json "${report_root}/makes-target-list.json"
           make k8s-validate > "${report_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
           printf -- "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/ops-validate.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"

@@ -125,7 +125,7 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/sources/repository/make/*.json": [
+    "configs/sources/repository/makes/*.json": [
       "make",
       "bijux-dev-atlas"
     ],

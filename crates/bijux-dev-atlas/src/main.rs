@@ -34,8 +34,8 @@ mod load_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
-#[path = "application/make.rs"]
-mod make_commands;
+#[path = "application/makes.rs"]
+mod makes_commands;
 #[path = "application/migrations.rs"]
 mod migrations_commands;
 #[path = "application/observe.rs"]

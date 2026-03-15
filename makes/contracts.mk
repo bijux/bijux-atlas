@@ -4,7 +4,7 @@ CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACT_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
 
 contracts-help: ## Show contracts gate targets
-	@printf '%s\n' "docs: $(MAKE_README_PATH)" "target-list: make/target-list.json"
+	@printf '%s\n' "docs: $(MAKE_README_PATH)" "target-list: makes/target-list.json"
 
 contract: ## Run pure contract execution through the canonical suite runner
 	@$(DEV_ATLAS) suites run --suite contracts --jobs $(JOBS) --mode pure $(CONTRACT_FAIL_FAST_FLAG) --format $(FORMAT)

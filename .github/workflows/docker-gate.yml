@@ -4,8 +4,8 @@ on:
   pull_request:
     paths:
       - "ops/docker/**"
-      - "make/docker.mk"
-      - "make/root.mk"
+      - "makes/docker.mk"
+      - "makes/root.mk"
       - "crates/bijux-dev-atlas/src/commands/control_plane.rs"
       - "crates/bijux-dev-atlas/tests/dockerfile_contracts.rs"
 

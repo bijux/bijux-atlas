@@ -1004,14 +1004,14 @@ fn build_generated_command_lists_body(repo_root: &std::path::Path) -> Result<Str
     }
     let make_list = std::process::Command::new("cargo")
         .current_dir(repo_root)
-        .args(["run", "-q", "-p", "bijux-dev-atlas", "--", "make", "list", "--format", "text"])
+        .args(["run", "-q", "-p", "bijux-dev-atlas", "--", "makes", "list", "--format", "text"])
         .output()
-        .map_err(|e| format!("run make list failed: {e}"))?;
+        .map_err(|e| format!("run makes list failed: {e}"))?;
     if !make_list.status.success() {
-        return Err("bijux-dev-atlas make list failed".to_string());
+        return Err("bijux-dev-atlas makes list failed".to_string());
     }
     Ok(format!(
-        "# Generated Command Lists\n\n## bijux-dev-atlas\n\n```text\n{}\n```\n\n## make wrappers\n\n```text\n{}\n```\n",
+        "# Generated Command Lists\n\n## bijux-dev-atlas\n\n```text\n{}\n```\n\n## makes wrappers\n\n```text\n{}\n```\n",
         String::from_utf8(root_help.stdout).map_err(|e| e.to_string())?,
         String::from_utf8(make_list.stdout).map_err(|e| e.to_string())?,
     ))

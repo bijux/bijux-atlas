@@ -300,26 +300,26 @@ pub enum ConfigsCommand {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum MakeCommand {
-    VerifyModule(MakeVerifyArgs),
+pub enum MakesCommand {
+    VerifyModule(MakesVerifyArgs),
     Wrappers {
         #[command(subcommand)]
-        command: MakeWrappersCommand,
+        command: MakesWrappersCommand,
     },
-    Surface(MakeCommonArgs),
-    List(MakeCommonArgs),
-    Explain(MakeExplainArgs),
-    TargetList(MakeCommonArgs),
-    LintPolicyReport(MakeCommonArgs),
+    Surface(MakesCommonArgs),
+    List(MakesCommonArgs),
+    Explain(MakesExplainArgs),
+    TargetList(MakesCommonArgs),
+    LintPolicyReport(MakesCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
-pub enum MakeWrappersCommand {
-    Verify(MakeCommonArgs),
+pub enum MakesWrappersCommand {
+    Verify(MakesCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
-pub struct MakeCommonArgs {
+pub struct MakesCommonArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
@@ -333,16 +333,16 @@ pub struct MakeCommonArgs {
 }
 
 #[derive(Args, Debug, Clone)]
-pub struct MakeVerifyArgs {
+pub struct MakesVerifyArgs {
     #[command(flatten)]
-    pub common: MakeCommonArgs,
+    pub common: MakesCommonArgs,
     pub module: String,
 }
 
 #[derive(Args, Debug, Clone)]
-pub struct MakeExplainArgs {
+pub struct MakesExplainArgs {
     #[command(flatten)]
-    pub common: MakeCommonArgs,
+    pub common: MakesCommonArgs,
     pub target: String,
 }
 

@@ -108,7 +108,7 @@
     "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
     "configs/sources/repository/gates/*.json",
     "configs/sources/repository/layout/*.json",
-    "configs/sources/repository/make/*.json",
+    "configs/sources/repository/makes/*.json",
     "configs/sources/repository/meta/*.json",
     "configs/sources/repository/repo-surface/*.json",
     "configs/sources/repository/rust-tooling/*.json",

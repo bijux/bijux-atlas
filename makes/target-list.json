@@ -28,5 +28,5 @@
     "tests-all"
   ],
   "schema_version": 1,
-  "source": "make/root.mk:CURATED_TARGETS"
+  "source": "makes/root.mk:CURATED_TARGETS"
 }

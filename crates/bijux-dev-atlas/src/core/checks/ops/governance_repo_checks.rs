@@ -63,24 +63,24 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
         .filter(|line| !line.starts_with('#'))
         .collect::<Vec<_>>();
     if lines.len() == 2
-        && lines[0] == "include make/public.mk"
-        && lines[1] == "include make/help.mk"
+        && lines[0] == "include makes/public.mk"
+        && lines[1] == "include makes/help.mk"
     {
         return Ok(Vec::new());
     }
-    if !lines.contains(&"include make/public.mk") || !lines.contains(&"include make/help.mk") {
+    if !lines.contains(&"include makes/public.mk") || !lines.contains(&"include makes/help.mk") {
         return Ok(vec![violation(
             "ROOT_MAKEFILE_MISSING_ROOT_INCLUDE",
-            "root Makefile must include make/public.mk and make/help.mk".to_string(),
+            "root Makefile must include makes/public.mk and makes/help.mk".to_string(),
             "use root Makefile as a thin include entrypoint",
             Some(rel),
         )]);
     }
-    lines.retain(|line| *line != "include make/public.mk" && *line != "include make/help.mk");
+    lines.retain(|line| *line != "include makes/public.mk" && *line != "include makes/help.mk");
     Ok(vec![violation(
         "ROOT_MAKEFILE_NOT_SINGLE_INCLUDE_ENTRYPOINT",
         "root Makefile contains logic beyond the include-only entrypoint".to_string(),
-        "keep root Makefile to two includes only: `include make/public.mk` and `include make/help.mk`",
+        "keep root Makefile to two includes only: `include makes/public.mk` and `include makes/help.mk`",
         Some(rel),
     )])
 }
@@ -88,7 +88,7 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
 pub(super) fn check_makefiles_root_includes_sorted(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("make/root.mk");
+    let rel = Path::new("makes/root.mk");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let includes = text
@@ -104,7 +104,7 @@ pub(super) fn check_makefiles_root_includes_sorted(
     } else {
         Ok(vec![violation(
             "MAKEFILES_ROOT_INCLUDES_NOT_SORTED",
-            "make/root.mk include statements must be sorted".to_string(),
+            "makes/root.mk include statements must be sorted".to_string(),
             "sort include lines lexicographically for deterministic diffs",
             Some(rel),
         )])

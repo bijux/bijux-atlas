@@ -24,7 +24,7 @@
       "title": "Intro"
     },
     {
-      "path": "reference/make-targets.md",
+      "path": "reference/makes-targets.md",
       "title": "Make Targets"
     },
     {
@@ -67,7 +67,7 @@
       "in_nav": true,
       "last_reviewed": null,
       "owner": null,
-      "path": "reference/make-targets.md",
+      "path": "reference/makes-targets.md",
       "stability": null
     },
     {

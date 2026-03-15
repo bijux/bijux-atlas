@@ -33,7 +33,7 @@ jobs:
               - '.github/**'
               - 'configs/sources/repository/docs/**'
               - 'configs/sources/runtime/openapi/**'
-              - 'make/docs.mk'
+              - 'makes/docs.mk'
 
   minimal-root-policies:
     runs-on: ubuntu-latest
@@ -101,8 +101,8 @@ jobs:
           make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
-          make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
-          cp make/target-list.json "${report_root}/make-target-list.json"
+          make makes-target-list > "${logs_root}/makes-target-list.stdout.log" 2> "${logs_root}/makes-target-list.stderr.log"
+          cp makes/target-list.json "${report_root}/makes-target-list.json"
           if [ "${GITHUB_EVENT_NAME}" = "merge_group" ]; then
             ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts-merge > "${contracts_root}/all.json" 2> "${logs_root}/contracts-merge.stderr.log"
           else
@@ -236,7 +236,7 @@ jobs:
               "head": head,
               "configs": {"changed": subset(["configs/", "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
               "docs": {"changed": subset(["docs/"])},
-              "make": {"changed": subset(["make/", "configs/sources/operations/ops/make-target-registry.json", "make/target-list.json"])},
+              "make": {"changed": subset(["makes/", "configs/sources/operations/ops/makes-targets.json", "makes/target-list.json"])},
               "docker": {"changed": subset(["ops/docker/", "ops/docker/images.manifest.json", "ops/docker/policy.json"])},
               "ops_readiness": {"changed": subset(["ops/observe/readiness.json", "ops/report/evidence-levels.json", "ops/report/generated/readiness-score.json", "ops/report/generated/release-evidence-bundle.json"])},
           }
@@ -292,9 +292,9 @@ jobs:
             ssot_docs_pairs=1
             changed_file "docs/reference/repo-map.md" || { echo "root surface SSOT changed but docs/reference/repo-map.md was not updated" >&2; exit 1; }
           fi
-          if changed_file "configs/sources/operations/ops/make-target-registry.json"; then
+          if changed_file "configs/sources/operations/ops/makes-targets.json"; then
             ssot_docs_pairs=1
-            changed_file "docs/_internal/generated/make-targets.md" || { echo "public target registry changed but docs/_internal/generated/make-targets.md was not updated" >&2; exit 1; }
+            changed_file "docs/_internal/generated/makes-targets.md" || { echo "public target registry changed but docs/_internal/generated/makes-targets.md was not updated" >&2; exit 1; }
           fi
           if changed_file "docs/_internal/registry/registry.json"; then
             ssot_docs_pairs=1
@@ -403,10 +403,10 @@ jobs:
           }, indent=2) + "\n")
           PY
           # Make surface must derive from one source.
-          jq -r '.public_targets[]' make/target-list.json | sort > "${report_root}/make-public-targets.txt"
-          jq -r '.targets[] | select(.visibility=="public") | .name' configs/sources/operations/ops/make-target-registry.json | sort > "${report_root}/make-registry-public-targets.txt"
+          jq -r '.public_targets[]' makes/target-list.json | sort > "${report_root}/make-public-targets.txt"
+          jq -r '.targets[] | select(.visibility=="public") | .name' configs/sources/operations/ops/makes-targets.json | sort > "${report_root}/make-registry-public-targets.txt"
           if ! diff -u "${report_root}/make-registry-public-targets.txt" "${report_root}/make-public-targets.txt" > "${report_root}/make-surface-drift.diff"; then
-            echo "public wrapper surface drift: make/target-list.json does not match configs/sources/operations/ops/make-target-registry.json" >&2
+            echo "public wrapper surface drift: makes/target-list.json does not match configs/sources/operations/ops/makes-targets.json" >&2
             exit 1
           fi
           jq -n --rawfile registry "${report_root}/make-registry-public-targets.txt" --rawfile surface "${report_root}/make-public-targets.txt" '{
@@ -1476,8 +1476,8 @@ jobs:
           make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
-          make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
-          cp make/target-list.json "${report_root}/make-target-list.json"
+          make makes-target-list > "${logs_root}/makes-target-list.stdout.log" 2> "${logs_root}/makes-target-list.stderr.log"
+          cp makes/target-list.json "${report_root}/makes-target-list.json"
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
           printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/sources/repository/rust-tooling\n' > "${report_root}/effective-clippy-policy.txt"
           cargo run --locked -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"

@@ -48,7 +48,7 @@ pub(crate) use crate::governance_commands::run_governance_command;
 pub(crate) use crate::governance_commands::run_registry_command;
 pub(crate) use crate::invariants_commands::run_invariants_command;
 pub(crate) use crate::load_commands::run_load_command;
-pub(crate) use crate::make_commands::run_make_command;
+pub(crate) use crate::makes_commands::run_makes_command;
 pub(crate) use crate::migrations_commands::run_migrations_command;
 pub(crate) use crate::observe_commands::run_observe_command;
 pub(crate) use crate::ops_commands::{

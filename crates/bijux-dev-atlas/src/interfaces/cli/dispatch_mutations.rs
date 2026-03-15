@@ -3,7 +3,7 @@
 use crate::cli::{
     ApiCommand, ArtifactsCommand, AuditCommand, Command, ConfigsCommand, DatasetsCommand,
     DocsCommand, DriftCommand, FormatArg, IngestCommand, InvariantsCommand, LoadCommand,
-    MakeCommand, MigrationsCommand, ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand,
+    MakesCommand, MigrationsCommand, ObserveCommand, OpsCommand, PerfCommand, PoliciesCommand,
     RegistryCommand, ReleaseApiSurfaceCommand, ReleaseChecksumsCommand, ReleaseCommand,
     ReleaseCratesCommand, ReleaseImagesCommand, ReleaseMsrvCommand, ReleaseOpsCommand,
     ReleaseSemverCommand, ReportsCommand, ReproduceCommand, SecurityCommand, TestsCommand,
@@ -42,7 +42,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         },
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
-        Command::Make { command } => force_json_make(command),
+        Command::Makes { command } => force_json_makes(command),
         Command::Artifacts { command } => force_json_artifacts(command),
         Command::Reports { command } => match command {
             ReportsCommand::List(args) => args.format = FormatArg::Json,
@@ -569,17 +569,17 @@ fn force_json_docs(command: &mut DocsCommand) {
     }
 }
 
-fn force_json_make(command: &mut MakeCommand) {
+fn force_json_makes(command: &mut MakesCommand) {
     match command {
-        MakeCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
-        MakeCommand::Wrappers { command } => match command {
-            crate::cli::MakeWrappersCommand::Verify(common) => common.format = FormatArg::Json,
+        MakesCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
+        MakesCommand::Wrappers { command } => match command {
+            crate::cli::MakesWrappersCommand::Verify(common) => common.format = FormatArg::Json,
         },
-        MakeCommand::Surface(common)
-        | MakeCommand::List(common)
-        | MakeCommand::Explain(crate::cli::MakeExplainArgs { common, .. })
-        | MakeCommand::TargetList(common)
-        | MakeCommand::LintPolicyReport(common) => common.format = FormatArg::Json,
+        MakesCommand::Surface(common)
+        | MakesCommand::List(common)
+        | MakesCommand::Explain(crate::cli::MakesExplainArgs { common, .. })
+        | MakesCommand::TargetList(common)
+        | MakesCommand::LintPolicyReport(common) => common.format = FormatArg::Json,
     }
 }
 
@@ -991,7 +991,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | ConfigsCommand::Explain(_)
             | ConfigsCommand::Compile(_) => {}
         },
-        Command::Make { .. } => {}
+        Command::Makes { .. } => {}
         _ => {}
     }
 }
@@ -1001,18 +1001,18 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         return;
     };
     match command {
-        Command::Make { command } => match command {
-            MakeCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
-            MakeCommand::Wrappers { command } => match command {
-                crate::cli::MakeWrappersCommand::Verify(common) => {
+        Command::Makes { command } => match command {
+            MakesCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
+            MakesCommand::Wrappers { command } => match command {
+                crate::cli::MakesWrappersCommand::Verify(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
-            MakeCommand::Surface(common)
-            | MakeCommand::List(common)
-            | MakeCommand::Explain(crate::cli::MakeExplainArgs { common, .. })
-            | MakeCommand::TargetList(common)
-            | MakeCommand::LintPolicyReport(common) => common.repo_root = Some(root.clone()),
+            MakesCommand::Surface(common)
+            | MakesCommand::List(common)
+            | MakesCommand::Explain(crate::cli::MakesExplainArgs { common, .. })
+            | MakesCommand::TargetList(common)
+            | MakesCommand::LintPolicyReport(common) => common.repo_root = Some(root.clone()),
         },
         Command::Artifacts { command } => match command {
             ArtifactsCommand::Clean(common) => common.repo_root = Some(root.clone()),

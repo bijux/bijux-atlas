@@ -333,7 +333,7 @@ pub(crate) fn help_inventory_payload() -> serde_json::Value {
             "purpose": "inspect and validate thin make wrapper surfaces",
             "effects": ["fs_read", "subprocess"],
             "inputs": ["target", "repo_root"],
-            "outputs": ["make surface reports"],
+            "outputs": ["makes surface reports"],
             "report_ids": [],
             "hidden": true
         }),

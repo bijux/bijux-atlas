@@ -51,7 +51,7 @@ fn docs_reference_target_contents(
             render_docs_reference_configs(repo_root)?,
         ),
         (
-            "docs/reference/make-targets.md",
+            "docs/reference/makes-targets.md",
             render_docs_reference_make_targets(repo_root)?,
         ),
         (
@@ -204,7 +204,7 @@ fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, 
 
 fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<String, String> {
     let value: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("configs/sources/operations/ops/make-target-registry.json"))
+        &std::fs::read_to_string(repo_root.join("configs/sources/operations/ops/makes-targets.json"))
             .map_err(|e| format!("read make target registry failed: {e}"))?,
     )
     .map_err(|e| format!("parse make target registry failed: {e}"))?;
@@ -228,7 +228,7 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
-    out.push_str("- Source-of-truth: `configs/sources/operations/ops/make-target-registry.json`\n\n");
+    out.push_str("- Source-of-truth: `configs/sources/operations/ops/makes-targets.json`\n\n");
     out.push_str("## Targets\n\n| Target | Surface | Description |\n| --- | --- | --- |\n");
     for (name, surface, description) in rows {
         out.push_str(&format!("| `{name}` | `{surface}` | {description} |\n"));
@@ -296,7 +296,7 @@ fn render_docs_reference_commands(repo_root: &std::path::Path) -> Result<String,
     let root_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["--help"])?);
     let ops_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["ops", "--help"])?);
     Ok(format!(
-        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/make-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/make-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
+        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/makes-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/makes-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
     ))
 }
 

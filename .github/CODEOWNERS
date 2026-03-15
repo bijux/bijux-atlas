@@ -16,6 +16,6 @@
 /crates/ @bijan
 /docs/ @bijan
 /ops/docker/ @bijan
-/make/ @bijan
+/makes/ @bijan
 /crates/*/docs/ @bijan
 /configs/ @bijan

@@ -476,8 +476,8 @@
         "schemas": 1
       },
       "files": [
-        "configs/sources/repository/make/public-targets.json",
-        "configs/sources/repository/make/targets.json"
+        "configs/sources/repository/makes/public-targets.json",
+        "configs/sources/repository/makes/targets.json"
       ],
       "name": "make",
       "owner": "platform",
@@ -609,7 +609,7 @@
         "configs/sources/operations/ops/internal-config-keys.txt",
         "configs/sources/operations/ops/load/schemas/suite-baselines.schema.json",
         "configs/sources/operations/ops/load/suite-baselines.json",
-        "configs/sources/operations/ops/make-target-registry.json",
+        "configs/sources/operations/ops/makes-targets.json",
         "configs/sources/operations/ops/manifests-registry.json",
         "configs/sources/operations/ops/namespaces.json",
         "configs/sources/operations/ops/network-policy.json",
@@ -624,7 +624,7 @@
         "configs/sources/operations/ops/pins/tools.json",
         "configs/sources/operations/ops/policies/ops-smoke-budget.json",
         "configs/sources/operations/ops/ports.json",
-        "configs/sources/operations/ops/public-make-targets.json",
+        "configs/sources/operations/ops/public-makes-targets.json",
         "configs/sources/operations/ops/public-surface-doc-exceptions.txt",
         "configs/sources/operations/ops/schema-contracts.json",
         "configs/sources/operations/ops/schemas/env.schema.json",

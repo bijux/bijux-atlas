@@ -244,14 +244,14 @@ pub(super) fn check_crate_docs_governance_contract(
 pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("make/docs.mk");
+    let rel = Path::new("makes/docs.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
         violations.push(violation(
             "MAKE_DOCS_BIJUX_VARIABLES_MISSING",
-            "make/docs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables"
+            "makes/docs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables"
                 .to_string(),
             "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
             Some(rel),
@@ -261,7 +261,7 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
         if line.trim_end().ends_with('\\') {
             violations.push(violation(
                 "MAKE_DOCS_SINGLE_LINE_RECIPE_REQUIRED",
-                "make/docs.mk wrapper recipes must be single-line delegations"
+                "makes/docs.mk wrapper recipes must be single-line delegations"
                     .to_string(),
                 "keep docs wrappers single-line and delegation-only",
                 Some(rel),
@@ -278,7 +278,7 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
         }) {
             violations.push(violation(
                 "MAKE_DOCS_DELEGATION_ONLY_VIOLATION",
-                format!("make/docs.mk must stay delegation-only: `{line}`"),
+                format!("makes/docs.mk must stay delegation-only: `{line}`"),
                 "docs wrappers may call make or bijux dev atlas only",
                 Some(rel),
             ));

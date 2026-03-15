@@ -28,7 +28,7 @@ fn docs_budget_exempt(rel: &str) -> bool {
             "reference/repo-map.md"
                 | "reference/contracts/config-keys.md"
                 | "reference/contracts/errors.md"
-                | "reference/make-targets.md"
+                | "reference/makes-targets.md"
         )
 }
 
@@ -140,7 +140,7 @@ pub(crate) fn docs_validate_payload(
         "reference/commands.md",
         "reference/schemas.md",
         "reference/configs.md",
-        "reference/make-targets.md",
+        "reference/makes-targets.md",
     ] {
         if !ctx.docs_root.join(rel).exists() {
             issues.errors.push(format!(

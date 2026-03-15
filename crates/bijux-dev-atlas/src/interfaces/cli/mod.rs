@@ -104,10 +104,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ReportsCommand,
     },
-    #[command(hide = true)]
-    Make {
+    #[command(name = "makes", visible_alias = "make", hide = true)]
+    Makes {
         #[command(subcommand)]
-        command: MakeCommand,
+        command: MakesCommand,
     },
     Configs {
         #[command(subcommand)]

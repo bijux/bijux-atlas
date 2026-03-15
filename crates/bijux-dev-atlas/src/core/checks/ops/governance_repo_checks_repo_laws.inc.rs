@@ -497,8 +497,8 @@ pub(super) fn check_repo_defaults_work_surface_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
-    let build_mk_rel = Path::new("make/build.mk");
-    let docs_mk_rel = Path::new("make/docs.mk");
+    let build_mk_rel = Path::new("makes/build.mk");
+    let docs_mk_rel = Path::new("makes/docs.mk");
     let helm_templates_rel = Path::new("ops/k8s/charts/bijux-atlas/templates");
     let build_text = fs::read_to_string(ctx.repo_root.join(build_mk_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -507,7 +507,7 @@ pub(super) fn check_repo_defaults_work_surface_contract(
     if !build_text.contains("build:") {
         violations.push(violation(
             "REPO_DEFAULT_BUILD_TARGET_MISSING",
-            "make/build.mk must define `build:` target".to_string(),
+            "makes/build.mk must define `build:` target".to_string(),
             "restore default build target",
             Some(build_mk_rel),
         ));
@@ -515,7 +515,7 @@ pub(super) fn check_repo_defaults_work_surface_contract(
     if !docs_text.contains("docs-build:") {
         violations.push(violation(
             "REPO_DEFAULT_DOCS_TARGET_MISSING",
-            "make/docs.mk must define `docs-build:` target".to_string(),
+            "makes/docs.mk must define `docs-build:` target".to_string(),
             "restore default docs build target",
             Some(docs_mk_rel),
         ));

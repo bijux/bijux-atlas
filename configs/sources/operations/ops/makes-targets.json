@@ -4,7 +4,7 @@
     {
       "name": "_internal-explain",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -12,7 +12,7 @@
     {
       "name": "_internal-lint-make",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -20,7 +20,7 @@
     {
       "name": "_internal-list",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -28,7 +28,7 @@
     {
       "name": "_internal-make-drift-report",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -36,7 +36,7 @@
     {
       "name": "_internal-surface",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -44,7 +44,7 @@
     {
       "name": "audit",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -52,7 +52,7 @@
     {
       "name": "build",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -60,7 +60,7 @@
     {
       "name": "build-ci",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -68,7 +68,7 @@
     {
       "name": "build-doctor",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -76,7 +76,7 @@
     {
       "name": "build-meta",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -84,7 +84,7 @@
     {
       "name": "build-release",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -92,7 +92,7 @@
     {
       "name": "build-sdist",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -100,7 +100,7 @@
     {
       "name": "check",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -108,7 +108,7 @@
     {
       "name": "checks-effect",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -116,7 +116,7 @@
     {
       "name": "checks-group",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -124,7 +124,7 @@
     {
       "name": "checks-pure",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -132,7 +132,7 @@
     {
       "name": "checks-tag",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -140,7 +140,7 @@
     {
       "name": "ci",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -148,7 +148,7 @@
     {
       "name": "ci-dependency-lock-refresh",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -156,7 +156,7 @@
     {
       "name": "ci-docs",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -164,7 +164,7 @@
     {
       "name": "ci-fast",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -174,7 +174,7 @@
     {
       "name": "ci-nightly",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -184,7 +184,7 @@
     {
       "name": "ci-pr",
       "defined_in": [
-        "make/ci.mk"
+        "makes/ci.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -194,7 +194,7 @@
     {
       "name": "clean",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -202,7 +202,7 @@
     {
       "name": "clean-build",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -210,7 +210,7 @@
     {
       "name": "clean-dist",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -218,7 +218,7 @@
     {
       "name": "configs",
       "defined_in": [
-        "make/configs.mk"
+        "makes/configs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -226,7 +226,7 @@
     {
       "name": "configs-doctor",
       "defined_in": [
-        "make/configs.mk"
+        "makes/configs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -234,7 +234,7 @@
     {
       "name": "configs-inventory",
       "defined_in": [
-        "make/configs.mk"
+        "makes/configs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -242,7 +242,7 @@
     {
       "name": "configs-lint",
       "defined_in": [
-        "make/configs.mk"
+        "makes/configs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -250,7 +250,7 @@
     {
       "name": "configs-validate",
       "defined_in": [
-        "make/configs.mk"
+        "makes/configs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -258,7 +258,7 @@
     {
       "name": "contract",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -266,7 +266,7 @@
     {
       "name": "contract-all",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -274,7 +274,7 @@
     {
       "name": "contract-effect",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -282,7 +282,7 @@
     {
       "name": "contracts-configs-required",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -290,7 +290,7 @@
     {
       "name": "contracts-docs-required",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -298,7 +298,7 @@
     {
       "name": "contracts-group",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -306,7 +306,7 @@
     {
       "name": "contracts-help",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -314,7 +314,7 @@
     {
       "name": "contracts-make-required",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -322,7 +322,7 @@
     {
       "name": "contracts-merge",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": [
@@ -332,7 +332,7 @@
     {
       "name": "contracts-pr",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": [
@@ -342,7 +342,7 @@
     {
       "name": "contracts-pure",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -350,7 +350,7 @@
     {
       "name": "contracts-release",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": [
@@ -360,7 +360,7 @@
     {
       "name": "contracts-tag",
       "defined_in": [
-        "make/contracts.mk"
+        "makes/contracts.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -368,7 +368,7 @@
     {
       "name": "coverage",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -376,7 +376,7 @@
     {
       "name": "dev-check-ci",
       "defined_in": [
-        "make/dev.mk"
+        "makes/dev.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -384,7 +384,7 @@
     {
       "name": "dev-doctor",
       "defined_in": [
-        "make/dev.mk"
+        "makes/dev.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -392,7 +392,7 @@
     {
       "name": "dist",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -400,7 +400,7 @@
     {
       "name": "dist-verify",
       "defined_in": [
-        "make/build.mk"
+        "makes/build.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -408,7 +408,7 @@
     {
       "name": "docker",
       "defined_in": [
-        "make/docker.mk"
+        "makes/docker.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -420,7 +420,7 @@
     {
       "name": "docs",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -428,7 +428,7 @@
     {
       "name": "docs-build",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -436,7 +436,7 @@
     {
       "name": "docs-clean",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -444,7 +444,7 @@
     {
       "name": "docs-doctor",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -452,7 +452,7 @@
     {
       "name": "docs-external-links",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -460,7 +460,7 @@
     {
       "name": "docs-reference-check",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -468,7 +468,7 @@
     {
       "name": "docs-reference-regenerate",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -476,7 +476,7 @@
     {
       "name": "docs-serve",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -484,7 +484,7 @@
     {
       "name": "docs-validate",
       "defined_in": [
-        "make/docs.mk"
+        "makes/docs.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -492,7 +492,7 @@
     {
       "name": "doctor",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -505,7 +505,7 @@
     {
       "name": "fmt",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -513,7 +513,7 @@
     {
       "name": "help",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -525,7 +525,7 @@
     {
       "name": "install-local",
       "defined_in": [
-        "make/dev.mk"
+        "makes/dev.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -533,7 +533,7 @@
     {
       "name": "k8s-render",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -543,7 +543,7 @@
     {
       "name": "k8s-validate",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -554,7 +554,7 @@
     {
       "name": "kind-down",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -562,7 +562,7 @@
     {
       "name": "kind-reset",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -570,7 +570,7 @@
     {
       "name": "kind-status",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -578,7 +578,7 @@
     {
       "name": "kind-up",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -586,7 +586,7 @@
     {
       "name": "lint",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -594,7 +594,7 @@
     {
       "name": "lint-clippy-json",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -602,7 +602,7 @@
     {
       "name": "lint-make",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -610,7 +610,7 @@
     {
       "name": "lint-policy-enforce",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -618,7 +618,7 @@
     {
       "name": "lint-policy-report",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -626,15 +626,15 @@
     {
       "name": "make-contract-check",
       "defined_in": [
-        "make/checks.mk"
+        "makes/checks.mk"
       ],
       "visibility": "internal",
       "used_in": []
     },
     {
-      "name": "make-target-list",
+      "name": "makes-target-list",
       "defined_in": [
-        "make/public.mk"
+        "makes/public.mk"
       ],
       "visibility": "internal",
       "used_in": [
@@ -646,7 +646,7 @@
     {
       "name": "openapi-generate",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -654,7 +654,7 @@
     {
       "name": "ops",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -662,7 +662,7 @@
     {
       "name": "ops-artifact-root-check",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -670,7 +670,7 @@
     {
       "name": "ops-clean",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -678,7 +678,7 @@
     {
       "name": "ops-contracts",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -688,7 +688,7 @@
     {
       "name": "ops-contracts-effect",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -698,7 +698,7 @@
     {
       "name": "ops-doctor",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -706,7 +706,7 @@
     {
       "name": "ops-down",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -714,7 +714,7 @@
     {
       "name": "ops-e2e",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -722,7 +722,7 @@
     {
       "name": "ops-help",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -730,7 +730,7 @@
     {
       "name": "ops-install-plan",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -738,7 +738,7 @@
     {
       "name": "ops-k8s",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -746,7 +746,7 @@
     {
       "name": "ops-k8s-contracts",
       "defined_in": [
-        "make/k8s.mk"
+        "makes/k8s.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -754,7 +754,7 @@
     {
       "name": "ops-k8s-smoke",
       "defined_in": [
-        "make/k8s.mk"
+        "makes/k8s.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -762,7 +762,7 @@
     {
       "name": "ops-k8s-tests",
       "defined_in": [
-        "make/k8s.mk"
+        "makes/k8s.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -770,7 +770,7 @@
     {
       "name": "ops-kind-down",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -778,7 +778,7 @@
     {
       "name": "ops-kind-up",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -786,7 +786,7 @@
     {
       "name": "ops-load",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -794,7 +794,7 @@
     {
       "name": "ops-load-plan",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -802,7 +802,7 @@
     {
       "name": "ops-load-run",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -810,7 +810,7 @@
     {
       "name": "ops-observability",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -818,7 +818,7 @@
     {
       "name": "ops-pins-check",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -826,7 +826,7 @@
     {
       "name": "ops-pins-update",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -834,7 +834,7 @@
     {
       "name": "ops-render",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -842,7 +842,7 @@
     {
       "name": "ops-reset",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -850,7 +850,7 @@
     {
       "name": "ops-stack",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -858,7 +858,7 @@
     {
       "name": "ops-status",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -866,7 +866,7 @@
     {
       "name": "ops-tools-verify",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -874,7 +874,7 @@
     {
       "name": "ops-trace-debug",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -882,7 +882,7 @@
     {
       "name": "ops-traces-check",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -890,7 +890,7 @@
     {
       "name": "ops-up",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -898,7 +898,7 @@
     {
       "name": "ops-validate",
       "defined_in": [
-        "make/ops.mk"
+        "makes/ops.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -906,7 +906,7 @@
     {
       "name": "policies",
       "defined_in": [
-        "make/policies.mk"
+        "makes/policies.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -914,7 +914,7 @@
     {
       "name": "registry-doctor",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -922,7 +922,7 @@
     {
       "name": "release-plan",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -930,7 +930,7 @@
     {
       "name": "release-verify",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -938,7 +938,7 @@
     {
       "name": "root-surface-explain",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -946,7 +946,7 @@
     {
       "name": "stack-down",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -956,7 +956,7 @@
     {
       "name": "stack-up",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -966,7 +966,7 @@
     {
       "name": "suites-list",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -974,7 +974,7 @@
     {
       "name": "test",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -982,7 +982,7 @@
     {
       "name": "test-all",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -990,7 +990,7 @@
     {
       "name": "test-slow",
       "defined_in": [
-        "make/cargo.mk"
+        "makes/cargo.mk"
       ],
       "visibility": "internal",
       "used_in": []
@@ -998,7 +998,7 @@
     {
       "name": "tests-all",
       "defined_in": [
-        "make/root.mk"
+        "makes/root.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -1006,7 +1006,7 @@
     {
       "name": "verification",
       "defined_in": [
-        "make/verification.mk"
+        "makes/verification.mk"
       ],
       "visibility": "internal",
       "used_in": []

@@ -15,7 +15,7 @@ fn workspace_root() -> PathBuf {
 #[test]
 fn test_all_runs_nextest_once_without_retries() {
     let cargo_mk =
-        fs::read_to_string(workspace_root().join("make/cargo.mk")).expect("read make/cargo.mk");
+        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
     let start = cargo_mk
         .find("test-all: ## Run all workspace tests including slow_ and ignored tests")
         .expect("test-all target");
@@ -36,7 +36,7 @@ fn test_all_runs_nextest_once_without_retries() {
 
 #[test]
 fn ci_lane_targets_use_check_run_surface() {
-    let ci_mk = fs::read_to_string(workspace_root().join("make/ci.mk")).expect("read make/ci.mk");
+    let ci_mk = fs::read_to_string(workspace_root().join("makes/ci.mk")).expect("read makes/ci.mk");
     for marker in [
         "ci-fast: ## CI fast lane wrapper",
         "ci-pr: ## CI PR lane wrapper",
@@ -60,7 +60,7 @@ fn ci_lane_targets_use_check_run_surface() {
 #[test]
 fn checks_variant_targets_use_human_check_run_surface() {
     let root_mk =
-        fs::read_to_string(workspace_root().join("make/root.mk")).expect("read make/root.mk");
+        fs::read_to_string(workspace_root().join("makes/root.mk")).expect("read makes/root.mk");
     for marker in [
         "checks-group: ## Run one checks suite group (GROUP=<name>)",
         "checks-tag: ## Run checks suite entries with a shared tag (TAG=<name>)",
@@ -87,20 +87,20 @@ fn checks_variant_targets_use_human_check_run_surface() {
 #[test]
 fn make_target_list_wrapper_uses_target_list_surface() {
     let public_mk =
-        fs::read_to_string(workspace_root().join("make/public.mk")).expect("read make/public.mk");
+        fs::read_to_string(workspace_root().join("makes/public.mk")).expect("read makes/public.mk");
     let start = public_mk
-        .find("make-target-list: ## Regenerate make public target list artifact")
-        .expect("make-target-list target");
+        .find("makes-target-list: ## Regenerate the makes public target list artifact")
+        .expect("makes-target-list target");
     let tail = &public_mk[start..];
     let end = tail.find("\n\n").unwrap_or(tail.len());
     let target_block = &tail[..end];
 
     assert!(
-        target_block.contains("$(DEV_ATLAS) make target-list --allow-write"),
-        "make-target-list should use the dedicated target-list surface"
+        target_block.contains("$(DEV_ATLAS) makes target-list --allow-write"),
+        "makes-target-list should use the dedicated target-list surface"
     );
     assert!(
         !target_block.contains("make surface"),
-        "make-target-list should not reuse the surface report envelope"
+        "makes-target-list should not reuse the surface report envelope"
     );
 }

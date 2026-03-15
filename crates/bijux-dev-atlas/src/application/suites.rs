@@ -496,7 +496,7 @@ fn suite_high_mem_parallelism(root: &Path, suite_id: &str) -> Result<usize, Stri
 }
 
 fn known_commands_local(root: &Path) -> Result<BTreeSet<String>, String> {
-    let inventory: serde_json::Value = read_json_file(&root.join("make/target-list.json"))?;
+    let inventory: serde_json::Value = read_json_file(&root.join("makes/target-list.json"))?;
     let targets = inventory["public_targets"]
         .as_array()
         .into_iter()
@@ -2960,7 +2960,7 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("make/target-list.json"),
+            &dir.path().join("makes/target-list.json"),
             &serde_json::json!({
                 "public_targets": ["fmt"]
             }),

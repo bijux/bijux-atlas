@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{MakeCommand, MakeExplainArgs, MakeVerifyArgs, MakeWrappersCommand};
+use crate::cli::{MakesCommand, MakesExplainArgs, MakesVerifyArgs, MakesWrappersCommand};
 use crate::{emit_payload, resolve_repo_root};
 use std::collections::BTreeMap;
 use std::fs::{self, File};
@@ -10,19 +10,19 @@ use std::process::{Command as ProcessCommand, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
 
-pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
+pub(crate) fn run_makes_command(quiet: bool, command: MakesCommand) -> i32 {
     let run: Result<(String, i32), String> = {
         let started = Instant::now();
         match command {
-            MakeCommand::VerifyModule(args) => run_verify_module(args, started),
-            MakeCommand::Wrappers { command } => match command {
-                MakeWrappersCommand::Verify(common) => run_wrappers_verify(common, started),
+            MakesCommand::VerifyModule(args) => run_verify_module(args, started),
+            MakesCommand::Wrappers { command } => match command {
+                MakesWrappersCommand::Verify(common) => run_wrappers_verify(common, started),
             },
-            MakeCommand::Surface(common) => run_surface(common, started),
-            MakeCommand::List(common) => run_list(common, started),
-            MakeCommand::Explain(args) => run_explain(args, started),
-            MakeCommand::TargetList(common) => run_target_list(common, started),
-            MakeCommand::LintPolicyReport(common) => run_lint_policy_report(common, started),
+            MakesCommand::Surface(common) => run_surface(common, started),
+            MakesCommand::List(common) => run_list(common, started),
+            MakesCommand::Explain(args) => run_explain(args, started),
+            MakesCommand::TargetList(common) => run_target_list(common, started),
+            MakesCommand::LintPolicyReport(common) => run_lint_policy_report(common, started),
         }
     };
     match run {
@@ -33,14 +33,14 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
             code
         }
         Err(err) => {
-            let _ = writeln!(io::stderr(), "bijux-dev-atlas make failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas makes failed: {err}");
             1
         }
     }
 }
 
 fn run_surface(
-    common: crate::cli::MakeCommonArgs,
+    common: crate::cli::MakesCommonArgs,
     _started: Instant,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -49,7 +49,7 @@ fn run_surface(
     let payload = serde_json::json!({
         "schema_version": 1,
         "action": "surface",
-        "source": "make/root.mk:CURATED_TARGETS",
+        "source": "makes/root.mk:CURATED_TARGETS",
         "text": text,
         "public_targets": targets,
     });
@@ -57,14 +57,14 @@ fn run_surface(
     Ok((rendered, 0))
 }
 
-fn run_list(common: crate::cli::MakeCommonArgs, started: Instant) -> Result<(String, i32), String> {
+fn run_list(common: crate::cli::MakesCommonArgs, started: Instant) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
     let text = targets.join("\n");
     let payload = serde_json::json!({
         "schema_version": 1,
         "action": "list",
-        "source": "make/root.mk:CURATED_TARGETS",
+        "source": "makes/root.mk:CURATED_TARGETS",
         "text": text,
         "public_targets": targets,
         "target_count": targets.len(),
@@ -74,7 +74,7 @@ fn run_list(common: crate::cli::MakeCommonArgs, started: Instant) -> Result<(Str
     Ok((rendered, 0))
 }
 
-fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32), String> {
+fn run_explain(args: MakesExplainArgs, started: Instant) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let target = args.target.trim();
     if target.is_empty() {
@@ -101,11 +101,11 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
             "where_to_read": [
                 "docs/06-development/automation-control-plane.md",
                 "docs/07-reference/automation-command-surface.md",
-                "make/README.md",
+                "makes/README.md",
             ],
             "defined_in": metadata.get("defined_in").cloned().unwrap_or_default(),
             "visibility": metadata.get("visibility").cloned().unwrap_or_default(),
-            "source": "make/root.mk:CURATED_TARGETS",
+            "source": "makes/root.mk:CURATED_TARGETS",
             "duration_ms": started.elapsed().as_millis() as u64,
         })
     } else {
@@ -114,14 +114,14 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
             "action": "explain",
             "target": target,
             "known": false,
-            "text": format!("{target} is not part of the curated make surface"),
-            "hint": "Use `bijux dev atlas make list` to inspect supported targets.",
+            "text": format!("{target} is not part of the curated makes surface"),
+            "hint": "Use `bijux dev atlas makes list` to inspect supported targets.",
             "where_to_read": [
                 "docs/06-development/automation-control-plane.md",
                 "docs/07-reference/automation-command-surface.md",
-                "make/README.md",
+                "makes/README.md",
             ],
-            "source": "make/root.mk:CURATED_TARGETS",
+            "source": "makes/root.mk:CURATED_TARGETS",
             "duration_ms": started.elapsed().as_millis() as u64,
         })
     };
@@ -130,20 +130,20 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
 }
 
 fn run_target_list(
-    common: crate::cli::MakeCommonArgs,
+    common: crate::cli::MakesCommonArgs,
     started: Instant,
 ) -> Result<(String, i32), String> {
     if !common.allow_write {
-        return Err("make target-list requires --allow-write".to_string());
+        return Err("makes target-list requires --allow-write".to_string());
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
     let payload = serde_json::json!({
         "schema_version": 1,
-        "source": "make/root.mk:CURATED_TARGETS",
+        "source": "makes/root.mk:CURATED_TARGETS",
         "public_targets": targets,
     });
-    let output_path = repo_root.join("make/target-list.json");
+    let output_path = repo_root.join("makes/target-list.json");
     fs::write(
         &output_path,
         serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())? + "\n",
@@ -162,11 +162,11 @@ fn run_target_list(
 }
 
 fn run_lint_policy_report(
-    common: crate::cli::MakeCommonArgs,
+    common: crate::cli::MakesCommonArgs,
     started: Instant,
 ) -> Result<(String, i32), String> {
     if !common.allow_write {
-        return Err("make lint-policy-report requires --allow-write".to_string());
+        return Err("makes lint-policy-report requires --allow-write".to_string());
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let output_path = repo_root.join("artifacts/lint/effective-clippy-policy.txt");
@@ -212,7 +212,7 @@ fn run_lint_policy_report(
 }
 
 fn run_wrappers_verify(
-    common: crate::cli::MakeCommonArgs,
+    common: crate::cli::MakesCommonArgs,
     started: Instant,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(common.repo_root.clone())?;
@@ -252,20 +252,20 @@ fn run_wrappers_verify(
     Ok((rendered, code))
 }
 
-fn run_verify_module(args: MakeVerifyArgs, started: Instant) -> Result<(String, i32), String> {
+fn run_verify_module(args: MakesVerifyArgs, started: Instant) -> Result<(String, i32), String> {
     if !args.common.allow_subprocess {
-        return Err("make verify-module requires --allow-subprocess".to_string());
+        return Err("makes verify-module requires --allow-subprocess".to_string());
     }
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let module = args.module.trim().to_string();
     if module.is_empty() {
-        return Err("make verify-module requires a module name".to_string());
+        return Err("makes verify-module requires a module name".to_string());
     }
     let makefile = resolve_make_module(&repo_root, &module)?;
     let targets = discover_targets(&makefile)?;
     if targets.is_empty() {
         return Err(format!(
-            "make verify-module found no runnable targets in {}",
+            "makes verify-module found no runnable targets in {}",
             makefile.display()
         ));
     }
@@ -328,13 +328,13 @@ fn resolve_make_module(repo_root: &Path, module: &str) -> Result<PathBuf, String
         return Ok(underscored);
     }
     Err(format!(
-        "make verify-module could not find make/{module}.mk or make/_{module}.mk"
+        "makes verify-module could not find makes/{module}.mk or makes/_{module}.mk"
     ))
 }
 
 fn load_curated_targets(repo_root: &Path) -> Result<Vec<String>, String> {
-    let root_mk = fs::read_to_string(repo_root.join("make/root.mk"))
-        .map_err(|err| format!("read make/root.mk failed: {err}"))?;
+    let root_mk = fs::read_to_string(repo_root.join("makes/root.mk"))
+        .map_err(|err| format!("read makes/root.mk failed: {err}"))?;
     let mut collecting = false;
     let mut targets = Vec::new();
     for line in root_mk.lines() {
@@ -369,7 +369,7 @@ fn load_target_metadata(
     repo_root: &Path,
     target: &str,
 ) -> Result<BTreeMap<String, Vec<String>>, String> {
-    let registry_path = repo_root.join("configs/sources/operations/ops/make-target-registry.json");
+    let registry_path = repo_root.join("configs/sources/operations/ops/makes-targets.json");
     let text = fs::read_to_string(&registry_path)
         .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
     let value: serde_json::Value = serde_json::from_str(&text)
@@ -404,7 +404,7 @@ fn load_target_metadata(
 }
 
 fn load_target_recipe_lines(repo_root: &Path, target: &str) -> Result<Vec<String>, String> {
-    let root_mk = repo_root.join("make/root.mk");
+    let root_mk = repo_root.join("makes/root.mk");
     let text = fs::read_to_string(&root_mk)
         .map_err(|err| format!("read {} failed: {err}", root_mk.display()))?;
     let mut recipes: BTreeMap<String, Vec<String>> = BTreeMap::new();
@@ -608,7 +608,7 @@ fn run_serve_target(
 #[cfg(test)]
 mod tests {
     use super::{run_explain, run_list};
-    use crate::cli::{FormatArg, MakeCommonArgs, MakeExplainArgs};
+    use crate::cli::{FormatArg, MakesCommonArgs, MakesExplainArgs};
     use serde_json::Value;
     use std::fs;
     use std::time::Instant;
@@ -618,15 +618,15 @@ mod tests {
             panic!("create make dir failed: {err}");
         }
         if let Err(err) = fs::write(
-            root.join("make/root.mk"),
+            root.join("makes/root.mk"),
             "CURATED_TARGETS := \\\n\tfmt help test\n",
         ) {
             panic!("write root.mk failed: {err}");
         }
     }
 
-    fn common(repo_root: &std::path::Path) -> MakeCommonArgs {
-        MakeCommonArgs {
+    fn common(repo_root: &std::path::Path) -> MakesCommonArgs {
+        MakesCommonArgs {
             repo_root: Some(repo_root.to_path_buf()),
             format: FormatArg::Json,
             out: None,
@@ -665,7 +665,7 @@ mod tests {
             Err(err) => panic!("tempdir failed: {err}"),
         };
         write_minimal_root_mk(temp.path());
-        let args = MakeExplainArgs {
+        let args = MakesExplainArgs {
             common: common(temp.path()),
             target: "unknown-target".to_string(),
         };
@@ -682,7 +682,7 @@ mod tests {
         assert_eq!(payload["known"], false);
         assert_eq!(
             payload["hint"],
-            "Use `bijux dev atlas make list` to inspect supported targets."
+            "Use `bijux dev atlas makes list` to inspect supported targets."
         );
     }
 
@@ -696,7 +696,7 @@ mod tests {
             panic!("create make dir failed: {err}");
         }
         if let Err(err) = fs::write(
-            temp.path().join("make/root.mk"),
+            temp.path().join("makes/root.mk"),
             "CURATED_TARGETS := \\\n\tfmt _hidden help invalid$name test-all\n",
         ) {
             panic!("write root.mk failed: {err}");

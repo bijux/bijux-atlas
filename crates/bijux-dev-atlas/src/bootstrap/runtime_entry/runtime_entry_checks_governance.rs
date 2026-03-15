@@ -188,8 +188,8 @@ pub(crate) fn run_check_tree_budgets(
     errors.extend(check_owner_coverage(&repo_root.join("configs/OWNERS.md"), "configs")?);
     errors.extend(check_owner_coverage(&repo_root.join("docs/OWNERS.md"), "docs")?);
 
-    let make_help = repo_root.join("make/help.md");
-    let make_targets = repo_root.join("make/target-list.json");
+    let make_help = repo_root.join("makes/help.md");
+    let make_targets = repo_root.join("makes/target-list.json");
     if make_help.exists() && make_targets.exists() {
         let help_text = fs::read_to_string(&make_help)
             .map_err(|e| format!("failed to read {}: {e}", make_help.display()))?;
@@ -207,7 +207,7 @@ pub(crate) fn run_check_tree_budgets(
         {
             if !help_text.contains(&format!("- {target}:")) {
                 errors.push(format!(
-                    "TREE_BUDGET_ERROR: public make target `{target}` missing from make/help.md"
+                    "TREE_BUDGET_ERROR: public make target `{target}` missing from makes/help.md"
                 ));
             }
         }
@@ -217,7 +217,7 @@ pub(crate) fn run_check_tree_budgets(
         "docs/reference/commands.md",
         "docs/reference/schemas.md",
         "docs/reference/configs.md",
-        "docs/reference/make-targets.md",
+        "docs/reference/makes-targets.md",
     ] {
         let path = repo_root.join(rel);
         if !path.exists() {
@@ -451,7 +451,7 @@ pub(crate) fn run_check_repo_doctor(
         .collect::<Vec<_>>();
     docs_indexes.sort();
     let mut make_targets = Vec::<String>::new();
-    let target_list_path = root.join("make/target-list.json");
+    let target_list_path = root.join("makes/target-list.json");
     if target_list_path.exists() {
         let value: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(&target_list_path)

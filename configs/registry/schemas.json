@@ -47,7 +47,7 @@
     "configs/registry/inventory/ops-owners.json": "configs/schemas/registry/configs-ownership.schema.json",
     "configs/registry/inventory/owners.json": "configs/schemas/contracts/inventory-owners.schema.json",
     "configs/sources/repository/layout/*.json": "configs/schemas/contracts/inventory-budgets.schema.json",
-    "configs/sources/repository/make/*.json": "configs/schemas/contracts/inventory-make.schema.json",
+    "configs/sources/repository/makes/*.json": "configs/schemas/contracts/inventory-make.schema.json",
     "configs/sources/repository/meta/*.json": "configs/schemas/registry/meta-ownership.schema.json",
     "configs/generated/openapi/v1/openapi.json": "configs/schemas/registry/openapi-document.schema.json",
     "configs/generated/openapi/v1/openapi.snapshot.json": "configs/schemas/registry/openapi-document.schema.json",

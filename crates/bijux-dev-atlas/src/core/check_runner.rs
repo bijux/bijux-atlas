@@ -365,15 +365,15 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
 }
 
 fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let target = Path::new("make/README.md");
+    let target = Path::new("makes/README.md");
     if ctx.adapters.fs.exists(ctx.repo_root, target) {
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
             code: known_violation_id("make_contract_missing"),
-            message: "missing make/README.md".to_string(),
-            hint: Some("restore the make surface readme".to_string()),
+            message: "missing makes/README.md".to_string(),
+            hint: Some("restore the makes surface readme".to_string()),
             path: Some(known_artifact_path(target.display().to_string())),
             line: None,
             severity: Severity::Error,

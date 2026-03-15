@@ -976,7 +976,7 @@ fn run_ci_verify_gate(
                     "configs/sources/repository/docs/**",
                     "ops/report/docs/**",
                     "ops/docker/**",
-                    "make/**",
+                    "makes/**",
                 ])
                 .output()
                 .map_err(|err| format!("git diff for docs failed: {err}"))?;

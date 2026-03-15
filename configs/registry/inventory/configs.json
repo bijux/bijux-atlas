@@ -322,7 +322,7 @@
       "name": "make",
       "owner": "platform",
       "public_files": [
-        "configs/sources/repository/make/*.json"
+        "configs/sources/repository/makes/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [

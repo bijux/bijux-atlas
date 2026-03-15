@@ -15,12 +15,12 @@ VERIFICATION_ACCEPT_CODES__configs ?= 0 2
 VERIFICATION_ACCEPT_CODES_docs ?= 0 2
 VERIFICATION_ACCEPT_CODES__docs ?= 0 2
 
-verification: ## Run every target declared in make/<module>.mk
+verification: ## Run every target declared in makes/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
 	if [ -z "$$module" ]; then \
 		printf '%s\n' "usage: make verification <module>"; \
 		exit 2; \
 	fi; \
-	$(DEV_ATLAS) make verify-module "$$module" --allow-subprocess --format $(FORMAT)
+	$(DEV_ATLAS) makes verify-module "$$module" --allow-subprocess --format $(FORMAT)
 
 .PHONY: verification

@@ -1239,7 +1239,7 @@ fn validate_command_order(commands: &[String]) -> bool {
 
 fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     let mut commands = BTreeSet::new();
-    let public_targets = read_json_value(&root.join("configs/sources/repository/make/public-targets.json"))?;
+    let public_targets = read_json_value(&root.join("configs/sources/repository/makes/public-targets.json"))?;
     for row in public_targets
         .get("public_targets")
         .and_then(serde_json::Value::as_array)
@@ -1270,12 +1270,12 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     }
 
     for rel in [
-        "make/cargo.mk",
-        "make/root.mk",
-        "make/contracts.mk",
-        "make/configs.mk",
-        "make/docs.mk",
-        "make/k8s.mk",
+        "makes/cargo.mk",
+        "makes/root.mk",
+        "makes/contracts.mk",
+        "makes/configs.mk",
+        "makes/docs.mk",
+        "makes/k8s.mk",
     ] {
         let path = root.join(rel);
         let text = fs::read_to_string(&path)
@@ -1706,7 +1706,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         for command in &check.commands {
             if !resolvable_commands.contains(command) {
                 errors.push(format!(
-                    "{} command `{}` is not resolvable from known make/control-plane inventory",
+                    "{} command `{}` is not resolvable from known makes/control-plane inventory",
                     check.check_id, command
                 ));
             }
@@ -1969,7 +1969,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["runner"]}));
         } else if !resolvable_commands.contains(&contract.runner) {
             errors.push(format!(
-                "{} runner `{}` is not resolvable from known make/control-plane inventory",
+                "{} runner `{}` is not resolvable from known makes/control-plane inventory",
                 contract.contract_id, contract.runner
             ));
         }
