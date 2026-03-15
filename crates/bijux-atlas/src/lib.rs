@@ -39,17 +39,14 @@ pub(crate) use tracing::{error, info, warn, Instrument};
 pub mod api;
 pub mod application;
 pub mod bootstrap;
-mod config;
 pub mod contracts;
 pub mod core;
 pub mod domain;
-pub mod effects;
 pub mod errors;
 pub mod infrastructure;
 pub mod interfaces;
 pub mod model;
 pub mod ports;
-pub mod server;
 pub mod support;
 pub mod types;
 
