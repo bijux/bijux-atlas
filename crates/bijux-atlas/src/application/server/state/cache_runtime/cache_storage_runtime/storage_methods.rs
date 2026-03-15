@@ -2,7 +2,7 @@ use super::*;
 
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
-        let disk_root = crate::application::config::runtime::resolve_runtime_path(
+        let disk_root = crate::runtime::config::resolve_runtime_path(
             cfg.disk_root.clone(),
         );
         let cfg = DatasetCacheConfig { disk_root, ..cfg };

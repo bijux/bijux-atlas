@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
+use std::time::Duration;
+
 use super::*;
+use super::settings::{RegistrySourceSpec, StoreRetryConfig};
 use crate::domain::dataset::DatasetId;
 
 pub(super) fn invalid_format(name: &str, value: String, message: String) -> RuntimeConfigError {

@@ -706,7 +706,7 @@ async fn relative_cache_root_is_anchored_to_the_workspace_artifacts_root() {
 
     assert_eq!(
         mgr.disk_root(),
-        crate::application::config::default_runtime_cache_root().as_path()
+        crate::runtime::config::default_runtime_cache_root().as_path()
     );
     assert!(
         !crate_local_cache_root.exists(),

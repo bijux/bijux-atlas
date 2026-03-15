@@ -3,7 +3,7 @@
 use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 use crate::application::server::cache;
-use crate::application::config::ApiConfig;
+use crate::runtime::config::ApiConfig;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use crate::domain::{
     FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
@@ -66,7 +66,7 @@ pub struct DatasetCacheConfig {
 impl Default for DatasetCacheConfig {
     fn default() -> Self {
         Self {
-            disk_root: crate::application::config::default_runtime_cache_root(),
+            disk_root: crate::runtime::config::default_runtime_cache_root(),
             max_disk_bytes: 4 * 1024 * 1024 * 1024,
             disk_high_watermark_pct: 90,
             disk_low_watermark_pct: 75,

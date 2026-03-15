@@ -1,19 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use crate::domain::dataset::DatasetId;
-
-mod env_parsing;
 
 pub const CONFIG_SCHEMA_VERSION: &str = "1";
 pub use crate::contracts::config::{
     effective_config_payload, effective_runtime_config_payload, runtime_config_contract_snapshot,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
 };
-use env_parsing::{
+use super::env::{
     env_bool, env_dataset_list, env_duration_ms, env_f64, env_list, env_u64, env_usize,
     parse_registry_source_specs, validate_url,
 };
@@ -186,7 +184,7 @@ impl std::fmt::Display for RuntimeConfigError {
 impl std::error::Error for RuntimeConfigError {}
 
 pub fn validate_runtime_env_contract() -> Result<(), RuntimeConfigError> {
-    let raw = include_str!("../../../../../../configs/contracts/env.schema.json");
+    let raw = include_str!("../../../../../configs/contracts/env.schema.json");
     let parsed: serde_json::Value =
         serde_json::from_str(raw).map_err(|e| RuntimeConfigError::InvalidValue {
             message: format!("invalid env contract json: {e}"),
@@ -431,10 +429,10 @@ pub fn validate_startup_config_contract(
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
-struct RuntimeStartupConfigFile {
-    bind_addr: Option<String>,
-    store_root: Option<PathBuf>,
-    cache_root: Option<PathBuf>,
+pub(crate) struct RuntimeStartupConfigFile {
+    pub(crate) bind_addr: Option<String>,
+    pub(crate) store_root: Option<PathBuf>,
+    pub(crate) cache_root: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -501,7 +499,7 @@ pub fn default_runtime_pod_id() -> String {
     std::env::var("HOSTNAME").unwrap_or_else(|_| "unknown-pod".to_string())
 }
 
-fn resolve_runtime_startup_config(
+pub(crate) fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,
     cli_store_root: Option<&Path>,
@@ -1048,6 +1046,3 @@ pub fn load_runtime_config(
             .map_err(|message| RuntimeConfigError::InvalidValue { message })?;
     RuntimeConfig::from_env(startup)
 }
-
-#[cfg(test)]
-mod tests;

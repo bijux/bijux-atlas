@@ -32,7 +32,7 @@ pub fn atlas_http_response_contract_source(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_runtime_config_tests_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("application/config/runtime/tests.rs")
+    atlas_src_root(repo_root).join("runtime/config/tests.rs")
 }
 
 #[must_use]

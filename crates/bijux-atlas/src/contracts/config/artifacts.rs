@@ -2,7 +2,7 @@
 
 use std::path::Path;
 
-use crate::application::config::runtime::{
+use crate::runtime::config::{
     ApiConfig, RuntimeConfig, RuntimeStartupConfig, DEFAULT_BIND_ADDR, DEFAULT_CACHE_ROOT,
     DEFAULT_STORE_ROOT,
 };
