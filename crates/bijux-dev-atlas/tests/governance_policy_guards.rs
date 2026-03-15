@@ -105,26 +105,15 @@ fn crate_roots_do_not_accumulate_local_artifacts_directories() {
 }
 
 #[test]
-fn atlas_application_server_shims_stay_thin() {
+fn atlas_app_server_shims_do_not_reappear() {
     let root = repo_root();
-    for (path, expected) in [
-        (
-            "crates/bijux-atlas/src/app/server/state/router.rs",
-            "pub use crate::adapters::inbound::http::router::*;",
-        ),
-        (
-            "crates/bijux-atlas/src/app/server/state/request_utils.rs",
-            "pub use crate::adapters::inbound::http::request_policies::*;",
-        ),
+    for path in [
+        "crates/bijux-atlas/src/app/server/state/router.rs",
+        "crates/bijux-atlas/src/app/server/state/request_utils.rs",
     ] {
-        let text = fs::read_to_string(root.join(path)).expect("shim source");
         assert!(
-            text.contains(expected),
-            "shim must delegate to the canonical interface owner: {path}"
-        );
-        assert!(
-            text.lines().count() <= 4,
-            "shim must stay minimal and must not regain implementation logic: {path}"
+            !root.join(path).exists(),
+            "removed app-server shim must not reappear: {path}"
         );
     }
 }

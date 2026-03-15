@@ -12,22 +12,22 @@ fn dev_atlas_src_root(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_server_router_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("interfaces/http/router.rs")
+    atlas_src_root(repo_root).join("adapters/inbound/http/router.rs")
 }
 
 #[must_use]
 pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("interfaces/http/request_policies.rs")
+    atlas_src_root(repo_root).join("adapters/inbound/http/request_policies.rs")
 }
 
 #[must_use]
 pub fn atlas_http_handlers_utilities_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("interfaces/http/handlers_utilities.rs")
+    atlas_src_root(repo_root).join("adapters/inbound/http/handlers_utilities.rs")
 }
 
 #[must_use]
 pub fn atlas_http_response_contract_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("interfaces/http/response_contract.rs")
+    atlas_src_root(repo_root).join("adapters/inbound/http/response_contract.rs")
 }
 
 #[must_use]

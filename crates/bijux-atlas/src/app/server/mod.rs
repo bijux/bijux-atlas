@@ -6,7 +6,6 @@ pub(crate) mod state;
 mod dataset_cache_manager_tests;
 
 pub use self::state::{
-    build_router, chrono_like_unix_millis, record_shed_reason, route_sli_class, AppState,
-    DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource,
-    RetryPolicy, S3LikeBackend,
+    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
+    RegistrySource, RetryPolicy, S3LikeBackend,
 };

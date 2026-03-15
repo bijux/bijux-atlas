@@ -2,13 +2,14 @@
 
 use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
+use crate::{chrono_like_unix_millis, route_sli_class};
+use crate::StatusCode;
 use crate::app::server::cache;
 use crate::runtime::config::ApiConfig;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use crate::domain::{
     FailureRecoveryRegistry, MembershipRegistry, ReplicaRegistry, ShardRegistry, sha256_hex,
 };
-use axum::http::StatusCode;
 use bijux_atlas::query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -21,8 +22,6 @@ use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
 pub(crate) mod cache_runtime;
-mod request_utils;
-mod router;
 
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct DatasetCacheConfig {
@@ -364,8 +363,6 @@ impl RequestMetrics {
 
 pub use crate::store::registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 pub use crate::store::registry::federated::{FederatedBackend, RegistrySource};
-pub use self::request_utils::{chrono_like_unix_millis, record_shed_reason, route_sli_class};
-pub use self::router::build_router;
 
 pub(crate) struct DatasetEntry {
     pub(crate) sqlite_path: PathBuf,
