@@ -285,6 +285,46 @@ path = "benches/client/client_sdk.rs"
 harness = false
 
 [[bench]]
+name = "policy_evaluation"
+path = "benches/policy/evaluation.rs"
+harness = false
+
+[[bench]]
+name = "policy_validate"
+path = "benches/policy/validate.rs"
+harness = false
+
+[[bench]]
+name = "query_cache"
+path = "benches/query/cache.rs"
+harness = false
+
+[[bench]]
+name = "query_concurrency"
+path = "benches/query/concurrency.rs"
+harness = false
+
+[[bench]]
+name = "query_patterns"
+path = "benches/query/patterns.rs"
+harness = false
+
+[[bench]]
+name = "query_planner_and_serialization"
+path = "benches/query/planner_and_serialization.rs"
+harness = false
+
+[[bench]]
+name = "query_routing_and_index"
+path = "benches/query/routing_and_index.rs"
+harness = false
+
+[[bench]]
+name = "query_stages"
+path = "benches/query/stages.rs"
+harness = false
+
+[[bench]]
 name = "server_cache_manager"
 path = "benches/server/cache_manager.rs"
 harness = false
