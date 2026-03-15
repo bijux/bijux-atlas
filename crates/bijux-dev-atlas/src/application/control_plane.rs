@@ -52,10 +52,12 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     }
 }
 
-mod control_plane_docker;
-mod control_plane_policies;
-pub(crate) use control_plane_docker::run_docker_command;
-use control_plane_policies::{run_policies_explain, run_policies_list, run_policies_report};
+#[path = "control_plane/docker.rs"]
+mod docker;
+#[path = "control_plane/policies.rs"]
+mod policies;
+pub(crate) use docker::run_docker_command;
+use policies::{run_policies_explain, run_policies_list, run_policies_report};
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
     let payload = serde_json::json!({
         "schema_version": CONTRACT_SCHEMA_VERSION,
