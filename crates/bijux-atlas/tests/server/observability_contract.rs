@@ -197,13 +197,13 @@ async fn metrics_endpoint_matches_metrics_contract() {
     .expect("parse endpoints");
     let server_sources = [
         root.join("crates/bijux-atlas/src/app/router.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/genes.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/handlers.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/diff.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/sequence.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/transcript_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/handlers_endpoints.rs"),
-        root.join("crates/bijux-atlas/src/adapters/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/genes.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/handlers.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/diff.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/sequence.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/transcript_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/handlers_endpoints.rs"),
+        root.join("crates/bijux-atlas/src/interfaces/http/handlers_utilities.rs"),
     ];
     let source_concat = server_sources
         .iter()
@@ -228,7 +228,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     );
 
     let trace_generated = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/telemetry/generated/trace_spans_contract.rs"),
+        root.join("crates/bijux-atlas/src/infrastructure/telemetry/generated/trace_spans_contract.rs"),
     )
     .expect("read generated spans");
     for span in contract.required_spans {

@@ -36,7 +36,6 @@ pub(crate) use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::{error, info, warn, Instrument};
 
-pub mod adapters;
 pub mod api;
 pub mod app;
 #[path = "app/cache/mod.rs"]
@@ -47,22 +46,18 @@ pub mod core;
 pub mod domain;
 pub mod effects;
 pub mod errors;
-#[path = "adapters/http/middleware/mod.rs"]
-mod middleware;
+pub mod infrastructure;
+pub mod interfaces;
 pub mod model;
 pub mod ports;
 pub mod server;
-#[path = "adapters/store/registry/mod.rs"]
+#[path = "interfaces/http/middleware/mod.rs"]
+mod middleware;
+#[path = "infrastructure/store/registry/mod.rs"]
 mod server_store;
 pub mod support;
 pub mod types;
 
-pub use crate::adapters::cli;
-pub use crate::adapters::cli::main_entry;
-pub use crate::adapters::client;
-pub use crate::adapters::http;
-pub use crate::adapters::store;
-pub use crate::adapters::telemetry;
 pub use crate::app::{
     build_router, chrono_like_unix_millis, effective_config_payload,
     effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
@@ -78,6 +73,12 @@ pub use crate::domain::ingest;
 pub use crate::domain::policy as policies;
 pub use crate::domain::query;
 pub use crate::domain::routing::consistent_route_dataset;
+pub use crate::infrastructure::store;
+pub use crate::infrastructure::telemetry;
+pub use crate::interfaces::cli;
+pub use crate::interfaces::cli::main_entry;
+pub use crate::interfaces::client;
+pub use crate::interfaces::http;
 pub use crate::telemetry::generated::metrics_contract::CONTRACT_METRIC_NAMES;
 pub use crate::telemetry::generated::trace_spans_contract::CONTRACT_TRACE_SPAN_NAMES;
 pub use crate::telemetry::logging::{redact_if_needed, LoggingConfig};
