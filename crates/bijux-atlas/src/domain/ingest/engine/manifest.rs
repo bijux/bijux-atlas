@@ -99,7 +99,7 @@ pub fn build_and_write_manifest_and_reports(
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
-    manifest.ingest_build_hash = option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string();
+    manifest.ingest_build_hash = crate::application::config::runtime_build_hash().to_string();
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
     manifest.sharding_plan = sharding_plan;

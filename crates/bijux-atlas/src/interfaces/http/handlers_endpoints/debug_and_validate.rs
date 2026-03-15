@@ -431,9 +431,9 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
         return with_request_id(resp, &request_id);
     }
     let response = Json(json!({
-        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
-        "release_id": std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string()),
-        "governance_version": std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string())
+        "build_hash": crate::application::config::runtime_build_hash(),
+        "release_id": crate::application::config::runtime_release_id(),
+        "governance_version": crate::application::config::runtime_governance_version()
     }))
     .into_response();
     state

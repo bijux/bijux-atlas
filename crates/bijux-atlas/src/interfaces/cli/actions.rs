@@ -86,12 +86,12 @@ pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
 pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
     let payload = if verbose {
         json!({
-            "plugin": {
-                "name": "bijux-atlas",
-                "version": env!("CARGO_PKG_VERSION"),
-                "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
-                "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
-            },
+                "plugin": {
+                    "name": "bijux-atlas",
+                    "version": env!("CARGO_PKG_VERSION"),
+                    "build_hash": crate::application::config::runtime_build_hash(),
+                    "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
+                },
             "schemas": {
                 "plugin_metadata_schema_version": "v1",
                 "openapi_version": "v1"
@@ -112,7 +112,7 @@ fn plugin_metadata_payload() -> Value {
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
         "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
         "compatible_umbrella": ">=0.3.0,<0.4.0",
-        "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+        "build_hash": crate::application::config::runtime_build_hash(),
     })
 }
 

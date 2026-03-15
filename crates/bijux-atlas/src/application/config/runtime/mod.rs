@@ -482,6 +482,27 @@ pub fn default_runtime_policy_mode() -> String {
     std::env::var("ATLAS_POLICY_MODE").unwrap_or_else(|_| "strict".to_string())
 }
 
+#[must_use]
+pub fn runtime_build_hash() -> &'static str {
+    option_env!("BIJUX_BUILD_HASH").unwrap_or("unversioned")
+}
+
+#[must_use]
+pub fn runtime_release_id() -> String {
+    std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "unknown-release".to_string())
+}
+
+#[must_use]
+pub fn runtime_governance_version() -> String {
+    std::env::var("ATLAS_GOVERNANCE_VERSION")
+        .unwrap_or_else(|_| "unknown-governance".to_string())
+}
+
+#[must_use]
+pub fn default_runtime_pod_id() -> String {
+    std::env::var("HOSTNAME").unwrap_or_else(|_| "unknown-pod".to_string())
+}
+
 fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,
@@ -1003,7 +1024,7 @@ impl RuntimeConfig {
             warm_coordination_lock_ttl_secs: env_u64("ATLAS_WARM_COORDINATION_LOCK_TTL_SECS", 300)?,
             warm_coordination_retry_budget: env_usize("ATLAS_WARM_COORDINATION_RETRY_BUDGET", 3)?,
             warm_coordination_retry_base_ms: env_u64("ATLAS_WARM_COORDINATION_RETRY_BASE_MS", 250)?,
-            pod_id: std::env::var("HOSTNAME").unwrap_or_else(|_| "atlas-pod".to_string()),
+            pod_id: default_runtime_pod_id(),
             policy_mode: default_runtime_policy_mode(),
             shutdown_drain_ms: env_u64("ATLAS_SHUTDOWN_DRAIN_MS", 5000)?,
             tcp_keepalive_enabled: env_bool("ATLAS_TCP_KEEPALIVE_ENABLED", true)?,

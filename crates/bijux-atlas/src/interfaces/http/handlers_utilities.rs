@@ -588,7 +588,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
             "name": "bijux-atlas",
             "version": env!("CARGO_PKG_VERSION"),
             "compatible_umbrella": ">=0.3.0,<0.4.0",
-            "build_hash": option_env!("BIJUX_BUILD_HASH").unwrap_or("dev"),
+            "build_hash": crate::application::config::runtime_build_hash(),
         },
         "server": {
             "crate": CRATE_NAME,
@@ -1341,7 +1341,7 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
     {
         info.insert(
             "x-build-id".to_string(),
-            serde_json::Value::String(option_env!("BIJUX_BUILD_HASH").unwrap_or("dev").to_string()),
+            serde_json::Value::String(crate::application::config::runtime_build_hash().to_string()),
         );
     }
     let mut response = Json(spec).into_response();

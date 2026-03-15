@@ -377,11 +377,11 @@ async fn wait_for_shutdown_signal() -> Result<(), String> {
 }
 
 fn observability_release_id() -> String {
-    std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string())
+    bijux_atlas::runtime_release_id()
 }
 
 fn observability_governance_version() -> String {
-    std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string())
+    bijux_atlas::runtime_governance_version()
 }
 
 #[tokio::main]

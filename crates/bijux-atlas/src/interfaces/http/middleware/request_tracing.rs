@@ -41,8 +41,8 @@ pub(crate) async fn request_tracing_middleware(
     }
     info!(
         event_id = "request_handled",
-        release_id = %std::env::var("ATLAS_RELEASE_ID").unwrap_or_else(|_| "dev".to_string()),
-        governance_version = %std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "main@unknown".to_string()),
+        release_id = %crate::application::config::runtime_release_id(),
+        governance_version = %crate::application::config::runtime_governance_version(),
         request_id = %trace.request_id,
         route = %route,
         status = status_code,

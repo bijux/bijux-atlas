@@ -44,7 +44,8 @@ pub mod types;
 pub use crate::contracts::api;
 pub use crate::application::config::{
     effective_config_payload, effective_runtime_config_payload, load_runtime_config,
-    load_runtime_startup_config, runtime_config_contract_snapshot,
+    load_runtime_startup_config, runtime_build_hash, runtime_config_contract_snapshot,
+    runtime_governance_version, runtime_release_id,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
     validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, CatalogMode,
     RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
