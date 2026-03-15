@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "map": {
-    "elite": "baseline",
-    "refgrade": "required",
-    "reference-grade": "contract",
-    "production-grade": "policy-compliant"
-  }
-}

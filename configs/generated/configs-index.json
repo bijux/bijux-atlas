@@ -222,10 +222,10 @@
     },
     {
       "counts": {
-        "covered": 34,
+        "covered": 33,
         "generated": 0,
         "internal": 0,
-        "public": 34,
+        "public": 33,
         "schemas": 1
       },
       "files": [
@@ -234,7 +234,6 @@
         "configs/sources/governance/governance/check-policy-authority-map.json",
         "configs/sources/governance/governance/checks-output.schema.json",
         "configs/sources/governance/governance/checks.registry.json",
-        "configs/sources/governance/governance/cli-command-migrations.json",
         "configs/sources/governance/governance/cli-dev-command-surface.json",
         "configs/sources/governance/governance/cli-user-command-surface.json",
         "configs/sources/governance/governance/compatibility.yaml",
@@ -367,15 +366,14 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
         "internal": 0,
-        "public": 3,
+        "public": 2,
         "schemas": 1
       },
       "files": [
         "configs/sources/repository/make/public-targets.json",
-        "configs/sources/repository/make/retired-makefiles.json",
         "configs/sources/repository/make/targets.json"
       ],
       "name": "make",
@@ -486,10 +484,10 @@
     },
     {
       "counts": {
-        "covered": 51,
+        "covered": 50,
         "generated": 0,
         "internal": 0,
-        "public": 51,
+        "public": 50,
         "schemas": 3
       },
       "files": [
@@ -497,7 +495,6 @@
         "configs/sources/operations/ops/artifacts-allowlist.txt",
         "configs/sources/operations/ops/budgets.json",
         "configs/sources/operations/ops/cache-budget-thresholds.v1.json",
-        "configs/sources/operations/ops/cargo-invocation-legacy.txt",
         "configs/sources/operations/ops/command-artifact-retention.json",
         "configs/sources/operations/ops/command-capabilities.json",
         "configs/sources/operations/ops/config-sources.json",
@@ -596,10 +593,10 @@
     },
     {
       "counts": {
-        "covered": 31,
+        "covered": 29,
         "generated": 0,
         "internal": 0,
-        "public": 31,
+        "public": 29,
         "schemas": 2
       },
       "files": [
@@ -614,14 +611,12 @@
         "configs/sources/governance/policy/bypass-removal-milestones.json",
         "configs/sources/governance/policy/bypass-types.json",
         "configs/sources/governance/policy/check-filename-allowlist.json",
-        "configs/sources/governance/policy/check-id-migration.json",
         "configs/sources/governance/policy/check-registry-exceptions.json",
         "configs/sources/governance/policy/check_speed_approvals.json",
         "configs/sources/governance/policy/config-key-renames.json",
         "configs/sources/governance/policy/dependency-exceptions.json",
         "configs/sources/governance/policy/forbidden-adjectives-allowlist.txt",
         "configs/sources/governance/policy/forbidden-adjectives-approvals.json",
-        "configs/sources/governance/policy/forbidden-adjectives-migration-map.json",
         "configs/sources/governance/policy/layer-live-diff-allowlist.json",
         "configs/sources/governance/policy/ops-image-digest-policy.json",
         "configs/sources/governance/policy/ops-lint-relaxations.json",

@@ -5,6 +5,6 @@ This directory groups authored inputs that define repository rules, enforcement 
 Current domains:
 - `audit/` for audit bundle inputs and templates.
 - `governance/` for compatibility policy, suites, check registries, and enforcement rules.
-- `policy/` for exceptions, relaxations, and transition maps that refine governance behavior.
+- `policy/` for exceptions, relaxations, and enforcement refinements that govern repository behavior.
 
 These files express rule intent and policy decisions. Ownership and consumer metadata stay in `configs/registry/`.
