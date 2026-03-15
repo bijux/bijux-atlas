@@ -42,7 +42,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",
@@ -81,7 +81,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",
@@ -122,7 +122,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "cache",
@@ -165,7 +165,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "cache",
@@ -207,7 +207,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "client_type",
@@ -249,7 +249,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -292,7 +292,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -335,7 +335,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -373,7 +373,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -412,7 +412,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -451,7 +451,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -493,7 +493,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -535,7 +535,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",
@@ -576,7 +576,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "backend",
@@ -619,7 +619,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "backend",
@@ -663,7 +663,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -701,7 +701,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -739,7 +739,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -777,7 +777,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -815,7 +815,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -853,7 +853,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "code",
@@ -892,7 +892,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -930,7 +930,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -971,7 +971,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1010,7 +1010,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",
@@ -1054,7 +1054,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1093,7 +1093,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1131,7 +1131,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1169,7 +1169,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1208,7 +1208,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1246,7 +1246,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1284,7 +1284,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1324,7 +1324,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1361,7 +1361,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1401,7 +1401,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1439,7 +1439,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "backend",
@@ -1480,7 +1480,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "dataset",
@@ -1518,7 +1518,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",
@@ -1563,7 +1563,7 @@
       ],
       "owner": {
         "crate": "bijux-atlas",
-        "module": "src/infrastructure/telemetry/metrics_endpoint.rs"
+        "module": "src/adapters/outbound/telemetry/metrics_endpoint.rs"
       },
       "required_labels": [
         "class",

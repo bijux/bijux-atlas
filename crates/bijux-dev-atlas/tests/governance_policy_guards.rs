@@ -214,19 +214,12 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 }
 
 #[test]
-fn atlas_legacy_root_modules_stay_compatibility_only() {
+fn atlas_removed_legacy_root_modules_do_not_reappear() {
     let root = repo_root();
-    for path in [
-        "crates/bijux-atlas/src/bootstrap/mod.rs",
-    ] {
-        let text = fs::read_to_string(root.join(path)).expect("legacy root surface");
+    for path in ["crates/bijux-atlas/src/bootstrap/mod.rs"] {
         assert!(
-            text.contains("Compatibility surface"),
-            "legacy root must declare its compatibility-only role: {path}"
-        );
-        assert!(
-            text.lines().count() <= 10,
-            "legacy root entrypoint must stay minimal: {path}"
+            !root.join(path).exists(),
+            "removed legacy root must not reappear: {path}"
         );
     }
 }
