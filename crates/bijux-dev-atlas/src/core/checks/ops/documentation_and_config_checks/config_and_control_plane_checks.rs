@@ -227,24 +227,63 @@ pub(super) fn check_scripting_contract_rust_control_plane_lock(
 pub(super) fn check_docs_ops_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/bijux-dev-atlas-docs/internal/ops-command-list.md");
+    let rel = Path::new("docs/_internal/generated/ops-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
         "ops",
+        "logs",
+        "describe",
+        "events",
+        "resources",
+        "kind",
+        "helm",
+        "list",
+        "explain",
+        "stack",
+        "k8s",
+        "profiles",
+        "profile",
+        "load",
+        "datasets",
+        "e2e",
+        "scenario",
+        "obs",
+        "schema",
+        "inventory-domain",
+        "report-domain",
+        "evidence",
+        "diagnose",
+        "drills",
+        "tools",
+        "suite",
         "doctor",
         "validate",
+        "graph",
+        "inventory",
+        "docs",
+        "docs-verify",
+        "conformance",
+        "report",
+        "helm-env",
+        "readiness",
         "render",
         "install",
+        "smoke",
         "status",
         "list-profiles",
         "explain-profile",
         "list-tools",
         "verify-tools",
         "list-actions",
+        "plan",
+        "package",
+        "release-plan",
+        "install-plan",
         "up",
         "down",
         "clean",
+        "cleanup",
         "reset",
         "pins",
         "generate",
@@ -256,7 +295,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_OPS_COMMAND_LIST_MISMATCH",
             "ops command list doc does not match canonical ops help snapshot".to_string(),
-            "update bijux-dev-atlas-docs/internal/ops-command-list.md to match ops --help command list",
+            "update docs/_internal/generated/ops-command-list.md to match ops --help command list",
             Some(rel),
         )])
     }
@@ -265,14 +304,20 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
 pub(super) fn check_docs_configs_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/bijux-dev-atlas-docs/internal/configs-command-list.md");
+    let rel = Path::new("docs/_internal/generated/configs-command-list.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
         "configs",
+        "print",
+        "list",
+        "graph",
+        "explain",
+        "verify",
         "doctor",
         "validate",
         "lint",
+        "fmt",
         "inventory",
         "compile",
         "diff",
@@ -284,7 +329,7 @@ pub(super) fn check_docs_configs_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
             "configs command list doc does not match canonical configs help snapshot".to_string(),
-            "update bijux-dev-atlas-docs/internal/configs-command-list.md to match configs --help command list",
+            "update docs/_internal/generated/configs-command-list.md to match configs --help command list",
             Some(rel),
         )])
     }

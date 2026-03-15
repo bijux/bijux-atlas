@@ -1,0 +1,13 @@
+configs
+print
+list
+graph
+explain
+verify
+doctor
+validate
+lint
+fmt
+inventory
+compile
+diff

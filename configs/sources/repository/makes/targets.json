@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": {
-    "ownership": "configs/sources/repository/makes/ownership.json",
+    "ownership": "configs/sources/repository/meta/owners.json",
     "ssot": "configs/sources/repository/makes/public-targets.json"
   },
   "targets": [

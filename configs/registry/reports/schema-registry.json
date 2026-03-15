@@ -6,44 +6,8 @@
       "schema_path": "configs/schemas/contracts/reports/breaking-changes.schema.json"
     },
     {
-      "report_id": "check-clippy",
-      "schema_path": "configs/schemas/contracts/report-checks/check-clippy.schema.json"
-    },
-    {
-      "report_id": "check-config-format",
-      "schema_path": "configs/schemas/contracts/report-checks/check-config-format.schema.json"
-    },
-    {
-      "report_id": "check-deps",
-      "schema_path": "configs/schemas/contracts/report-checks/check-deps.schema.json"
-    },
-    {
-      "report_id": "check-docs-links",
-      "schema_path": "configs/schemas/contracts/report-checks/check-docs-links.schema.json"
-    },
-    {
-      "report_id": "check-helm-lint",
-      "schema_path": "configs/schemas/contracts/report-checks/check-helm-lint.schema.json"
-    },
-    {
-      "report_id": "check-kubeconform",
-      "schema_path": "configs/schemas/contracts/report-checks/check-kubeconform.schema.json"
-    },
-    {
-      "report_id": "check-rustfmt",
-      "schema_path": "configs/schemas/contracts/report-checks/check-rustfmt.schema.json"
-    },
-    {
-      "report_id": "check-suite-summary",
-      "schema_path": "configs/schemas/contracts/report-checks/check-suite-summary.schema.json"
-    },
-    {
       "report_id": "closure-index",
       "schema_path": "configs/schemas/contracts/reports/closure-index.schema.json"
-    },
-    {
-      "report_id": "docs-build-closure-summary",
-      "schema_path": "configs/schemas/contracts/reports/closure-summary.schema.json"
     },
     {
       "report_id": "compat-warnings",
@@ -52,6 +16,10 @@
     {
       "report_id": "deprecations-summary",
       "schema_path": "configs/schemas/contracts/reports/deprecations-summary.schema.json"
+    },
+    {
+      "report_id": "docs-build-closure-summary",
+      "schema_path": "configs/schemas/contracts/reports/closure-summary.schema.json"
     },
     {
       "report_id": "docs-site-output",

@@ -5,31 +5,31 @@
       "report_id": "closure-index",
       "owner": "docs-governance",
       "schema_path": "configs/schemas/contracts/reports/closure-index.schema.json",
-      "docs_path": "docs/reference/reports/index.md"
+      "docs_path": "docs/07-reference/automation-reports-reference.md"
     },
     {
       "report_id": "docs-build-closure-summary",
       "owner": "docs-governance",
       "schema_path": "configs/schemas/contracts/reports/closure-summary.schema.json",
-      "docs_path": "docs/reference/reports/index.md"
+      "docs_path": "docs/07-reference/automation-reports-reference.md"
     },
     {
       "report_id": "docs-site-output",
       "owner": "docs-governance",
       "schema_path": "configs/schemas/contracts/reports/docs-site-output.schema.json",
-      "docs_path": "docs/reference/reports/index.md"
+      "docs_path": "docs/07-reference/automation-reports-reference.md"
     },
     {
       "report_id": "helm-env",
       "owner": "ops-governance",
       "schema_path": "configs/schemas/contracts/reports/helm-env.schema.json",
-      "docs_path": "docs/reference/reports/index.md"
+      "docs_path": "docs/07-reference/automation-reports-reference.md"
     },
     {
       "report_id": "ops-profiles",
       "owner": "ops-governance",
       "schema_path": "configs/schemas/contracts/reports/ops-profiles.schema.json",
-      "docs_path": "docs/reference/reports/index.md"
+      "docs_path": "docs/07-reference/automation-reports-reference.md"
     }
   ]
 }

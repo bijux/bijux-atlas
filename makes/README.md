@@ -1,6 +1,6 @@
-# Make
+# Makes
 
-`make` is the minimal wrapper surface for common repository automation.
+`makes` is the governed repository surface around GNU Make wrapper entrypoints.
 
 ## Scope
 

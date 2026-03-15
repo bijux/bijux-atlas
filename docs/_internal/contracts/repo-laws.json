@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "laws": [
+    {
+      "id": "repo_artifacts_stay_ephemeral",
+      "severity": "high",
+      "owner": "team:atlas-governance",
+      "statement": "Tracked source excludes runtime artifacts outside governed examples."
+    },
+    {
+      "id": "repo_control_plane_stays_rust_owned",
+      "severity": "high",
+      "owner": "team:atlas-governance",
+      "statement": "Repository automation orchestration lives in Rust control-plane surfaces."
+    },
+    {
+      "id": "repo_docs_and_configs_are_navigable",
+      "severity": "medium",
+      "owner": "team:atlas-governance",
+      "statement": "Docs and configs stay discoverable through index and ownership contracts."
+    },
+    {
+      "id": "repo_legacy_script_roots_stay_absent",
+      "severity": "medium",
+      "owner": "team:atlas-governance",
+      "statement": "Retired script and tool roots stay absent so the control plane remains authoritative."
+    },
+    {
+      "id": "repo_makes_entrypoint_stays_include_only",
+      "severity": "high",
+      "owner": "team:atlas-governance",
+      "statement": "The root Makefile stays a thin include entrypoint over the governed makes surface."
+    },
+    {
+      "id": "repo_root_layout_stays_allowlisted",
+      "severity": "high",
+      "owner": "team:atlas-governance",
+      "statement": "Root directories and root markdown files stay within the approved repository surface."
+    }
+  ]
+}
