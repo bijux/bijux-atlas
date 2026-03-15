@@ -1,4 +1,3 @@
-use criterion as _;
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::client::{AtlasClient, ClientConfig, DatasetQuery, ErrorClass};

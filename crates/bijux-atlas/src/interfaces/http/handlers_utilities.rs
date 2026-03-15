@@ -1355,7 +1355,7 @@ pub(crate) async fn live_handler(State(state): State<AppState>) -> impl IntoResp
     with_request_id(resp, &request_id)
 }
 
-fn readyz_catalog_ready(
+pub(crate) fn readyz_catalog_ready(
     readiness_requires_catalog: bool,
     cached_only_mode: bool,
     catalog_present: bool,

@@ -6,7 +6,7 @@ use std::path::PathBuf;
 fn api_module_dependency_guardrails() {
     let api_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/contracts/api");
     let mut sources = Vec::new();
-    for entry in std::fs::read_dir(&api_root).expect("read src/api") {
+    for entry in std::fs::read_dir(&api_root).expect("read src/contracts/api") {
         let entry = entry.expect("api source entry");
         let path = entry.path();
         if path.extension().and_then(std::ffi::OsStr::to_str) == Some("rs") {

@@ -1,5 +1,4 @@
 use bijux_atlas::client::AtlasClient;
-use criterion as _;
 // SPDX-License-Identifier: Apache-2.0
 
 use reqwest as _;
