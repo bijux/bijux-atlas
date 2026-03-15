@@ -54,8 +54,6 @@ pub mod effects;
 pub mod errors;
 #[path = "core/generated/mod.rs"]
 mod generated;
-#[path = "server/http/mod.rs"]
-mod http;
 pub mod ingest;
 #[path = "server/middleware/mod.rs"]
 mod middleware;
@@ -76,6 +74,7 @@ pub mod support;
 pub mod types;
 
 pub use crate::adapters::client;
+pub use crate::adapters::http;
 pub use crate::adapters::store;
 pub use crate::adapters::telemetry;
 pub use crate::app::{
