@@ -4,6 +4,8 @@
 use bijux_atlas::{core as bijux_atlas_core, model as bijux_atlas_model};
 
 use super::*;
+use crate::application::server::state::{dataset_index_path, local_cache_paths};
+use crate::server::FakeStore;
 use tempfile::tempdir;
 
 fn fixture_sqlite() -> Vec<u8> {

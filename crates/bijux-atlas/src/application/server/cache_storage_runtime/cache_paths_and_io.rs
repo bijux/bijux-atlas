@@ -1,16 +1,16 @@
 #[derive(Debug, Clone)]
-struct LocalCachePaths {
-    cache_root: PathBuf,
-    inputs_dir: PathBuf,
-    derived_dir: PathBuf,
-    fasta: PathBuf,
-    fai: PathBuf,
-    sqlite: PathBuf,
-    manifest: PathBuf,
-    release_gene_index: PathBuf,
+pub(crate) struct LocalCachePaths {
+    pub(crate) cache_root: PathBuf,
+    pub(crate) inputs_dir: PathBuf,
+    pub(crate) derived_dir: PathBuf,
+    pub(crate) fasta: PathBuf,
+    pub(crate) fai: PathBuf,
+    pub(crate) sqlite: PathBuf,
+    pub(crate) manifest: PathBuf,
+    pub(crate) release_gene_index: PathBuf,
 }
 
-fn local_cache_paths(root: &Path, cache_key: &str) -> LocalCachePaths {
+pub(crate) fn local_cache_paths(root: &Path, cache_key: &str) -> LocalCachePaths {
     let cache_root = root.join(cache_key);
     let inputs_dir = cache_root.join("inputs");
     let derived_dir = cache_root.join("derived");
@@ -37,7 +37,7 @@ fn manifest_cache_key(manifest: &ArtifactManifest) -> String {
     }
 }
 
-fn dataset_index_path(root: &Path, dataset: &DatasetId) -> PathBuf {
+pub(crate) fn dataset_index_path(root: &Path, dataset: &DatasetId) -> PathBuf {
     root.join(".dataset-index")
         .join(format!("{}.key", dataset.key_string()))
 }

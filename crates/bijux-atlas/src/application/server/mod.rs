@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub(crate) mod cache;
-mod state;
+pub(crate) mod state;
 
 pub use self::state::{
     build_router, chrono_like_unix_millis, effective_config_payload,

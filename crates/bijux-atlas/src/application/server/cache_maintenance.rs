@@ -38,7 +38,7 @@ impl DatasetCacheManager {
         }
     }
 
-    async fn reverify_cached_datasets(&self) -> Result<(), CacheError> {
+    pub(crate) async fn reverify_cached_datasets(&self) -> Result<(), CacheError> {
         let datasets: Vec<DatasetId> = {
             let entries = self.entries.lock().await;
             entries.keys().cloned().collect()

@@ -561,7 +561,7 @@ impl DatasetCacheManager {
         Ok(false)
     }
 
-    async fn evict_background(&self) -> Result<(), CacheError> {
+    pub(crate) async fn evict_background(&self) -> Result<(), CacheError> {
         let disk_io_started = Instant::now();
         let now = Instant::now();
         let mut entries = self.entries.lock().await;
@@ -671,7 +671,7 @@ impl DatasetCacheManager {
         Ok(paths.derived_dir)
     }
 
-    async fn resolve_cache_paths(
+    pub(crate) async fn resolve_cache_paths(
         &self,
         dataset: &DatasetId,
     ) -> Result<LocalCachePaths, CacheError> {

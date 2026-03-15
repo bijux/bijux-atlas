@@ -65,6 +65,7 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
 mod tests {
     use super::*;
     use axum::http::{HeaderMap, HeaderValue};
+    use crate::server::FakeStore;
 
     #[test]
     fn extracts_request_trace_fields() {
@@ -75,7 +76,7 @@ mod tests {
 
         let state = crate::AppState::new(crate::DatasetCacheManager::new(
             crate::DatasetCacheConfig::default(),
-            std::sync::Arc::new(crate::FakeStore::default()),
+            std::sync::Arc::new(FakeStore::default()),
         ));
         let trace = extract_request_trace(&headers, &state);
         assert_eq!(trace.request_id, "req-abc");
@@ -97,7 +98,7 @@ mod tests {
 
         let state = crate::AppState::new(crate::DatasetCacheManager::new(
             crate::DatasetCacheConfig::default(),
-            std::sync::Arc::new(crate::FakeStore::default()),
+            std::sync::Arc::new(FakeStore::default()),
         ));
         let started = std::time::Instant::now();
         for _ in 0..10_000 {
