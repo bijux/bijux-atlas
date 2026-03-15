@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
   "governance_version": 3,
-  "compatibility_policy": "configs/governance/compatibility.yaml",
+  "compatibility_policy": "configs/sources/governance/governance/compatibility.yaml",
   "contract_evolution_policy": {
     "authority": "docs/_internal/governance/compatibility-and-deprecation-process.md",
     "compatibility_mode": "backward-compatible-with-announced-deprecations"
   },
   "components": {
-    "policies_registry": "configs/governance/governance.json",
-    "contracts_registry": "configs/governance/contracts.registry.json",
-    "checks_registry": "configs/governance/checks.registry.json",
-    "exceptions_registry": "configs/governance/exceptions.yaml"
+    "policies_registry": "configs/sources/governance/governance/governance.json",
+    "contracts_registry": "configs/sources/governance/governance/contracts.registry.json",
+    "checks_registry": "configs/sources/governance/governance/checks.registry.json",
+    "exceptions_registry": "configs/sources/governance/governance/exceptions.yaml"
   },
   "policy_authority_mappings": {
-    "checks": "configs/governance/check-policy-authority-map.json",
-    "contracts": "configs/governance/contract-policy-authority-map.json"
+    "checks": "configs/sources/governance/governance/check-policy-authority-map.json",
+    "contracts": "configs/sources/governance/governance/contract-policy-authority-map.json"
   },
   "policies": [
     {

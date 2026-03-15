@@ -79,7 +79,7 @@
   },
   "policy": {
     "allow_pin_bypass": false,
-    "relaxation_registry": "configs/policy/pin-relaxations.json"
+    "relaxation_registry": "configs/sources/governance/policy/pin-relaxations.json"
   },
   "schema_version": 1,
   "tools": {

@@ -24,7 +24,7 @@
     },
     {
       "topic": "global_governance_enforcement",
-      "policy": "configs/governance/governance.json",
+      "policy": "configs/sources/governance/governance/governance.json",
       "applies_to": ["*"]
     }
   ]

@@ -15,124 +15,124 @@
     },
     {
       "kind": "json",
-      "path": "configs/policy/budget-relaxations.json",
+      "path": "configs/sources/governance/policy/budget-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {
       "kind": "json",
-      "path": "configs/policy/check-filename-allowlist.json",
+      "path": "configs/sources/governance/policy/check-filename-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "json",
-      "path": "configs/policy/dead-modules-allowlist.json",
+      "path": "configs/sources/governance/policy/dead-modules-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "retired"
     },
     {
       "kind": "json",
-      "path": "configs/policy/dependency-exceptions.json",
+      "path": "configs/sources/governance/policy/dependency-exceptions.json",
       "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "tools"
     },
     {
       "kind": "json",
-      "path": "configs/policy/effect-boundary-exceptions.json",
+      "path": "configs/sources/governance/policy/effect-boundary-exceptions.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "effects"
     },
     {
       "kind": "txt",
-      "path": "configs/policy/forbidden-adjectives-allowlist.txt",
+      "path": "configs/sources/governance/policy/forbidden-adjectives-allowlist.txt",
       "requires_metadata": false,
       "type": "naming"
     },
     {
       "kind": "json",
-      "path": "configs/policy/json-dumps-determinism-allowlist.json",
+      "path": "configs/sources/governance/policy/json-dumps-determinism-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "json",
-      "path": "configs/policy/layer-live-diff-allowlist.json",
+      "path": "configs/sources/governance/policy/layer-live-diff-allowlist.json",
       "requires_metadata": false,
       "schema": "configs/schemas/registry/layer-live-diff-allowlist.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "json",
-      "path": "configs/policy/layer-relaxations.json",
+      "path": "configs/sources/governance/policy/layer-relaxations.json",
       "requires_metadata": true,
       "schema": "configs/schemas/registry/layer-relaxations.schema.json",
       "type": "layer"
     },
     {
       "kind": "json",
-      "path": "configs/policy/ops-lint-relaxations.json",
+      "path": "configs/sources/governance/policy/ops-lint-relaxations.json",
       "requires_metadata": true,
       "schema": "configs/schemas/registry/ops-lint-relaxations.schema.json",
       "type": "ops"
     },
     {
       "kind": "json",
-      "path": "configs/policy/ops-smoke-budget-relaxations.json",
+      "path": "configs/sources/governance/policy/ops-smoke-budget-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {
       "kind": "json",
-      "path": "configs/policy/pin-relaxations.json",
+      "path": "configs/sources/governance/policy/pin-relaxations.json",
       "requires_metadata": true,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "tools"
     },
     {
       "kind": "json",
-      "path": "configs/policy/policy-relaxations.json",
+      "path": "configs/sources/governance/policy/policy-relaxations.json",
       "requires_metadata": true,
       "schema": "configs/schemas/registry/policy-relaxations.schema.json",
       "type": "policy"
     },
     {
       "kind": "json",
-      "path": "configs/policy/runtime-access-retired-allowlist.json",
+      "path": "configs/sources/governance/policy/runtime-access-retired-allowlist.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "allowlist"
     },
     {
       "kind": "txt",
-      "path": "configs/policy/shell-location-allowlist.txt",
+      "path": "configs/sources/governance/policy/shell-location-allowlist.txt",
       "requires_metadata": false,
       "type": "tools"
     },
     {
       "kind": "txt",
-      "path": "configs/policy/shell-network-fetch-allowlist.txt",
+      "path": "configs/sources/governance/policy/shell-network-fetch-allowlist.txt",
       "requires_metadata": false,
       "type": "tools"
     },
     {
       "kind": "txt",
-      "path": "configs/policy/shell-probes-allowlist.txt",
+      "path": "configs/sources/governance/policy/shell-probes-allowlist.txt",
       "requires_metadata": false,
       "type": "tools"
     },
     {
       "kind": "json",
-      "path": "configs/policy/slow-checks-ratchet.json",
+      "path": "configs/sources/governance/policy/slow-checks-ratchet.json",
       "requires_metadata": false,
-      "schema": "configs/policy/bypass.schema.json",
+      "schema": "configs/sources/governance/policy/bypass.schema.json",
       "type": "budget"
     },
     {

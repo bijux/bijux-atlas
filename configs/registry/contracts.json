@@ -240,8 +240,8 @@
       "severity": "should",
       "title": "no hidden network-fetch allowlists without explicit policy contract",
       "touched_paths": [
-        "configs/policy/*.txt",
-        "configs/policy/*.json"
+        "configs/sources/governance/policy/*.txt",
+        "configs/sources/governance/policy/*.json"
       ]
     },
     {

@@ -10,7 +10,7 @@
 /ops/run/ @bijan
 
 # Policy and CI boundary governance
-/configs/policy/ @bijan
+/configs/sources/governance/policy/ @bijan
 /ops/_lint/ @bijan
 /.github/workflows/ @bijan
 /crates/ @bijan

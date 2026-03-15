@@ -16,7 +16,7 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/audit/*.json": [
+    "configs/sources/governance/audit/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -96,23 +96,23 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/governance/*.json": [
+    "configs/sources/governance/governance/*.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/governance/*.txt": [
+    "configs/sources/governance/governance/*.txt": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/governance/*.yaml": [
+    "configs/sources/governance/governance/*.yaml": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/governance/enforcement/*.json": [
+    "configs/sources/governance/governance/enforcement/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/governance/suites/*.json": [
+    "configs/sources/governance/governance/suites/*.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
@@ -191,15 +191,15 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/policy/*.json": [
+    "configs/sources/governance/policy/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/policy/*.txt": [
+    "configs/sources/governance/policy/*.txt": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/policy/*.yml": [
+    "configs/sources/governance/policy/*.yml": [
       "bijux-dev-atlas",
       "ci"
     ],

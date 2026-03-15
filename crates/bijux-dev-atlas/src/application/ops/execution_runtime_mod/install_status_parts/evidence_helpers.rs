@@ -539,10 +539,10 @@ pub(super) fn load_required_metric_names(repo_root: &std::path::Path) -> Result<
 
 pub(super) fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let paths = [
-        "configs/governance/exceptions.yaml",
-        "configs/governance/exceptions-archive.yaml",
-        "configs/governance/compatibility.yaml",
-        "configs/governance/deprecations.yaml",
+        "configs/sources/governance/governance/exceptions.yaml",
+        "configs/sources/governance/governance/exceptions-archive.yaml",
+        "configs/sources/governance/governance/compatibility.yaml",
+        "configs/sources/governance/governance/deprecations.yaml",
         "configs/schemas/contracts/governance/exceptions.schema.json",
         "configs/schemas/contracts/governance/exceptions-archive.schema.json",
         "configs/schemas/contracts/governance/compatibility.schema.json",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "configs/governance/enforcement/rules.schema.json",
+  "$id": "configs/sources/governance/governance/enforcement/rules.schema.json",
   "title": "Atlas governance enforcement rules",
   "type": "object",
   "required": ["schema_version", "registry_id", "rules"],

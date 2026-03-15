@@ -5,8 +5,8 @@
   "inputs": {
     "generator": "bijux-dev-atlas governance exceptions validate",
     "sources": [
-      "configs/governance/exceptions.yaml",
-      "configs/governance/exceptions-archive.yaml"
+      "configs/sources/governance/governance/exceptions.yaml",
+      "configs/sources/governance/governance/exceptions-archive.yaml"
     ]
   },
   "type": "object",

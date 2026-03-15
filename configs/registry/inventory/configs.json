@@ -20,11 +20,11 @@
       "name": "audit",
       "owner": "atlas-governance",
       "public_files": [
-        "configs/audit/*.json"
+        "configs/sources/governance/audit/*.json"
       ],
       "schema_owner": "atlas-governance",
       "schemas": [
-        "configs/audit/audit-bundle.schema.json"
+        "configs/sources/governance/audit/audit-bundle.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -158,11 +158,11 @@
       "name": "governance",
       "owner": "atlas-governance",
       "public_files": [
-        "configs/governance/*.json",
-        "configs/governance/*.txt",
-        "configs/governance/*.yaml",
-        "configs/governance/enforcement/*.json",
-        "configs/governance/suites/*.json"
+        "configs/sources/governance/governance/*.json",
+        "configs/sources/governance/governance/*.txt",
+        "configs/sources/governance/governance/*.yaml",
+        "configs/sources/governance/governance/enforcement/*.json",
+        "configs/sources/governance/governance/suites/*.json"
       ],
       "schema_owner": "atlas-governance",
       "schemas": [
@@ -358,13 +358,13 @@
       "name": "policy",
       "owner": "platform",
       "public_files": [
-        "configs/policy/*.json",
-        "configs/policy/*.yml",
-        "configs/policy/*.txt"
+        "configs/sources/governance/policy/*.json",
+        "configs/sources/governance/policy/*.yml",
+        "configs/sources/governance/policy/*.txt"
       ],
       "schema_owner": "platform",
       "schemas": [
-        "configs/policy/policy.schema.json",
+        "configs/sources/governance/policy/policy.schema.json",
         "configs/schemas/registry/policy-relaxations.schema.json"
       ],
       "stability": "stable",
