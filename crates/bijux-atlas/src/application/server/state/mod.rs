@@ -453,7 +453,7 @@ pub use self::router::build_router;
 #[async_trait]
 pub trait DatasetStoreBackend: Send + Sync + 'static {
     fn backend_tag(&self) -> &'static str {
-        "unknown"
+        "custom"
     }
 
     async fn fetch_catalog(&self, if_none_match: Option<&str>) -> Result<CatalogFetch, CacheError>;

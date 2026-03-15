@@ -149,7 +149,7 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
             percentile_ns(&vals, 0.95) as f64
         ));
     }
-    for backend in ["http_s3", "local_fs", "federated", "unknown"] {
+    for backend in ["http_s3", "local_fs", "federated", "custom"] {
         body.push_str(&format!(
             "bijux_store_fetch_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",backend=\"{}\"}} {:.6}\n",
             METRIC_SUBSYSTEM,

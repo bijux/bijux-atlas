@@ -754,24 +754,28 @@ pub(super) async fn provenance_headers_middleware(
             .ok()
             .map(|m| m.dataset_signature_sha256);
         (
-            sha256_hex(ds.canonical_string().as_bytes()),
-            ds.release.to_string(),
+            Some(sha256_hex(ds.canonical_string().as_bytes())),
+            Some(ds.release.to_string()),
             artifact_hash,
         )
     } else {
-        ("unknown".to_string(), "unknown".to_string(), None)
+        (None, None, None)
     };
 
-    if let Ok(v) = HeaderValue::from_str(&dataset_hash) {
-        resp.headers_mut().insert("x-atlas-dataset-hash", v);
+    if let Some(dataset_hash) = dataset_hash {
+        if let Ok(v) = HeaderValue::from_str(&dataset_hash) {
+            resp.headers_mut().insert("x-atlas-dataset-hash", v);
+        }
     }
     if let Some(artifact_hash) = artifact_hash {
         if let Ok(v) = HeaderValue::from_str(&artifact_hash) {
             resp.headers_mut().insert("x-atlas-artifact-hash", v);
         }
     }
-    if let Ok(v) = HeaderValue::from_str(&release) {
-        resp.headers_mut().insert("x-atlas-release", v);
+    if let Some(release) = release {
+        if let Ok(v) = HeaderValue::from_str(&release) {
+            resp.headers_mut().insert("x-atlas-release", v);
+        }
     }
     resp
 }
@@ -1262,7 +1266,8 @@ pub(super) async fn security_middleware(
         auth_mode = state.api.auth_mode.as_str(),
         mechanism = auth_context.mechanism,
         subject = auth_context.subject.as_str(),
-        issuer = auth_context.issuer.as_deref().unwrap_or("unknown"),
+        issuer = auth_context.issuer.as_deref().unwrap_or_default(),
+        issuer_present = auth_context.issuer.is_some(),
         scope_count = auth_context.scopes.len(),
         route = route,
         "authentication context established"
@@ -1307,8 +1312,7 @@ pub(super) async fn security_middleware(
     let path = req.uri().path().to_string();
     let request_id =
         normalized_header_value(req.headers(), "x-request-id", 128).unwrap_or_default();
-    let client_ip =
-        normalized_forwarded_for(req.headers()).unwrap_or_else(|| "unknown".to_string());
+    let client_ip = normalized_forwarded_for(req.headers());
     let resp = next.run(req).await;
     if state.api.audit.enabled {
         let event_name = if route_is_admin_endpoint(&path) {
@@ -1318,6 +1322,15 @@ pub(super) async fn security_middleware(
         };
         let status_text = resp.status().as_u16().to_string();
         let latency_ms = started.elapsed().as_millis().to_string();
+        let mut audit_fields = vec![
+            ("method", method.as_str()),
+            ("status", status_text.as_str()),
+            ("request_id", request_id.as_str()),
+            ("latency_ms", latency_ms.as_str()),
+        ];
+        if let Some(client_ip) = client_ip.as_deref() {
+            audit_fields.push(("client_ip", client_ip));
+        }
         emit_audit_event(
             &state.api.audit,
             event_name,
@@ -1325,13 +1338,7 @@ pub(super) async fn security_middleware(
             route_action_id(&path),
             route_resource_kind(&path),
             &path,
-            &[
-                ("method", method.as_str()),
-                ("status", status_text.as_str()),
-                ("request_id", request_id.as_str()),
-                ("client_ip", client_ip.as_str()),
-                ("latency_ms", latency_ms.as_str()),
-            ],
+            &audit_fields,
         );
     }
     resp

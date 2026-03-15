@@ -294,12 +294,12 @@ pub fn extract_request_identity(headers: &BTreeMap<String, String>) -> RequestId
                 .and_then(|value| value.split(',').next())
                 .map(str::trim)
                 .filter(|value| !value.is_empty())
-                .unwrap_or("unknown-client");
+                .unwrap_or_default();
             let user_agent = headers
                 .get("user-agent")
                 .map(String::as_str)
                 .filter(|value| !value.trim().is_empty())
-                .unwrap_or("unknown-agent");
+                .unwrap_or_default();
             let fingerprint = sha256_hex(format!("{client_ip}\n{user_agent}").as_bytes());
             format!("req-{}", &fingerprint[..16])
         });
@@ -309,11 +309,11 @@ pub fn extract_request_identity(headers: &BTreeMap<String, String>) -> RequestId
         .map(str::trim)
         .filter(|value| !value.is_empty())
         .map(ToString::to_string)
-        .unwrap_or_else(|| "unknown".to_string());
+        .unwrap_or_default();
     let user_agent = headers
         .get("user-agent")
         .cloned()
-        .unwrap_or_else(|| "unknown".to_string());
+        .unwrap_or_default();
     RequestIdentity {
         request_id,
         client_ip,
@@ -459,5 +459,16 @@ mod tests {
         assert_eq!(first.request_id, second.request_id);
         assert_eq!(first.client_ip, "203.0.113.9");
         assert_eq!(first.user_agent, "atlas-client/2.0");
+    }
+
+    #[test]
+    fn request_identity_keeps_missing_client_fields_empty() {
+        let headers = BTreeMap::new();
+
+        let identity = extract_request_identity(&headers);
+
+        assert!(identity.request_id.starts_with("req-"));
+        assert!(identity.client_ip.is_empty());
+        assert!(identity.user_agent.is_empty());
     }
 }

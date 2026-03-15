@@ -295,7 +295,7 @@ bijux_store_error_other_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}} 
         .iter()
         .map(|((backend, class), count)| (backend.clone(), class.clone(), *count))
         .collect::<Vec<_>>();
-    for backend in ["http_s3", "local_fs", "federated", "unknown"] {
+    for backend in ["http_s3", "local_fs", "federated", "custom"] {
         for class in ["cheap", "standard", "heavy"] {
             if !store_error_by
                 .iter()

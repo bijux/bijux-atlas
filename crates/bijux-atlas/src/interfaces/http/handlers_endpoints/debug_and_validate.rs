@@ -402,7 +402,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
         "version": env!("CARGO_PKG_VERSION"),
         "os": std::env::consts::OS,
         "arch": std::env::consts::ARCH,
-        "hostname": std::env::var("HOSTNAME").unwrap_or_else(|_| "unknown".to_string())
+        "hostname": crate::application::config::default_runtime_pod_id()
     }))
     .into_response();
     state
