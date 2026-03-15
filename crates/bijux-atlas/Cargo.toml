@@ -97,6 +97,38 @@ path = "src/bin/bijux-atlas-policies.rs"
 name = "bijux-atlas-store"
 path = "src/bin/bijux-atlas-store.rs"
 
+[[test]]
+name = "compatibility_core"
+path = "tests/compatibility/core.rs"
+
+[[test]]
+name = "compatibility_model"
+path = "tests/compatibility/model.rs"
+
+[[test]]
+name = "contracts_api"
+path = "tests/contracts/api.rs"
+
+[[test]]
+name = "infrastructure_store"
+path = "tests/infrastructure/store.rs"
+
+[[test]]
+name = "interfaces_client"
+path = "tests/interfaces/client.rs"
+
+[[test]]
+name = "interfaces_server"
+path = "tests/interfaces/server.rs"
+
+[[test]]
+name = "workflows_end_to_end"
+path = "tests/workflows/end_to_end.rs"
+
+[[test]]
+name = "workflows_ingest"
+path = "tests/workflows/ingest.rs"
+
 [[bench]]
 name = "domain_canonical_json"
 path = "benches/domain/canonical_json.rs"
