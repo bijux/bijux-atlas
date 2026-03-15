@@ -42,16 +42,19 @@ pub mod ports;
 pub mod types;
 
 pub use crate::contracts::api;
-pub use crate::application::{
-    build_router, chrono_like_unix_millis, effective_config_payload,
-    effective_runtime_config_payload, load_runtime_config, load_runtime_startup_config,
-    record_shed_reason, route_sli_class, runtime_config_contract_snapshot,
+pub use crate::application::config::{
+    effective_config_payload, effective_runtime_config_payload, load_runtime_config,
+    load_runtime_startup_config, runtime_config_contract_snapshot,
     runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
-    validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, AppState,
-    CacheError, CatalogFetch, CatalogMode, DatasetCacheConfig, DatasetCacheManager,
-    DatasetStoreBackend, FederatedBackend, LocalFsBackend, RateLimitConfig, RegistrySource,
-    RegistrySourceHealth, RetryPolicy, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig,
-    S3LikeBackend, StoreConfig, StoreMode,
+    validate_runtime_env_contract, validate_startup_config_contract, ApiConfig, CatalogMode,
+    RateLimitConfig, RuntimeConfig, RuntimeConfigError, RuntimeStartupConfig, StoreConfig,
+    StoreMode,
+};
+pub use crate::application::server::{
+    build_router, chrono_like_unix_millis, record_shed_reason, route_sli_class, AppState,
+    CacheError, CatalogFetch, DatasetCacheConfig, DatasetCacheManager, DatasetStoreBackend,
+    FederatedBackend, LocalFsBackend, RegistrySource, RegistrySourceHealth, RetryPolicy,
+    S3LikeBackend,
 };
 pub use crate::bootstrap::server::FakeStore;
 pub use crate::domain::ingest;

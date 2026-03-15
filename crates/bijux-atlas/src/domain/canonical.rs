@@ -5,8 +5,8 @@ use base64::Engine;
 use sha2::{Digest, Sha256};
 
 #[cfg(feature = "serde")]
-use crate::errors::Error;
-use crate::errors::Result;
+use crate::contracts::errors::Error;
+use crate::contracts::errors::Result;
 
 #[cfg(feature = "serde")]
 use serde::Serialize;

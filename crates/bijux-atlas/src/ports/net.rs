@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::errors::Result;
+use crate::contracts::errors::Result;
 
 pub trait NetPort {
     fn get_bytes(&self, url: &str) -> Result<Vec<u8>>;

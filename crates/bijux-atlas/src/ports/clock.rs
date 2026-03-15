@@ -2,7 +2,7 @@
 
 use std::time::{Duration, SystemTime};
 
-use crate::errors::Result;
+use crate::contracts::errors::Result;
 
 pub trait ClockPort {
     fn now(&self) -> Result<SystemTime>;

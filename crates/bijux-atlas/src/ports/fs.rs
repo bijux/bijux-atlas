@@ -2,7 +2,7 @@
 
 use std::path::Path;
 
-use crate::errors::Result;
+use crate::contracts::errors::Result;
 
 pub trait FsPort {
     fn read_to_string(&self, path: &Path) -> Result<String>;

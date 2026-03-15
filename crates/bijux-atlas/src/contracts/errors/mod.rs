@@ -1,3 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use crate::errors::{Error, ErrorCode, ErrorContext, ExitCode, MachineError, ERROR_CODES};
+pub use crate::errors::{
+    ConfigPathScope, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result, ERROR_CODES,
+};

@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use crate::errors::ConfigPathScope;
+use crate::contracts::errors::ConfigPathScope;
 
 #[must_use]
 pub fn resolve_bijux_cache_dir() -> PathBuf {

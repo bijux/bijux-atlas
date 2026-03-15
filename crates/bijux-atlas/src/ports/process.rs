@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use crate::errors::Result;
+use crate::contracts::errors::Result;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProcessResult {

@@ -119,7 +119,7 @@ fn plugin_metadata_payload() -> Value {
 pub(super) fn enforce_umbrella_compatibility(version: &str) -> Result<(), CliError> {
     if !version_in_supported_range(version) {
         return Err(CliError {
-            exit_code: crate::errors::ExitCode::Usage,
+            exit_code: crate::contracts::errors::ExitCode::Usage,
             machine: MachineError::new(
                 "umbrella_incompatible",
                 "umbrella version is outside plugin compatibility range",
