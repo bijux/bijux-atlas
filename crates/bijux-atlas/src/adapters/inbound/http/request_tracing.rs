@@ -65,7 +65,7 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
 mod tests {
     use super::*;
     use axum::http::{HeaderMap, HeaderValue};
-    use crate::adapters::outbound::store::registry::fake::FakeStore;
+    use crate::adapters::outbound::store::testing::FakeStore;
 
     #[test]
     fn extracts_request_trace_fields() {

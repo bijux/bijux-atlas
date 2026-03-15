@@ -9,6 +9,7 @@ mod catalog;
 mod manifest;
 mod paths;
 pub mod registry;
+pub mod testing;
 mod retry;
 
 #[cfg(feature = "backend-s3")]
@@ -17,6 +18,8 @@ pub use backends::local::LocalFsStore;
 #[cfg(feature = "backend-s3")]
 pub use backends::s3::S3LikeStore;
 pub use backend_capabilities::{validate_backend_compiled, BackendKind};
+pub use registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
+pub use registry::federated::{FederatedBackend, RegistrySource};
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
 };
@@ -31,6 +34,6 @@ pub use paths::{
     dataset_sqlite_key, manifest_lock_path, publish_lock_path, CATALOG_FILE, MANIFEST_FILE,
     MANIFEST_LOCK_FILE, SQLITE_FILE,
 };
-pub use retry::{BackoffPolicy, RetryPolicy};
+pub use retry::BackoffPolicy;
 
 pub const CRATE_NAME: &str = "bijux-atlas";

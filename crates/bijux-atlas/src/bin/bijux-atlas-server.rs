@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::adapters::inbound::http::router::build_router;
+use bijux_atlas::adapters::outbound::store::{
+    FederatedBackend, LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
+};
 use bijux_atlas::adapters::outbound::telemetry::logging::LoggingConfig;
 use bijux_atlas::adapters::outbound::telemetry::tracing::{
     TraceConfig, TraceExporterKind, init_tracing,
 };
 use bijux_atlas::app::ports::DatasetStoreBackend;
-use bijux_atlas::app::server::{
-    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
-    RegistrySource, RetryPolicy, S3LikeBackend,
-};
+use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::DatasetId;
 use bijux_atlas::runtime::config::{

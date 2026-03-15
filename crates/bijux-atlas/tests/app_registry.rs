@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use async_trait::async_trait;
+use bijux_atlas::adapters::outbound::store::{FederatedBackend, RegistrySource};
 use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
-use bijux_atlas::app::server::{
-    DatasetCacheConfig, DatasetCacheManager, FederatedBackend, RegistrySource,
-};
+use bijux_atlas::app::server::{DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::app::cache::CacheError;
 use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{

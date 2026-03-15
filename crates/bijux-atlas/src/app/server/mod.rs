@@ -5,7 +5,4 @@ pub(crate) mod state;
 #[cfg(test)]
 mod dataset_cache_manager_tests;
 
-pub use self::state::{
-    AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend, LocalFsBackend,
-    RegistrySource, RetryPolicy, S3LikeBackend,
-};
+pub use self::state::{AppState, DatasetCacheConfig, DatasetCacheManager};

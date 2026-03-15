@@ -11,11 +11,16 @@ use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::runtime::config::ApiConfig;
 use crate::domain::cluster::config::load_cluster_config_from_path;
-use crate::domain::{
-    canonical, ConsistencyGuarantee, ConsistencyLevel, FailureDetectionPolicy,
-    FailureRecoveryRegistry, MembershipPolicy, MembershipRegistry, RecoveryPolicy,
-    ReplicaRegistry, ReplicationPolicy, ResilienceGuarantees, ShardRegistry, sha256_hex,
+use crate::domain::canonical;
+use crate::domain::cluster::membership::{MembershipPolicy, MembershipRegistry};
+use crate::domain::cluster::replication::{
+    ConsistencyGuarantee, ConsistencyLevel, ReplicaRegistry, ReplicationPolicy,
 };
+use crate::domain::cluster::resilience::{
+    FailureDetectionPolicy, FailureRecoveryRegistry, RecoveryPolicy, ResilienceGuarantees,
+};
+use crate::domain::cluster::sharding::ShardRegistry;
+use crate::domain::sha256_hex;
 use crate::adapters::inbound::http;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
@@ -358,7 +363,7 @@ pub fn build_router(state: AppState) -> Router {
 #[cfg(test)]
 mod bulkhead_tests {
     use super::*;
-    use crate::adapters::outbound::store::registry::fake::FakeStore;
+    use crate::adapters::outbound::store::testing::FakeStore;
     use crate::app::server::state::DatasetCacheConfig;
 
     #[tokio::test]
