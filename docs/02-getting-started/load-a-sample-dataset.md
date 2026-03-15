@@ -11,6 +11,8 @@ last_reviewed: 2026-03-15
 
 This guide builds a small local dataset from the committed `tiny` fixtures so you have real Atlas artifacts to validate and serve.
 
+The point of this guide is not just to make files appear on disk. The point is to walk through the intended data path: ingest, validate, verify, publish, and promote.
+
 ## Sample Input Set
 
 ```mermaid
@@ -39,6 +41,8 @@ cargo run -p bijux-atlas --bin bijux-atlas -- ingest \
   --assembly GRCh38
 ```
 
+Those identity flags matter. If you change them, later validation, publication, and query steps must use the same values.
+
 ## Why This Input Set
 
 The `tiny` fixture is small enough for a fast first run but still exercises the main ingest contract:
@@ -47,6 +51,8 @@ The `tiny` fixture is small enough for a fast first run but still exercises the 
 - FASTA sequence input
 - FAI index input
 - release, species, and assembly identity
+
+This fixture is intentionally tiny. It is useful for learning the workflow shape, not for proving realistic throughput, storage pressure, or operational behavior.
 
 ## Validate the Built Dataset Root
 
@@ -68,6 +74,8 @@ cargo run -p bijux-atlas --bin bijux-atlas -- dataset verify \
   --assembly GRCh38 \
   --deep
 ```
+
+Use `validate` first and `verify --deep` second. If `validate` already fails, jumping straight to deeper checks usually adds noise rather than clarity.
 
 ```mermaid
 flowchart TD
@@ -96,6 +104,8 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
   --assembly GRCh38
 ```
 
+Do not treat publication and promotion as optional ceremony. They are the boundary between “I built something” and “the runtime can discover and serve it in the intended way.”
+
 ## What You Should See
 
 - a build root under `artifacts/getting-started/tiny-build`
@@ -119,3 +129,4 @@ flowchart LR
 - confirm `artifacts/getting-started/tiny-build` and `artifacts/getting-started/tiny-store` are writable
 - re-run with `--verbose` or `--trace` for more detail
 - use the `tiny` fixture first before trying the `realistic` fixture
+- fix the first failing boundary before continuing; do not skip from ingest failure straight to server startup

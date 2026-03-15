@@ -30,6 +30,8 @@ Focus on build and workspace issues first:
 - confirm the workspace compiles
 - re-run the exact command with `--verbose` or `--trace`
 
+Do not debug dataset paths or server flags before the binary can even start. That usually wastes time in the wrong layer.
+
 ## If Fixture Paths Cannot Be Found
 
 Check that these exist:
@@ -59,6 +61,8 @@ Common causes:
 - mismatched flags for release, species, or assembly
 - trying to skip the FAI or other required inputs
 
+The right recovery pattern is to fix one concrete input problem and rerun the same ingest command. Do not change multiple identity flags and paths at once unless you enjoy losing the root cause.
+
 ## If Dataset Validation Fails
 
 The usual causes are:
@@ -68,6 +72,8 @@ The usual causes are:
 - release identity flags do not match the built output
 
 Always validate the same root you passed as `--output-root` during ingest.
+
+If validation fails, do not move on to publish or startup. That only spreads uncertainty into later layers.
 
 ## If the Server Fails Even Though Ingest Succeeded
 
@@ -118,6 +124,8 @@ Check:
 - `curl -s http://127.0.0.1:8080/v1/version`
 - `curl -s http://127.0.0.1:8080/v1/datasets`
 - your query parameters for release, species, and assembly
+
+This is the classic point where people confuse “the server is up” with “the expected dataset is published and discoverable.” Atlas keeps those as separate questions on purpose.
 
 ## Fast Diagnosis Order
 
