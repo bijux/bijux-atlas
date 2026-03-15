@@ -30,7 +30,7 @@
       "actions": [
         "e2e.run"
       ],
-      "dev_atlas_suite": "ops-nightly",
+      "dev_atlas_suite": "ci-nightly",
       "evidence_area": "e2e",
       "markers": [
         "ops",
@@ -89,7 +89,7 @@
         "load.run",
         "load.compare"
       ],
-      "dev_atlas_suite": "ops-nightly",
+      "dev_atlas_suite": "ci-nightly",
       "evidence_area": "load-suite",
       "markers": [
         "ops",

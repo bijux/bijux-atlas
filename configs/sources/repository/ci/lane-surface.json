@@ -52,7 +52,7 @@
         {
           "id": "ci-nightly",
           "kind": "command",
-          "command": "make ops-nightly"
+          "command": "make ci-nightly"
         }
       ],
       "reports": [

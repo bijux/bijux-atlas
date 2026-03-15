@@ -2,14 +2,6 @@
   "schema_version": 1,
   "targets": [
     {
-      "name": "_contracts_guard",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
       "name": "_internal-explain",
       "defined_in": [
         "make/root.mk"
@@ -50,22 +42,12 @@
       "used_in": []
     },
     {
-      "name": "artifacts-clean",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
       "name": "audit",
       "defined_in": [
         "make/cargo.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/ci-pr.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "build",
@@ -124,6 +106,38 @@
       "used_in": []
     },
     {
+      "name": "checks-effect",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "checks-group",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "checks-pure",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "checks-tag",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
       "name": "ci",
       "defined_in": [
         "make/ci.mk"
@@ -137,9 +151,7 @@
         "make/ci.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/dependency-lock.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ci-docs",
@@ -154,25 +166,17 @@
       "defined_in": [
         "make/ci.mk"
       ],
-      "visibility": "internal",
+      "visibility": "public",
       "used_in": [
         ".github/workflows/ci-pr.yml"
       ]
-    },
-    {
-      "name": "ci-help",
-      "defined_in": [
-        "make/ci.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
     },
     {
       "name": "ci-nightly",
       "defined_in": [
         "make/ci.mk"
       ],
-      "visibility": "internal",
+      "visibility": "public",
       "used_in": [
         ".github/workflows/ci-nightly.yml"
       ]
@@ -182,7 +186,7 @@
       "defined_in": [
         "make/ci.mk"
       ],
-      "visibility": "internal",
+      "visibility": "public",
       "used_in": [
         ".github/workflows/ci-pr.yml"
       ]
@@ -213,14 +217,6 @@
     },
     {
       "name": "configs",
-      "defined_in": [
-        "make/configs.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "configs-check",
       "defined_in": [
         "make/configs.mk"
       ],
@@ -260,15 +256,114 @@
       "used_in": []
     },
     {
-      "name": "docker",
+      "name": "contract",
       "defined_in": [
-        "make/docker.mk"
+        "make/contracts.mk"
       ],
-      "visibility": "public",
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contract-all",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contract-effect",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-configs-required",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-docs-required",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-group",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-help",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-make-required",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-merge",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
       "used_in": [
-        ".github/workflows/docker-gate.yml",
         ".github/workflows/ci-pr.yml"
       ]
+    },
+    {
+      "name": "contracts-pr",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-pure",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-release",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": [
+        ".github/workflows/release-candidate.yml"
+      ]
+    },
+    {
+      "name": "contracts-tag",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
     },
     {
       "name": "coverage",
@@ -280,14 +375,6 @@
     },
     {
       "name": "dev-check-ci",
-      "defined_in": [
-        "make/dev.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "dev-ci",
       "defined_in": [
         "make/dev.mk"
       ],
@@ -308,9 +395,7 @@
         "make/build.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/release-candidate.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "dist-verify",
@@ -321,16 +406,24 @@
       "used_in": []
     },
     {
+      "name": "docker",
+      "defined_in": [
+        "make/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-nightly.yml",
+        ".github/workflows/ci-pr.yml",
+        ".github/workflows/docker-gate.yml"
+      ]
+    },
+    {
       "name": "docs",
       "defined_in": [
         "make/docs.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/compatibility-matrix.yml",
-        ".github/workflows/docs-audit.yml",
-        ".github/workflows/docs-only.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "docs-build",
@@ -365,14 +458,6 @@
       "used_in": []
     },
     {
-      "name": "docs-lock",
-      "defined_in": [
-        "make/docs.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
       "name": "docs-reference-check",
       "defined_in": [
         "make/docs.mk"
@@ -382,22 +467,6 @@
     },
     {
       "name": "docs-reference-regenerate",
-      "defined_in": [
-        "make/docs.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docs-registry",
-      "defined_in": [
-        "make/docs.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docs-registry-validate",
       "defined_in": [
         "make/docs.mk"
       ],
@@ -426,7 +495,12 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ci-nightly.yml",
+        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ops-integration-kind.yml",
+        ".github/workflows/ops-validate.yml"
+      ]
     },
     {
       "name": "fmt",
@@ -442,15 +516,11 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "help-contract",
-      "defined_in": [
-        "make/public.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ci-nightly.yml",
+        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ops-validate.yml"
+      ]
     },
     {
       "name": "install-local",
@@ -466,7 +536,9 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ops-validate.yml"
+      ]
     },
     {
       "name": "k8s-validate",
@@ -474,7 +546,10 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ops-integration-kind.yml",
+        ".github/workflows/ops-validate.yml"
+      ]
     },
     {
       "name": "kind-down",
@@ -549,55 +624,7 @@
       "used_in": []
     },
     {
-      "name": "make-ci-surface-check",
-      "defined_in": [
-        "make/checks.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
       "name": "make-contract-check",
-      "defined_in": [
-        "make/checks.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "make-fast",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "make-include-cycle-check",
-      "defined_in": [
-        "make/checks.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "make-public-surface-sync-check",
-      "defined_in": [
-        "make/checks.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "make-size-budget-check",
-      "defined_in": [
-        "make/checks.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "make-target-governance-check",
       "defined_in": [
         "make/checks.mk"
       ],
@@ -609,8 +636,12 @@
       "defined_in": [
         "make/public.mk"
       ],
-      "visibility": "public",
-      "used_in": []
+      "visibility": "internal",
+      "used_in": [
+        ".github/workflows/ci-nightly.yml",
+        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ops-validate.yml"
+      ]
     },
     {
       "name": "openapi-generate",
@@ -650,7 +681,9 @@
         "make/ops.mk"
       ],
       "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
     },
     {
       "name": "ops-contracts-effect",
@@ -687,14 +720,6 @@
       "used_in": []
     },
     {
-      "name": "ops-fast",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
       "name": "ops-help",
       "defined_in": [
         "make/ops.mk"
@@ -716,9 +741,7 @@
         "make/ops.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/ops-integration-kind.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ops-k8s-contracts",
@@ -730,22 +753,6 @@
     },
     {
       "name": "ops-k8s-smoke",
-      "defined_in": [
-        "make/k8s.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "ops-k8s-suite",
-      "defined_in": [
-        "make/k8s.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "ops-k8s-template-tests",
       "defined_in": [
         "make/k8s.mk"
       ],
@@ -766,9 +773,7 @@
         "make/ops.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/ops-integration-kind.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ops-kind-up",
@@ -776,9 +781,7 @@
         "make/ops.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/ops-integration-kind.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ops-load",
@@ -805,14 +808,6 @@
       "used_in": []
     },
     {
-      "name": "ops-nightly",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
       "name": "ops-observability",
       "defined_in": [
         "make/ops.mk"
@@ -834,14 +829,6 @@
         "make/ops.mk"
       ],
       "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "ops-pr",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
       "used_in": []
     },
     {
@@ -885,6 +872,22 @@
       "used_in": []
     },
     {
+      "name": "ops-trace-debug",
+      "defined_in": [
+        "make/ops.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "ops-traces-check",
+      "defined_in": [
+        "make/ops.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
       "name": "ops-up",
       "defined_in": [
         "make/ops.mk"
@@ -898,9 +901,7 @@
         "make/ops.mk"
       ],
       "visibility": "internal",
-      "used_in": [
-        ".github/workflows/ops-validate.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "policies",
@@ -948,7 +949,9 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ops-integration-kind.yml"
+      ]
     },
     {
       "name": "stack-up",
@@ -956,15 +959,9 @@
         "make/root.mk"
       ],
       "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "suites-all",
-      "defined_in": [
-        "make/root.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
+      "used_in": [
+        ".github/workflows/ops-integration-kind.yml"
+      ]
     },
     {
       "name": "suites-list",

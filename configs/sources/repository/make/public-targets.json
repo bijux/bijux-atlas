@@ -1,24 +1,41 @@
 {
-  "max_public_targets": 70,
-  "target_public_targets": 70,
+  "max_public_targets": 26,
+  "target_public_targets": 26,
   "public_targets": [
     {
-      "name": "artifacts-clean",
-      "description": "Clean ephemeral artifacts through the control plane",
+      "name": "build",
+      "description": "Build required binaries into artifacts/dist/bin",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "build"
     },
     {
-      "name": "build",
-      "description": "Run workspace build lane",
+      "name": "ci-fast",
+      "description": "CI fast lane wrapper",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "ci"
+    },
+    {
+      "name": "ci-nightly",
+      "description": "CI nightly lane (includes slow checks)",
+      "lanes": [
+        "ci"
+      ],
+      "area": "ci"
+    },
+    {
+      "name": "ci-pr",
+      "description": "CI PR lane wrapper",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ci"
     },
     {
       "name": "clean",
@@ -31,7 +48,7 @@
     },
     {
       "name": "docker",
-      "description": "Run docker validate lane",
+      "description": "Run canonical docker validation through dev-atlas",
       "lanes": [
         "dev",
         "ci"
@@ -40,16 +57,16 @@
     },
     {
       "name": "doctor",
-      "description": "Run control-plane doctor gate",
+      "description": "Run Rust control-plane doctor suite as JSON",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "governance"
     },
     {
       "name": "help",
-      "description": "Show bounded public target surface",
+      "description": "Show curated make targets owned by Rust control-plane wrappers",
       "lanes": [
         "dev",
         "ci"
@@ -58,7 +75,7 @@
     },
     {
       "name": "k8s-render",
-      "description": "Render manifests via control plane",
+      "description": "Render Kubernetes manifests through dev-atlas",
       "lanes": [
         "dev",
         "ci"
@@ -67,7 +84,7 @@
     },
     {
       "name": "k8s-validate",
-      "description": "Validate manifests via control plane",
+      "description": "Validate Kubernetes manifests through dev-atlas",
       "lanes": [
         "dev",
         "ci"
@@ -76,7 +93,7 @@
     },
     {
       "name": "kind-down",
-      "description": "Delete kind simulation cluster",
+      "description": "Delete the deterministic kind simulation cluster",
       "lanes": [
         "dev",
         "ci"
@@ -85,7 +102,7 @@
     },
     {
       "name": "kind-reset",
-      "description": "Recreate kind simulation cluster",
+      "description": "Recreate the deterministic kind simulation cluster",
       "lanes": [
         "dev",
         "ci"
@@ -94,7 +111,7 @@
     },
     {
       "name": "kind-status",
-      "description": "Report kind simulation cluster status",
+      "description": "Report kind simulation cluster node readiness",
       "lanes": [
         "dev",
         "ci"
@@ -103,7 +120,7 @@
     },
     {
       "name": "kind-up",
-      "description": "Create kind simulation cluster",
+      "description": "Create or verify the deterministic kind simulation cluster",
       "lanes": [
         "dev",
         "ci"
@@ -112,25 +129,7 @@
     },
     {
       "name": "lint-make",
-      "description": "Run make contracts through the control plane",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "make"
-    },
-    {
-      "name": "make-fast",
-      "description": "Run fastest make-focused contract lane",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "make"
-    },
-    {
-      "name": "make-target-list",
-      "description": "Generate make target inventory artifact",
+      "description": "Run the governed make-required check suite",
       "lanes": [
         "dev",
         "ci"
@@ -144,11 +143,11 @@
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "api"
     },
     {
       "name": "ops-contracts",
-      "description": "Run static ops contracts",
+      "description": "Run static ops contracts via dev-atlas suite runner",
       "lanes": [
         "dev",
         "ci"
@@ -157,33 +156,7 @@
     },
     {
       "name": "ops-contracts-effect",
-      "description": "Run effect ops contracts",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "ops"
-    },
-    {
-      "name": "ops-fast",
-      "description": "Run fast CI suite checks",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "ops"
-    },
-    {
-      "name": "ops-nightly",
-      "description": "Run nightly CI suite checks",
-      "lanes": [
-        "ci"
-      ],
-      "area": "ops"
-    },
-    {
-      "name": "ops-pr",
-      "description": "Run pull request CI suite checks",
+      "description": "Run effect ops contracts via dev-atlas suite runner",
       "lanes": [
         "dev",
         "ci"
@@ -192,12 +165,12 @@
     },
     {
       "name": "registry-doctor",
-      "description": "Run registry-doctor through the governed make surface",
+      "description": "Validate governed suite registries and mappings",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "governance"
     },
     {
       "name": "release-plan",
@@ -206,16 +179,16 @@
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "release"
     },
     {
       "name": "release-verify",
-      "description": "Run release verification lane through dev-atlas only",
+      "description": "Verify a release evidence tarball through bijux-dev-atlas",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "release"
     },
     {
       "name": "root-surface-explain",
@@ -224,11 +197,11 @@
         "dev",
         "ci"
       ],
-      "area": "root"
+      "area": "governance"
     },
     {
       "name": "stack-down",
-      "description": "Stop local stack via control plane",
+      "description": "Stop local ops stack through dev-atlas",
       "lanes": [
         "dev",
         "ci"
@@ -237,7 +210,7 @@
     },
     {
       "name": "stack-up",
-      "description": "Start local stack via control plane",
+      "description": "Start local ops stack through dev-atlas",
       "lanes": [
         "dev",
         "ci"
@@ -245,31 +218,22 @@
       "area": "ops"
     },
     {
-      "name": "suites-all",
-      "description": "Run suites-all through the governed make surface",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "make"
-    },
-    {
       "name": "suites-list",
-      "description": "Run suites-list through the governed make surface",
+      "description": "List suite ids exposed through the control plane",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "governance"
     },
     {
       "name": "tests-all",
-      "description": "Run deterministic test suite",
+      "description": "Run the deterministic test suite without external network",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "tests"
     }
   ]
 }

@@ -368,7 +368,7 @@
         "check suite report"
       ],
       "commands": [
-        "make ops-fast"
+        "make ci-fast"
       ],
       "report_ids": [
         "check-suite-summary"
@@ -412,7 +412,7 @@
         "check suite report"
       ],
       "commands": [
-        "make ops-pr"
+        "make ci-pr"
       ],
       "report_ids": [
         "check-suite-summary"
@@ -456,7 +456,7 @@
         "check suite report"
       ],
       "commands": [
-        "make ops-nightly"
+        "make ci-nightly"
       ],
       "report_ids": [
         "check-suite-summary"
