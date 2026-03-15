@@ -467,6 +467,16 @@ fn resolve_runtime_path(path: PathBuf) -> PathBuf {
     }
 }
 
+#[must_use]
+pub fn default_runtime_store_root() -> PathBuf {
+    resolve_runtime_path(PathBuf::from(DEFAULT_STORE_ROOT))
+}
+
+#[must_use]
+pub fn default_runtime_cache_root() -> PathBuf {
+    resolve_runtime_path(PathBuf::from(DEFAULT_CACHE_ROOT))
+}
+
 fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,

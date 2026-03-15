@@ -91,7 +91,7 @@ pub struct DatasetCacheConfig {
 impl Default for DatasetCacheConfig {
     fn default() -> Self {
         Self {
-            disk_root: PathBuf::from("artifacts/server-cache"),
+            disk_root: crate::application::config::default_runtime_cache_root(),
             max_disk_bytes: 4 * 1024 * 1024 * 1024,
             disk_high_watermark_pct: 90,
             disk_low_watermark_pct: 75,

@@ -165,6 +165,12 @@ fn runtime_startup_config_preserves_absolute_paths() {
 }
 
 #[test]
+fn dataset_cache_default_uses_runtime_cache_root() {
+    let cache = crate::DatasetCacheConfig::default();
+    assert_eq!(cache.disk_root, default_runtime_cache_root());
+}
+
+#[test]
 fn runtime_startup_config_contract_artifacts_match_generated() {
     let generated_docs = generated_docs_dir();
     let schema_path = generated_docs.join("runtime-startup-config.schema.json");
