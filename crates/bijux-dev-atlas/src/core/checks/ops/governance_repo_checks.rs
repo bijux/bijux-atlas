@@ -241,14 +241,14 @@ pub(super) fn check_configs_nextest_toml_present(
 pub(super) fn check_configs_security_deny_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("configs/security/deny.toml");
+    let rel = Path::new("configs/sources/security/deny.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "CONFIGS_SECURITY_DENY_TOML_MISSING",
-            "configs/security/deny.toml must exist".to_string(),
-            "keep cargo-deny policy under configs/security/deny.toml",
+            "configs/sources/security/deny.toml must exist".to_string(),
+            "keep cargo-deny policy under configs/sources/security/deny.toml",
             Some(rel),
         )])
     }

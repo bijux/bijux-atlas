@@ -3,7 +3,7 @@
   "manifest_name": "release-surfaces",
   "versioning": {
     "workspace_version": "0.1.0",
-    "policy": "configs/release/version-policy.json"
+    "policy": "configs/sources/release/version-policy.json"
   },
   "artifacts": {
     "docs_site": "artifacts/docs/site",

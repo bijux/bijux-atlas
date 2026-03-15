@@ -16,8 +16,8 @@ fn workspace_root() -> PathBuf {
 
 fn authentication_benchmarks(c: &mut Criterion) {
     let root = workspace_root();
-    let auth_model_path = root.join("configs/security/auth-model.yaml");
-    let runtime_security_path = root.join("configs/security/runtime-security.yaml");
+    let auth_model_path = root.join("configs/sources/security/auth-model.yaml");
+    let runtime_security_path = root.join("configs/sources/security/runtime-security.yaml");
 
     c.bench_function("security_auth_model_parse", |b| {
         b.iter(|| {

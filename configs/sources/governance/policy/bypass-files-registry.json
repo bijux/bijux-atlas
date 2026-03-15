@@ -137,7 +137,7 @@
     },
     {
       "kind": "toml",
-      "path": "configs/security/audit-allowlist.toml",
+      "path": "configs/sources/security/audit-allowlist.toml",
       "requires_metadata": false,
       "type": "security"
     },

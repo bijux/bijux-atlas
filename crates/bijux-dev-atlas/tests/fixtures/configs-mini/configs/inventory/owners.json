@@ -13,7 +13,7 @@
     "configs/policy": "platform",
     "configs/repo": "platform",
     "configs/rust": "rust-foundation",
-    "configs/security": "security",
+    "configs/sources/security": "security",
     "configs/shellcheck": "platform",
     "configs/sources/operations/slo": "bijux-atlas-operations"
   }

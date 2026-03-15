@@ -399,7 +399,7 @@ pub(crate) fn run_security_command(
 
 fn run_security_auth_api_keys(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
+    let auth_model = read_yaml(&root.join("configs/sources/security/auth-model.yaml"))?;
     let methods = auth_method_count(&auth_model);
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -459,7 +459,7 @@ fn run_security_auth_token_inspect(
 fn run_security_auth_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let config = load_security_config_from_path(
-        &root.join("configs/security/runtime-security.yaml"),
+        &root.join("configs/sources/security/runtime-security.yaml"),
     )?;
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -477,8 +477,8 @@ fn run_security_auth_diagnostics(args: SecurityValidateArgs) -> Result<(String, 
 
 fn run_security_auth_policy_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let auth_model = read_yaml(&root.join("configs/security/auth-model.yaml"))?;
-    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let auth_model = read_yaml(&root.join("configs/sources/security/auth-model.yaml"))?;
+    let policy = read_yaml(&root.join("configs/sources/security/policy.yaml"))?;
     let method_count = auth_method_count(&auth_model);
     let rule_count = policy
         .get("rules")
@@ -498,7 +498,7 @@ fn run_security_auth_policy_validate(args: SecurityValidateArgs) -> Result<(Stri
 
 fn run_security_authorization_roles(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let roles = read_yaml(&root.join("configs/security/roles.yaml"))?;
+    let roles = read_yaml(&root.join("configs/sources/security/roles.yaml"))?;
     let rows = roles
         .get("roles")
         .and_then(serde_yaml::Value::as_sequence)
@@ -522,7 +522,7 @@ fn run_security_authorization_permissions(
     args: SecurityValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let permissions = read_yaml(&root.join("configs/security/permissions.yaml"))?;
+    let permissions = read_yaml(&root.join("configs/sources/security/permissions.yaml"))?;
     let rows = permissions
         .get("permissions")
         .and_then(serde_yaml::Value::as_sequence)
@@ -546,10 +546,10 @@ fn run_security_authorization_diagnostics(
     args: SecurityValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let roles = read_yaml(&root.join("configs/security/roles.yaml"))?;
-    let permissions = read_yaml(&root.join("configs/security/permissions.yaml"))?;
-    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
-    let assignments = read_yaml(&root.join("configs/security/role-assignments.yaml")).ok();
+    let roles = read_yaml(&root.join("configs/sources/security/roles.yaml"))?;
+    let permissions = read_yaml(&root.join("configs/sources/security/permissions.yaml"))?;
+    let policy = read_yaml(&root.join("configs/sources/security/policy.yaml"))?;
+    let assignments = read_yaml(&root.join("configs/sources/security/role-assignments.yaml")).ok();
     let role_count = roles
         .get("roles")
         .and_then(serde_yaml::Value::as_sequence)
@@ -589,7 +589,7 @@ fn run_security_authorization_assign(
     args: SecurityRoleAssignArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let path = root.join("configs/security/role-assignments.yaml");
+    let path = root.join("configs/sources/security/role-assignments.yaml");
     let mut assignments = if path.exists() {
         read_yaml(&path)?
     } else {
@@ -636,12 +636,12 @@ fn run_security_authorization_validate(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let roles: RoleCatalog = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/roles.yaml"))
+        &fs::read_to_string(root.join("configs/sources/security/roles.yaml"))
             .map_err(|err| format!("failed to read role catalog: {err}"))?,
     )
     .map_err(|err| format!("parse role catalog failed: {err}"))?;
     let permissions: PermissionCatalog = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/permissions.yaml"))
+        &fs::read_to_string(root.join("configs/sources/security/permissions.yaml"))
             .map_err(|err| format!("failed to read permission catalog: {err}"))?,
     )
     .map_err(|err| format!("parse permission catalog failed: {err}"))?;
@@ -687,7 +687,7 @@ fn run_security_authorization_validate(
 
 fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let path = root.join("configs/security/runtime-security.yaml");
+    let path = root.join("configs/sources/security/runtime-security.yaml");
     let config = load_security_config_from_path(&path)?;
     let errors = validate_security_config(&config);
     let payload = serde_json::json!({
@@ -703,10 +703,10 @@ fn run_security_config_validate(args: SecurityValidateArgs) -> Result<(String, i
 
 fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let config_path = root.join("configs/security/runtime-security.yaml");
+    let config_path = root.join("configs/sources/security/runtime-security.yaml");
     let config = load_security_config_from_path(&config_path)?;
     let mut registry = SecurityPolicyRegistry::new();
-    let policy_rows = read_yaml(&root.join("configs/security/policy.yaml"))?
+    let policy_rows = read_yaml(&root.join("configs/sources/security/policy.yaml"))?
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
         .cloned()
@@ -742,7 +742,7 @@ fn run_security_diagnostics(args: SecurityValidateArgs) -> Result<(String, i32),
 
 fn run_security_policy_inspect(args: SecurityPolicyInspectArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let policy = read_yaml(&root.join("configs/security/policy.yaml"))?;
+    let policy = read_yaml(&root.join("configs/sources/security/policy.yaml"))?;
     let rules = policy
         .get("rules")
         .and_then(serde_yaml::Value::as_sequence)
@@ -1295,12 +1295,12 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let threats_path = root.join("ops/security/threat-model/threats.yaml");
     let mitigations_path = root.join("ops/security/threat-model/mitigations.yaml");
     let controls_path = root.join("ops/security/compliance/controls.yaml");
-    let auth_model_path = root.join("configs/security/auth-model.yaml");
-    let principals_path = root.join("configs/security/principals.yaml");
-    let actions_path = root.join("configs/security/actions.yaml");
-    let resources_path = root.join("configs/security/resources.yaml");
-    let policy_path = root.join("configs/security/policy.yaml");
-    let data_classification_path = root.join("configs/security/data-classification.yaml");
+    let auth_model_path = root.join("configs/sources/security/auth-model.yaml");
+    let principals_path = root.join("configs/sources/security/principals.yaml");
+    let actions_path = root.join("configs/sources/security/actions.yaml");
+    let resources_path = root.join("configs/sources/security/resources.yaml");
+    let policy_path = root.join("configs/sources/security/policy.yaml");
+    let data_classification_path = root.join("configs/sources/security/data-classification.yaml");
     let audit_schema_path = root.join("configs/sources/operations/observability/audit-log.schema.json");
     let log_safe_fields_path = root.join("configs/sources/operations/observability/log-safe-fields.yaml");
     let retention_path = root.join("configs/sources/operations/observability/retention.yaml");
@@ -1330,10 +1330,10 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let log_field_inventory_schema_path =
         root.join("configs/sources/operations/observability/log-field-inventory.schema.json");
     let retention_schema_path = root.join("configs/sources/operations/observability/retention.schema.json");
-    let secrets_path = root.join("configs/security/secrets.json");
-    let redaction_path = root.join("configs/security/redaction.json");
-    let forbidden_patterns_path = root.join("configs/security/forbidden-patterns.json");
-    let dependency_policy_path = root.join("configs/security/dependency-source-policy.json");
+    let secrets_path = root.join("configs/sources/security/secrets.json");
+    let redaction_path = root.join("configs/sources/security/redaction.json");
+    let forbidden_patterns_path = root.join("configs/sources/security/forbidden-patterns.json");
+    let dependency_policy_path = root.join("configs/sources/security/dependency-source-policy.json");
     let signing_policy_path = root.join("ops/release/signing/policy.yaml");
 
     ensure_json(&asset_schema_path)?;
@@ -1775,13 +1775,13 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .and_then(|value| value.get("auth_model"))
             .and_then(|value| value.get("path"))
             .and_then(serde_json::Value::as_str)
-            == Some("configs/security/auth-model.yaml")
+            == Some("configs/sources/security/auth-model.yaml")
             && manifest
                 .get("auth_policy")
                 .and_then(|value| value.get("access_policy"))
                 .and_then(|value| value.get("path"))
                 .and_then(serde_json::Value::as_str)
-                == Some("configs/security/policy.yaml")
+                == Some("configs/sources/security/policy.yaml")
     });
     let rel_audit_001 = release_manifest.as_ref().is_some_and(|manifest| {
         manifest
@@ -2203,7 +2203,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         .get("github_actions")
         .and_then(|value| value.get("exceptions_path"))
         .and_then(serde_json::Value::as_str)
-        .unwrap_or("configs/security/github-actions-exceptions.json");
+        .unwrap_or("configs/sources/security/github-actions-exceptions.json");
     let action_inventory = read_json(&root.join(action_inventory_path))?;
     let action_exceptions = read_json(&root.join(action_exceptions_path))?;
     let allowed_actions = action_inventory
@@ -3082,7 +3082,7 @@ fn run_security_compliance_validate(args: SecurityValidateArgs) -> Result<(Strin
 fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     let schema_path = root.join("configs/schemas/contracts/security/forbidden-patterns.schema.json");
-    let policy_path = root.join("configs/security/forbidden-patterns.json");
+    let policy_path = root.join("configs/sources/security/forbidden-patterns.json");
     ensure_json(&schema_path)?;
     let policy: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&policy_path)
@@ -3156,7 +3156,7 @@ mod tests {
     use std::fs;
 
     fn write_minimal_security_files(root: &std::path::Path) {
-        let config_dir = root.join("configs/security");
+        let config_dir = root.join("configs/sources/security");
         fs::create_dir_all(&config_dir).expect("create security config dir");
         fs::write(
             config_dir.join("runtime-security.yaml"),
@@ -3169,7 +3169,7 @@ auth:
   required: true
 authorization:
   default_decision: deny
-  policy_source: configs/security/policy.yaml
+  policy_source: configs/sources/security/policy.yaml
 secrets:
   provider: env
   references: [ATLAS_API_KEY]
@@ -3543,7 +3543,7 @@ threat_ids: []
         let temp = tempfile::tempdir().expect("tempdir");
         write_minimal_security_files(temp.path());
 
-        let auth_model_path = temp.path().join("configs/security/auth-model.yaml");
+        let auth_model_path = temp.path().join("configs/sources/security/auth-model.yaml");
         fs::write(
             &auth_model_path,
             r#"default_stance: zero-trust

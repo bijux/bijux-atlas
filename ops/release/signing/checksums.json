@@ -58,12 +58,12 @@
     },
     {
       "kind": "auth-model-snapshot",
-      "path": "configs/security/auth-model.yaml",
+      "path": "configs/sources/security/auth-model.yaml",
       "sha256": "6c0bd46330edb353802b54819269e03866badc8ac44f8a53fcd23d11f9874400"
     },
     {
       "kind": "auth-policy-snapshot",
-      "path": "configs/security/policy.yaml",
+      "path": "configs/sources/security/policy.yaml",
       "sha256": "8f079d16ad9a7390c5daf4d876ca3a6b5eecb081b09cadc951a8c652801a8325"
     },
     {

@@ -374,7 +374,7 @@ fn run_release_check(args: ReleaseCheckArgs) -> Result<(String, i32), String> {
 }
 
 fn read_publish_policy(root: &Path) -> Result<serde_json::Value, String> {
-    read_json(&root.join("configs/release/publish-policy.json"))
+    read_json(&root.join("configs/sources/release/publish-policy.json"))
 }
 
 fn read_crates_release_spec(root: &Path) -> Result<toml::Value, String> {
@@ -641,7 +641,7 @@ fn run_release_images_sbom_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/image-sbom-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/image-sbom-policy.json"))?;
     let required = policy
         .get("required")
         .and_then(serde_json::Value::as_bool)
@@ -698,7 +698,7 @@ fn run_release_images_provenance_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/image-provenance-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/image-provenance-policy.json"))?;
     let required = policy
         .get("required")
         .and_then(serde_json::Value::as_bool)
@@ -754,7 +754,7 @@ fn run_release_images_scan_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/image-vulnerability-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/image-vulnerability-policy.json"))?;
     let required_artifacts = policy
         .get("required_artifacts")
         .and_then(serde_json::Value::as_array)
@@ -790,7 +790,7 @@ fn run_release_images_smoke_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let spec = read_json(&root.join("configs/release/image-smoke-scenarios.json"))?;
+    let spec = read_json(&root.join("configs/sources/release/image-smoke-scenarios.json"))?;
     let checks = spec
         .get("required_checks")
         .and_then(serde_json::Value::as_array)
@@ -824,7 +824,7 @@ fn run_release_images_size_report(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
     let budget = policy
         .get("runtime_image_max_bytes")
         .and_then(serde_json::Value::as_u64)
@@ -899,7 +899,7 @@ fn run_release_images_runtime_hardening_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/image-runtime-hardening-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
     let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
@@ -3045,7 +3045,7 @@ fn run_release_api_surface_snapshot(
 
 fn run_release_semver_check(args: ReleaseSemverCheckArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/release/semver-api-policy.json"))?;
+    let policy = read_json(&root.join("configs/sources/release/semver-api-policy.json"))?;
     let current_version = args.version.unwrap_or(workspace_version(&root)?);
     let (major, _, _) = parse_semver_triplet(&current_version)
         .ok_or_else(|| format!("invalid semver version: {current_version}"))?;
@@ -3196,11 +3196,11 @@ fn run_release_crates_publish_plan(args: ReleaseCratesListArgs) -> Result<(Strin
 }
 
 fn package_policy(root: &Path) -> Result<serde_json::Value, String> {
-    read_json(&root.join("configs/release/crate-package-policy.json"))
+    read_json(&root.join("configs/sources/release/crate-package-policy.json"))
 }
 
 fn dependency_policy(root: &Path) -> Result<serde_json::Value, String> {
-    read_json(&root.join("configs/release/dependency-policy.json"))
+    read_json(&root.join("configs/sources/release/dependency-policy.json"))
 }
 
 fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, i32), String> {
@@ -3494,8 +3494,8 @@ fn run_release_transition_plan(
 fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
-    let feature_policy = read_json(&root.join("configs/release/feature-policy.json"))?;
-    let missing_docs_policy = read_json(&root.join("configs/release/missing-docs-policy.json"))?;
+    let feature_policy = read_json(&root.join("configs/sources/release/feature-policy.json"))?;
+    let missing_docs_policy = read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
     let dependency_policy = dependency_policy(&root)?;
     let feature_doc = fs::read_to_string(root.join("docs/reference/crate-feature-flags.md"))
         .map_err(|err| format!("failed to read docs/reference/crate-feature-flags.md: {err}"))?;
@@ -3535,7 +3535,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
             .cloned();
         if docs_entry.is_none() {
             errors.push(format!(
-                "missing docs policy entry for crate `{crate_name}` in configs/release/missing-docs-policy.json"
+                "missing docs policy entry for crate `{crate_name}` in configs/sources/release/missing-docs-policy.json"
             ));
         }
         let manifest_path = root.join("crates").join(crate_name).join("Cargo.toml");
@@ -3718,7 +3718,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
             for feature in defaults.iter().filter_map(toml::Value::as_str) {
                 if !allowed.contains(feature) {
                     errors.push(format!(
-                        "crate `{crate_name}` default feature `{feature}` is not allowed by configs/release/feature-policy.json"
+                        "crate `{crate_name}` default feature `{feature}` is not allowed by configs/sources/release/feature-policy.json"
                     ));
                 }
             }
@@ -4608,7 +4608,7 @@ fn collect_toolchain_versions(root: &Path) -> serde_json::Value {
 }
 
 fn read_reproducibility_policy(root: &Path) -> Result<serde_json::Value, String> {
-    read_json(&root.join("configs/release/reproducibility-policy.json"))
+    read_json(&root.join("configs/sources/release/reproducibility-policy.json"))
 }
 
 fn create_release_manifest(root: &Path, version: &str) -> Result<serde_json::Value, String> {
@@ -5353,7 +5353,7 @@ fn generate_release_docs_artifacts(
 
 fn run_release_version_check(args: ReleaseVersionCheckArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
-    let policy_path = root.join("configs/release/version-policy.json");
+    let policy_path = root.join("configs/sources/release/version-policy.json");
     let policy = read_json(&policy_path)?;
     let version = args
         .version
@@ -5714,7 +5714,7 @@ fn run_release_changelog_validate(
     let version = args
         .version
         .unwrap_or_else(|| default_release_version(&root));
-    let policy_path = root.join("configs/release/version-policy.json");
+    let policy_path = root.join("configs/sources/release/version-policy.json");
     let policy = read_json(&policy_path)?;
     let required_sections = policy
         .get("changelog")
@@ -5954,9 +5954,10 @@ mod tests {
         let pid = std::process::id();
         let root = std::env::temp_dir().join(format!("bijux-release-tests-{pid}-{stamp}"));
         cleanup_release_test_repo(&root);
-        fs::create_dir_all(root.join("configs/release")).expect("create release config directory");
+        fs::create_dir_all(root.join("configs/sources/release"))
+            .expect("create release config directory");
         fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");
-        fs::write(root.join("configs/release/version-policy.json"), policy).expect("write policy");
+        fs::write(root.join("configs/sources/release/version-policy.json"), policy).expect("write policy");
         root
     }
 

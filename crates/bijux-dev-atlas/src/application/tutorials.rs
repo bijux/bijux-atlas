@@ -206,7 +206,7 @@ fn run_tutorials_verify(args: &TutorialsCommandArgs) -> Result<(String, i32), St
 }
 
 fn validate_tutorials_legacy_automation_policy(repo_root: &Path) -> (bool, serde_json::Value) {
-    let exceptions_path = repo_root.join("configs/tutorials/legacy-script-exceptions.json");
+    let exceptions_path = repo_root.join("configs/sources/tutorials/legacy-script-exceptions.json");
     let exceptions_json: serde_json::Value = fs::read_to_string(&exceptions_path)
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
@@ -280,8 +280,8 @@ fn validate_real_data_run_artifacts(repo_root: &Path) -> (bool, serde_json::Valu
     let mut skipped_incomplete_runs = Vec::new();
     let runs_root = repo_root.join("artifacts/tutorials/runs");
     let nondeterministic_policy =
-        repo_root.join("configs/tutorials/nondeterministic-fields-policy.json");
-    let redaction_policy = repo_root.join("configs/tutorials/redaction-policy.json");
+        repo_root.join("configs/sources/tutorials/nondeterministic-fields-policy.json");
+    let redaction_policy = repo_root.join("configs/sources/tutorials/redaction-policy.json");
     for required in [&nondeterministic_policy, &redaction_policy] {
         if !required.exists() {
             violations.push(format!(
@@ -1397,7 +1397,7 @@ fn run_tutorials_real_data_fetch(args: &TutorialsRealDataRunArgs) -> Result<(Str
         .join("artifacts/tutorials/cache")
         .join(&run.dataset);
     let fetch_spec = load_dataset_fetch_spec(&repo_root, &run.dataset)?;
-    let retry_policy_path = repo_root.join("configs/tutorials/fetch-retry-policy.json");
+    let retry_policy_path = repo_root.join("configs/sources/tutorials/fetch-retry-policy.json");
     let retry_policy: serde_json::Value = fs::read_to_string(&retry_policy_path)
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
@@ -2045,7 +2045,7 @@ fn run_tutorials_real_data_compare_regression(
     let run_dir = repo_root
         .join("artifacts/tutorials/runs")
         .join(&args.run_id);
-    let thresholds_path = repo_root.join("configs/tutorials/regression-threshold-policy.json");
+    let thresholds_path = repo_root.join("configs/sources/tutorials/regression-threshold-policy.json");
     let thresholds: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&thresholds_path)
             .map_err(|err| format!("failed to read {}: {err}", thresholds_path.display()))?,
@@ -2190,7 +2190,7 @@ fn validate_real_data_run_layout(run_dir: &Path) -> bool {
 }
 
 fn load_real_data_runs_catalog(repo_root: &Path) -> Result<RealDataRunCatalog, String> {
-    let path = repo_root.join("configs/tutorials/real-data-runs.json");
+    let path = repo_root.join("configs/sources/tutorials/real-data-runs.json");
     let raw = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let catalog: RealDataRunCatalog = serde_json::from_str(&raw)

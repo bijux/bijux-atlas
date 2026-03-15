@@ -4,8 +4,8 @@ mappings:
     evidence:
       - docs/architecture/security/auth-model.md
       - docs/operations/security/deploy-behind-auth-proxy.md
-      - configs/security/auth-model.yaml
-      - configs/security/policy.yaml
+      - configs/sources/security/auth-model.yaml
+      - configs/sources/security/policy.yaml
   - control_id: CTRL-AUDIT-001
     evidence:
       - docs/operations/security/audit-logging.md
@@ -18,8 +18,8 @@ mappings:
     evidence:
       - docs/operations/security/safe-logging-guidelines.md
       - docs/operations/security/data-deletion-requests.md
-      - configs/security/data-classification.yaml
-      - configs/security/redaction.json
+      - configs/sources/security/data-classification.yaml
+      - configs/sources/security/redaction.json
   - control_id: CTRL-LOG-001
     evidence:
       - configs/schemas/contracts/observability/log.schema.json

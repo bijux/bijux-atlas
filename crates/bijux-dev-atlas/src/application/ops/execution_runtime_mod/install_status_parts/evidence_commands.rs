@@ -211,8 +211,8 @@ pub(crate) fn run_ops_evidence_collect(
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
     let docker_bases = repo_root.join("ops/docker/bases.lock");
     let toolchain_inventory = repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
-    let auth_model = repo_root.join("configs/security/auth-model.yaml");
-    let access_policy = repo_root.join("configs/security/policy.yaml");
+    let auth_model = repo_root.join("configs/sources/security/auth-model.yaml");
+    let access_policy = repo_root.join("configs/sources/security/policy.yaml");
     let audit_schema = repo_root.join("configs/sources/operations/observability/audit-log.schema.json");
     let retention_policy = repo_root.join("configs/sources/operations/observability/retention.yaml");
     let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");

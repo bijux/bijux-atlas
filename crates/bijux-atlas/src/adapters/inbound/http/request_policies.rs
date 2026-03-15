@@ -399,7 +399,7 @@ fn embedded_policy_allows(
     route: &str,
 ) -> bool {
     const EMBEDDED_AUTH_POLICY: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/policy.yaml"));
     static POLICY: std::sync::OnceLock<Result<serde_yaml::Value, String>> =
         std::sync::OnceLock::new();
     let policy = match POLICY.get_or_init(|| parse_embedded_auth_policy(EMBEDDED_AUTH_POLICY)) {
@@ -488,12 +488,12 @@ fn embedded_authorization_allows(
 ) -> bool {
     const EMBEDDED_PERMISSIONS: &str = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../configs/security/permissions.yaml"
+        "/../../configs/sources/security/permissions.yaml"
     ));
     const EMBEDDED_ROLES: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/roles.yaml"));
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/roles.yaml"));
     const EMBEDDED_AUTHZ_POLICY: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/security/policy.yaml"));
+        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/policy.yaml"));
     static ENGINE: std::sync::OnceLock<Result<AuthorizationEngine, String>> =
         std::sync::OnceLock::new();
     let engine = match ENGINE.get_or_init(|| {
@@ -1526,15 +1526,15 @@ mod tests {
     fn invalid_embedded_authorization_contracts_fail_closed_without_panicking() {
         let valid_permissions = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/security/permissions.yaml"
+            "/../../configs/sources/security/permissions.yaml"
         ));
         let valid_roles = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/security/roles.yaml"
+            "/../../configs/sources/security/roles.yaml"
         ));
         let valid_policy = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/security/policy.yaml"
+            "/../../configs/sources/security/policy.yaml"
         ));
 
         let permissions_err =

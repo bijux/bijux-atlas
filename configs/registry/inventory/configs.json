@@ -209,7 +209,7 @@
         "configs/sources/repository/coverage/*",
         "configs/sources/repository/shell/*",
         "configs/sources/runtime/product/*",
-        "configs/release/*.json"
+        "configs/sources/release/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [
@@ -486,9 +486,9 @@
       "name": "security",
       "owner": "security",
       "public_files": [
-        "configs/security/*.json",
-        "configs/security/*.toml",
-        "configs/security/*.yaml"
+        "configs/sources/security/*.json",
+        "configs/sources/security/*.toml",
+        "configs/sources/security/*.yaml"
       ],
       "schema_owner": "security",
       "schemas": [
@@ -541,7 +541,7 @@
       "name": "tutorials",
       "owner": "platform",
       "public_files": [
-        "configs/tutorials/*.json"
+        "configs/sources/tutorials/*.json"
       ],
       "schema_owner": "platform",
       "schemas": [

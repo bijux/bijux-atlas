@@ -23,11 +23,11 @@
   },
   "auth_policy": {
     "access_policy": {
-      "path": "configs/security/policy.yaml",
+      "path": "configs/sources/security/policy.yaml",
       "sha256": "8f079d16ad9a7390c5daf4d876ca3a6b5eecb081b09cadc951a8c652801a8325"
     },
     "auth_model": {
-      "path": "configs/security/auth-model.yaml",
+      "path": "configs/sources/security/auth-model.yaml",
       "sha256": "6c0bd46330edb353802b54819269e03866badc8ac44f8a53fcd23d11f9874400"
     }
   },
@@ -258,7 +258,7 @@
         "sha256": "3c91e19de28d2d6f761e851a01be0349a304ce94692b3f16cf36b29d77a90f22"
       },
       {
-        "path": "configs/security/dependency-source-policy.json",
+        "path": "configs/sources/security/dependency-source-policy.json",
         "sha256": "cacaa7b96599babc9aa59c75472defcff01589d77a64da40cddecfbd7c1858d0"
       }
     ]

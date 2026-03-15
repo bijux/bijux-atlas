@@ -575,7 +575,7 @@ fn domain_path_prefixes(domain: &str) -> &'static [&'static str] {
         "docs" => &["docs/", "mkdocs.yml", "configs/sources/repository/docs/"],
         "ops" => &["ops/", "configs/sources/operations/ops/", ".github/workflows/ops-"],
         "ci" => &[".github/workflows/", "configs/sources/repository/ci/", "crates/bijux-dev-atlas/"],
-        "release" => &["ops/release/", "docs/", "configs/release/", ".github/workflows/release-"],
+        "release" => &["ops/release/", "docs/", "configs/sources/release/", ".github/workflows/release-"],
         "dependency" => &["Cargo.lock", ".github/workflows/dependency-"],
         _ => &[".github/workflows/"],
     }

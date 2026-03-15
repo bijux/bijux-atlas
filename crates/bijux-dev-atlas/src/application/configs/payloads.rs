@@ -88,7 +88,7 @@ fn is_secret_like_key_exception(rel: &str, key_path: &str) -> bool {
     key_path.contains('/')
         || matches!(
             (rel, key_path),
-            ("configs/security/secrets.json", "secrets")
+            ("configs/sources/security/secrets.json", "secrets")
                 | (
                     "configs/schemas/contracts/security/secrets.schema.json",
                     "properties.secrets"

@@ -1129,7 +1129,7 @@ fn docs_generate_ops_snippets(repo_root: &std::path::Path) -> Result<Vec<String>
 }
 
 fn load_docs_real_data_catalog(repo_root: &std::path::Path) -> Result<DocsRealDataCatalog, String> {
-    let path = repo_root.join("configs/tutorials/real-data-runs.json");
+    let path = repo_root.join("configs/sources/tutorials/real-data-runs.json");
     let text =
         fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
     serde_json::from_str(&text).map_err(|e| format!("failed to parse {}: {e}", path.display()))
@@ -1150,7 +1150,7 @@ fn build_real_data_runs_table_body(catalog: &DocsRealDataCatalog) -> String {
 
 fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     let mut out = String::from(
-        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../ops/tutorials/real-data/index.md)\n\nThis page is generated from `configs/tutorials/real-data-runs.json`.\n\n",
+        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../ops/tutorials/real-data/index.md)\n\nThis page is generated from `configs/sources/tutorials/real-data-runs.json`.\n\n",
     );
     out.push_str("## Coverage Summary\n\n");
     out.push_str(&format!("- Total runs: `{}`\n", catalog.runs.len()));

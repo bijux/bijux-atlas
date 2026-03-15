@@ -17,6 +17,6 @@
 - `configs/repo`: `platform`
 - `configs/rust`: `rust-foundation`
 - `configs/schemas/registry`: `platform`
-- `configs/security`: `security`
+- `configs/sources/security`: `security`
 - `configs/shellcheck`: `platform`
 - `configs/sources/operations/slo`: `bijux-atlas-operations`

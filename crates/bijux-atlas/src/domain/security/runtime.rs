@@ -232,7 +232,7 @@ mod tests {
             },
             authorization: SecurityAuthorizationConfig {
                 default_decision: "deny".to_string(),
-                policy_source: "configs/security/policy.yaml".to_string(),
+                policy_source: "configs/sources/security/policy.yaml".to_string(),
             },
             secrets: SecuritySecretsConfig {
                 provider: "env".to_string(),

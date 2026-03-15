@@ -910,7 +910,7 @@ pub(super) fn collect_supply_chain_inventory(
         ".github/dependabot.yml",
         "configs/sources/repository/docs/package-lock.json",
         "configs/sources/repository/docs/requirements.lock.txt",
-        "configs/security/dependency-source-policy.json",
+        "configs/sources/security/dependency-source-policy.json",
     ];
     let mut rows = Vec::new();
     for relative in paths {
@@ -975,14 +975,14 @@ pub(super) fn build_release_evidence_tarball(
     if repo_root.join("artifacts/security/log-field-inventory.json").exists() {
         files.push("artifacts/security/log-field-inventory.json".to_string());
     }
-    files.push("configs/security/auth-model.yaml".to_string());
-    files.push("configs/security/policy.yaml".to_string());
+    files.push("configs/sources/security/auth-model.yaml".to_string());
+    files.push("configs/sources/security/policy.yaml".to_string());
     files.push("configs/sources/operations/observability/audit-log.schema.json".to_string());
     files.push("configs/sources/operations/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
     files.push("configs/sources/repository/docs/package-lock.json".to_string());
     files.push("configs/sources/repository/docs/requirements.lock.txt".to_string());
-    files.push("configs/security/dependency-source-policy.json".to_string());
+    files.push("configs/sources/security/dependency-source-policy.json".to_string());
     files.sort();
     files.dedup();
     std::fs::write(&list_path, files.join("\n"))

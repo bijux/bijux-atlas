@@ -10,7 +10,7 @@ encryption:
   at_rest_required: true
   dataset_encryption_optional: true
 classification:
-  source: configs/security/data-classification.yaml
+  source: configs/sources/security/data-classification.yaml
   policy: least-collection-and-redaction
 sensitive_handling:
   forbid_plaintext_secrets_in_logs: true

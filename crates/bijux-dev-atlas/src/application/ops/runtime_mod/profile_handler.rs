@@ -351,7 +351,7 @@ pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(Str
                 "status": if stack_errors.is_empty() { "ok" } else { "failed" },
                 "text": "ops release plan generated",
                 "distribution_format": "oci-helm-and-release-bundle",
-                "distribution_policy": "configs/release/ops-distribution-policy.json",
+                "distribution_policy": "configs/sources/release/ops-distribution-policy.json",
                 "chart": {
                     "path": chart_yaml.strip_prefix(&repo_root).unwrap_or(&chart_yaml).display().to_string(),
                     "exists": chart_yaml.exists()

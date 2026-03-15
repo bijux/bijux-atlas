@@ -18,7 +18,7 @@ COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY configs/sources/repository/rust-tooling/rustfmt.toml /workspace/configs/sources/repository/rust-tooling/rustfmt.toml
 COPY configs/sources/repository/rust-tooling/clippy.toml /workspace/configs/sources/repository/rust-tooling/clippy.toml
 COPY configs/contracts /workspace/configs/contracts
-COPY configs/security /workspace/configs/security
+COPY configs/sources/security /workspace/configs/sources/security
 COPY crates ./crates
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \

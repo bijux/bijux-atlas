@@ -20,20 +20,20 @@ fn workspace_root() -> PathBuf {
 fn load_engine() -> AuthorizationEngine {
     let root = workspace_root();
     let role_catalog: RoleCatalog = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/roles.yaml")).expect("read roles"),
+        &fs::read_to_string(root.join("configs/sources/security/roles.yaml")).expect("read roles"),
     )
     .expect("parse roles");
     let permission_catalog: PermissionCatalog = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/permissions.yaml"))
+        &fs::read_to_string(root.join("configs/sources/security/permissions.yaml"))
             .expect("read permissions"),
     )
     .expect("parse permissions");
     let policy: AuthorizationPolicy = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/policy.yaml")).expect("read policy"),
+        &fs::read_to_string(root.join("configs/sources/security/policy.yaml")).expect("read policy"),
     )
     .expect("parse policy");
     let assignments: serde_yaml::Value = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/security/role-assignments.yaml"))
+        &fs::read_to_string(root.join("configs/sources/security/role-assignments.yaml"))
             .expect("read role assignments"),
     )
     .expect("parse role assignments");

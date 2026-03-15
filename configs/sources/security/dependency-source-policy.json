@@ -45,7 +45,7 @@
   "github_actions": {
     "workflow_dir": ".github/workflows",
     "toolchain_inventory": "ops/inventory/toolchain.json",
-    "exceptions_path": "configs/security/github-actions-exceptions.json",
+    "exceptions_path": "configs/sources/security/github-actions-exceptions.json",
     "require_sha_pins": true
   },
   "images": {

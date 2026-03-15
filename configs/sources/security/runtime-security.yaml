@@ -7,7 +7,7 @@ auth:
   required: true
 authorization:
   default_decision: deny
-  policy_source: configs/security/policy.yaml
+  policy_source: configs/sources/security/policy.yaml
 secrets:
   provider: env
   references:

@@ -274,7 +274,7 @@
       "mode": "effect",
       "inputs": [
         "Cargo.lock",
-        "configs/security/deny.toml"
+        "configs/sources/security/deny.toml"
       ],
       "outputs": [
         "cargo deny output",

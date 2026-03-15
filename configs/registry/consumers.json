@@ -207,15 +207,15 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/release/*.json": [
+    "configs/sources/release/*.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/release/reproducibility-policy.json": [
+    "configs/sources/release/reproducibility-policy.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/release/version-policy.json": [
+    "configs/sources/release/version-policy.json": [
       "bijux-dev-atlas",
       "ci"
     ],
@@ -267,30 +267,30 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/security/*.toml": [
+    "configs/sources/security/*.toml": [
       "ci"
     ],
-    "configs/security/*.yaml": [
+    "configs/sources/security/*.yaml": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/security/dependency-source-policy.json": [
+    "configs/sources/security/dependency-source-policy.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/security/forbidden-patterns.json": [
+    "configs/sources/security/forbidden-patterns.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/security/github-actions-exceptions.json": [
+    "configs/sources/security/github-actions-exceptions.json": [
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/security/redaction.json": [
+    "configs/sources/security/redaction.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/security/secrets.json": [
+    "configs/sources/security/secrets.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
@@ -307,7 +307,7 @@
       "runtime",
       "ci"
     ],
-    "configs/tutorials/*.json": [
+    "configs/sources/tutorials/*.json": [
       "bijux-dev-atlas",
       "docs-build",
       "runtime"
