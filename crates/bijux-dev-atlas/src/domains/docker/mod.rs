@@ -14,6 +14,27 @@ pub fn plugin() -> DockerDomain {
     DockerDomain
 }
 
+fn parse_runnable_id(value: &str) -> RunnableId {
+    match RunnableId::parse(value) {
+        Ok(id) => id,
+        Err(err) => panic!("invalid docker route id `{value}`: {err}"),
+    }
+}
+
+fn checks_suite_id() -> SuiteId {
+    match SuiteId::parse("checks") {
+        Ok(id) => id,
+        Err(err) => panic!("invalid checks suite id: {err}"),
+    }
+}
+
+fn docker_tag() -> Tag {
+    match Tag::parse("docker") {
+        Ok(tag) => tag,
+        Err(err) => panic!("invalid docker tag: {err}"),
+    }
+}
+
 pub fn routes() -> Vec<CommandRoute> {
     commands::routes()
 }
@@ -47,14 +68,14 @@ impl Domain for DockerDomain {
         routes()
             .into_iter()
             .map(|route| RunnableEntry {
-                id: RunnableId::parse(route.id).expect("docker route id"),
-                suite: SuiteId::parse("checks").expect("checks suite"),
+                id: parse_runnable_id(route.id),
+                suite: checks_suite_id(),
                 kind: RunnableKind::Check,
                 mode: RunnableMode::Pure,
                 summary: route.purpose.to_string(),
                 owner: self.name().to_string(),
                 group: self.name().to_string(),
-                tags: vec![Tag::parse("docker").expect("docker tag")],
+                tags: vec![docker_tag()],
                 commands: vec![route.name.to_string()],
                 report_ids: vec![],
                 reports: vec![],
