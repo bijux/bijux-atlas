@@ -170,7 +170,7 @@ pub(super) fn collect_governance_objects(
         );
     }
 
-    let make_targets = read_json(&repo_root.join("configs/ops/make-target-registry.json"))?;
+    let make_targets = read_json(&repo_root.join("configs/sources/operations/ops/make-target-registry.json"))?;
     for row in make_targets["targets"]
         .as_array()
         .cloned()
@@ -215,7 +215,7 @@ pub(super) fn collect_governance_objects(
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/make/targets.json".to_string()],
                 links,
-                authority_source: "configs/ops/make-target-registry.json".to_string(),
+                authority_source: "configs/sources/operations/ops/make-target-registry.json".to_string(),
                 reviewed_on: row["last_reviewed"]
                     .as_str()
                     .map(str::to_string)

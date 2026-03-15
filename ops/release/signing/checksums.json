@@ -3,12 +3,12 @@
   "items": [
     {
       "kind": "exceptions-registry",
-      "path": "configs/governance/exceptions.yaml",
+      "path": "configs/sources/governance/governance/exceptions.yaml",
       "sha256": "66f19a0cdeb024f982932f994150191ec2dce3945452b6595ba981996a38fac9"
     },
     {
       "kind": "exceptions-archive",
-      "path": "configs/governance/exceptions-archive.yaml",
+      "path": "configs/sources/governance/governance/exceptions-archive.yaml",
       "sha256": "ee0c326533753bb51c20a547533543c7b556f353300d5bd62967fe2d1f059017"
     },
     {
@@ -68,12 +68,12 @@
     },
     {
       "kind": "audit-schema",
-      "path": "configs/observability/audit-log.schema.json",
+      "path": "configs/sources/operations/observability/audit-log.schema.json",
       "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
     },
     {
       "kind": "retention-policy",
-      "path": "configs/observability/retention.yaml",
+      "path": "configs/sources/operations/observability/retention.yaml",
       "sha256": "170b07e84732310b760ca353ca3e5452ed5681a2d1dc65b2c973c333fea14dff"
     },
     {

@@ -5,7 +5,7 @@
       "sha256": "4b50d1963ee5c688a0e45855088ad1f7f16a2b5728113febc1531b9e827ad8cd"
     },
     "retention_policy": {
-      "path": "configs/observability/retention.yaml",
+      "path": "configs/sources/operations/observability/retention.yaml",
       "sha256": "170b07e84732310b760ca353ca3e5452ed5681a2d1dc65b2c973c333fea14dff"
     },
     "sample_log": {
@@ -13,7 +13,7 @@
       "sha256": "f6a6ecf0538a79263603546d17549dafe93d06145d74ae6cc413c5a1872f7ae2"
     },
     "schema": {
-      "path": "configs/observability/audit-log.schema.json",
+      "path": "configs/sources/operations/observability/audit-log.schema.json",
       "sha256": "94f3caaf6a19579d1bb6ca15de6d3fc7d8cc20a53f66b0a5c33d975c47a92334"
     },
     "verification_report": {
@@ -77,7 +77,7 @@
       "sha256": "ce7fcda0bcce6a1d90cf837c9f6e2538d7ea6801ea1c5594986dc731efefc645"
     },
     "exceptions_archive": {
-      "path": "configs/governance/exceptions-archive.yaml",
+      "path": "configs/sources/governance/governance/exceptions-archive.yaml",
       "sha256": "ee0c326533753bb51c20a547533543c7b556f353300d5bd62967fe2d1f059017"
     },
     "exceptions_churn": {
@@ -89,7 +89,7 @@
       "sha256": "2bea370260114e65a4042b635672d5ec97af14a442722cfb8e4aaf8f54906a7b"
     },
     "exceptions_registry": {
-      "path": "configs/governance/exceptions.yaml",
+      "path": "configs/sources/governance/governance/exceptions.yaml",
       "sha256": "66f19a0cdeb024f982932f994150191ec2dce3945452b6595ba981996a38fac9"
     },
     "exceptions_summary": {
@@ -171,10 +171,10 @@
     "ops/schema/observe/prometheus-rule.schema.json"
   ],
   "perf_assets": [
-    "configs/perf/slo.yaml",
-    "configs/perf/budgets.yaml",
-    "configs/perf/benches.json",
-    "configs/perf/exceptions.json",
+    "configs/sources/operations/perf/slo.yaml",
+    "configs/sources/operations/perf/budgets.yaml",
+    "configs/sources/operations/perf/benches.json",
+    "configs/sources/operations/perf/exceptions.json",
     "configs/schemas/contracts/perf/slo.schema.json",
     "configs/schemas/contracts/perf/budgets.schema.json",
     "configs/schemas/contracts/perf/benches.schema.json",

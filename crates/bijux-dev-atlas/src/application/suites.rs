@@ -220,36 +220,36 @@ fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String
 }
 
 fn suites_index_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/suites.index.json")
+    root.join("configs/sources/governance/governance/suites/suites.index.json")
 }
 
 fn suite_file_path(root: &Path, suite_id: &str) -> PathBuf {
-    root.join("configs/governance/suites")
+    root.join("configs/sources/governance/governance/suites")
         .join(format!("{suite_id}.suite.json"))
 }
 
 fn check_groups_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/check-groups.json")
+    root.join("configs/sources/governance/governance/check-groups.json")
 }
 
 fn contract_groups_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/contract-groups.json")
+    root.join("configs/sources/governance/governance/contract-groups.json")
 }
 
 fn checks_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/checks.registry.json")
+    root.join("configs/sources/governance/governance/checks.registry.json")
 }
 
 fn contracts_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/contracts.registry.json")
+    root.join("configs/sources/governance/governance/contracts.registry.json")
 }
 
 fn perf_budgets_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/perf-budgets.json")
+    root.join("configs/sources/governance/governance/perf-budgets.json")
 }
 
 fn default_jobs_policy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/default-jobs.json")
+    root.join("configs/sources/governance/governance/suites/default-jobs.json")
 }
 
 fn latest_runs_pointer_path(artifacts_root: &Path) -> PathBuf {
@@ -1294,7 +1294,7 @@ fn pinned_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
         return Some(git_sha(repo_root));
     }
     let payload: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(repo_root.join("configs/ops/pins/tools.json")).ok()?,
+        &fs::read_to_string(repo_root.join("configs/sources/operations/ops/pins/tools.json")).ok()?,
     )
     .ok()?;
     payload
@@ -2910,7 +2910,7 @@ mod tests {
         let dir = tempdir().expect("tempdir");
         write_json(
             &dir.path()
-                .join("configs/governance/suites/suites.index.json"),
+                .join("configs/sources/governance/governance/suites/suites.index.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "index_id": "governance-suites",
@@ -2919,7 +2919,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/governance/suites/checks.suite.json"),
+                .join("configs/sources/governance/governance/suites/checks.suite.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "suite_id": "checks",
@@ -2933,7 +2933,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/governance/suites/contracts.suite.json"),
+                .join("configs/sources/governance/governance/suites/contracts.suite.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "suite_id": "contracts",
@@ -2946,13 +2946,13 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/check-groups.json"),
+            &dir.path().join("configs/sources/governance/governance/check-groups.json"),
             &serde_json::json!({
                 "groups": [{"id":"rust"}]
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/contract-groups.json"),
+            &dir.path().join("configs/sources/governance/governance/contract-groups.json"),
             &serde_json::json!({
                 "groups": [{"id":"ops"}]
             }),
@@ -2964,7 +2964,7 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/checks.registry.json"),
+            &dir.path().join("configs/sources/governance/governance/checks.registry.json"),
             &serde_json::json!({
                 "checks": [{
                     "check_id":"CHECK-GIT-VERSION-001",
@@ -2989,7 +2989,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/governance/contracts.registry.json"),
+                .join("configs/sources/governance/governance/contracts.registry.json"),
             &serde_json::json!({
                 "contracts": [{
                     "contract_id":"CONTRACT-GIT-VERSION-001",
@@ -3007,7 +3007,7 @@ mod tests {
         );
         write_json(
             &dir.path()
-                .join("configs/governance/suites/default-jobs.json"),
+                .join("configs/sources/governance/governance/suites/default-jobs.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "policy_id": "suite-default-jobs",
@@ -3159,7 +3159,7 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/governance/perf-budgets.json"),
+            &dir.path().join("configs/sources/governance/governance/perf-budgets.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "budgets": [

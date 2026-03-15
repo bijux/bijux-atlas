@@ -46,11 +46,11 @@ struct FailureInjection {
 }
 
 fn simulation_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/system/simulation-scenarios.json")
+    root.join("configs/sources/operations/system/simulation-scenarios.json")
 }
 
 fn failure_injection_catalog_path(root: &Path) -> PathBuf {
-    root.join("configs/system/failure-injection.json")
+    root.join("configs/sources/operations/system/failure-injection.json")
 }
 
 fn simulation_root(root: &Path) -> PathBuf {
@@ -58,11 +58,11 @@ fn simulation_root(root: &Path) -> PathBuf {
 }
 
 fn simulation_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/system/system-simulation-report.schema.json")
+    root.join("configs/sources/operations/system/system-simulation-report.schema.json")
 }
 
 fn diagnostics_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/system/system-diagnostics-report.schema.json")
+    root.join("configs/sources/operations/system/system-diagnostics-report.schema.json")
 }
 
 fn simulation_scenario_dir(root: &Path, scenario_id: &str) -> PathBuf {
@@ -331,7 +331,7 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         SystemClusterCommand::ShardRouting(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
             let root = resolve_repo_root(args.repo_root.clone())?;
-            let shard_meta_path = root.join("configs/ops/runtime/shard-metadata.example.json");
+            let shard_meta_path = root.join("configs/sources/operations/ops/runtime/shard-metadata.example.json");
             let shard_meta: serde_json::Value = read_json_file(&shard_meta_path)?;
             let key = "chr1:100-200";
             let mut registry = ShardRegistry::new();
@@ -885,7 +885,7 @@ mod tests {
     fn diagnostics_report_schema_validation_accepts_required_shape() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let schema_dir = root.join("configs/system");
+        let schema_dir = root.join("configs/sources/operations/system");
         fs::create_dir_all(&schema_dir).expect("create schema dir");
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
@@ -910,7 +910,7 @@ mod tests {
     fn debug_command_writes_diagnostics_artifact_even_on_connection_error() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let schema_dir = root.join("configs/system");
+        let schema_dir = root.join("configs/sources/operations/system");
         fs::create_dir_all(&schema_dir).expect("create schema dir");
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
@@ -941,7 +941,7 @@ mod tests {
     fn cluster_topology_command_renders_cluster_shape() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -978,8 +978,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
             }))
             .expect("run topology command");
         assert_eq!(code, 0);
@@ -992,7 +992,7 @@ mod tests {
     fn cluster_node_drain_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1031,9 +1031,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/ops/runtime/cluster-config.example.json",
+                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
                     ),
-                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
                 },
                 node_id: "node-1".to_string(),
             },
@@ -1049,7 +1049,7 @@ mod tests {
     fn cluster_shard_routing_command_renders_selected_shard() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1097,8 +1097,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
             }))
             .expect("run shard routing command");
         assert_eq!(code, 0);
@@ -1111,7 +1111,7 @@ mod tests {
     fn cluster_shard_rebalance_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1150,9 +1150,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/ops/runtime/cluster-config.example.json",
+                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
                     ),
-                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
                 },
                 shard_id: None,
                 target_node_id: None,
@@ -1169,7 +1169,7 @@ mod tests {
     fn cluster_replica_list_command_renders_replica_rows() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1206,8 +1206,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
             }))
             .expect("run replica list command");
         assert_eq!(code, 0);
@@ -1222,7 +1222,7 @@ mod tests {
     fn cluster_replica_failover_command_renders_promote_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1261,9 +1261,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/ops/runtime/cluster-config.example.json",
+                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
                     ),
-                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
                 },
                 dataset_id: "atlas-default".to_string(),
                 shard_id: "atlas-default-s001".to_string(),
@@ -1282,7 +1282,7 @@ mod tests {
     fn cluster_recovery_run_command_renders_recovery_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1312,8 +1312,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
             }))
             .expect("run recovery command");
         assert_eq!(code, 0);
@@ -1326,7 +1326,7 @@ mod tests {
     fn cluster_chaos_test_command_renders_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1358,9 +1358,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/ops/runtime/cluster-config.example.json",
+                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
                     ),
-                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "network_partition".to_string(),
@@ -1377,7 +1377,7 @@ mod tests {
     fn cluster_failover_command_renders_resilience_action_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1409,9 +1409,9 @@ mod tests {
                     format: FormatArg::Json,
                     out: None,
                     cluster_config: PathBuf::from(
-                        "configs/ops/runtime/cluster-config.example.json",
+                        "configs/sources/operations/ops/runtime/cluster-config.example.json",
                     ),
-                    node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                    node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "node_crash".to_string(),
@@ -1428,7 +1428,7 @@ mod tests {
     fn cluster_resilience_diagnostics_command_renders_payload() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let configs_dir = root.join("configs/ops/runtime");
+        let configs_dir = root.join("configs/sources/operations/ops/runtime");
         fs::create_dir_all(&configs_dir).expect("create runtime config dir");
         write_json(
             &configs_dir.join("cluster-config.example.json"),
@@ -1458,8 +1458,8 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/ops/runtime/cluster-config.example.json"),
-                node_config: PathBuf::from("configs/ops/runtime/node-config.example.json"),
+                cluster_config: PathBuf::from("configs/sources/operations/ops/runtime/cluster-config.example.json"),
+                node_config: PathBuf::from("configs/sources/operations/ops/runtime/node-config.example.json"),
             },
         ))
         .expect("run resilience diagnostics");

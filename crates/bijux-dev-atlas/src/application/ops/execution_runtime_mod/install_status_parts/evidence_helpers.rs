@@ -451,10 +451,10 @@ pub(super) fn collect_observability_assets(repo_root: &std::path::Path) -> Resul
 pub(super) fn collect_perf_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
-        "configs/perf/slo.yaml",
-        "configs/perf/budgets.yaml",
-        "configs/perf/benches.json",
-        "configs/perf/exceptions.json",
+        "configs/sources/operations/perf/slo.yaml",
+        "configs/sources/operations/perf/budgets.yaml",
+        "configs/sources/operations/perf/benches.json",
+        "configs/sources/operations/perf/exceptions.json",
         "configs/schemas/contracts/perf/slo.schema.json",
         "configs/schemas/contracts/perf/budgets.schema.json",
         "configs/schemas/contracts/perf/benches.schema.json",
@@ -977,8 +977,8 @@ pub(super) fn build_release_evidence_tarball(
     }
     files.push("configs/security/auth-model.yaml".to_string());
     files.push("configs/security/policy.yaml".to_string());
-    files.push("configs/observability/audit-log.schema.json".to_string());
-    files.push("configs/observability/retention.yaml".to_string());
+    files.push("configs/sources/operations/observability/audit-log.schema.json".to_string());
+    files.push("configs/sources/operations/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
     files.push("configs/sources/repository/docs/package-lock.json".to_string());
     files.push("configs/sources/repository/docs/requirements.lock.txt".to_string());

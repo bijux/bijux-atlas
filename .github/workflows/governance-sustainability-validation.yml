@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "docs/governance/**"
-      - "configs/governance/**"
+      - "configs/sources/governance/governance/**"
       - "ops/governance/**"
       - "crates/bijux-dev-atlas/src/commands/governance.rs"
       - "crates/bijux-dev-atlas/tests/*governance*"

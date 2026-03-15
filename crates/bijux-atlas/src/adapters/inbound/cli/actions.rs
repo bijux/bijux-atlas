@@ -286,7 +286,7 @@ fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {
         .parent()
         .and_then(|p| p.parent())
         .unwrap_or_else(|| std::path::Path::new("."))
-        .join("configs/ops/sharding-policy.json");
+        .join("configs/sources/operations/ops/sharding-policy.json");
     let raw = match std::fs::read_to_string(path) {
         Ok(v) => v,
         Err(_) => return (ShardingPlanCli::None, 512),

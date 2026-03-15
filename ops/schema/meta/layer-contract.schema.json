@@ -83,11 +83,11 @@
       "properties": {
         "namespaces": {
           "type": "string",
-          "pattern": "^configs/ops/.+\\.json$"
+          "pattern": "^configs/sources/operations/ops/.+\\.json$"
         },
         "ports": {
           "type": "string",
-          "pattern": "^configs/ops/.+\\.json$"
+          "pattern": "^configs/sources/operations/ops/.+\\.json$"
         },
         "profiles": {
           "type": "string",

@@ -10,8 +10,8 @@
 - `configs/meta`: `platform`
 - `configs/nextest`: `platform`
 - `configs/openapi`: `api-contracts`
-- `configs/ops`: `bijux-atlas-operations`
-- `configs/perf`: `bijux-atlas-performance`
+- `configs/sources/operations/ops`: `bijux-atlas-operations`
+- `configs/sources/operations/perf`: `bijux-atlas-performance`
 - `configs/policy`: `platform`
 - `configs/product`: `product`
 - `configs/repo`: `platform`
@@ -19,4 +19,4 @@
 - `configs/schemas/registry`: `platform`
 - `configs/security`: `security`
 - `configs/shellcheck`: `platform`
-- `configs/slo`: `bijux-atlas-operations`
+- `configs/sources/operations/slo`: `bijux-atlas-operations`

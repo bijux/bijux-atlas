@@ -508,7 +508,7 @@ pub(crate) fn run_check_repo_doctor(
         "text": if tree_code == 0 && docs_code == 0 && configs_code == 0 && snapshot_drift_error.is_null() { "repo doctor passed" } else { "repo doctor failed" },
         "explain": if explain {
             serde_json::json!({
-                "tree_budgets": "validates depth and breadth budgets across docs/configs/ops",
+                "tree_budgets": "validates depth and breadth budgets across docs/configs and ops surfaces",
                 "docs_validate": "validates docs links, nav shape, and docs contracts",
                 "configs_validate": "validates config schema and inventory integrity",
                 "surface_snapshot": "validates committed snapshot parity for root-level governed surfaces"

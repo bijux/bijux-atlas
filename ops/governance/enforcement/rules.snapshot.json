@@ -10,7 +10,7 @@
       "paths": [
         "README.md",
         "Cargo.toml",
-        "configs/governance/governance.json"
+        "configs/sources/governance/governance/governance.json"
       ],
       "classification": "repository"
     },
@@ -31,7 +31,7 @@
       "severity": "high",
       "rule_type": "repo_layout_contract",
       "paths": [
-        "configs/governance/enforcement/repo-layout-contract.json"
+        "configs/sources/governance/governance/enforcement/repo-layout-contract.json"
       ],
       "classification": "repository"
     },
@@ -51,7 +51,7 @@
       "severity": "high",
       "rule_type": "contract_registry_complete",
       "paths": [
-        "configs/governance/contracts.registry.json"
+        "configs/sources/governance/governance/contracts.registry.json"
       ],
       "classification": "registry"
     },
@@ -61,7 +61,7 @@
       "severity": "high",
       "rule_type": "checks_registry_complete",
       "paths": [
-        "configs/governance/checks.registry.json"
+        "configs/sources/governance/governance/checks.registry.json"
       ],
       "classification": "registry"
     },

@@ -8,7 +8,7 @@
     },
     {
       "kind": "json",
-      "path": "configs/ops/temporary-shims.json",
+      "path": "configs/sources/operations/ops/temporary-shims.json",
       "requires_metadata": true,
       "subtype": "shim",
       "type": "ops"

@@ -153,8 +153,8 @@
     }
   },
   "ssot": {
-    "namespaces": "configs/ops/namespaces.json",
-    "ports": "configs/ops/ports.json",
+    "namespaces": "configs/sources/operations/ops/namespaces.json",
+    "ports": "configs/sources/operations/ops/ports.json",
     "profiles": "ops/stack/profiles.json"
   }
 }

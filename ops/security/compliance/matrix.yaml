@@ -11,8 +11,8 @@ mappings:
       - docs/operations/security/audit-logging.md
       - docs/operations/security/audit-log-rotation.md
       - docs/operations/security/respond-to-suspicious-activity.md
-      - configs/observability/audit-log.schema.json
-      - configs/observability/retention.yaml
+      - configs/sources/operations/observability/audit-log.schema.json
+      - configs/sources/operations/observability/retention.yaml
       - artifacts/security/audit-verify.json
   - control_id: CTRL-PRIV-001
     evidence:

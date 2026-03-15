@@ -47,7 +47,7 @@ Breaking changes should be rare, explicit, and accompanied by migration guidance
 
 ## Deprecation Discipline
 
-Atlas should not remove or rename stable surfaces casually. The current compatibility policy in `configs/governance/compatibility.yaml` defines deprecation windows of:
+Atlas should not remove or rename stable surfaces casually. The current compatibility policy in `configs/sources/governance/governance/compatibility.yaml` defines deprecation windows of:
 
 - 180 days for env keys, chart values, profile keys, and report schemas
 - 365 days for docs URLs

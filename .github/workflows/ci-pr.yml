@@ -236,7 +236,7 @@ jobs:
               "head": head,
               "configs": {"changed": subset(["configs/", "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
               "docs": {"changed": subset(["docs/"])},
-              "make": {"changed": subset(["make/", "configs/ops/make-target-registry.json", "make/target-list.json"])},
+              "make": {"changed": subset(["make/", "configs/sources/operations/ops/make-target-registry.json", "make/target-list.json"])},
               "docker": {"changed": subset(["ops/docker/", "ops/docker/images.manifest.json", "ops/docker/policy.json"])},
               "ops_readiness": {"changed": subset(["ops/observe/readiness.json", "ops/report/evidence-levels.json", "ops/report/generated/readiness-score.json", "ops/report/generated/release-evidence-bundle.json"])},
           }
@@ -292,7 +292,7 @@ jobs:
             ssot_docs_pairs=1
             changed_file "docs/reference/repo-map.md" || { echo "root surface SSOT changed but docs/reference/repo-map.md was not updated" >&2; exit 1; }
           fi
-          if changed_file "configs/ops/make-target-registry.json"; then
+          if changed_file "configs/sources/operations/ops/make-target-registry.json"; then
             ssot_docs_pairs=1
             changed_file "docs/_internal/generated/make-targets.md" || { echo "public target registry changed but docs/_internal/generated/make-targets.md was not updated" >&2; exit 1; }
           fi
@@ -344,7 +344,7 @@ jobs:
           missing_runbooks = sorted([k for k,v in alerts.items() if v.get("runbook_id","") not in runbook_ids])
           if missing_alerts or missing_runbooks:
               raise SystemExit(f"alerts/runbooks mapping failed missing_alerts={missing_alerts} missing_runbooks={missing_runbooks}")
-          slo = json.loads((root / "configs/slo/slo.json").read_text())
+          slo = json.loads((root / "configs/sources/operations/slo/slo.json").read_text())
           slis = {r["id"] for r in slo["slis"]}
           slos = slo["slos"]
           bad_slos = [row["id"] for row in slos if row.get("sli") not in slis]
@@ -404,9 +404,9 @@ jobs:
           PY
           # Make surface must derive from one source.
           jq -r '.public_targets[]' make/target-list.json | sort > "${report_root}/make-public-targets.txt"
-          jq -r '.targets[] | select(.visibility=="public") | .name' configs/ops/make-target-registry.json | sort > "${report_root}/make-registry-public-targets.txt"
+          jq -r '.targets[] | select(.visibility=="public") | .name' configs/sources/operations/ops/make-target-registry.json | sort > "${report_root}/make-registry-public-targets.txt"
           if ! diff -u "${report_root}/make-registry-public-targets.txt" "${report_root}/make-public-targets.txt" > "${report_root}/make-surface-drift.diff"; then
-            echo "public wrapper surface drift: make/target-list.json does not match configs/ops/make-target-registry.json" >&2
+            echo "public wrapper surface drift: make/target-list.json does not match configs/sources/operations/ops/make-target-registry.json" >&2
             exit 1
           fi
           jq -n --rawfile registry "${report_root}/make-registry-public-targets.txt" --rawfile surface "${report_root}/make-public-targets.txt" '{
@@ -1071,7 +1071,7 @@ jobs:
           schema_map = json.loads((root / "configs/registry/schemas.json").read_text())
           no_schema = json.loads((root / "configs/registry/inventory/no-schema-justifications.json").read_text())
           config_keys_registry = json.loads((root / "docs/reference/contracts/schemas/CONFIG_KEYS.json").read_text())
-          rename_policy = json.loads((root / "configs/policy/config-key-renames.json").read_text())
+          rename_policy = json.loads((root / "configs/sources/governance/policy/config-key-renames.json").read_text())
           allowed_groups = set(groups.get("allowed_groups", []))
           root_file_allow = {
               "CONSUMERS.json",
@@ -1089,7 +1089,7 @@ jobs:
           }
           exclusion_prefixes = [
               "configs/sources/repository/docs/.vale/styles/",
-              "configs/ops/perf/baselines/",
+              "configs/sources/operations/ops/perf/baselines/",
           ]
           max_depth = 5
           max_files_per_dir = 40
@@ -1283,7 +1283,7 @@ jobs:
 
           # Rename compatibility policy.
           if rename_policy.get("schema_version") != 1:
-              violations.append("configs/policy/config-key-renames.json schema_version must be 1")
+              violations.append("configs/sources/governance/policy/config-key-renames.json schema_version must be 1")
           rename_violations = []
           for row in rename_policy.get("renames", []):
               old_key = row.get("old_key", "")

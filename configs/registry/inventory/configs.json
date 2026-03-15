@@ -9,7 +9,7 @@
     {
       "approved_by": "perf-governance",
       "expires_on": "2027-12-31",
-      "pattern": "configs/ops/perf/baselines/**",
+      "pattern": "configs/sources/operations/ops/perf/baselines/**",
       "reason": "legacy deep perf baselines stay explicit until perf config flattening"
     }
   ],
@@ -278,8 +278,8 @@
       "name": "observability",
       "owner": "bijux-atlas-operations",
       "public_files": [
-        "configs/observability/*.json",
-        "configs/observability/*.yaml"
+        "configs/sources/operations/observability/*.json",
+        "configs/sources/operations/observability/*.yaml"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
@@ -314,17 +314,17 @@
       "name": "ops",
       "owner": "bijux-atlas-operations",
       "public_files": [
-        "configs/ops/*.json",
-        "configs/ops/*.txt",
-        "configs/ops/*.schema.json",
-        "configs/ops/*/*.json",
-        "configs/ops/*/*.txt"
+        "configs/sources/operations/ops/*.json",
+        "configs/sources/operations/ops/*.txt",
+        "configs/sources/operations/ops/*.schema.json",
+        "configs/sources/operations/ops/*/*.json",
+        "configs/sources/operations/ops/*/*.txt"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
         "configs/schemas/contracts/inventory-ops.schema.json",
-        "configs/ops/env.schema.json",
-        "configs/ops/scenarios.schema.json"
+        "configs/sources/operations/ops/env.schema.json",
+        "configs/sources/operations/ops/scenarios.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -338,8 +338,8 @@
       "name": "perf",
       "owner": "bijux-atlas-performance",
       "public_files": [
-        "configs/perf/*.json",
-        "configs/perf/*.yaml"
+        "configs/sources/operations/perf/*.json",
+        "configs/sources/operations/perf/*.yaml"
       ],
       "schema_owner": "bijux-atlas-performance",
       "schemas": [
@@ -506,7 +506,7 @@
       "name": "slo",
       "owner": "bijux-atlas-operations",
       "public_files": [
-        "configs/slo/*.json"
+        "configs/sources/operations/slo/*.json"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
@@ -523,11 +523,11 @@
       "name": "system",
       "owner": "bijux-atlas-operations",
       "public_files": [
-        "configs/system/*.json"
+        "configs/sources/operations/system/*.json"
       ],
       "schema_owner": "bijux-atlas-operations",
       "schemas": [
-        "configs/system/system-simulation-report.schema.json"
+        "configs/sources/operations/system/system-simulation-report.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
@@ -557,7 +557,7 @@
       ]
     }
   ],
-  "max_depth": 5,
+  "max_depth": 6,
   "max_group_depth": 2,
   "max_groups": 25,
   "root_files": [

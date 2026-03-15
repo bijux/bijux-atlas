@@ -16,8 +16,8 @@ fn repo_root() -> PathBuf {
 fn performance_regression_assets_are_present_and_parseable() {
     let root = repo_root();
     let required = [
-        "configs/perf/regression-policy.json",
-        "configs/perf/regression-notifications.json",
+        "configs/sources/operations/perf/regression-policy.json",
+        "configs/sources/operations/perf/regression-notifications.json",
         "ops/report/generated/performance-regression-report.json",
         "ops/report/generated/performance-history.json",
         "ops/report/generated/performance-trend.json",

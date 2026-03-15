@@ -155,7 +155,7 @@ fn load_json<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String> {
 }
 
 fn load_suites(repo_root: &Path) -> Result<Vec<SuiteEntry>, String> {
-    let path = repo_root.join("configs/governance/suites/suites.index.json");
+    let path = repo_root.join("configs/sources/governance/governance/suites/suites.index.json");
     let index: SuitesIndex = load_json(&path)?;
     if index.schema_version != 1 || index.index_id != "governance-suites" {
         return Err(format!(
@@ -169,7 +169,7 @@ fn load_suites(repo_root: &Path) -> Result<Vec<SuiteEntry>, String> {
         .map(|name| name.trim_end_matches(".suite.json").to_string())
         .map(|suite_name| {
             let suite_path = repo_root
-                .join("configs/governance/suites")
+                .join("configs/sources/governance/governance/suites")
                 .join(format!("{suite_name}.suite.json"));
             let suite_file: SuiteFile = load_json(&suite_path)?;
             if suite_file.schema_version != 1 || suite_file.suite_id != suite_name {
@@ -193,7 +193,7 @@ fn load_suites(repo_root: &Path) -> Result<Vec<SuiteEntry>, String> {
 }
 
 fn load_checks(repo_root: &Path) -> Result<Vec<RunnableEntry>, String> {
-    let path = repo_root.join("configs/governance/checks.registry.json");
+    let path = repo_root.join("configs/sources/governance/governance/checks.registry.json");
     let registry: ChecksRegistry = load_json(&path)?;
     let suite = SuiteId::parse("checks")?;
     let mut entries = registry
@@ -230,7 +230,7 @@ fn load_checks(repo_root: &Path) -> Result<Vec<RunnableEntry>, String> {
 }
 
 fn load_contracts(repo_root: &Path) -> Result<Vec<RunnableEntry>, String> {
-    let path = repo_root.join("configs/governance/contracts.registry.json");
+    let path = repo_root.join("configs/sources/governance/governance/contracts.registry.json");
     let registry: ContractsRegistry = load_json(&path)?;
     let suite = SuiteId::parse("contracts")?;
     let mut entries = registry

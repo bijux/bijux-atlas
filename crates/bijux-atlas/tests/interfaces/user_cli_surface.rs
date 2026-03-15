@@ -59,7 +59,7 @@ fn user_cli_commands_match_governance_surface_registry() {
         .expect("run help");
     assert!(out.status.success());
     let observed = parse_help_commands(&String::from_utf8_lossy(&out.stdout));
-    let config_path = root.join("configs/governance/cli-user-command-surface.json");
+    let config_path = root.join("configs/sources/governance/governance/cli-user-command-surface.json");
     let config_text = fs::read_to_string(&config_path).expect("read cli surface config");
     let config_json: serde_json::Value = serde_json::from_str(&config_text).expect("parse config");
     let mut expected: Vec<String> = config_json["top_level_commands"]

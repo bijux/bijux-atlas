@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 
-const GOVERNANCE_RULES_PATH: &str = "configs/governance/enforcement/rules.json";
+const GOVERNANCE_RULES_PATH: &str = "configs/sources/governance/governance/enforcement/rules.json";
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]

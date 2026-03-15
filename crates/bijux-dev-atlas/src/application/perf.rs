@@ -218,9 +218,9 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
     ensure_json(&root.join("configs/schemas/contracts/perf/slo.schema.json"))?;
     ensure_json(&root.join("configs/schemas/contracts/perf/budgets.schema.json"))?;
     ensure_json(&root.join("configs/schemas/contracts/perf/exceptions.schema.json"))?;
-    let slo_path = root.join("configs/perf/slo.yaml");
-    let budgets_path = root.join("configs/perf/budgets.yaml");
-    let exceptions_path = root.join("configs/perf/exceptions.json");
+    let slo_path = root.join("configs/sources/operations/perf/slo.yaml");
+    let budgets_path = root.join("configs/sources/operations/perf/budgets.yaml");
+    let exceptions_path = root.join("configs/sources/operations/perf/exceptions.json");
     let slo = read_yaml(&slo_path)?;
     let budgets = read_yaml(&budgets_path)?;
     let exceptions = read_json(&exceptions_path)?;
@@ -277,9 +277,9 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let report = serde_json::json!({
         "schema_version": 1,
         "status": if validate_ok { "ok" } else { "failed" },
-        "slo_path": "configs/perf/slo.yaml",
-        "budgets_path": "configs/perf/budgets.yaml",
-        "exceptions_path": "configs/perf/exceptions.json",
+        "slo_path": "configs/sources/operations/perf/slo.yaml",
+        "budgets_path": "configs/sources/operations/perf/budgets.yaml",
+        "exceptions_path": "configs/sources/operations/perf/exceptions.json",
         "contracts": {
             "PERF-SLO-001": validate_ok,
             "PERF-EXC-001": expired == 0
@@ -295,8 +295,8 @@ fn run_perf_validate(args: PerfValidateArgs) -> Result<(String, i32), String> {
             "text": if validate_ok { "perf SLO validates" } else { "perf SLO is invalid" },
             "rows": [{
                 "report_path": "artifacts/perf/perf-slo.json",
-                "budgets_path": "configs/perf/budgets.yaml",
-                "exceptions_path": "configs/perf/exceptions.json",
+                "budgets_path": "configs/sources/operations/perf/budgets.yaml",
+                "exceptions_path": "configs/sources/operations/perf/exceptions.json",
                 "contracts": report["contracts"].clone()
             }],
             "summary": {
@@ -316,8 +316,8 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
     ensure_json(&root.join("configs/schemas/contracts/perf/budgets.schema.json"))?;
 
     let scenario = load_perf_scenario(&args.scenario)?;
-    let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
-    let budgets = read_yaml(&root.join("configs/perf/budgets.yaml"))?;
+    let slo = read_yaml(&root.join("configs/sources/operations/perf/slo.yaml"))?;
+    let budgets = read_yaml(&root.join("configs/sources/operations/perf/budgets.yaml"))?;
 
     let expected_path = scenario
         .get("request_path")
@@ -630,7 +630,7 @@ fn run_perf(args: PerfRunArgs) -> Result<(String, i32), String> {
 fn run_perf_cold_start(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/schemas/contracts/perf/cold-start-report.schema.json"))?;
-    let slo = read_yaml(&root.join("configs/perf/slo.yaml"))?;
+    let slo = read_yaml(&root.join("configs/sources/operations/perf/slo.yaml"))?;
     let started = Instant::now();
     let _base = start_fixture_server("/readyz".to_string(), "{\"ready\":true}".to_string())?;
     let ready_ms = started.elapsed().as_secs_f64() * 1000.0;
@@ -828,7 +828,7 @@ fn run_perf_diff(args: PerfDiffArgs) -> Result<(String, i32), String> {
 fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     ensure_json(&root.join("configs/schemas/contracts/perf/benches.schema.json"))?;
-    let registry = read_json(&root.join("configs/perf/benches.json"))?;
+    let registry = read_json(&root.join("configs/sources/operations/perf/benches.json"))?;
     let benches_root = root.join("crates/bijux-atlas/benches/server");
     let mut disk_entries = BTreeSet::new();
     for entry in fs::read_dir(&benches_root)
@@ -870,7 +870,7 @@ fn run_perf_benches_list(args: PerfValidateArgs) -> Result<(String, i32), String
         "status": if perf_bench_001 && perf_bench_002 { "ok" } else { "failed" },
         "text": if perf_bench_001 && perf_bench_002 { "bench registry matches disk" } else { "bench registry mismatch" },
         "rows": [{
-            "registry_path": "configs/perf/benches.json",
+            "registry_path": "configs/sources/operations/perf/benches.json",
             "contracts": {
                 "PERF-BENCH-001": perf_bench_001,
                 "PERF-BENCH-002": perf_bench_002
@@ -913,7 +913,7 @@ struct CliUxThresholds {
 }
 
 fn load_cli_ux_spec(root: &Path) -> Result<CliUxSpec, String> {
-    let path = root.join("configs/perf/cli-ux-benchmark-spec.json");
+    let path = root.join("configs/sources/operations/perf/cli-ux-benchmark-spec.json");
     let text = fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let spec: CliUxSpec = serde_json::from_str(&text)

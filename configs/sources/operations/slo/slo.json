@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source": "configs/ops/slo/slo.v1.json",
+  "source": "configs/sources/operations/ops/slo/slo.v1.json",
   "slis": [
     {
       "id": "readyz-availability",

@@ -45,13 +45,13 @@ fn walk_files(root: &Path) -> Vec<PathBuf> {
 }
 
 fn check_ops_surface_manifest(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let manifest = Path::new("configs/ops/ops-surface-manifest.json");
+    let manifest = Path::new("configs/sources/operations/ops/ops-surface-manifest.json");
     let surface = Path::new("ops/inventory/surfaces.json");
     let mut violations = Vec::new();
     if !ctx.adapters.fs.exists(ctx.repo_root, manifest) {
         violations.push(violation(
             "OPS_SURFACE_MANIFEST_MISSING",
-            "missing configs/ops/ops-surface-manifest.json".to_string(),
+            "missing configs/sources/operations/ops/ops-surface-manifest.json".to_string(),
             "restore ops surface manifest",
             Some(manifest),
         ));

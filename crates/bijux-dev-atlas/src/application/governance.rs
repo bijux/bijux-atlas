@@ -351,19 +351,19 @@ struct CheckReportSchemaEntry {
 }
 
 fn exceptions_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/exceptions.yaml")
+    root.join("configs/sources/governance/governance/exceptions.yaml")
 }
 
 fn checks_suite_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/checks.suite.json")
+    root.join("configs/sources/governance/governance/suites/checks.suite.json")
 }
 
 fn contracts_suite_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/contracts.suite.json")
+    root.join("configs/sources/governance/governance/suites/contracts.suite.json")
 }
 
 fn tests_suite_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/tests.suite.json")
+    root.join("configs/sources/governance/governance/suites/tests.suite.json")
 }
 
 fn checks_schema_index_path(root: &Path) -> PathBuf {
@@ -375,23 +375,23 @@ fn suite_schema_path(root: &Path) -> PathBuf {
 }
 
 fn governance_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/governance.json")
+    root.join("configs/sources/governance/governance/governance.json")
 }
 
 fn governance_registry_schema_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/governance.schema.json")
+    root.join("configs/sources/governance/governance/governance.schema.json")
 }
 
 fn governance_version_history_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/governance-version-history.json")
+    root.join("configs/sources/governance/governance/governance-version-history.json")
 }
 
 fn contract_policy_authority_map_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/contract-policy-authority-map.json")
+    root.join("configs/sources/governance/governance/contract-policy-authority-map.json")
 }
 
 fn checks_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/checks.registry.json")
+    root.join("configs/sources/governance/governance/checks.registry.json")
 }
 
 fn checks_registry_schema_path(root: &Path) -> PathBuf {
@@ -399,7 +399,7 @@ fn checks_registry_schema_path(root: &Path) -> PathBuf {
 }
 
 fn contracts_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/contracts.registry.json")
+    root.join("configs/sources/governance/governance/contracts.registry.json")
 }
 
 fn contracts_registry_schema_path(root: &Path) -> PathBuf {
@@ -427,7 +427,7 @@ fn registry_status_markdown_path(root: &Path) -> PathBuf {
 }
 
 fn suites_index_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/suites.index.json")
+    root.join("configs/sources/governance/governance/suites/suites.index.json")
 }
 
 fn suites_index_schema_path(root: &Path) -> PathBuf {
@@ -435,7 +435,7 @@ fn suites_index_schema_path(root: &Path) -> PathBuf {
 }
 
 fn tags_taxonomy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/tags.json")
+    root.join("configs/sources/governance/governance/tags.json")
 }
 
 fn tags_schema_path(root: &Path) -> PathBuf {
@@ -443,7 +443,7 @@ fn tags_schema_path(root: &Path) -> PathBuf {
 }
 
 fn check_groups_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/check-groups.json")
+    root.join("configs/sources/governance/governance/check-groups.json")
 }
 
 fn check_groups_schema_path(root: &Path) -> PathBuf {
@@ -451,7 +451,7 @@ fn check_groups_schema_path(root: &Path) -> PathBuf {
 }
 
 fn contract_groups_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/contract-groups.json")
+    root.join("configs/sources/governance/governance/contract-groups.json")
 }
 
 fn contract_groups_schema_path(root: &Path) -> PathBuf {
@@ -459,7 +459,7 @@ fn contract_groups_schema_path(root: &Path) -> PathBuf {
 }
 
 fn registry_completeness_policy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/registry-completeness-policy.json")
+    root.join("configs/sources/governance/governance/registry-completeness-policy.json")
 }
 
 fn registry_completeness_policy_schema_path(root: &Path) -> PathBuf {
@@ -467,7 +467,7 @@ fn registry_completeness_policy_schema_path(root: &Path) -> PathBuf {
 }
 
 fn default_jobs_policy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/default-jobs.json")
+    root.join("configs/sources/governance/governance/suites/default-jobs.json")
 }
 
 fn default_jobs_policy_schema_path(root: &Path) -> PathBuf {
@@ -475,7 +475,7 @@ fn default_jobs_policy_schema_path(root: &Path) -> PathBuf {
 }
 
 fn suite_baseline_policy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/suites/baseline.json")
+    root.join("configs/sources/governance/governance/suites/baseline.json")
 }
 
 fn suite_baseline_policy_schema_path(root: &Path) -> PathBuf {
@@ -483,7 +483,7 @@ fn suite_baseline_policy_schema_path(root: &Path) -> PathBuf {
 }
 
 fn compatibility_policy_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/compatibility.yaml")
+    root.join("configs/sources/governance/governance/compatibility.yaml")
 }
 
 fn compatibility_policy_schema_path(root: &Path) -> PathBuf {
@@ -491,7 +491,7 @@ fn compatibility_policy_schema_path(root: &Path) -> PathBuf {
 }
 
 fn deprecations_registry_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/deprecations.yaml")
+    root.join("configs/sources/governance/governance/deprecations.yaml")
 }
 
 fn deprecations_registry_schema_path(root: &Path) -> PathBuf {
@@ -503,7 +503,7 @@ fn exceptions_registry_schema_path(root: &Path) -> PathBuf {
 }
 
 fn exceptions_archive_path(root: &Path) -> PathBuf {
-    root.join("configs/governance/exceptions-archive.yaml")
+    root.join("configs/sources/governance/governance/exceptions-archive.yaml")
 }
 
 fn exceptions_archive_schema_path(root: &Path) -> PathBuf {
@@ -907,7 +907,7 @@ fn known_check_ids(root: &Path) -> Result<BTreeSet<String>, String> {
 
 fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
     let mut out = String::from("# Governance Exceptions\n\n");
-    out.push_str("Read-only generated view from `configs/governance/exceptions.yaml`.\n\n");
+    out.push_str("Read-only generated view from `configs/sources/governance/governance/exceptions.yaml`.\n\n");
     out.push_str(
         "| Id | Scope | Severity | Owner | Expires | Days left |\n|---|---|---|---|---|---|\n",
     );
@@ -1111,7 +1111,7 @@ fn validate_governance_registry(root: &Path) -> Result<Vec<String>, String> {
     }
 
     let contract_map_path = if registry.policy_authority_mappings.contracts
-        == "configs/governance/contract-policy-authority-map.json"
+        == "configs/sources/governance/governance/contract-policy-authority-map.json"
     {
         contract_policy_authority_map_path(root)
     } else {
@@ -2286,9 +2286,9 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         "report_id": "registry-missing-fields",
         "version": 1,
         "inputs": {
-            "checks_registry": "configs/governance/checks.registry.json",
-            "contracts_registry": "configs/governance/contracts.registry.json",
-            "completeness_policy": "configs/governance/registry-completeness-policy.json"
+            "checks_registry": "configs/sources/governance/governance/checks.registry.json",
+            "contracts_registry": "configs/sources/governance/governance/contracts.registry.json",
+            "completeness_policy": "configs/sources/governance/governance/registry-completeness-policy.json"
         },
         "status": if missing_rows.is_empty() { "ok" } else { "failed" },
         "summary": {
@@ -3532,7 +3532,7 @@ pub(crate) fn run_governance_command(
                     "version": 1,
                     "inputs": {
                         "generator": "bijux-dev-atlas governance exceptions validate",
-                        "sources": ["configs/governance/exceptions.yaml"]
+                        "sources": ["configs/sources/governance/governance/exceptions.yaml"]
                     },
                     "status": "ok",
                     "summary": {
@@ -3569,8 +3569,8 @@ pub(crate) fn run_governance_command(
                     "inputs": {
                         "generator": "bijux-dev-atlas governance exceptions validate",
                         "sources": [
-                            "configs/governance/exceptions.yaml",
-                            "configs/governance/exceptions-archive.yaml"
+                            "configs/sources/governance/governance/exceptions.yaml",
+                            "configs/sources/governance/governance/exceptions-archive.yaml"
                         ]
                     },
                     "status": "ok",
@@ -3600,7 +3600,7 @@ pub(crate) fn run_governance_command(
                         .and_then(|value| value.get("exceptions_registry"))
                         .and_then(|value| value.get("path"))
                         .and_then(serde_json::Value::as_str)
-                        == Some("configs/governance/exceptions.yaml")
+                        == Some("configs/sources/governance/governance/exceptions.yaml")
                         && manifest
                             .get("governance_assets")
                             .and_then(|value| value.get("exceptions_summary"))
@@ -3616,7 +3616,7 @@ pub(crate) fn run_governance_command(
                     "inputs": {
                         "generator": "bijux-dev-atlas governance exceptions validate",
                         "sources": [
-                            "configs/governance/exceptions.yaml",
+                            "configs/sources/governance/governance/exceptions.yaml",
                             "ops/inventory/contracts.json",
                             "ops/inventory/registry.toml"
                         ]
@@ -3701,7 +3701,7 @@ pub(crate) fn run_governance_command(
                     "inputs": {
                         "generator": "bijux-dev-atlas governance deprecations validate",
                         "sources": [
-                            "configs/governance/deprecations.yaml",
+                            "configs/sources/governance/governance/deprecations.yaml",
                             "ops/k8s/charts/bijux-atlas/values.yaml",
                             "ops/k8s/values"
                         ]
@@ -3882,8 +3882,8 @@ pub(crate) fn run_governance_command(
                     "inputs": {
                         "generator": "bijux-dev-atlas governance deprecations validate",
                         "sources": [
-                            "configs/governance/compatibility.yaml",
-                            "configs/governance/deprecations.yaml",
+                            "configs/sources/governance/governance/compatibility.yaml",
+                            "configs/sources/governance/governance/deprecations.yaml",
                             "configs/schemas/contracts/env.schema.json",
                             "ops/k8s/charts/bijux-atlas/values.schema.json",
                             "docs/redirects.json"
@@ -4134,7 +4134,7 @@ pub(crate) fn run_governance_command(
                     "inputs": {
                         "generator": "bijux-dev-atlas governance breaking validate",
                         "sources": [
-                            "configs/governance/deprecations.yaml",
+                            "configs/sources/governance/governance/deprecations.yaml",
                             "artifacts/governance/compat-warnings.json",
                             "docs/redirects.json",
                             "ops/k8s/charts/bijux-atlas/Chart.yaml",
@@ -4284,7 +4284,7 @@ pub(crate) fn run_governance_command(
                 "schema_version": 1,
                 "generated_from": {
                     "breaking_changes": "artifacts/governance/breaking-changes.json",
-                    "deprecations": "configs/governance/deprecations.yaml"
+                    "deprecations": "configs/sources/governance/governance/deprecations.yaml"
                 },
                 "breaking_changes": breaking_report.get("rows").cloned().unwrap_or_else(|| serde_json::json!([])),
                 "deprecations": active_deprecations
@@ -4343,8 +4343,8 @@ pub(crate) fn run_governance_command(
                 "inputs": {
                     "generator": "bijux-dev-atlas governance doctor",
                     "sources": [
-                        "configs/governance/exceptions.yaml",
-                        "configs/governance/deprecations.yaml",
+                        "configs/sources/governance/governance/exceptions.yaml",
+                        "configs/sources/governance/governance/deprecations.yaml",
                         "artifacts/governance/breaking-changes.json"
                     ]
                 },

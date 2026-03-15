@@ -31,7 +31,7 @@ impl CheckCatalog {
     }
 
     pub fn load(repo_root: &Path) -> Result<Self, String> {
-        let path = repo_root.join("configs/governance/checks.registry.json");
+        let path = repo_root.join("configs/sources/governance/governance/checks.registry.json");
         let text = fs::read_to_string(&path)
             .map_err(|err| format!("read {} failed: {err}", path.display()))?;
         let registry: ChecksRegistry = serde_json::from_str(&text)

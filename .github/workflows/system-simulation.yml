@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - "crates/bijux-dev-atlas/src/commands/system.rs"
-      - "configs/system/**"
+      - "configs/sources/operations/system/**"
       - ".github/workflows/system-simulation.yml"
 
 permissions:

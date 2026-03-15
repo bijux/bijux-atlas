@@ -6,13 +6,13 @@
       "rule_id": "GOV-RULE-001",
       "severity": "high",
       "message": "required file is missing",
-      "path": "configs/governance/governance.json"
+      "path": "configs/sources/governance/governance/governance.json"
     },
     {
       "rule_id": "GOV-RULE-006",
       "severity": "high",
       "message": "checks registry has no checks entries",
-      "path": "configs/governance/checks.registry.json"
+      "path": "configs/sources/governance/governance/checks.registry.json"
     },
     {
       "rule_id": "GOV-RULE-010",

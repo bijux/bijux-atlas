@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - "crates/bijux-dev-atlas/src/commands/audit.rs"
-      - "configs/audit/**"
+      - "configs/sources/governance/audit/**"
       - "docs/operations/**"
       - ".github/workflows/final-readiness.yml"
 

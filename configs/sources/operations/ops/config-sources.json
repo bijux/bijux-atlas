@@ -2,7 +2,7 @@
   "schema_version": 1,
   "concepts": {
     "tool_versions": {
-      "canonical": "configs/ops/tool-versions.json",
+      "canonical": "configs/sources/operations/ops/tool-versions.json",
       "forbid_globs": [
         "ops/**/*versions*.json"
       ],
@@ -12,7 +12,7 @@
       ]
     },
     "observability_pack": {
-      "canonical": "configs/ops/observability-pack.json",
+      "canonical": "configs/sources/operations/ops/observability-pack.json",
       "forbid_globs": [
         "ops/**/*observability*pack*.json"
       ],

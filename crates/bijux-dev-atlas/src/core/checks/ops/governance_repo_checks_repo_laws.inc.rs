@@ -227,7 +227,7 @@ pub(super) fn check_repo_duplicate_ssot_registries_absent(
             violations.push(violation(
                 "REPO_DUPLICATE_SSOT_REGISTRY_ROOT_PRESENT",
                 format!("duplicate ssot registry root is forbidden at repo root: `{rel}`"),
-                "keep ssot registries under canonical docs/configs/ops locations",
+                "keep ssot registries under canonical docs, configs, and ops locations",
                 Some(path),
             ));
         }

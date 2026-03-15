@@ -573,7 +573,7 @@ fn lane_domain_from_id(lane_id: &str) -> &'static str {
 fn domain_path_prefixes(domain: &str) -> &'static [&'static str] {
     match domain {
         "docs" => &["docs/", "mkdocs.yml", "configs/sources/repository/docs/"],
-        "ops" => &["ops/", "configs/ops/", ".github/workflows/ops-"],
+        "ops" => &["ops/", "configs/sources/operations/ops/", ".github/workflows/ops-"],
         "ci" => &[".github/workflows/", "configs/sources/repository/ci/", "crates/bijux-dev-atlas/"],
         "release" => &["ops/release/", "docs/", "configs/release/", ".github/workflows/release-"],
         "dependency" => &["Cargo.lock", ".github/workflows/dependency-"],

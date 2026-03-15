@@ -1301,9 +1301,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let resources_path = root.join("configs/security/resources.yaml");
     let policy_path = root.join("configs/security/policy.yaml");
     let data_classification_path = root.join("configs/security/data-classification.yaml");
-    let audit_schema_path = root.join("configs/observability/audit-log.schema.json");
-    let log_safe_fields_path = root.join("configs/observability/log-safe-fields.yaml");
-    let retention_path = root.join("configs/observability/retention.yaml");
+    let audit_schema_path = root.join("configs/sources/operations/observability/audit-log.schema.json");
+    let log_safe_fields_path = root.join("configs/sources/operations/observability/log-safe-fields.yaml");
+    let retention_path = root.join("configs/sources/operations/observability/retention.yaml");
     let asset_schema_path = root.join("configs/schemas/contracts/security/assets.schema.json");
     let threats_schema_path = root.join("configs/schemas/contracts/security/threats.schema.json");
     let mitigations_schema_path = root.join("configs/schemas/contracts/security/mitigations.schema.json");
@@ -1316,7 +1316,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let data_classification_schema_path =
         root.join("configs/schemas/contracts/security/data-classification.schema.json");
     let log_safe_fields_schema_path =
-        root.join("configs/observability/log-safe-fields.schema.json");
+        root.join("configs/sources/operations/observability/log-safe-fields.schema.json");
     let secrets_schema_path = root.join("configs/schemas/contracts/security/secrets.schema.json");
     let redaction_schema_path = root.join("configs/schemas/contracts/security/redaction.schema.json");
     let forbidden_patterns_schema_path =
@@ -1328,8 +1328,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let signing_policy_schema_path =
         root.join("configs/schemas/contracts/release/signing-policy.schema.json");
     let log_field_inventory_schema_path =
-        root.join("configs/observability/log-field-inventory.schema.json");
-    let retention_schema_path = root.join("configs/observability/retention.schema.json");
+        root.join("configs/sources/operations/observability/log-field-inventory.schema.json");
+    let retention_schema_path = root.join("configs/sources/operations/observability/retention.schema.json");
     let secrets_path = root.join("configs/security/secrets.json");
     let redaction_path = root.join("configs/security/redaction.json");
     let forbidden_patterns_path = root.join("configs/security/forbidden-patterns.json");
@@ -1789,13 +1789,13 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             .and_then(|value| value.get("schema"))
             .and_then(|value| value.get("path"))
             .and_then(serde_json::Value::as_str)
-            == Some("configs/observability/audit-log.schema.json")
+            == Some("configs/sources/operations/observability/audit-log.schema.json")
             && manifest
                 .get("audit_assets")
                 .and_then(|value| value.get("retention_policy"))
                 .and_then(|value| value.get("path"))
                 .and_then(serde_json::Value::as_str)
-                == Some("configs/observability/retention.yaml")
+                == Some("configs/sources/operations/observability/retention.yaml")
     });
     let rel_audit_002 = release_manifest.as_ref().is_some_and(|manifest| {
         manifest
@@ -2623,7 +2623,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
 
     let unsafe_pattern_needles = ["curl", "wget"];
     let script_allowlist_text =
-        fs::read_to_string(root.join("configs/policy/shell-network-fetch-allowlist.txt"))
+        fs::read_to_string(root.join("configs/sources/governance/policy/shell-network-fetch-allowlist.txt"))
             .unwrap_or_default();
     let script_allowlist = parse_expiry_allowlist_rows(&script_allowlist_text);
     let mut unsafe_download_hits = Vec::new();

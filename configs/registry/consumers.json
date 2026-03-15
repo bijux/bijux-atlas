@@ -142,7 +142,7 @@
     "configs/sources/repository/nextest/*.toml": [
       "ci"
     ],
-    "configs/observability/*.yaml": [
+    "configs/sources/operations/observability/*.yaml": [
       "bijux-dev-atlas",
       "runtime"
     ],
@@ -150,22 +150,22 @@
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/ops/*.json": [
+    "configs/sources/operations/ops/*.json": [
       "bijux-dev-atlas",
       "runtime",
       "ci"
     ],
-    "configs/ops/*.schema.json": [
+    "configs/sources/operations/ops/*.schema.json": [
       "bijux-dev-atlas",
       "runtime",
       "ci"
     ],
-    "configs/ops/*.txt": [
+    "configs/sources/operations/ops/*.txt": [
       "bijux-dev-atlas",
       "runtime",
       "ci"
     ],
-    "configs/ops/*/*.json": [
+    "configs/sources/operations/ops/*/*.json": [
       "bijux-dev-atlas",
       "runtime",
       "ci"
@@ -179,15 +179,15 @@
       "docs-build",
       "runtime"
     ],
-    "configs/perf/*.json": [
+    "configs/sources/operations/perf/*.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/perf/budgets.yaml": [
+    "configs/sources/operations/perf/budgets.yaml": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/perf/slo.yaml": [
+    "configs/sources/operations/perf/slo.yaml": [
       "bijux-dev-atlas",
       "runtime"
     ],
@@ -298,11 +298,11 @@
       "bijux-dev-atlas",
       "ci"
     ],
-    "configs/slo/*.json": [
+    "configs/sources/operations/slo/*.json": [
       "bijux-dev-atlas",
       "runtime"
     ],
-    "configs/system/*.json": [
+    "configs/sources/operations/system/*.json": [
       "bijux-dev-atlas",
       "runtime",
       "ci"

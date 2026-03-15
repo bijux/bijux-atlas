@@ -21,8 +21,8 @@
     "configs/sources/governance/governance/enforcement/*.json": "atlas-governance",
     "configs/registry/inventory/index.json": "platform",
     "configs/registry/owners.json": "platform",
-    "configs/perf/budgets.yaml": "bijux-atlas-performance",
-    "configs/perf/slo.yaml": "bijux-atlas-performance",
+    "configs/sources/operations/perf/budgets.yaml": "bijux-atlas-performance",
+    "configs/sources/operations/perf/slo.yaml": "bijux-atlas-performance",
     "configs/release/*.json": "platform",
     "configs/release/reproducibility-policy.json": "platform",
     "configs/release/version-policy.json": "platform",
@@ -31,9 +31,9 @@
     "configs/security/forbidden-patterns.json": "security",
     "configs/security/redaction.json": "security",
     "configs/security/secrets.json": "security",
-    "configs/system/failure-injection.json": "bijux-atlas-operations",
-    "configs/system/simulation-scenarios.json": "bijux-atlas-operations",
-    "configs/system/system-simulation-report.schema.json": "bijux-atlas-operations",
+    "configs/sources/operations/system/failure-injection.json": "bijux-atlas-operations",
+    "configs/sources/operations/system/simulation-scenarios.json": "bijux-atlas-operations",
+    "configs/sources/operations/system/system-simulation-report.schema.json": "bijux-atlas-operations",
     "configs/tutorials/*.json": "platform"
   },
   "groups": {

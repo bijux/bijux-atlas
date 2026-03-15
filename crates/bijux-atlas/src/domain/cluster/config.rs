@@ -172,7 +172,7 @@ mod tests {
 
     #[test]
     fn cluster_config_loader_accepts_example_contract() {
-        let path = repo_root().join("configs/ops/runtime/cluster-config.example.json");
+        let path = repo_root().join("configs/sources/operations/ops/runtime/cluster-config.example.json");
         let loaded = load_cluster_config_from_path(&path).expect("load cluster config");
         assert_eq!(loaded.schema_version, 1);
         assert!(loaded.validate());
@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn node_config_loader_accepts_example_contract() {
-        let path = repo_root().join("configs/ops/runtime/node-config.example.json");
+        let path = repo_root().join("configs/sources/operations/ops/runtime/node-config.example.json");
         let loaded = load_node_config_from_path(&path).expect("load node config");
         assert_eq!(loaded.schema_version, 1);
         assert!(loaded.validate());
@@ -190,7 +190,7 @@ mod tests {
 
     #[test]
     fn cluster_bootstrap_contract_enforces_join_attempts() {
-        let path = repo_root().join("configs/ops/runtime/cluster-config.example.json");
+        let path = repo_root().join("configs/sources/operations/ops/runtime/cluster-config.example.json");
         let mut loaded = load_cluster_config_from_path(&path).expect("load cluster config");
         loaded.bootstrap.max_join_attempts = 0;
         assert!(!loaded.validate());

@@ -5,14 +5,14 @@
     {
       "name": "ops.load.smoke",
       "suite": "mixed",
-      "baseline": "configs/ops/perf/baselines/local.json",
+      "baseline": "configs/sources/operations/ops/perf/baselines/local.json",
       "mode": "smoke",
       "must_validate_manifest": true
     },
     {
       "name": "ops.load.regression",
       "suite": "mixed",
-      "baseline": "configs/ops/perf/baselines/ci-runner.json",
+      "baseline": "configs/sources/operations/ops/perf/baselines/ci-runner.json",
       "mode": "regression",
       "must_validate_manifest": true
     }

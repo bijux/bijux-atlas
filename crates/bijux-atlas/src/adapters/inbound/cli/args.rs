@@ -165,7 +165,7 @@ pub(crate) enum AtlasCommand {
     IngestValidate {
         #[arg(long)]
         qc_report: CliPathBuf,
-        #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.v1.json")]
+        #[arg(long, default_value = "configs/sources/operations/ops/dataset-qc-thresholds.v1.json")]
         thresholds: CliPathBuf,
     },
     #[command(hide = true)]

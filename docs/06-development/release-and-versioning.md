@@ -51,13 +51,13 @@ Each release type still needs explicit evidence. Urgency changes the path length
 For deprecations:
 
 1. introduce the replacement first
-2. record the deprecation in `configs/governance/deprecations.yaml`
+2. record the deprecation in `configs/sources/governance/governance/deprecations.yaml`
 3. keep compatibility shims or redirects for the supported window
 4. remove the deprecated surface only after the planned removal point and updated evidence
 
 ## Practical Governance Checks
 
-Review deprecation entries in `configs/governance/deprecations.yaml` as part of release preparation, and use this command to inspect the broader governance state:
+Review deprecation entries in `configs/sources/governance/governance/deprecations.yaml` as part of release preparation, and use this command to inspect the broader governance state:
 
 ```bash
 cargo run -q -p bijux-dev-atlas -- governance doctor --format json

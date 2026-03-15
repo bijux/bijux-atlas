@@ -5,7 +5,7 @@
   "sources": [
     "docs/governance/governance-charter.md",
     "docs/governance/maintainers-and-roles.md",
-    "configs/governance/enforcement/rules.json",
+    "configs/sources/governance/governance/enforcement/rules.json",
     "artifacts/governance/governance-health-report.json"
   ],
   "status": "ok"

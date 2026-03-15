@@ -16,10 +16,10 @@ verification:
     - verification reads only local evidence files
     - consumers should compare checksums before promoting artifacts
 signed_items:
-  - path: configs/governance/exceptions.yaml
+  - path: configs/sources/governance/governance/exceptions.yaml
     kind: exceptions-registry
     required: true
-  - path: configs/governance/exceptions-archive.yaml
+  - path: configs/sources/governance/governance/exceptions-archive.yaml
     kind: exceptions-archive
     required: true
   - path: artifacts/governance/exceptions-summary.json
@@ -55,10 +55,10 @@ signed_items:
   - path: configs/security/policy.yaml
     kind: auth-policy-snapshot
     required: true
-  - path: configs/observability/audit-log.schema.json
+  - path: configs/sources/operations/observability/audit-log.schema.json
     kind: audit-schema
     required: true
-  - path: configs/observability/retention.yaml
+  - path: configs/sources/operations/observability/retention.yaml
     kind: retention-policy
     required: true
   - path: artifacts/security/audit-verify.json

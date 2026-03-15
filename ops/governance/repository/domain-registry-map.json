@@ -24,7 +24,7 @@
     },
     "make": {
       "registries": [
-        "configs/ops/make-target-registry.json"
+        "configs/sources/operations/ops/make-target-registry.json"
       ]
     },
     "ops": {

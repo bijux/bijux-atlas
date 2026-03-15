@@ -2,7 +2,7 @@
   "schema_version": 1,
   "version": "v1",
   "owner": "bijux-atlas-operations",
-  "classes_file": "configs/ops/slo/classes.json",
+  "classes_file": "configs/sources/operations/ops/slo/classes.json",
   "slis": [
     {
       "id": "readyz-availability",

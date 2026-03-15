@@ -7,11 +7,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 fn checklist_path(root: &Path) -> PathBuf {
-    root.join("configs/audit/audit-artifact-checklist.json")
+    root.join("configs/sources/governance/audit/audit-artifact-checklist.json")
 }
 
 fn schema_path(root: &Path) -> PathBuf {
-    root.join("configs/audit/audit-bundle.schema.json")
+    root.join("configs/sources/governance/audit/audit-bundle.schema.json")
 }
 
 fn bundle_path(root: &Path) -> PathBuf {
@@ -27,7 +27,7 @@ fn bundle_hash_path(root: &Path) -> PathBuf {
 }
 
 fn compliance_matrix_path(root: &Path) -> PathBuf {
-    root.join("configs/audit/compliance-matrix-template.json")
+    root.join("configs/sources/governance/audit/compliance-matrix-template.json")
 }
 
 fn compliance_report_path(root: &Path) -> PathBuf {

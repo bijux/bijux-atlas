@@ -367,7 +367,7 @@ fn load_target_metadata(
     repo_root: &Path,
     target: &str,
 ) -> Result<BTreeMap<String, Vec<String>>, String> {
-    let registry_path = repo_root.join("configs/ops/make-target-registry.json");
+    let registry_path = repo_root.join("configs/sources/operations/ops/make-target-registry.json");
     let text = fs::read_to_string(&registry_path)
         .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
     let value: serde_json::Value = serde_json::from_str(&text)
