@@ -590,10 +590,10 @@
     },
     {
       "counts": {
-        "covered": 46,
+        "covered": 43,
         "generated": 0,
         "internal": 5,
-        "public": 43,
+        "public": 40,
         "schemas": 3
       },
       "files": [
@@ -603,7 +603,6 @@
         "configs/sources/operations/ops/cache-budget-thresholds.v1.json",
         "configs/sources/operations/ops/command-artifact-retention.json",
         "configs/sources/operations/ops/command-capabilities.json",
-        "configs/sources/operations/ops/config-sources.json",
         "configs/sources/operations/ops/dataset-qc-thresholds.v1.json",
         "configs/sources/operations/ops/external-tools-allowlist.json",
         "configs/sources/operations/ops/hpa-safety-caps.json",
@@ -614,8 +613,6 @@
         "configs/sources/operations/ops/manifests-registry.json",
         "configs/sources/operations/ops/namespaces.json",
         "configs/sources/operations/ops/network-policy.json",
-        "configs/sources/operations/ops/obs/budgets.json",
-        "configs/sources/operations/ops/observability-pack.json",
         "configs/sources/operations/ops/ops-domain-surface.json",
         "configs/sources/operations/ops/ops-module-budgets.json",
         "configs/sources/operations/ops/ops-subprocess-allowlist.json",
