@@ -179,7 +179,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
     for expected in [
         "pub mod adapters;",
         "pub mod app;",
-        "pub(crate) mod infrastructure;",
         "pub use crate::app::server::{",
         "pub use crate::adapters::inbound::cli;",
         "pub use crate::adapters::inbound::client;",
@@ -218,7 +217,6 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 fn atlas_legacy_root_modules_stay_compatibility_only() {
     let root = repo_root();
     for path in [
-        "crates/bijux-atlas/src/infrastructure/mod.rs",
         "crates/bijux-atlas/src/bootstrap/mod.rs",
     ] {
         let text = fs::read_to_string(root.join(path)).expect("legacy root surface");

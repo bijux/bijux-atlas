@@ -358,7 +358,7 @@ pub fn build_router(state: AppState) -> Router {
 #[cfg(test)]
 mod bulkhead_tests {
     use super::*;
-    use crate::infrastructure::store::registry::fake::FakeStore;
+    use crate::adapters::outbound::store::registry::fake::FakeStore;
     use crate::app::server::state::DatasetCacheConfig;
 
     #[tokio::test]

@@ -34,7 +34,6 @@ pub mod contracts;
 pub mod core;
 pub mod domain;
 pub mod errors;
-pub(crate) mod infrastructure;
 pub mod model;
 pub mod ports;
 pub mod types;

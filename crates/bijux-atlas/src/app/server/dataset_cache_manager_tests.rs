@@ -5,7 +5,7 @@ use crate::app::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
 use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
-use crate::infrastructure::store::registry::fake::FakeStore;
+use crate::adapters::outbound::store::registry::fake::FakeStore;
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;
 use std::sync::Arc;
