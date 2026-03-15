@@ -515,7 +515,7 @@ jobs:
           cargo test --locked -q -p bijux-atlas runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- contracts make --mode static --format text --artifacts-root "${contracts_root}" > "${contracts_root}/make-static.txt" 2> "${logs_root}/make-contracts-static.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- docker check --allow-subprocess --format json > "${contracts_root}/docker-check.json" 2> "${logs_root}/docker-check.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts ops --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/ops-static.json" 2> "${logs_root}/ops-contracts-static.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- ops validate --format json > "${contracts_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
           cargo test --locked -q -p bijux-dev-atlas --test ops_contract_registry_snapshot -- --nocapture > "${logs_root}/ops-contract-snapshot.stdout.log" 2> "${logs_root}/ops-contract-snapshot.stderr.log"
           for file in \
             ops/inventory/contract-gate-map.json \
@@ -530,38 +530,42 @@ jobs:
             ops/inventory/surfaces.json \
             ops/schema/generated/schema-index.json \
             ops/_generated.example/contracts-registry-snapshot.json > "${logs_root}/contracts-canonical-diff.log"
-          jq -r '.tests[] | select(.status=="FAIL" or .status=="ERROR") | "\(.contract_id) \(.test_id) \(.status) \((.violations | map(.message) | join("; ")))"' \
-            "${contracts_root}/ops-static.json" | while IFS= read -r row; do
-            [ -z "${row}" ] && continue
-            contract_id="$(echo "${row}" | awk '{print $1}')"
-            test_id="$(echo "${row}" | awk '{print $2}')"
-            message="$(echo "${row}" | cut -d' ' -f4-)"
-            echo "::error title=OPS Contract ${contract_id}/${test_id}::${message}"
-          done
-          jq -r '.tests[] | select(.status=="FAIL" or .status=="ERROR") | "\(.contract_id) \(.test_id) \((.violations | map(.message) | join("; ")))"' \
-            "${contracts_root}/ops-static.json" > "${contracts_root}/ops-failures.txt"
           jq -r '
-            . as $r
-            | $r.tests
-            | group_by((.contract_id | split("-")[1]))[]
-            | {
-                pillar: (.[0].contract_id | split("-")[1]),
-                contracts: (map(.contract_id) | unique | length),
-                tests: length,
-                pass: (map(select(.status=="PASS")) | length),
-                fail: (map(select(.status=="FAIL")) | length),
-                skip: (map(select(.status=="SKIP")) | length),
-                error: (map(select(.status=="ERROR")) | length),
-                pass_rate: ((map(select(.status=="PASS")) | length) / length)
-              }
-          ' "${contracts_root}/ops-static.json" > "${contracts_root}/ops-coverage-by-pillar.json"
-          jq -n --argfile ops "${contracts_root}/ops-static.json" --argfile docker "${contracts_root}/docker-check.json" --argfile pillar "${contracts_root}/ops-coverage-by-pillar.json" '
+            .rows[0].checks_output
+            | fromjson
+            | .results[]
+            | select(.status=="fail" or .status=="error")
+            | "\(.id) \(.status) \((.violations | map(.message) | join("; ")))"
+          ' "${contracts_root}/ops-validate.json" | while IFS= read -r row; do
+            [ -z "${row}" ] && continue
+            check_id="$(echo "${row}" | awk '{print $1}')"
+            status="$(echo "${row}" | awk '{print $2}')"
+            message="$(echo "${row}" | cut -d' ' -f3-)"
+            echo "::error title=OPS Validation ${check_id}/${status}::${message}"
+          done
+          jq -r '
+            .rows[0].checks_output
+            | fromjson
+            | .results[]
+            | select(.status=="fail" or .status=="error")
+            | "\(.id) \((.violations | map(.message) | join("; ")))"
+          ' "${contracts_root}/ops-validate.json" > "${contracts_root}/ops-failures.txt"
+          jq '
             {
               schema_version: 1,
-              kind: "contracts_coverage_v1",
+              kind: "ops_pipeline_coverage_v1",
+              summary: .rows[0].pipeline.summary,
+              rows: .rows[0].pipeline.rows
+            }
+          ' "${contracts_root}/ops-validate.json" > "${contracts_root}/ops-coverage-by-pipeline.json"
+          jq -n --argfile ops "${contracts_root}/ops-validate.json" --argfile docker "${contracts_root}/docker-check.json" --argfile pipeline "${contracts_root}/ops-coverage-by-pipeline.json" '
+            {
+              schema_version: 1,
+              kind: "ops_validation_coverage_v1",
               ops_summary: $ops.summary,
+              ops_pipeline_summary: $ops.rows[0].pipeline.summary,
               docker_summary: $docker.summary,
-              pillar_coverage: $pillar
+              pipeline_coverage: $pipeline
             }
           ' > "${contracts_root}/coverage-summary.json"
           # Coverage heatmap + missing proof + proof debt ledger + proof-level guardrails.
@@ -645,14 +649,18 @@ jobs:
               "control_plane": contracts_root / "control-plane-static.json",
               "configs": contracts_root / "configs-static.json",
               "docker": contracts_root / "docker-check.json",
-              "ops": contracts_root / "ops-static.json",
+              "ops": contracts_root / "ops-validate.json",
               "root": contracts_root / "root-static-first.json",
           }
           measured = {}
           over = []
           for domain, path in files.items():
               payload = json.loads(path.read_text())
-              dur = int(payload.get("summary", {}).get("duration_ms", 0))
+              if domain == "ops":
+                  checks_output = json.loads(payload["rows"][0]["checks_output"])
+                  dur = int(sum(int(row.get("duration_ms", 0)) for row in checks_output.get("results", [])))
+              else:
+                  dur = int(payload.get("summary", {}).get("duration_ms", 0))
               measured[domain] = dur
               budget = int(budgets.get(domain, 0))
               if budget and dur > budget and domain not in active_waivers:
@@ -1376,8 +1384,8 @@ jobs:
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${CACHE_REGISTRY_HIT}" "${CACHE_TARGET_HIT}" > "artifacts/${RUN_ID}/summary.md"
-          printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- wrappers required: %s\n- wrappers required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts wrappers static: %s\n- contracts ops static: %s\n- docker check: %s\n- coverage: %s\n" \
-            "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-check.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- wrappers required: %s\n- wrappers required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts wrappers static: %s\n- ops validation: %s\n- docker check: %s\n- coverage: %s\n" \
+            "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-validate.json" "${contracts_root}/docker-check.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
           printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- wrapper surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs quality contracts: %s\n- configs taxonomy contracts: %s\n- configs semantic diff: %s\n- config debt ledger: %s\n- config key usage map: %s\n- configs graph: %s\n- configs explain: %s\n- configs diff: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-quality-contracts.json" "${report_root}/configs-taxonomy-contracts.json" "${report_root}/configs-semantic-diff.json" "${report_root}/config-debt-ledger.json" "${report_root}/config-key-usage-map.json" "${report_root}/configs-graph.json" "${report_root}/configs-explain-configs-json.json" "${report_root}/configs-diff.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"

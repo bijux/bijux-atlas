@@ -77,7 +77,7 @@ jobs:
           cp make/target-list.json "${report_root}/make-target-list.json"
           cargo run --locked -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- contracts make --mode static --format text --artifacts-root "${contracts_root}" > "${contracts_root}/make-static.txt" 2> "${logs_root}/make-contracts-static.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts ops --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/ops-static.json" 2> "${logs_root}/ops-contracts-static.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- ops validate --format json > "${contracts_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- docker check --allow-subprocess --format json > "${report_root}/docker-check.json" 2> "${logs_root}/docker-check.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- docs registry build --allow-write --format json > "${report_root}/docs-registry-build.json" 2> "${logs_root}/docs-registry-build.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- docs reference generate --allow-subprocess --allow-write --format json > "${report_root}/docs-reference-generate.json" 2> "${logs_root}/docs-reference-generate.stderr.log"
@@ -86,8 +86,8 @@ jobs:
           make ops-contracts-effect > "${logs_root}/ops-contracts-effect.stdout.log" 2> "${logs_root}/ops-contracts-effect.stderr.log"
           make ops-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-nightly.json"
-          printf "- lane: ci-nightly\n- report: %s\n- docs registry build: %s\n- docs reference generate: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- docker check: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/ci-nightly.json" "${report_root}/docs-registry-build.json" "${report_root}/docs-reference-generate.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${report_root}/docker-check.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          printf "- lane: ci-nightly\n- report: %s\n- docs registry build: %s\n- docs reference generate: %s\n- contracts configs static: %s\n- contracts make static: %s\n- ops validation: %s\n- docker check: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-nightly.json" "${report_root}/docs-registry-build.json" "${report_root}/docs-reference-generate.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-validate.json" "${report_root}/docker-check.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()

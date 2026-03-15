@@ -413,15 +413,22 @@ trait Pipe: Sized {
 impl<T> Pipe for T {}
 
 fn normalized_contract_command(command: &str) -> String {
-    if command == "bijux dev atlas ops check" {
-        "bijux dev atlas ops validate".to_string()
-    } else if command.starts_with("bijux dev atlas contracts ops ") {
-        if command.contains("--allow-network") {
-            "bijux dev atlas ops validate --allow-network".to_string()
+    if matches!(
+        command,
+        "bijux dev atlas ops check" | "bijux-dev-atlas ops check"
+    ) {
+        "bijux-dev-atlas ops validate".to_string()
+    } else if command.starts_with("bijux dev atlas contracts ops ")
+        || command.starts_with("bijux-dev-atlas contracts ops ")
+    {
+        if command.contains("--allow-network") && command.contains("--allow-subprocess") {
+            "bijux-dev-atlas ops validate --allow-subprocess --allow-network".to_string()
+        } else if command.contains("--allow-network") {
+            "bijux-dev-atlas ops validate --allow-network".to_string()
         } else if command.contains("--allow-subprocess") {
-            "bijux dev atlas ops validate --allow-subprocess".to_string()
+            "bijux-dev-atlas ops validate --allow-subprocess".to_string()
         } else {
-            "bijux dev atlas ops validate".to_string()
+            "bijux-dev-atlas ops validate".to_string()
         }
     } else {
         command.replace("--only-contract", "--only")
@@ -499,9 +506,9 @@ fn known_commands_local(root: &Path) -> Result<BTreeSet<String>, String> {
         .collect::<BTreeSet<_>>();
     let mut commands = targets;
     commands.extend([
-        "bijux dev atlas ops validate".to_string(),
-        "bijux dev atlas ops validate --allow-network".to_string(),
-        "bijux dev atlas ops validate --allow-subprocess".to_string(),
+        "bijux-dev-atlas ops validate".to_string(),
+        "bijux-dev-atlas ops validate --allow-network".to_string(),
+        "bijux-dev-atlas ops validate --allow-subprocess".to_string(),
     ]);
     let checks_registry: serde_json::Value = read_json_file(&checks_registry_path(root))?;
     for check in checks_registry["checks"].as_array().into_iter().flatten() {
