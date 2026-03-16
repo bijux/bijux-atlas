@@ -266,10 +266,14 @@ fn normalized_output_is_blocked_in_prod_mode() {
 #[test]
 fn cyclic_parent_graph_is_detected() {
     let root = tempdir().expect("tempdir");
-    let mut o = opts(root.path(), StrictnessMode::Strict);
-    o.gff3_path = fixture_dir().join("genes_parent_cycle.gff3");
-    let err = ingest_dataset(&o).expect_err("cycle must fail in strict mode");
+    let err = {
+        let mut o = opts(root.path(), StrictnessMode::Strict);
+        o.gff3_path = fixture_dir().join("genes_parent_cycle.gff3");
+        ingest_dataset(&o).expect_err("cycle must fail in strict mode")
+    };
     assert!(err.to_string().contains("cyclic Parent graph"));
+    drop(err);
+    root.close().expect("close tempdir");
 }
 
 #[test]

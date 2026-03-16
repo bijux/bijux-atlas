@@ -8,9 +8,32 @@ use crate::app::server::state::cache_runtime::cache_storage_runtime::{
 use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 use tempfile::tempdir;
+
+struct CreatedDirGuard {
+    path: PathBuf,
+    existed: bool,
+}
+
+impl CreatedDirGuard {
+    fn new(path: &Path) -> Self {
+        Self {
+            path: path.to_path_buf(),
+            existed: path.exists(),
+        }
+    }
+}
+
+impl Drop for CreatedDirGuard {
+    fn drop(&mut self) {
+        if !self.existed && self.path.exists() {
+            let _ = std::fs::remove_dir_all(&self.path);
+        }
+    }
+}
 
 fn fixture_sqlite() -> Vec<u8> {
     let dir = tempdir().expect("tempdir");
@@ -683,21 +706,22 @@ async fn cache_root_permissions_are_hardened() {
 
 #[tokio::test]
 async fn relative_cache_root_is_anchored_to_the_workspace_artifacts_root() {
-    let crate_local_cache_root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    let relative_cache_root = PathBuf::from("artifacts/test-relative-cache-root");
+    let expected_workspace_cache_root =
+        crate::runtime::config::resolve_runtime_path(relative_cache_root.clone());
+    let _cleanup = CreatedDirGuard::new(&expected_workspace_cache_root);
+    let crate_local_cache_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("artifacts")
-        .join("server-cache");
+        .join("test-relative-cache-root");
     let mgr = DatasetCacheManager::new(
         DatasetCacheConfig {
-            disk_root: std::path::PathBuf::from("artifacts/server-cache"),
+            disk_root: relative_cache_root,
             ..Default::default()
         },
         Arc::new(FakeStore::default()),
     );
 
-    assert_eq!(
-        mgr.disk_root(),
-        crate::runtime::config::default_runtime_cache_root().as_path()
-    );
+    assert_eq!(mgr.disk_root(), expected_workspace_cache_root.as_path());
     assert!(
         !crate_local_cache_root.exists(),
         "relative cache roots must never create crate-local artifacts: {}",
