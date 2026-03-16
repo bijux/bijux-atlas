@@ -2,7 +2,7 @@
 
 <a id="top"></a>
 
-**Bijux Atlas is a Rust-owned atlas runtime and release control plane for immutable dataset artifacts, governed APIs, and reproducible operations evidence.**
+**Bijux Atlas is a Rust-owned genomics dataset delivery platform for GFF3/FASTA ingest, immutable gene-query artifacts, governed HTTP APIs, and reproducible operations evidence.**
 
 This repository currently ships four connected surfaces:
 
@@ -12,6 +12,7 @@ This repository currently ships four connected surfaces:
 * `bijux-dev-atlas`: the maintainer control plane binary defined in this workspace.
 
 The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
+Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: install Atlas through `bijux` when you want routed `bijux atlas ...` and `bijux dev atlas ...` commands, or install Atlas directly when you want the standalone binaries only.
 
 [![crates.io](https://img.shields.io/crates/v/bijux-atlas.svg)](https://crates.io/crates/bijux-atlas)
 [![Rust Docs](https://img.shields.io/badge/docs-Rust%20Docs-blue)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
@@ -38,6 +39,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 
 * [Why Bijux Atlas?](#why-bijux-atlas)
 * [What Ships Today](#what-ships-today)
+* [How Atlas Fits With Bijux CLI](#how-atlas-fits-with-bijux-cli)
 * [Key Features](#key-features)
 * [Installation](#installation)
 * [Runtime in 60 Seconds](#runtime-in-60-seconds)
@@ -107,6 +109,20 @@ runtime use and which are for repository maintenance.
 
 ---
 
+## How Atlas Fits With Bijux CLI
+
+Atlas owns the domain runtime for genomic dataset build, query, and serving workflows.
+`bijux-cli` owns the umbrella command runtime that can route Atlas alongside other Bijux tools.
+
+Choose one command identity per environment:
+
+* use `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi` when you want the Atlas binaries directly
+* use `bijux atlas ...` and `bijux dev atlas ...` when you already standardize on the `bijux` umbrella runtime
+
+The routed and direct entrypoints should describe the same Atlas runtime surface. The difference is packaging and command routing, not a different product contract.
+
+---
+
 ## Key Features
 
 ### Immutable Dataset Delivery
@@ -136,18 +152,22 @@ The release story includes checked manifests, compatibility tables, docs deploym
 
 ## Installation
 
-Use the release channel that matches the surface you need:
+Choose one install route at a time.
 
-```bash
-cargo install --locked bijux-atlas
-```
-
-If you use the `bijux` umbrella installer, install the runtime plugin and call it through the stable namespace:
+If you already use the `bijux` umbrella CLI, prefer the routed Atlas install so the runtime stays reachable through the same command root as the rest of your Bijux toolchain:
 
 ```bash
 bijux install bijux-atlas
 bijux atlas --help
 bijux atlas version
+```
+
+Use direct Cargo installation when you want Atlas by itself, or when CI and local Rust workflows call the binaries directly:
+
+```bash
+cargo install --locked bijux-atlas
+bijux-atlas --help
+bijux-atlas version
 ```
 
 For maintainer automation, the installed umbrella namespace is:
@@ -157,7 +177,7 @@ bijux install bijux-dev-atlas
 bijux dev atlas --help
 ```
 
-Quick verification:
+Quick verification for the standalone binaries:
 
 ```bash
 bijux-atlas version

@@ -13,6 +13,30 @@ flowchart LR
 This contributor path is here to make the review standard explicit. Atlas changes are expected to
 carry their own explanation and proof, not just code edits in isolation.
 
+## Prerequisites
+
+- Rust 1.85.0 through [`rust-toolchain.toml`](rust-toolchain.toml)
+- Cargo
+- GNU Make
+- Python 3 when you need to run the MkDocs documentation toolchain from [`configs/sources/repository/docs/requirements.txt`](configs/sources/repository/docs/requirements.txt)
+
+## Local Setup
+
+Start from the repository root and verify the control-plane surfaces before making broader edits:
+
+```bash
+cargo fetch
+cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- governance validate --format json
+make help
+```
+
+If you are changing published docs behavior or MkDocs configuration, also run:
+
+```bash
+make docs-validate
+```
+
 ## Read Before You Edit
 
 Start here before opening a broad change:
@@ -54,6 +78,8 @@ make help
 
 If these fail, fix the environment or the repository state before adding more edits.
 
+When your change touches install guidance or the `bijux atlas ...` routed surface, verify both the direct Atlas binaries and the umbrella route where applicable so `bijux-atlas` and `bijux-cli` stay aligned.
+
 ## Choosing Validation Honestly
 
 Run the smallest meaningful proof for the surface you changed, then the wrapper or lane that reviewers will rely on.
@@ -61,6 +87,7 @@ Run the smallest meaningful proof for the surface you changed, then the wrapper 
 - runtime behavior change: run focused crate tests and update the matching reference or contract page
 - docs, configs, ops, or makes change: run the relevant `bijux-dev-atlas` validation command and the narrowest matching lane
 - public command, schema, or contract change: update the checked-in documentation and any generated outputs that describe the surface
+- moved or renamed docs page: regenerate redirects with `cargo run -q -p bijux-dev-atlas -- docs redirects sync --allow-write`
 - release-sensitive change: review [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md) and refresh the supporting evidence
 
 ```mermaid
