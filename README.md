@@ -63,6 +63,19 @@ Bijux Atlas is for repository-managed dataset systems where:
 * release claims should come from checked evidence instead of folklore,
 * and maintainers need one honest control plane instead of scattered shell logic.
 
+```mermaid
+flowchart LR
+    Sources[Governed source inputs] --> Validate[Validate and normalize]
+    Validate --> Build[Build immutable artifacts]
+    Build --> Publish[Publish to store and catalog]
+    Publish --> Serve[Serve through CLI and HTTP]
+    Serve --> Observe[Observe through metrics, logs, and contracts]
+```
+
+This product map is the shortest accurate picture of Atlas. The repository does not revolve around
+mutable runtime state alone. It revolves around turning governed inputs into immutable artifacts and
+then exposing those artifacts through explicit surfaces.
+
 ---
 
 ## What Ships Today
@@ -77,6 +90,20 @@ The repository is strongest when it stays concrete about what is already real:
 * and release inputs for crates, images, docs, and operations evidence.
 
 This README intentionally describes the shipped release surfaces and their contracts, not every internal experiment or implementation detail in the workspace.
+
+```mermaid
+flowchart TD
+    Workspace[Repository workspace] --> RuntimeCLI[bijux-atlas]
+    Workspace --> Server[bijux-atlas-server]
+    Workspace --> OpenAPI[bijux-atlas-openapi]
+    Workspace --> ControlPlane[bijux-dev-atlas]
+    Workspace --> Docs[Numbered docs spine]
+    Workspace --> Governance[configs and ops validation]
+```
+
+This release-surface diagram is important because Atlas ships more than one binary and more than
+one kind of repository contract. Readers should be able to see immediately which surfaces are for
+runtime use and which are for repository maintenance.
 
 ---
 
@@ -172,6 +199,17 @@ For the canonical runtime references, start with:
 * [`docs/04-operations/index.md`](docs/04-operations/index.md)
 * [`docs/07-reference/command-surface.md`](docs/07-reference/command-surface.md)
 
+```mermaid
+flowchart LR
+    Inspect[Inspect CLI and server] --> BuildDocs[Read getting started]
+    BuildDocs --> Ingest[Build a dataset]
+    Ingest --> Serve[Start the server]
+    Serve --> Query[Run first queries]
+```
+
+This quick-start path is intentionally shorter than the full docs spine. It is for readers who want
+to confirm the product shape before they commit to a deeper setup.
+
 ---
 
 ## Maintainer Control Plane
@@ -197,6 +235,16 @@ cargo run -q -p bijux-dev-atlas -- release validate --format json
 make ci-fast
 ```
 
+```mermaid
+flowchart LR
+    Change[Contributor change] --> Validate[Governance and doctor checks]
+    Validate --> Test[Test and evidence]
+    Test --> Release[Release validation and generation]
+```
+
+The maintainer surface is separate on purpose. It keeps repository validation, docs generation, and
+release evidence out of the runtime binaries that end users depend on.
+
 ---
 
 ## Packages, Configs, and Ops
@@ -212,6 +260,21 @@ That is intentional, but the boundaries stay explicit:
 
 The goal is not “everything is public API.”
 The goal is one honest source of truth for each governed concern.
+
+```mermaid
+flowchart TD
+    Repo[Repository] --> Crates[crates]
+    Repo --> Configs[configs]
+    Repo --> Ops[ops]
+    Repo --> Docs[docs]
+    Repo --> Makes[makes]
+    Docs --> ReaderFace[Reader-facing product docs]
+    Configs --> Policy[Policy and schema sources]
+    Ops --> RuntimeOps[Operational inputs]
+```
+
+This repository map helps explain why Atlas looks broader than a single-crate project. The extra
+trees are not incidental clutter; they are part of the governed release and operations surface.
 
 ---
 

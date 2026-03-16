@@ -25,6 +25,9 @@ flowchart TD
     F --> G[Troubleshoot early problems if needed]
 ```
 
+This sequence is intentionally linear. It gives first-time readers one reliable path to a successful
+local run instead of asking them to assemble a workflow from scattered pages.
+
 ## What You Will Have at the End
 
 - a working Atlas CLI invocation
@@ -41,6 +44,9 @@ flowchart LR
     Store --> Server[Local server]
     Server --> Queries[First queries]
 ```
+
+This diagram shows the state you should expect to create, not just the commands you should run.
+That matters because Atlas separates build outputs, serving store state, and runtime behavior.
 
 ## Pages in This Section
 
@@ -61,11 +67,22 @@ flowchart LR
     GS --> Trouble[Troubleshoot]
 ```
 
+This section map is useful when you return later. It tells you which page to reopen when you need to
+repeat only part of the first-run path.
+
 ## Ground Rules
 
 - commands prefer repository-relative paths so you can follow them from the workspace root
 - sample data comes from committed test fixtures rather than invented fake commands
 - output roots go under `artifacts/`, not inside crate directories
+
+## What This Section Deliberately Does Not Cover
+
+- production deployment topologies
+- every query shape or advanced runtime flag
+- deep architecture rationale for maintainers
+
+Those topics matter, but they come later in the docs spine after you have a working local baseline.
 
 ## Purpose
 

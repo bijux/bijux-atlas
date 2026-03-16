@@ -2,6 +2,17 @@
 
 Atlas expects contributors to work from source-of-truth documents, governed commands, and small reviewable changes. If a README, comment, or habit disagrees with the numbered docs spine or a control-plane check, treat the docs spine and the check as authoritative.
 
+```mermaid
+flowchart LR
+    Understand[Read the relevant docs] --> Change[Make one coherent change]
+    Change --> Validate[Run focused proof]
+    Validate --> Align[Update docs and generated evidence]
+    Align --> Review[Prepare a reviewable branch]
+```
+
+This contributor path is here to make the review standard explicit. Atlas changes are expected to
+carry their own explanation and proof, not just code edits in isolation.
+
 ## Read Before You Edit
 
 Start here before opening a broad change:
@@ -26,6 +37,9 @@ Start here before opening a broad change:
 - update docs, tests, configs, ops inputs, and generated evidence together when a governed surface changes
 - do not hand-edit generated artifacts unless the owning command regenerated them in the same change
 
+These rules exist so the repository stays explainable months later. A reviewer should be able to
+look at a commit, a generated artifact, and the owning command and see one coherent story.
+
 ## Local Baseline
 
 These commands are a good first pass from a fresh checkout:
@@ -48,6 +62,21 @@ Run the smallest meaningful proof for the surface you changed, then the wrapper 
 - docs, configs, ops, or makes change: run the relevant `bijux-dev-atlas` validation command and the narrowest matching lane
 - public command, schema, or contract change: update the checked-in documentation and any generated outputs that describe the surface
 - release-sensitive change: review [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md) and refresh the supporting evidence
+
+```mermaid
+flowchart TD
+    Surface[Changed surface] --> Runtime[Runtime behavior]
+    Surface --> Repo[Docs or governance]
+    Surface --> Contract[Public contract]
+    Surface --> Release[Release-sensitive]
+    Runtime --> RuntimeProof[Focused crate tests]
+    Repo --> RepoProof[Relevant dev-atlas validation]
+    Contract --> ContractProof[Docs plus generated outputs]
+    Release --> ReleaseProof[Release validation and evidence]
+```
+
+This validation map keeps “run some tests” from becoming vague advice. Different surfaces need
+different proof, and the right proof should be obvious before review starts.
 
 ## Pull Request Standard
 

@@ -29,6 +29,10 @@ flowchart TD
     A --> H[Policy workflows]
 ```
 
+This workflow map shows the practical jobs Atlas users return to most often. The user guide is
+organized around those jobs so readers can start from the action they need instead of from internal
+implementation structure.
+
 ```mermaid
 flowchart LR
     UserGuide[User guide] --> Product[Everyday product use]
@@ -36,6 +40,10 @@ flowchart LR
     Product --> Operations[Operations for production]
     Product --> Architecture[Architecture for deeper understanding]
 ```
+
+This second diagram clarifies the section boundary. The user guide should help you use Atlas well,
+but it should not try to replace the operator runbooks, reference indexes, or maintainer
+architecture pages.
 
 ## Pages in This Section
 
@@ -62,6 +70,12 @@ For those, move to:
 - [Operations](../04-operations/index.md)
 - [Architecture](../05-architecture/index.md)
 - [Reference](../07-reference/index.md)
+
+## When to Use This Section
+
+- you can already run Atlas locally
+- you need to repeat a workflow such as ingest, publish, query, or server startup
+- you want procedure and examples, not just a flat command listing
 
 ## Purpose
 

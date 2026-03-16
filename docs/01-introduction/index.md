@@ -28,6 +28,10 @@ flowchart TD
     C --> G[Contracts and compatibility]
 ```
 
+This flow is the core introduction model. It shows that Atlas centers the artifact boundary, not the
+source tree and not the live server process. Readers who understand this diagram will read the rest
+of the docs with the right expectations.
+
 The introduction pages answer these foundational questions:
 
 - what Atlas is and is not
@@ -43,6 +47,9 @@ mindmap
     Boundaries
     Guarantees
 ```
+
+This mind map explains why the introduction section exists at all. It is not a feature tour. It is
+the conceptual groundwork needed before workflow pages or reference pages will make sense.
 
 ## Pages in This Section
 
@@ -60,6 +67,16 @@ flowchart LR
     Guarantees --> GettingStarted[Getting Started]
 ```
 
+This page map shows the intended order inside the section. Most readers should move through these
+pages before jumping into commands, because each page removes a different category of confusion.
+
+## What You Should Know After This Section
+
+- what Atlas considers a durable product artifact
+- which behaviors are described as current implementation versus stable promise
+- where Atlas draws system boundaries and non-goals
+- which next section to read for hands-on work
+
 ## Reading Advice
 
 Do not skip this section if you are planning to:
@@ -70,6 +87,13 @@ Do not skip this section if you are planning to:
 - review compatibility claims
 
 Without this model, it is easy to confuse source files with durable artifacts, runtime details with public contracts, or internal code layout with user-facing guarantees.
+
+## Common Reader Mistakes This Section Prevents
+
+- assuming ingest output and published serving artifacts are the same thing
+- treating every CLI detail as a compatibility commitment
+- assuming the live server is the source of truth for dataset state
+- reading architecture pages before learning the product vocabulary
 
 ## Purpose
 

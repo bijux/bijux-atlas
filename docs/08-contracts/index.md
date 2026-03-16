@@ -22,12 +22,18 @@ flowchart LR
     Contracts --> Ownership[Ownership and versioning]
 ```
 
+This map names the stable promises Atlas chooses to publish. A page belongs in this section only
+when it describes behavior that reviewers, operators, or downstream users are expected to rely on.
+
 ```mermaid
 flowchart TD
     Promise[Promise] --> Docs[Documentation]
     Promise --> Tests[Test enforcement]
     Promise --> Review[Review and release decisions]
 ```
+
+This diagram explains how Atlas treats a contract: it is not just prose. A contract should connect
+to test enforcement and release decisions so the promise remains credible over time.
 
 ## Pages in This Section
 
@@ -43,6 +49,12 @@ flowchart TD
 ## Purpose
 
 This page defines the Atlas contract expectations for contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+
+## When to Reach for This Section
+
+- a change might alter a documented compatibility promise
+- you need to know whether a behavior is intentionally stable
+- a release, review, or downstream integration decision depends on a clear promise
 
 ## Stability
 

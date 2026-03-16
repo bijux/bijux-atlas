@@ -27,6 +27,9 @@ flowchart TD
     Contracts --> Runtime
 ```
 
+This diagram names the architectural layers readers will see across the codebase. It makes clear
+that contracts shape both the domain and the runtime, rather than living as an afterthought.
+
 ```mermaid
 flowchart LR
     Architecture[Architecture docs] --> Overview[System overview]
@@ -38,6 +41,15 @@ flowchart LR
     Architecture --> RuntimeFlow[Runtime composition]
     Architecture --> Boundaries[Contracts and boundaries]
 ```
+
+This map helps maintainers pick the right architecture page for the question they are trying to
+answer. That keeps readers from treating one overview page as a substitute for the whole section.
+
+## When to Prefer This Section
+
+- you are deciding where code should live
+- you need to understand why a boundary exists
+- you are reviewing a design or refactor rather than running a workflow
 
 ## Pages in This Section
 

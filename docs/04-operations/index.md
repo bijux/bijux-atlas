@@ -26,6 +26,10 @@ flowchart TD
     Operate --> Recover[Recover from incidents and rollback]
 ```
 
+This operating sequence reflects the real order of responsibility in production. Atlas should be
+deployed from explicit artifact state, configured deliberately, observed continuously, and recovered
+with written procedures rather than guesswork.
+
 ```mermaid
 flowchart LR
     Operations[Operations] --> Runtime[Runtime behavior]
@@ -33,6 +37,9 @@ flowchart LR
     Operations --> Security[Security posture]
     Operations --> Recovery[Incident response]
 ```
+
+This map shows the four operator concerns this section covers. It helps readers find the right page
+quickly when the problem is operational rather than developmental.
 
 ## Pages in This Section
 
@@ -50,6 +57,12 @@ flowchart LR
 ## Operational Principle
 
 Atlas should be run from explicit artifact and catalog state, with explicit runtime inputs, and with observability that explains what the system is doing rather than hiding drift.
+
+## Who Should Read This Section
+
+- operators preparing a real deployment
+- maintainers on call for runtime failures
+- reviewers checking whether a change affects production procedures
 
 ## Purpose
 

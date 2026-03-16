@@ -23,12 +23,19 @@ flowchart LR
     Need --> Terms[Glossary]
 ```
 
+This lookup map exists so readers can move directly from a factual question to the right reference
+page. Reference pages are meant to shorten confirmation work, not add more narrative.
+
 ```mermaid
 flowchart TD
     Reference[Reference section] --> Lookup[Fast lookup]
     Reference --> Accuracy[Factual accuracy]
     Reference --> NotTutorial[Not a tutorial]
 ```
+
+This diagram makes the section boundary explicit. If you need step-by-step guidance, move back to
+getting-started, user-guide, or operations pages instead of expecting the reference section to teach
+workflow.
 
 ## Pages in This Section
 
@@ -46,6 +53,12 @@ flowchart TD
 ## Purpose
 
 This page is the lookup reference for reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## What to Expect Here
+
+- exact names, keys, paths, and identifiers
+- cross-links into generated evidence where helpful
+- less tutorial prose and more stable factual lookup
 
 ## Stability
 

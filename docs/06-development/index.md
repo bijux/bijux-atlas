@@ -26,6 +26,9 @@ flowchart TD
     Docs --> Release[Release safely]
 ```
 
+This change path shows the standard Atlas development loop. Code, proof, documentation, and release
+discipline are expected to move together, not as separate cleanup steps.
+
 ```mermaid
 flowchart LR
     Development[Development docs] --> Local[Local workflow]
@@ -34,6 +37,16 @@ flowchart LR
     Development --> Compatibility[Change discipline]
     Development --> Docs[Documentation standards]
 ```
+
+This page map helps contributors find the owning guidance for the kind of change they are making.
+That is especially useful in a repository where runtime code, automation, and docs are all governed
+surfaces.
+
+## Use This Section When
+
+- you plan to change code, docs, governance inputs, or release automation
+- you need to choose the right validation evidence
+- you are preparing a reviewable branch and want the repository’s contribution rules in one place
 
 ## Pages in This Section
 
