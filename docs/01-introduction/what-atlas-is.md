@@ -29,6 +29,10 @@ flowchart LR
     C --> L[CLI workflows]
 ```
 
+This diagram is the shortest honest description of the product. Atlas is not only a runtime and not
+only a build tool. It is a governed path from inputs to immutable artifacts and then to serving
+surfaces.
+
 Atlas treats the artifact boundary as the center of gravity. That means:
 
 - raw inputs are important, but they are not the serving surface
@@ -46,6 +50,10 @@ flowchart TD
     Runtime --> Query[HTTP query surface]
     Contracts --> Stability[Stable outputs and schemas]
 ```
+
+This view matters because many readers arrive through only one face of Atlas. The product is easier
+to understand when you see how data workflows, runtime behavior, and contracts reinforce each other
+instead of competing for ownership.
 
 1. Data workflow system
    Atlas validates source inputs, creates artifacts, and tracks releases.
@@ -66,6 +74,9 @@ flowchart LR
     O[Operator] --> R[Run server, observe, recover]
     M[Maintainer] --> D[Change code and contracts safely]
 ```
+
+This audience diagram sets expectations for the rest of the docs. Different readers need different
+entry points, but they are still reading one coherent product surface.
 
 - users who need deterministic dataset and catalog workflows
 - operators who need a predictable runtime and clear observability
@@ -104,6 +115,18 @@ Atlas is opinionated in ways that matter operationally:
 - it treats structured output as a product surface
 - it keeps artifact ownership separate from server request handling
 - it tries to make compatibility visible rather than accidental
+
+## What a Reader Should Take Away
+
+- Atlas separates source inputs, artifact production, and runtime serving on purpose.
+- Atlas treats contracts as part of the product, not as documentation garnish.
+- Atlas is strongest when you want deterministic release-shaped data workflows.
+
+## Common Misreadings to Avoid
+
+- Atlas is not a claim that every local shortcut is a supported production workflow.
+- Atlas is not a promise that every internal repository detail is stable.
+- Atlas is not a generic mutable database that rewrites release content at runtime.
 
 ## Current Limits to Keep in Mind
 

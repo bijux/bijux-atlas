@@ -23,6 +23,10 @@ flowchart LR
     Ingest --> Output[artifacts/getting-started/tiny-build]
 ```
 
+This input diagram makes the required dataset ingredients explicit. The tutorial uses the committed
+`tiny` fixture so readers can reproduce the flow exactly instead of adapting undocumented local
+inputs on the first attempt.
+
 ## Build the Tiny Sample
 
 Run from the repository root:
@@ -85,6 +89,9 @@ flowchart TD
     Publish --> Serve[Ready for local server startup]
 ```
 
+This sequence matters because it turns a raw ingest run into a checked dataset root before the
+runtime ever sees it. Atlas is intentionally conservative at that boundary.
+
 ## Publish into a Serving Store
 
 The build root is validated dataset state. The server expects a serving store with published artifacts and catalog state.
@@ -108,6 +115,10 @@ Do not treat publication and promotion as optional ceremony. They are the
 boundary between "I built something" and "the runtime can discover and serve it
 in the intended way."
 
+Keep the identity flags consistent across ingest, validate, verify, publish, and promote. If the
+release, species, or assembly values drift, later failures can look like runtime bugs when they are
+really just identity mismatches.
+
 ## What You Should See
 
 - a build root under `artifacts/getting-started/tiny-build`
@@ -125,6 +136,10 @@ flowchart LR
     Derived --> Publish
 ```
 
+This expected-output diagram helps readers confirm the result shape, not only the command exit
+status. A successful first run should leave both a validated build root and a serving store ready
+for runtime startup.
+
 ## If This Step Fails
 
 - confirm you are using the repository fixture paths exactly
@@ -132,6 +147,12 @@ flowchart LR
 - re-run with `--verbose` or `--trace` for more detail
 - use the `tiny` fixture first before trying the `realistic` fixture
 - fix the first failing boundary before continuing; do not skip from ingest failure straight to server startup
+
+## What This Step Proves
+
+- the committed fixture set is valid for the documented ingest path
+- Atlas can build and verify a sample dataset root locally
+- publication and catalog promotion create discoverable serving state
 
 ## Purpose
 

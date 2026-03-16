@@ -24,6 +24,10 @@ flowchart TD
     Store --> Query[Query surface]
 ```
 
+This concept map shows the vocabulary Atlas keeps separate. If these terms blur together, readers
+often misread later workflow pages and assume a successful local build is already the final serving
+state.
+
 The most common mistake is to collapse these boundaries into one idea. Atlas works better when you keep them distinct:
 
 - source inputs are not yet release state
@@ -63,6 +67,9 @@ flowchart LR
     Catalog --> Serve[Serving and lookup]
 ```
 
+This artifact path matters because it explains why Atlas has more than one boundary after ingest.
+The product deliberately creates room to verify and publish before the runtime depends on the data.
+
 ## Catalog
 
 A catalog is the discoverable inventory of published datasets and their artifact locations or metadata. It answers two practical questions:
@@ -92,6 +99,9 @@ flowchart LR
     Resolve --> Execute[Execute against serving state]
     Execute --> Response[Structured response]
 ```
+
+This query flow anchors later API and architecture pages. Atlas query behavior is not just “run SQL”
+or “hit an endpoint”; it is a validated request against explicit published dataset state.
 
 ## Runtime Configuration
 
@@ -123,6 +133,13 @@ When in doubt, ask three questions:
 1. Is this source input, validated dataset state, or immutable artifact state?
 2. Is this about runtime behavior or durable release content?
 3. Is this a contract-owned surface or an implementation detail?
+
+## Terms Worth Remembering
+
+- build root: validated ingest output before publication into a serving store
+- artifact: immutable durable release output
+- catalog: published discoverability layer for dataset identities
+- store: persistence layer for immutable artifacts used by the runtime
 
 ## Purpose
 

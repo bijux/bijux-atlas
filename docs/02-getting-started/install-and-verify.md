@@ -30,6 +30,9 @@ flowchart TD
     D --> E[Confirm fixtures and artifacts root]
 ```
 
+This verification flow is intentionally shallow but strict. It proves that the binaries, fixture
+paths, and local output roots are usable before you spend time debugging later workflow steps.
+
 ## Prerequisites
 
 - Rust toolchain compatible with the workspace
@@ -51,6 +54,9 @@ bijux install bijux-dev-atlas
 ```
 
 If you are working from a repository checkout, you can skip installation entirely and use `cargo run`.
+
+For a first pass from source, prefer `cargo run`. It removes uncertainty about whether the installed
+binary and the checked-out repository are on the same version.
 
 ## Step 1: Verify the Runtime CLI Entrypoint
 
@@ -96,6 +102,9 @@ flowchart LR
     Fixtures --> Next[Sample ingest and validation]
 ```
 
+This layout diagram exists because many first-run failures are path mistakes. The getting-started
+docs assume one workspace root, committed fixtures, and disposable outputs under `artifacts/`.
+
 ## Step 4: Sanity-Check Structured Output
 
 ```bash
@@ -117,6 +126,9 @@ flowchart TD
     Paths --> Logs[Re-run with --verbose or --trace]
 ```
 
+This troubleshooting order prevents a common mistake: debugging later Atlas workflow layers before
+the local toolchain and workspace are even healthy enough to run the binaries.
+
 - if `cargo run` fails, resolve the workspace build issue first
 - if help commands fail, do not proceed to ingest or server startup
 - if fixture paths are missing, confirm you are at the repository root
@@ -132,6 +144,12 @@ At this point you should be able to:
 - create an `artifacts/getting-started` directory for local outputs
 
 If all of that works, you have a usable starting environment. You do not yet have proof that Atlas can ingest, publish, or serve real dataset state.
+
+## What This Page Does Not Prove
+
+- that ingest succeeds on the sample fixture
+- that the serving store is shaped correctly
+- that the HTTP runtime can boot and answer queries
 
 ## Purpose
 

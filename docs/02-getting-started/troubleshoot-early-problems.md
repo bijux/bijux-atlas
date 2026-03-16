@@ -22,6 +22,10 @@ flowchart TD
     A --> F[Query problem]
 ```
 
+This failure map is here to shorten diagnosis time. Atlas first-run issues usually belong to one
+layer at a time, and readers get unstuck faster when they identify the layer before changing
+multiple things.
+
 ## If `cargo run` Fails Before the Command Starts
 
 Focus on build and workspace issues first:
@@ -53,6 +57,9 @@ flowchart LR
     Output --> Flags[Check release/species/assembly flags]
     Flags --> Logs[Re-run with --trace]
 ```
+
+This ingest triage order keeps the likely causes practical and local. Most early ingest failures are
+input, path, or identity mismatches rather than deep product defects.
 
 Common causes:
 
@@ -107,6 +114,9 @@ flowchart TD
     Config --> Retry[Retry startup]
 ```
 
+This startup decision tree exists because server failures often get overcomplicated. Atlas startup
+problems are usually explained by serving-store shape, cache-root setup, or resolved runtime config.
+
 Use:
 
 ```bash
@@ -139,6 +149,9 @@ questions on purpose.
 5. Does server config validation pass?
 6. Does `v1/version` work?
 7. Does `v1/datasets` work?
+
+If you answer “no” at one step, fix that layer before you continue. Atlas is easier to debug when
+you narrow the failure boundary instead of pushing uncertainty forward through the workflow.
 
 If you answer those in order, you usually isolate the failing layer quickly.
 

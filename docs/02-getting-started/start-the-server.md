@@ -28,6 +28,9 @@ flowchart LR
     Config[flags or config file] --> Server
 ```
 
+This runtime-input diagram shows why the server startup page comes after publication. Atlas expects
+the runtime to start from serving store state, plus explicit cache and configuration inputs.
+
 ## Validate the Runtime Shape First
 
 ```bash
@@ -68,6 +71,9 @@ sequenceDiagram
     Server-->>User: bind and accept requests
 ```
 
+This startup sequence keeps the server’s dependencies visible. If startup fails, the first place to
+look is the store root, cache root, or resolved configuration, not the query layer.
+
 ## First Health Checks
 
 In another terminal:
@@ -93,6 +99,9 @@ flowchart TD
     Health --> Query[Serve query endpoints]
 ```
 
+This model shows the order Atlas is trying to enforce. Readiness should come after configuration and
+artifact resolution, not before.
+
 Atlas tries to make startup failure explicit rather than turning configuration drift into partial runtime behavior.
 
 ## If the Server Does Not Start
@@ -102,6 +111,12 @@ Atlas tries to make startup failure explicit rather than turning configuration d
 - confirm the `--cache-root` is under `artifacts/` and writable
 - re-run with `--print-effective-config` if you need to inspect resolved settings
 - treat “process started” and “runtime is ready” as different questions
+
+## What a Good Startup Proves
+
+- the server can resolve the store root and cache root you supplied
+- the runtime can bind and expose health endpoints
+- you are ready to move from startup checks to real query checks
 
 ## Purpose
 

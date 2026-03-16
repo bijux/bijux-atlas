@@ -21,6 +21,10 @@ flowchart LR
     Ops[External deployment and infrastructure] --> Atlas
 ```
 
+This system-boundary view makes the ownership model visible. Atlas owns how supported inputs become
+artifacts and how those artifacts are served, but it does not pretend to own every upstream or
+infrastructure concern around them.
+
 Atlas owns:
 
 - validation and normalization of supported data inputs
@@ -50,6 +54,10 @@ flowchart TD
     Internal --> Tests[Test support code]
 ```
 
+This reader-facing boundary model exists so documentation promises stay honest. It distinguishes the
+surfaces a reader may reasonably rely on from internal code that can change during normal
+maintenance.
+
 The key distinction is between supported surfaces and implementation detail. Atlas tries to keep that distinction boring:
 
 - commands, endpoints, and contracts are public-facing
@@ -77,6 +85,9 @@ flowchart LR
     LessDrift --> BetterChanges[Cleaner code review]
 ```
 
+This is why non-goals deserve a dedicated page. A system becomes easier to change when maintainers
+keep saying no to scope that would blur ownership, runtime behavior, and compatibility promises.
+
 When a system tries to be everything, documentation, code ownership, and contracts all blur together. Atlas does better when it stays narrow:
 
 - artifacts are durable truth
@@ -91,6 +102,12 @@ When a system tries to be everything, documentation, code ownership, and contrac
 4. Would a user or operator reasonably expect this to be stable?
 
 If the answer to the last question is yes, the change probably belongs in a contract-aware path and should be documented as such.
+
+## Boundary Checks That Save Time
+
+- ask whether the change affects users, operators, or only maintainers
+- ask whether the change belongs to artifacts, runtime behavior, or repository automation
+- ask whether a future release would need to preserve the behavior intentionally
 
 ## Purpose
 

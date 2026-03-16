@@ -25,6 +25,9 @@ flowchart TD
     Releases --> Users[User and operator trust]
 ```
 
+This stack shows the intended direction of proof. Atlas wants trust to come from documented
+surfaces, enforced tests, and checked release evidence instead of from repository folklore.
+
 Atlas aims to make stability understandable by layer:
 
 - public commands and options are more stable than internal helper code
@@ -50,6 +53,9 @@ flowchart LR
     G --> C3[Explicit runtime validation]
     G --> C4[Immutable artifact-oriented workflows]
 ```
+
+This list of guarantees is deliberately narrow. Atlas is trying to make a few promises clearly and
+credibly rather than implying stability everywhere.
 
 Atlas tries to provide:
 
@@ -81,6 +87,9 @@ flowchart LR
     Evidence --> Trust[Operational trust]
 ```
 
+This evidence chain explains how readers should evaluate stability claims. A statement becomes
+stronger when it is documented, enforced, and visible in release or validation output.
+
 Atlas does not treat “we intended this to be stable” as enough. Stability is meaningful only when:
 
 - the surface is documented
@@ -108,6 +117,12 @@ If you are an operator:
 If you are a maintainer:
 
 - do not turn undocumented implementation details into accidental promises
+
+## Stability Reading Shortcut
+
+- tutorial and example pages explain workflow and current practice
+- reference pages explain exact factual surfaces
+- contract pages describe the strongest intentional promises
 
 ## Next Pages
 

@@ -21,6 +21,10 @@ flowchart LR
     Validate[Query validation endpoint] --> Guardrails[Query validation]
 ```
 
+This first-query set is intentionally small. It checks identity, dataset discovery, a simple data
+lookup, and request validation without asking a new reader to understand the entire query surface at
+once.
+
 ## 1. Check Server Identity
 
 ```bash
@@ -62,6 +66,9 @@ sequenceDiagram
     QueryLayer-->>Client: structured response
 ```
 
+This sequence makes the query path easier to reason about. A request is validated, resolved against
+published dataset state, executed, and then returned as structured output.
+
 ## 5. Validate a Query Without Executing It
 
 ```bash
@@ -83,6 +90,9 @@ flowchart TD
     Validate[Query validate] --> Rules[Request guardrails]
 ```
 
+This summary map helps readers interpret what each endpoint proves. The goal is not just to get
+responses, but to learn which part of the system each response exercises.
+
 - `v1/version` proves the runtime is alive
 - `v1/datasets` proves the store and catalog are wired
 - `v1/genes` proves the query path is working with an explicit selector
@@ -93,6 +103,12 @@ flowchart TD
 - read [Configuration and Output](../03-user-guide/configuration-and-output.md)
 - read [Query Workflows](../03-user-guide/query-workflows.md)
 - read [Request Lifecycle](../05-architecture/request-lifecycle.md)
+
+## Common First-Query Mistakes
+
+- querying with release, species, or assembly values that do not match the published sample dataset
+- assuming `healthz` success already proves catalog and query resolution
+- treating an empty result as a server failure before checking dataset identity filters
 
 ## Purpose
 

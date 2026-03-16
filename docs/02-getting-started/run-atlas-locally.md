@@ -31,6 +31,10 @@ flowchart LR
     Server --> Client[curl or browser]
 ```
 
+This layout separates the main local concerns clearly: committed fixtures, a disposable build root,
+the serving store, and the running server. Keeping those paths distinct prevents a lot of avoidable
+local confusion.
+
 ## Prepare a Local Workspace
 
 ```bash
@@ -60,6 +64,9 @@ flowchart TD
     F --> G[Inspect logs and metrics]
 ```
 
+This local loop is the intended product path, even for development. It is meant to keep readers from
+treating an ingest output directory as if it were already ready-made serving state.
+
 The local development loop is not “start the server and hope.” It is:
 
 1. build a sample dataset into an artifact root
@@ -77,6 +84,10 @@ flowchart LR
     Bad[Build root directly treated as serving state] --> Drift[Confusion and drift]
     Good[Build root published into serving store] --> Confidence[Deterministic local behavior]
 ```
+
+This comparison diagram explains why Atlas prefers the longer-looking loop. The extra publication
+step is not ceremony for its own sake; it is the boundary that makes local runtime behavior match
+the serving model.
 
 ## What This Local Loop Proves
 
@@ -108,6 +119,12 @@ You are running Atlas locally in the intended way when:
 - queries return data for the release you just built
 
 If any of those conditions are false, you may still have a working demo, but you do not yet have the Atlas workflow running in its intended shape.
+
+## A Good Local Smell Test
+
+- can you point to the fixture path, build root, store root, and cache root separately?
+- can you explain which step produced each of those paths?
+- can you restart the loop without manual cleanup outside `artifacts/`?
 
 ## Purpose
 
