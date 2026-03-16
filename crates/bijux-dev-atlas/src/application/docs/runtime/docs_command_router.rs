@@ -1034,7 +1034,7 @@ fn docs_generate_command_lists(repo_root: &std::path::Path) -> Result<Vec<String
     let content = build_generated_command_lists_body(repo_root)?;
     Ok(vec![write_generated_docs_file(
         repo_root,
-        "docs/_generated/command-lists.md",
+        "artifacts/docs/generated/command-lists.md",
         content,
     )?])
 }
@@ -1068,7 +1068,7 @@ fn docs_generate_schema_snippets(repo_root: &std::path::Path) -> Result<Vec<Stri
     let content = build_generated_schema_snippets_body(repo_root)?;
     Ok(vec![write_generated_docs_file(
         repo_root,
-        "docs/_generated/schema-snippets.md",
+        "artifacts/docs/generated/schema-snippets.md",
         content,
     )?])
 }
@@ -1100,7 +1100,7 @@ fn docs_generate_openapi_snippets(repo_root: &std::path::Path) -> Result<Vec<Str
     let content = build_generated_openapi_snippets_body(repo_root)?;
     Ok(vec![write_generated_docs_file(
         repo_root,
-        "docs/_generated/openapi-snippets.md",
+        "artifacts/docs/generated/openapi-snippets.md",
         content,
     )?])
 }
@@ -1138,7 +1138,7 @@ fn docs_generate_ops_snippets(repo_root: &std::path::Path) -> Result<Vec<String>
     let content = build_generated_ops_snippets_body(repo_root)?;
     Ok(vec![write_generated_docs_file(
         repo_root,
-        "docs/_generated/ops-snippets.md",
+        "artifacts/docs/generated/ops-snippets.md",
         content,
     )?])
 }
@@ -1192,7 +1192,7 @@ fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
         out.push_str(&format!("- `{}`: `ops/tutorials/real-data/runs/{}.md`\n", run.run_label, run.id));
     }
     out.push_str("\n## Related pages\n\n");
-    out.push_str("- `docs/_generated/real-data-runs-table.md`\n");
+    out.push_str("- `artifacts/docs/generated/real-data-runs-table.md`\n");
     out.push_str("- `artifacts/docs/generated/real-data-runs-overview.json`\n");
     out
 }
@@ -1270,7 +1270,7 @@ fn docs_generate_real_data_pages(repo_root: &std::path::Path) -> Result<Vec<Stri
     let catalog = load_docs_real_data_catalog(repo_root)?;
     generated.push(write_generated_docs_file(
         repo_root,
-        "docs/_generated/real-data-runs-table.md",
+        "artifacts/docs/generated/real-data-runs-table.md",
         build_real_data_runs_table_body(&catalog),
     )?);
     generated.push(write_generated_docs_file(
@@ -1319,11 +1319,11 @@ fn build_generated_examples_body() -> String {
     [
         "# Generated Examples Index".to_string(),
         "".to_string(),
-        "- [Command lists](command-lists.md)".to_string(),
-        "- [Schema snippets](schema-snippets.md)".to_string(),
-        "- [OpenAPI snippets](openapi-snippets.md)".to_string(),
-        "- [Ops snippets](ops-snippets.md)".to_string(),
-        "- [Real data runs table](real-data-runs-table.md)".to_string(),
+        "- `artifacts/docs/generated/command-lists.md`".to_string(),
+        "- `artifacts/docs/generated/schema-snippets.md`".to_string(),
+        "- `artifacts/docs/generated/openapi-snippets.md`".to_string(),
+        "- `artifacts/docs/generated/ops-snippets.md`".to_string(),
+        "- `artifacts/docs/generated/real-data-runs-table.md`".to_string(),
         "".to_string(),
     ]
     .join("\n")
@@ -1333,7 +1333,7 @@ fn docs_generate_examples(repo_root: &std::path::Path) -> Result<Vec<String>, St
     let content = build_generated_examples_body();
     Ok(vec![write_generated_docs_file(
         repo_root,
-        "docs/_generated/examples.md",
+        "artifacts/docs/generated/examples.md",
         content,
     )?])
 }
@@ -1394,27 +1394,27 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
     );
     let expected = [
         (
-            "docs/_generated/examples.md",
+            "artifacts/docs/generated/examples.md",
             format_generated_doc_content(&build_generated_examples_body()),
         ),
         (
-            "docs/_generated/command-lists.md",
+            "artifacts/docs/generated/command-lists.md",
             format_generated_doc_content(&build_generated_command_lists_body(repo_root)?),
         ),
         (
-            "docs/_generated/schema-snippets.md",
+            "artifacts/docs/generated/schema-snippets.md",
             format_generated_doc_content(&build_generated_schema_snippets_body(repo_root)?),
         ),
         (
-            "docs/_generated/openapi-snippets.md",
+            "artifacts/docs/generated/openapi-snippets.md",
             format_generated_doc_content(&build_generated_openapi_snippets_body(repo_root)?),
         ),
         (
-            "docs/_generated/ops-snippets.md",
+            "artifacts/docs/generated/ops-snippets.md",
             format_generated_doc_content(&build_generated_ops_snippets_body(repo_root)?),
         ),
         (
-            "docs/_generated/real-data-runs-table.md",
+            "artifacts/docs/generated/real-data-runs-table.md",
             format_generated_doc_content(&build_real_data_runs_table_body(&catalog)),
         ),
         (
@@ -2227,7 +2227,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let samples = [
                     "index.html",
                     "07-reference/index.html",
-                    "_generated/real-data-runs-table/index.html",
+                    "03-user-guide/server-workflows/index.html",
                     "08-contracts/index.html",
                 ];
                 let mut rows = Vec::new();

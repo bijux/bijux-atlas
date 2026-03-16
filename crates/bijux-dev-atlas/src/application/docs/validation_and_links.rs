@@ -66,16 +66,6 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs theme.features must include `navigation.path`".to_string(),
         );
     }
-    let not_in_nav = yaml
-        .get("not_in_nav")
-        .and_then(|v| v.as_str())
-        .unwrap_or_default()
-        .to_string();
-    if not_in_nav.contains("_generated/**") {
-        issues.errors.push(
-            "DOCS_NAV_ERROR: mkdocs not_in_nav must not exclude docs/_generated/**".to_string(),
-        );
-    }
     for required in ["index.md"] {
         if !ctx.docs_root.join(required).exists() {
             issues.errors.push(format!(
@@ -83,12 +73,42 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
+    let allowed_docs_roots = BTreeSet::from([
+        "01-introduction".to_string(),
+        "02-getting-started".to_string(),
+        "03-user-guide".to_string(),
+        "04-operations".to_string(),
+        "05-architecture".to_string(),
+        "06-development".to_string(),
+        "07-reference".to_string(),
+        "08-contracts".to_string(),
+        "assets".to_string(),
+        "index.md".to_string(),
+    ]);
+    let mut actual_docs_roots = BTreeSet::new();
+    for entry in fs::read_dir(&ctx.docs_root)
+        .map_err(|e| format!("failed to read {}: {e}", ctx.docs_root.display()))?
+    {
+        let entry = entry.map_err(|e| e.to_string())?;
+        let name = entry.file_name().to_string_lossy().to_string();
+        actual_docs_roots.insert(name);
+    }
+    for extra in actual_docs_roots.difference(&allowed_docs_roots) {
+        issues.errors.push(format!(
+            "DOCS_STRUCTURE_ERROR: docs/ contains forbidden top-level entry `{extra}`"
+        ));
+    }
+    for missing in allowed_docs_roots.difference(&actual_docs_roots) {
+        issues.errors.push(format!(
+            "DOCS_STRUCTURE_ERROR: docs/ is missing required top-level entry `{missing}`"
+        ));
+    }
     let mut top_level_dirs = BTreeSet::<String>::new();
     let mut page_counts = BTreeMap::<String, usize>::new();
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file.strip_prefix(&ctx.docs_root).unwrap_or(&file);
         if let Some(component) = rel.components().next().and_then(|c| c.as_os_str().to_str()) {
-            if component != "_generated" && component != "_drafts" {
+            if component != "_drafts" {
                 top_level_dirs.insert(component.to_string());
                 *page_counts.entry(component.to_string()).or_insert(0) += 1;
             }
@@ -303,7 +323,6 @@ pub(crate) fn docs_validate_payload(
         if page == "INDEX.md"
             || page == "index.md"
             || page.ends_with("/INDEX.md")
-            || page.starts_with("_generated/")
             || page.starts_with("_drafts/")
             || page.starts_with("_internal/")
             || page.starts_with("_assets/")
@@ -606,17 +625,11 @@ pub(crate) fn docs_links_payload(
                     }
                 }
                 if !ok {
-                    let generated_target =
-                        path_part.starts_with("_generated/") || path_part.contains("/_generated/");
                     let message = format!(
                         "DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`",
                         idx + 1
                     );
-                    if generated_target && !common.strict {
-                        issues.warnings.push(message);
-                    } else {
-                        issues.errors.push(message);
-                    }
+                    issues.errors.push(message);
                 }
                 rows.push(
                     serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}),

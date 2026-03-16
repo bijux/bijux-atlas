@@ -2,27 +2,27 @@
   "schema_version": 1,
   "entries": [
     {
-      "path": "docs/_generated/examples.md",
+      "path": "artifacts/docs/generated/examples.md",
       "generator": "bijux-dev-atlas docs generate examples --allow-write"
     },
     {
-      "path": "docs/_generated/command-lists.md",
+      "path": "artifacts/docs/generated/command-lists.md",
       "generator": "bijux-dev-atlas docs generate command-lists --allow-write --allow-subprocess"
     },
     {
-      "path": "docs/_generated/schema-snippets.md",
+      "path": "artifacts/docs/generated/schema-snippets.md",
       "generator": "bijux-dev-atlas docs generate schema-snippets --allow-write"
     },
     {
-      "path": "docs/_generated/openapi-snippets.md",
+      "path": "artifacts/docs/generated/openapi-snippets.md",
       "generator": "bijux-dev-atlas docs generate openapi-snippets --allow-write"
     },
     {
-      "path": "docs/_generated/ops-snippets.md",
+      "path": "artifacts/docs/generated/ops-snippets.md",
       "generator": "bijux-dev-atlas docs generate ops-snippets --allow-write"
     },
     {
-      "path": "docs/_generated/real-data-runs-table.md",
+      "path": "artifacts/docs/generated/real-data-runs-table.md",
       "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
     },
     {
