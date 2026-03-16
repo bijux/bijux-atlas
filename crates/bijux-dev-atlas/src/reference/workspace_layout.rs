@@ -45,6 +45,15 @@ pub fn dev_atlas_cli_mod_source(repo_root: &Path) -> PathBuf {
     dev_atlas_src_root(repo_root).join("interfaces/cli/mod.rs")
 }
 
+#[must_use]
+pub fn atlas_runtime_generated_artifact(repo_root: &Path, file_name: &str) -> PathBuf {
+    repo_root
+        .join("configs")
+        .join("generated")
+        .join("runtime")
+        .join(file_name)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

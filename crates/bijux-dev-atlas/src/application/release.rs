@@ -824,7 +824,8 @@ fn run_release_images_size_report(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
+    let policy =
+        read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
     let budget = policy
         .get("runtime_image_max_bytes")
         .and_then(serde_json::Value::as_u64)
@@ -899,7 +900,8 @@ fn run_release_images_runtime_hardening_verify(
     args: ReleaseImagesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let policy = read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
+    let policy =
+        read_json(&root.join("configs/sources/release/image-runtime-hardening-policy.json"))?;
     let dockerfile = root.join("ops/docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile)
         .map_err(|err| format!("failed to read {}: {err}", dockerfile.display()))?;
@@ -992,8 +994,10 @@ fn run_release_images_runtime_command_verify(
     let root = resolve_repo_root(args.repo_root.clone())?;
     let dev_cli_dispatch = crate::reference::workspace_layout::dev_atlas_cli_dispatch_source(&root);
     let dev_cli_mod = crate::reference::workspace_layout::dev_atlas_cli_mod_source(&root);
-    let schema_path =
-        root.join("docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json");
+    let schema_path = crate::reference::workspace_layout::atlas_runtime_generated_artifact(
+        &root,
+        "runtime-startup-config.schema.json",
+    );
     let dispatch_text = fs::read_to_string(&dev_cli_dispatch)
         .map_err(|err| format!("failed to read {}: {err}", dev_cli_dispatch.display()))?;
     let cli_text = fs::read_to_string(&dev_cli_mod)
@@ -2282,12 +2286,12 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
 
 fn run_release_ops_provenance_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let doc_path = root.join("docs/operations/ops-provenance.md");
+    let doc_path = root.join("docs/06-development/release-and-versioning.md");
     let manifest_path = root.join("ops/release/ops-release-manifest.json");
     let digest_path = root.join("ops/release/ops-chart-digest.json");
     let mut errors = Vec::<String>::new();
     if !doc_path.exists() {
-        errors.push("missing docs/operations/ops-provenance.md".to_string());
+        errors.push("missing docs/06-development/release-and-versioning.md".to_string());
     }
     if !manifest_path.exists() {
         errors.push("missing ops/release/ops-release-manifest.json".to_string());
@@ -3153,7 +3157,9 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
         .unwrap_or_default()
         .to_string();
     let msrv_doc = fs::read_to_string(root.join("docs/06-development/workspace-and-tooling.md"))
-        .map_err(|err| format!("failed to read docs/06-development/workspace-and-tooling.md: {err}"))?;
+        .map_err(|err| {
+            format!("failed to read docs/06-development/workspace-and-tooling.md: {err}")
+        })?;
     let mut errors = Vec::<String>::new();
     if workspace_msrv != toolchain_channel {
         errors.push(format!(
@@ -3495,7 +3501,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let root = resolve_repo_root(args.repo_root.clone())?;
     let policy = read_publish_policy(&root)?;
     let feature_policy = read_json(&root.join("configs/sources/release/feature-policy.json"))?;
-    let missing_docs_policy = read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
+    let missing_docs_policy =
+        read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
     let dependency_policy = dependency_policy(&root)?;
     let feature_doc = fs::read_to_string(root.join("docs/07-reference/feature-flags.md"))
         .map_err(|err| format!("failed to read docs/07-reference/feature-flags.md: {err}"))?;
@@ -4564,9 +4571,8 @@ fn default_release_version(root: &Path) -> String {
             }
         }
     }
-    if let Some(version) =
-        crate::version_support::latest_version_tag(root)
-            .and_then(|tag| crate::version_support::version_from_tag(&tag))
+    if let Some(version) = crate::version_support::latest_version_tag(root)
+        .and_then(|tag| crate::version_support::version_from_tag(&tag))
     {
         return version;
     }
@@ -5981,7 +5987,11 @@ mod tests {
         fs::create_dir_all(root.join("configs/sources/release"))
             .expect("create release config directory");
         fs::write(root.join("CHANGELOG.md"), changelog).expect("write changelog");
-        fs::write(root.join("configs/sources/release/version-policy.json"), policy).expect("write policy");
+        fs::write(
+            root.join("configs/sources/release/version-policy.json"),
+            policy,
+        )
+        .expect("write policy");
         root
     }
 

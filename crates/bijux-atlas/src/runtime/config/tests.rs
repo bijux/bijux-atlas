@@ -3,21 +3,20 @@
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
-use super::*;
 use super::settings::{
     resolve_runtime_startup_config, RuntimeStartupConfigFile, DEFAULT_BIND_ADDR,
     DEFAULT_CACHE_ROOT, DEFAULT_STORE_ROOT,
 };
+use super::*;
 
-fn generated_docs_dir() -> PathBuf {
+fn generated_runtime_artifacts_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .and_then(|p| p.parent())
         .expect("workspace root")
-        .join("docs")
-        .join("bijux-atlas-crate")
-        .join("server")
+        .join("configs")
         .join("generated")
+        .join("runtime")
 }
 
 fn atlas_repo_root() -> PathBuf {
@@ -110,8 +109,14 @@ fn runtime_startup_config_cli_overrides_env_and_file() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, "127.0.0.1:9200");
-    assert_eq!(resolved.store_root, atlas_repo_root().join("from-cli-store"));
-    assert_eq!(resolved.cache_root, atlas_repo_root().join("from-cli-cache"));
+    assert_eq!(
+        resolved.store_root,
+        atlas_repo_root().join("from-cli-store")
+    );
+    assert_eq!(
+        resolved.cache_root,
+        atlas_repo_root().join("from-cli-cache")
+    );
 }
 
 #[test]
@@ -131,8 +136,14 @@ fn runtime_startup_config_env_overrides_file() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, "127.0.0.1:9100");
-    assert_eq!(resolved.store_root, atlas_repo_root().join("from-env-store"));
-    assert_eq!(resolved.cache_root, atlas_repo_root().join("from-env-cache"));
+    assert_eq!(
+        resolved.store_root,
+        atlas_repo_root().join("from-env-store")
+    );
+    assert_eq!(
+        resolved.cache_root,
+        atlas_repo_root().join("from-env-cache")
+    );
 }
 
 #[test]
@@ -148,8 +159,14 @@ fn runtime_startup_config_uses_defaults_without_sources() {
     )
     .expect("load");
     assert_eq!(resolved.bind_addr, DEFAULT_BIND_ADDR);
-    assert_eq!(resolved.store_root, atlas_repo_root().join(DEFAULT_STORE_ROOT));
-    assert_eq!(resolved.cache_root, atlas_repo_root().join(DEFAULT_CACHE_ROOT));
+    assert_eq!(
+        resolved.store_root,
+        atlas_repo_root().join(DEFAULT_STORE_ROOT)
+    );
+    assert_eq!(
+        resolved.cache_root,
+        atlas_repo_root().join(DEFAULT_CACHE_ROOT)
+    );
 }
 
 #[test]
@@ -176,24 +193,33 @@ fn dataset_cache_default_uses_runtime_cache_root() {
 
 #[test]
 fn runtime_startup_config_contract_artifacts_match_generated() {
-    let generated_docs = generated_docs_dir();
-    let schema_path = generated_docs.join("runtime-startup-config.schema.json");
-    let docs_path = generated_docs.join("runtime-startup-config.md");
-    let expected_schema = std::fs::read_to_string(schema_path).expect("schema file");
-    let expected_docs = std::fs::read_to_string(docs_path).expect("docs file");
-
     let generated_schema = runtime_startup_config_schema_json();
-    let expected_schema: serde_json::Value =
-        serde_json::from_str(&expected_schema).expect("parse schema file");
     let generated_docs = runtime_startup_config_docs_markdown();
+    let generated_artifacts = generated_runtime_artifacts_dir();
+    let schema_path = generated_artifacts.join("runtime-startup-config.schema.json");
+    let docs_path = generated_artifacts.join("runtime-startup-config.md");
+
+    if std::env::var_os("UPDATE_GOLDEN").is_some() {
+        std::fs::create_dir_all(&generated_artifacts).expect("create generated runtime dir");
+        let schema_json = serde_json::to_string_pretty(&generated_schema)
+            .expect("encode runtime startup config schema");
+        std::fs::write(&schema_path, format!("{schema_json}\n")).expect("write schema file");
+        std::fs::write(&docs_path, &generated_docs).expect("write docs file");
+        return;
+    }
+
+    let expected_schema: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&schema_path).expect("schema file"))
+            .expect("parse schema file");
+    let expected_docs = std::fs::read_to_string(&docs_path).expect("docs file");
 
     assert_eq!(
         generated_schema, expected_schema,
-        "runtime startup config schema drift; regenerate docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json"
+        "runtime startup config schema drift; regenerate configs/generated/runtime/runtime-startup-config.schema.json"
     );
     assert_eq!(
         generated_docs, expected_docs,
-        "runtime startup config docs drift; regenerate docs/bijux-atlas-crate/server/generated/runtime-startup-config.md"
+        "runtime startup config docs drift; regenerate configs/generated/runtime/runtime-startup-config.md"
     );
 }
 
@@ -211,8 +237,10 @@ fn effective_config_snapshot_matches_generated() {
     )
     .expect("effective config payload");
 
-    let snapshot_path = generated_docs_dir().join("effective-config.snapshot.json");
+    let generated_artifacts = generated_runtime_artifacts_dir();
+    let snapshot_path = generated_artifacts.join("effective-config.snapshot.json");
     if std::env::var_os("UPDATE_GOLDEN").is_some() {
+        std::fs::create_dir_all(&generated_artifacts).expect("create generated runtime dir");
         let encoded =
             serde_json::to_string_pretty(&payload).expect("encode effective config snapshot");
         std::fs::write(&snapshot_path, format!("{encoded}\n"))
@@ -225,7 +253,7 @@ fn effective_config_snapshot_matches_generated() {
     .expect("parse effective config snapshot");
     assert_eq!(
         payload, expected,
-        "effective config snapshot drift; regenerate docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json"
+        "effective config snapshot drift; regenerate configs/generated/runtime/effective-config.snapshot.json"
     );
 }
 
@@ -588,7 +616,7 @@ fn runtime_config_contract_snapshot_points_to_the_allowlist_source() {
     );
     assert_eq!(
         snapshot["docs_path"],
-        serde_json::json!("docs/reference/runtime/config.md")
+        serde_json::json!("docs/07-reference/runtime-config-reference.md")
     );
     let allowlisted_env = snapshot["allowlisted_env"]
         .as_array()
