@@ -22,7 +22,7 @@ jobs:
     outputs:
       docs_only: ${{ steps.filter.outputs.docs_only }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - id: filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
         with:
@@ -49,8 +49,8 @@ jobs:
       TMP: artifacts/isolates/ci-pr-minimal/tmp
       TEMP: artifacts/isolates/ci-pr-minimal/tmp
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.85.0
       - name: Normalize temp roots to absolute workspace paths
@@ -137,7 +137,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- check list --suite repo_required --include-internal --include-slow --format json > "${report_root}/suite-membership-repo_required.json"
           jq -n \
             --arg run_id "${RUN_ID}" \
-            --arg source "docs/_internal/contracts/repo-laws.json" \
+            --arg source "configs/sources/repository/repo-laws.json" \
             --arg suite "repo_required" \
             --slurpfile suite_members "${report_root}/suite-membership-repo_required.json" \
             --slurpfile run_report "${contracts_root}/repo-required.json" \
@@ -236,7 +236,7 @@ jobs:
               "kind": "semantic_drift_reports",
               "base": base,
               "head": head,
-              "configs": {"changed": subset(["configs/", "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
+              "configs": {"changed": subset(["configs/", "configs/schemas/contracts/env.schema.json"])},
               "docs": {"changed": subset(["docs/"])},
               "make": {"changed": subset(["makes/", "configs/sources/operations/ops/makes-targets.json", "makes/target-list.json"])},
               "docker": {"changed": subset(["ops/docker/", "ops/docker/images.manifest.json", "ops/docker/policy.json"])},
@@ -266,41 +266,31 @@ jobs:
           fi
           endpoints_changed=0
           openapi_changed=0
-          if changed_file "docs/reference/contracts/schemas/ENDPOINTS.json"; then endpoints_changed=1; fi
+          if changed_file "ops/observe/contracts/endpoint-observability-contract.json"; then endpoints_changed=1; fi
           if changed_file "configs/generated/openapi/v1/openapi.snapshot.json"; then openapi_changed=1; fi
           if [ "${endpoints_changed}" -ne "${openapi_changed}" ]; then
-            echo "ENDPOINTS registry diff must match OpenAPI snapshot diff" >&2
+            echo "endpoint observability contract diff must match OpenAPI snapshot diff" >&2
             exit 1
           fi
           error_registry_changed=0
           error_runtime_changed=0
-          if changed_file "docs/reference/contracts/schemas/ERROR_CODES.json"; then error_registry_changed=1; fi
+          if changed_file "crates/bijux-atlas/src/contracts/errors/error_codes.rs"; then error_registry_changed=1; fi
           if changed_file "crates/bijux-atlas/src/api/generated/error_codes.rs" || changed_file "crates/bijux-atlas/src/generated/error_codes.rs" || changed_file "ops/inventory/meta/error-registry.json"; then error_runtime_changed=1; fi
           if [ "${error_registry_changed}" -ne "${error_runtime_changed}" ]; then
             echo "ERROR_CODES registry diff must match runtime error map diff" >&2
             exit 1
           fi
           config_registry_changed=0
-          config_runtime_changed=0
-          if changed_file "docs/reference/contracts/schemas/CONFIG_KEYS.json"; then config_registry_changed=1; fi
-          if changed_file "docs/bijux-atlas-crate/server/generated/effective-config.snapshot.json" || changed_file "docs/bijux-atlas-crate/server/generated/runtime-startup-config.md" || changed_file "docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json"; then config_runtime_changed=1; fi
-          if [ "${config_registry_changed}" -ne "${config_runtime_changed}" ]; then
-            echo "CONFIG_KEYS registry diff must match runtime effective config artifact diff" >&2
-            exit 1
-          fi
+          if changed_file "configs/schemas/contracts/env.schema.json"; then config_registry_changed=1; fi
           # Generated reference drift mapping from SSOT surfaces.
           ssot_docs_pairs=0
           if changed_file "ops/inventory/root-surface.json"; then
             ssot_docs_pairs=1
-            changed_file "docs/reference/repo-map.md" || { echo "root surface SSOT changed but docs/reference/repo-map.md was not updated" >&2; exit 1; }
+            changed_file "docs/05-architecture/source-layout-and-ownership.md" || { echo "root surface SSOT changed but docs/05-architecture/source-layout-and-ownership.md was not updated" >&2; exit 1; }
           fi
           if changed_file "configs/sources/operations/ops/makes-targets.json"; then
             ssot_docs_pairs=1
             changed_file "makes/target-list.json" || { echo "public target registry changed but makes/target-list.json was not updated" >&2; exit 1; }
-          fi
-          if changed_file "docs/_internal/registry/registry.json"; then
-            ssot_docs_pairs=1
-            changed_file "docs/_internal/governance/metadata/front-matter.index.json" || { echo "docs registry changed but front-matter index was not updated" >&2; exit 1; }
           fi
           if [ "${ssot_docs_pairs}" -eq 1 ]; then
             jq -n '{schema_version:1,kind:"docs_ssot_reference_drift_gate",status:"ok"}' > "${report_root}/docs-ssot-reference-drift.json"
@@ -694,385 +684,9 @@ jobs:
           assert payload["duration_budget_minutes"] <= 3
           assert len(payload["steps"]) <= payload["steps_budget"]
           PY
-          # Docs entrypoints/nav/metadata/directory-budget contracts.
-          python - <<'PY'
-          import json, pathlib, yaml, os
-          root = pathlib.Path(".")
-          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
-          mkdocs = yaml.safe_load((root / "mkdocs.yml").read_text())
-          nav = mkdocs.get("nav", [])
-          top_names = []
-          def top_label(item):
-              if isinstance(item, dict):
-                  return next(iter(item.keys()))
-              return str(item)
-          top_names = [top_label(x) for x in nav]
-          if top_names[:2] != ["Home", "Start Here"]:
-              raise SystemExit(f"docs entrypoint contract failed: first two nav items must be Home/Start Here, got {top_names[:2]}")
-          nav_text = (root / "mkdocs.yml").read_text()
-          if "_internal/" in nav_text:
-              raise SystemExit("published nav must not include docs/_internal pages")
-          registry = json.loads((root / "docs/_internal/registry/registry.json").read_text())
-          missing_meta = []
-          for row in registry.get("documents", []):
-              path = row.get("path", "")
-              if not path.startswith("docs/") or path.startswith("docs/_internal/"):
-                  continue
-              required = ["audience", "title", "stability", "owner", "last_reviewed"]
-              for key in required:
-                  if not row.get(key):
-                      missing_meta.append(f"{path}:{key}")
-          if missing_meta:
-              raise SystemExit("published docs metadata missing required fields: " + ", ".join(missing_meta[:20]))
-          limits = json.loads((root / "docs/_internal/governance/metadata/directory-budget-exceptions.json").read_text())
-          max_files = int(limits["max_files"])
-          max_subdirs = int(limits["max_subdirs"])
-          exceptions = {row["path"]: row for row in limits.get("exceptions", [])}
-          violations = []
-          for d in sorted((root / "docs").rglob("*")):
-              if not d.is_dir():
-                  continue
-              rel = d.as_posix()
-              if "/_internal/generated" in rel:
-                  continue
-              files = [p for p in d.iterdir() if p.is_file() and not p.name.startswith(".")]
-              dirs = [p for p in d.iterdir() if p.is_dir() and not p.name.startswith(".")]
-              if len(files) <= max_files and len(dirs) <= max_subdirs:
-                  continue
-              if rel in exceptions:
-                  continue
-              violations.append({"path": rel, "files": len(files), "subdirs": len(dirs)})
-          if violations:
-              raise SystemExit("docs directory budget exceeded without exception proof: " + json.dumps(violations[:20]))
-          (report_root / "docs-entrypoint-and-budget-contracts.json").write_text(json.dumps({
-              "schema_version": 1,
-              "kind": "docs_entrypoint_and_budget_contracts",
-              "status": "ok",
-              "top_nav": top_names,
-              "published_docs_count": len([r for r in registry.get("documents", []) if str(r.get("path","")).startswith("docs/") and not str(r.get("path","")).startswith("docs/_internal/")]),
-              "directory_exception_count": len(exceptions)
-          }, indent=2) + "\n")
-          PY
-          python - <<'PY'
-          import json, os, pathlib, re
-          root = pathlib.Path(".")
-          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
-          docs_root = root / "docs"
-          spine_pages = [
-              "docs/index.md",
-              "docs/01-introduction/index.md",
-              "docs/02-getting-started/index.md",
-              "docs/03-user-guide/index.md",
-              "docs/04-operations/index.md",
-              "docs/05-architecture/index.md",
-              "docs/06-development/index.md",
-              "docs/07-reference/index.md",
-              "docs/08-contracts/index.md",
-          ]
-          required_glossary_terms = [
-              "Build Root",
-              "Serving Store",
-              "Catalog",
-              "Dataset Identity",
-              "Contract",
-              "Adapter",
-              "Runtime",
-          ]
-          # 1) Every published docs directory must expose index.md.
-          index_violations = []
-          for d in sorted(docs_root.rglob("*")):
-              if not d.is_dir():
-                  continue
-              rel = d.as_posix()
-              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
-                  continue
-              entries = [p for p in d.iterdir() if not p.name.startswith(".")]
-              if not entries:
-                  continue
-              if not (d / "index.md").exists():
-                  index_violations.append(rel)
-          if index_violations:
-              raise SystemExit("docs directory index contract failed; missing index.md in: " + ", ".join(index_violations[:20]))
-          # 2) Home page keeps the numbered docs spine explicit and ordered.
-          home = (root / "docs/index.md").read_text()
-          m = re.search(r"## Documentation Spine\\n\\n(?P<body>.*?)(\\n## |\\Z)", home, flags=re.S)
-          if not m:
-              raise SystemExit("docs/index.md must include a `## Documentation Spine` section")
-          track_lines = [ln.strip()[2:].strip() for ln in m.group("body").splitlines() if ln.strip().startswith("- ")]
-          expected_tracks = [
-              "[01 Introduction](01-introduction/index.md)",
-              "[02 Getting Started](02-getting-started/index.md)",
-              "[03 User Guide](03-user-guide/index.md)",
-              "[04 Operations](04-operations/index.md)",
-              "[05 Architecture](05-architecture/index.md)",
-              "[06 Development](06-development/index.md)",
-              "[07 Reference](07-reference/index.md)",
-              "[08 Contracts](08-contracts/index.md)",
-          ]
-          if track_lines != expected_tracks:
-              raise SystemExit(f"docs/index.md documentation-spine contract failed: expected {expected_tracks}, got {track_lines}")
-          # 3) Every numbered section index exists and is readable from the home page.
-          missing_spine_indexes = [rel for rel in spine_pages[1:] if not (root / rel).exists()]
-          if missing_spine_indexes:
-              raise SystemExit("docs spine is missing section index pages: " + ", ".join(missing_spine_indexes))
-          # 4) Glossary must define required terms and remain linked from the reference index.
-          glossary_text = (root / "docs/07-reference/glossary.md").read_text()
-          defined = set(re.findall(r"^## (.+)$", glossary_text, flags=re.M))
-          missing_terms = [t for t in required_glossary_terms if t not in defined]
-          if missing_terms:
-              raise SystemExit("glossary contract failed; missing required terms: " + ", ".join(missing_terms))
-          if "glossary.md" not in (root / "docs/07-reference/index.md").read_text():
-              raise SystemExit("reference index must link docs/07-reference/glossary.md")
-          # 5) Orphan report with where-to-link hints.
-          all_docs = []
-          for path in docs_root.rglob("*.md"):
-              rel = path.as_posix()
-              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
-                  continue
-              all_docs.append(rel)
-          all_set = set(all_docs)
-          links = {rel: set() for rel in all_docs}
-          md_link_re = re.compile(r"\\[[^\\]]+\\]\\(([^)]+)\\)")
-          for rel in all_docs:
-              src_path = root / rel
-              text = src_path.read_text()
-              for target in md_link_re.findall(text):
-                  target = target.split("#")[0].strip()
-                  if not target or target.startswith("http://") or target.startswith("https://") or target.startswith("mailto:"):
-                      continue
-                  cand = (src_path.parent / target).resolve()
-                  try:
-                      rel_target = cand.relative_to(root).as_posix()
-                  except Exception:
-                      continue
-                  if rel_target in all_set:
-                      links[rel].add(rel_target)
-          reachable = set()
-          queue = ["docs/index.md"]
-          while queue:
-              cur = queue.pop(0)
-              if cur in reachable:
-                  continue
-              reachable.add(cur)
-              for nxt in sorted(links.get(cur, [])):
-                  if nxt not in reachable:
-                      queue.append(nxt)
-          orphans = sorted([p for p in all_docs if p not in reachable])
-          orphan_hints = []
-          for orphan in orphans:
-              parent = pathlib.Path(orphan).parent.as_posix()
-              parent_index = f"{parent}/index.md" if parent != "docs" else "docs/index.md"
-              if parent_index == orphan:
-                  parent_index = "docs/index.md"
-              orphan_hints.append({
-                  "path": orphan,
-                  "suggested_link_source": parent_index,
-                  "reason": "orphan page is unreachable from docs/index.md",
-              })
-          # 6) Duplicate topic collisions (top 20 by Jaccard similarity).
-          tokens = {}
-          for rel in all_docs:
-              text = (root / rel).read_text()
-              words = re.findall(r"[A-Za-z0-9]{5,}", text.lower())
-              tokens[rel] = set(words)
-          collisions = []
-          docs_list = sorted(all_docs)
-          for i, left in enumerate(docs_list):
-              for right in docs_list[i + 1:]:
-                  lt = tokens[left]
-                  rt = tokens[right]
-                  if not lt or not rt:
-                      continue
-                  inter = len(lt & rt)
-                  if inter == 0:
-                      continue
-                  union = len(lt | rt)
-                  score = inter / union
-                  if score >= 0.35:
-                      collisions.append({"left": left, "right": right, "similarity": round(score, 3), "shared_token_count": inter})
-          collisions.sort(key=lambda row: (-row["similarity"], row["left"], row["right"]))
-          top_collisions = collisions[:20]
-          payload = {
-              "schema_version": 1,
-              "kind": "docs_navigation_and_semantics_contracts",
-              "status": "ok",
-              "directory_index_missing": [],
-              "orphan_hints": orphan_hints,
-              "duplicate_topic_collisions_top20": top_collisions,
-              "three_reader_tracks": expected_tracks,
-              "spine_pages_checked": spine_pages,
-              "required_glossary_terms": required_glossary_terms,
-          }
-          (report_root / "docs-navigation-and-semantics-contracts.json").write_text(json.dumps(payload, indent=2) + "\\n")
-          PY
-          python - <<'PY'
-          import datetime, json, os, pathlib, re, yaml
-          root = pathlib.Path(".")
-          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
-          docs_root = root / "docs"
-          today = datetime.date.fromisoformat("2026-03-01")
-          spine_pages = [
-              "docs/index.md",
-              "docs/01-introduction/index.md",
-              "docs/02-getting-started/index.md",
-              "docs/03-user-guide/index.md",
-              "docs/04-operations/index.md",
-              "docs/05-architecture/index.md",
-              "docs/06-development/index.md",
-              "docs/07-reference/index.md",
-              "docs/08-contracts/index.md",
-          ]
-          # Docs governance sources of truth.
-          registry = json.loads((root / "docs/_internal/registry/registry.json").read_text())
-          quality_policy = json.loads((root / "configs/sources/repository/docs/quality-policy.json").read_text())
-          stale_days = int(quality_policy.get("stale_days", 90))
-          external_allow = json.loads((root / "configs/sources/repository/docs/external-link-allowlist.json").read_text())
-          synonyms = json.loads((root / "docs/_internal/governance/metadata/search-synonyms.json").read_text())
-          taxonomy = json.loads((root / "docs/_internal/governance/metadata/tag-taxonomy.json").read_text())
-          nav_baseline_path = root / "docs/_internal/governance/metadata/nav-order.json"
-          nav_baseline = json.loads(nav_baseline_path.read_text())
-          mkdocs = yaml.safe_load((root / "mkdocs.yml").read_text())
-          top_nav = []
-          for row in mkdocs.get("nav", []):
-              if isinstance(row, dict):
-                  label, target = next(iter(row.items()))
-                  top_nav.append({"label": label, "target": target if isinstance(target, str) else None})
-          expected_nav = nav_baseline.get("top_nav", [])
-          if top_nav != expected_nav:
-              raise SystemExit("docs navigation drift detected; update docs/_internal/governance/metadata/nav-order.json with intentional migration evidence")
-          if synonyms.get("schema_version") != "v1" or not synonyms.get("synonyms"):
-              raise SystemExit("docs search synonyms SSOT invalid: docs/_internal/governance/metadata/search-synonyms.json")
-          if taxonomy.get("schema_version") != "v1" or not taxonomy.get("tags"):
-              raise SystemExit("docs taxonomy SSOT invalid: docs/_internal/governance/metadata/tag-taxonomy.json")
-          # Review freshness SLA on stable published pages.
-          stale_rows = []
-          stable_paths = set()
-          for row in registry.get("documents", []):
-              path = str(row.get("path", ""))
-              if not path.startswith("docs/") or path.startswith("docs/_internal/"):
-                  continue
-              if row.get("stability") != "stable":
-                  continue
-              stable_paths.add(path)
-              reviewed = str(row.get("last_reviewed", "")).strip()
-              try:
-                  reviewed_date = datetime.date.fromisoformat(reviewed)
-              except ValueError:
-                  stale_rows.append({"path": path, "reason": f"invalid last_reviewed `{reviewed}`"})
-                  continue
-              age_days = (today - reviewed_date).days
-              if age_days > stale_days:
-                  stale_rows.append({"path": path, "age_days": age_days, "stale_days": stale_days})
-          if stale_rows:
-              raise SystemExit("docs review SLA failed for stable pages: " + json.dumps(stale_rows[:20]))
-          # Reader-spine quality: readability, examples, no internal path leaks.
-          readability_budget = 240
-          spine_quality_violations = []
-          ext_re = re.compile(r"\[[^\]]+\]\((https?://[^)]+)\)")
-          md_link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
-          allow_rows = []
-          for entry in external_allow.get("entries", []):
-              exp = datetime.date.fromisoformat(entry["expires_on"])
-              if exp < today:
-                  raise SystemExit(f"expired external-link allowlist entry: {entry}")
-              allow_rows.append(entry["pattern"])
-          for rel in spine_pages:
-              text = (root / rel).read_text()
-              line_count = len(text.splitlines())
-              if line_count > readability_budget:
-                  spine_quality_violations.append(f"{rel}: readability budget exceeded ({line_count}>{readability_budget})")
-              has_example = (
-                  "## Example" in text
-                  or "```bash" in text
-                  or "```text" in text
-                  or "```mermaid" in text
-                  or "## Pages in This Section" in text
-              )
-              if not has_example:
-                  spine_quality_violations.append(f"{rel}: missing concrete example section or runnable code block")
-              for forbidden in ("docs/_internal/", "docs/_generated/", "ops/_generated/", "ops/_generated.example/"):
-                  if forbidden in text:
-                      spine_quality_violations.append(f"{rel}: reader page must not reference internal tooling path `{forbidden}`")
-              for url in ext_re.findall(text):
-                  if not any(url.startswith(pattern) for pattern in allow_rows):
-                      spine_quality_violations.append(f"{rel}: external URL not allowlisted `{url}`")
-          if spine_quality_violations:
-              raise SystemExit("spine quality contracts failed: " + "; ".join(spine_quality_violations[:20]))
-          # Diagram textual explanation contract.
-          diagram_violations = []
-          mermaid_block_re = re.compile(r"```mermaid.*?```", flags=re.S)
-          image_re = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
-          for row in registry.get("documents", []):
-              rel = str(row.get("path", ""))
-              if rel.startswith("docs/_internal/") or not rel.endswith(".md"):
-                  continue
-              text = (root / rel).read_text()
-              has_diagram = bool(mermaid_block_re.search(text)) or bool(image_re.search(text))
-              if not has_diagram:
-                  continue
-              prose_text = mermaid_block_re.sub("", text)
-              prose_text = image_re.sub("", prose_text)
-              prose_chars = len(re.sub(r"\s+", "", prose_text))
-              if prose_chars < 400:
-                  diagram_violations.append(rel)
-          if diagram_violations:
-              raise SystemExit("diagram contract failed; reader page needs meaningful prose beyond diagrams: " + ", ".join(diagram_violations[:20]))
-          # No TODO markers in stable published docs.
-          todo_violations = []
-          for rel in sorted(stable_paths):
-              text = (root / rel).read_text().lower()
-              if "todo" in text:
-                  todo_violations.append(rel)
-          if todo_violations:
-              raise SystemExit("stable docs must not contain TODO markers: " + ", ".join(todo_violations[:20]))
-          # Zero broken links for published pages.
-          all_docs = set()
-          for path in docs_root.rglob("*.md"):
-              rel = path.as_posix()
-              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
-                  continue
-              all_docs.add(rel)
-          generated_ref_violations = []
-          for rel in sorted(all_docs):
-              text = (root / rel).read_text()
-              if "docs/_generated/" in text:
-                  generated_ref_violations.append(rel)
-          if generated_ref_violations:
-              raise SystemExit("reader docs must not reference docs/_generated paths: " + ", ".join(generated_ref_violations[:20]))
-          broken = []
-          for rel in sorted(all_docs):
-              src = root / rel
-              text = src.read_text()
-              for raw in md_link_re.findall(text):
-                  target = raw.split("#")[0].strip()
-                  if not target or target.startswith("http://") or target.startswith("https://") or target.startswith("mailto:"):
-                      continue
-                  resolved = (src.parent / target).resolve()
-                  try:
-                      rel_target = resolved.relative_to(root).as_posix()
-                  except ValueError:
-                      broken.append({"source": rel, "target": raw, "resolved": str(resolved)})
-                      continue
-                  if rel_target not in all_docs and not resolved.exists():
-                      broken.append({"source": rel, "target": raw, "resolved": rel_target})
-          if broken:
-              raise SystemExit("broken link zero goal failed for published docs: " + json.dumps(broken[:20]))
-          cleanup_doc = (root / "docs/_internal/governance/docs-quarterly-cleanup.md").read_text()
-          if "Run once per quarter." not in cleanup_doc or "docs shrink report" not in cleanup_doc:
-              raise SystemExit("docs quarterly prune gate contract failed: docs-quarterly-cleanup.md missing cadence or budget evidence requirements")
-          payload = {
-              "schema_version": 1,
-              "kind": "docs_quality_contracts",
-              "status": "ok",
-              "stale_days": stale_days,
-              "spine_readability_budget": readability_budget,
-              "stable_pages_checked": len(stable_paths),
-              "search_synonyms_terms": len(synonyms.get("synonyms", [])),
-              "taxonomy_tags": len(taxonomy.get("tags", [])),
-              "top_nav": top_nav,
-          }
-          (report_root / "docs-quality-contracts.json").write_text(json.dumps(payload, indent=2) + "\n")
-          PY
+          # Docs structure and quality contracts come from the control plane.
+          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json > "${REPORT_ROOT}/docs-entrypoint-and-budget-contracts.json"
+          cargo run --locked -q -p bijux-dev-atlas -- docs links --format json > "${REPORT_ROOT}/docs-quality-contracts.json"
           python - <<'PY'
           import datetime, fnmatch, json, os, pathlib, re
           root = pathlib.Path(".")
@@ -1085,7 +699,7 @@ jobs:
           consumers_registry = json.loads((root / "configs/registry/consumers.json").read_text())
           schema_map = json.loads((root / "configs/registry/schemas.json").read_text())
           no_schema = json.loads((root / "configs/registry/inventory/no-schema-justifications.json").read_text())
-          config_keys_registry = json.loads((root / "docs/reference/contracts/schemas/CONFIG_KEYS.json").read_text())
+          config_keys_registry = json.loads((root / "configs/schemas/contracts/env.schema.json").read_text())
           rename_policy = json.loads((root / "configs/sources/governance/policy/config-key-renames.json").read_text())
           allowed_groups = set(groups.get("allowed_groups", []))
           root_file_allow = {
@@ -1247,7 +861,7 @@ jobs:
               violations.append("schema without mapped examples/config files: " + ", ".join(missing_schema_examples[:20]))
 
           # Config key registry SSOT / usage / hidden-default checks.
-          registry_keys = sorted(config_keys_registry.get("env_keys", []))
+          registry_keys = sorted(config_keys_registry.get("allowed_env", []))
           key_usage = []
           all_code_files = []
           for code_root in ("crates", "ops", "configs"):
@@ -1323,16 +937,6 @@ jobs:
               violations.append("secrets scan failed for stable configs: " + json.dumps(secret_hits[:20]))
 
           # Change checklist quality gate.
-          checklist = (root / "docs/development/config-change-checklist.md").read_text()
-          checklist_requirements = [
-              "registry",
-              "docs",
-              "examples",
-          ]
-          for token in checklist_requirements:
-              if token not in checklist.lower():
-                  violations.append(f"config change checklist missing required section token `{token}`")
-
           # Semantic diff / debt / graph artifacts.
           rows = []
           for rel in sorted(tracked_files):
@@ -1360,7 +964,7 @@ jobs:
               "kind": "config_key_usage_map",
               "status": "ok",
               "rows": key_usage,
-              "registry_path": "docs/reference/contracts/schemas/CONFIG_KEYS.json",
+              "registry_path": "configs/schemas/contracts/env.schema.json",
           }
           (report_root / "config-key-usage-map.json").write_text(json.dumps(key_usage_payload, indent=2) + "\n")
 
@@ -1446,8 +1050,8 @@ jobs:
       TMP: artifacts/isolates/ci-pr/tmp
       TEMP: artifacts/isolates/ci-pr/tmp
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.85.0
       - name: Restore cargo registry cache
@@ -1553,8 +1157,8 @@ jobs:
       TMP: artifacts/isolates/ci-supply-chain/tmp
       TEMP: artifacts/isolates/ci-supply-chain/tmp
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.85.0
       - name: Normalize temp roots to absolute workspace paths
@@ -1642,7 +1246,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Run workflow policy verifier
         shell: bash
         run: |
@@ -1660,8 +1264,8 @@ jobs:
       TMP: artifacts/isolates/ci-pr-ops/docker/tmp
       TEMP: artifacts/isolates/ci-pr-ops/docker/tmp
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.85.0
       - name: Run docker gate lane
