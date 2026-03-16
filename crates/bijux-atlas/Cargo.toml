@@ -44,7 +44,7 @@ semver.workspace = true
 sha2 = "0.10"
 tar = "0.4"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
-toml = "0.8"
+toml = "1.0"
 tracing = "0.1"
 tracing-opentelemetry = "0.28"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
