@@ -5,28 +5,36 @@ BIJUX ?= bijux
 BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 docs: ## Canonical docs gate
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs doctor --format $(FORMAT)
 
 docs-doctor: ## Run docs doctor checks
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs doctor --format $(FORMAT)
 
 docs-check: ## Validate and build the docs surface through dev-atlas
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(MAKE) -s docs-validate FORMAT=$(FORMAT)
 	@$(MAKE) -s docs-build FORMAT=$(FORMAT)
 
 docs-validate: ## Run docs validation checks
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs validate --format $(FORMAT)
 
 docs-external-links: ## Run docs external link checks
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs external-links --allow-network --format $(FORMAT)
 
 docs-build: ## Build docs into artifacts
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-serve: ## Serve docs locally
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs serve --allow-subprocess --allow-network --format $(FORMAT)
 
 docs-clean: ## Clean docs generated outputs
+	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) docs clean --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-reference-regenerate: ## Regenerate docs operations reference pages from SSOT inputs
