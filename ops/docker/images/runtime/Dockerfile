@@ -1,4 +1,4 @@
-# syntax=ops/docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.7
 ARG RUST_VERSION=1.84.1
 ARG DEBIAN_FRONTEND=noninteractive
 ARG IMAGE_VERSION=dev-local
@@ -17,7 +17,7 @@ RUN apt-get update \
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY configs/sources/repository/rust-tooling/rustfmt.toml /workspace/configs/sources/repository/rust-tooling/rustfmt.toml
 COPY configs/sources/repository/rust-tooling/clippy.toml /workspace/configs/sources/repository/rust-tooling/clippy.toml
-COPY configs/contracts /workspace/configs/contracts
+COPY configs/schemas/contracts /workspace/configs/schemas/contracts
 COPY configs/sources/security /workspace/configs/sources/security
 COPY crates ./crates
 
@@ -31,8 +31,8 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb AS runtime
 WORKDIR /app
-COPY --from=builder /workspace/artifacts/target/ops/release/bijux-atlas-server /app/bijux-atlas-server
-COPY --from=builder /workspace/artifacts/target/ops/release/bijux-atlas /app/bijux-atlas
+COPY --from=builder /workspace/artifacts/target/release/bijux-atlas-server /app/bijux-atlas-server
+COPY --from=builder /workspace/artifacts/target/release/bijux-atlas /app/bijux-atlas
 
 ENV RUST_LOG=info \
     TZ=UTC
