@@ -6,6 +6,6 @@ nav:
       - Commands: reference/commands.md
       - Schemas: reference/schemas.md
       - Configs: reference/configs.md
-      - Make Targets: reference/makes-targets.md
+      - Make Targets: reference/make-targets.md
   - Guide:
       - Intro: sub/intro.md

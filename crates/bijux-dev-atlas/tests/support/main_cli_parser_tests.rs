@@ -361,7 +361,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "mkdocs nav legacy parser pending rewrite"]
     fn mkdocs_nav_parser_extracts_refs() {
         let root = test_fixture_root("docs-mini");
         let refs = crate::mkdocs_nav_refs(&root).expect("mkdocs nav");
@@ -373,7 +372,7 @@ mod tests {
                 "reference/configs.md".to_string(),
                 "index.md".to_string(),
                 "sub/intro.md".to_string(),
-                "reference/makes-targets.md".to_string(),
+                "reference/make-targets.md".to_string(),
                 "reference/schemas.md".to_string(),
             ]
         );
@@ -484,12 +483,8 @@ mod tests {
 
     #[test]
     fn system_cluster_commands_require_explicit_runtime_configs() {
-        let missing_configs = crate::Cli::try_parse_from(vec![
-            "bijux-dev-atlas",
-            "system",
-            "cluster",
-            "topology",
-        ]);
+        let missing_configs =
+            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "system", "cluster", "topology"]);
         assert!(
             missing_configs.is_err(),
             "system cluster topology should require explicit runtime config paths"

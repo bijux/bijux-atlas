@@ -11,16 +11,8 @@ struct EndpointsContract {
 struct EndpointEntry {
     method: String,
     path: String,
+    #[serde(rename = "class")]
     telemetry_class: String,
-    #[serde(default)]
-    params: Vec<EndpointParam>,
-}
-
-#[derive(Debug, Deserialize)]
-struct EndpointParam {
-    name: String,
-    #[serde(rename = "in")]
-    in_: String,
 }
 
 #[test]
@@ -31,7 +23,7 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
         .expect("workspace root")
         .to_path_buf();
 
-    let contract_path = root.join("docs/reference/contracts/schemas/ENDPOINTS.json");
+    let contract_path = root.join("ops/observe/contracts/endpoint-observability-contract.json");
     let contract: EndpointsContract =
         serde_json::from_slice(&std::fs::read(contract_path).expect("read endpoints contract"))
             .expect("parse endpoints contract");
@@ -56,8 +48,9 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
 
     let mut contract_set = std::collections::BTreeSet::new();
     for ep in &contract.endpoints {
+        let method = ep.method.to_ascii_uppercase();
         assert!(
-            matches!(ep.method.as_str(), "GET" | "POST"),
+            matches!(method.as_str(), "GET" | "POST"),
             "unsupported method in v1 route registry: {} {}",
             ep.method,
             ep.path
@@ -65,7 +58,7 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
         assert!(
             !ep.telemetry_class.trim().is_empty(),
             "missing telemetry_class for {} {}",
-            ep.method,
+            method,
             ep.path
         );
         contract_set.insert(ep.path.clone());
@@ -83,44 +76,51 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
 }
 
 #[test]
-fn endpoint_params_match_openapi_registry() {
+fn openapi_path_params_match_path_templates() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .and_then(|p| p.parent())
         .expect("workspace root")
         .to_path_buf();
-    let contract: EndpointsContract = serde_json::from_slice(
-        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json"))
-            .expect("read endpoints"),
-    )
-    .expect("parse endpoints");
     let openapi: serde_json::Value = serde_json::from_slice(
         &std::fs::read(root.join("configs/generated/openapi/v1/openapi.json"))
             .expect("read openapi"),
     )
     .expect("parse openapi");
-    for ep in &contract.endpoints {
-        let actual = openapi
-            .pointer(&format!(
-                "/paths/{}/get/parameters",
-                ep.path.replace('/', "~1")
-            ))
-            .and_then(serde_json::Value::as_array)
-            .cloned()
-            .unwrap_or_default()
-            .into_iter()
-            .filter_map(|v| {
-                let name = v.get("name")?.as_str()?.to_string();
-                let in_ = v.get("in")?.as_str()?.to_string();
-                Some((in_, name))
+    for (path, methods) in openapi["paths"].as_object().expect("paths object") {
+        let expected = regex::Regex::new(r"\{([^}]+)\}")
+            .expect("path param regex")
+            .captures_iter(path)
+            .filter_map(|capture| {
+                capture
+                    .get(1)
+                    .map(|m| ("path".to_string(), m.as_str().to_string()))
             })
             .collect::<std::collections::BTreeSet<_>>();
-        let expected = ep
-            .params
-            .iter()
-            .map(|p| (p.in_.clone(), p.name.clone()))
-            .collect::<std::collections::BTreeSet<_>>();
-        assert_eq!(expected, actual, "param registry drift for {}", ep.path);
+        for method in ["get", "post"] {
+            if methods.get(method).is_none() {
+                continue;
+            }
+            let actual = methods[method]["parameters"]
+                .as_array()
+                .cloned()
+                .unwrap_or_default()
+                .into_iter()
+                .filter_map(|value| {
+                    let name = value.get("name")?.as_str()?.to_string();
+                    let in_ = value.get("in")?.as_str()?.to_string();
+                    Some((in_, name))
+                })
+                .filter(|(in_, _)| in_ == "path")
+                .collect::<std::collections::BTreeSet<_>>();
+            if !actual.is_empty() || !expected.is_empty() {
+                assert_eq!(
+                    expected, actual,
+                    "path param registry drift for {} {}",
+                    method, path
+                );
+            }
+        }
     }
 }
 
@@ -155,7 +155,8 @@ fn docs_reference_canonical_dataset_path() {
         .and_then(|p| p.parent())
         .expect("workspace root")
         .to_path_buf();
-    let docs = std::fs::read_to_string(root.join("docs/api/v1-surface.md")).expect("read docs");
+    let docs = std::fs::read_to_string(root.join("docs/07-reference/api-endpoint-index.md"))
+        .expect("read docs");
     assert!(
         docs.contains("/v1/datasets/{release}/{species}/{assembly}"),
         "canonical dataset path missing from V1 surface docs"

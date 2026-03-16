@@ -42,7 +42,7 @@
           },
           "runbook_path": {
             "type": "string",
-            "pattern": "^docs/operations/.+\\.md$"
+            "pattern": "^docs/04-operations/.+\\.md$"
           },
           "control_graph_node": {
             "type": "string",

@@ -615,8 +615,9 @@ fn supports_color(color: SuiteColorArg) -> bool {
 }
 
 fn load_perf_budget(root: &Path, suite_id: &str) -> Result<PerfBudgetEntry, String> {
-    let schema_value: serde_json::Value =
-        read_json_file(&root.join("configs/schemas/contracts/governance/perf-budgets.schema.json"))?;
+    let schema_value: serde_json::Value = read_json_file(
+        &root.join("configs/schemas/contracts/governance/perf-budgets.schema.json"),
+    )?;
     let required_fields = schema_value["required"]
         .as_array()
         .into_iter()
@@ -1251,7 +1252,7 @@ fn task_report_paths(task: &SuiteTask, task_root: &Path) -> Vec<String> {
 
 fn check_report_schema_path(repo_root: &Path, report_id: &str) -> PathBuf {
     repo_root
-        .join("configs/schemas/contracts/reports/checks")
+        .join("configs/schemas/contracts/report-checks")
         .join(format!("{report_id}.schema.json"))
 }
 
@@ -1300,7 +1301,8 @@ fn pinned_tool_version(repo_root: &Path, tool: &str) -> Option<String> {
         return Some(git_sha(repo_root));
     }
     let payload: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(repo_root.join("configs/sources/operations/ops/pins/tools.json")).ok()?,
+        &fs::read_to_string(repo_root.join("configs/sources/operations/ops/pins/tools.json"))
+            .ok()?,
     )
     .ok()?;
     payload
@@ -2948,13 +2950,15 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/sources/governance/governance/check-groups.json"),
+            &dir.path()
+                .join("configs/sources/governance/governance/check-groups.json"),
             &serde_json::json!({
                 "groups": [{"id":"rust"}]
             }),
         );
         write_json(
-            &dir.path().join("configs/sources/governance/governance/contract-groups.json"),
+            &dir.path()
+                .join("configs/sources/governance/governance/contract-groups.json"),
             &serde_json::json!({
                 "groups": [{"id":"ops"}]
             }),
@@ -2966,7 +2970,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/sources/governance/governance/checks.registry.json"),
+            &dir.path()
+                .join("configs/sources/governance/governance/checks.registry.json"),
             &serde_json::json!({
                 "checks": [{
                     "check_id":"CHECK-GIT-VERSION-001",
@@ -3161,7 +3166,8 @@ mod tests {
             }),
         );
         write_json(
-            &dir.path().join("configs/sources/governance/governance/perf-budgets.json"),
+            &dir.path()
+                .join("configs/sources/governance/governance/perf-budgets.json"),
             &serde_json::json!({
                 "schema_version": 1,
                 "budgets": [
@@ -3223,7 +3229,7 @@ mod tests {
             out: None,
         })
         .expect("suite run");
-        assert_eq!(result.1, 0);
+        assert_eq!(result.1, 0, "suite output: {}", result.0);
         let summary_path = root
             .path()
             .join("artifacts/suites/checks/checks-test/suite-summary.json");

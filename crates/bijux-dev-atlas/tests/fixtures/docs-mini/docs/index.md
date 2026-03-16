@@ -4,4 +4,4 @@
 - [Commands Reference](reference/commands.md#commands-reference)
 - [Schemas Reference](reference/schemas.md#schemas-reference)
 - [Configs Reference](reference/configs.md#configs-reference)
-- [Make Targets Reference](reference/makes-targets.md#make-targets-reference)
+- [Make Targets Reference](reference/make-targets.md#make-targets-reference)

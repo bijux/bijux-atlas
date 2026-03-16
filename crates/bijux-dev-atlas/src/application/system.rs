@@ -7,7 +7,7 @@ use crate::cli::{
 };
 use crate::{emit_payload, resolve_repo_root};
 use bijux_atlas::domain::cluster::config::{
-    ClusterConfigFile, NodeConfigFile, load_cluster_config_from_path, load_node_config_from_path,
+    load_cluster_config_from_path, load_node_config_from_path, ClusterConfigFile, NodeConfigFile,
 };
 use bijux_atlas::domain::cluster::sharding::ShardRegistry;
 use serde::Deserialize;
@@ -197,13 +197,7 @@ fn run_debug_command(command: SystemDebugCommand) -> Result<(String, i32), Strin
 
 fn load_cluster_inputs(
     args: &SystemClusterArgs,
-) -> Result<
-    (
-        ClusterConfigFile,
-        NodeConfigFile,
-    ),
-    String,
-> {
+) -> Result<(ClusterConfigFile, NodeConfigFile), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let cluster_path = root.join(&args.cluster_config);
     let node_path = root.join(&args.node_config);
@@ -331,7 +325,8 @@ fn run_cluster_command(command: SystemClusterCommand) -> Result<(String, i32), S
         SystemClusterCommand::ShardRouting(args) => {
             let (_cluster, _node) = load_cluster_inputs(&args)?;
             let root = resolve_repo_root(args.repo_root.clone())?;
-            let shard_meta_path = root.join("configs/examples/operations/runtime/shard-metadata.json");
+            let shard_meta_path =
+                root.join("configs/examples/operations/runtime/shard-metadata.json");
             let shard_meta: serde_json::Value = read_json_file(&shard_meta_path)?;
             let key = "chr1:100-200";
             let mut registry = ShardRegistry::new();
@@ -885,7 +880,7 @@ mod tests {
     fn diagnostics_report_schema_validation_accepts_required_shape() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let schema_dir = root.join("configs/sources/operations/system");
+        let schema_dir = root.join("configs/sources/operations/system/schemas");
         fs::create_dir_all(&schema_dir).expect("create schema dir");
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
@@ -910,7 +905,7 @@ mod tests {
     fn debug_command_writes_diagnostics_artifact_even_on_connection_error() {
         let temp = tempfile::tempdir().expect("tempdir");
         let root = temp.path();
-        let schema_dir = root.join("configs/sources/operations/system");
+        let schema_dir = root.join("configs/sources/operations/system/schemas");
         fs::create_dir_all(&schema_dir).expect("create schema dir");
         let schema = serde_json::json!({
             "required": ["schema_version", "kind", "command", "url", "http_status", "duration_ms"]
@@ -978,7 +973,9 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                cluster_config: PathBuf::from(
+                    "configs/examples/operations/runtime/cluster-config.json",
+                ),
                 node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run topology command");
@@ -1033,7 +1030,9 @@ mod tests {
                     cluster_config: PathBuf::from(
                         "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
+                    node_config: PathBuf::from(
+                        "configs/examples/operations/runtime/node-config.json",
+                    ),
                 },
                 node_id: "node-1".to_string(),
             },
@@ -1097,7 +1096,9 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                cluster_config: PathBuf::from(
+                    "configs/examples/operations/runtime/cluster-config.json",
+                ),
                 node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run shard routing command");
@@ -1152,7 +1153,9 @@ mod tests {
                     cluster_config: PathBuf::from(
                         "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
+                    node_config: PathBuf::from(
+                        "configs/examples/operations/runtime/node-config.json",
+                    ),
                 },
                 shard_id: None,
                 target_node_id: None,
@@ -1206,7 +1209,9 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                cluster_config: PathBuf::from(
+                    "configs/examples/operations/runtime/cluster-config.json",
+                ),
                 node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run replica list command");
@@ -1263,7 +1268,9 @@ mod tests {
                     cluster_config: PathBuf::from(
                         "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
+                    node_config: PathBuf::from(
+                        "configs/examples/operations/runtime/node-config.json",
+                    ),
                 },
                 dataset_id: "atlas-default".to_string(),
                 shard_id: "atlas-default-s001".to_string(),
@@ -1312,7 +1319,9 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                cluster_config: PathBuf::from(
+                    "configs/examples/operations/runtime/cluster-config.json",
+                ),
                 node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             }))
             .expect("run recovery command");
@@ -1360,7 +1369,9 @@ mod tests {
                     cluster_config: PathBuf::from(
                         "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
+                    node_config: PathBuf::from(
+                        "configs/examples/operations/runtime/node-config.json",
+                    ),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "network_partition".to_string(),
@@ -1411,7 +1422,9 @@ mod tests {
                     cluster_config: PathBuf::from(
                         "configs/examples/operations/runtime/cluster-config.json",
                     ),
-                    node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
+                    node_config: PathBuf::from(
+                        "configs/examples/operations/runtime/node-config.json",
+                    ),
                 },
                 target_id: Some("node-a".to_string()),
                 fault_kind: "node_crash".to_string(),
@@ -1458,7 +1471,9 @@ mod tests {
                 repo_root: Some(root.to_path_buf()),
                 format: FormatArg::Json,
                 out: None,
-                cluster_config: PathBuf::from("configs/examples/operations/runtime/cluster-config.json"),
+                cluster_config: PathBuf::from(
+                    "configs/examples/operations/runtime/cluster-config.json",
+                ),
                 node_config: PathBuf::from("configs/examples/operations/runtime/node-config.json"),
             },
         ))

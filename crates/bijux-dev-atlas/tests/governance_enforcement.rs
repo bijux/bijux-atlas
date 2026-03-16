@@ -109,8 +109,8 @@ fn generated_report_examples_reference_existing_report_schemas() {
             "ops/schema/report/stack-health-report.schema.json",
         ),
         (
-            "ops/_generated.example/evidence-gap-report.json",
-            "ops/schema/report/evidence-gap-report.schema.json",
+            "ops/_generated.example/incident-playbook-generation-report.json",
+            "ops/schema/report/incident-playbook-generation-report.schema.json",
         ),
     ];
     for (report_rel, schema_rel) in required_pairs {
