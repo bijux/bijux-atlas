@@ -13,5 +13,5 @@ jobs:
     timeout-minutes: 10
     continue-on-error: true
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - uses: actions/dependency-review-action@05fe4576374b728f0c523d6a13d64c25081e0803

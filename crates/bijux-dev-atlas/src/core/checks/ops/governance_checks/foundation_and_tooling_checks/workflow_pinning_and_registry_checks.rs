@@ -48,7 +48,10 @@ pub(super) fn checks_ops_workflows_github_actions_pinned(
             let Some((_, spec_raw)) = trimmed.split_once(':') else {
                 continue;
             };
-            let spec = spec_raw.trim();
+            let spec = spec_raw
+                .split_once('#')
+                .map_or(spec_raw, |(before_comment, _)| before_comment)
+                .trim();
             if spec.starts_with("docker://") {
                 continue;
             }
@@ -193,4 +196,3 @@ pub(super) fn check_ops_internal_registry_consistency(
         )])
     }
 }
-

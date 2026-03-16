@@ -71,7 +71,7 @@
         "k8s",
         "obs"
       ],
-      "surface_actions": 91,
+      "surface_actions": 86,
       "toolchain_images": 8,
       "tools": [
         "curl",
