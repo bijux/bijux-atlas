@@ -1,6 +1,6 @@
 {
   "artifacts": {
-    "closure_index": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_internal/generated/closure-index.json",
+    "closure_index": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/docs/generated/closure-index.json",
     "closure_summary": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/docs-build-closure-summary.json",
     "report_manifest": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/report-manifest.json",
     "site_output": "/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/tests/fixtures/docs-mini/artifacts/run/docs_fixture/gates/docs/site-output.json"

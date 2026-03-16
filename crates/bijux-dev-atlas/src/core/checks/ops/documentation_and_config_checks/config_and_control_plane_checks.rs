@@ -227,7 +227,7 @@ pub(super) fn check_scripting_contract_rust_control_plane_lock(
 pub(super) fn check_docs_ops_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/_internal/generated/ops-command-list.md");
+    let rel = Path::new("configs/generated/docs/ops-command-list.txt");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -295,7 +295,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_OPS_COMMAND_LIST_MISMATCH",
             "ops command list doc does not match canonical ops help snapshot".to_string(),
-            "update docs/_internal/generated/ops-command-list.md to match ops --help command list",
+            "update configs/generated/docs/ops-command-list.txt to match ops --help command list",
             Some(rel),
         )])
     }
@@ -304,7 +304,7 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
 pub(super) fn check_docs_configs_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/_internal/generated/configs-command-list.md");
+    let rel = Path::new("configs/generated/docs/configs-command-list.txt");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
@@ -329,7 +329,7 @@ pub(super) fn check_docs_configs_command_list_matches_snapshot(
         Ok(vec![violation(
             "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
             "configs command list doc does not match canonical configs help snapshot".to_string(),
-            "update docs/_internal/generated/configs-command-list.md to match configs --help command list",
+            "update configs/generated/docs/configs-command-list.txt to match configs --help command list",
             Some(rel),
         )])
     }

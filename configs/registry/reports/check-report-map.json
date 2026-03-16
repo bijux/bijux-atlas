@@ -58,7 +58,7 @@
     {
       "check_id": "REPO-006",
       "report_id": "closure-index",
-      "report_path": "docs/_internal/generated/closure-index.json",
+      "report_path": "artifacts/docs/generated/closure-index.json",
       "evidence_level": "minimal"
     }
   ]

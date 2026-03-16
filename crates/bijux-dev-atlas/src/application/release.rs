@@ -2630,8 +2630,8 @@ fn run_release_ops_compatibility_matrix(
     });
 
     if args.allow_write {
-        let md_path = root.join("docs/_internal/generated/ops-compatibility-matrix.md");
-        let json_path = root.join("docs/_internal/generated/ops-compatibility-matrix.json");
+        let md_path = root.join("artifacts/docs/generated/ops-compatibility-matrix.md");
+        let json_path = root.join("artifacts/docs/generated/ops-compatibility-matrix.json");
         if let Some(parent) = md_path.parent() {
             fs::create_dir_all(parent)
                 .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
@@ -5340,7 +5340,7 @@ fn generate_release_docs_artifacts(
     version: &str,
     versions: &[String],
 ) -> Result<(), String> {
-    let generated_dir = root.join("docs/_internal/generated");
+    let generated_dir = root.join("ops/release/generated");
     fs::create_dir_all(&generated_dir)
         .map_err(|err| format!("failed to create {}: {err}", generated_dir.display()))?;
     let metadata_path = generated_dir.join("release-metadata.json");
@@ -5790,7 +5790,7 @@ fn run_release_changelog_validate(
             ));
         }
     }
-    let metadata_path = root.join("docs/_internal/generated/release-metadata.json");
+    let metadata_path = root.join("ops/release/generated/release-metadata.json");
     if metadata_path.exists() {
         let metadata = read_json(&metadata_path)?;
         let artifact_root = metadata

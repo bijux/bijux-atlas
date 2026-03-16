@@ -131,34 +131,34 @@ pub fn closure_index_report() -> serde_json::Value {
         "version": 1,
         "run_id": "docs-internal-generated",
         "inputs": {
-            "source": "docs/_internal/governance/closure-checks.md"
+            "source": "configs/sources/repository/docs/site-output-contract.json"
         },
         "summary": {
             "entry_count": 4
         },
         "evidence": {
-            "docs_source": "docs/_internal/governance/closure-checks.md"
+            "docs_source": "configs/sources/repository/docs/site-output-contract.json"
         },
         "entries": [
             {
                 "check_id": "REPO-003",
                 "title": "Helm env subset",
-                "docs_path": "docs/reference/contracts/ops/helm-env-subset.md"
+                "docs_path": "docs/04-operations/deployment-models.md"
             },
             {
                 "check_id": "REPO-004",
                 "title": "Ops profile matrix",
-                "docs_path": "docs/reference/contracts/ops/profile-matrix.md"
+                "docs_path": "docs/04-operations/deployment-models.md"
             },
             {
                 "check_id": "REPO-005",
                 "title": "Docs site output",
-                "docs_path": "docs/reference/contracts/docs/site-output.md"
+                "docs_path": "docs/06-development/documentation-standards.md"
             },
             {
                 "check_id": "runtime-env-allowlist",
                 "title": "Runtime env allowlist enforcement",
-                "docs_path": "docs/reference/runtime/config.md"
+                "docs_path": "docs/07-reference/runtime-config-reference.md"
             }
         ]
     })

@@ -26,23 +26,23 @@
       "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
     },
     {
-      "path": "docs/_internal/generated/docs-artifact-link-inventory.md",
+      "path": "artifacts/docs/generated/docs-artifact-link-inventory.md",
       "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
     },
     {
-      "path": "docs/_internal/generated/real-data-runs-overview.md",
+      "path": "artifacts/docs/generated/real-data-runs-overview.md",
       "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
     },
     {
-      "path": "docs/_internal/generated/real-data-runs-overview.json",
+      "path": "artifacts/docs/generated/real-data-runs-overview.json",
       "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
     },
     {
-      "path": "docs/_internal/generated/ops-compatibility-matrix.md",
+      "path": "artifacts/docs/generated/ops-compatibility-matrix.md",
       "generator": "bijux-dev-atlas release ops compatibility-matrix --allow-write"
     },
     {
-      "path": "docs/_internal/generated/ops-compatibility-matrix.json",
+      "path": "artifacts/docs/generated/ops-compatibility-matrix.json",
       "generator": "bijux-dev-atlas release ops compatibility-matrix --allow-write"
     }
   ]

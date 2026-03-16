@@ -998,13 +998,13 @@ fn run_ci_verify_gate(
             if !allow_write {
                 return Err("ci verify docs-quality requires --allow-write".to_string());
             }
-            let path = repo_root.join("docs/_internal/generated/docs-test-coverage.json");
+            let path = repo_root.join("artifacts/docs/generated/docs-test-coverage.json");
             if !path.exists() {
                 serde_json::json!({
                     "schema_version": 1,
                     "kind": "ci_verify_docs_quality",
                     "status": "failed",
-                    "errors": ["missing docs/_internal/generated/docs-test-coverage.json"]
+                    "errors": ["missing artifacts/docs/generated/docs-test-coverage.json"]
                 })
             } else {
                 let payload: serde_json::Value = serde_json::from_str(

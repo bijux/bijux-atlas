@@ -5,7 +5,7 @@
       "report_id": "closure-index",
       "version": 1,
       "schema_path": "configs/schemas/contracts/reports/closure-index.schema.json",
-      "example_path": "docs/_internal/generated/closure-index.json"
+      "example_path": "artifacts/docs/generated/closure-index.json"
     },
     {
       "report_id": "docs-build-closure-summary",
