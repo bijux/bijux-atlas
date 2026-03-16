@@ -4,6 +4,7 @@
 .idea/
 .vscode/
 *.code-workspace
+.cache
 
 # -----------------------------------------------------------------------------
 # OS noise
@@ -45,7 +46,6 @@ ops/openapi/v1/openapi.generated.json
 *.gcda
 *.gcno
 *.lcov
-coverage/
 flamegraph.svg
 perf.data
 perf.data.old
