@@ -169,7 +169,16 @@ publish-rs: ## Publish Rust crates and dry-run by default
 				continue; \
 			fi; \
 		fi; \
-		cargo publish --locked $$dry_run_flag -p "$$pkg"; \
+		if ! cargo publish --locked $$dry_run_flag -p "$$pkg"; then \
+			if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
+				status="$$(curl -s -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+				if [ "$${status}" = "200" ]; then \
+					echo "skipping $$pkg $(RELEASE_VERSION); crates.io now reports the version as published"; \
+					continue; \
+				fi; \
+			fi; \
+			exit 1; \
+		fi; \
 	done
 
 .PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow test-all publish-rs
