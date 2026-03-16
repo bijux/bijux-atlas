@@ -27,6 +27,9 @@ flowchart LR
 
 The goal is simple: one execution surface, one capability model, and one place to document automation behavior.
 
+This contrast diagram explains why Atlas invests in a control plane instead of accumulating scripts.
+Shared commands and explicit capabilities keep local runs, CI, and docs closer to the same truth.
+
 ## Surface Model
 
 ```mermaid
@@ -43,6 +46,9 @@ flowchart TD
     Governance --> Artifacts
     Reports --> Artifacts
 ```
+
+This surface model shows how `make` and `bijux dev atlas` relate. `make` is the ergonomic wrapper;
+the control plane is the authoritative execution surface.
 
 Use `make` for the common lane wrappers and `bijux dev atlas ...` when you need narrower selection or deeper inspection.
 
@@ -77,6 +83,11 @@ Some workflows are pure reads, while others intentionally require effects.
 - docs commands that spawn tools or write artifacts require explicit capability flags such as `--allow-subprocess`, `--allow-write`, and `--allow-network`
 
 Commands should fail closed when a required capability is missing. Quietly downgrading behavior would make CI and local evidence diverge.
+
+## A Useful Control-Plane Question
+
+Ask whether you need a lane wrapper, a suite, a focused check, or a report lookup. Picking the
+smallest correct control-plane surface keeps automation both honest and fast.
 
 ## Triage Workflow
 

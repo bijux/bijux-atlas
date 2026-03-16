@@ -22,6 +22,9 @@ flowchart LR
     Contracts --> Evidence
 ```
 
+This evidence model shows that Atlas review is not code-versus-tests alone. Docs, contract checks,
+and explicit proof all contribute to the case that a change is safe.
+
 ## Test Shape
 
 ```mermaid
@@ -31,6 +34,9 @@ flowchart TD
     Interface[Interface tests] --> Confidence
     Workflow[Workflow tests] --> Confidence
 ```
+
+This test-shape diagram makes the testing stack easier to reason about. Different test classes answer
+different questions, and the right mix depends on the surface you changed.
 
 ## Practical Commands
 
@@ -61,6 +67,12 @@ Performance evidence is part of the quality story when a change touches expensiv
 ## Cost Awareness
 
 Fast feedback matters. Run the smallest targeted command that proves the change is safe, then escalate to broader suites only when the change scope requires it.
+
+## Evidence Smell Test
+
+- can a reviewer rerun the proof quickly?
+- does the evidence match the surface that changed?
+- is the output structured when the review path depends on structured evidence?
 
 ## Maintainer Rule
 

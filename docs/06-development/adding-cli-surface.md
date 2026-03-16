@@ -22,6 +22,9 @@ flowchart TD
     Docs --> Tests[Test help and behavior]
 ```
 
+This CLI addition flow keeps maintainers from treating new commands as isolated parser work. A new
+CLI surface changes behavior, output, docs, and tests together.
+
 ## Placement Model
 
 ```mermaid
@@ -31,12 +34,21 @@ flowchart LR
     App --> Contracts[contract-owned output if stable]
 ```
 
+This placement model explains where CLI-specific concerns should stop. Parsing belongs in inbound
+adapters, while reusable logic should move deeper into app or domain layers.
+
 ## Rules
 
 - prefer extending the right command family over inventing a new miscellaneous root
 - keep CLI parsing in inbound CLI adapters
 - move reusable behavior into app or domain code when appropriate
 - document stable output behavior if users or automation will depend on it
+
+## CLI Surface Check Before Merge
+
+- does the command belong in an existing family?
+- does help output still tell an honest story?
+- is any stable output now contract-worthy?
 
 ## Purpose
 

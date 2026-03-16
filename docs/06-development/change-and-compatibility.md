@@ -21,6 +21,9 @@ flowchart TD
     Surface --> Breaking[Breaking change]
 ```
 
+This classification diagram exists so compatibility thinking happens before implementation momentum
+takes over. Atlas wants breaking and compatible changes to be intentional, not discovered late.
+
 ## Compatibility Questions
 
 ```mermaid
@@ -29,6 +32,9 @@ flowchart LR
     Docs --> Tests[Tested?]
     Tests --> Promise[Actually promised?]
 ```
+
+This compatibility-question chain is the quickest way to determine how seriously to treat a change.
+If the surface is documented, tested, and promised, compatibility review is not optional.
 
 ## Maintainer Checklist
 
@@ -40,6 +46,12 @@ flowchart LR
 ## Rule of Thumb
 
 If users, operators, or CI would notice the change without reading source code, treat it as a compatibility question first and an implementation question second.
+
+## A Useful Compatibility Habit
+
+- classify the surface before coding
+- say “internal,” “compatible,” or “breaking” explicitly in review language
+- update docs and evidence in the same change when the answer is not purely internal
 
 ## Purpose
 

@@ -20,6 +20,9 @@ flowchart TD
     Evidence --> Release[Release]
 ```
 
+This release flow reminds maintainers that versioning is downstream of validated change analysis and
+evidence. Release is the public expression of work that was already classified and proven.
+
 ## Versioning Model
 
 ```mermaid
@@ -27,6 +30,9 @@ flowchart LR
     Internal[Internal-only changes] --> Lower[Lower compatibility risk]
     Contract[Contract surface changes] --> Higher[Higher compatibility scrutiny]
 ```
+
+This versioning model is intentionally simple: the more a change touches contract-owned surfaces, the
+more carefully release review should treat it.
 
 ## Maintainer Priorities
 
@@ -67,6 +73,12 @@ cargo run -q -p bijux-dev-atlas -- governance doctor --format json
 ## Practical Mindset
 
 Release discipline is not only a packaging step. It is the final check that the documented story, tested story, and shipped story still match.
+
+## Release Questions Worth Asking
+
+- which user, operator, or automation surfaces changed?
+- what evidence proves the release story still matches the docs?
+- does the versioning decision reflect the actual compatibility impact?
 
 ## Purpose
 

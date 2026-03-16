@@ -22,6 +22,9 @@ flowchart TD
     Contract --> Record
 ```
 
+This decision-class diagram helps maintainers decide when informal reasoning is no longer enough. A
+cross-domain or contract-affecting change deserves a durable record other people can find later.
+
 Use local judgment for isolated implementation work. When the change crosses domains or alters a
 documented promise, capture the decision in a durable record instead of leaving it in chat or commit
 lore.
@@ -36,6 +39,9 @@ The most reliable ownership signals in this repository are:
 - repository review boundaries in `.github/CODEOWNERS`
 
 If those signals disagree, resolve the ownership drift before merging the change.
+
+That rule matters because ambiguous ownership leads to slow reviews, duplicated rules, and
+undocumented handoffs.
 
 ## Governance Rules
 
@@ -86,6 +92,11 @@ Use these commands to inspect the current governance state before you add anothe
 Never rely on "the owner probably knows" or "the context is in the PR" as the only governance
 mechanism. If future readers need the decision to understand why the repository is shaped this way,
 record it in a canonical file.
+
+## A Good Ownership Check
+
+- can you point to the owner in docs, config metadata, or CODEOWNERS?
+- can a future maintainer find the decision without reading chat history?
 
 ## Purpose
 

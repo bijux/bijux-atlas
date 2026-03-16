@@ -22,6 +22,9 @@ flowchart TD
     Review --> Merge[Merge with ownership approval]
 ```
 
+This first-contribution path shows the expected shape of a reviewable Atlas change. Reading, scoped
+editing, focused proof, and clear evidence are part of the workflow, not optional cleanup.
+
 ## Environment Baseline
 
 Treat the workspace root as the only supported starting point.
@@ -52,6 +55,9 @@ submitting a cross-cutting change.
 - get maintainer signoff when the change affects contracts, ownership, or
   repository-wide automation behavior
 
+This governance baseline exists because Atlas treats repository rules as a product-quality concern,
+not as optional maintainer preference.
+
 ## Review Expectations
 
 - make the scope and user-visible intent explicit
@@ -69,6 +75,11 @@ Before opening or updating a pull request, confirm:
 - the matching docs page is updated when public behavior changed
 - evidence artifacts or JSON output are refreshed when review depends on them
 - reviewers can reproduce the result with one copy-paste command
+
+## One Rule That Prevents Review Pain
+
+If a reviewer cannot tell what changed, why it changed, and how to rerun the proof quickly, the
+branch is not ready yet.
 
 ## Common Local Problems
 

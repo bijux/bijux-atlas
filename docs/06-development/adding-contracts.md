@@ -21,6 +21,10 @@ flowchart TD
     Docs --> Tests[Add contract tests]
 ```
 
+This contract-addition flow keeps “we should probably promise this” from staying vague. A real
+contract needs an owner, a definition, documentation, and tests that can fail when the promise
+drifts.
+
 ## Ownership Model
 
 ```mermaid
@@ -30,12 +34,21 @@ flowchart LR
     Errors[Error contracts] --> Contracts
 ```
 
+This ownership model makes the contract home explicit. Atlas tries to give each stable promise one
+obvious owner path so refactors do not create duplicate sources of truth.
+
 ## Rules
 
 - give each contract one obvious owner path
 - document the promise and its intended audience
 - add tests that would fail if the promise drifts
 - do not hide contract truth behind convenience reexports
+
+## Contract Addition Check
+
+- who relies on this promise?
+- where is the one owning source?
+- what test will fail if the promise changes accidentally?
 
 ## Purpose
 

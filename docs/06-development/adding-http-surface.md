@@ -22,6 +22,9 @@ flowchart TD
     Contract --> Tests[Add interface tests]
 ```
 
+This HTTP addition flow shows the full change path for a new endpoint. Routing, handler logic,
+contracts, docs, and tests all move together when the surface is real.
+
 ## Layering Model
 
 ```mermaid
@@ -32,12 +35,21 @@ flowchart LR
     App --> Store[Store or query backend]
 ```
 
+This layering model keeps transport concerns from spreading too far inward. HTTP types and routing
+rules should not quietly become application truth.
+
 ## Rules
 
 - keep router declarations declarative
 - keep HTTP concerns in HTTP adapters
 - avoid letting HTTP types become application truth
 - update documentation and contracts when the surface is stable or public
+
+## HTTP Surface Check Before Merge
+
+- does the router stay declarative?
+- is policy enforcement still visible and testable?
+- did OpenAPI and interface tests move with the new route?
 
 ## Purpose
 

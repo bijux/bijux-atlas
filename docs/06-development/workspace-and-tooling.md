@@ -22,6 +22,9 @@ flowchart LR
     Workspace --> Configs[configs/]
 ```
 
+This workspace view shows why Atlas changes should rarely be reasoned about in one crate alone. The
+runtime, control plane, docs, configs, and ops material form one governed repository surface.
+
 ## Tooling View
 
 ```mermaid
@@ -31,6 +34,10 @@ flowchart TD
     Make[Make targets] --> Automation[Common workflows]
     DevAtlas[bijux-dev-atlas] --> ControlPlane[Governed checks and reports]
 ```
+
+This tooling view keeps the main developer entry points visible. Each tool has a role, but
+`bijux-dev-atlas` is the unifying control plane for governed repository checks and generated
+evidence.
 
 ## Practical Advice
 
@@ -44,6 +51,12 @@ flowchart TD
 The current workspace MSRV and pinned Rust toolchain are both `1.85.0`.
 
 If `Cargo.toml`, `rust-toolchain.toml`, and release validation disagree about that version, treat it as a release blocker rather than a cosmetic drift.
+
+## Good Workspace Discipline
+
+- start from the workspace root
+- prefer governed commands over one-off local wrappers
+- keep outputs under `artifacts/` so cleanup and review stay predictable
 
 ## Purpose
 
