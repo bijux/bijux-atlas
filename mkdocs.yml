@@ -15,6 +15,7 @@ validation:
   omitted_files: ignore
 
 exclude_docs: |
+  _drafts/**
   automation/**
   README.md
 
