@@ -980,12 +980,20 @@ fn write_generated_docs_file(
     rel_path: &str,
     body: String,
 ) -> Result<String, String> {
+    write_generated_file(repo_root, rel_path, format_generated_doc_content(&body))
+}
+
+fn write_generated_file(
+    repo_root: &std::path::Path,
+    rel_path: &str,
+    content: String,
+) -> Result<String, String> {
     let path = repo_root.join(rel_path);
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
     }
-    fs::write(&path, format_generated_doc_content(&body))
+    fs::write(&path, content)
         .map_err(|e| format!("write {} failed: {e}", path.display()))?;
     Ok(rel_path.to_string())
 }
@@ -1136,13 +1144,73 @@ fn build_generated_ops_snippets_body(repo_root: &std::path::Path) -> Result<Stri
     ))
 }
 
+fn build_generated_ops_compatibility_matrix(
+    repo_root: &std::path::Path,
+) -> Result<(String, String), String> {
+    let workspace_version = fs::read_to_string(repo_root.join("Cargo.toml"))
+        .ok()
+        .and_then(|text| {
+            text.lines()
+                .find(|line| line.trim_start().starts_with("version = "))
+                .map(str::to_string)
+        })
+        .and_then(|line| line.split('"').nth(1).map(str::to_string))
+        .unwrap_or_else(|| "0.1.0".to_string());
+    let ops_manifest_path = repo_root.join("ops/release/ops-release-manifest.json");
+    let ops_manifest: serde_json::Value = fs::read_to_string(&ops_manifest_path)
+        .ok()
+        .and_then(|text| serde_json::from_str(&text).ok())
+        .unwrap_or_else(|| serde_json::json!({}));
+    let chart_version = ops_manifest
+        .get("chart_version")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or(workspace_version.as_str());
+    let chart_reference = ops_manifest
+        .get("chart_reference")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas");
+    let ops_matrix_json = serde_json::json!({
+        "schema_version": 1,
+        "kind": "release_ops_compatibility_matrix",
+        "status": "ok",
+        "rows": [{
+            "runtime_version": workspace_version,
+            "chart_version": chart_version,
+            "client_version": workspace_version,
+            "chart_reference": chart_reference
+        }]
+    });
+    let ops_matrix_md = format!(
+        "# Ops Compatibility Matrix\n\n| Runtime version | Chart version | Client version | Chart reference |\n| --- | --- | --- | --- |\n| `{}` | `{}` | `{}` | `{}` |\n",
+        ops_matrix_json["rows"][0]["runtime_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["chart_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["client_version"].as_str().unwrap_or_default(),
+        ops_matrix_json["rows"][0]["chart_reference"].as_str().unwrap_or_default()
+    );
+    let ops_matrix_json_text = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&ops_matrix_json)
+            .map_err(|e| format!("encode ops compatibility matrix failed: {e}"))?
+    );
+    Ok((ops_matrix_md, ops_matrix_json_text))
+}
+
 fn docs_generate_ops_snippets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let content = build_generated_ops_snippets_body(repo_root)?;
-    Ok(vec![write_generated_docs_file(
-        repo_root,
-        "artifacts/docs/generated/ops-snippets.md",
-        content,
-    )?])
+    let (ops_matrix_md, ops_matrix_json) = build_generated_ops_compatibility_matrix(repo_root)?;
+    Ok(vec![
+        write_generated_docs_file(repo_root, "artifacts/docs/generated/ops-snippets.md", content)?,
+        write_generated_docs_file(
+            repo_root,
+            "artifacts/docs/generated/ops-compatibility-matrix.md",
+            ops_matrix_md,
+        )?,
+        write_generated_file(
+            repo_root,
+            "artifacts/docs/generated/ops-compatibility-matrix.json",
+            ops_matrix_json,
+        )?,
+    ])
 }
 
 fn load_docs_real_data_catalog(repo_root: &std::path::Path) -> Result<DocsRealDataCatalog, String> {
@@ -1354,46 +1422,7 @@ fn docs_generate_all(repo_root: &std::path::Path) -> Result<Vec<String>, String>
 fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let catalog = load_docs_real_data_catalog(repo_root)?;
     let link_rows = docs_markdown_link_inventory(repo_root)?;
-    let workspace_version = fs::read_to_string(repo_root.join("Cargo.toml"))
-        .ok()
-        .and_then(|text| {
-            text.lines()
-                .find(|line| line.trim_start().starts_with("version = "))
-                .map(str::to_string)
-        })
-        .and_then(|line| line.split('"').nth(1).map(str::to_string))
-        .unwrap_or_else(|| "0.1.0".to_string());
-    let ops_manifest_path = repo_root.join("ops/release/ops-release-manifest.json");
-    let ops_manifest: serde_json::Value = fs::read_to_string(&ops_manifest_path)
-        .ok()
-        .and_then(|text| serde_json::from_str(&text).ok())
-        .unwrap_or_else(|| serde_json::json!({}));
-    let chart_version = ops_manifest
-        .get("chart_version")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or(workspace_version.as_str());
-    let chart_reference = ops_manifest
-        .get("chart_reference")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("oci://ghcr.io/bijux/charts/bijux-atlas");
-    let ops_matrix_json = serde_json::json!({
-        "schema_version": 1,
-        "kind": "release_ops_compatibility_matrix",
-        "status": "ok",
-        "rows": [{
-            "runtime_version": workspace_version,
-            "chart_version": chart_version,
-            "client_version": workspace_version,
-            "chart_reference": chart_reference
-        }]
-    });
-    let ops_matrix_md = format!(
-        "# Ops Compatibility Matrix\n\n| Runtime version | Chart version | Client version | Chart reference |\n| --- | --- | --- | --- |\n| `{}` | `{}` | `{}` | `{}` |\n",
-        ops_matrix_json["rows"][0]["runtime_version"].as_str().unwrap_or_default(),
-        ops_matrix_json["rows"][0]["chart_version"].as_str().unwrap_or_default(),
-        ops_matrix_json["rows"][0]["client_version"].as_str().unwrap_or_default(),
-        ops_matrix_json["rows"][0]["chart_reference"].as_str().unwrap_or_default()
-    );
+    let (ops_matrix_md, ops_matrix_json) = build_generated_ops_compatibility_matrix(repo_root)?;
     let expected = [
         (
             "artifacts/docs/generated/examples.md",
@@ -1429,11 +1458,7 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         ),
         (
             "artifacts/docs/generated/ops-compatibility-matrix.json",
-            format!(
-                "{}\n",
-                serde_json::to_string_pretty(&ops_matrix_json)
-                    .map_err(|e| format!("encode ops compatibility matrix failed: {e}"))?
-            ),
+            ops_matrix_json,
         ),
     ];
     let mut missing = Vec::new();
@@ -2322,7 +2347,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "schema_version": 1,
                         "kind": "docs_build_preflight",
                         "status": "failed",
-                        "text": "generated tutorial snippets are stale; run `bijux-dev-atlas docs generate examples --allow-write --allow-subprocess`",
+                        "text": "generated docs artifacts are stale; run the relevant `bijux-dev-atlas docs generate ... --allow-write --allow-subprocess` command for the reported paths",
                         "missing": generated["missing"],
                         "missing_header": generated["missing_header"],
                         "stale": generated["stale"],
