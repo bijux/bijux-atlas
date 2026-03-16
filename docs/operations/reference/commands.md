@@ -1,3 +1,12 @@
+---
+title: Command Surface Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Command Surface Reference
 
 - Owner: `bijux-atlas-operations`
@@ -122,4 +131,4 @@ See `docs/_internal/generated/makes-targets.md` and generated ops surface refere
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is generated from the checked-in command surface and should remain aligned with the current control plane.

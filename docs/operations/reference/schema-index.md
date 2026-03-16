@@ -1,19 +1,33 @@
+---
+title: Schema Index Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Schema Index Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
+- Stability: `stable`
 - Source-of-truth: `ops/schema/generated/schema-index.json`
+
+## Purpose
+
+This page points readers to the canonical generated schema index without duplicating that inventory.
 
 ## Canonical Source
 
 - `ops/schema/generated/schema-index.json` is the authoritative generated schema index.
 - This page is a docs-site reference pointer to avoid duplicating the schema table.
 
-## Purpose
+## Regenerate
 
-This page is the lookup reference for schema index reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page should change only when the schema index source changes.

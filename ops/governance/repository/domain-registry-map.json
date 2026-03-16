@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "approved_registry_json_paths": [
-    "docs/_internal/registry/registry.json"
+    "docs/_internal/registry/registry.json",
+    "ops/invariants/registry.json"
   ],
   "domains": {
     "configs": {

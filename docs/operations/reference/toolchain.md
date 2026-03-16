@@ -1,3 +1,12 @@
+---
+title: Toolchain Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Toolchain Reference
 
 - Owner: `bijux-atlas-operations`
@@ -53,6 +62,10 @@ Generated reference for the pinned repository toolchain, images, and GitHub Acti
 | `helm/kind-action` | `v1` | `ef37e7f390d99f746eb8b610417061a60e82a6cc` |
 | `peter-evans/create-pull-request` | `v6` | `c0f553fe549906ede9cf27b5156039d195d2ece0` |
 
+## Regenerate
+
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
+
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is generated from the pinned toolchain inventory. Update the inventory first, then regenerate the docs snapshot.

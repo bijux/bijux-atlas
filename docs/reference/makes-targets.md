@@ -1,3 +1,12 @@
+---
+title: Make Targets Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Make Targets Reference
 
 - Owner: `bijux-atlas-operations`
@@ -142,4 +151,4 @@ Generated reference for governed make wrapper targets and their declared surface
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is generated from the governed make target inventory and should remain synchronized with the checked-in registry.

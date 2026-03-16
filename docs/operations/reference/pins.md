@@ -1,9 +1,23 @@
+---
+title: Pins Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Pins Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
+- Stability: `stable`
 - Source-of-truth: `ops/inventory/pins.yaml`
+
+## Purpose
+
+Generated reference for the repository pin inventory.
 
 ## Pins
 
@@ -24,10 +38,10 @@
 | `versions` | `chart` | `0.1.0` |
 | `versions` | `prometheus_operator_crd` | `0.76.0` |
 
-## Purpose
+## Regenerate
 
-This page is the lookup reference for pins reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Treat this page as generated evidence of the checked-in pin registry.

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "registry_id": "docs-sections",
+  "sections": [
+    {
+      "id": "introduction",
+      "path": "docs/01-introduction",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/01-introduction/index.md"
+    },
+    {
+      "id": "getting-started",
+      "path": "docs/02-getting-started",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/02-getting-started/index.md"
+    },
+    {
+      "id": "user-guide",
+      "path": "docs/03-user-guide",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/03-user-guide/index.md"
+    },
+    {
+      "id": "operations",
+      "path": "docs/04-operations",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/04-operations/index.md"
+    },
+    {
+      "id": "architecture",
+      "path": "docs/05-architecture",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/05-architecture/index.md"
+    },
+    {
+      "id": "development",
+      "path": "docs/06-development",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/06-development/index.md"
+    },
+    {
+      "id": "governance",
+      "path": "docs/governance",
+      "owner": "atlas-governance",
+      "entrypoint": "docs/governance/index.md"
+    },
+    {
+      "id": "reference",
+      "path": "docs/07-reference",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/07-reference/index.md"
+    },
+    {
+      "id": "contracts",
+      "path": "docs/08-contracts",
+      "owner": "atlas-docs",
+      "entrypoint": "docs/08-contracts/index.md"
+    },
+    {
+      "id": "generated-reference",
+      "path": "docs/reference",
+      "owner": "bijux-atlas-operations",
+      "entrypoint": "docs/reference/commands.md"
+    },
+    {
+      "id": "generated-operations-reference",
+      "path": "docs/operations/reference",
+      "owner": "bijux-atlas-operations",
+      "entrypoint": "docs/operations/reference/commands.md"
+    }
+  ]
+}

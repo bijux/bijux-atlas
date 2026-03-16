@@ -1,3 +1,12 @@
+---
+title: Commands Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Commands Reference
 
 - Owner: `bijux-atlas-operations`
@@ -50,4 +59,4 @@ Generated reference for the maintainer command registry. Narrative docs should d
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This generated page is a checked-in reference surface. Regenerate it when the command inventory changes so docs and automation stay aligned.

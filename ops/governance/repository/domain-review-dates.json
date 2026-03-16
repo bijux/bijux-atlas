@@ -7,6 +7,9 @@
     "docker": {
       "reviewed_on": "2026-03-01"
     },
+    "docs": {
+      "reviewed_on": "2026-03-16"
+    },
     "make": {
       "reviewed_on": "2026-03-01"
     },

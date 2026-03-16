@@ -1,3 +1,12 @@
+---
+title: Repository Map
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Repository Map
 
 - Owner: `bijux-atlas-operations`
@@ -25,4 +34,4 @@ checked-in index page in the area you are working in rather than relying on gene
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is a generated navigation aid and should remain aligned with the current repository layout.

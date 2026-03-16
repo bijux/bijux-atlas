@@ -1,3 +1,12 @@
+---
+title: Configs Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Configs Reference
 
 - Owner: `bijux-atlas-operations`
@@ -27,4 +36,4 @@ Generated reference for governed config groups and their declared consumers.
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Treat this page as generated evidence for governed config groups and their declared consumers.

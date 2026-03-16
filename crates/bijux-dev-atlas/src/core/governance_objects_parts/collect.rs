@@ -46,6 +46,38 @@ fn read_domain_review_dates(repo_root: &Path) -> BTreeMap<String, String> {
         .collect::<BTreeMap<_, _>>()
 }
 
+fn read_docs_frontmatter_metadata(path: &Path) -> (Option<String>, Option<String>) {
+    let Ok(text) = fs::read_to_string(path) else {
+        return (None, None);
+    };
+    let mut lines = text.lines();
+    if lines.next().map(str::trim) != Some("---") {
+        return (None, None);
+    }
+    let mut owner = None;
+    let mut last_reviewed = None;
+    for line in lines {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            break;
+        }
+        let Some((key, value)) = trimmed.split_once(':') else {
+            continue;
+        };
+        let value = value
+            .trim()
+            .trim_matches('"')
+            .trim_matches('\'')
+            .to_string();
+        match key.trim() {
+            "owner" if !value.is_empty() => owner = Some(value),
+            "last_reviewed" if !value.is_empty() => last_reviewed = Some(value),
+            _ => {}
+        }
+    }
+    (owner, last_reviewed)
+}
+
 pub(super) fn collect_governance_objects(
     repo_root: &Path,
 ) -> Result<Vec<GovernanceObject>, String> {
@@ -66,19 +98,21 @@ pub(super) fn collect_governance_objects(
         {
             continue;
         }
-        let reviewed_on = domain_reviews.get("docs").cloned().unwrap_or_default();
+        let (owner, last_reviewed) = read_docs_frontmatter_metadata(&path);
         push_object(
             &mut objects,
             GovernanceObject {
                 id: format!("docs:page:{}", slug_from_path(&rel)),
                 domain: "docs".to_string(),
-                owner: "docs".to_string(),
+                owner: owner.unwrap_or_else(|| "atlas-docs".to_string()),
                 consumers: vec!["docs/index.md".to_string()],
                 lifecycle: "stable".to_string(),
                 evidence: vec!["artifacts/governance/docs/pages.json".to_string()],
                 links: vec![rel],
                 authority_source: "docs/".to_string(),
-                reviewed_on,
+                reviewed_on: last_reviewed
+                    .or_else(|| domain_reviews.get("docs").cloned())
+                    .unwrap_or_default(),
             },
         );
     }
@@ -170,7 +204,8 @@ pub(super) fn collect_governance_objects(
         );
     }
 
-    let make_targets = read_json(&repo_root.join("configs/sources/operations/ops/makes-targets.json"))?;
+    let make_targets =
+        read_json(&repo_root.join("configs/sources/operations/ops/makes-targets.json"))?;
     for row in make_targets["targets"]
         .as_array()
         .cloned()

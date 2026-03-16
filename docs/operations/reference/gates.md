@@ -1,9 +1,23 @@
+---
+title: Gates Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Gates Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
+- Stability: `stable`
 - Source-of-truth: `ops/inventory/gates.json`
+
+## Purpose
+
+Generated reference for governed release and validation gates.
 
 ## Gates
 
@@ -48,10 +62,10 @@
 | `ops.gate.validate` | `governance` | `ops.root.validate` | validate all json/yaml/toml artifacts and schema contracts |
 | `ops.validate` | `root` | `ops.root.validate` | full contract validation lane |
 
-## Purpose
+## Regenerate
 
-This page is the lookup reference for gates reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page reflects the checked-in gates inventory and should stay generated from that registry.

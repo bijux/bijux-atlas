@@ -97,6 +97,20 @@ fn docs_reference_target_contents(
     ])
 }
 
+fn wrap_generated_reference_page(title: &str, audience: &str, owner: &str, body: String) -> String {
+    format!(
+        "---\n\
+title: {title}\n\
+audience: {audience}\n\
+type: reference\n\
+status: generated\n\
+owner: {owner}\n\
+last_reviewed: 2026-03-16\n\
+---\n\n\
+{body}"
+    )
+}
+
 fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Result<String, String> {
     let value: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(repo_root.join("docs/_internal/generated/command-index.json"))
@@ -134,7 +148,13 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
         out.push_str(&format!("| `{id}` | `{kind}` | {purpose} |\n"));
     }
     out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nThis generated page is a checked-in reference surface. Regenerate it when the command inventory changes so docs and automation stay aligned.\n");
+    Ok(wrap_generated_reference_page(
+        "Commands Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, String> {
@@ -171,7 +191,13 @@ fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, 
         out.push_str(&format!("| `{path}` | {title} | `{kind}` |\n"));
     }
     out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nThis page is generated from the checked-in schema inventory and should change only when the schema set changes.\n");
+    Ok(wrap_generated_reference_page(
+        "Schemas Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, String> {
@@ -211,7 +237,13 @@ fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, 
         out.push_str(&format!("| `{group}` | `{consumers}` |\n"));
     }
     out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nTreat this page as generated evidence for governed config groups and their declared consumers.\n");
+    Ok(wrap_generated_reference_page(
+        "Configs Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<String, String> {
@@ -248,11 +280,20 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
         out.push_str(&format!("| `{name}` | `{surface}` | {description} |\n"));
     }
     out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nThis page is generated from the governed make target inventory and should remain synchronized with the checked-in registry.\n");
+    Ok(wrap_generated_reference_page(
+        "Make Targets Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_repo_map(_repo_root: &std::path::Path) -> Result<String, String> {
-    Ok(
+    Ok(wrap_generated_reference_page(
+        "Repository Map",
+        "operators",
+        "bijux-atlas-operations",
         "# Repository Map\n\n\
 - Owner: `bijux-atlas-operations`\n\
 - Type: `reference`\n\
@@ -268,9 +309,11 @@ understand ownership, boundaries, and where material lives.\n\n\
 - [Operations Reference](../operations/reference/commands.md)\n\n\
 ## Reader Guidance\n\n\
 Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Follow the nearest\n\
-checked-in index page in the area you are working in rather than relying on generated inventory artifacts.\n"
-            .to_string(),
-    )
+checked-in index page in the area you are working in rather than relying on generated inventory artifacts.\n\n\
+## Stability\n\n\
+This page is a generated navigation aid and should remain aligned with the current repository layout.\n"
+        .to_string(),
+    ))
 }
 
 fn run_bijux_dev_atlas_help(repo_root: &std::path::Path, args: &[&str]) -> Result<String, String> {
@@ -310,8 +353,13 @@ fn trim_help_usage_and_commands(help: &str) -> String {
 fn render_docs_reference_commands(repo_root: &std::path::Path) -> Result<String, String> {
     let root_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["--help"])?);
     let ops_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["ops", "--help"])?);
-    Ok(format!(
-        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/makes-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/makes-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
+    Ok(wrap_generated_reference_page(
+        "Command Surface Reference",
+        "operators",
+        "bijux-atlas-operations",
+        format!(
+        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/makes-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/makes-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n\n## Stability\n\nThis page is generated from the checked-in command surface and should remain aligned with the current control plane.\n"
+        ),
     ))
 }
 
@@ -371,7 +419,13 @@ fn render_docs_reference_ops_surface(repo_root: &std::path::Path) -> Result<Stri
         ));
     }
     out.push_str("\n## See Also\n\n- `ops/_generated.example/control-plane-surface-list.json` (generated surface evidence)\n- `ops/inventory/surfaces.json` (machine truth)\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nThis page is generated from the ops surface inventory. Change the inventory first, then regenerate the docs snapshot.\n");
+    Ok(wrap_generated_reference_page(
+        "Ops Surface Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_tools(repo_root: &std::path::Path) -> Result<String, String> {
@@ -399,7 +453,13 @@ fn render_docs_reference_tools(repo_root: &std::path::Path) -> Result<String, St
         ));
     }
     out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
-    Ok(out)
+    out.push_str("\n## Stability\n\nThis page reflects the checked-in tool inventory and should remain generated rather than edited by hand.\n");
+    Ok(wrap_generated_reference_page(
+        "Tools Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_toolchain(repo_root: &std::path::Path) -> Result<String, String> {
@@ -459,7 +519,14 @@ fn render_docs_reference_toolchain(repo_root: &std::path::Path) -> Result<String
             row["sha"].as_str().unwrap_or_default()
         ));
     }
-    Ok(out)
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
+    out.push_str("\n## Stability\n\nThis page is generated from the pinned toolchain inventory. Update the inventory first, then regenerate the docs snapshot.\n");
+    Ok(wrap_generated_reference_page(
+        "Toolchain Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_pins(repo_root: &std::path::Path) -> Result<String, String> {
@@ -472,11 +539,18 @@ fn render_docs_reference_pins(repo_root: &std::path::Path) -> Result<String, Str
     collect_yaml_rows("root", &value, &mut rows);
     rows.sort();
     let mut out = String::new();
-    out.push_str("# Pins Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/pins.yaml`\n\n## Pins\n\n| Section | Key | Value |\n| --- | --- | --- |\n");
+    out.push_str("# Pins Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/pins.yaml`\n\n## Purpose\n\nGenerated reference for the repository pin inventory.\n\n## Pins\n\n| Section | Key | Value |\n| --- | --- | --- |\n");
     for (section, key, val) in rows {
         out.push_str(&format!("| `{}` | `{}` | `{}` |\n", section, key, val));
     }
-    Ok(out)
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
+    out.push_str("\n## Stability\n\nTreat this page as generated evidence of the checked-in pin registry.\n");
+    Ok(wrap_generated_reference_page(
+        "Pins Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn collect_yaml_rows(prefix: &str, value: &serde_yaml::Value, out: &mut Vec<(String, String, String)>) {
@@ -527,7 +601,7 @@ fn render_docs_reference_gates(repo_root: &std::path::Path) -> Result<String, St
     let mut gates = value["gates"].as_array().cloned().unwrap_or_default();
     gates.sort_by_key(|g| g["id"].as_str().unwrap_or_default().to_string());
     let mut out = String::new();
-    out.push_str("# Gates Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/gates.json`\n\n## Gates\n\n| Gate ID | Category | Action ID | Description |\n| --- | --- | --- | --- |\n");
+    out.push_str("# Gates Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/gates.json`\n\n## Purpose\n\nGenerated reference for governed release and validation gates.\n\n## Gates\n\n| Gate ID | Category | Action ID | Description |\n| --- | --- | --- | --- |\n");
     for gate in gates {
         out.push_str(&format!(
             "| `{}` | `{}` | `{}` | {} |\n",
@@ -537,7 +611,14 @@ fn render_docs_reference_gates(repo_root: &std::path::Path) -> Result<String, St
             gate["description"].as_str().unwrap_or_default()
         ));
     }
-    Ok(out)
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
+    out.push_str("\n## Stability\n\nThis page reflects the checked-in gates inventory and should stay generated from that registry.\n");
+    Ok(wrap_generated_reference_page(
+        "Gates Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_drills(repo_root: &std::path::Path) -> Result<String, String> {
@@ -555,15 +636,28 @@ fn render_docs_reference_drills(repo_root: &std::path::Path) -> Result<String, S
         .collect::<Vec<_>>();
     drills.sort();
     let mut out = String::new();
-    out.push_str("# Drills Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/drills.json`\n\n## Drills\n\n");
+    out.push_str("# Drills Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/drills.json`\n\n## Purpose\n\nGenerated reference for the drill registry used by ops exercises and verification.\n\n## Drills\n\n");
     for drill in drills {
         out.push_str(&format!("- `{drill}`\n"));
     }
-    Ok(out)
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
+    out.push_str("\n## Stability\n\nThis page should mirror the drill inventory exactly and remain generated from that source.\n");
+    Ok(wrap_generated_reference_page(
+        "Drills Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }
 
 fn render_docs_reference_schema_index() -> String {
-    "# Schema Index Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/schema/generated/schema-index.json`\n\n## Canonical Source\n\n- `ops/schema/generated/schema-index.json` is the authoritative generated schema index.\n- This page is a docs-site reference pointer to avoid duplicating the schema table.\n".to_string()
+    wrap_generated_reference_page(
+        "Schema Index Reference",
+        "operators",
+        "bijux-atlas-operations",
+        "# Schema Index Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/schema/generated/schema-index.json`\n\n## Purpose\n\nThis page points readers to the canonical generated schema index without duplicating that inventory.\n\n## Canonical Source\n\n- `ops/schema/generated/schema-index.json` is the authoritative generated schema index.\n- This page is a docs-site reference pointer to avoid duplicating the schema table.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n\n## Stability\n\nThis page should change only when the schema index source changes.\n"
+            .to_string(),
+    )
 }
 
 fn render_docs_reference_evidence_model(repo_root: &std::path::Path) -> Result<String, String> {
@@ -577,9 +671,14 @@ fn render_docs_reference_evidence_model(repo_root: &std::path::Path) -> Result<S
             .map_err(|e| format!("read release-evidence-bundle schema failed: {e}"))?,
     )
     .map_err(|e| format!("parse release-evidence-bundle schema failed: {e}"))?;
-    Ok(format!(
-        "# Evidence Model Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/schema/report/evidence-levels.schema.json`, `ops/schema/report/release-evidence-bundle.schema.json`\n\n## Canonical Schemas\n\n- `ops/schema/report/evidence-levels.schema.json`\n- `ops/schema/report/release-evidence-bundle.schema.json`\n\n## Notes\n\n- evidence-levels schema title: `{}`\n",
+    Ok(wrap_generated_reference_page(
+        "Evidence Model Reference",
+        "operators",
+        "bijux-atlas-operations",
+        format!(
+        "# Evidence Model Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/schema/report/evidence-levels.schema.json`, `ops/schema/report/release-evidence-bundle.schema.json`\n\n## Purpose\n\nGenerated reference for the evidence schemas that define repository release evidence levels and bundle shape.\n\n## Canonical Schemas\n\n- `ops/schema/report/evidence-levels.schema.json`\n- `ops/schema/report/release-evidence-bundle.schema.json`\n\n## Notes\n\n- evidence-levels schema title: `{}`\n",
         levels["title"].as_str().unwrap_or_default()
+        ) + "\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n\n## Stability\n\nThis generated page summarizes the checked-in evidence schemas and should remain aligned with them.\n",
     ))
 }
 
@@ -590,7 +689,7 @@ fn render_docs_reference_what_breaks(repo_root: &std::path::Path) -> Result<Stri
     )
     .map_err(|e| format!("parse what-breaks-if-removed report failed: {e}"))?;
     let mut out = String::new();
-    out.push_str("# What Breaks If Removed Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/_generated.example/what-breaks-if-removed-report.json`\n\n## Removal Impact Targets\n\n| Path | Impact | Consumers |\n| --- | --- | --- |\n");
+    out.push_str("# What Breaks If Removed Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/_generated.example/what-breaks-if-removed-report.json`\n\n## Purpose\n\nGenerated reference for curated removal-impact evidence.\n\n## Removal Impact Targets\n\n| Path | Impact | Consumers |\n| --- | --- | --- |\n");
     for row in value["targets"].as_array().into_iter().flatten() {
         let consumers = row["consumers"]
             .as_array()
@@ -606,5 +705,12 @@ fn render_docs_reference_what_breaks(repo_root: &std::path::Path) -> Result<Stri
             consumers
         ));
     }
-    Ok(out)
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
+    out.push_str("\n## Stability\n\nThis page should reflect the checked-in removal-impact example report and stay generated from that input.\n");
+    Ok(wrap_generated_reference_page(
+        "What Breaks If Removed Reference",
+        "operators",
+        "bijux-atlas-operations",
+        out,
+    ))
 }

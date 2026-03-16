@@ -1,9 +1,23 @@
+---
+title: Drills Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Drills Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
+- Stability: `stable`
 - Source-of-truth: `ops/inventory/drills.json`
+
+## Purpose
+
+Generated reference for the drill registry used by ops exercises and verification.
 
 ## Drills
 
@@ -17,10 +31,10 @@
 - `ops.drill.toxiproxy_latency`
 - `ops.drill.upgrade`
 
-## Purpose
+## Regenerate
 
-This page is the lookup reference for drills reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page should mirror the drill inventory exactly and remain generated from that source.

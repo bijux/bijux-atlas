@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "registry_id": "docs-section-owners",
+  "section_owners": {
+    "docs/01-introduction": "atlas-docs",
+    "docs/02-getting-started": "atlas-docs",
+    "docs/03-user-guide": "atlas-docs",
+    "docs/04-operations": "atlas-docs",
+    "docs/05-architecture": "atlas-docs",
+    "docs/06-development": "atlas-docs",
+    "docs/07-reference": "atlas-docs",
+    "docs/08-contracts": "atlas-docs",
+    "docs/governance": "atlas-governance",
+    "docs/operations/reference": "bijux-atlas-operations",
+    "docs/reference": "bijux-atlas-operations",
+    "docs/start-here.md": "atlas-docs",
+    "docs/index.md": "atlas-docs"
+  }
+}

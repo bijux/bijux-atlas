@@ -1,9 +1,23 @@
+---
+title: Evidence Model Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Evidence Model Reference
 
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
+- Stability: `stable`
 - Source-of-truth: `ops/schema/report/evidence-levels.schema.json`, `ops/schema/report/release-evidence-bundle.schema.json`
+
+## Purpose
+
+Generated reference for the evidence schemas that define repository release evidence levels and bundle shape.
 
 ## Canonical Schemas
 
@@ -14,10 +28,10 @@
 
 - evidence-levels schema title: ``
 
-## Purpose
+## Regenerate
 
-This page is the lookup reference for evidence model reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This generated page summarizes the checked-in evidence schemas and should remain aligned with them.

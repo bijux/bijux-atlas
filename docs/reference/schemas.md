@@ -1,3 +1,12 @@
+---
+title: Schemas Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Schemas Reference
 
 - Owner: `bijux-atlas-operations`
@@ -24,4 +33,4 @@ Generated reference for checked-in schemas and schema-derived docs surfaces.
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is generated from the checked-in schema inventory and should change only when the schema set changes.

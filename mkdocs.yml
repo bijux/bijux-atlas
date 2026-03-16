@@ -152,6 +152,15 @@ nav:
       - Change and Compatibility: 06-development/change-and-compatibility.md
       - Release and Versioning: 06-development/release-and-versioning.md
       - Documentation Standards: 06-development/documentation-standards.md
+  - Governance:
+      - Governance Overview: governance/index.md
+      - Governance Charter: governance/governance-charter.md
+      - Project Governance Model: governance/project-governance-model.md
+      - Maintainers and Roles: governance/maintainers-and-roles.md
+      - Decision Process: governance/decision-process.md
+      - Contributor Onboarding Workflow: governance/contributor-onboarding-workflow.md
+      - ADR Registry: governance/adr-registry.md
+      - ADR Template: governance/adr-template.md
   - 07 Reference:
       - Reference Overview: 07-reference/index.md
       - Command Surface: 07-reference/command-surface.md

@@ -7,6 +7,12 @@
     "api-contracts": {
       "github_handles": ["@bijan"]
     },
+    "atlas-docs": {
+      "github_handles": ["@bijan"]
+    },
+    "atlas-governance": {
+      "github_handles": ["@bijan"]
+    },
     "architecture": {
       "github_handles": ["@bijan"]
     },
@@ -44,6 +50,9 @@
       "github_handles": ["@bijan"]
     },
     "data-governance": {
+      "github_handles": ["@bijan"]
+    },
+    "docs": {
       "github_handles": ["@bijan"]
     },
     "docs-governance": {

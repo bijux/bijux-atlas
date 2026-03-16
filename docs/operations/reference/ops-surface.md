@@ -1,3 +1,12 @@
+---
+title: Ops Surface Reference
+audience: operators
+type: reference
+status: generated
+owner: bijux-atlas-operations
+last_reviewed: 2026-03-16
+---
+
 # Ops Surface Reference
 
 - Owner: `bijux-atlas-operations`
@@ -247,4 +256,4 @@ Generated ops surface reference derived from inventory surfaces.
 
 ## Stability
 
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+This page is generated from the ops surface inventory. Change the inventory first, then regenerate the docs snapshot.
