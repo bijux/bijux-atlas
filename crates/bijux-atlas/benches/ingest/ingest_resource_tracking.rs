@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::ingest::{ingest_dataset_with_events, IngestOptions};
 use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::domain::ingest::{ingest_dataset_with_events, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::time::Instant;
@@ -40,15 +40,13 @@ fn bench_ingest_resource_tracking(c: &mut Criterion) {
     c.bench_function("ingest_resource_tracking", |b| {
         b.iter(|| {
             let out = tempdir().expect("tmp");
-            let options = IngestOptions {
-                gff3_path: fixture("tests/fixtures/realistic/genes.gff3"),
-                fasta_path: fixture("tests/fixtures/realistic/genome.fa"),
-                fai_path: fixture("tests/fixtures/realistic/genome.fa.fai"),
-                output_root: out.path().to_path_buf(),
-                dataset: DatasetId::new("214", "homo_sapiens", "GRCh38").expect("dataset"),
-                strictness: StrictnessMode::Lenient,
-                ..IngestOptions::default()
-            };
+            let dataset = DatasetId::new("214", "homo_sapiens", "GRCh38").expect("dataset");
+            let mut options = IngestOptions::for_dataset(dataset);
+            options.gff3_path = fixture("tests/fixtures/realistic/genes.gff3");
+            options.fasta_path = fixture("tests/fixtures/realistic/genome.fa");
+            options.fai_path = fixture("tests/fixtures/realistic/genome.fa.fai");
+            options.output_root = out.path().to_path_buf();
+            options.strictness = StrictnessMode::Lenient;
 
             let read_started = Instant::now();
             let gff_bytes = std::fs::read(&options.gff3_path).expect("read gff3 fixture");

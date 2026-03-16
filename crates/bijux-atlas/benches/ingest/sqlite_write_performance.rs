@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{IngestOptions, ingest_dataset};
 use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
@@ -14,15 +14,13 @@ fn bench_sqlite_write_performance(c: &mut Criterion) {
     c.bench_function("sqlite_write_performance", |b| {
         b.iter(|| {
             let out = tempdir().expect("tmp");
-            let options = IngestOptions {
-                gff3_path: fixture("tests/fixtures/tiny/genes.gff3"),
-                fasta_path: fixture("tests/fixtures/tiny/genome.fa"),
-                fai_path: fixture("tests/fixtures/tiny/genome.fa.fai"),
-                output_root: out.path().to_path_buf(),
-                dataset: DatasetId::new("212", "homo_sapiens", "GRCh38").expect("dataset"),
-                strictness: StrictnessMode::Lenient,
-                ..IngestOptions::default()
-            };
+            let dataset = DatasetId::new("212", "homo_sapiens", "GRCh38").expect("dataset");
+            let mut options = IngestOptions::for_dataset(dataset);
+            options.gff3_path = fixture("tests/fixtures/tiny/genes.gff3");
+            options.fasta_path = fixture("tests/fixtures/tiny/genome.fa");
+            options.fai_path = fixture("tests/fixtures/tiny/genome.fa.fai");
+            options.output_root = out.path().to_path_buf();
+            options.strictness = StrictnessMode::Lenient;
             let result = ingest_dataset(&options).expect("ingest tiny");
             let sqlite_bytes = std::fs::metadata(&result.sqlite_path)
                 .expect("sqlite metadata")

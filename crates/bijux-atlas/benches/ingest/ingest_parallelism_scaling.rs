@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{IngestOptions, ingest_dataset};
 use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
@@ -12,16 +12,14 @@ fn fixture(path: &str) -> std::path::PathBuf {
 
 fn run_with_threads(max_threads: usize) -> usize {
     let out = tempdir().expect("tmp");
-    let options = IngestOptions {
-        gff3_path: fixture("tests/fixtures/realistic/genes.gff3"),
-        fasta_path: fixture("tests/fixtures/realistic/genome.fa"),
-        fai_path: fixture("tests/fixtures/realistic/genome.fa.fai"),
-        output_root: out.path().to_path_buf(),
-        dataset: DatasetId::new("219", "homo_sapiens", "GRCh38").expect("dataset"),
-        strictness: StrictnessMode::Lenient,
-        max_threads,
-        ..IngestOptions::default()
-    };
+    let dataset = DatasetId::new("219", "homo_sapiens", "GRCh38").expect("dataset");
+    let mut options = IngestOptions::for_dataset(dataset);
+    options.gff3_path = fixture("tests/fixtures/realistic/genes.gff3");
+    options.fasta_path = fixture("tests/fixtures/realistic/genome.fa");
+    options.fai_path = fixture("tests/fixtures/realistic/genome.fa.fai");
+    options.output_root = out.path().to_path_buf();
+    options.strictness = StrictnessMode::Lenient;
+    options.max_threads = max_threads;
     let result = ingest_dataset(&options).expect("ingest with scaling thread count");
     result.events.len()
 }

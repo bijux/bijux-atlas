@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::ingest::compute_input_hashes;
+use bijux_atlas::domain::ingest::compute_input_hashes;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn fixture(path: &str) -> std::path::PathBuf {

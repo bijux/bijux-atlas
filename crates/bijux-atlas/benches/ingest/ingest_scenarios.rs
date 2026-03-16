@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{IngestOptions, ingest_dataset};
 use bijux_atlas::domain::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
 use criterion::{criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
@@ -11,16 +11,15 @@ fn fixture(path: &str) -> std::path::PathBuf {
 }
 
 fn base_options(out: &std::path::Path) -> IngestOptions {
-    IngestOptions {
-        gff3_path: fixture("tests/fixtures/realistic/genes.gff3"),
-        fasta_path: fixture("tests/fixtures/realistic/genome.fa"),
-        fai_path: fixture("tests/fixtures/realistic/genome.fa.fai"),
-        output_root: out.to_path_buf(),
-        dataset: DatasetId::new("211", "homo_sapiens", "GRCh38").expect("dataset"),
-        strictness: StrictnessMode::Lenient,
-        max_threads: 1,
-        ..IngestOptions::default()
-    }
+    let dataset = DatasetId::new("211", "homo_sapiens", "GRCh38").expect("dataset");
+    let mut options = IngestOptions::for_dataset(dataset);
+    options.gff3_path = fixture("tests/fixtures/realistic/genes.gff3");
+    options.fasta_path = fixture("tests/fixtures/realistic/genome.fa");
+    options.fai_path = fixture("tests/fixtures/realistic/genome.fa.fai");
+    options.output_root = out.to_path_buf();
+    options.strictness = StrictnessMode::Lenient;
+    options.max_threads = 1;
+    options
 }
 
 fn bench_ingest_small_dataset(c: &mut Criterion) {
