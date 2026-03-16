@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use semver::Version;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -148,13 +149,16 @@ where
     };
 
     for relative in ["HEAD", "packed-refs", "refs/tags", "refs/heads"] {
-        emit(format!("cargo:rerun-if-changed={}", resolved.join(relative).display()));
+        emit(format!(
+            "cargo:rerun-if-changed={}",
+            resolved.join(relative).display()
+        ));
     }
 }
 
 pub fn emit_optional_env(key: &str, value: Option<&str>) {
     if let Some(value) = value {
-        println!("cargo:rustc-env={key}={value}");
+        let _ = writeln!(io::stdout(), "cargo:rustc-env={key}={value}");
     }
 }
 
@@ -259,7 +263,15 @@ fn describe_exact_tag_version(workspace_root: &Path) -> Option<String> {
 fn describe_git_version(workspace_root: &Path) -> Option<GitDerivedVersion> {
     let output = Command::new("git")
         .args(["-C", workspace_root.to_string_lossy().as_ref()])
-        .args(["describe", "--tags", "--match", "v[0-9]*", "--long", "--dirty", "--abbrev=12"])
+        .args([
+            "describe",
+            "--tags",
+            "--match",
+            "v[0-9]*",
+            "--long",
+            "--dirty",
+            "--abbrev=12",
+        ])
         .output()
         .ok()?;
     if !output.status.success() {
@@ -318,7 +330,10 @@ fn commits_since_tag(workspace_root: &Path, tag: &str) -> Option<u64> {
     if !output.status.success() {
         return None;
     }
-    String::from_utf8_lossy(&output.stdout).trim().parse::<u64>().ok()
+    String::from_utf8_lossy(&output.stdout)
+        .trim()
+        .parse::<u64>()
+        .ok()
 }
 
 fn tagged_display_version(version: &str) -> String {
