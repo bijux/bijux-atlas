@@ -251,7 +251,6 @@ dependencies = [
  "axum",
  "base64",
  "bijux-cli",
- "bijux-versioning",
  "brotli",
  "clap",
  "clap_complete",
@@ -268,6 +267,7 @@ dependencies = [
  "regex",
  "reqwest",
  "rusqlite",
+ "semver",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -313,11 +313,11 @@ dependencies = [
  "base64",
  "bijux-atlas",
  "bijux-cli",
- "bijux-versioning",
  "clap",
  "criterion",
  "regex",
  "reqwest",
+ "semver",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -325,13 +325,6 @@ dependencies = [
  "tar",
  "tempfile",
  "toml",
-]
-
-[[package]]
-name = "bijux-versioning"
-version = "0.2.0"
-dependencies = [
- "semver",
 ]
 
 [[package]]
