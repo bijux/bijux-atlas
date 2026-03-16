@@ -23,6 +23,10 @@ flowchart TD
     Query --> Observe[Metrics and diagnostics]
 ```
 
+This server workflow model keeps the runtime path simple: start from a serving store, establish
+health, serve traffic, and then observe the process. It is meant to stop readers from treating
+startup and successful traffic as the same proof.
+
 ## Main Server Surfaces
 
 ```mermaid
@@ -33,6 +37,10 @@ flowchart LR
     Runtime --> Data[Dataset and query routes]
     Runtime --> OpenAPI[OpenAPI route]
 ```
+
+This surface map clarifies that the running server exposes more than one kind of endpoint. Readers
+should not expect health, metrics, product queries, and contract endpoints to answer the same
+question.
 
 Not every surface has the same audience:
 
@@ -70,6 +78,12 @@ curl -s http://127.0.0.1:8080/v1/openapi.json
 Those checks answer different questions. A healthy metrics endpoint does not prove that the expected
 dataset is published. A reachable OpenAPI document does not prove that an environment is
 production-ready.
+
+## Everyday Interpretation Rule
+
+- health answers “is the process alive enough to answer?”
+- readiness answers “does the process consider itself ready?”
+- product endpoints answer “can the server resolve and serve dataset state?”
 
 ## Operational Boundary
 

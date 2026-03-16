@@ -23,6 +23,10 @@ flowchart LR
     Promote --> Alias[latest alias update if policy allows]
 ```
 
+This lifecycle diagram shows the catalog’s real job: making published dataset state discoverable to
+the serving layer. Publication alone is not enough if the catalog never points the runtime at the
+dataset.
+
 ## Main Catalog Operations
 
 - `catalog validate`: validate a catalog document
@@ -39,6 +43,9 @@ flowchart TD
     Publish --> Promote[catalog promote]
     Promote --> Serve[Serving store is ready]
 ```
+
+This normal flow matters because it separates dataset publication from dataset discovery. Many user
+issues that look like runtime bugs are really catalog-state omissions.
 
 For most users, `catalog promote` is the important day-to-day action after a dataset is successfully published.
 
@@ -70,6 +77,12 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog rollback \
 - the catalog is missing or malformed
 - the latest alias is updated before promotion
 - the serving store is mistaken for the ingest build root
+
+## What This Page Helps You Confirm
+
+- whether a dataset is actually discoverable by the server
+- whether the catalog reflects the dataset state you think is published
+- whether alias changes happened in the right order
 
 ## Rule of Thumb
 

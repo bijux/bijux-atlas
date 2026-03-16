@@ -24,6 +24,9 @@ flowchart LR
     Endpoint --> Consumers
 ```
 
+This relationship diagram shows why Atlas publishes OpenAPI in two forms. One is useful before a
+server exists, and the other is useful when you need to confirm what a running environment exposes.
+
 ## Two Ways to Access the API Description
 
 - offline generation through the CLI
@@ -56,6 +59,9 @@ flowchart TD
     Validate --> Confidence
 ```
 
+This split matters because OpenAPI serves two distinct jobs: review-time contract inspection and
+runtime surface verification. Readers should use the one that matches the question they are asking.
+
 The generated file is useful during code review, CI, and contract validation. The runtime endpoint is useful for confirming what a live server is exposing.
 
 If the two disagree, treat that as a real problem. Either the environment is not running what you think it is, or the contract-generation path has drifted.
@@ -66,6 +72,12 @@ If the two disagree, treat that as a real problem. Either the environment is not
 - pair endpoint usage with explicit dataset identity fields
 - use the generated contract during integration work and the runtime endpoint during environment verification
 - do not assume a documented route guarantees the requested dataset is actually published in your current store
+
+## What OpenAPI Does Not Replace
+
+- real query tests against published dataset state
+- operational checks such as readiness, metrics, and policy behavior
+- compatibility review for changes that affect more than surface shape
 
 ## Where to Read More
 

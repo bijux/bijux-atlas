@@ -28,6 +28,10 @@ flowchart TD
     Files[Config files] --> Runtime
 ```
 
+This configuration model shows the supported inputs that shape runtime behavior. It also signals an
+important honesty rule: readers should prefer documented flags, files, and environment variables
+over accidental local defaults.
+
 In practice:
 
 - CLI commands expose explicit flags
@@ -43,6 +47,9 @@ flowchart LR
     Json --> CI[CI and automation]
     Human --> Reader[Interactive use]
 ```
+
+This output split is one of the most important practical boundaries in Atlas. Human-readable output
+helps people inspect behavior, while structured output is what automation should depend on.
 
 Atlas output is designed around two modes:
 
@@ -83,6 +90,9 @@ flowchart TD
     Review --> Confidence[Confidence in automation]
 ```
 
+This determinism diagram is here to explain why Atlas spends effort on structured output contracts.
+Automation becomes safer when the same inputs lead to the same output class and field shape.
+
 ## Practical Commands
 
 Inspect canonical config:
@@ -107,6 +117,12 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
 ## Honest Boundary
 
 If you are depending on a field or response shape in automation, verify that it is documented in reference or contracts. Being visible in one command run is not enough by itself.
+
+## A Good User Habit
+
+- use human-readable output while learning a command
+- switch to `--json` before you automate the workflow
+- confirm the exact field contract in reference or contract pages
 
 ## Purpose
 

@@ -21,6 +21,9 @@ flowchart LR
     Policy --> Response[structured response]
 ```
 
+This query shape makes the request contract explicit. Atlas wants dataset identity, selectors, and
+policy checks to be visible rather than hidden inside vague endpoint behavior.
+
 ## Most Useful Query Endpoints
 
 - `/v1/datasets`
@@ -38,6 +41,9 @@ flowchart TD
     Broad[Broad unbounded query] --> Reject[policy rejection]
     Explicit[Explicit selector such as gene_id or region] --> Execute[query executes]
 ```
+
+This selector diagram is here to set expectations early. Atlas is designed to reject some expensive
+or ambiguous scans instead of silently turning them into unsafe runtime work.
 
 The server will reject some broad scans unless they are explicitly allowed. For a reliable first query, prefer selectors such as:
 
@@ -69,6 +75,12 @@ curl -s \
 - prefer explicit selectors over wide scans
 - use `query/validate` when teaching clients how to form requests
 - treat policy rejection as signal, not as a nuisance to work around blindly
+
+## What a Healthy Query Workflow Looks Like
+
+- the request names the dataset identity explicitly
+- the selector is narrow enough to satisfy policy
+- the client can explain whether a failure is validation, policy, or missing data
 
 ## Purpose
 

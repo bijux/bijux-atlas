@@ -21,6 +21,9 @@ flowchart LR
     Build --> Verify[Validate dataset root]
 ```
 
+This ingest pipeline diagram is here to show that Atlas ingest is more than file copying. The step
+produces validated derived output and quality signals that later workflows depend on.
+
 ## Important Ingest Inputs
 
 - GFF3 annotation input
@@ -40,6 +43,9 @@ flowchart TD
 ```
 
 The strictness mode changes how Atlas responds to problematic input conditions. Use stricter modes unless you have a clear reason not to.
+
+This strictness view helps users choose intentionally. A looser mode may be useful for exploration,
+but it changes the meaning of a “successful” ingest.
 
 ## Why Ingest Output Is a Build Root
 
@@ -72,6 +78,12 @@ Always do these next:
 2. verify the build root if needed
 3. publish into a serving store
 4. promote into the catalog
+
+## What Ingest Alone Does Not Prove
+
+- that the runtime can discover the dataset
+- that the serving store has been populated correctly
+- that catalog state now points to the new dataset
 
 ## Practical Advice
 

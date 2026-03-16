@@ -21,6 +21,10 @@ flowchart LR
     Runtime --> Validate[policy validate]
 ```
 
+This policy surface map shows how Atlas turns policy from a hidden runtime influence into something
+you can inspect and explain. That is important when clients need to understand why a request was
+accepted or rejected.
+
 ## Main Policy Commands
 
 - `policy validate`
@@ -34,6 +38,9 @@ flowchart TD
     Policy --> Rejection[Rejection reasons]
     Policy --> Predictability[Predictable runtime behavior]
 ```
+
+This user-facing view explains why policy belongs in the user guide at all. It is not just an
+operator or maintainer concern when policy changes the requests users can make successfully.
 
 Policy is what turns “the server happened to reject my request” into “the server enforced a known rule for a known reason.”
 
@@ -67,6 +74,12 @@ Common policy-sensitive areas:
 - use policy output to explain runtime behavior to clients
 - do not treat policy rejection as a server bug by default
 - change policy intentionally, not by relying on hidden defaults
+
+## When to Reach for Policy Commands
+
+- a query is rejected and you need the reason to be explicit
+- you are comparing expected versus active runtime policy behavior
+- you need to explain enforcement behavior to another team or client
 
 ## Purpose
 

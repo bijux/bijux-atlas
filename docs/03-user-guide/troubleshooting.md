@@ -24,6 +24,10 @@ flowchart TD
     Problem --> Policy[Policy issue]
 ```
 
+This troubleshooting map is meant to reduce scope quickly. User-guide problems usually become much
+easier once you identify whether the issue belongs to configuration, dataset state, runtime state,
+query shape, or policy.
+
 ## The Fastest Diagnostic Question
 
 Ask: which lifecycle stage am I in?
@@ -35,6 +39,9 @@ flowchart LR
     Store --> Runtime[Running server]
     Runtime --> Client[Client request]
 ```
+
+This lifecycle diagram is the fastest mental reset when things feel blurry. Many “Atlas is broken”
+reports are actually one stage being mistaken for another.
 
 Most confusion comes from mixing those stages:
 
@@ -56,6 +63,11 @@ Most confusion comes from mixing those stages:
 3. confirm dataset identity values are correct
 4. confirm runtime health with `/healthz`, `/readyz`, and `/v1/version`
 5. validate query shape before assuming the data is missing
+
+## A Reliable Troubleshooting Rule
+
+Do not fix three layers at once. Pick the first failing layer in the sequence above, make one
+change, and rerun the same check before you move on.
 
 ## When to Leave This Section
 
