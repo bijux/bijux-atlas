@@ -16,8 +16,6 @@ This site is written as engineering documentation, not product marketing. It aim
 about where Atlas is strong, where it is intentionally narrow, and which behaviors are documented
 contracts versus current implementation.
 
-Start with [Start Here](start-here.md) if you want the shortest path into the right section.
-
 This site is organized for three reader groups:
 
 - users who need to ingest, validate, query, and serve data
@@ -25,6 +23,13 @@ This site is organized for three reader groups:
 - contributors who need to understand the architecture, code ownership, and change model
 
 ## How to Read This Site
+
+If you want the shortest route:
+
+- new runtime users should read [What Atlas Is](01-introduction/what-atlas-is.md) and then [Install and Verify](02-getting-started/install-and-verify.md)
+- operators should continue into [04 Operations](04-operations/index.md)
+- contributors should continue into [05 Architecture](05-architecture/index.md) and [06 Development](06-development/index.md)
+- reviewers and integrators should use [07 Reference](07-reference/index.md) and [08 Contracts](08-contracts/index.md)
 
 If you are new to Atlas, start in `01-introduction`, then move through `02-getting-started`, and only after that branch into `03-user-guide` or `04-operations`.
 

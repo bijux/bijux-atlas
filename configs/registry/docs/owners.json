@@ -10,10 +10,6 @@
     "docs/06-development": "atlas-docs",
     "docs/07-reference": "atlas-docs",
     "docs/08-contracts": "atlas-docs",
-    "docs/governance": "atlas-governance",
-    "docs/operations/reference": "bijux-atlas-operations",
-    "docs/reference": "bijux-atlas-operations",
-    "docs/start-here.md": "atlas-docs",
     "docs/index.md": "atlas-docs"
   }
 }

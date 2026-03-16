@@ -375,7 +375,6 @@ mod tests {
                 "sub/intro.md".to_string(),
                 "reference/makes-targets.md".to_string(),
                 "reference/schemas.md".to_string(),
-                "start-here.md".to_string(),
             ]
         );
     }

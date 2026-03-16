@@ -48,12 +48,8 @@ fn docs_verify_contracts_payload(
         .join("configs/sources/repository/docs/tag-vocabulary.json");
     let allowed_tags = if tags_allowlist_path.exists() {
         let value: serde_json::Value = serde_json::from_str(
-            &fs::read_to_string(&tags_allowlist_path).map_err(|e| {
-                format!(
-                    "failed to read {}: {e}",
-                    tags_allowlist_path.display()
-                )
-            })?,
+            &fs::read_to_string(&tags_allowlist_path)
+                .map_err(|e| format!("failed to read {}: {e}", tags_allowlist_path.display()))?,
         )
         .map_err(|e| format!("invalid {}: {e}", tags_allowlist_path.display()))?;
         value["allowed_tags"]
@@ -79,12 +75,14 @@ fn docs_verify_contracts_payload(
     let review_window_stable_days = 365i64;
     let review_window_experimental_days = 180i64;
     let canonical_index_links = [
-        "start-here.md",
-        "product/index.md",
-        "operations/index.md",
-        "development/index.md",
-        "control-plane/index.md",
-        "reference/index.md",
+        "01-introduction/index.md",
+        "02-getting-started/index.md",
+        "03-user-guide/index.md",
+        "04-operations/index.md",
+        "05-architecture/index.md",
+        "06-development/index.md",
+        "07-reference/index.md",
+        "08-contracts/index.md",
     ];
 
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
@@ -104,7 +102,7 @@ fn docs_verify_contracts_payload(
                 ));
             }
         }
-        if rel.starts_with("docs/_internal/generated/") || rel.starts_with("docs/_assets/") {
+        if rel.starts_with("docs/_assets/") {
             continue;
         }
         let frontmatter = parse_frontmatter_contract_fields(&text);
@@ -128,12 +126,13 @@ fn docs_verify_contracts_payload(
             .trim();
 
         let enforce_contract_surface = rel == "docs/index.md"
-            || rel == "docs/start-here.md"
-            || rel == "docs/product/index.md"
-            || rel == "docs/operations/index.md"
-            || rel == "docs/development/index.md"
-            || rel == "docs/control-plane/index.md"
-            || rel == "docs/reference/index.md";
+            || rel == "docs/01-introduction/index.md"
+            || rel == "docs/02-getting-started/index.md"
+            || rel == "docs/03-user-guide/index.md"
+            || rel == "docs/04-operations/index.md"
+            || rel == "docs/05-architecture/index.md"
+            || rel == "docs/06-development/index.md"
+            || rel == "docs/07-reference/index.md";
 
         if enforce_contract_surface && owner.is_empty() {
             errors.push(format!(
@@ -141,7 +140,10 @@ fn docs_verify_contracts_payload(
             ));
         }
         if enforce_contract_surface
-            && !matches!(stability, "stable" | "experimental" | "deprecated" | "internal")
+            && !matches!(
+                stability,
+                "stable" | "experimental" | "deprecated" | "internal"
+            )
         {
             errors.push(format!(
                 "DOCS_STABILITY_INVALID: `{rel}` uses unsupported stability `{stability}`"
@@ -166,12 +168,18 @@ fn docs_verify_contracts_payload(
             }
         }
         let lower = text.to_ascii_lowercase();
-        if enforce_contract_surface && lower.contains("production-ready") && stability == "experimental" {
+        if enforce_contract_surface
+            && lower.contains("production-ready")
+            && stability == "experimental"
+        {
             errors.push(format!(
                 "DOCS_PRODUCTION_CLAIM_MISMATCH: `{rel}` claims production-ready while stability is experimental"
             ));
         }
-        if enforce_contract_surface && stability == "stable" && (text.contains("TODO") || text.contains("TBD")) {
+        if enforce_contract_surface
+            && stability == "stable"
+            && (text.contains("TODO") || text.contains("TBD"))
+        {
             errors.push(format!(
                 "DOCS_STABLE_PLACEHOLDER_FORBIDDEN: `{rel}` contains TODO/TBD while stability=stable"
             ));
@@ -270,19 +278,26 @@ fn parse_frontmatter_contract_fields(text: &str) -> FrontmatterContractFields {
             let key = key.trim().to_string();
             if !key.is_empty() {
                 result.keys.push(key.clone());
-                result
-                    .values
-                    .insert(key.clone(), value.trim().trim_matches('"').trim_matches('\'').to_string());
+                result.values.insert(
+                    key.clone(),
+                    value
+                        .trim()
+                        .trim_matches('"')
+                        .trim_matches('\'')
+                        .to_string(),
+                );
                 active_key = Some(key);
             }
             continue;
         }
-        if trimmed.trim_start().starts_with("- ")
-            && active_key.as_deref() == Some("tags")
-        {
-            result
-                .tags
-                .push(trimmed.trim_start().trim_start_matches("- ").trim().to_string());
+        if trimmed.trim_start().starts_with("- ") && active_key.as_deref() == Some("tags") {
+            result.tags.push(
+                trimmed
+                    .trim_start()
+                    .trim_start_matches("- ")
+                    .trim()
+                    .to_string(),
+            );
         }
     }
     result
@@ -293,6 +308,7 @@ pub(crate) fn docs_lint_payload(
     common: &DocsCommonArgs,
 ) -> Result<serde_json::Value, String> {
     let policy = load_quality_policy(&ctx.repo_root);
+    let mkdocs_text = fs::read_to_string(ctx.repo_root.join("mkdocs.yml")).unwrap_or_default();
     let mut errors = Vec::<String>::new();
     let docs_lint_root = ctx.repo_root.join("configs/sources/repository/docs");
     let required_lint_files = [
@@ -486,7 +502,11 @@ pub(crate) fn docs_lint_payload(
                 continue;
             };
             let rels = rel.display().to_string();
-            let mut referenced = false;
+            let mut referenced = rel
+                .strip_prefix("docs/")
+                .ok()
+                .and_then(|path| path.to_str())
+                .is_some_and(|path| mkdocs_text.contains(path));
             for doc in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
                 let text = fs::read_to_string(&doc).unwrap_or_default();
                 if text.contains(&rels) {

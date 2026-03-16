@@ -31,10 +31,6 @@
       "path": "reference/schemas.md",
       "title": "Schemas"
     },
-    {
-      "path": "start-here.md",
-      "title": "Start Here"
-    }
   ],
   "options": {
     "include_drafts": false,
@@ -75,13 +71,6 @@
       "last_reviewed": null,
       "owner": null,
       "path": "reference/schemas.md",
-      "stability": null
-    },
-    {
-      "in_nav": true,
-      "last_reviewed": null,
-      "owner": null,
-      "path": "start-here.md",
       "stability": null
     },
     {

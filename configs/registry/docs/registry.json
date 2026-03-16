@@ -39,12 +39,6 @@
       "entrypoint": "docs/06-development/index.md"
     },
     {
-      "id": "governance",
-      "path": "docs/governance",
-      "owner": "atlas-governance",
-      "entrypoint": "docs/governance/index.md"
-    },
-    {
       "id": "reference",
       "path": "docs/07-reference",
       "owner": "atlas-docs",
@@ -55,18 +49,6 @@
       "path": "docs/08-contracts",
       "owner": "atlas-docs",
       "entrypoint": "docs/08-contracts/index.md"
-    },
-    {
-      "id": "generated-reference",
-      "path": "docs/reference",
-      "owner": "bijux-atlas-operations",
-      "entrypoint": "docs/reference/commands.md"
-    },
-    {
-      "id": "generated-operations-reference",
-      "path": "docs/operations/reference",
-      "owner": "bijux-atlas-operations",
-      "entrypoint": "docs/operations/reference/commands.md"
     }
   ]
 }
