@@ -2998,8 +2998,7 @@ fn validate_publishable_package_surface(
             ));
         }
     }
-    if let (Some(homepage), Some(documentation)) = (homepage.as_deref(), documentation.as_deref())
-    {
+    if let (Some(homepage), Some(documentation)) = (homepage.as_deref(), documentation.as_deref()) {
         if homepage == documentation {
             errors.push(format!(
                 "crate `{crate_name}` package.homepage and package.documentation must point to distinct surfaces"
@@ -3020,12 +3019,7 @@ fn validate_publishable_package_surface(
             ));
         }
     }
-    let markdown_link_re =
-        Regex::new(r#"\[[^\]]+\]\(([^)]+)\)"#).expect("markdown link regex must compile");
-    for capture in markdown_link_re.captures_iter(readme) {
-        let Some(target) = capture.get(1).map(|m| m.as_str().trim()) else {
-            continue;
-        };
+    for target in markdown_link_targets(readme) {
         if target.starts_with("../") || target.contains("/../") {
             errors.push(format!(
                 "crate `{crate_name}` README contains parent-relative link `{target}` that will not be publish-safe"
@@ -3033,6 +3027,37 @@ fn validate_publishable_package_surface(
         }
     }
     errors
+}
+
+fn markdown_link_targets(markdown: &str) -> Vec<&str> {
+    let mut targets = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(open_bracket) = markdown[cursor..].find('[') {
+        let open_bracket = cursor + open_bracket;
+        let Some(close_bracket) = markdown[open_bracket..].find(']') else {
+            break;
+        };
+        let close_bracket = open_bracket + close_bracket;
+        let Some(open_paren) = markdown[close_bracket..].find('(') else {
+            cursor = close_bracket + 1;
+            continue;
+        };
+        let open_paren = close_bracket + open_paren;
+        if open_paren != close_bracket + 1 {
+            cursor = close_bracket + 1;
+            continue;
+        }
+        let Some(close_paren) = markdown[open_paren + 1..].find(')') else {
+            break;
+        };
+        let close_paren = open_paren + 1 + close_paren;
+        let target = markdown[open_paren + 1..close_paren].trim();
+        if !target.is_empty() {
+            targets.push(target);
+        }
+        cursor = close_paren + 1;
+    }
+    targets
 }
 
 fn run_release_crates_validate_publish_flags(
@@ -6313,14 +6338,12 @@ mod tests {
             documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
             repository = "https://github.com/bijux/bijux-atlas.git"
         };
-        let errors = validate_publishable_package_surface(
-            "bijux-atlas",
-            &package,
-            None,
-            "# crate\n",
-        );
+        let errors =
+            validate_publishable_package_surface("bijux-atlas", &package, None, "# crate\n");
 
-        assert!(errors.iter().any(|err| err.contains("README must link to package.homepage")));
+        assert!(errors
+            .iter()
+            .any(|err| err.contains("README must link to package.homepage")));
         assert!(errors
             .iter()
             .any(|err| err.contains("README must link to package.documentation")));
@@ -6338,12 +6361,7 @@ mod tests {
 [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
 [Control Plane](../bijux-dev-atlas/README.md)
 "#;
-        let errors = validate_publishable_package_surface(
-            "bijux-atlas",
-            &package,
-            None,
-            readme,
-        );
+        let errors = validate_publishable_package_surface("bijux-atlas", &package, None, readme);
 
         assert!(errors
             .iter()
@@ -6359,15 +6377,31 @@ mod tests {
             repository = "https://github.com/bijux/bijux-atlas.git"
         };
 
-        let resolved = resolve_package_field(
-            &package,
-            Some(&workspace_package),
-            "repository",
-        );
+        let resolved = resolve_package_field(&package, Some(&workspace_package), "repository");
 
         assert_eq!(
             resolved.as_deref(),
             Some("https://github.com/bijux/bijux-atlas.git")
+        );
+    }
+
+    #[test]
+    fn markdown_link_targets_extracts_inline_links() {
+        let markdown = r#"
+[Docs](https://bijux.github.io/bijux-atlas/)
+text [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/) end
+[Control Plane](../bijux-dev-atlas/README.md)
+"#;
+
+        let targets = markdown_link_targets(markdown);
+
+        assert_eq!(
+            targets,
+            vec![
+                "https://bijux.github.io/bijux-atlas/",
+                "https://docs.rs/bijux-atlas/latest/bijux_atlas/",
+                "../bijux-dev-atlas/README.md"
+            ]
         );
     }
 }
