@@ -75,16 +75,26 @@ mod tests {
     use std::fs;
     use std::path::{Path, PathBuf};
     use std::time::{SystemTime, UNIX_EPOCH};
+    use tempfile::{Builder, TempDir};
 
-    fn temp_repo_root() -> PathBuf {
+    fn external_fixture_parent() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(Path::parent)
+            .and_then(Path::parent)
+            .unwrap_or_else(|| panic!("workspace fixture parent"))
+            .to_path_buf()
+    }
+
+    fn temp_repo_root() -> TempDir {
         let suffix = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap_or_else(|err| panic!("duration since unix epoch failed: {err}"))
             .as_nanos();
-        let root = std::env::temp_dir().join(format!("bijux-dev-atlas-adapter-io-{suffix}"));
-        fs::create_dir_all(&root)
-            .unwrap_or_else(|err| panic!("create temp repo root failed: {err}"));
-        root
+        Builder::new()
+            .prefix(&format!("bijux-dev-atlas-adapter-io-{suffix}-"))
+            .tempdir_in(external_fixture_parent())
+            .unwrap_or_else(|err| panic!("create temp repo root failed: {err}"))
     }
 
     #[test]
@@ -94,10 +104,10 @@ mod tests {
         let allowed = PathBuf::from("artifacts/atlas-dev/run_one/report.json");
         let denied = PathBuf::from("ops/out.json");
 
-        let ok = fs_adapter.write_text(&repo_root, "run_one", &allowed, "{}");
+        let ok = fs_adapter.write_text(repo_root.path(), "run_one", &allowed, "{}");
         assert!(ok.is_ok());
 
-        let fail = fs_adapter.write_text(&repo_root, "run_one", &denied, "{}");
+        let fail = fs_adapter.write_text(repo_root.path(), "run_one", &denied, "{}");
         assert!(matches!(fail, Err(AdapterError::PathViolation { .. })));
     }
 
@@ -143,10 +153,10 @@ mod tests {
     #[test]
     fn fake_world_reads_stubbed_file() {
         let repo_root = temp_repo_root();
-        let file_path = repo_root.join("docs/index.md");
+        let file_path = repo_root.path().join("docs/index.md");
         let fake = FakeWorld::default().with_file(&file_path, "index");
         let text = fake
-            .read_text(&repo_root, Path::new("docs/index.md"))
+            .read_text(repo_root.path(), Path::new("docs/index.md"))
             .unwrap_or_else(|err| panic!("fake world read failed: {err}"));
         assert_eq!(text, "index");
     }
@@ -155,7 +165,8 @@ mod tests {
     fn subprocess_policy_blocks_non_allowlisted_programs() {
         let repo_root = temp_repo_root();
         let policy = SubprocessPolicy::strict_default();
-        let err = run_subprocess_captured("python3", &[], &repo_root, &policy).expect_err("deny");
+        let err =
+            run_subprocess_captured("python3", &[], repo_root.path(), &policy).expect_err("deny");
         assert!(matches!(
             err,
             AdapterError::EffectDenied {
@@ -168,7 +179,7 @@ mod tests {
     #[test]
     fn repo_root_discovery_has_explicit_failure_mode() {
         let repo_root = temp_repo_root();
-        let nested = repo_root.join("deep/nested");
+        let nested = repo_root.path().join("deep/nested");
         fs::create_dir_all(&nested)
             .unwrap_or_else(|err| panic!("create nested repo root failed: {err}"));
         let err = discover_repo_root(&nested).expect_err("must fail");
@@ -194,16 +205,16 @@ mod tests {
     #[test]
     fn test_bundle_exposes_walk_and_exec_ports() {
         let repo_root = temp_repo_root();
-        let docs = repo_root.join("docs/a.md");
+        let docs = repo_root.path().join("docs/a.md");
         let bundle = TestBundle::new().with_world(FakeWorld::default().with_file(&docs, "hello"));
         let walked = bundle
             .walker()
-            .walk_files(&repo_root, Path::new("docs"))
+            .walk_files(repo_root.path(), Path::new("docs"))
             .unwrap_or_else(|err| panic!("walk files failed: {err}"));
         assert_eq!(walked, vec![docs]);
         let err = bundle
             .exec()
-            .run("cargo", &["--version".to_string()], &repo_root)
+            .run("cargo", &["--version".to_string()], repo_root.path())
             .expect_err("not stubbed");
         assert!(matches!(err, AdapterError::Process { .. }));
     }

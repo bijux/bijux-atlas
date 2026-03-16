@@ -49,32 +49,42 @@ mod tests {
     use super::WorkspaceRoot;
     use crate::runtime::AdapterError;
     use std::fs;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
     use std::sync::atomic::{AtomicU64, Ordering};
     use std::time::{SystemTime, UNIX_EPOCH};
+    use tempfile::{Builder, TempDir};
 
     static TEMP_ROOT_COUNTER: AtomicU64 = AtomicU64::new(0);
 
-    fn temp_root() -> PathBuf {
+    fn external_fixture_parent() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(Path::parent)
+            .and_then(Path::parent)
+            .unwrap_or_else(|| panic!("workspace fixture parent"))
+            .to_path_buf()
+    }
+
+    fn temp_root() -> TempDir {
         let suffix = match SystemTime::now().duration_since(UNIX_EPOCH) {
             Ok(d) => d.as_nanos(),
             Err(_) => 0,
         };
         let counter = TEMP_ROOT_COUNTER.fetch_add(1, Ordering::Relaxed);
         let pid = std::process::id();
-        let root = std::env::temp_dir().join(format!(
-            "bijux-dev-atlas-workspace-root-{pid}-{suffix}-{counter}"
-        ));
-        let _ = fs::remove_dir_all(&root);
-        let _ = fs::create_dir_all(&root);
-        root
+        Builder::new()
+            .prefix(&format!(
+                "bijux-dev-atlas-workspace-root-{pid}-{suffix}-{counter}-"
+            ))
+            .tempdir_in(external_fixture_parent())
+            .unwrap_or_else(|err| panic!("tempdir failed: {err}"))
     }
 
     #[test]
     fn workspace_root_discovers_repo_from_nested_path() {
         let repo = temp_root();
-        let nested = repo.join("a/b/c");
-        let _ = fs::write(repo.join("Cargo.toml"), "[workspace]\nmembers=[]\n");
+        let nested = repo.path().join("a/b/c");
+        let _ = fs::write(repo.path().join("Cargo.toml"), "[workspace]\nmembers=[]\n");
         let _ = fs::create_dir_all(&nested);
 
         let resolved = WorkspaceRoot::discover_from(&nested);
@@ -83,7 +93,7 @@ mod tests {
             Ok(v) => v,
             Err(_) => return,
         };
-        let expected = match repo.canonicalize() {
+        let expected = match repo.path().canonicalize() {
             Ok(v) => v,
             Err(_) => panic!("expected temp repo to canonicalize"),
         };
@@ -93,7 +103,7 @@ mod tests {
     #[test]
     fn workspace_root_returns_explicit_error_when_marker_missing() {
         let root = temp_root();
-        let nested = root.join("x/y");
+        let nested = root.path().join("x/y");
         let _ = fs::create_dir_all(&nested);
         let err = WorkspaceRoot::discover_from(&nested);
         assert!(matches!(err, Err(AdapterError::PathViolation { .. })));
@@ -102,9 +112,12 @@ mod tests {
     #[test]
     fn explicit_workspace_root_path_is_not_promoted_to_repo_root() {
         let repo = temp_root();
-        let nested_crate = repo.join("crates").join("sample");
-        let _ = fs::write(repo.join("Cargo.toml"), "[workspace]\nmembers=[]\n");
-        let _ = fs::write(repo.join(".git"), "not-a-real-git-dir-marker-for-test");
+        let nested_crate = repo.path().join("crates").join("sample");
+        let _ = fs::write(repo.path().join("Cargo.toml"), "[workspace]\nmembers=[]\n");
+        let _ = fs::write(
+            repo.path().join(".git"),
+            "not-a-real-git-dir-marker-for-test",
+        );
         let _ = fs::create_dir_all(&nested_crate);
         let _ = fs::write(
             nested_crate.join("Cargo.toml"),
