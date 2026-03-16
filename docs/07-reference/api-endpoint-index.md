@@ -22,6 +22,9 @@ flowchart TD
     Router --> Meta[OpenAPI and query validate]
 ```
 
+This endpoint-family map gives the fastest overview of the public HTTP surface. It helps readers
+separate health, identity, query, diff, and metadata routes before drilling into individual paths.
+
 ## Public Runtime and Health Routes
 
 - `/`
@@ -56,6 +59,9 @@ flowchart LR
     Queries --> Diffs[Diff routes]
     Queries --> Meta[Validation and OpenAPI]
 ```
+
+This relationship view shows how the route families build on dataset identity. Most useful Atlas
+query work starts by naming the dataset explicitly and then choosing the query or diff path.
 
 ## Debug Routes
 

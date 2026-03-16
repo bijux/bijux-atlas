@@ -19,6 +19,9 @@ flowchart LR
     Plugin --> Consumers[Umbrella or integration consumers]
 ```
 
+This metadata model shows the integration-facing surface clearly. Plugin identity exists so umbrella
+tools and other consumers can reason about Atlas compatibility without reading source code.
+
 ## Contract Focus
 
 ```mermaid
@@ -28,6 +31,9 @@ flowchart TD
     PluginContract --> Compatibility[Compatible umbrella range]
     PluginContract --> BuildHash[Build hash]
 ```
+
+This focus diagram lists the contract fields integrators care about most when deciding whether a
+plugin instance is compatible and identifiable.
 
 ## Main Promise
 

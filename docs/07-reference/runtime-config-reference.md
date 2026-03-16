@@ -20,6 +20,9 @@ flowchart LR
     Env[Environment variables] --> Runtime
 ```
 
+This input diagram shows the three main ways runtime configuration reaches the server. It is meant
+to support fast lookup, not to replace the deeper operational guidance in the operations section.
+
 ## Visible Server Flags
 
 ```mermaid
@@ -31,6 +34,9 @@ flowchart TD
     Server --> Effective[--print-effective-config]
     Server --> Validate[--validate-config]
 ```
+
+This flag map calls out the highest-signal server startup options so readers can identify the exact
+entrypoint they need without reading full help output first.
 
 ## Key Flags
 

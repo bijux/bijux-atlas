@@ -20,6 +20,9 @@ flowchart LR
     Ops --> Runtime[Runtime validation]
 ```
 
+This operational-scope diagram shows the stable operator-facing surfaces Atlas expects deployments to
+rely on intentionally.
+
 ## Operator Promise Model
 
 ```mermaid
@@ -27,6 +30,9 @@ flowchart TD
     Promise[Operational promise] --> Checks[Checks and evidence]
     Checks --> Deploy[Safe deployment use]
 ```
+
+This promise model explains how operational contracts should stay credible: they must connect to
+checks and evidence that operators can actually use during deployment and recovery.
 
 ## Main Promise Areas
 

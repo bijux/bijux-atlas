@@ -21,6 +21,9 @@ flowchart TD
     ServingStore --> Published[published manifests and sqlite]
 ```
 
+This layout model shows the two durable Atlas storage shapes readers most often confuse: the ingest
+build root and the serving store. The reference page keeps that distinction visible.
+
 ## Example Layout Ideas
 
 ```mermaid
@@ -29,6 +32,9 @@ flowchart LR
     Artifacts --> Store[getting-started/tiny-store]
     Artifacts --> Cache[getting-started/server-cache]
 ```
+
+This example layout is not a contract for every path name, but it is the canonical pattern the docs
+use when showing build, store, and cache locations in the repository workspace.
 
 ## Key Distinctions
 

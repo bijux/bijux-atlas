@@ -21,6 +21,9 @@ flowchart LR
     ExitCode --> Automation[Automation handling]
 ```
 
+This error-reporting model separates two important consumers: HTTP clients and CLI automation. Both
+need structured signals, but they consume them through different surfaces.
+
 ## Main API Error Categories
 
 ```mermaid
@@ -30,6 +33,9 @@ flowchart TD
     Errors --> Data[Dataset and artifact]
     Errors --> Runtime[Runtime and readiness]
 ```
+
+This category map helps readers interpret error codes by failure area instead of memorizing each one
+in isolation.
 
 ## Common API Error Classes
 

@@ -21,6 +21,9 @@ flowchart LR
     API --> Versioning[Versioned surface]
 ```
 
+This compatibility-scope diagram names the parts of the HTTP surface Atlas expects clients to rely
+on intentionally. It is the contract boundary for API evolution decisions.
+
 ## Compatibility Model
 
 ```mermaid
@@ -28,6 +31,9 @@ flowchart TD
     Docs[Documented API] --> Tests[Compatibility tests]
     Tests --> Release[Release confidence]
 ```
+
+This model explains how API compatibility should be justified: documented surface plus tests plus
+release confidence, not only implementation intent.
 
 ## Main Promise Areas
 

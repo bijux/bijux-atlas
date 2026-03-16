@@ -19,6 +19,9 @@ flowchart LR
     Json --> Automation[Automation and CI]
 ```
 
+This output-contract diagram shows why structured output deserves its own contract page. It is the
+surface automation should parse when Atlas explicitly documents it as stable.
+
 ## Stability Logic
 
 ```mermaid
@@ -26,6 +29,9 @@ flowchart TD
     Stable[Documented structured output] --> Parse[Safe to parse]
     Unstable[Undocumented text output] --> Human[Human-only interpretation]
 ```
+
+This stability logic keeps the parsing rule simple: documented structured output is the contract,
+while human-readable text remains descriptive.
 
 ## Main Promise
 

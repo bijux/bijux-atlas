@@ -20,6 +20,9 @@ flowchart LR
     Features --> Allocator[Allocator choice]
 ```
 
+This feature-group diagram shows why Cargo features belong in reference rather than runtime
+configuration docs. They are build-time capability switches, not live server knobs.
+
 ## Current Features
 
 ```mermaid
@@ -30,6 +33,8 @@ flowchart TD
     FeatureSet --> Bench[bench-ingest-throughput]
     FeatureSet --> Jemalloc[jemalloc]
 ```
+
+This current-feature map gives a fast inventory of the notable compile-time switches in the crate.
 
 ## Feature Summary
 

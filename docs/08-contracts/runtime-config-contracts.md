@@ -20,6 +20,9 @@ flowchart LR
     RuntimeConfig --> Schema[Config schema]
 ```
 
+This scope diagram shows the parts of runtime configuration Atlas treats as contract-sensitive:
+documented flags, supported environment variables, and configuration-schema behavior.
+
 ## Contract Logic
 
 ```mermaid
@@ -27,6 +30,9 @@ flowchart TD
     Invalid[Invalid config] --> Reject[Validation should reject]
     Valid[Valid config] --> Start[Runtime may start]
 ```
+
+This contract logic emphasizes fail-closed validation. Atlas should reject malformed or contradictory
+runtime input rather than silently inventing a meaning for it.
 
 ## Main Promise
 

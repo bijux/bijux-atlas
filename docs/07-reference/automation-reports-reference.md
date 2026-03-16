@@ -22,6 +22,10 @@ cargo run -q -p bijux-dev-atlas -- reports progress --format json
 cargo run -q -p bijux-dev-atlas -- reports validate --dir artifacts
 ```
 
+These commands belong together because the reports surface is both discoverable and governed. Readers
+should be able to list report families, inspect indexes, and validate report directories from one
+documented command family.
+
 ## Shared Report Header
 
 Governed report schemas under `configs/schemas/contracts/reports/` consistently require these fields:

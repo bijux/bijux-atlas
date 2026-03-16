@@ -20,6 +20,9 @@ flowchart LR
     Owners --> Docs[Docs]
 ```
 
+This ownership model shows the minimum stable shape Atlas wants for a real contract: one owner path,
+plus tests and docs that reinforce the same boundary.
+
 A stable surface should have one obvious owner in practice, not just in theory. In this repository that usually means some combination of:
 
 - canonical docs with explicit `owner` metadata
@@ -36,6 +39,9 @@ flowchart TD
     Compatible --> Versioning[Versioning decision]
     Breaking --> Versioning
 ```
+
+This versioning logic keeps compatibility classification visible. The purpose is to make evolution
+intentional rather than retroactively explained.
 
 ## Change Classes
 

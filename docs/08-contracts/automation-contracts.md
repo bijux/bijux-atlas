@@ -21,6 +21,9 @@ flowchart LR
     Automation --> Lanes[Suites and wrappers]
 ```
 
+This contract-scope diagram shows the four parts of the control plane Atlas treats as stable enough
+to document for maintainers and automation consumers.
+
 ## Main Promises
 
 - repository automation remains discoverable through `bijux-dev-atlas` and documented wrapper entrypoints
@@ -40,6 +43,9 @@ For governed report families, the shared report contract includes:
 - `evidence`
 
 Report-specific fields may evolve, but breaking schema changes require a version bump and matching documentation, schema, and fixture updates.
+
+That rule matters because reports are consumed by automation. Schema drift without versioning would
+turn review and CI behavior into guesswork.
 
 ## Compatibility Rules
 

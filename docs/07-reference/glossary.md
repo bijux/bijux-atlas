@@ -9,6 +9,9 @@ last_reviewed: 2026-03-15
 
 # Glossary
 
+Use this page when a term appears in another document and the surrounding page assumes you already
+know the vocabulary. The goal is to give short durable definitions, not tutorial-length narrative.
+
 ## Build Root
 
 Validated ingest output that is not yet the final serving store.

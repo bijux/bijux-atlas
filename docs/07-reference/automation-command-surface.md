@@ -23,6 +23,9 @@ The direct binary remains `bijux-dev-atlas`.
 - `make ci-nightly`: broader nightly lane wrapper
 - `make docs-build`: docs build wrapper
 
+These entrypoints are listed together because Atlas treats them as one maintainer-facing automation
+surface, with `bijux dev atlas` as the canonical root and `make` as the thin convenience wrapper.
+
 ## Global Options
 
 The top-level binary exposes common flags that show up across most command families:

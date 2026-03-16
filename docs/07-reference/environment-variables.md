@@ -19,6 +19,9 @@ flowchart LR
     RuntimeSpecific[Runtime-specific env vars] --> Runtime
 ```
 
+This environment-variable split is important because not every variable carries the same compatibility
+weight. Some are stable public knobs, while others are closer to runtime-specific deployment inputs.
+
 ## Main Stable Variables
 
 ```mermaid
@@ -26,6 +29,9 @@ flowchart TD
     Env[Environment] --> Log[BIJUX_LOG_LEVEL]
     Env --> Cache[BIJUX_CACHE_DIR]
 ```
+
+This small stable-variable map highlights the public environment knobs readers can depend on most
+confidently without searching through implementation details.
 
 ## Public Variables
 

@@ -20,6 +20,9 @@ flowchart LR
     Store --> Catalog[catalog.json]
 ```
 
+This storage-shape diagram names the durable handoff Atlas wants to protect: build state becomes
+published store state, and the catalog is part of that discoverable serving shape.
+
 ## Contract Focus
 
 ```mermaid
@@ -28,6 +31,9 @@ flowchart TD
     ArtifactContract --> Sqlite[SQLite artifact expectations]
     ArtifactContract --> Catalog[Catalog discoverability]
 ```
+
+This focus diagram makes the artifact contract concrete. It is not only “some files on disk”; it is
+manifest shape, SQLite artifact expectations, and catalog discoverability together.
 
 ## Main Promise
 

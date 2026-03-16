@@ -32,6 +32,9 @@ flowchart TD
     CLI --> OpenAPI[openapi]
 ```
 
+This command map is the quickest way to orient yourself in the runtime CLI. It groups the public
+families readers are expected to discover from the product-facing command surface.
+
 ## Runtime Companions
 
 ```mermaid
@@ -40,6 +43,9 @@ flowchart LR
     ServerCLI[bijux-atlas-server] --> Runtime[Runtime server]
     OpenAPICLI[bijux-atlas-openapi or openapi generate] --> Contracts[OpenAPI generation]
 ```
+
+This companion view matters because Atlas exposes more than one runtime binary. It keeps users from
+treating server startup, CLI workflows, and OpenAPI generation as one indistinct surface.
 
 Use this page when you are asking, "Which runtime-facing binary or subcommand family should I use?"
 
