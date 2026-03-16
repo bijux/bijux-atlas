@@ -161,7 +161,11 @@ pub fn to_table(report: &RunReport) -> String {
     }
     out.push_str(&format!(
         "SUMMARY | {} | {} | {} contracts, {} pass, {} fail, {} skip, {} error\n",
-        if report.exit_code() == 0 { "PASS" } else { "FAIL" },
+        if report.exit_code() == 0 {
+            "PASS"
+        } else {
+            "FAIL"
+        },
         report.total_tests(),
         report.total_contracts(),
         report.pass_count(),
@@ -254,7 +258,10 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
 }
 
 pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
-    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let contracts = reports
+        .iter()
+        .map(RunReport::total_contracts)
+        .sum::<usize>();
     let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
     let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
     let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
@@ -307,7 +314,10 @@ pub fn to_pretty_all(reports: &[RunReport]) -> String {
         }
         out.push_str(&to_pretty(report));
     }
-    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let contracts = reports
+        .iter()
+        .map(RunReport::total_contracts)
+        .sum::<usize>();
     let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
     let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
     let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
@@ -341,7 +351,10 @@ pub fn to_table_all(reports: &[RunReport]) -> String {
         out.push_str(&format!("GROUP: {}\n", report.domain));
         out.push_str(&to_table(report));
     }
-    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let contracts = reports
+        .iter()
+        .map(RunReport::total_contracts)
+        .sum::<usize>();
     let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
     let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
     let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
@@ -349,7 +362,11 @@ pub fn to_table_all(reports: &[RunReport]) -> String {
     let error = reports.iter().map(RunReport::error_count).sum::<usize>();
     out.push_str(&format!(
         "\nSUMMARY | {} | {} | {} contracts, {} pass, {} fail, {} skip, {} error\n",
-        if fail == 0 && error == 0 { "PASS" } else { "FAIL" },
+        if fail == 0 && error == 0 {
+            "PASS"
+        } else {
+            "FAIL"
+        },
         tests,
         contracts,
         pass,
@@ -469,12 +486,10 @@ pub fn to_junit(report: &RunReport) -> Result<String, String> {
                 let detail = case
                     .violations
                     .iter()
-                    .map(|v| {
-                        match (&v.file, v.line) {
-                            (Some(file), Some(line)) => format!("{file}:{line}: {}", v.message),
-                            (Some(file), None) => format!("{file}: {}", v.message),
-                            (None, _) => v.message.clone(),
-                        }
+                    .map(|v| match (&v.file, v.line) {
+                        (Some(file), Some(line)) => format!("{file}:{line}: {}", v.message),
+                        (Some(file), None) => format!("{file}: {}", v.message),
+                        (None, _) => v.message.clone(),
                     })
                     .collect::<Vec<_>>()
                     .join("; ");

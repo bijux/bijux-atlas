@@ -29,7 +29,8 @@ fn load_engine() -> AuthorizationEngine {
     )
     .expect("parse permissions");
     let policy: AuthorizationPolicy = serde_yaml::from_str(
-        &fs::read_to_string(root.join("configs/sources/security/policy.yaml")).expect("read policy"),
+        &fs::read_to_string(root.join("configs/sources/security/policy.yaml"))
+            .expect("read policy"),
     )
     .expect("parse policy");
     let assignments: serde_yaml::Value = serde_yaml::from_str(

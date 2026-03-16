@@ -4,8 +4,8 @@
 pub mod commands;
 
 use crate::domains::Domain;
-use crate::model::{Effect, RunnableId, RunnableKind, RunnableMode, SuiteId, Tag};
 use crate::model::{CommandRoute, RunnableEntry};
+use crate::model::{Effect, RunnableId, RunnableKind, RunnableMode, SuiteId, Tag};
 use crate::registry::RunnableRegistry;
 
 pub struct DockerDomain;
@@ -31,7 +31,10 @@ fn fallback_runnable(
         commands: vec![route.name.to_string()],
         report_ids: vec![],
         reports: vec![],
-        required_tools: required_tools.iter().map(|tool| (*tool).to_string()).collect(),
+        required_tools: required_tools
+            .iter()
+            .map(|tool| (*tool).to_string())
+            .collect(),
         missing_tools_policy: "warn".to_string(),
         effects_required: vec![Effect::FsRead],
     })
@@ -58,9 +61,7 @@ impl Domain for DockerDomain {
         let runnables = registry
             .all()
             .iter()
-            .filter(|entry| {
-                entry.group.contains("docker") || entry.id.as_str().contains("docker")
-            })
+            .filter(|entry| entry.group.contains("docker") || entry.id.as_str().contains("docker"))
             .cloned()
             .collect::<Vec<_>>();
         if !runnables.is_empty() {

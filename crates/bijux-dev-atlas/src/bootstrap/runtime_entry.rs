@@ -3,6 +3,10 @@ pub(crate) use std::io::{self, IsTerminal, Write};
 pub(crate) use std::path::{Path, PathBuf};
 pub(crate) use std::process::Command as ProcessCommand;
 
+pub(crate) use crate::api_commands::run_api_command;
+pub(crate) use crate::artifacts_commands::run_artifacts_command;
+pub(crate) use crate::audit_commands::run_audit_command;
+pub(crate) use crate::build_commands::run_build_command;
 #[cfg(test)]
 pub(crate) use crate::cli::Cli;
 pub(crate) use crate::cli::{
@@ -10,21 +14,6 @@ pub(crate) use crate::cli::{
     DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
-pub(crate) use crate::api_commands::run_api_command;
-pub(crate) use crate::artifacts_commands::run_artifacts_command;
-pub(crate) use crate::audit_commands::run_audit_command;
-pub(crate) use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
-pub(crate) use bijux_dev_atlas::core::{
-    exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
-    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
-    Selectors,
-};
-pub(crate) use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
-pub(crate) use bijux_dev_atlas::model::{CheckMode, CheckSeverity};
-pub(crate) use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
-pub(crate) use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
-pub(crate) use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
-pub(crate) use crate::build_commands::run_build_command;
 pub(crate) use crate::commands_data::run_data_command;
 #[cfg(test)]
 pub(crate) use crate::configs_commands::parse_config_file;
@@ -33,9 +22,8 @@ pub(crate) use crate::configs_commands::{
     run_configs_command,
 };
 pub(crate) use crate::control_plane_commands::{
-    run_capabilities_command, run_docker_command, run_help_inventory_command,
-    run_policies_command, run_print_boundaries_command, run_print_policies,
-    run_version_command,
+    run_capabilities_command, run_docker_command, run_help_inventory_command, run_policies_command,
+    run_print_boundaries_command, run_print_policies, run_version_command,
 };
 #[cfg(test)]
 pub(crate) use crate::docs_commands::mkdocs_nav_refs;
@@ -59,19 +47,32 @@ pub(crate) use crate::ops_support::{
     ToolDefinition, ToolchainInventory,
 };
 pub(crate) use crate::perf_commands::run_perf_command;
-pub(crate) use regex::Regex;
 pub(crate) use crate::release_commands::run_release_command;
 pub(crate) use crate::reproduce_commands::run_reproduce_command;
 pub(crate) use crate::runtime_commands::run_runtime_command;
 pub(crate) use crate::security_commands::run_security_command;
-pub(crate) use serde::{Deserialize, Serialize};
-pub(crate) use serde_yaml::Value as YamlValue;
-pub(crate) use sha2::{Digest, Sha256};
 pub(crate) use crate::suites_commands::{
     run_registry_check_by_id, run_registry_contract_by_id, run_suites_command,
 };
 pub(crate) use crate::system_commands::run_system_command;
 pub(crate) use crate::tutorials_commands::run_tutorials_command;
+pub(crate) use bijux_dev_atlas::core::ops_inventory::{
+    ops_inventory_summary, validate_ops_inventory,
+};
+pub(crate) use bijux_dev_atlas::core::{
+    exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
+    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
+    Selectors,
+};
+pub(crate) use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+pub(crate) use bijux_dev_atlas::model::{CheckMode, CheckSeverity};
+pub(crate) use bijux_dev_atlas::registry::{CheckCatalog, CheckCatalogEntry};
+pub(crate) use bijux_dev_atlas::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
+pub(crate) use bijux_dev_atlas::ui::terminal::report::render_check_run_report;
+pub(crate) use regex::Regex;
+pub(crate) use serde::{Deserialize, Serialize};
+pub(crate) use serde_yaml::Value as YamlValue;
+pub(crate) use sha2::{Digest, Sha256};
 
 const UMBRELLA_MIN_VERSION: &str = "0.3.0";
 const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.4.0";

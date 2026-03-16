@@ -191,11 +191,8 @@ pub fn run_selected(
         let json_path = out_dir.join(format!("{domain}.json"));
         let json_payload = serde_json::to_string_pretty(&to_json(&report))
             .map_err(|e| format!("encode contracts report failed: {e}"))?;
-        std::fs::write(
-            &json_path,
-            &json_payload,
-        )
-        .map_err(|e| format!("write {} failed: {e}", json_path.display()))?;
+        std::fs::write(&json_path, &json_payload)
+            .map_err(|e| format!("write {} failed: {e}", json_path.display()))?;
         if let Some(alias_name) = match domain {
             "docs" => Some("docs_contracts_report.json"),
             "configs" => Some("configs_contracts_report.json"),
@@ -238,7 +235,10 @@ pub fn run_selected(
         .map_err(|e| format!("write {} failed: {e}", maturity_path.display()))?;
         let table_path = out_dir.join("table.txt");
         let mut table = String::new();
-        table.push_str(&format!("Contracts: {} (mode={})\n", report.domain, report.mode));
+        table.push_str(&format!(
+            "Contracts: {} (mode={})\n",
+            report.domain, report.mode
+        ));
         for contract in &report.contracts {
             table.push_str(&format!(
                 "{}\t{}\t{}\n",

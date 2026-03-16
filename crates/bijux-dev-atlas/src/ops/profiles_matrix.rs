@@ -385,8 +385,7 @@ fn rollout_safety_status(
                 == 0
         {
             errors.push(
-                "$.pdb.enabled: prod-class profiles require a PodDisruptionBudget"
-                    .to_string(),
+                "$.pdb.enabled: prod-class profiles require a PodDisruptionBudget".to_string(),
             );
         }
         if let Some(strategy) = statefulset_update_strategy {

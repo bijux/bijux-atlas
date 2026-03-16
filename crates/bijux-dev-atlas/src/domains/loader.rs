@@ -40,6 +40,7 @@ pub fn load_domains(repo_root: &std::path::Path) -> Result<Vec<DomainCatalog>, S
     let domains: Vec<Box<dyn Domain>> = vec![
         Box::new(crate::domains::configs::plugin()),
         Box::new(crate::domains::docs::plugin()),
+        Box::new(crate::domains::docker::plugin()),
         Box::new(crate::domains::ops::plugin()),
         Box::new(crate::domains::governance::plugin()),
         Box::new(crate::domains::security::plugin()),

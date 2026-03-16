@@ -24,8 +24,8 @@ impl Domain for ConfigsDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/reference/configs.md",
-            "docs/reference/registry/index.md",
+            "docs/07-reference/runtime-config-reference.md",
+            "docs/06-development/workspace-and-tooling.md",
         ]
     }
 

@@ -15,8 +15,8 @@ pub mod tutorials;
 
 pub const ALL_DOMAIN_NAMES: &[&str] = &[
     "configs",
-    "docker",
     "docs",
+    "docker",
     "governance",
     "ops",
     "perf",

@@ -71,7 +71,8 @@ fn run_datasets_validate(args: DatasetsValidateArgs) -> Result<(String, i32), St
     ensure_json(&root.join("configs/schemas/contracts/datasets/manifest.schema.json"))?;
     ensure_json(&root.join("configs/schemas/contracts/datasets/pinned-policy.schema.json"))?;
     let manifest = read_yaml(&root.join("configs/sources/runtime/datasets/manifest.yaml"))?;
-    let pinned_policy = read_yaml(&root.join("configs/sources/runtime/datasets/pinned-policy.yaml"))?;
+    let pinned_policy =
+        read_yaml(&root.join("configs/sources/runtime/datasets/pinned-policy.yaml"))?;
     let offline = read_yaml(&root.join("ops/k8s/values/offline.yaml"))?;
 
     let datasets = manifest

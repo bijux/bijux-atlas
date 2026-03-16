@@ -14,7 +14,6 @@ mod audit_commands;
 mod bootstrap;
 #[path = "application/build.rs"]
 mod build_commands;
-mod interfaces;
 #[path = "application/data.rs"]
 mod commands_data;
 #[path = "application/configs.rs"]
@@ -27,6 +26,7 @@ mod docs_commands;
 mod drift_commands;
 #[path = "application/governance.rs"]
 mod governance_commands;
+mod interfaces;
 #[path = "application/invariants.rs"]
 mod invariants_commands;
 #[path = "application/load.rs"]

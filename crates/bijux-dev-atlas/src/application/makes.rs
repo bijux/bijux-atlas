@@ -57,7 +57,10 @@ fn run_surface(
     Ok((rendered, 0))
 }
 
-fn run_list(common: crate::cli::MakesCommonArgs, started: Instant) -> Result<(String, i32), String> {
+fn run_list(
+    common: crate::cli::MakesCommonArgs,
+    started: Instant,
+) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
     let text = targets.join("\n");
@@ -176,8 +179,11 @@ fn run_lint_policy_report(
     }
     let cargo_toml = fs::read_to_string(repo_root.join("Cargo.toml"))
         .map_err(|err| format!("read Cargo.toml failed: {err}"))?;
-    let clippy_toml = fs::read_to_string(repo_root.join("configs/sources/repository/rust-tooling/clippy.toml"))
-        .map_err(|err| format!("read configs/sources/repository/rust-tooling/clippy.toml failed: {err}"))?;
+    let clippy_toml =
+        fs::read_to_string(repo_root.join("configs/sources/repository/rust-tooling/clippy.toml"))
+            .map_err(|err| {
+            format!("read configs/sources/repository/rust-tooling/clippy.toml failed: {err}")
+        })?;
     let workspace_lints = extract_workspace_lints(&cargo_toml);
     let cargo_clippy_version = ProcessCommand::new("cargo")
         .current_dir(&repo_root)

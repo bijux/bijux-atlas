@@ -154,23 +154,24 @@ fn run_check_surface_command(quiet: bool, command: CheckCommand) -> i32 {
             out,
             include_internal,
             include_slow,
-        } => match crate::run_check_doctor(repo_root, include_internal, include_slow, format, out)
-        {
-            Ok((rendered, code)) => {
-                if !quiet && !rendered.is_empty() {
-                    if code == 0 {
-                        let _ = writeln!(io::stdout(), "{rendered}");
-                    } else {
-                        let _ = writeln!(io::stderr(), "{rendered}");
+        } => {
+            match crate::run_check_doctor(repo_root, include_internal, include_slow, format, out) {
+                Ok((rendered, code)) => {
+                    if !quiet && !rendered.is_empty() {
+                        if code == 0 {
+                            let _ = writeln!(io::stdout(), "{rendered}");
+                        } else {
+                            let _ = writeln!(io::stderr(), "{rendered}");
+                        }
                     }
+                    code
                 }
-                code
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas check doctor failed: {err}");
+                    1
+                }
             }
-            Err(err) => {
-                let _ = writeln!(io::stderr(), "bijux-dev-atlas check doctor failed: {err}");
-                1
-            }
-        },
+        }
     }
 }
 

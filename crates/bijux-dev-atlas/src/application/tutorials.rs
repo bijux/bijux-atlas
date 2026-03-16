@@ -223,9 +223,8 @@ fn validate_tutorials_script_policy(repo_root: &Path) -> (bool, serde_json::Valu
         let reason = row["reason"].as_str().unwrap_or_default().to_string();
         let expires = row["expires_on"].as_str().unwrap_or_default().to_string();
         if path.is_empty() || reason.is_empty() || expires.is_empty() {
-            violations.push(
-                "script exception entries require path, reason, and expires_on".to_string(),
-            );
+            violations
+                .push("script exception entries require path, reason, and expires_on".to_string());
             continue;
         }
         if is_iso_date(&expires) {
@@ -2046,7 +2045,8 @@ fn run_tutorials_real_data_compare_regression(
     let run_dir = repo_root
         .join("artifacts/tutorials/runs")
         .join(&args.run_id);
-    let thresholds_path = repo_root.join("configs/sources/tutorials/regression-threshold-policy.json");
+    let thresholds_path =
+        repo_root.join("configs/sources/tutorials/regression-threshold-policy.json");
     let thresholds: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&thresholds_path)
             .map_err(|err| format!("failed to read {}: {err}", thresholds_path.display()))?,

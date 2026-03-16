@@ -32,7 +32,10 @@ pub fn matches_skip_filter(filters: &[String], value: &str) -> bool {
 }
 
 pub fn contract_mode(contract: &Contract) -> ContractMode {
-    let has_pure = contract.tests.iter().any(|case| case.kind == TestKind::Pure);
+    let has_pure = contract
+        .tests
+        .iter()
+        .any(|case| case.kind == TestKind::Pure);
     let has_effect = contract
         .tests
         .iter()

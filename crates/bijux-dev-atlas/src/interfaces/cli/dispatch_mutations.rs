@@ -1816,9 +1816,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             crate::cli::CheckCommand::List { repo_root, .. }
             | crate::cli::CheckCommand::Explain { repo_root, .. }
             | crate::cli::CheckCommand::Run { repo_root, .. }
-            | crate::cli::CheckCommand::Doctor { repo_root, .. } => {
-                *repo_root = Some(root.clone())
-            }
+            | crate::cli::CheckCommand::Doctor { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Lanes { command } => match command {

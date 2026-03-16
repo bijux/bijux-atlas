@@ -16,7 +16,10 @@ pub(crate) fn normalize_suite_name(raw: &str) -> Result<&str, String> {
     }
 }
 
-pub(crate) fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
+pub(crate) fn write_output_if_requested(
+    out: Option<PathBuf>,
+    rendered: &str,
+) -> Result<(), String> {
     if let Some(path) = out {
         std::fs::write(&path, format!("{rendered}\n"))
             .map_err(|err| format!("cannot write {}: {err}", path.display()))?;
@@ -341,7 +344,10 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         if !path.is_file() {
             continue;
         }
-        let ext = path.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        let ext = path
+            .extension()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
         if ext == "sh" || ext == "py" {
             let rel = path
                 .strip_prefix(root)
@@ -384,17 +390,16 @@ fn scan_automation_boundaries(root: &Path) -> Result<Vec<AutomationBoundaryCheck
         if is_path_within(rel, ".github/workflows/") {
             for line in text.lines().map(str::trim) {
                 if line.contains("bash -c") {
-                    workflow_bash_script_violations
-                        .push(format!("{}: {}", rel.display(), line));
+                    workflow_bash_script_violations.push(format!("{}: {}", rel.display(), line));
                 }
                 if line.contains("python ") || line.contains("python3 ") {
-                    workflow_python_violations
-                        .push(format!("{}: {}", rel.display(), line));
+                    workflow_python_violations.push(format!("{}: {}", rel.display(), line));
                 }
-                if line.contains("bash ./") || line.contains("bash scripts/") || line.contains(".sh")
+                if line.contains("bash ./")
+                    || line.contains("bash scripts/")
+                    || line.contains(".sh")
                 {
-                    workflow_bash_script_violations
-                        .push(format!("{}: {}", rel.display(), line));
+                    workflow_bash_script_violations.push(format!("{}: {}", rel.display(), line));
                 }
             }
         }
@@ -598,7 +603,11 @@ fn render_automation_boundaries_report(
                 "checks:".to_string(),
             ];
             for check in &report.checks {
-                let badge = if check.status == "pass" { "PASS" } else { "FAIL" };
+                let badge = if check.status == "pass" {
+                    "PASS"
+                } else {
+                    "FAIL"
+                };
                 lines.push(format!(
                     "{badge} {} violations={}",
                     check.id, check.violation_count
@@ -624,7 +633,11 @@ fn run_automation_boundaries_report(
         .iter()
         .flat_map(|check| check.violations.iter().cloned())
         .collect::<Vec<_>>();
-    let status = if violations.is_empty() { "pass" } else { "fail" };
+    let status = if violations.is_empty() {
+        "pass"
+    } else {
+        "fail"
+    };
 
     let evidence_dir = root.join("artifacts/atlas-dev/doctrine");
     fs::create_dir_all(&evidence_dir)
@@ -685,7 +698,11 @@ pub(crate) fn run_checks_catalog_list(
         })
         .cloned()
         .collect::<Vec<_>>();
-    checks.sort_by(|a, b| a.domain.cmp(b.domain).then_with(|| a.check_id.cmp(&b.check_id)));
+    checks.sort_by(|a, b| {
+        a.domain
+            .cmp(b.domain)
+            .then_with(|| a.check_id.cmp(&b.check_id))
+    });
     let rendered = render_catalog_list_output(&checks, options.format)?;
     write_output_if_requested(options.out, &rendered)?;
     Ok((rendered, 0))
@@ -799,7 +816,6 @@ pub(crate) struct ConfigsContext {
     pub(crate) artifacts_root: PathBuf,
     pub(crate) run_id: RunId,
 }
-
 
 pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
     let root = resolve_repo_root(options.repo_root)?;

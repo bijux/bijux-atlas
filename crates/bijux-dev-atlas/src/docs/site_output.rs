@@ -43,7 +43,9 @@ fn site_output_contract_schema_path(repo_root: &Path) -> PathBuf {
 }
 
 fn report_schema_path(repo_root: &Path, file_name: &str) -> PathBuf {
-    repo_root.join("configs/schemas/contracts/reports").join(file_name)
+    repo_root
+        .join("configs/schemas/contracts/reports")
+        .join(file_name)
 }
 
 pub fn render_stable_report_json(payload: &serde_json::Value) -> Result<String, String> {

@@ -335,7 +335,10 @@ fn verify_api(common: ApiCommonArgs) -> Result<(String, i32), String> {
     });
     write_json(&root.join(API_COVERAGE_ARTIFACT), &coverage)?;
     let compatibility = compatibility_report(&root, &spec)?;
-    let status = if version.zip(expected).is_some_and(|(current, wanted)| current == wanted) {
+    let status = if version
+        .zip(expected)
+        .is_some_and(|(current, wanted)| current == wanted)
+    {
         "ok"
     } else {
         "failed"

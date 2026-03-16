@@ -164,7 +164,10 @@ fn validate_ci_lanes_registry(repo_root: &Path) -> Result<serde_json::Value, Str
             sorted.sort();
             sorted
         } {
-            errors.push(format!("lane `{}` aliases must be deterministically ordered", lane.id));
+            errors.push(format!(
+                "lane `{}` aliases must be deterministically ordered",
+                lane.id
+            ));
         }
         for alias in &lane.aliases {
             if alias == &lane.id {
@@ -187,7 +190,10 @@ fn validate_ci_lanes_registry(repo_root: &Path) -> Result<serde_json::Value, Str
             errors.push(format!("lane `{}` is missing description", lane.id));
         }
         if lane.artifacts_expected.is_empty() {
-            errors.push(format!("lane `{}` must declare artifacts_expected", lane.id));
+            errors.push(format!(
+                "lane `{}` must declare artifacts_expected",
+                lane.id
+            ));
         }
         if lane.evidence_bundle.trim().is_empty() {
             errors.push(format!("lane `{}` must declare evidence_bundle", lane.id));
@@ -256,7 +262,10 @@ fn validate_ci_lanes_registry(repo_root: &Path) -> Result<serde_json::Value, Str
         let Some(lane_def) = registry.lanes.iter().find(|item| item.id == lane.lane) else {
             continue;
         };
-        let Some(timeout_def) = registry.timeout_classes.get(lane_def.timeout_class.as_str()) else {
+        let Some(timeout_def) = registry
+            .timeout_classes
+            .get(lane_def.timeout_class.as_str())
+        else {
             continue;
         };
         let timeout = workflow_timeouts
@@ -336,10 +345,10 @@ fn render_ci_env_contract_validate(
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let path = repo_root.join("configs/sources/repository/ci/env-contract.json");
-    let text =
-        fs::read_to_string(&path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
-    let value: serde_json::Value =
-        serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
     let status = if value
         .get("required_job_env_keys")
         .and_then(|v| v.as_array())
@@ -573,9 +582,22 @@ fn lane_domain_from_id(lane_id: &str) -> &'static str {
 fn domain_path_prefixes(domain: &str) -> &'static [&'static str] {
     match domain {
         "docs" => &["docs/", "mkdocs.yml", "configs/sources/repository/docs/"],
-        "ops" => &["ops/", "configs/sources/operations/ops/", ".github/workflows/ops-"],
-        "ci" => &[".github/workflows/", "configs/sources/repository/ci/", "crates/bijux-dev-atlas/"],
-        "release" => &["ops/release/", "docs/", "configs/sources/release/", ".github/workflows/release-"],
+        "ops" => &[
+            "ops/",
+            "configs/sources/operations/ops/",
+            ".github/workflows/ops-",
+        ],
+        "ci" => &[
+            ".github/workflows/",
+            "configs/sources/repository/ci/",
+            "crates/bijux-dev-atlas/",
+        ],
+        "release" => &[
+            "ops/release/",
+            "docs/",
+            "configs/sources/release/",
+            ".github/workflows/release-",
+        ],
         "dependency" => &["Cargo.lock", ".github/workflows/dependency-"],
         _ => &[".github/workflows/"],
     }
@@ -650,7 +672,9 @@ fn run_ci_verify_gate(
                 "configs/sources/repository/ci/lane-surface.json",
             ] {
                 if !repo_root.join(required).exists() {
-                    errors.push(format!("missing required workflow policy file `{required}`"));
+                    errors.push(format!(
+                        "missing required workflow policy file `{required}`"
+                    ));
                 }
             }
             if !text.contains("actions/checkout@") {
@@ -739,7 +763,9 @@ fn run_ci_verify_gate(
                 if !path_filters.is_empty() {
                     let allowed_prefixes = domain_path_prefixes(lane_domain);
                     let aligned = path_filters.iter().any(|entry| {
-                        allowed_prefixes.iter().any(|prefix| entry.starts_with(prefix))
+                        allowed_prefixes
+                            .iter()
+                            .any(|prefix| entry.starts_with(prefix))
                     });
                     if !aligned {
                         errors.push(format!(
@@ -764,11 +790,13 @@ fn run_ci_verify_gate(
                             "workflow `{workflow_path}` uses secrets but mapped lanes are not allowed for secret use"
                         ));
                     }
-                    let secret_registry_path = repo_root.join("configs/sources/repository/ci/secret-registry.json");
+                    let secret_registry_path =
+                        repo_root.join("configs/sources/repository/ci/secret-registry.json");
                     if secret_registry_path.exists() {
-                        let registry_text = fs::read_to_string(&secret_registry_path).map_err(|err| {
-                            format!("read {} failed: {err}", secret_registry_path.display())
-                        })?;
+                        let registry_text =
+                            fs::read_to_string(&secret_registry_path).map_err(|err| {
+                                format!("read {} failed: {err}", secret_registry_path.display())
+                            })?;
                         let registry_value: serde_json::Value =
                             serde_json::from_str(&registry_text).map_err(|err| {
                                 format!("parse {} failed: {err}", secret_registry_path.display())
@@ -812,7 +840,10 @@ fn run_ci_verify_gate(
             errors.extend(policy_drift.uniqueness_errors);
             errors.extend(policy_drift.docs_errors);
             errors.extend(policy_drift.exception_errors);
-            let lane_workflow_set = workflow_to_lanes.keys().cloned().collect::<std::collections::BTreeSet<_>>();
+            let lane_workflow_set = workflow_to_lanes
+                .keys()
+                .cloned()
+                .collect::<std::collections::BTreeSet<_>>();
             let lint_rows = workflow_step_rows(repo_root)?;
             errors.extend(lint_rows.into_iter().filter(|row| !row.allowed).map(|row| {
                 if lane_workflow_set.contains(row.workflow.as_str()) {
@@ -937,7 +968,10 @@ fn run_ci_verify_gate(
         }
         "docs-preview" => {
             if !allow_subprocess || !allow_write {
-                return Err("ci verify docs-preview requires --allow-subprocess and --allow-write".to_string());
+                return Err(
+                    "ci verify docs-preview requires --allow-subprocess and --allow-write"
+                        .to_string(),
+                );
             }
             let docs_common = DocsCommonArgs {
                 repo_root: Some(repo_root.to_path_buf()),
@@ -963,7 +997,9 @@ fn run_ci_verify_gate(
         }
         "docs-diff" => {
             if !allow_git || !allow_write {
-                return Err("ci verify docs-diff requires --allow-git and --allow-write".to_string());
+                return Err(
+                    "ci verify docs-diff requires --allow-git and --allow-write".to_string()
+                );
             }
             let output = ProcessCommand::new("git")
                 .current_dir(repo_root)
@@ -1026,7 +1062,14 @@ fn run_ci_verify_gate(
             }
             let output = ProcessCommand::new("cargo")
                 .current_dir(repo_root)
-                .args(["fmt", "--all", "--", "--check", "--config-path", "configs/sources/repository/rust-tooling/rustfmt.toml"])
+                .args([
+                    "fmt",
+                    "--all",
+                    "--",
+                    "--check",
+                    "--config-path",
+                    "configs/sources/repository/rust-tooling/rustfmt.toml",
+                ])
                 .output()
                 .map_err(|err| format!("cargo fmt failed: {err}"))?;
             serde_json::json!({
@@ -1044,7 +1087,17 @@ fn run_ci_verify_gate(
             let output = ProcessCommand::new("cargo")
                 .current_dir(repo_root)
                 .env("CLIPPY_CONF_DIR", "configs/sources/repository/rust-tooling")
-                .args(["clippy", "-q", "--workspace", "--all-targets", "--all-features", "--locked", "--", "-D", "warnings"])
+                .args([
+                    "clippy",
+                    "-q",
+                    "--workspace",
+                    "--all-targets",
+                    "--all-features",
+                    "--locked",
+                    "--",
+                    "-D",
+                    "warnings",
+                ])
                 .output()
                 .map_err(|err| format!("cargo clippy failed: {err}"))?;
             serde_json::json!({
@@ -1111,7 +1164,10 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                     code
                 }
                 Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci lanes explain failed: {err}");
+                    let _ = writeln!(
+                        io::stderr(),
+                        "bijux-dev-atlas ci lanes explain failed: {err}"
+                    );
                     1
                 }
             },
@@ -1133,7 +1189,10 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                     code
                 }
                 Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci lanes validate failed: {err}");
+                    let _ = writeln!(
+                        io::stderr(),
+                        "bijux-dev-atlas ci lanes validate failed: {err}"
+                    );
                     1
                 }
             },
@@ -1181,7 +1240,10 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                     code
                 }
                 Err(err) => {
-                    let _ = writeln!(io::stderr(), "bijux-dev-atlas ci env-contract validate failed: {err}");
+                    let _ = writeln!(
+                        io::stderr(),
+                        "bijux-dev-atlas ci env-contract validate failed: {err}"
+                    );
                     1
                 }
             },
@@ -1297,7 +1359,9 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
             repo_root,
             format,
             out,
-        } => match resolve_repo_root(repo_root).and_then(|root| render_ci_explain(&root, &lane, format, out)) {
+        } => match resolve_repo_root(repo_root)
+            .and_then(|root| render_ci_explain(&root, &lane, format, out))
+        {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
@@ -1314,7 +1378,9 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
             kind,
             format,
             out,
-        } => match resolve_repo_root(repo_root).and_then(|root| render_ci_report(&root, &kind, format, out)) {
+        } => match resolve_repo_root(repo_root)
+            .and_then(|root| render_ci_report(&root, &kind, format, out))
+        {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
@@ -1336,14 +1402,18 @@ pub(super) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
             allow_write,
             allow_network,
         } => match resolve_repo_root(repo_root).and_then(|root| {
-            run_ci_verify_gate(&root, &gate, CiVerifyRunOptions {
-                format,
-                out,
-                allow_subprocess,
-                allow_git,
-                allow_write,
-                allow_network,
-            })
+            run_ci_verify_gate(
+                &root,
+                &gate,
+                CiVerifyRunOptions {
+                    format,
+                    out,
+                    allow_subprocess,
+                    allow_git,
+                    allow_write,
+                    allow_network,
+                },
+            )
         }) {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {

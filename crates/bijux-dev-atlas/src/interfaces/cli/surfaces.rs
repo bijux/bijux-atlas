@@ -256,7 +256,10 @@ pub struct DocsTableRenderArgs {
 pub struct DocsExternalLinksArgs {
     #[command(flatten)]
     pub common: DocsCommonArgs,
-    #[arg(long, default_value = "configs/sources/repository/docs/external-link-allowlist.json")]
+    #[arg(
+        long,
+        default_value = "configs/sources/repository/docs/external-link-allowlist.json"
+    )]
     pub allowlist: PathBuf,
 }
 

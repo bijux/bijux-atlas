@@ -92,9 +92,7 @@ pub(super) fn collect_governance_objects(
             continue;
         };
         let rel = rel.display().to_string();
-        if rel.starts_with("docs/_drafts/")
-            || rel.starts_with("docs/_assets/")
-        {
+        if rel.starts_with("docs/_drafts/") || rel.starts_with("docs/_assets/") {
             continue;
         }
         let (owner, last_reviewed) = read_docs_frontmatter_metadata(&path);

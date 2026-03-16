@@ -62,9 +62,7 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
         .filter(|line| !line.is_empty())
         .filter(|line| !line.starts_with('#'))
         .collect::<Vec<_>>();
-    if lines.len() == 1
-        && lines[0] == "include makes/root.mk"
-    {
+    if lines.len() == 1 && lines[0] == "include makes/root.mk" {
         return Ok(Vec::new());
     }
     if !lines.contains(&"include makes/root.mk") {
@@ -132,14 +130,7 @@ pub(super) fn check_makefiles_root_includes_sorted(
 pub(super) fn check_root_top_level_directories_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let expected = [
-        "artifacts",
-        "configs",
-        "crates",
-        "docs",
-        "makes",
-        "ops",
-    ];
+    let expected = ["artifacts", "configs", "crates", "docs", "makes", "ops"];
     let mut actual = fs::read_dir(ctx.repo_root)
         .map_err(|err| CheckError::Failed(err.to_string()))?
         .filter_map(Result::ok)
@@ -371,7 +362,9 @@ pub(super) fn check_crates_bijux_atlas_help_excludes_dev_commands(
 pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let src = ctx.repo_root.join("crates/bijux-atlas/src/adapters/inbound/cli/mod.rs");
+    let src = ctx
+        .repo_root
+        .join("crates/bijux-atlas/src/adapters/inbound/cli/mod.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("bijux dev atlas <command>") {
         Ok(Vec::new())
@@ -380,7 +373,9 @@ pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
             "CRATES_DEV_ATLAS_DISPATCH_HINT_MISSING",
             "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
             "restore dev atlas dispatch hint in bijux-atlas help routing",
-            Some(Path::new("crates/bijux-atlas/src/adapters/inbound/cli/mod.rs")),
+            Some(Path::new(
+                "crates/bijux-atlas/src/adapters/inbound/cli/mod.rs",
+            )),
         )])
     }
 }

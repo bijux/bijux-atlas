@@ -1399,9 +1399,8 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let exceptions_registry: ExceptionsRegistry = read_yaml_file(&exceptions_registry_path(root))?;
     let deprecations_registry: serde_yaml::Value =
         read_yaml_file(&deprecations_registry_path(root))?;
-    let checks_doctrine = read_json_value(
-        &root.join("configs/sources/governance/governance/checks-doctrine.json"),
-    )?;
+    let checks_doctrine =
+        read_json_value(&root.join("configs/sources/governance/governance/checks-doctrine.json"))?;
     let suite_membership_policy = read_json_value(
         &root.join("configs/sources/governance/governance/suite-membership-policy.json"),
     )?;
@@ -3985,8 +3984,10 @@ pub(crate) fn run_governance_command(
                     .collect::<Vec<_>>();
                 let mut gov_rep_001 = true;
                 for entry in &report_schema_deprecations {
-                    let migration_path =
-                        root.join(format!("artifacts/governance/report-migrations/{}.md", entry.id));
+                    let migration_path = root.join(format!(
+                        "artifacts/governance/report-migrations/{}.md",
+                        entry.id
+                    ));
                     if !migration_path.exists() {
                         gov_rep_001 = false;
                         errors.push(format!(

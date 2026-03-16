@@ -9,16 +9,16 @@ use std::path::Path;
 use crate::model::engine::*;
 
 mod executor;
+mod rendering;
 mod report_codec;
 mod reporting;
-mod rendering;
 mod runner;
 mod selection;
 
 pub use executor::*;
+pub use rendering::*;
 pub use report_codec::*;
 pub use reporting::*;
-pub use rendering::*;
 pub use runner::*;
 pub use selection::*;
 #[cfg(test)]

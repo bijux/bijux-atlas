@@ -136,9 +136,9 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
 #[test]
 fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
     let root = repo_root();
-    let text = fs::read_to_string(root.join(
-        "crates/bijux-atlas/src/adapters/inbound/http/handlers_utilities.rs",
-    ))
+    let text = fs::read_to_string(
+        root.join("crates/bijux-atlas/src/adapters/inbound/http/handlers_utilities.rs"),
+    )
     .expect("handlers utilities surface");
 
     for expected in [
@@ -245,8 +245,8 @@ fn atlas_runtime_surface_keeps_wiring_internal() {
 #[test]
 fn atlas_contract_roots_stay_contract_owned() {
     let root = repo_root();
-    let contracts =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/mod.rs")).expect("contracts");
+    let contracts = fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/mod.rs"))
+        .expect("contracts");
     let config = fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/config/mod.rs"))
         .expect("contracts config");
 
@@ -297,8 +297,8 @@ fn atlas_domain_barrel_stays_thin() {
 #[test]
 fn atlas_app_server_surface_stays_app_owned() {
     let root = repo_root();
-    let app_server =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/mod.rs")).expect("app server");
+    let app_server = fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/mod.rs"))
+        .expect("app server");
     let app_state = fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/state/mod.rs"))
         .expect("app server state");
 

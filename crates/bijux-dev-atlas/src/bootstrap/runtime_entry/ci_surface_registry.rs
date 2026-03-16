@@ -259,15 +259,14 @@ pub(super) fn workflow_step_rows(repo_root: &Path) -> Result<Vec<WorkflowLintRow
                     .or_else(|| step.get("uses").and_then(serde_yaml::Value::as_str))
                     .unwrap_or("unnamed-step")
                     .to_string();
-                let (step_kind, step_value) = if let Some(uses) =
-                    step.get("uses").and_then(serde_yaml::Value::as_str)
-                {
-                    ("uses".to_string(), uses.to_string())
-                } else if let Some(run) = step.get("run").and_then(serde_yaml::Value::as_str) {
-                    ("run".to_string(), normalized_run_body(run))
-                } else {
-                    ("invalid-step".to_string(), String::new())
-                };
+                let (step_kind, step_value) =
+                    if let Some(uses) = step.get("uses").and_then(serde_yaml::Value::as_str) {
+                        ("uses".to_string(), uses.to_string())
+                    } else if let Some(run) = step.get("run").and_then(serde_yaml::Value::as_str) {
+                        ("run".to_string(), normalized_run_body(run))
+                    } else {
+                        ("invalid-step".to_string(), String::new())
+                    };
                 let matched_pattern = patterns
                     .patterns
                     .iter()
@@ -277,17 +276,23 @@ pub(super) fn workflow_step_rows(repo_root: &Path) -> Result<Vec<WorkflowLintRow
                     })
                     .cloned();
                 let allowlist_entry = allowlist.entries.iter().find(|entry| {
-                    entry.workflow == workflow_rel && entry.job == job_name && entry.step == step_name
+                    entry.workflow == workflow_rel
+                        && entry.job == job_name
+                        && entry.step == step_name
                 });
                 let registry_entry = registry.entries.iter().find(|entry| {
-                    entry.workflow == workflow_rel && entry.job == job_name && entry.step == step_name
+                    entry.workflow == workflow_rel
+                        && entry.job == job_name
+                        && entry.step == step_name
                 });
                 let classification = matched_pattern
                     .as_ref()
                     .map(|pattern| pattern.classification.clone())
                     .or_else(|| registry_entry.map(|entry| entry.classification.clone()))
                     .unwrap_or_else(|| "unclassified".to_string());
-                let allowed = matched_pattern.as_ref().is_some_and(|pattern| pattern.allowed)
+                let allowed = matched_pattern
+                    .as_ref()
+                    .is_some_and(|pattern| pattern.allowed)
                     || allowlist_entry.is_some();
                 rows.push(WorkflowLintRow {
                     workflow: workflow_rel.clone(),
@@ -402,7 +407,8 @@ pub(super) fn ci_registry_unplanned_entries(
                 exception.policy_id, exception.governance_tier
             ));
         }
-        if exception.governance_tier != "governance-approved" && exception.expires_on == "9999-12-31"
+        if exception.governance_tier != "governance-approved"
+            && exception.expires_on == "9999-12-31"
         {
             exception_errors.push(format!(
                 "policy exception `{}` uses a permanent expiry without governance approval",
@@ -473,13 +479,10 @@ mod tests {
     #[test]
     fn ci_exception_expiry_parser_handles_past_and_future_dates() {
         assert!(
-            ci_exception_is_expired("2000-01-01")
-                .unwrap_or_else(|err| panic!("past date: {err}"))
+            ci_exception_is_expired("2000-01-01").unwrap_or_else(|err| panic!("past date: {err}"))
         );
-        assert!(
-            !ci_exception_is_expired("2999-01-01")
-                .unwrap_or_else(|err| panic!("future date: {err}"))
-        );
+        assert!(!ci_exception_is_expired("2999-01-01")
+            .unwrap_or_else(|err| panic!("future date: {err}")));
         assert!(ci_exception_is_expired("invalid").is_err());
     }
 }
