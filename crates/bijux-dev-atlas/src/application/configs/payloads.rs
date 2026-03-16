@@ -90,6 +90,11 @@ fn is_secret_like_key_exception(rel: &str, key_path: &str) -> bool {
             (rel, key_path),
             ("configs/sources/security/secrets.json", "secrets")
                 | (
+                    "configs/sources/security/data-protection.yaml",
+                    "sensitive_handling.forbid_plaintext_secrets_in_logs"
+                )
+                | ("configs/sources/security/runtime-security.yaml", "secrets")
+                | (
                     "configs/schemas/contracts/security/secrets.schema.json",
                     "properties.secrets"
                 )
