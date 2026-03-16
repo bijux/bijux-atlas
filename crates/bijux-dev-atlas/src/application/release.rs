@@ -2869,6 +2869,16 @@ fn run_release_crates_validate_metadata(
     args: ReleaseCratesValidateArgs,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
+    let workspace_manifest: toml::Value = toml::from_str(
+        &fs::read_to_string(root.join("Cargo.toml"))
+            .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse root Cargo.toml: {err}"))?;
+    let workspace_package = workspace_manifest
+        .get("workspace")
+        .and_then(toml::Value::as_table)
+        .and_then(|workspace| workspace.get("package"))
+        .and_then(toml::Value::as_table);
     let spec = read_crates_release_spec(&root)?;
     let (publishable, _) = release_spec_allow_deny(&spec);
     let required_fields = spec
@@ -2911,6 +2921,15 @@ fn run_release_crates_validate_metadata(
                 "crate `{crate_name}` readme path does not exist: {}",
                 readme_path.display()
             ));
+        } else {
+            let readme = fs::read_to_string(&readme_path)
+                .map_err(|err| format!("failed to read {}: {err}", readme_path.display()))?;
+            errors.extend(validate_publishable_package_surface(
+                &crate_name,
+                &package,
+                workspace_package,
+                &readme,
+            ));
         }
         checked.push(crate_name);
     }
@@ -2926,6 +2945,94 @@ fn run_release_crates_validate_metadata(
     });
     let rendered = emit_payload(args.format, args.out, &payload)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+fn resolve_package_field(
+    package: &toml::value::Table,
+    workspace_package: Option<&toml::value::Table>,
+    key: &str,
+) -> Option<String> {
+    let value = package.get(key)?;
+    match value {
+        toml::Value::String(text) => Some(text.to_string()),
+        toml::Value::Table(table) => table
+            .get("workspace")
+            .and_then(toml::Value::as_bool)
+            .filter(|workspace| *workspace)
+            .and_then(|_| workspace_package)
+            .and_then(|workspace| workspace.get(key))
+            .and_then(toml::Value::as_str)
+            .map(str::to_string),
+        _ => None,
+    }
+}
+
+fn validate_publishable_package_surface(
+    crate_name: &str,
+    package: &toml::value::Table,
+    workspace_package: Option<&toml::value::Table>,
+    readme: &str,
+) -> Vec<String> {
+    let mut errors = Vec::new();
+    let repository = resolve_package_field(package, workspace_package, "repository");
+    let homepage = resolve_package_field(package, workspace_package, "homepage");
+    let documentation = resolve_package_field(package, workspace_package, "documentation");
+    for (field_name, value) in [
+        ("repository", repository.as_deref()),
+        ("homepage", homepage.as_deref()),
+        ("documentation", documentation.as_deref()),
+    ] {
+        let Some(url) = value else {
+            continue;
+        };
+        if !url.starts_with("https://") {
+            errors.push(format!(
+                "crate `{crate_name}` package.{field_name} must be an absolute https URL"
+            ));
+        }
+    }
+    if let (Some(repository), Some(homepage)) = (repository.as_deref(), homepage.as_deref()) {
+        if repository == homepage {
+            errors.push(format!(
+                "crate `{crate_name}` package.homepage must not duplicate package.repository"
+            ));
+        }
+    }
+    if let (Some(homepage), Some(documentation)) = (homepage.as_deref(), documentation.as_deref())
+    {
+        if homepage == documentation {
+            errors.push(format!(
+                "crate `{crate_name}` package.homepage and package.documentation must point to distinct surfaces"
+            ));
+        }
+    }
+    if let Some(homepage) = homepage.as_deref() {
+        if !readme.contains(homepage) {
+            errors.push(format!(
+                "crate `{crate_name}` README must link to package.homepage"
+            ));
+        }
+    }
+    if let Some(documentation) = documentation.as_deref() {
+        if !readme.contains(documentation) {
+            errors.push(format!(
+                "crate `{crate_name}` README must link to package.documentation"
+            ));
+        }
+    }
+    let markdown_link_re =
+        Regex::new(r#"\[[^\]]+\]\(([^)]+)\)"#).expect("markdown link regex must compile");
+    for capture in markdown_link_re.captures_iter(readme) {
+        let Some(target) = capture.get(1).map(|m| m.as_str().trim()) else {
+            continue;
+        };
+        if target.starts_with("../") || target.contains("/../") {
+            errors.push(format!(
+                "crate `{crate_name}` README contains parent-relative link `{target}` that will not be publish-safe"
+            ));
+        }
+    }
+    errors
 }
 
 fn run_release_crates_validate_publish_flags(
@@ -3567,6 +3674,11 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         .and_then(toml::Value::as_str)
         .unwrap_or_default()
         .to_string();
+    let workspace_package = workspace_manifest
+        .get("workspace")
+        .and_then(toml::Value::as_table)
+        .and_then(|workspace| workspace.get("package"))
+        .and_then(toml::Value::as_table);
     let publishable = policy["publishable_crates"]
         .as_array()
         .cloned()
@@ -3654,6 +3766,15 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         }
         if !readme_path.exists() {
             errors.push(format!("missing crate README: {}", readme_path.display()));
+        } else if let Some(pkg_table) = pkg {
+            let readme = fs::read_to_string(&readme_path)
+                .map_err(|err| format!("failed to read {}: {err}", readme_path.display()))?;
+            errors.extend(validate_publishable_package_surface(
+                crate_name,
+                pkg_table,
+                workspace_package,
+                &readme,
+            ));
         }
         for section in ["dependencies", "build-dependencies", "dev-dependencies"] {
             let Some(deps) = manifest.get(section).and_then(toml::Value::as_table) else {
@@ -6183,5 +6304,70 @@ mod tests {
         assert!(members.contains(&"ops/release/evidence/manifest.json".to_string()));
         assert!(members.contains(&rel.to_string()));
         cleanup_release_test_repo(&root);
+    }
+
+    #[test]
+    fn publishable_package_surface_requires_readme_links_to_homepage_and_docs() {
+        let package = toml::toml! {
+            homepage = "https://bijux.github.io/bijux-atlas/"
+            documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
+            repository = "https://github.com/bijux/bijux-atlas.git"
+        };
+        let errors = validate_publishable_package_surface(
+            "bijux-atlas",
+            &package,
+            None,
+            "# crate\n",
+        );
+
+        assert!(errors.iter().any(|err| err.contains("README must link to package.homepage")));
+        assert!(errors
+            .iter()
+            .any(|err| err.contains("README must link to package.documentation")));
+    }
+
+    #[test]
+    fn publishable_package_surface_rejects_parent_relative_readme_links() {
+        let package = toml::toml! {
+            homepage = "https://bijux.github.io/bijux-atlas/"
+            documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
+            repository = "https://github.com/bijux/bijux-atlas.git"
+        };
+        let readme = r#"
+[Docs](https://bijux.github.io/bijux-atlas/)
+[API](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
+[Control Plane](../bijux-dev-atlas/README.md)
+"#;
+        let errors = validate_publishable_package_surface(
+            "bijux-atlas",
+            &package,
+            None,
+            readme,
+        );
+
+        assert!(errors
+            .iter()
+            .any(|err| err.contains("parent-relative link `../bijux-dev-atlas/README.md`")));
+    }
+
+    #[test]
+    fn resolve_package_field_reads_workspace_metadata() {
+        let package = toml::toml! {
+            repository = { workspace = true }
+        };
+        let workspace_package = toml::toml! {
+            repository = "https://github.com/bijux/bijux-atlas.git"
+        };
+
+        let resolved = resolve_package_field(
+            &package,
+            Some(&workspace_package),
+            "repository",
+        );
+
+        assert_eq!(
+            resolved.as_deref(),
+            Some("https://github.com/bijux/bijux-atlas.git")
+        );
     }
 }
