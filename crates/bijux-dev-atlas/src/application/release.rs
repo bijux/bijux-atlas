@@ -2959,7 +2959,7 @@ fn resolve_package_field(
             .get("workspace")
             .and_then(toml::Value::as_bool)
             .filter(|workspace| *workspace)
-            .and_then(|_| workspace_package)
+            .and(workspace_package)
             .and_then(|workspace| workspace.get(key))
             .and_then(toml::Value::as_str)
             .map(str::to_string),
