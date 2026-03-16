@@ -2341,6 +2341,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     build_args.push("--strict".to_string());
                 }
                 let ctx = docs_context(&common)?;
+                if common.allow_write {
+                    docs_generate_all(&ctx.repo_root)?;
+                }
                 let generated = docs_verify_generated(&ctx.repo_root)?;
                 if generated["status"] != "ok" {
                     let payload = serde_json::json!({
