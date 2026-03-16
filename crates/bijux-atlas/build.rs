@@ -1,5 +1,9 @@
 #![forbid(unsafe_code)]
 
+#[allow(dead_code)]
+#[path = "src/version_support.rs"]
+mod version_support;
+
 use std::env;
 use std::path::PathBuf;
 
@@ -8,11 +12,11 @@ fn main() {
 
     let manifest_dir =
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR must be set"));
-    let workspace_root = bijux_versioning::workspace_root_from_manifest_dir(&manifest_dir);
-    bijux_versioning::emit_git_rerun_hints(&workspace_root, |line| println!("{line}"));
+    let workspace_root = version_support::workspace_root_from_manifest_dir(&manifest_dir);
+    version_support::emit_git_rerun_hints(&workspace_root, |line| println!("{line}"));
 
     let package_version = env::var("CARGO_PKG_VERSION").unwrap_or_else(|_| "0.0.0".to_string());
-    let metadata = bijux_versioning::resolve_runtime_versions(
+    let metadata = version_support::resolve_runtime_versions(
         &workspace_root,
         &package_version,
         "BIJUX_ATLAS_VERSION_OVERRIDE",
@@ -30,11 +34,11 @@ fn main() {
         "cargo:rustc-env=BIJUX_ATLAS_BUILD_VERSION_SOURCE={}",
         metadata.source
     );
-    bijux_versioning::emit_optional_env(
+    version_support::emit_optional_env(
         "BIJUX_ATLAS_BUILD_GIT_COMMIT",
         metadata.git_commit.as_deref(),
     );
-    bijux_versioning::emit_optional_env(
+    version_support::emit_optional_env(
         "BIJUX_ATLAS_BUILD_GIT_DIRTY",
         metadata.git_dirty.map(|dirty| if dirty { "1" } else { "0" }),
     );

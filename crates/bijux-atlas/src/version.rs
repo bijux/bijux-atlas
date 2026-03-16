@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_versioning::{RuntimeVersionEnv, RuntimeVersionInfo};
+use crate::version_support::{self, RuntimeVersionEnv, RuntimeVersionInfo};
 
 const fn build_profile() -> &'static str {
     if cfg!(debug_assertions) {
@@ -24,25 +24,25 @@ const fn runtime_env() -> RuntimeVersionEnv {
 }
 
 pub const fn runtime_semver() -> &'static str {
-    bijux_versioning::runtime_semver(runtime_env())
+    version_support::runtime_semver(runtime_env())
 }
 
 pub const fn runtime_version() -> &'static str {
-    bijux_versioning::runtime_version(runtime_env())
+    version_support::runtime_version(runtime_env())
 }
 
 pub fn runtime_version_source() -> &'static str {
-    bijux_versioning::runtime_version_source(runtime_env())
+    version_support::runtime_version_source(runtime_env())
 }
 
 pub fn runtime_git_dirty() -> Option<bool> {
-    bijux_versioning::runtime_git_dirty(runtime_env())
+    version_support::runtime_git_dirty(runtime_env())
 }
 
 pub fn runtime_version_info() -> RuntimeVersionInfo {
-    bijux_versioning::runtime_version_info(runtime_env())
+    version_support::runtime_version_info(runtime_env())
 }
 
 pub fn runtime_version_line() -> String {
-    bijux_versioning::runtime_version_line(runtime_env())
+    version_support::runtime_version_line(runtime_env())
 }

@@ -1,4 +1,4 @@
-#![forbid(unsafe_code)]
+// SPDX-License-Identifier: Apache-2.0
 
 use semver::Version;
 use std::path::{Path, PathBuf};
@@ -318,10 +318,7 @@ fn commits_since_tag(workspace_root: &Path, tag: &str) -> Option<u64> {
     if !output.status.success() {
         return None;
     }
-    String::from_utf8_lossy(&output.stdout)
-        .trim()
-        .parse::<u64>()
-        .ok()
+    String::from_utf8_lossy(&output.stdout).trim().parse::<u64>().ok()
 }
 
 fn tagged_display_version(version: &str) -> String {

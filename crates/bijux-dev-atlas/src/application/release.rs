@@ -4552,7 +4552,7 @@ fn run_release_packet(args: ReleasePacketArgs) -> Result<(String, i32), String> 
 fn default_release_version(root: &Path) -> String {
     if let Some(version) = env_var_text("GITHUB_REF")
         .and_then(|value| value.strip_prefix("refs/tags/").map(str::to_string))
-        .and_then(|tag| bijux_versioning::version_from_tag(&tag))
+        .and_then(|tag| crate::version_support::version_from_tag(&tag))
     {
         return version;
     }
@@ -4565,7 +4565,8 @@ fn default_release_version(root: &Path) -> String {
         }
     }
     if let Some(version) =
-        bijux_versioning::latest_version_tag(root).and_then(|tag| bijux_versioning::version_from_tag(&tag))
+        crate::version_support::latest_version_tag(root)
+            .and_then(|tag| crate::version_support::version_from_tag(&tag))
     {
         return version;
     }
@@ -4573,7 +4574,8 @@ fn default_release_version(root: &Path) -> String {
 }
 
 fn release_line_for_version(version: &str) -> String {
-    bijux_versioning::release_line_from_version(version).unwrap_or_else(|| "unknown".to_string())
+    crate::version_support::release_line_from_version(version)
+        .unwrap_or_else(|| "unknown".to_string())
 }
 
 fn release_line_from_spec(spec: &toml::Value, root: &Path) -> String {

@@ -32,6 +32,8 @@ pub mod contracts;
 pub mod domain;
 pub mod runtime;
 pub mod version;
+#[allow(dead_code)]
+pub(crate) mod version_support;
 
 pub(crate) use crate::adapters::inbound::http::request_policies::{
     chrono_like_unix_millis, record_shed_reason, route_sli_class,

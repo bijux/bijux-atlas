@@ -25,7 +25,6 @@ jemalloc = ["dep:tikv-jemallocator"]
 async-trait = "0.1"
 axum = "0.7"
 base64 = "0.22"
-bijux-versioning = { workspace = true }
 brotli = "6"
 hex = "0.4"
 hmac = "0.12"
@@ -41,6 +40,7 @@ reqwest = { version = "0.12", default-features = false, features = ["blocking", 
 rusqlite = { version = "0.31", features = ["bundled", "vtab", "hooks"] }
 serde_json.workspace = true
 serde_yaml = "0.9"
+semver.workspace = true
 sha2 = "0.10"
 tar = "0.4"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
@@ -52,7 +52,7 @@ unicode-normalization = "0.1"
 zstd = "0.13"
 
 [build-dependencies]
-bijux-versioning = { workspace = true }
+semver.workspace = true
 
 [dependencies.tikv-jemallocator]
 version = "0.6"

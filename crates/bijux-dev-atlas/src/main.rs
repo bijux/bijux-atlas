@@ -62,6 +62,8 @@ mod suites_commands;
 mod system_commands;
 #[path = "application/tutorials.rs"]
 mod tutorials_commands;
+#[allow(dead_code)]
+mod version_support;
 
 pub(crate) use self::bootstrap::*;
 pub(crate) use self::interfaces::cli;

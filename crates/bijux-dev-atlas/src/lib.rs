@@ -25,6 +25,8 @@ pub mod registry;
 pub(crate) mod schema_support;
 pub mod ui;
 pub mod version;
+#[allow(dead_code)]
+pub(crate) mod version_support;
 
 pub use self::infrastructure::adapters;
 pub use self::infrastructure::runtime;
