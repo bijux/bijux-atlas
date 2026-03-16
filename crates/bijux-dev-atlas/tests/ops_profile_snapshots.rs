@@ -47,7 +47,33 @@ fn run_render(profile: &str, run_id: &str) -> String {
     fs::read_to_string(path).expect("read rendered manifest")
 }
 
-fn run_install_plan(profile: &str) -> String {
+fn run_helm_render(profile: &str, run_id: &str) {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "render",
+            "--target",
+            "helm",
+            "--profile",
+            profile,
+            "--run-id",
+            run_id,
+            "--allow-write",
+            "--allow-subprocess",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops render helm");
+    assert!(
+        output.status.success(),
+        "helm render failed for profile `{profile}`:\n{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+fn run_install_plan_with_run_id(profile: &str, run_id: &str) -> String {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
@@ -55,6 +81,8 @@ fn run_install_plan(profile: &str) -> String {
             "install-plan",
             "--profile",
             profile,
+            "--run-id",
+            run_id,
             "--format",
             "json",
         ])
@@ -66,7 +94,8 @@ fn run_install_plan(profile: &str) -> String {
         String::from_utf8_lossy(&output.stderr)
     );
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("parse json");
-    serde_json::to_string_pretty(&payload).expect("serialize")
+    let rendered = serde_json::to_string_pretty(&payload).expect("serialize");
+    format!("{rendered}\n")
 }
 
 fn assert_or_update_golden(path: &PathBuf, actual: &str) {
@@ -100,14 +129,18 @@ fn ops_render_perf_matches_golden() {
 
 #[test]
 fn ops_install_plan_ci_matches_golden() {
-    let actual = run_install_plan("ci");
+    let run_id = "ops_install_plan_ci_snapshot";
+    run_helm_render("ci", run_id);
+    let actual = run_install_plan_with_run_id("ci", run_id);
     let golden = repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_install_plan_ci.json");
     assert_or_update_golden(&golden, &actual);
 }
 
 #[test]
 fn ops_install_plan_kind_matches_golden() {
-    let actual = run_install_plan("kind");
+    let run_id = "ops_install_plan_kind_snapshot";
+    run_helm_render("kind", run_id);
+    let actual = run_install_plan_with_run_id("kind", run_id);
     let golden =
         repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_install_plan_kind.json");
     assert_or_update_golden(&golden, &actual);
@@ -115,7 +148,9 @@ fn ops_install_plan_kind_matches_golden() {
 
 #[test]
 fn ops_install_plan_perf_matches_golden() {
-    let actual = run_install_plan("perf");
+    let run_id = "ops_install_plan_perf_snapshot";
+    run_helm_render("perf", run_id);
+    let actual = run_install_plan_with_run_id("perf", run_id);
     let golden =
         repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_install_plan_perf.json");
     assert_or_update_golden(&golden, &actual);

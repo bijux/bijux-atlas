@@ -7,11 +7,59 @@
         "forbidden_objects": [],
         "has_crds": false,
         "has_rbac": false,
-        "missing_render_path": "/Users/bijan/bijux/bijux-atlas/artifacts/ops/ops_run/render/kind/helm/render.yaml",
         "namespace_isolated": true,
         "namespaces": [],
-        "resource_kinds": {},
-        "resources": []
+        "resource_kinds": {
+          "ConfigMap": 1,
+          "Deployment": 1,
+          "NetworkPolicy": 1,
+          "PodDisruptionBudget": 1,
+          "PrometheusRule": 2,
+          "Service": 1,
+          "ServiceMonitor": 1
+        },
+        "resources": [
+          {
+            "kind": "ConfigMap",
+            "name": "bijux-atlas-bijux-atlas-config",
+            "namespace": null
+          },
+          {
+            "kind": "Deployment",
+            "name": "bijux-atlas-bijux-atlas",
+            "namespace": null
+          },
+          {
+            "kind": "NetworkPolicy",
+            "name": "bijux-atlas-bijux-atlas",
+            "namespace": null
+          },
+          {
+            "kind": "PodDisruptionBudget",
+            "name": "bijux-atlas-bijux-atlas",
+            "namespace": null
+          },
+          {
+            "kind": "PrometheusRule",
+            "name": "bijux-atlas-bijux-atlas-alerts",
+            "namespace": null
+          },
+          {
+            "kind": "PrometheusRule",
+            "name": "bijux-atlas-bijux-atlas-recording",
+            "namespace": null
+          },
+          {
+            "kind": "Service",
+            "name": "bijux-atlas-bijux-atlas",
+            "namespace": null
+          },
+          {
+            "kind": "ServiceMonitor",
+            "name": "bijux-atlas-bijux-atlas",
+            "namespace": null
+          }
+        ]
       },
       "kind_context_expected": "kind-normal",
       "plan_mode": true,
@@ -30,7 +78,7 @@
           "health-endpoint"
         ]
       },
-      "run_id": "ops_run",
+      "run_id": "ops_install_plan_kind_snapshot",
       "schema_version": 1,
       "steps": [
         "validate-only"
