@@ -6,8 +6,7 @@ pub(crate) const ENV_CONTRACT_SCHEMA_JSON: &str =
 pub(crate) const ERROR_CODES_JSON: &str =
     include_str!("../resources/observability/error-codes.json");
 pub(crate) const AUTH_POLICY_YAML: &str = include_str!("../resources/security/policy.yaml");
-pub(crate) const PERMISSIONS_YAML: &str =
-    include_str!("../resources/security/permissions.yaml");
+pub(crate) const PERMISSIONS_YAML: &str = include_str!("../resources/security/permissions.yaml");
 pub(crate) const ROLES_YAML: &str = include_str!("../resources/security/roles.yaml");
 
 #[cfg(test)]
@@ -34,7 +33,8 @@ mod tests {
         let source = fs::read_to_string(&source_path)
             .unwrap_or_else(|err| panic!("read {}: {err}", source_path.display()));
         assert_eq!(
-            packaged, source,
+            packaged,
+            source,
             "packaged resource drifted from {}",
             source_path.display()
         );

@@ -186,8 +186,10 @@ impl std::error::Error for RuntimeConfigError {}
 
 pub fn validate_runtime_env_contract() -> Result<(), RuntimeConfigError> {
     let parsed: serde_json::Value =
-        serde_json::from_str(ENV_CONTRACT_SCHEMA_JSON).map_err(|e| RuntimeConfigError::InvalidValue {
-            message: format!("invalid env contract json: {e}"),
+        serde_json::from_str(ENV_CONTRACT_SCHEMA_JSON).map_err(|e| {
+            RuntimeConfigError::InvalidValue {
+                message: format!("invalid env contract json: {e}"),
+            }
         })?;
     let allowed: HashSet<String> = parsed["allowed_env"]
         .as_array()
