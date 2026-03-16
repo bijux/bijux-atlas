@@ -4,14 +4,14 @@ version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
 rust-version.workspace = true
-description = "End-user atlas CLI for dataset and query workflows"
+description = "Deterministic bioinformatics atlas runtime with CLI, HTTP server, and OpenAPI export"
 repository.workspace = true
-homepage.workspace = true
-documentation = "https://docs.rs/bijux-atlas"
+homepage = "https://bijux.github.io/bijux-atlas/"
+documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
 readme = "README.md"
-categories = ["command-line-utilities", "science"]
+categories = ["command-line-utilities", "science", "science::bioinformatics"]
 exclude = ["tests/fixtures/**"]
-keywords = ["atlas", "cli", "datasets", "query", "contracts"]
+keywords = ["bioinformatics", "genomics", "datasets", "data-service", "atlas"]
 
 [features]
 default = ["serde", "backend-local"]
