@@ -69,8 +69,8 @@
       "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
     },
     "taiki-e/install-action": {
-      "ref": "cargo-nextest",
-      "sha": "02ff358066d08fda9d83b908e71e5894e6c6979c"
+      "ref": "v2.60.0",
+      "sha": "0c5db7f7f897c03b771660e91d065338615679f4"
     }
   },
   "images": {

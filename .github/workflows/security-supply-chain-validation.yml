@@ -70,4 +70,4 @@ jobs:
         run: cargo run --locked -q -p bijux-dev-atlas -- security dependency-audit --format json
 
       - name: run supply chain contracts
-        run: cargo test --locked -p bijux-dev-atlas --test security_supply_chain_contracts -- --nocapture
+        run: cargo test --locked -p bijux-dev-atlas security_dependency_audit_command_emits_report -- --nocapture
