@@ -23,15 +23,24 @@ bijux install bijux-dev-atlas
 
 # or
 
-cargo install bijux-atlas
-cargo install bijux-dev-atlas
+cargo install --locked bijux-atlas
+cargo install --locked bijux-dev-atlas
+```
+
+### Verify
+```bash
+bijux atlas version
+bijux dev atlas --help
+bijux-atlas version
+bijux-atlas-server --help
+bijux-atlas-openapi --help
 ```
 
 ### Supply Chain Artifacts
 - SBOM: SPDX JSON artifact attached to release workflow.
 - Signature: cosign signature published for image digest.
 
-### Verification
+### Signature Verification
 ```bash
 cosign verify \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \

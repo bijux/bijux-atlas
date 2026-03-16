@@ -21,6 +21,24 @@ body:
         - low
     validations:
       required: true
+  - type: dropdown
+    id: affected_surface
+    attributes:
+      label: Affected surface
+      options:
+        - bijux-atlas CLI
+        - bijux-atlas-server
+        - bijux-atlas-openapi
+        - bijux dev atlas
+        - bijux atlas umbrella route
+        - docs, configs, or release automation surface
+    validations:
+      required: true
+  - type: input
+    id: install_route
+    attributes:
+      label: Install route or runtime path
+      placeholder: cargo install, bijux install, source checkout, container image, or other route
   - type: input
     id: affected_versions
     attributes:
@@ -41,3 +59,15 @@ body:
       label: Summary
     validations:
       required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and attacker capability
+      description: Describe what an attacker can do and what access or trust boundary is required.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction or proof of concept
+      description: Include private reproduction steps, affected configuration, or a safe proof of concept.
