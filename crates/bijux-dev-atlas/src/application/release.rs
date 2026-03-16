@@ -3764,35 +3764,58 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         .get("duplicate_dependency_threshold")
         .and_then(serde_json::Value::as_u64)
         .unwrap_or(30) as usize;
-    let duplicate_output = ProcessCommand::new("cargo")
-        .args(["tree", "-d", "--workspace", "--prefix", "none"])
-        .current_dir(&root)
-        .output();
-    match duplicate_output {
-        Ok(output) if output.status.success() => {
-            let mut duplicates = BTreeSet::<String>::new();
-            for line in String::from_utf8_lossy(&output.stdout).lines() {
-                let trimmed = line.trim();
-                if trimmed.is_empty() {
-                    continue;
-                }
-                if let Some(name) = trimmed.split_whitespace().next() {
-                    duplicates.insert(name.to_string());
+    let mut duplicates = BTreeSet::<String>::new();
+    let mut duplicate_scan_failed = None;
+    for crate_name in &checked_crates {
+        let duplicate_output = ProcessCommand::new("cargo")
+            .args([
+                "tree",
+                "-d",
+                "-p",
+                crate_name,
+                "--all-features",
+                "-e",
+                "normal,build",
+                "--prefix",
+                "none",
+            ])
+            .current_dir(&root)
+            .output();
+        match duplicate_output {
+            Ok(output) if output.status.success() => {
+                for line in String::from_utf8_lossy(&output.stdout).lines() {
+                    let trimmed = line.trim();
+                    if trimmed.is_empty() {
+                        continue;
+                    }
+                    if let Some(name) = trimmed.split_whitespace().next() {
+                        duplicates.insert(name.to_string());
+                    }
                 }
             }
-            if duplicates.len() > duplicate_threshold {
-                warnings.push(format!(
-                    "duplicate dependency count {} exceeds threshold {}",
-                    duplicates.len(),
-                    duplicate_threshold
+            Ok(output) => {
+                duplicate_scan_failed = Some(format!(
+                    "cargo tree duplicate dependency scan failed for {crate_name}: {}",
+                    String::from_utf8_lossy(&output.stderr).trim()
                 ));
+                break;
+            }
+            Err(err) => {
+                duplicate_scan_failed = Some(format!(
+                    "failed to run cargo tree duplicate scan for {crate_name}: {err}"
+                ));
+                break;
             }
         }
-        Ok(output) => warnings.push(format!(
-            "cargo tree duplicate dependency scan failed: {}",
-            String::from_utf8_lossy(&output.stderr).trim()
-        )),
-        Err(err) => warnings.push(format!("failed to run cargo tree duplicate scan: {err}")),
+    }
+    if let Some(message) = duplicate_scan_failed {
+        warnings.push(message);
+    } else if duplicates.len() > duplicate_threshold {
+        warnings.push(format!(
+            "duplicate dependency count {} exceeds threshold {}",
+            duplicates.len(),
+            duplicate_threshold
+        ));
     }
 
     let cargo_deny_required = dependency_policy
@@ -3808,8 +3831,19 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     if cargo_deny_enabled {
+        let cargo_deny_config = root.join("configs/sources/security/deny.toml");
         match ProcessCommand::new("cargo")
-            .args(["deny", "check", "licenses", "bans", "sources"])
+            .args([
+                "deny",
+                "check",
+                "--config",
+                cargo_deny_config
+                    .to_str()
+                    .ok_or_else(|| "cargo-deny config path is not valid UTF-8".to_string())?,
+                "licenses",
+                "bans",
+                "sources",
+            ])
             .current_dir(&root)
             .output()
         {
