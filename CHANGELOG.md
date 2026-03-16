@@ -1,23 +1,46 @@
 # Changelog
+<a id="top"></a>
 
-All notable changes are documented in this file.
+All notable changes to **Bijux Atlas** are documented in this file.
+This project adheres to [Semantic Versioning](https://semver.org) and the
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
+
+---
 
 ## v0.2.0
 
 ### Added
-- Added public release-facing workflow parity for CI, docs deployment, crates.io publishing, and GitHub releases.
-- Added a GitHub helper surface in `makes/` so release automation can stay thin and deterministic.
+- Added the public runtime release line around the shipped binaries `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`, plus the workspace maintainer control plane `bijux-dev-atlas`.
+- Added a numbered documentation spine and GitHub Pages structure that map directly to the live runtime, operations, contracts, development, and reference surfaces.
+- Added release evidence generation, signing, packet assembly, and verification flows that bundle docs, SBOMs, ops reports, and publish artifacts under `ops/release/`.
+- Added crates.io release support for `bijux-atlas` with crate-owned runtime contracts, packaged security policy inputs, and publish-time validation that succeeds from the crate tarball instead of only from the workspace checkout.
+- Added public GitHub release workflows and a thin `makes/` helper surface so automation can stay declarative while the real orchestration lives in Rust.
 
 ### Changed
-- Changed the root release story to align the README, chart version, workspace version, and release metadata around `v0.2.0`.
-- Changed release specification filenames from version-shaped names to stable names under `ops/release/`.
+- Changed the repository layout to use durable ownership boundaries across `crates/`, `docs/`, `ops/`, `configs/`, `.github/`, and root metadata so the code, contracts, and operating guidance describe the same system.
+- Changed runtime and release version identity to derive from real `v*` git tags, keeping checkout builds honest about the latest published release line until a newer tag exists.
+- Changed authoritative repository inputs to live under `configs/sources/...`, with generated material kept separate from source authority data and checked through the maintainer control plane.
+- Changed the Atlas README, crate READMEs, docs navigation, contributor guidance, security policy, and workflow templates to match the current product and maintainer surfaces instead of older split-layout assumptions.
+- Changed release specification filenames from version-shaped names to stable names under `ops/release/` so automation refers to durable contracts rather than release-era placeholders.
+
+### Removed
+- Removed split legacy crate trees, duplicate root-level runtime wrappers, stale compatibility facades, and placeholder module paths that no longer matched the merged `bijux-atlas` runtime ownership model.
+- Removed obsolete docs, generated registry authority drift, stale config aliases, and retired ops markdown surfaces that were creating duplicate or misleading sources of truth.
+- Removed release and governance assumptions that depended on manual interpretation instead of validated repository contracts and signed evidence outputs.
 
 ### Fixed
-- Fixed release validation to read the live docs spine for MSRV and feature-flag documentation.
-- Fixed the runtime CLI config example so it satisfies the current runtime configuration contract.
+- Fixed the ingest SQLite golden hash checks so cross-machine determinism no longer depends on volatile build metadata.
+- Fixed crates.io packaging by embedding runtime contract assets inside the published crate instead of reading files from workspace-only paths.
+- Fixed release validation to read dependency, governance, compatibility, and docs policy from canonical sources, including publishable-crate filtering for dependency policy checks.
+- Fixed security workflow pin validation so GitHub Actions pinned by SHA remain valid even when inline version comments are present.
+- Fixed release evidence signing and verification so the normalized bundle includes the same ops evidence and report artifacts declared in the manifest, and `release verify --evidence` accepts the evidence directory contract directly.
+- Fixed docs redirects, deprecation validation, compatibility rule coverage, and stale operations/security references so repository guidance stays aligned with validated live surfaces.
 
 ### Breaking Changes
-- Renamed `ops/release/crates-v0.1.toml`, `ops/release/images-v0.1.toml`, and `ops/release/ops-v0.1.toml` to stable filenames. Any automation that referenced the old paths must switch to `crates-release.toml`, `images-release.toml`, and `ops-release.toml`.
+- Renamed `ops/release/crates-v0.1.toml`, `ops/release/images-v0.1.toml`, and `ops/release/ops-v0.1.toml` to `crates-release.toml`, `images-release.toml`, and `ops-release.toml`.
+- Renamed the public runtime binaries to the `bijux-atlas*` family and moved the stable umbrella namespaces to `bijux atlas ...` and `bijux dev atlas ...`.
+
+[Back to top](#top)
 
 ## v0.1.1
 
