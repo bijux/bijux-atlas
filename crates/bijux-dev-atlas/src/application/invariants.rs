@@ -700,7 +700,7 @@ fn generate_docs(common: InvariantsCommonArgs) -> Result<(String, i32), String> 
         lines.push(format!("- summary: {}", row.summary));
         lines.push(String::new());
     }
-    let out_path = root.join("docs/operations/system-invariants-reference.md");
+    let out_path = root.join("artifacts/docs/generated/reference/system-invariants-reference.md");
     fs::write(&out_path, format!("{}\n", lines.join("\n")))
         .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
     let payload = serde_json::json!({

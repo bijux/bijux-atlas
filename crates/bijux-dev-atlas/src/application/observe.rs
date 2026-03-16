@@ -167,7 +167,8 @@ fn generate_docs(common: ObserveMetricsCommonArgs) -> Result<(String, i32), Stri
             row.id, row.name, row.category, row.unit, row.stability
         ));
     }
-    let out_path = root.join("docs/operations/observability/metrics-registry-reference.md");
+    let out_path =
+        root.join("artifacts/docs/generated/operations-reference/metrics-registry-reference.md");
     if let Some(parent) = out_path.parent() {
         fs::create_dir_all(parent)
             .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
