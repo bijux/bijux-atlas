@@ -319,7 +319,7 @@ pub fn write_sqlite(input: WriteSqliteInput<'_>) -> Result<(), IngestError> {
             params![format!(
                 "{}@{}",
                 crate::CRATE_NAME,
-                crate::version::runtime_version()
+                crate::version::runtime_semver()
             )],
         )
         .map_err(|e| IngestError(e.to_string()))?;

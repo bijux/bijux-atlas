@@ -41,6 +41,7 @@ pub(crate) use crate::adapters::inbound::http::request_policies::{
 pub(crate) use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+#[rustfmt::skip]
 pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
 
 pub const CRATE_NAME: &str = "bijux-atlas";

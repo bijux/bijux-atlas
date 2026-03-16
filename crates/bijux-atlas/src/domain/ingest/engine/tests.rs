@@ -360,8 +360,17 @@ fn ingest_sqlite_meta_includes_build_pragmas() {
             r.get(0)
         })
         .expect("fai hash");
+    let created_by: String = conn
+        .query_row("SELECT v FROM atlas_meta WHERE k='created_by'", [], |r| {
+            r.get(0)
+        })
+        .expect("created_by");
     assert_eq!(fasta_hash.len(), 64);
     assert_eq!(fai_hash.len(), 64);
+    assert_eq!(
+        created_by,
+        format!("{}@{}", crate::CRATE_NAME, crate::version::runtime_semver())
+    );
 }
 
 #[test]
@@ -558,7 +567,7 @@ fn tiny_fixture_matches_cross_machine_golden_hashes() {
     let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
     assert_eq!(
         run.manifest.checksums.sqlite_sha256,
-        "a1be584819cdb23d64689b5fcac288ce3683d62008b0871f5f0fcd1d77ada1b7"
+        "9a75da82b544abc5b8b754b94a3954d3a5b7e3449d3f24f2ee318455ec1b586c"
     );
     assert_eq!(
         run.manifest.dataset_signature_sha256,
