@@ -204,6 +204,10 @@ fn is_full_sha(value: &str) -> bool {
     value.len() == 40 && value.chars().all(|ch| ch.is_ascii_hexdigit())
 }
 
+fn normalize_workflow_action_spec(spec: &str) -> &str {
+    spec.split('#').next().unwrap_or(spec).trim()
+}
+
 fn is_sha256_digest(value: &str) -> bool {
     let Some(hex) = value.strip_prefix("sha256:") else {
         return false;
@@ -2278,7 +2282,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             let Some((_, spec_raw)) = trimmed.split_once(':') else {
                 continue;
             };
-            let spec = spec_raw.trim();
+            let spec = normalize_workflow_action_spec(spec_raw.trim());
             if spec.starts_with("docker://") {
                 continue;
             }
@@ -3152,13 +3156,14 @@ fn run_security_scan_artifacts(args: SecurityScanArtifactsArgs) -> Result<(Strin
 #[cfg(test)]
 mod tests {
     use super::{
-        run_security_audit, run_security_auth_api_keys, run_security_auth_diagnostics,
-        run_security_auth_policy_validate, run_security_auth_token_inspect,
-        run_security_authorization_assign, run_security_authorization_diagnostics,
-        run_security_authorization_permissions, run_security_authorization_roles,
-        run_security_authorization_validate, run_security_config_validate,
-        run_security_dependency_audit, run_security_diagnostics, run_security_policy_inspect,
-        run_security_threats_explain, run_security_threats_list, run_security_threats_verify,
+        normalize_workflow_action_spec, run_security_audit, run_security_auth_api_keys,
+        run_security_auth_diagnostics, run_security_auth_policy_validate,
+        run_security_auth_token_inspect, run_security_authorization_assign,
+        run_security_authorization_diagnostics, run_security_authorization_permissions,
+        run_security_authorization_roles, run_security_authorization_validate,
+        run_security_config_validate, run_security_dependency_audit, run_security_diagnostics,
+        run_security_policy_inspect, run_security_threats_explain, run_security_threats_list,
+        run_security_threats_verify,
     };
     use crate::cli::{
         FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityThreatExplainArgs,
@@ -3485,6 +3490,16 @@ threat_ids: []
         let value: serde_json::Value = serde_json::from_str(&rendered).expect("parse report");
         assert_eq!(value["kind"], "security_dependency_audit_report");
         assert_eq!(value["status"], "ok");
+    }
+
+    #[test]
+    fn workflow_action_specs_ignore_inline_comments() {
+        assert_eq!(
+            normalize_workflow_action_spec(
+                "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0"
+            ),
+            "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        );
     }
 
     #[test]

@@ -2,7 +2,7 @@ schema_version: 1
 mappings:
   - control_id: CTRL-AUTH-001
     evidence:
-      - docs/architecture/security/auth-model.md
+      - docs/04-operations/security-operations.md
       - docs/04-operations/security-operations.md
       - configs/sources/security/auth-model.yaml
       - configs/sources/security/policy.yaml
