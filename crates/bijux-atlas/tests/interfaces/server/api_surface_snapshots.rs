@@ -6,8 +6,8 @@ use std::sync::Arc;
 use bijux_atlas::adapters::inbound::http::router::build_router;
 use bijux_atlas::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::domain::{canonical::stable_json_bytes, sha256_hex};
 use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::{canonical::stable_json_bytes, sha256_hex};
 use bijux_atlas::runtime::config::ApiConfig;
 use rusqlite::Connection;
 use serde::Serialize;
@@ -76,6 +76,18 @@ fn header_value(headers: &str, name: &str) -> Option<String> {
                 .trim()
                 .to_string()
         })
+}
+
+fn normalize_metric_line(line: &str) -> String {
+    let Some(version_start) = line.find("version=\"") else {
+        return line.to_string();
+    };
+    let value_start = version_start + "version=\"".len();
+    let Some(version_end) = line[value_start..].find('"') else {
+        return line.to_string();
+    };
+    let value_end = value_start + version_end;
+    format!("{}<version>{}", &line[..value_start], &line[value_end..])
 }
 
 fn normalize_json(value: &Value) -> Value {
@@ -336,7 +348,7 @@ async fn api_surface_response_shapes_match_golden_snapshot() {
                 .lines()
                 .filter(|line| line.starts_with("bijux_") || line.starts_with("atlas_"))
                 .take(5)
-                .map(str::to_string)
+                .map(normalize_metric_line)
                 .collect::<Vec<_>>();
             lines.sort();
             serde_json::json!({"type":"text","sample_metric_lines":lines})
