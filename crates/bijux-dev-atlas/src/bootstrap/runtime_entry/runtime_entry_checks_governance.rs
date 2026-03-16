@@ -199,11 +199,11 @@ pub(crate) fn run_check_tree_budgets(
         "docs",
     )?);
 
-    let make_help = repo_root.join("makes/help.md");
+    let make_readme = repo_root.join("makes/README.md");
     let make_targets = repo_root.join("makes/target-list.json");
-    if make_help.exists() && make_targets.exists() {
-        let help_text = fs::read_to_string(&make_help)
-            .map_err(|e| format!("failed to read {}: {e}", make_help.display()))?;
+    if make_readme.exists() && make_targets.exists() {
+        let readme_text = fs::read_to_string(&make_readme)
+            .map_err(|e| format!("failed to read {}: {e}", make_readme.display()))?;
         let targets_json: serde_json::Value = serde_json::from_str(
             &fs::read_to_string(&make_targets)
                 .map_err(|e| format!("failed to read {}: {e}", make_targets.display()))?,
@@ -216,9 +216,11 @@ pub(crate) fn run_check_tree_budgets(
             .into_iter()
             .filter_map(|v| v.as_str().map(str::to_string))
         {
-            if !help_text.contains(&format!("- {target}:")) {
+            let plain_bullet = format!("- {target}:");
+            let code_bullet = format!("- `{target}`:");
+            if !readme_text.contains(&plain_bullet) && !readme_text.contains(&code_bullet) {
                 errors.push(format!(
-                    "TREE_BUDGET_ERROR: public make target `{target}` missing from makes/help.md"
+                    "TREE_BUDGET_ERROR: public make target `{target}` missing from makes/README.md"
                 ));
             }
         }
