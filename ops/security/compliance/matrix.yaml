@@ -3,36 +3,36 @@ mappings:
   - control_id: CTRL-AUTH-001
     evidence:
       - docs/architecture/security/auth-model.md
-      - docs/operations/security/deploy-behind-auth-proxy.md
+      - docs/04-operations/security-operations.md
       - configs/sources/security/auth-model.yaml
       - configs/sources/security/policy.yaml
   - control_id: CTRL-AUDIT-001
     evidence:
-      - docs/operations/security/audit-logging.md
-      - docs/operations/security/audit-log-rotation.md
-      - docs/operations/security/respond-to-suspicious-activity.md
+      - docs/04-operations/security-operations.md
+      - docs/04-operations/security-operations.md
+      - docs/04-operations/security-operations.md
       - configs/sources/operations/observability/schemas/audit-log.schema.json
       - configs/sources/operations/observability/retention.yaml
       - artifacts/security/audit-verify.json
   - control_id: CTRL-PRIV-001
     evidence:
-      - docs/operations/security/safe-logging-guidelines.md
-      - docs/operations/security/data-deletion-requests.md
+      - docs/04-operations/security-operations.md
+      - docs/04-operations/security-operations.md
       - configs/sources/security/data-classification.yaml
       - configs/sources/security/redaction.json
   - control_id: CTRL-LOG-001
     evidence:
       - configs/schemas/contracts/observability/log.schema.json
-      - docs/reference/contracts/observability.md
+      - docs/08-contracts/operational-contracts.md
   - control_id: CTRL-EVID-001
     evidence:
       - ops/release/evidence/manifest.json
-      - docs/reference/contracts/ops/release/evidence.md
+      - docs/08-contracts/operational-contracts.md
   - control_id: CTRL-NP-001
     evidence:
-      - docs/operations/networkpolicy.md
+      - docs/04-operations/security-operations.md
       - ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml
   - control_id: CTRL-OBS-001
     evidence:
       - ops/schema/k8s/obs-verify.schema.json
-      - docs/reference/contracts/observability.md
+      - docs/08-contracts/operational-contracts.md

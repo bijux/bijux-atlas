@@ -187,7 +187,7 @@ pub fn runtime_config_contract_snapshot() -> Result<serde_json::Value, String> {
         "schema_version": 1,
         "kind": "atlas_runtime_config_contract_snapshot_v1",
         "env_schema_path": "configs/schemas/contracts/env.schema.json",
-        "docs_path": "docs/reference/runtime/config.md",
+        "docs_path": "docs/07-reference/runtime-config-reference.md",
         "allowlisted_env": allowlisted_env
     }))
 }

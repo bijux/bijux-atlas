@@ -249,7 +249,10 @@ pub(super) fn update_drill_summary(
 pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static str, std::path::PathBuf)> {
     match drill {
         "warmup-pod-restart" => vec![
-            ("warmup lock doc", repo_root.join("docs/operations/warmup-lock.md")),
+            (
+                "warmup lock doc",
+                repo_root.join("docs/04-operations/runtime-configuration.md"),
+            ),
             (
                 "warmup lock metric contract",
                 repo_root.join("configs/schemas/contracts/observability/metrics.schema.json"),
@@ -260,14 +263,17 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
         ],
         "redis-outage" => vec![
-            ("network policy guide", repo_root.join("docs/operations/networkpolicy.md")),
+            (
+                "network policy guide",
+                repo_root.join("docs/04-operations/security-operations.md"),
+            ),
             (
                 "error registry",
                 repo_root.join("configs/sources/operations/observability/error-codes.json"),
             ),
             (
                 "drills guide",
-                repo_root.join("docs/operations/drills.md"),
+                repo_root.join("docs/04-operations/incident-response.md"),
             ),
         ],
         "offline-network-deny" | "offline-prewarm-serve" => vec![
@@ -275,7 +281,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ("network policy examples", repo_root.join("ops/k8s/values/networkpolicy-examples.yaml")),
             (
                 "health endpoints contract",
-                repo_root.join("docs/reference/contracts/health-endpoints.md"),
+                repo_root.join("docs/08-contracts/operational-contracts.md"),
             ),
         ],
         "catalog-unreachable" => vec![
@@ -285,7 +291,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "health endpoints contract",
-                repo_root.join("docs/reference/contracts/health-endpoints.md"),
+                repo_root.join("docs/08-contracts/operational-contracts.md"),
             ),
             (
                 "error registry",
@@ -299,7 +305,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "release evidence guide",
-                repo_root.join("docs/operations/release-evidence.md"),
+                repo_root.join("docs/08-contracts/operational-contracts.md"),
             ),
             (
                 "error registry",
@@ -307,14 +313,17 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
         ],
         "rollout-failure-recovery" => vec![
-            ("upgrade guide", repo_root.join("docs/operations/upgrade.md")),
+            (
+                "upgrade guide",
+                repo_root.join("docs/04-operations/upgrades-and-rollback.md"),
+            ),
             (
                 "rollback schema",
                 repo_root.join("ops/schema/k8s/ops-rollback.schema.json"),
             ),
             (
                 "lifecycle contract",
-                repo_root.join("docs/reference/contracts/ops/lifecycle.md"),
+                repo_root.join("docs/08-contracts/operational-contracts.md"),
             ),
         ],
         "invalid-config-rejected" => vec![
@@ -332,30 +341,6 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
         ],
         _ => Vec::new(),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::drill_check_paths;
-    use std::path::PathBuf;
-
-    fn repo_root() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(|path| path.parent())
-            .expect("workspace root")
-            .to_path_buf()
-    }
-
-    #[test]
-    fn drill_source_paths_exist_for_current_workspace_layout() {
-        let root = repo_root();
-        for drill in ["catalog-unreachable", "invalid-config-rejected"] {
-            for (_, path) in drill_check_paths(&root, drill) {
-                assert!(path.exists(), "missing drill source path: {}", path.display());
-            }
-        }
     }
 }
 
@@ -955,4 +940,28 @@ pub(super) fn update_readiness_baseline(
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     Ok(path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::drill_check_paths;
+    use std::path::PathBuf;
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn drill_source_paths_exist_for_current_workspace_layout() {
+        let root = repo_root();
+        for drill in ["catalog-unreachable", "invalid-config-rejected"] {
+            for (_, path) in drill_check_paths(&root, drill) {
+                assert!(path.exists(), "missing drill source path: {}", path.display());
+            }
+        }
+    }
 }

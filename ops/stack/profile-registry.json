@@ -10,7 +10,7 @@
       "allowed_namespaces": ["atlas-dev"],
       "required_services": ["api", "query"],
       "optional_components": ["metrics"],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -26,7 +26,7 @@
       "allowed_namespaces": ["atlas-dev", "atlas-deps"],
       "required_services": ["api", "query", "redis"],
       "optional_components": ["metrics", "grafana"],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -42,7 +42,7 @@
       "allowed_namespaces": ["atlas-dev", "atlas-deps"],
       "required_services": ["api", "query", "redis"],
       "optional_components": ["metrics"],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -58,7 +58,7 @@
       "allowed_namespaces": ["atlas-dev", "atlas-deps"],
       "required_services": ["api", "query", "redis"],
       "optional_components": ["metrics"],
-      "doc_link": "docs/operations/kind-simulation.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -74,7 +74,7 @@
       "allowed_namespaces": ["atlas-dev"],
       "required_services": ["api"],
       "optional_components": [],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -90,7 +90,7 @@
       "allowed_namespaces": ["atlas-dev", "atlas-deps", "atlas-observe"],
       "required_services": ["api", "query", "redis", "metrics"],
       "optional_components": ["prometheus", "grafana"],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",
@@ -106,7 +106,7 @@
       "allowed_namespaces": ["atlas-dev"],
       "required_services": ["api", "query"],
       "optional_components": [],
-      "doc_link": "docs/operations/k8s/profile-invariants.md",
+      "doc_link": "docs/04-operations/performance-and-load.md",
       "config_source_paths": [
         "ops/stack/profiles.json",
         "ops/k8s/install-matrix.json",

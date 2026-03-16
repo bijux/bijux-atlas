@@ -8,7 +8,7 @@ metadata:
     contract_git_sha: "REQUIRED_AT_BUILD"
   annotations:
     contact: "ops@bijux.local"
-    runbook_index: "docs/operations/runbooks/INDEX.md"
+    runbook_index: "docs/04-operations/incident-response.md"
 spec:
   groups:
   - name: bijux-atlas-slo-burn
@@ -40,7 +40,7 @@ spec:
         annotations:
           summary: "Cheap class error budget burn is critically high"
           description: "Fast-burn condition (5m/1h) exceeded for cheap endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-cheap-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasCheapSloBurnMedium
         expr: |
           (
@@ -68,7 +68,7 @@ spec:
         annotations:
           summary: "Cheap class error budget burn is elevated"
           description: "Medium-burn condition (30m/6h) exceeded for cheap endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-cheap-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasCheapSloBurnSlow
         expr: |
           (
@@ -96,7 +96,7 @@ spec:
         annotations:
           summary: "Cheap class error budget burn is slowly trending bad"
           description: "Slow-burn condition (2h/24h) exceeded for cheap endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-cheap-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasStandardSloBurnFast
         expr: |
           (
@@ -124,7 +124,7 @@ spec:
         annotations:
           summary: "Standard class error budget burn is critically high"
           description: "Fast-burn condition (5m/1h) exceeded for standard endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-standard-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasStandardSloBurnMedium
         expr: |
           (
@@ -152,7 +152,7 @@ spec:
         annotations:
           summary: "Standard class error budget burn is elevated"
           description: "Medium-burn condition (30m/6h) exceeded for standard endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-standard-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasStandardSloBurnSlow
         expr: |
           (
@@ -180,7 +180,7 @@ spec:
         annotations:
           summary: "Standard class error budget burn is slowly trending bad"
           description: "Slow-burn condition (2h/24h) exceeded for standard endpoint SLO."
-          runbook: "docs/operations/runbooks/slo-standard-burn.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasOverloadSurvivalViolated
         expr: |
           (
@@ -199,7 +199,7 @@ spec:
         annotations:
           summary: "Cheap endpoint survival SLO violated during overload"
           description: "Cheap endpoint success dropped below 99.99% while overload shedding was active."
-          runbook: "docs/operations/runbooks/slo-overload-survival.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasRegistryRefreshStale
         expr: atlas_registry_refresh_age_seconds{subsystem="atlas"} > 600
         for: 15m
@@ -212,7 +212,7 @@ spec:
         annotations:
           summary: "Registry refresh is stale"
           description: "Registry refresh age exceeded 10 minutes for 15 minutes."
-          runbook: "docs/operations/runbooks/slo-registry-refresh-stale.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasStoreBackendErrorSpike
         expr: |
           sum(rate(atlas_store_errors_total{subsystem="atlas"}[5m]))
@@ -229,4 +229,4 @@ spec:
         annotations:
           summary: "Store backend error spike"
           description: "Store backend errors crossed 2% of standard/heavy request volume over 10m."
-          runbook: "docs/operations/runbooks/slo-store-backend-error-spike.md"
+          runbook: "docs/04-operations/incident-response.md"

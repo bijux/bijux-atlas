@@ -26,8 +26,8 @@ impl Domain for OpsDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/reference/ops-surface.md",
-            "docs/reference/contracts/ops/lifecycle.md",
+            "docs/07-reference/automation-command-surface.md",
+            "docs/08-contracts/operational-contracts.md",
         ]
     }
 

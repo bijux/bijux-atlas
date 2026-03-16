@@ -158,22 +158,26 @@ fn infer_domain(group: &str, check_id: &str) -> &'static str {
 
 fn default_doc_ref(domain: &'static str) -> DocRef {
     match domain {
-        "configs" => DocRef::new("docs/reference/configs.md", None, "Configs Reference"),
+        "configs" => DocRef::new(
+            "docs/07-reference/runtime-config-reference.md",
+            None,
+            "Runtime Config Reference",
+        ),
         "docs" => DocRef::new(
-            "docs/_internal/governance/checks/docs-checks.md",
+            "docs/06-development/documentation-standards.md",
             None,
-            "Docs Checks",
+            "Documentation Standards",
         ),
-        "docker" => DocRef::new(
-            "docs/reference/contracts/index.md",
+        "docker" => DocRef::new("docs/08-contracts/index.md", None, "Contracts Overview"),
+        "ops" => DocRef::new(
+            "docs/07-reference/automation-command-surface.md",
             None,
-            "Contract Reference",
+            "Automation Command Surface",
         ),
-        "ops" => DocRef::new("docs/reference/ops-surface.md", None, "Ops Surface"),
         _ => DocRef::new(
-            "docs/_internal/governance/checks-and-contracts.md",
+            "docs/08-contracts/ownership-and-versioning.md",
             None,
-            "Checks And Contracts",
+            "Ownership And Versioning",
         ),
     }
 }

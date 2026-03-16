@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "repo_integrity_summary",
   "generated_by": "bijux dev atlas check run --suite repo_required --include-internal --include-slow --format json",
-  "laws_source": "docs/_internal/contracts/repo-laws.json",
+  "laws_source": "configs/sources/repository/repo-laws.json",
   "required_suite": "repo_required",
   "p0_checks": [
     "checks_repo_artifacts_not_tracked",

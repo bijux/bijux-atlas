@@ -10,7 +10,7 @@
         "log:store_outage",
         "trace:error"
       ],
-      "runbook": "docs/operations/runbooks/store-outage.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -25,7 +25,7 @@
         "metric:bijux_http_requests_total",
         "log:prom_outage"
       ],
-      "runbook": "docs/operations/runbooks/traffic-spike.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -41,7 +41,7 @@
         "log:otel_outage",
         "trace:error"
       ],
-      "runbook": "docs/operations/observability/otel-outage-behavior.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -56,7 +56,7 @@
         "metric:bijux_store_breaker_open",
         "log:store_latency"
       ],
-      "runbook": "docs/operations/runbooks/store-outage.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -72,7 +72,7 @@
         "metric:atlas_shed_total",
         "log:policy_rejection"
       ],
-      "runbook": "docs/operations/runbooks/traffic-spike.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -86,7 +86,7 @@
       "expected_signals": [
         "validator:log_schema_failure"
       ],
-      "runbook": "docs/operations/observability/compatibility.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 60,
       "parallel_policy": "serial",
       "warmup": false,
@@ -100,7 +100,7 @@
       "expected_signals": [
         "validator:metric_cardinality_failure"
       ],
-      "runbook": "docs/operations/observability/metric-cardinality-guardrails.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 60,
       "parallel_policy": "serial",
       "warmup": false,
@@ -114,7 +114,7 @@
       "expected_signals": [
         "validator:trace_coverage_failure"
       ],
-      "runbook": "docs/operations/observability/tracing.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 60,
       "parallel_policy": "serial",
       "warmup": true,
@@ -128,7 +128,7 @@
       "expected_signals": [
         "validator:alerts_contract"
       ],
-      "runbook": "docs/operations/observability/alerts.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -142,7 +142,7 @@
       "expected_signals": [
         "validator:runbook_mapping"
       ],
-      "runbook": "docs/operations/runbooks/INDEX.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -156,7 +156,7 @@
       "expected_signals": [
         "metric:bijux_cheap_queries_served_while_overloaded_total"
       ],
-      "runbook": "docs/operations/runbooks/traffic-spike.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -170,7 +170,7 @@
       "expected_signals": [
         "metric:bijux_dataset_cache_misses_total"
       ],
-      "runbook": "docs/operations/runbooks/profile-under-load.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -184,7 +184,7 @@
       "expected_signals": [
         "validator:readiness_catalog_refresh"
       ],
-      "runbook": "docs/operations/runbooks/registry-federation.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -198,7 +198,7 @@
       "expected_signals": [
         "validator:dataset_corruption"
       ],
-      "runbook": "docs/operations/runbooks/dataset-corruption.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -212,7 +212,7 @@
       "expected_signals": [
         "validator:gc_under_load"
       ],
-      "runbook": "docs/operations/runbooks/incident-playbook.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -226,7 +226,7 @@
       "expected_signals": [
         "validator:rolling_restart"
       ],
-      "runbook": "docs/operations/runbooks/pod-churn.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -240,7 +240,7 @@
       "expected_signals": [
         "validator:hpa_scale"
       ],
-      "runbook": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -254,7 +254,7 @@
       "expected_signals": [
         "validator:disk_pressure"
       ],
-      "runbook": "docs/operations/runbooks/high-memory.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -268,7 +268,7 @@
       "expected_signals": [
         "validator:cpu_throttle"
       ],
-      "runbook": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "runbook": "docs/04-operations/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -282,7 +282,7 @@
       "expected_signals": [
         "validator:dashboard_contract"
       ],
-      "runbook": "docs/operations/observability/dashboard.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -296,7 +296,7 @@
       "expected_signals": [
         "validator:alerts_runbook_map"
       ],
-      "runbook": "docs/operations/observability/runbook-dashboard-alert-map.md",
+      "runbook": "docs/04-operations/logging-metrics-and-tracing.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,

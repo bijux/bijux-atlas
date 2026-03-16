@@ -3,55 +3,55 @@ mitigations:
   - id: MIT-HTTP-BOUNDARY
     title: Governed HTTP boundary and health endpoint semantics.
     control_check_id: OBS-004
-    docs_page: docs/reference/contracts/health-endpoints.md
-    runbook_page: docs/operations/upgrade.md
+    docs_page: docs/08-contracts/operational-contracts.md
+    runbook_page: docs/04-operations/upgrades-and-rollback.md
   - id: MIT-AUTH-MODEL
     title: Explicit auth model stance and ingress auth boundary guidance.
     control_check_id: SEC-AUTH-001
     docs_page: docs/architecture/security/auth-model.md
-    runbook_page: docs/operations/security/deploy-behind-auth-proxy.md
+    runbook_page: docs/04-operations/security-operations.md
   - id: MIT-OBS-EVIDENCE
     title: Observability verification and governed evidence artifacts.
     control_check_id: OBS-001
-    docs_page: docs/reference/contracts/observability.md
+    docs_page: docs/08-contracts/operational-contracts.md
   - id: MIT-SECRET-REDACTION
     title: Redaction and no-secret evidence discipline.
     control_check_id: SEC-RED-001
-    docs_page: docs/operations/log-redaction-policy.md
+    docs_page: docs/04-operations/security-operations.md
   - id: MIT-EVIDENCE-SCAN
     title: Evidence bundle scanning for forbidden secret patterns.
     control_check_id: SEC-ART-001
-    docs_page: docs/operations/release-evidence.md
+    docs_page: docs/08-contracts/operational-contracts.md
   - id: MIT-EVIDENCE-INTEGRITY
     title: Evidence manifest, checksums, and reproducible tarball generation.
     control_check_id: REL-EVID-007
-    docs_page: docs/reference/contracts/ops/release/evidence.md
+    docs_page: docs/08-contracts/operational-contracts.md
   - id: MIT-READINESS-CONTRACT
     title: Deterministic readiness behavior under dependency loss.
     control_check_id: OBS-003
-    docs_page: docs/reference/contracts/health-endpoints.md
-    runbook_page: docs/operations/upgrade.md
+    docs_page: docs/08-contracts/operational-contracts.md
+    runbook_page: docs/04-operations/upgrades-and-rollback.md
   - id: MIT-DRILL-COVERAGE
     title: Governed drills prove failure and recovery expectations.
     control_check_id: DRILL-001
-    docs_page: docs/reference/contracts/drills.md
-    runbook_page: docs/operations/drills.md
+    docs_page: docs/04-operations/incident-response.md
+    runbook_page: docs/04-operations/incident-response.md
   - id: MIT-AUDIT-VERIFICATION
     title: Audit verification reports are checksum-bound into signed release evidence.
     control_check_id: REL-AUDIT-002
-    docs_page: docs/operations/security/audit-logging.md
-    runbook_page: docs/operations/security/respond-to-suspicious-activity.md
+    docs_page: docs/04-operations/security-operations.md
+    runbook_page: docs/04-operations/security-operations.md
   - id: MIT-AUDIT-FIELD-GOVERNANCE
     title: Governed safe-field inventory blocks unclassified audit fields.
     control_check_id: OBS-LOG-INV-001
-    docs_page: docs/operations/security/log-field-inventory.md
-    runbook_page: docs/operations/security/safe-logging-guidelines.md
+    docs_page: docs/04-operations/security-operations.md
+    runbook_page: docs/04-operations/security-operations.md
   - id: MIT-AUDIT-RETENTION
     title: Retention and rotation contracts keep audit logs bounded and reviewable.
     control_check_id: OBS-RET-001
-    docs_page: docs/operations/security/audit-log-rotation.md
-    runbook_page: docs/operations/security/export-audit-logs-to-siem.md
+    docs_page: docs/04-operations/security-operations.md
+    runbook_page: docs/04-operations/security-operations.md
   - id: MIT-MANUAL-REVIEW
     title: Human review remains required for new external integrations.
-    docs_page: docs/operations/review-packet.md
+    docs_page: docs/06-development/release-and-versioning.md
     documented_reason: Some risk classes are documented and reviewed rather than fully automated.

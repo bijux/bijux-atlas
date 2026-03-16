@@ -8,7 +8,7 @@ metadata:
     contract_git_sha: "REQUIRED_AT_BUILD"
   annotations:
     contact: "ops@bijux.local"
-    runbook_index: "docs/operations/runbooks/INDEX.md"
+    runbook_index: "docs/04-operations/incident-response.md"
 spec:
   groups:
   - name: bijux-atlas-slo
@@ -28,7 +28,7 @@ spec:
         annotations:
           summary: "High 5xx error rate"
           description: "5xx ratio exceeded 0.5% over 10m."
-          runbook: "docs/operations/runbooks/incident-playbook.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasP95LatencyRegression
         expr: bijux_http_request_latency_p95_seconds{subsystem="atlas",route="/v1/genes"} > 0.8
         for: 15m
@@ -39,7 +39,7 @@ spec:
         annotations:
           summary: "v1/genes p95 latency above SLO"
           description: "p95 latency above 800ms for 15m."
-          runbook: "docs/operations/runbooks/incident-playbook.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasStoreDownloadFailures
         expr: increase(bijux_store_download_failure_total{subsystem="atlas"}[10m]) > 5
         for: 10m
@@ -50,7 +50,7 @@ spec:
         annotations:
           summary: "Store download failures elevated"
           description: "More than 5 store download failures in 10m."
-          runbook: "docs/operations/runbooks/store-outage.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasCacheThrash
         expr: |
           rate(bijux_dataset_misses{subsystem="atlas"}[10m])
@@ -64,7 +64,7 @@ spec:
         annotations:
           summary: "Cache thrash detected"
           description: "Dataset miss rate is significantly higher than hit rate."
-          runbook: "docs/operations/runbooks/store-outage.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: AtlasOverloadSustained
         expr: avg_over_time(atlas_overload_active{subsystem="atlas"}[90s]) > 0
         for: 90s
@@ -75,7 +75,7 @@ spec:
         annotations:
           summary: "Sustained overload shedding active"
           description: "Overload remained active for more than 90 seconds."
-          runbook: "docs/operations/runbooks/traffic-spike.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasIngestFailures
         expr: increase(atlas_ingest_failure_total{subsystem="atlas"}[10m]) > 0
         for: 10m
@@ -86,7 +86,7 @@ spec:
         annotations:
           summary: "Ingest failures detected"
           description: "One or more ingest failures occurred in the last 10 minutes."
-          runbook: "docs/operations/runbooks/ingest-failures.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasQueryErrorSpike
         expr: |
           (
@@ -102,7 +102,7 @@ spec:
         annotations:
           summary: "Query error spike"
           description: "API error ratio exceeded 1% for 10 minutes."
-          runbook: "docs/operations/runbooks/high-error-rate.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasShardIntegrityViolation
         expr: increase(atlas_shard_integrity_violation_total{subsystem="atlas"}[10m]) > 0
         for: 5m
@@ -113,7 +113,7 @@ spec:
         annotations:
           summary: "Shard integrity violation"
           description: "One or more shard integrity violations occurred."
-          runbook: "docs/operations/runbooks/integrity-violation.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasDiskSpaceLow
         expr: atlas_disk_free_bytes{subsystem="atlas"} < 10737418240
         for: 15m
@@ -124,7 +124,7 @@ spec:
         annotations:
           summary: "Disk space low"
           description: "Disk free space is below 10 GiB for 15 minutes."
-          runbook: "docs/operations/runbooks/disk-pressure.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasRestartLoop
         expr: increase(kube_pod_container_status_restarts_total{namespace="atlas-dev",container="bijux-atlas"}[10m]) > 3
         for: 10m
@@ -135,7 +135,7 @@ spec:
         annotations:
           summary: "Restart loop detected"
           description: "Container restarts exceeded 3 in 10 minutes."
-          runbook: "docs/operations/runbooks/restart-loop.md"
+          runbook: "docs/04-operations/incident-response.md"
       - alert: BijuxAtlasNoDatasetsLoaded
         expr: atlas_loaded_datasets{subsystem="atlas"} == 0
         for: 15m
@@ -146,4 +146,4 @@ spec:
         annotations:
           summary: "No datasets loaded"
           description: "Service is running with no datasets loaded for 15 minutes."
-          runbook: "docs/operations/runbooks/ingest-failures.md"
+          runbook: "docs/04-operations/incident-response.md"

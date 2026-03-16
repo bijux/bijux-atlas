@@ -6,8 +6,8 @@ use std::sync::Arc;
 use bijux_atlas::adapters::inbound::http::router::build_router;
 use bijux_atlas::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::sha256_hex;
 use rusqlite::Connection;
 use serde::Deserialize;
 use tempfile::tempdir;
@@ -190,7 +190,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     }
 
     let endpoint_contract: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json"))
+        &std::fs::read(root.join("ops/observe/contracts/endpoint-observability-contract.json"))
             .expect("read endpoints"),
     )
     .expect("parse endpoints");
@@ -228,9 +228,9 @@ async fn metrics_endpoint_matches_metrics_contract() {
         "server sources must emit request metrics"
     );
 
-    let trace_generated = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/outbound/telemetry/generated/trace_spans_contract.rs"),
-    )
+    let trace_generated = std::fs::read_to_string(root.join(
+        "crates/bijux-atlas/src/adapters/outbound/telemetry/generated/trace_spans_contract.rs",
+    ))
     .expect("read generated spans");
     for span in contract.required_spans {
         assert!(
@@ -393,10 +393,11 @@ async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     )
     .expect("parse ops metrics contract");
 
-    let generated_metrics = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/outbound/telemetry/generated/metrics_contract.rs"),
-    )
-    .expect("read generated metrics contract");
+    let generated_metrics =
+        std::fs::read_to_string(root.join(
+            "crates/bijux-atlas/src/adapters/outbound/telemetry/generated/metrics_contract.rs",
+        ))
+        .expect("read generated metrics contract");
 
     for metric in ops_contract.required_metrics.keys() {
         assert!(

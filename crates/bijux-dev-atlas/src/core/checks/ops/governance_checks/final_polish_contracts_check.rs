@@ -94,7 +94,7 @@ pub(super) fn checks_ops_final_polish_contracts(
             ],
         ),
         (
-            "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
+            "docs/04-operations/incident-response.md",
             vec![
                 "- Owner:",
                 "- Purpose:",
@@ -105,7 +105,7 @@ pub(super) fn checks_ops_final_polish_contracts(
             ],
         ),
         (
-            "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
+            "docs/06-development/release-and-versioning.md",
             vec![
                 "- Owner:",
                 "- Purpose:",

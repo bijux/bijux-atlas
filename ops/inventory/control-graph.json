@@ -62,7 +62,7 @@
     {
       "id": "artifact.docs.operations_index",
       "type": "artifact",
-      "path": "docs/operations/INDEX.md",
+      "path": "docs/04-operations/index.md",
       "consumer": "ops.checks.inventory_contract_integrity",
       "lifecycle": "authoritative"
     },

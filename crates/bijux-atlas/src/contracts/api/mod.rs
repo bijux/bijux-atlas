@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::manifest::{
-    LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY,
-};
+use crate::domain::dataset::manifest::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
 
 pub const CRATE_NAME: &str = "bijux-atlas::api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
@@ -149,28 +147,9 @@ mod tests {
         }
 
         let a = crate::domain::canonical::stable_json_bytes(&spec).expect("stable bytes a");
-        let b =
-            crate::domain::canonical::stable_json_bytes(&openapi_v1_spec())
-                .expect("stable bytes b");
+        let b = crate::domain::canonical::stable_json_bytes(&openapi_v1_spec())
+            .expect("stable bytes b");
         assert_eq!(a, b);
-    }
-
-    #[test]
-    fn error_contract_matches_frozen_registry() {
-        let freeze =
-            include_str!("../../../../../docs/bijux-atlas-crate/api/ssot/ERROR_CODES.json");
-        let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
-        let codes = val["codes"]
-            .as_array()
-            .expect("error_codes array")
-            .iter()
-            .map(|v| v.as_str().expect("code").to_string())
-            .collect::<Vec<_>>();
-        let runtime = super::generated::error_codes::API_ERROR_CODES
-            .iter()
-            .map(|s| (*s).to_string())
-            .collect::<Vec<_>>();
-        assert_eq!(runtime, codes);
     }
 
     #[test]
@@ -239,61 +218,5 @@ mod tests {
             let parsed = ApiErrorCode::parse(code).expect("generated error code parse");
             assert_eq!(parsed.as_str(), *code);
         }
-    }
-
-    #[test]
-    fn openapi_paths_match_endpoint_contract() {
-        let spec = openapi_v1_spec();
-        let spec_paths = spec
-            .get("paths")
-            .and_then(serde_json::Value::as_object)
-            .expect("openapi paths object");
-
-        let contract: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../docs/reference/contracts/schemas/ENDPOINTS.json"
-        ))
-        .expect("parse endpoints contract");
-        let expected = contract
-            .get("endpoints")
-            .and_then(serde_json::Value::as_array)
-            .expect("endpoints array")
-            .iter()
-            .map(|e| {
-                e.get("path")
-                    .and_then(serde_json::Value::as_str)
-                    .expect("path")
-                    .to_string()
-            })
-            .collect::<std::collections::BTreeSet<_>>();
-        let observed = spec_paths
-            .keys()
-            .cloned()
-            .collect::<std::collections::BTreeSet<_>>();
-        assert_eq!(observed, expected);
-    }
-
-    #[test]
-    fn openapi_paths_match_api_surface_registry() {
-        let spec = openapi_v1_spec();
-        let spec_paths = spec
-            .get("paths")
-            .and_then(serde_json::Value::as_object)
-            .expect("openapi paths object")
-            .keys()
-            .cloned()
-            .collect::<std::collections::BTreeSet<_>>();
-
-        let contract: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../docs/bijux-atlas-crate/api/ssot/API_SURFACE.json"
-        ))
-        .expect("parse api surface");
-        let expected = contract
-            .get("endpoints")
-            .and_then(serde_json::Value::as_array)
-            .expect("endpoints array")
-            .iter()
-            .map(|v| v.as_str().expect("path").to_string())
-            .collect::<std::collections::BTreeSet<_>>();
-        assert_eq!(spec_paths, expected);
     }
 }

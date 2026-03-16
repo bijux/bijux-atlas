@@ -39,7 +39,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
         Path::new("ops/CONTRACT.md"),
         Path::new("ops/INDEX.md"),
         Path::new("ops/README.md"),
-        Path::new("docs/operations/ops-system/INDEX.md"),
+        Path::new("docs/04-operations/index.md"),
     ];
     for rel in canonical_docs {
         let path = ctx.repo_root.join(rel);
