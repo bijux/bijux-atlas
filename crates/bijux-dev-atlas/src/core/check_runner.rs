@@ -348,15 +348,15 @@ fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
 }
 
 fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let target = Path::new("docs/INDEX.md");
+    let target = Path::new("docs/index.md");
     if ctx.adapters.fs.exists(ctx.repo_root, target) {
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
             code: known_violation_id("docs_index_missing"),
-            message: "missing docs/INDEX.md".to_string(),
-            hint: Some("restore docs index".to_string()),
+            message: "missing docs/index.md".to_string(),
+            hint: Some("restore the root MkDocs entrypoint".to_string()),
             path: Some(known_artifact_path(target.display().to_string())),
             line: None,
             severity: Severity::Error,

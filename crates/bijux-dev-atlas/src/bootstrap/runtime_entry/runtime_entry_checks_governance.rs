@@ -446,7 +446,7 @@ pub(crate) fn run_check_repo_doctor(
         .into_iter()
         .filter_map(|p| {
             let rel = p.strip_prefix(&root).ok()?.display().to_string();
-            if rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" {
+            if rel.ends_with("/INDEX.md") || rel == "docs/index.md" {
                 Some(rel)
             } else {
                 None

@@ -143,10 +143,10 @@ mod tests {
     #[test]
     fn fake_world_reads_stubbed_file() {
         let repo_root = temp_repo_root();
-        let file_path = repo_root.join("docs/INDEX.md");
+        let file_path = repo_root.join("docs/index.md");
         let fake = FakeWorld::default().with_file(&file_path, "index");
         let text = fake
-            .read_text(&repo_root, Path::new("docs/INDEX.md"))
+            .read_text(&repo_root, Path::new("docs/index.md"))
             .unwrap_or_else(|err| panic!("fake world read failed: {err}"));
         assert_eq!(text, "index");
     }
