@@ -1,6 +1,7 @@
 # Required Status Checks
 
 - Owner: `build-and-release`
+- Source of truth: workflow and job names in `.github/workflows/*.yml`
 
 Required branch-protection checks for `main`:
 
@@ -15,6 +16,8 @@ Optional PR checks:
 
 - `ops-integration-kind / kind-integration` (manual dispatch or nightly)
 
-Nightly required checks:
+Nightly health checks:
 
 - `ci-nightly / nightly-validation`
+
+If a workflow name or job name changes, update this file in the same change that renamed it.
