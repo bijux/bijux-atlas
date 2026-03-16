@@ -3701,10 +3701,12 @@ pub(crate) fn run_governance_command(
                     read_json_value(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"))?;
                 let env_schema =
                     read_json_value(&root.join("configs/schemas/contracts/env.schema.json"))?;
-                let redirects = read_json_value(&root.join("docs/redirects.json"))?;
-                let redirects_map = redirects
-                    .as_object()
-                    .ok_or_else(|| "docs/redirects.json must be a JSON object".to_string())?;
+                let redirects =
+                    read_json_value(&root.join("configs/sources/repository/docs/redirects.json"))?;
+                let redirects_map = redirects.as_object().ok_or_else(|| {
+                    "configs/sources/repository/docs/redirects.json must be a JSON object"
+                        .to_string()
+                })?;
                 let known_checks = known_check_ids(&root)?;
                 let summary_path = deprecations_summary_path(&root);
                 let compat_path = compat_warnings_path(&root);
@@ -3916,7 +3918,7 @@ pub(crate) fn run_governance_command(
                             "configs/sources/governance/governance/deprecations.yaml",
                             "configs/schemas/contracts/env.schema.json",
                             "ops/k8s/charts/bijux-atlas/values.schema.json",
-                            "docs/redirects.json"
+                            "configs/sources/repository/docs/redirects.json"
                         ]
                     },
                     "status": if errors.is_empty() { "ok" } else { "failed" },
@@ -3983,10 +3985,12 @@ pub(crate) fn run_governance_command(
                 let chart = read_chart_metadata(&root)?;
                 let chart_major = semver_major(&chart.version).unwrap_or(0);
                 let compat_warnings = read_json_value(&compat_warnings_path(&root))?;
-                let redirects = read_json_value(&root.join("docs/redirects.json"))?;
-                let redirects_map = redirects
-                    .as_object()
-                    .ok_or_else(|| "docs/redirects.json must be a JSON object".to_string())?;
+                let redirects =
+                    read_json_value(&root.join("configs/sources/repository/docs/redirects.json"))?;
+                let redirects_map = redirects.as_object().ok_or_else(|| {
+                    "configs/sources/repository/docs/redirects.json must be a JSON object"
+                        .to_string()
+                })?;
                 let notes = load_breaking_notes_meta(&root)?;
                 let breaking_path = breaking_changes_path(&root);
                 let today = current_utc_day()?;
@@ -4168,7 +4172,7 @@ pub(crate) fn run_governance_command(
                         "sources": [
                             "configs/sources/governance/governance/deprecations.yaml",
                             "artifacts/governance/compat-warnings.json",
-                            "docs/redirects.json",
+                            "configs/sources/repository/docs/redirects.json",
                             "ops/k8s/charts/bijux-atlas/Chart.yaml",
                             "ops/release/notes/breaking.json"
                         ]

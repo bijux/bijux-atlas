@@ -1,6 +1,7 @@
-site_name: bijux-atlas
-site_description: bijux-atlas documentation
-site_url: https://bijux.github.io/bijux-atlas/
+site_name: Bijux Atlas
+site_description: Genomics dataset delivery docs for GFF3 and FASTA ingest, immutable gene-query artifacts, runtime APIs, and repository operations.
+site_url: !ENV [SITE_URL, https://bijux.github.io/bijux-atlas/]
+site_author: Bijan Mousavi
 repo_name: bijux/bijux-atlas
 repo_url: https://github.com/bijux/bijux-atlas
 edit_uri: edit/main/docs/
@@ -80,6 +81,19 @@ markdown_extensions:
 
 plugins:
   - search
+  - autorefs
+  - git-revision-date-localized:
+      enable_creation_date: false
+      fallback_to_build_date: true
+  - social:
+      enabled: !ENV [ENABLE_SOCIAL_CARDS, false]
+      cache_dir: artifacts/docs/.cache/social
+  - redirects:
+      # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
+      redirect_maps:
+        contracts/compatibility.md: 08-contracts/ownership-and-versioning.md
+        root/compatibility-policy.md: 08-contracts/ownership-and-versioning.md
+      # end generated redirect_maps
 
 not_in_nav: |
   assets/**

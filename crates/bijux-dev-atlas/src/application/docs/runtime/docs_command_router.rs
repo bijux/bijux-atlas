@@ -61,11 +61,11 @@ struct DocsRealDataProvenance {
 
 fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let mkdocs_path = repo_root.join("mkdocs.yml");
-    let redirects_path = repo_root.join("docs/redirects.json");
+    let redirects_path = repo_root.join("configs/sources/repository/docs/redirects.json");
     let redirect_registry_path =
         repo_root.join("configs/sources/repository/docs/redirect-registry.json");
     let legacy_inventory_path = repo_root.join("artifacts/docs/generated/legacy-url-inventory.md");
-    let start = "      # redirect_maps generated from docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write";
+    let start = "      # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write";
     let end = "      # end generated redirect_maps";
 
     let mapping: serde_json::Map<String, serde_json::Value> = serde_json::from_str(
@@ -568,7 +568,9 @@ fn docs_merge_validate_payload(
     ctx: &DocsContext,
     _common: &DocsCommonArgs,
 ) -> Result<serde_json::Value, String> {
-    let redirects_path = ctx.repo_root.join("docs/redirects.json");
+    let redirects_path = ctx
+        .repo_root
+        .join("configs/sources/repository/docs/redirects.json");
     let redirects_text = fs::read_to_string(&redirects_path)
         .map_err(|e| format!("failed to read {}: {e}", redirects_path.display()))?;
     let redirects: std::collections::BTreeMap<String, String> =
