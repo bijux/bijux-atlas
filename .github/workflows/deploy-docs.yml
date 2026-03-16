@@ -38,6 +38,13 @@ jobs:
           cache: pip
           cache-dependency-path: configs/sources/repository/docs/requirements.lock.txt
 
+      - name: Setup Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: configs/sources/repository/docs/package-lock.json
+
       - name: Restore the Rust cache
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 

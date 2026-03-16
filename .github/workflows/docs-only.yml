@@ -38,6 +38,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.85.0
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: configs/sources/repository/docs/package-lock.json
       - name: Prepare run artifact directory
         shell: bash
         run: |

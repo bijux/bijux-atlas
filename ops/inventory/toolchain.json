@@ -28,6 +28,10 @@
       "ref": "v6.1.0",
       "sha": "83679a892e2d95755f2dac6acb0bfd1e9ac5d548"
     },
+    "actions/setup-node": {
+      "ref": "v6.1.0",
+      "sha": "395ad3262231945c25e8478fd5baf05154b1d79f"
+    },
     "Swatinem/rust-cache": {
       "ref": "v2.9.1",
       "sha": "c19371144df3bb44fab255c43d04cbc2ab54d1c4"
@@ -63,6 +67,10 @@
     "softprops/action-gh-release": {
       "ref": "v2.3.3",
       "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
+    },
+    "taiki-e/install-action": {
+      "ref": "cargo-nextest",
+      "sha": "02ff358066d08fda9d83b908e71e5894e6c6979c"
     }
   },
   "images": {
