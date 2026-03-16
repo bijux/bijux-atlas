@@ -25,6 +25,9 @@ flowchart LR
     Traces --> Diagnosis
 ```
 
+This observability diagram shows the three complementary signal types Atlas expects operators to use.
+No single one of them is enough to explain every failure mode on its own.
+
 ## What Each Signal Is Good For
 
 - logs explain events and failures in context
@@ -45,6 +48,10 @@ flowchart TD
     MetricsEndpoint --> Scrape[Prometheus-style scraping]
     Scrape --> Alerting[Dashboards and alerts]
 ```
+
+This metrics path matters because operators often rely on it for alerting and trend analysis. The
+point is not just to expose a metrics endpoint, but to make the runtime’s operating state visible to
+the wider monitoring system.
 
 ## Operational Priorities
 
@@ -71,6 +78,12 @@ Those priorities are runtime questions. They do not tell you by themselves wheth
 ## Honest Limit
 
 Good telemetry shortens diagnosis. It does not remove the need to ask whether the problem is runtime health, store state, catalog state, request shape, or contract drift.
+
+## A Useful Observability Habit
+
+- correlate logs, metrics, and traces before concluding a root cause
+- keep runtime identity and dataset identity visible in your investigation path
+- treat missing telemetry context as an operational gap worth fixing
 
 ## Purpose
 

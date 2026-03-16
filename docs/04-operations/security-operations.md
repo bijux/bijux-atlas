@@ -20,6 +20,10 @@ flowchart LR
     Policy --> Data[Access to dataset surfaces]
 ```
 
+This security surface diagram keeps request handling honest. Security decisions happen before access
+to dataset surfaces, and they should be explainable from explicit runtime behavior rather than
+deployment folklore.
+
 ## Security Operations Model
 
 ```mermaid
@@ -28,6 +32,9 @@ flowchart TD
     Runtime --> Logs[Audit and security-relevant logs]
     Runtime --> Health[Operational visibility]
 ```
+
+This operations model shows that security is not just about accepting or rejecting requests. It also
+depends on configuration clarity, auditability, and the ability to observe the runtime safely.
 
 ## Operator Priorities
 
@@ -42,6 +49,12 @@ flowchart TD
 - avoid undocumented assumptions about reverse proxies or header injection
 - verify health routes and protected routes separately
 - preserve auditability when diagnosing incidents
+
+## Useful Security Checks
+
+- confirm which routes are intentionally unauthenticated
+- confirm which headers or proxy assumptions are required in your environment
+- confirm that security-relevant logs are present before an incident happens
 
 ## Purpose
 

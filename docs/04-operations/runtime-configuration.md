@@ -25,6 +25,9 @@ flowchart LR
     RuntimeConfig --> Limits[Rate, concurrency, and cache policy]
 ```
 
+This boundary diagram shows the line Atlas wants operators to keep clear. Published artifacts define
+release content; runtime configuration defines how the server exposes and protects that content.
+
 ## The Main Rule
 
 Do not mix runtime configuration with release content configuration.
@@ -42,6 +45,10 @@ flowchart TD
     Env[Environment variables] --> Runtime
     Runtime --> Validation[Validation and effective config]
 ```
+
+This configuration-input map exists so operators can reason about precedence and visibility. The key
+goal is that a running instance should be explainable from explicit inputs rather than hidden host
+defaults.
 
 ## Operational Practices
 
@@ -73,6 +80,12 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- \
 - missing or unpublished dataset artifacts
 - incorrect upstream source data
 - compatibility changes that should have been handled in contracts or migration paths
+
+## A Good Runtime-Config Check Before Rollout
+
+- can another operator explain the store root, cache root, limits, and telemetry settings?
+- can the instance validate the supplied config before serving traffic?
+- can you distinguish a config error from a data or catalog error quickly?
 
 ## Purpose
 

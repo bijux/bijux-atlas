@@ -21,6 +21,10 @@ flowchart LR
     Shared --> Managed[Managed production deployment]
 ```
 
+This deployment-shape diagram is not a maturity ladder. It shows the main operational contexts in
+which Atlas can run while preserving the same core boundary: a runtime serving from explicit
+published store state and explicit configuration.
+
 These models describe operational shape, not a maturity badge. The real boundary is whether artifact
 publication, runtime config, observability, and rollback are handled deliberately enough for the
 environment you are serving.
@@ -70,6 +74,10 @@ flowchart TD
     Observe --> Upgrade[Upgrade or rollback]
 ```
 
+This managed-service flow matters because Atlas does not erase the normal operator lifecycle. A
+production deployment still needs rollout discipline, observability, and rollback planning around
+the runtime.
+
 This model assumes the operator owns the surrounding infrastructure story. Atlas defines the
 runtime, contract, and artifact boundaries, but it does not replace environment-specific security,
 networking, storage, or incident policy.
@@ -94,6 +102,12 @@ If you are unsure, start with the simplest model that still preserves:
 - explicit artifact ownership
 - observable health behavior
 - safe rollback of runtime or store state
+
+## What Operators Should Carry Across Models
+
+- serve from a store root, not directly from an ingest build root
+- keep catalog state explicit and reviewable
+- make runtime configuration understandable to another operator
 
 ## Purpose
 

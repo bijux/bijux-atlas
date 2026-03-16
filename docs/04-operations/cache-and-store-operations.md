@@ -19,6 +19,9 @@ flowchart LR
     Cache[Runtime cache] --> Transient[Transient acceleration state]
 ```
 
+This store-versus-cache diagram names the most important operational separation in Atlas. The store
+is durable serving truth; the cache is optional performance help.
+
 The store is durable and authoritative for serving content.
 
 The cache is disposable and performance-oriented.
@@ -32,6 +35,9 @@ flowchart TD
     Runtime --> Cache[Cache warm or populate]
     Cache --> Response[Serve response faster]
 ```
+
+This operating model shows where the cache sits in the request path. It is downstream of the store,
+which is why cache loss and store loss should be treated as different classes of incident.
 
 ## Operator Rules
 
@@ -52,6 +58,12 @@ flowchart TD
 If a cold cache makes responses slower, that is usually a performance issue.
 
 If the store is missing or inconsistent, that is a correctness and availability issue.
+
+## Operator Checks Worth Automating
+
+- verify the serving store layout and catalog presence
+- observe cache size, miss behavior, and recovery after cold start
+- make sure cache loss does not look like data loss in your runbooks
 
 ## Purpose
 

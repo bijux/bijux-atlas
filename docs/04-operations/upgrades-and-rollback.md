@@ -24,6 +24,9 @@ flowchart TD
     Observe --> Rollback[Rollback if needed]
 ```
 
+This upgrade flow keeps rollout discipline visible. Atlas upgrades should be validated, observed,
+and explicitly kept or rolled back rather than treated as one-way jumps.
+
 ## Rollback Flow
 
 ```mermaid
@@ -32,6 +35,9 @@ flowchart LR
     Scope --> RuntimeRollback[Rollback runtime]
     Scope --> StoreRollback[Rollback serving state if required]
 ```
+
+This rollback flow explains one of the most important operator distinctions in Atlas: not every
+incident needs store-state rollback, and not every rollback should start there.
 
 ## Operator Guidance
 
@@ -46,6 +52,11 @@ flowchart LR
 - unusual rejection or error patterns
 - metrics or traces indicating saturation changes
 - catalog or dataset discoverability regressions
+
+## Rollout Question That Saves Time
+
+Ask first whether the change affected runtime behavior, serving-store state, or both. That answer
+usually determines the safest rollback path.
 
 ## Purpose
 

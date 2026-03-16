@@ -25,6 +25,9 @@ flowchart LR
     Runtime --> Live[Liveness route]
 ```
 
+This endpoint model is here to stop one of the most common operator mistakes: treating every probe
+as if it were answering the same operational question.
+
 ## Why the Distinction Matters
 
 ```mermaid
@@ -33,6 +36,10 @@ flowchart TD
     Ready[Can accept traffic] --> Draining[May later drain traffic]
     Overloaded[Overload state] --> Traffic[Traffic shaping decisions]
 ```
+
+This distinction diagram explains why Atlas exposes multiple routes. A runtime can be alive, unready,
+or intentionally shedding work in different combinations, and traffic policy should respond
+accordingly.
 
 Health answers “is the process alive enough to answer basic liveness checks?”
 
@@ -65,6 +72,12 @@ curl -s http://127.0.0.1:8080/healthz/overload
 - treat readiness regression as a first-class operational signal
 - observe overload behavior under stress before calling a deployment “ready for production”
 - do not declare an incident resolved just because `/healthz` came back
+
+## What a Healthy Probe Story Looks Like
+
+- liveness stays boring and stable
+- readiness reflects whether the instance should receive normal traffic
+- overload and drain signals help prevent healthy-looking saturation failures
 
 ## Purpose
 

@@ -21,6 +21,10 @@ flowchart TD
     Recover --> Cache[Cache state if useful]
 ```
 
+This recovery-priority diagram keeps the durable pieces at the center. Atlas recovery should start
+from serving store state, catalog state, and runtime configuration before anyone worries about cache
+warmth.
+
 ## What Matters Most
 
 - published manifests and SQLite artifacts
@@ -36,6 +40,9 @@ flowchart LR
     Validate --> Serve[Resume service]
 ```
 
+This recovery model emphasizes validation after restore. A restored file tree is not yet a recovered
+service until discoverability and readiness checks say so.
+
 ## Practical Advice
 
 - back up the serving store, not only a build root
@@ -46,6 +53,12 @@ flowchart LR
 ## What Recovery Is Not
 
 Recovery is not “copy whatever is in the cache and hope for the best.” Cache loss may hurt performance, but store loss is what threatens durable serving ability.
+
+## Recovery Questions to Answer Before an Incident
+
+- where is the authoritative backup of the serving store?
+- how is catalog integrity preserved or rebuilt?
+- what checks prove the recovered instance is ready to serve again?
 
 ## Purpose
 

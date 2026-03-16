@@ -22,6 +22,10 @@ flowchart TD
     Incident --> Security[Security or access control]
 ```
 
+This incident-classification diagram keeps the first response structured. Atlas incidents are easier
+to stabilize when operators decide early whether they are facing availability, correctness, policy,
+capacity, or security trouble.
+
 ## Response Flow
 
 ```mermaid
@@ -31,6 +35,9 @@ flowchart LR
     Stabilize --> Diagnose[Diagnose root cause]
     Diagnose --> Recover[Recover and validate]
 ```
+
+This response flow emphasizes order. Stabilization and recovery are faster when operators classify
+the layer first instead of changing runtime, store, and traffic controls all at once.
 
 ## First Questions to Ask
 
@@ -55,6 +62,12 @@ During incidents, do not confuse:
 - policy rejection with dataset absence
 - liveness with readiness
 - runtime rollback with store rollback
+
+## A Good Incident Habit
+
+- preserve evidence before making broad changes
+- keep the serving store and catalog state understandable during mitigation
+- validate recovery with readiness and key query paths before you declare the incident over
 
 ## Purpose
 

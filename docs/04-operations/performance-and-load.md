@@ -21,6 +21,9 @@ flowchart LR
     Cache[Cache behavior] --> Latency
 ```
 
+This performance model shows why Atlas performance cannot be summarized by one throughput number. The
+cost of work depends on query shape, limits, and cache behavior together.
+
 ## Load Model
 
 ```mermaid
@@ -29,6 +32,9 @@ flowchart TD
     Classes --> Concurrency[Concurrency controls]
     Concurrency --> Overload[Overload behavior]
 ```
+
+This load model explains why Atlas talks about traffic classes instead of treating all requests as
+equal. Different classes stress the runtime differently and can trigger different guardrails.
 
 ## What Usually Drives Performance
 
@@ -51,6 +57,11 @@ Good performance is not just “fast.” It is:
 - explicit about overload behavior
 - observable during degradation
 - recoverable after stress
+
+## A Better Performance Question
+
+Instead of asking only “how fast is Atlas,” ask “how predictable is Atlas under the traffic mix we
+actually expect to send?”
 
 ## Purpose
 
