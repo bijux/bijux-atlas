@@ -65,5 +65,6 @@ __pycache__/
 /datasets
 /fixtures
 
-# Docs tooling local installs (CI/local npm ci --prefix configs/docs)
+# Docs tooling local installs (CI/local npm ci --prefix configs/sources/repository/docs)
 configs/docs/node_modules/
+configs/sources/repository/docs/node_modules/
