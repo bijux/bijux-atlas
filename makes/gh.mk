@@ -81,7 +81,14 @@ gh-release-plan-crates: ## Determine whether the tagged commit should publish wo
 	version="$${tag#v}"; \
 	unpublished=""; \
 	for package in $(GH_CRATES_RELEASE_PACKAGES); do \
-		status="$$(curl -s -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$${package}/$${version}" || true)"; \
+		status=""; \
+		for attempt in 1 2 3 4 5; do \
+			status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$${package}/$${version}" || true)"; \
+			if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
+				break; \
+			fi; \
+			sleep "$${attempt}"; \
+		done; \
 		if [ "$${status}" != "200" ]; then \
 			if [ -n "$${unpublished}" ]; then unpublished="$${unpublished} "; fi; \
 			unpublished="$${unpublished}$${package}"; \

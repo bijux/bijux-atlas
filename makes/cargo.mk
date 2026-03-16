@@ -163,7 +163,14 @@ publish-rs: ## Publish Rust crates and dry-run by default
 	fi; \
 	for pkg in $(RUST_PUBLISH_PACKAGES); do \
 		if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
-			status="$$(curl -s -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+			status=""; \
+			for attempt in 1 2 3 4 5; do \
+				status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+				if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
+					break; \
+				fi; \
+				sleep "$${attempt}"; \
+			done; \
 			if [ "$${status}" = "200" ]; then \
 				echo "skipping $$pkg $(RELEASE_VERSION); already present on crates.io"; \
 				continue; \
@@ -171,7 +178,14 @@ publish-rs: ## Publish Rust crates and dry-run by default
 		fi; \
 		if ! cargo publish --locked $$dry_run_flag -p "$$pkg"; then \
 			if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
-				status="$$(curl -s -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+				status=""; \
+				for attempt in 1 2 3 4 5; do \
+					status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+					if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
+						break; \
+					fi; \
+					sleep "$${attempt}"; \
+				done; \
 				if [ "$${status}" = "200" ]; then \
 					echo "skipping $$pkg $(RELEASE_VERSION); crates.io now reports the version as published"; \
 					continue; \
