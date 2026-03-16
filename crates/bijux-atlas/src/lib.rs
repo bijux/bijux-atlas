@@ -30,6 +30,7 @@ pub mod adapters;
 pub mod app;
 pub mod contracts;
 pub mod domain;
+pub(crate) mod packaged;
 pub mod runtime;
 pub mod version;
 #[allow(dead_code)]

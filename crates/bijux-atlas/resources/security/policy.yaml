@@ -1,0 +1,65 @@
+schema_version: 1
+default_decision: deny
+rules:
+  - id: AUTH-POLICY-HEALTH
+    effect: allow
+    principals:
+      - user
+      - service-account
+      - operator
+      - ci
+    actions:
+      - catalog.read
+    resources:
+      kinds:
+        - namespace
+      values:
+        - health
+    routes:
+      - /healthz
+      - /healthz/overload
+      - /readyz
+      - /metrics
+      - /v1/openapi.json
+      - /v1/version
+  - id: AUTH-POLICY-READ
+    effect: allow
+    principals:
+      - user
+      - service-account
+      - operator
+      - ci
+    actions:
+      - catalog.read
+      - dataset.read
+    resources:
+      kinds:
+        - dataset-id
+        - namespace
+      values:
+        - "*"
+    routes:
+      - /v1/datasets
+      - /v1/releases
+      - /v1/genes
+      - /v1/query/validate
+      - /v1/sequence
+      - /v1/diff
+      - /v1/transcripts
+  - id: AUTH-POLICY-ADMIN
+    effect: allow
+    principals:
+      - operator
+      - ci
+    actions:
+      - ops.admin
+      - dataset.ingest
+    resources:
+      kinds:
+        - namespace
+        - project
+      values:
+        - "*"
+    routes:
+      - /debug
+      - /v1/_debug

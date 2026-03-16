@@ -60,14 +60,13 @@ pub(crate) fn api_error(code: ApiErrorCode, message: &str, details: Value) -> Ap
 mod tests {
     use super::api_error_status;
     use crate::contracts::api::ApiErrorCode;
+    use crate::packaged::ERROR_CODES_JSON;
     use axum::http::StatusCode;
 
     #[test]
     fn error_registry_matches_openapi_and_status_mapping() {
-        let registry: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../../configs/sources/operations/observability/error-codes.json"
-        ))
-        .unwrap_or_else(|err| panic!("error registry: {err}"));
+        let registry: serde_json::Value = serde_json::from_str(ERROR_CODES_JSON)
+            .unwrap_or_else(|err| panic!("error registry: {err}"));
         let spec = crate::contracts::api::openapi_v1_spec().to_string();
         let expected = [
             (

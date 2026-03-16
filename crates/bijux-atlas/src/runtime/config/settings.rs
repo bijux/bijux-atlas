@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::dataset::DatasetId;
+use crate::packaged::ENV_CONTRACT_SCHEMA_JSON;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -184,9 +185,8 @@ impl std::fmt::Display for RuntimeConfigError {
 impl std::error::Error for RuntimeConfigError {}
 
 pub fn validate_runtime_env_contract() -> Result<(), RuntimeConfigError> {
-    let raw = include_str!("../../../../../configs/schemas/contracts/env.schema.json");
     let parsed: serde_json::Value =
-        serde_json::from_str(raw).map_err(|e| RuntimeConfigError::InvalidValue {
+        serde_json::from_str(ENV_CONTRACT_SCHEMA_JSON).map_err(|e| RuntimeConfigError::InvalidValue {
             message: format!("invalid env contract json: {e}"),
         })?;
     let allowed: HashSet<String> = parsed["allowed_env"]

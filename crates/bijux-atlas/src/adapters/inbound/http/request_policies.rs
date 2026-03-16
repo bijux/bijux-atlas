@@ -8,6 +8,7 @@ use crate::domain::security::authorization::{
     PermissionEvaluator, RoleCatalog, RoleRegistry,
 };
 use crate::domain::security::data_protection::https_enforced;
+use crate::packaged::{AUTH_POLICY_YAML, PERMISSIONS_YAML, ROLES_YAML};
 use crate::sha256_hex;
 use axum::body::Body;
 use axum::extract::State;
@@ -389,13 +390,9 @@ fn build_embedded_authorization_engine(
 }
 
 fn embedded_policy_allows(principal: &str, action: &str, resource_kind: &str, route: &str) -> bool {
-    const EMBEDDED_AUTH_POLICY: &str = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../configs/sources/security/policy.yaml"
-    ));
     static POLICY: std::sync::OnceLock<Result<serde_yaml::Value, String>> =
         std::sync::OnceLock::new();
-    let policy = match POLICY.get_or_init(|| parse_embedded_auth_policy(EMBEDDED_AUTH_POLICY)) {
+    let policy = match POLICY.get_or_init(|| parse_embedded_auth_policy(AUTH_POLICY_YAML)) {
         Ok(policy) => policy,
         Err(err) => {
             error!(
@@ -479,26 +476,10 @@ fn embedded_authorization_allows(
     resource_kind: &str,
     route: &str,
 ) -> bool {
-    const EMBEDDED_PERMISSIONS: &str = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../configs/sources/security/permissions.yaml"
-    ));
-    const EMBEDDED_ROLES: &str = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../configs/sources/security/roles.yaml"
-    ));
-    const EMBEDDED_AUTHZ_POLICY: &str = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../configs/sources/security/policy.yaml"
-    ));
     static ENGINE: std::sync::OnceLock<Result<AuthorizationEngine, String>> =
         std::sync::OnceLock::new();
     let engine = match ENGINE.get_or_init(|| {
-        build_embedded_authorization_engine(
-            EMBEDDED_PERMISSIONS,
-            EMBEDDED_ROLES,
-            EMBEDDED_AUTHZ_POLICY,
-        )
+        build_embedded_authorization_engine(PERMISSIONS_YAML, ROLES_YAML, AUTH_POLICY_YAML)
     }) {
         Ok(engine) => engine,
         Err(err) => {
@@ -1552,27 +1533,14 @@ mod tests {
 
     #[test]
     fn invalid_embedded_authorization_contracts_fail_closed_without_panicking() {
-        let valid_permissions = include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/sources/security/permissions.yaml"
-        ));
-        let valid_roles = include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/sources/security/roles.yaml"
-        ));
-        let valid_policy = include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../configs/sources/security/policy.yaml"
-        ));
-
         let permissions_err =
-            build_embedded_authorization_engine("permissions: [", valid_roles, valid_policy)
+            build_embedded_authorization_engine("permissions: [", ROLES_YAML, AUTH_POLICY_YAML)
                 .expect_err("bad permissions");
         let roles_err =
-            build_embedded_authorization_engine(valid_permissions, "roles: [", valid_policy)
+            build_embedded_authorization_engine(PERMISSIONS_YAML, "roles: [", AUTH_POLICY_YAML)
                 .expect_err("bad roles");
         let policy_err =
-            build_embedded_authorization_engine(valid_permissions, valid_roles, "rules: [")
+            build_embedded_authorization_engine(PERMISSIONS_YAML, ROLES_YAML, "rules: [")
                 .expect_err("bad policy");
 
         assert!(permissions_err.contains("embedded permission catalog"));
