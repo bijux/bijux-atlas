@@ -9,11 +9,15 @@ last_reviewed: 2026-03-15
 
 # Automation Command Surface
 
-This page summarizes the current `bijux-dev-atlas` command families and the stable wrapper entrypoints around them.
+This page summarizes the current maintainer command families and the stable wrapper entrypoints around them.
+
+The installed maintainer namespace is `bijux dev atlas ...`.
+The direct binary remains `bijux-dev-atlas`.
 
 ## Primary Entrypoints
 
-- `bijux-dev-atlas`: the canonical repository automation binary
+- `bijux dev atlas`: the canonical installed repository automation namespace
+- `bijux-dev-atlas`: the direct repository automation binary
 - `make ci-fast`: fast feedback lane wrapper
 - `make ci-pr`: pull-request lane wrapper
 - `make ci-nightly`: broader nightly lane wrapper
@@ -33,6 +37,8 @@ The top-level binary exposes common flags that show up across most command famil
 Use these commands when you need to inspect what the control plane knows before you execute anything:
 
 ```bash
+bijux dev atlas list --format json
+bijux dev atlas check list
 cargo run -q -p bijux-dev-atlas -- list --format json
 cargo run -q -p bijux-dev-atlas -- describe --help
 cargo run -q -p bijux-dev-atlas -- check list

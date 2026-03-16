@@ -9,7 +9,7 @@ last_reviewed: 2026-03-15
 
 # Automation Control Plane
 
-Atlas uses `bijux-dev-atlas` as the canonical automation surface for repository checks, docs workflows, governance validation, and machine-readable evidence.
+Atlas uses `bijux dev atlas ...` as the canonical installed automation surface for repository checks, docs workflows, governance validation, and machine-readable evidence. The direct binary that backs that namespace is `bijux-dev-atlas`.
 
 ## Why This Exists
 
@@ -18,7 +18,7 @@ flowchart LR
     Scripts[Ad hoc scripts] --> Drift[Behavior drift]
     Drift --> HiddenRules[Hidden policy]
     HiddenRules --> FragileCI[Fragile CI]
-    ControlPlane[bijux-dev-atlas] --> SharedRules[Shared command surface]
+    ControlPlane[bijux dev atlas] --> SharedRules[Shared command surface]
     SharedRules --> Evidence[Deterministic evidence]
     Evidence --> Reviewable[Reviewable automation]
 ```
@@ -29,7 +29,7 @@ The goal is simple: one execution surface, one capability model, and one place t
 
 ```mermaid
 flowchart TD
-    Make[make wrappers] --> DevAtlas[bijux-dev-atlas]
+    Make[make wrappers] --> DevAtlas[bijux dev atlas]
     DevAtlas --> Suites[suites]
     DevAtlas --> Checks[check]
     DevAtlas --> Docs[docs]
@@ -42,7 +42,7 @@ flowchart TD
     Reports --> Artifacts
 ```
 
-Use `make` for the common lane wrappers and `bijux-dev-atlas` when you need narrower selection or deeper inspection.
+Use `make` for the common lane wrappers and `bijux dev atlas ...` when you need narrower selection or deeper inspection.
 
 ## Lane and Selection Rules
 
@@ -56,6 +56,8 @@ The broad workflow is:
 The narrow workflow is:
 
 ```bash
+bijux dev atlas suites list
+bijux dev atlas check list
 cargo run -q -p bijux-dev-atlas -- suites list
 cargo run -q -p bijux-dev-atlas -- check run --suite ci_pr --include-internal --include-slow --allow-git --format json
 cargo run -q -p bijux-dev-atlas -- check list
@@ -95,7 +97,7 @@ cargo run -q -p bijux-dev-atlas -- reports index --format json
 
 ## Operational Guardrails
 
-- repository automation should be routed through `bijux-dev-atlas`, not ad hoc root scripts
+- repository automation should be routed through `bijux dev atlas ...`, not ad hoc root scripts
 - expensive or environment-sensitive validations belong in the correct lane, not hidden inside fast feedback loops
 - external tools and capability requirements should fail with remediation, not with mystery
 - evidence should describe the failure, the rerun command, and the relevant artifact path

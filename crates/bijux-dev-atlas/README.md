@@ -9,7 +9,7 @@ Use this crate when you need to:
 - inspect or enforce repository policy
 - extend the workspace control plane in Rust instead of adding shell-script glue
 
-This crate is repo-local infrastructure. It is intentionally `publish = false`, and its primary supported interface is the `bijux-dev-atlas` CLI rather than an external Rust SDK.
+This crate is repository infrastructure. Its primary supported interfaces are the `bijux dev atlas ...` umbrella namespace and the direct `bijux-dev-atlas` CLI rather than an external Rust SDK.
 
 ## What This Crate Owns
 
@@ -23,7 +23,7 @@ This crate does not own the product-facing Atlas runtime. Dataset, server, API, 
 
 ## Supported Entry Points
 
-- maintainers and CI should start with the `bijux-dev-atlas` CLI
+- maintainers and CI should start with `bijux dev atlas ...` or the direct `bijux-dev-atlas` CLI
 - report consumers should start from the documented report and registry contracts
 - contributors may use the Rust modules internally, but the stable operational surface is the CLI plus the documented contracts and registries
 
@@ -43,10 +43,10 @@ For the exact command registry, use the generated command reference linked below
 
 ## Common Maintainer Workflows
 
-- inspect the available surface: `bijux-dev-atlas --help`
-- list registered domains, suites, and runnable ids: `bijux-dev-atlas list`
-- inspect check-oriented surfaces: `bijux-dev-atlas check --help`
-- inspect docs validation and generation flows: `bijux-dev-atlas docs --help`
+- inspect the available surface: `bijux dev atlas --help`
+- list registered domains, suites, and runnable ids: `bijux dev atlas list`
+- inspect check-oriented surfaces: `bijux dev atlas check --help`
+- inspect docs validation and generation flows: `bijux dev atlas docs --help`
 
 ## Control-Plane Rules
 
@@ -80,18 +80,22 @@ The internal tree is broader than the supported public story. The important rule
 Show the control-plane surface:
 
 ```bash
+bijux dev atlas --help
 cargo run -p bijux-dev-atlas -- --help
 ```
 
 List registered commands:
 
 ```bash
+bijux dev atlas list
 cargo run -p bijux-dev-atlas -- list
 ```
 
 Inspect the check and docs command families:
 
 ```bash
+bijux dev atlas check --help
+bijux dev atlas docs --help
 cargo run -p bijux-dev-atlas -- check --help
 cargo run -p bijux-dev-atlas -- docs --help
 ```

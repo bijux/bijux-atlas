@@ -11,13 +11,16 @@ last_reviewed: 2026-03-15
 
 This page summarizes the user-facing Atlas command families. It does not document the maintainer control plane; that lives in [Automation Command Surface](automation-command-surface.md).
 
+The installed runtime namespace is `bijux atlas ...`.
+The direct runtime binaries remain `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`.
+
 ## Top-Level Command Map
 
 ```mermaid
 flowchart TD
-    CLI[bijux-atlas] --> Version[version]
+    CLI[bijux atlas / bijux-atlas] --> Version[version]
     CLI --> Completion[completion]
-    CLI[bijux-atlas] --> Config[config]
+    CLI[bijux atlas / bijux-atlas] --> Config[config]
     CLI --> Catalog[catalog]
     CLI --> Dataset[dataset]
     CLI --> Diff[diff]
@@ -31,7 +34,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    AtlasCLI[bijux-atlas] --> UserWorkflows[User workflows]
+    AtlasCLI[bijux atlas / bijux-atlas] --> UserWorkflows[User workflows]
     ServerCLI[bijux-atlas-server] --> Runtime[Runtime server]
     OpenAPICLI[bijux-atlas-openapi or openapi generate] --> Contracts[OpenAPI generation]
 ```
@@ -55,7 +58,7 @@ Use the automation reference when you are asking, "Which maintainer command chec
 
 ## Stability Reading
 
-- `bijux-atlas`, `bijux-atlas-server`, and documented command families are user-facing surfaces
+- `bijux atlas ...`, `bijux-atlas`, `bijux-atlas-server`, and documented command families are user-facing surfaces
 - structured output, error behavior, and OpenAPI are only as stable as the documented contracts behind them
 - debug-only or maintainer-only commands should not be inferred from this page
 

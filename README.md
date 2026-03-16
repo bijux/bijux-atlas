@@ -9,7 +9,7 @@ This repository currently ships four connected surfaces:
 * `bijux-atlas`: the end-user CLI for dataset and query workflows,
 * `bijux-atlas-server`: the HTTP runtime server,
 * `bijux-atlas-openapi`: the OpenAPI export surface,
-* `bijux-dev-atlas`: the workspace-only maintainer control plane.
+* `bijux-dev-atlas`: the maintainer control plane binary defined in this workspace.
 
 The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
 
@@ -89,7 +89,8 @@ Atlas treats dataset builds as release artifacts with explicit manifests, proven
 ### Runtime Surfaces With Clear Boundaries
 
 `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi` are the user-facing runtime surfaces.
-`bijux-dev-atlas` is the maintainer control plane and is not part of the runtime CLI contract.
+The installed umbrella runtime namespace is `bijux atlas ...`.
+The maintainer namespace is `bijux dev atlas ...`, backed by the `bijux-dev-atlas` binary.
 
 ### Governed Repository Inputs
 
@@ -108,10 +109,25 @@ The release story includes checked manifests, compatibility tables, docs deploym
 
 ## Installation
 
-Use a published install channel for stable released builds:
+Use the release channel that matches the surface you need:
 
 ```bash
 cargo install --locked bijux-atlas
+```
+
+If you use the `bijux` umbrella installer, install the runtime plugin and call it through the stable namespace:
+
+```bash
+bijux install bijux-atlas
+bijux atlas --help
+bijux atlas version
+```
+
+For maintainer automation, the installed umbrella namespace is:
+
+```bash
+bijux install bijux-dev-atlas
+bijux dev atlas --help
 ```
 
 Quick verification:
@@ -127,7 +143,10 @@ From a workspace checkout, run the current source tree directly with:
 
 ```bash
 cargo run -q -p bijux-atlas --bin bijux-atlas -- version
+cargo run -q -p bijux-dev-atlas -- --help
 ```
+
+The runtime crate is published through Cargo. The maintainer crate is part of the repository contract and the `bijux dev atlas ...` umbrella surface, even when you run it directly from a checkout.
 
 Atlas does not publish a Python package yet. The planned Python bridge is a future release item, not a hidden install path today.
 
@@ -160,11 +179,13 @@ For the canonical runtime references, start with:
 Atlas keeps repository automation explicit:
 
 ```bash
+bijux dev atlas --help
 cargo run -q -p bijux-dev-atlas -- --help
 make help
 ```
 
-Use `bijux-dev-atlas` as the canonical automation surface.
+Use `bijux dev atlas ...` as the canonical installed automation surface.
+Use `bijux-dev-atlas` or `cargo run -p bijux-dev-atlas -- ...` when you are working from a checkout.
 Use `make` only through the curated wrappers exposed from [`makes/root.mk`](makes/root.mk).
 
 Helpful maintainer entrypoints:

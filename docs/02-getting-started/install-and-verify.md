@@ -9,7 +9,12 @@ last_reviewed: 2026-03-15
 
 # Install and Verify
 
-The fastest reliable way to start with Atlas is to run it from the workspace with Cargo. That avoids installation drift while you are learning the system.
+Atlas has two stable command identities:
+
+- runtime commands through `bijux atlas ...` or the direct `bijux-atlas` binary
+- maintainer commands through `bijux dev atlas ...` or the direct `bijux-dev-atlas` binary
+
+The fastest reliable way to start with Atlas is still to run it from the workspace with Cargo. That avoids installation drift while you are learning the system.
 
 This page verifies that the binaries, fixture paths, and local artifact roots are usable. It does not verify that ingest, publication, or runtime serving are already correct. Those come in later steps.
 
@@ -28,25 +33,45 @@ flowchart TD
 - Rust toolchain compatible with the workspace
 - Cargo
 - a shell that can run `cargo run`
+- optional: a preinstalled `bijux` umbrella CLI if you want the installed `bijux atlas ...` or `bijux dev atlas ...` routes
 
-## Step 1: Verify the CLI Entrypoint
+## Install Paths
+
+Choose the install route that matches the workflow you want to verify:
+
+```bash
+cargo install --locked bijux-atlas
+```
+
+```bash
+bijux install bijux-atlas
+bijux install bijux-dev-atlas
+```
+
+If you are working from a repository checkout, you can skip installation entirely and use `cargo run`.
+
+## Step 1: Verify the Runtime CLI Entrypoint
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas -- --help
+bijux-atlas --help
+bijux atlas --help
 ```
 
 You should see the top-level families such as `config`, `catalog`, `dataset`, `ingest`, `diff`, `gc`, `policy`, and `openapi`.
 
 If `--help` does not work, stop here. A failing help surface usually means the workspace or binary wiring is not healthy enough for the rest of the getting-started flow.
 
-## Step 2: Verify Runtime and Config Surfaces
+## Step 2: Verify Runtime, Server, and Maintainer Surfaces
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas -- config --help
 cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo run -p bijux-dev-atlas -- --help
+bijux dev atlas --help
 ```
 
-These two commands tell you whether both the product CLI and runtime server binary are wired correctly in your environment.
+These commands tell you whether the product CLI, runtime server binary, and maintainer control plane are wired correctly in your environment.
 
 They do not prove that your local store, dataset, or runtime configuration is valid yet. They only prove that the entrypoints are present and invokable.
 
@@ -69,13 +94,14 @@ flowchart LR
     Fixtures --> Next[Sample ingest and validation]
 ```
 
-## Step 4: Sanity-Check the CLI in JSON Mode
+## Step 4: Sanity-Check Structured Output
 
 ```bash
 cargo run -p bijux-atlas --bin bijux-atlas -- config --canonical --json
+cargo run -p bijux-dev-atlas -- list --format json
 ```
 
-This is a good first check because it exercises a structured-output path without requiring a built dataset or running server.
+These are good first checks because they exercise structured-output paths without requiring a built dataset or running server.
 
 It is also the first place to notice whether your shell setup, JSON mode, and top-level config surface agree with each other.
 
@@ -99,6 +125,7 @@ At this point you should be able to:
 
 - run CLI help successfully
 - run server help successfully
+- run maintainer control-plane help successfully
 - see committed fixtures under `crates/bijux-atlas/tests/fixtures`
 - create an `artifacts/getting-started` directory for local outputs
 
