@@ -20,6 +20,23 @@ gh-fmt: fmt ## Run GitHub formatting checks without modifying files
 gh-lint: lint ## Run GitHub lint checks
 
 gh-security: ## Run GitHub security checks through the Rust control plane
+	@mkdir -p artifacts/governance
+	@cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "$(CURDIR)" --format json || true
+	@for file in \
+		artifacts/governance/exceptions-summary.json \
+		artifacts/governance/exceptions-expiry-warning.json \
+		artifacts/governance/exceptions-churn.json \
+		artifacts/governance/deprecations-summary.json \
+		artifacts/governance/compat-warnings.json \
+		artifacts/governance/breaking-changes.json \
+		artifacts/governance/governance-doctor.json \
+		artifacts/governance/institutional-delta.md \
+		artifacts/governance/institutional-delta-inputs.json; do \
+		test -f "$${file}" || { echo "missing governance evidence file: $${file}" >&2; exit 1; }; \
+	done
 	@cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
 	@cargo run --locked -q -p bijux-dev-atlas -- security dependency-audit --format json
 
