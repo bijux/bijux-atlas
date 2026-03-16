@@ -9,9 +9,13 @@ last_reviewed: 2026-03-15
 
 # What Atlas Is
 
-Atlas is a data-serving system built around a simple discipline: validate inputs explicitly, build immutable release artifacts deterministically, and expose those artifacts through well-defined query and operational surfaces.
+Atlas is a data-serving system built around a simple discipline: validate inputs explicitly, build
+immutable release artifacts deterministically, and expose those artifacts through well-defined query
+and operational surfaces.
 
-Atlas is not just a server and not just a CLI. It is a full workflow that begins with source inputs, passes through validation and artifact construction, and ends with stable ways to inspect or serve the resulting release data.
+Atlas is not just a server and not just a CLI. It is a full workflow that begins with source inputs,
+passes through validation and artifact construction, and ends with stable ways to inspect or serve
+the resulting release data.
 
 ## The Product in One Picture
 
@@ -112,3 +116,11 @@ Atlas is opinionated in ways that matter operationally:
 - [Core Concepts](core-concepts.md)
 - [Boundaries and Non-Goals](boundaries-and-non-goals.md)
 - [Run Atlas Locally](../02-getting-started/run-atlas-locally.md)
+
+## Purpose
+
+This page explains the Atlas material for what atlas is and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -45,3 +45,10 @@ Business rules and domain semantics.
 
 Process-level composition of configuration, app state, and adapters.
 
+## Purpose
+
+This page is the lookup reference for glossary. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

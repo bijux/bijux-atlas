@@ -41,3 +41,10 @@ flowchart LR
 
 If users, operators, or CI would notice the change without reading source code, treat it as a compatibility question first and an implementation question second.
 
+## Purpose
+
+This page explains the Atlas material for change and compatibility and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

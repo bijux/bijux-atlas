@@ -93,3 +93,11 @@ flowchart TD
 - read [Configuration and Output](../03-user-guide/configuration-and-output.md)
 - read [Query Workflows](../03-user-guide/query-workflows.md)
 - read [Request Lifecycle](../05-architecture/request-lifecycle.md)
+
+## Purpose
+
+This page explains the Atlas material for run your first queries and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

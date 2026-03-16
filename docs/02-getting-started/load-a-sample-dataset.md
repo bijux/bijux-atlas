@@ -104,7 +104,9 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
   --assembly GRCh38
 ```
 
-Do not treat publication and promotion as optional ceremony. They are the boundary between “I built something” and “the runtime can discover and serve it in the intended way.”
+Do not treat publication and promotion as optional ceremony. They are the
+boundary between "I built something" and "the runtime can discover and serve it
+in the intended way."
 
 ## What You Should See
 
@@ -130,3 +132,11 @@ flowchart LR
 - re-run with `--verbose` or `--trace` for more detail
 - use the `tiny` fixture first before trying the `realistic` fixture
 - fix the first failing boundary before continuing; do not skip from ingest failure straight to server startup
+
+## Purpose
+
+This page explains the Atlas material for load a sample dataset and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

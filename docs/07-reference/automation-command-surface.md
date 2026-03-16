@@ -89,3 +89,11 @@ The current top-level `reports` catalog includes report families such as `closur
 - [Automation Reports Reference](automation-reports-reference.md)
 - [Automation Control Plane](../06-development/automation-control-plane.md)
 - [Automation Contracts](../08-contracts/automation-contracts.md)
+
+## Purpose
+
+This page is the lookup reference for automation command surface. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

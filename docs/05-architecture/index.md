@@ -50,3 +50,11 @@ flowchart LR
 - [Storage Architecture](storage-architecture.md)
 - [Runtime Composition](runtime-composition.md)
 - [Contracts and Boundaries](contracts-and-boundaries.md)
+
+## Purpose
+
+This page explains the Atlas material for architecture and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -84,3 +84,10 @@ Use `dataset pack` and `dataset verify-pack` when you need a portable dataset bu
 - treat build roots and serving stores as different lifecycle stages
 - use pack verification when moving dataset bundles across trust boundaries
 
+## Purpose
+
+This page explains the Atlas material for dataset workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

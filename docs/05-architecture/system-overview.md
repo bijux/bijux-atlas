@@ -88,3 +88,11 @@ This page is intentionally high-level. It tells you which boundaries matter most
 
 - [Source Layout and Ownership](source-layout-and-ownership.md)
 - [Automation Architecture](automation-architecture.md)
+
+## Purpose
+
+This page explains the Atlas material for system overview and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

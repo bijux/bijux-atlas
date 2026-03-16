@@ -56,3 +56,10 @@ Those are related, but they are not the same thing.
 - compatibility is test-backed
 - internal refactors do not quietly redefine public promises
 
+## Purpose
+
+This page explains the Atlas material for contracts and boundaries and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

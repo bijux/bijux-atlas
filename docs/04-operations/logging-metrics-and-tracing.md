@@ -71,3 +71,11 @@ Those priorities are runtime questions. They do not tell you by themselves wheth
 ## Honest Limit
 
 Good telemetry shortens diagnosis. It does not remove the need to ask whether the problem is runtime health, store state, catalog state, request shape, or contract drift.
+
+## Purpose
+
+This page explains the Atlas material for logging, metrics, and tracing and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

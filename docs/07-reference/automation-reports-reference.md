@@ -32,7 +32,8 @@ Governed report schemas under `configs/schemas/contracts/reports/` consistently 
 - `summary`: top-level counters or state
 - `evidence`: supporting metadata needed to interpret the result
 
-Report-specific payload fields appear after that shared header. For example, `docs-site-output` adds fields such as `docs_dir`, `site_dir`, `checks`, `counts`, `assets_directory`, and `status`.
+Report-specific payload fields appear after that shared header. For example, `docs-site-output` adds
+fields such as `docs_dir`, `site_dir`, `checks`, `counts`, `assets_directory`, and `status`.
 
 ## Current Governed Report Families
 
@@ -67,3 +68,11 @@ Treat those paths as report storage locations, not as new sources of truth. The 
 
 - [Automation Command Surface](automation-command-surface.md)
 - [Automation Contracts](../08-contracts/automation-contracts.md)
+
+## Purpose
+
+This page is the lookup reference for automation reports reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

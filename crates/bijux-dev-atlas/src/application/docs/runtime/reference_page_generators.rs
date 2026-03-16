@@ -123,11 +123,17 @@ fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Resul
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
+    out.push_str("- Stability: `stable`\n");
     out.push_str("- Source-of-truth: `docs/_internal/generated/command-index.json`\n\n");
+    out.push_str("## Purpose\n\n");
+    out.push_str(
+        "Generated reference for the maintainer command registry. Narrative docs should describe intent and link here for the complete surface.\n\n",
+    );
     out.push_str("## Commands\n\n| Command ID | Kind | Purpose |\n| --- | --- | --- |\n");
     for (id, kind, purpose) in rows {
         out.push_str(&format!("| `{id}` | `{kind}` | {purpose} |\n"));
     }
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
     Ok(out)
 }
 
@@ -157,11 +163,14 @@ fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, 
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
+    out.push_str("- Stability: `stable`\n");
     out.push_str("- Source-of-truth: `docs/_internal/generated/schema-index.json`\n\n");
+    out.push_str("## Purpose\n\nGenerated reference for checked-in schemas and schema-derived docs surfaces.\n\n");
     out.push_str("## Schemas\n\n| Path | Title | Kind |\n| --- | --- | --- |\n");
     for (path, title, kind) in rows {
         out.push_str(&format!("| `{path}` | {title} | `{kind}` |\n"));
     }
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
     Ok(out)
 }
 
@@ -194,11 +203,14 @@ fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, 
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
+    out.push_str("- Stability: `stable`\n");
     out.push_str("- Source-of-truth: `configs/registry/inventory/consumers.json`\n\n");
+    out.push_str("## Purpose\n\nGenerated reference for governed config groups and their declared consumers.\n\n");
     out.push_str("## Config Groups\n\n| Group | Consumers |\n| --- | --- |\n");
     for (group, consumers) in rows {
         out.push_str(&format!("| `{group}` | `{consumers}` |\n"));
     }
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
     Ok(out)
 }
 
@@ -228,11 +240,14 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Tier: `generated`\n");
     out.push_str("- Audience: `operators`\n");
+    out.push_str("- Stability: `stable`\n");
     out.push_str("- Source-of-truth: `configs/sources/operations/ops/makes-targets.json`\n\n");
+    out.push_str("## Purpose\n\nGenerated reference for governed make wrapper targets and their declared surface intent.\n\n");
     out.push_str("## Targets\n\n| Target | Surface | Description |\n| --- | --- | --- |\n");
     for (name, surface, description) in rows {
         out.push_str(&format!("| `{name}` | `{surface}` | {description} |\n"));
     }
+    out.push_str("\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
     Ok(out)
 }
 
@@ -296,7 +311,7 @@ fn render_docs_reference_commands(repo_root: &std::path::Path) -> Result<String,
     let root_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["--help"])?);
     let ops_help = trim_help_usage_and_commands(&run_bijux_dev_atlas_help(repo_root, &["ops", "--help"])?);
     Ok(format!(
-        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/makes-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/makes-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
+        "# Command Surface Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_internal/generated/makes-targets.md`\n\n## Purpose\n\nGenerated reference for the supported command surface. Narrative docs should link here instead of restating command lists.\n\n## bijux-dev-atlas\n\n```text\n{root_help}\n```\n\n## bijux-dev-atlas ops\n\n```text\n{ops_help}\n```\n\n## Make Wrapper Surface\n\nSee `docs/_internal/generated/makes-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n"
     ))
 }
 
@@ -326,7 +341,7 @@ fn render_docs_reference_ops_surface(repo_root: &std::path::Path) -> Result<Stri
     actions.sort_by_key(|row| row["id"].as_str().unwrap_or_default().to_string());
     let mut out = String::new();
     out.push_str("# Ops Surface Reference\n\n");
-    out.push_str("- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane-surface-list.json`\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane-surface-list.json`\n\n");
     out.push_str("## Purpose\n\nGenerated ops surface reference derived from inventory surfaces.\n\n");
     out.push_str("## Entry Points\n\n");
     for item in entrypoints {
@@ -336,13 +351,26 @@ fn render_docs_reference_ops_surface(repo_root: &std::path::Path) -> Result<Stri
     for item in commands {
         out.push_str(&format!("- `{item}`\n"));
     }
-    out.push_str("\n## Actions\n\n");
+    out.push_str("\n## Actions\n\n| Action ID | Domain | Command | Dry Run | Artifacts |\n| --- | --- | --- | --- | --- |\n");
     for item in actions {
-        let encoded = serde_json::to_string(&item)
-            .map_err(|e| format!("encode action row for ops surface reference failed: {e}"))?;
-        out.push_str(&format!("- `{encoded}`\n"));
+        let command = item["command"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|value| value.as_str().map(ToString::to_string))
+            .collect::<Vec<_>>()
+            .join(" ");
+        out.push_str(&format!(
+            "| `{}` | `{}` | `{}` | `{}` | `{}` |\n",
+            item["id"].as_str().unwrap_or_default(),
+            item["domain"].as_str().unwrap_or_default(),
+            command,
+            item["dry_run"].as_str().unwrap_or_default(),
+            item["artifacts_policy"].as_str().unwrap_or_default()
+        ));
     }
-    out.push_str("\n## See Also\n\n- `ops/_generated.example/control-plane-surface-list.json` (generated surface evidence)\n- `ops/inventory/surfaces.json` (machine truth)\n");
+    out.push_str("\n## See Also\n\n- `ops/_generated.example/control-plane-surface-list.json` (generated surface evidence)\n- `ops/inventory/surfaces.json` (machine truth)\n\n## Regenerate\n\n- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`\n");
     Ok(out)
 }
 
@@ -353,7 +381,7 @@ fn render_docs_reference_tools(repo_root: &std::path::Path) -> Result<String, St
     let mut rows = value["tools"].as_array().cloned().unwrap_or_default();
     rows.sort_by_key(|row| row["name"].as_str().unwrap_or_default().to_string());
     let mut out = String::new();
-    out.push_str("# Tools Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/tools.toml`\n\n## Tools\n\n| Tool | Required | Probe Args | Version Regex |\n| --- | --- | --- | --- |\n");
+    out.push_str("# Tools Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/tools.toml`\n\n## Purpose\n\nGenerated reference for governed external tools and probe contracts.\n\n## Tools\n\n| Tool | Required | Probe Args | Version Regex |\n| --- | --- | --- | --- |\n");
     for row in rows {
         let probe = row["probe_argv"]
             .as_array()
@@ -381,7 +409,7 @@ fn render_docs_reference_toolchain(repo_root: &std::path::Path) -> Result<String
     )
     .map_err(|e| format!("parse toolchain.json failed: {e}"))?;
     let mut out = String::new();
-    out.push_str("# Toolchain Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Source-of-truth: `ops/inventory/toolchain.json`\n\n## Tools\n\n| Tool | Required | Probe Args |\n| --- | --- | --- |\n");
+    out.push_str("# Toolchain Reference\n\n- Owner: `bijux-atlas-operations`\n- Tier: `generated`\n- Audience: `operators`\n- Stability: `stable`\n- Source-of-truth: `ops/inventory/toolchain.json`\n\n## Purpose\n\nGenerated reference for the pinned repository toolchain, images, and GitHub Action digests.\n\n## Tools\n\n| Tool | Required | Probe Args |\n| --- | --- | --- |\n");
     let mut tools = value["tools"]
         .as_object()
         .cloned()

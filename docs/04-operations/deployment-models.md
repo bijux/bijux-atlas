@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Deployment Models
 
-Atlas can run locally for development or in managed environments for shared access, but the core deployment principle stays the same: the runtime should serve from an explicit store root with explicit catalog state and explicit runtime configuration.
+Atlas can run locally for development or in managed environments for shared access, but the core
+deployment principle stays the same: the runtime should serve from an explicit store root with
+explicit catalog state and explicit runtime configuration.
 
 ## Deployment Shapes
 
@@ -19,7 +21,9 @@ flowchart LR
     Shared --> Managed[Managed production deployment]
 ```
 
-These models describe operational shape, not a maturity badge. The real boundary is whether artifact publication, runtime config, observability, and rollback are handled deliberately enough for the environment you are serving.
+These models describe operational shape, not a maturity badge. The real boundary is whether artifact
+publication, runtime config, observability, and rollback are handled deliberately enough for the
+environment you are serving.
 
 ## Model 1: Local Development Runtime
 
@@ -66,7 +70,9 @@ flowchart TD
     Observe --> Upgrade[Upgrade or rollback]
 ```
 
-This model assumes the operator owns the surrounding infrastructure story. Atlas defines the runtime, contract, and artifact boundaries, but it does not replace environment-specific security, networking, storage, or incident policy.
+This model assumes the operator owns the surrounding infrastructure story. Atlas defines the
+runtime, contract, and artifact boundaries, but it does not replace environment-specific security,
+networking, storage, or incident policy.
 
 ## What Does Not Change Across Models
 
@@ -88,3 +94,11 @@ If you are unsure, start with the simplest model that still preserves:
 - explicit artifact ownership
 - observable health behavior
 - safe rollback of runtime or store state
+
+## Purpose
+
+This page explains the Atlas material for deployment models and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

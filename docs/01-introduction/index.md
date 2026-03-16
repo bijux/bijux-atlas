@@ -71,3 +71,10 @@ Do not skip this section if you are planning to:
 
 Without this model, it is easy to confuse source files with durable artifacts, runtime details with public contracts, or internal code layout with user-facing guarantees.
 
+## Purpose
+
+This page explains the Atlas material for introduction and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

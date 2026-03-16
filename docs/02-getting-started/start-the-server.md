@@ -9,9 +9,13 @@ last_reviewed: 2026-03-15
 
 # Start the Server
 
-Once you have published and promoted a sample dataset into a serving store, starting the local server is straightforward: point the runtime at that store root and keep the cache root under `artifacts/`.
+Once you have published and promoted a sample dataset into a serving store, starting the local
+server is straightforward: point the runtime at that store root and keep the cache root under
+`artifacts/`.
 
-The important precondition is real: the sample dataset must already be published and catalog-promoted. Starting the server against a build root is a workflow mistake, not a supported shortcut.
+The important precondition is real: the sample dataset must already be published and
+catalog-promoted. Starting the server against a build root is a workflow mistake, not a supported
+shortcut.
 
 ## Runtime Inputs
 
@@ -98,3 +102,11 @@ Atlas tries to make startup failure explicit rather than turning configuration d
 - confirm the `--cache-root` is under `artifacts/` and writable
 - re-run with `--print-effective-config` if you need to inspect resolved settings
 - treat “process started” and “runtime is ready” as different questions
+
+## Purpose
+
+This page explains the Atlas material for start the server and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

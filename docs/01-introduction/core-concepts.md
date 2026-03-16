@@ -32,13 +32,16 @@ The most common mistake is to collapse these boundaries into one idea. Atlas wor
 
 ## Build Root
 
-A build root is the validated output of ingest before publication into a serving store. It exists so Atlas can inspect and verify produced dataset state before the runtime starts depending on it.
+A build root is the validated output of ingest before publication into a serving store. It exists so
+Atlas can inspect and verify produced dataset state before the runtime starts depending on it.
 
 Treat the build root as a staging boundary, not as the final public-serving shape.
 
 ## Dataset
 
-A dataset is the logical unit of released data. In Atlas docs, dataset identity is usually expressed by release, species, and assembly together. It is the thing you validate, publish, catalog, and later query.
+A dataset is the logical unit of released data. In Atlas docs, dataset identity is usually expressed
+by release, species, and assembly together. It is the thing you validate, publish, catalog, and
+later query.
 
 ## Release
 
@@ -69,7 +72,9 @@ A catalog is the discoverable inventory of published datasets and their artifact
 
 ## Store
 
-The store is the persistence layer for immutable artifacts and related content. Atlas can expose different store implementations, but the conceptual role is stable: hold durable artifact state, not transient request state and not raw ingest fixtures.
+The store is the persistence layer for immutable artifacts and related content. Atlas can expose
+different store implementations, but the conceptual role is stable: hold durable artifact state, not
+transient request state and not raw ingest fixtures.
 
 ## Query
 
@@ -118,3 +123,11 @@ When in doubt, ask three questions:
 1. Is this source input, validated dataset state, or immutable artifact state?
 2. Is this about runtime behavior or durable release content?
 3. Is this a contract-owned surface or an implementation detail?
+
+## Purpose
+
+This page explains the Atlas material for core concepts and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Troubleshooting
 
-This page is for problems that occur after the initial getting-started path: command confusion, workflow mismatches, rejected queries, or uncertainty about which Atlas layer you are interacting with.
+This page is for problems that occur after the initial getting-started path: command confusion,
+workflow mismatches, rejected queries, or uncertainty about which Atlas layer you are interacting
+with.
 
 ## Troubleshooting Map
 
@@ -63,3 +65,10 @@ Move to:
 - [Reference](../07-reference/index.md) for exact endpoint or config lookup
 - [Architecture](../05-architecture/index.md) if the problem is really conceptual confusion
 
+## Purpose
+
+This page explains the Atlas material for troubleshooting and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

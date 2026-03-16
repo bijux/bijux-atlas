@@ -65,3 +65,11 @@ Fast feedback matters. Run the smallest targeted command that proves the change 
 ## Maintainer Rule
 
 If you change a public or contract-owned surface, the test story should show why the change is safe or intentionally breaking.
+
+## Purpose
+
+This page explains the Atlas material for testing and evidence and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

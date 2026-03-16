@@ -73,3 +73,11 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- \
 - missing or unpublished dataset artifacts
 - incorrect upstream source data
 - compatibility changes that should have been handled in contracts or migration paths
+
+## Purpose
+
+This page explains the Atlas material for runtime configuration and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

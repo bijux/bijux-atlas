@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Automation Control Plane
 
-Atlas uses `bijux dev atlas ...` as the canonical installed automation surface for repository checks, docs workflows, governance validation, and machine-readable evidence. The direct binary that backs that namespace is `bijux-dev-atlas`.
+Atlas uses `bijux dev atlas ...` as the canonical installed automation surface for repository
+checks, docs workflows, governance validation, and machine-readable evidence. The direct binary that
+backs that namespace is `bijux-dev-atlas`.
 
 ## Why This Exists
 
@@ -107,3 +109,11 @@ cargo run -q -p bijux-dev-atlas -- reports index --format json
 - [Contributor Workflow](contributor-workflow.md)
 - [Testing and Evidence](testing-and-evidence.md)
 - [Command Surface](../07-reference/command-surface.md)
+
+## Purpose
+
+This page explains the Atlas material for automation control plane and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

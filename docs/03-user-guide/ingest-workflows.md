@@ -79,3 +79,10 @@ Always do these next:
 - keep output roots under `artifacts/`
 - treat report-only and lenient modes as intentional exceptions, not the default
 
+## Purpose
+
+This page explains the Atlas material for ingest workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

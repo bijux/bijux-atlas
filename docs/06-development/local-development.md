@@ -37,3 +37,10 @@ flowchart LR
 - validate the layer you changed instead of only running a giant command blindly
 - preserve the canonical module ownership model when moving code
 
+## Purpose
+
+This page explains the Atlas material for local development and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

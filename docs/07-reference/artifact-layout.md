@@ -40,3 +40,10 @@ flowchart LR
 
 Do not let crate-local scratch directories become artifact roots. Keep artifact and cache state under the repository artifacts area.
 
+## Purpose
+
+This page is the lookup reference for artifact layout. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

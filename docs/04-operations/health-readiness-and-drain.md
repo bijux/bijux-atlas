@@ -40,7 +40,9 @@ Readiness answers “should this instance currently receive normal traffic?”
 
 Drain or overload state answers “is the instance reducing or refusing certain work classes?”
 
-Operators get into trouble when they collapse those into a single success signal. Atlas exposes separate endpoints because a process can be alive, not yet ready, and already overloaded in meaningfully different combinations.
+Operators get into trouble when they collapse those into a single success signal. Atlas exposes
+separate endpoints because a process can be alive, not yet ready, and already overloaded in
+meaningfully different combinations.
 
 ## Operational Usage
 
@@ -63,3 +65,11 @@ curl -s http://127.0.0.1:8080/healthz/overload
 - treat readiness regression as a first-class operational signal
 - observe overload behavior under stress before calling a deployment “ready for production”
 - do not declare an incident resolved just because `/healthz` came back
+
+## Purpose
+
+This page explains the Atlas material for health, readiness, and drain and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

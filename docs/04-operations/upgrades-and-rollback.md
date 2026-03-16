@@ -47,3 +47,10 @@ flowchart LR
 - metrics or traces indicating saturation changes
 - catalog or dataset discoverability regressions
 
+## Purpose
+
+This page explains the Atlas material for upgrades and rollback and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

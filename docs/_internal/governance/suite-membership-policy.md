@@ -23,3 +23,11 @@ When overlap exists, record the reason in registry metadata instead of hiding it
 
 Update the owning registry first, then update the suite registry, then update any make or workflow wrapper that exposes the entry.
 Finish by rerunning the affected suite and registry validation so the surface and the evidence stay aligned.
+
+## Purpose
+
+This page documents internal Atlas repository behavior for maintainers and generated evidence around suite membership policy.
+
+## Stability
+
+This page is internal maintainer documentation. Keep it aligned with the current repository behavior, but do not treat it as a public runtime contract.

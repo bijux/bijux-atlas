@@ -64,10 +64,19 @@ When you add new automation behavior:
 
 ## Why This Shape Matters
 
-This structure lets Atlas keep one control plane for docs, governance, checks, suites, and report validation without turning the crate into an unreviewable pile of scripts and special cases.
+This structure lets Atlas keep one control plane for docs, governance, checks, suites, and report
+validation without turning the crate into an unreviewable pile of scripts and special cases.
 
 ## Where to Go Next
 
 - [System Overview](system-overview.md)
 - [Contracts and Boundaries](contracts-and-boundaries.md)
 - [Automation Control Plane](../06-development/automation-control-plane.md)
+
+## Purpose
+
+This page explains the Atlas material for automation architecture and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -44,3 +44,10 @@ flowchart TD
 
 Treat feature flags as build-time capability switches. Do not confuse them with runtime configuration flags.
 
+## Purpose
+
+This page is the lookup reference for feature flags. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

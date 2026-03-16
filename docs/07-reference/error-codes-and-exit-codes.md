@@ -44,3 +44,10 @@ flowchart TD
 
 Use the structured error code, not only the human message text, when building client or automation behavior.
 
+## Purpose
+
+This page is the lookup reference for error codes and exit codes. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

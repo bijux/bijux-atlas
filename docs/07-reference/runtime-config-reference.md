@@ -45,3 +45,10 @@ flowchart TD
 
 `--store-root` should point at a serving store with published artifacts and catalog state, not at an ingest build root.
 
+## Purpose
+
+This page is the lookup reference for runtime config reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

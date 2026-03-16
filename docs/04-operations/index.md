@@ -51,3 +51,10 @@ flowchart LR
 
 Atlas should be run from explicit artifact and catalog state, with explicit runtime inputs, and with observability that explains what the system is doing rather than hiding drift.
 
+## Purpose
+
+This page explains the Atlas material for operations and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -15,7 +15,9 @@ Running Atlas locally is easiest when you separate the workflow into three areas
 - built artifacts
 - runtime processes
 
-A good local run proves that your inputs, artifacts, store, and server wiring agree with each other. It does not prove that production infrastructure, scaling, or operational policy are already correct.
+A good local run proves that your inputs, artifacts, store, and server wiring agree with each other.
+It does not prove that production infrastructure, scaling, or operational policy are already
+correct.
 
 ## Local Layout
 
@@ -106,3 +108,11 @@ You are running Atlas locally in the intended way when:
 - queries return data for the release you just built
 
 If any of those conditions are false, you may still have a working demo, but you do not yet have the Atlas workflow running in its intended shape.
+
+## Purpose
+
+This page explains the Atlas material for run atlas locally and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

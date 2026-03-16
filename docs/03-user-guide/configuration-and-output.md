@@ -107,3 +107,11 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
 ## Honest Boundary
 
 If you are depending on a field or response shape in automation, verify that it is documented in reference or contracts. Being visible in one command run is not enough by itself.
+
+## Purpose
+
+This page explains the Atlas material for configuration and output and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

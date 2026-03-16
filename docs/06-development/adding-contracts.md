@@ -37,3 +37,10 @@ flowchart LR
 - add tests that would fail if the promise drifts
 - do not hide contract truth behind convenience reexports
 
+## Purpose
+
+This page explains the Atlas material for adding contracts and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

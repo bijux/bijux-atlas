@@ -61,7 +61,8 @@ Common causes:
 - mismatched flags for release, species, or assembly
 - trying to skip the FAI or other required inputs
 
-The right recovery pattern is to fix one concrete input problem and rerun the same ingest command. Do not change multiple identity flags and paths at once unless you enjoy losing the root cause.
+The right recovery pattern is to fix one concrete input problem and rerun the same ingest command.
+Do not change multiple identity flags and paths at once unless you enjoy losing the root cause.
 
 ## If Dataset Validation Fails
 
@@ -125,7 +126,9 @@ Check:
 - `curl -s http://127.0.0.1:8080/v1/datasets`
 - your query parameters for release, species, and assembly
 
-This is the classic point where people confuse “the server is up” with “the expected dataset is published and discoverable.” Atlas keeps those as separate questions on purpose.
+This is the classic point where people confuse "the server is up" with "the
+expected dataset is published and discoverable." Atlas keeps those as separate
+questions on purpose.
 
 ## Fast Diagnosis Order
 
@@ -138,3 +141,11 @@ This is the classic point where people confuse “the server is up” with “th
 7. Does `v1/datasets` work?
 
 If you answer those in order, you usually isolate the failing layer quickly.
+
+## Purpose
+
+This page explains the Atlas material for troubleshoot early problems and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

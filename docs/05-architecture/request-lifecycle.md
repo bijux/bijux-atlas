@@ -51,3 +51,10 @@ The router should remain declarative. Request shaping, policy enforcement, execu
 - presentation explains why structured output looks the way it does
 - metrics and tracing explain what happened after the fact
 
+## Purpose
+
+This page explains the Atlas material for request lifecycle and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

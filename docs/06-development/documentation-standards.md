@@ -59,3 +59,11 @@ Before merging docs, ask:
 - is the source of truth obvious?
 - is the page in the right section?
 - would a pedantic reviewer know what this page is for immediately?
+
+## Purpose
+
+This page explains the Atlas material for documentation standards and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

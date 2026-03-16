@@ -40,3 +40,11 @@ An entry belongs to one suite by default; overlap must be deliberate, documented
 | checks | `check run` | suite, id, group, tag | static or effect per check |
 | contracts | `suites run --suite contracts` | suite, group, tag, mode | pure, effect, or all |
 | make wrappers | `make <target>` | curated public entrypoints | delegated to `bijux-dev-atlas` |
+
+## Purpose
+
+This page documents internal Atlas repository behavior for maintainers and generated evidence around checks and contracts.
+
+## Stability
+
+This page is internal maintainer documentation. Keep it aligned with the current repository behavior, but do not treat it as a public runtime contract.

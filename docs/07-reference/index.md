@@ -42,3 +42,11 @@ flowchart TD
 - [Feature Flags](feature-flags.md)
 - [Artifact Layout](artifact-layout.md)
 - [Glossary](glossary.md)
+
+## Purpose
+
+This page is the lookup reference for reference. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

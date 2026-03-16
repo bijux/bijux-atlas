@@ -1,3 +1,5 @@
+# Ops Command List
+
 ops
 logs
 describe
@@ -54,3 +56,11 @@ cleanup
 reset
 pins
 generate
+
+## Purpose
+
+This page documents internal Atlas repository behavior for maintainers and generated evidence around ops command list.
+
+## Stability
+
+This page is internal maintainer documentation. Keep it aligned with the current repository behavior, but do not treat it as a public runtime contract.

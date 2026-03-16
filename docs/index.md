@@ -9,9 +9,14 @@ last_reviewed: 2026-03-15
 
 # bijux-atlas Documentation
 
-Atlas is a contract-governed data platform for validating genomic dataset inputs, producing immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
+Atlas is a contract-governed data platform for validating genomic dataset inputs, producing
+immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
 
-This site is written as engineering documentation, not product marketing. It aims to be specific about where Atlas is strong, where it is intentionally narrow, and which behaviors are documented contracts versus current implementation.
+This site is written as engineering documentation, not product marketing. It aims to be specific
+about where Atlas is strong, where it is intentionally narrow, and which behaviors are documented
+contracts versus current implementation.
+
+Start with [Start Here](start-here.md) if you want the shortest path into the right section.
 
 This site is organized for three reader groups:
 
@@ -23,7 +28,9 @@ This site is organized for three reader groups:
 
 If you are new to Atlas, start in `01-introduction`, then move through `02-getting-started`, and only after that branch into `03-user-guide` or `04-operations`.
 
-If you are maintaining Atlas, treat `05-architecture`, `06-development`, `07-reference`, and `08-contracts` as the canonical explanation of how the system is designed and what behavior is promised.
+If you are maintaining Atlas, treat `05-architecture`, `06-development`, `07-reference`, and
+`08-contracts` as the canonical explanation of how the system is designed and what behavior is
+promised.
 
 ```mermaid
 flowchart TD
@@ -119,3 +126,11 @@ If it appears only in examples, source code, or debug output, treat it as curren
 - [What Atlas Is](01-introduction/what-atlas-is.md)
 - [Run Atlas Locally](02-getting-started/run-atlas-locally.md)
 - [System Overview](05-architecture/system-overview.md)
+
+## Purpose
+
+This page explains the Atlas material for bijux-atlas documentation and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -63,3 +63,10 @@ For those, move to:
 - [Architecture](../05-architecture/index.md)
 - [Reference](../07-reference/index.md)
 
+## Purpose
+
+This page explains the Atlas material for user guide and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

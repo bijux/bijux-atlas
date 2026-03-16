@@ -71,3 +71,11 @@ If the two disagree, treat that as a real problem. Either the environment is not
 
 - [API Endpoint Index](../07-reference/api-endpoint-index.md)
 - [API Compatibility](../08-contracts/api-compatibility.md)
+
+## Purpose
+
+This page explains the Atlas material for openapi and api usage and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

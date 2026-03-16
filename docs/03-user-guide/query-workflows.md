@@ -70,3 +70,10 @@ curl -s \
 - use `query/validate` when teaching clients how to form requests
 - treat policy rejection as signal, not as a nuisance to work around blindly
 
+## Purpose
+
+This page explains the Atlas material for query workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

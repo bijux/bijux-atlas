@@ -22,7 +22,9 @@ flowchart TD
     Contract --> Record
 ```
 
-Use local judgment for isolated implementation work. When the change crosses domains or alters a documented promise, capture the decision in a durable record instead of leaving it in chat or commit lore.
+Use local judgment for isolated implementation work. When the change crosses domains or alters a
+documented promise, capture the decision in a durable record instead of leaving it in chat or commit
+lore.
 
 ## Ownership Signals
 
@@ -56,4 +58,14 @@ Use these commands to inspect the current governance state before you add anothe
 
 ## Maintainer Rule
 
-Never rely on "the owner probably knows" or "the context is in the PR" as the only governance mechanism. If future readers need the decision to understand why the repository is shaped this way, record it in a canonical file.
+Never rely on "the owner probably knows" or "the context is in the PR" as the only governance
+mechanism. If future readers need the decision to understand why the repository is shaped this way,
+record it in a canonical file.
+
+## Purpose
+
+This page explains the Atlas material for decision records and ownership and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

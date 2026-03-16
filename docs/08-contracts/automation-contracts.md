@@ -62,3 +62,11 @@ These details may change without becoming compatibility commitments:
 - [Automation Command Surface](../07-reference/automation-command-surface.md)
 - [Automation Reports Reference](../07-reference/automation-reports-reference.md)
 - [Ownership and Versioning](ownership-and-versioning.md)
+
+## Purpose
+
+This page defines the Atlas contract expectations for automation contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+
+## Stability
+
+This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.

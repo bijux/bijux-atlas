@@ -39,3 +39,10 @@ flowchart LR
 - avoid letting HTTP types become application truth
 - update documentation and contracts when the surface is stable or public
 
+## Purpose
+
+This page explains the Atlas material for adding http surface and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

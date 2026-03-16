@@ -68,3 +68,10 @@ Common policy-sensitive areas:
 - do not treat policy rejection as a server bug by default
 - change policy intentionally, not by relying on hidden defaults
 
+## Purpose
+
+This page explains the Atlas material for policy workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

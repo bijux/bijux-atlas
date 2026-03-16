@@ -11,7 +11,9 @@ last_reviewed: 2026-03-15
 
 Atlas is opinionated about stability: it does not promise everything, but what it does promise should be explicit, test-backed, and documented.
 
-The practical reading rule is simple: if a behavior is not documented as a contract-owned surface, treat it as current behavior only and confirm it before you build automation or operational process around it.
+The practical reading rule is simple: if a behavior is not documented as a contract-owned surface,
+treat it as current behavior only and confirm it before you build automation or operational process
+around it.
 
 ## The Stability Stack
 
@@ -112,3 +114,11 @@ If you are a maintainer:
 - [Run Atlas Locally](../02-getting-started/run-atlas-locally.md)
 - [Contracts and Boundaries](../05-architecture/contracts-and-boundaries.md)
 - [Ownership and Versioning](../08-contracts/ownership-and-versioning.md)
+
+## Purpose
+
+This page explains the Atlas material for guarantees and stability and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

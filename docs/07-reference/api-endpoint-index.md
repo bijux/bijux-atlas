@@ -61,3 +61,10 @@ flowchart LR
 
 Additional `/debug/...` routes may be enabled depending on runtime settings. Treat them as operationally sensitive and configuration-dependent rather than universal public surface.
 
+## Purpose
+
+This page is the lookup reference for api endpoint index. Use it when you need the current checked-in surface quickly and without extra narrative.
+
+## Stability
+
+This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.

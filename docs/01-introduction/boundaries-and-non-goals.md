@@ -91,3 +91,11 @@ When a system tries to be everything, documentation, code ownership, and contrac
 4. Would a user or operator reasonably expect this to be stable?
 
 If the answer to the last question is yes, the change probably belongs in a contract-aware path and should be documented as such.
+
+## Purpose
+
+This page explains the Atlas material for boundaries and non-goals and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

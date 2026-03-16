@@ -53,3 +53,10 @@ If a cold cache makes responses slower, that is usually a performance issue.
 
 If the store is missing or inconsistent, that is a correctness and availability issue.
 
+## Purpose
+
+This page explains the Atlas material for cache and store operations and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

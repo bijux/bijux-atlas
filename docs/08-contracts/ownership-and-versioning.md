@@ -47,12 +47,14 @@ Breaking changes should be rare, explicit, and accompanied by migration guidance
 
 ## Deprecation Discipline
 
-Atlas should not remove or rename stable surfaces casually. The current compatibility policy in `configs/sources/governance/governance/compatibility.yaml` defines deprecation windows of:
+Atlas should not remove or rename stable surfaces casually. The current compatibility policy in
+`configs/sources/governance/governance/compatibility.yaml` defines deprecation windows of:
 
 - 180 days for env keys, chart values, profile keys, and report schemas
 - 365 days for docs URLs
 
-That policy matters because versioning is not only about semver labels. It is also about whether real users, operators, and maintainers have enough time and documentation to move safely.
+That policy matters because versioning is not only about semver labels. It is also about whether
+real users, operators, and maintainers have enough time and documentation to move safely.
 
 ## Main Promise
 
@@ -65,3 +67,11 @@ If you cannot answer all three questions clearly, the surface is not ready to be
 1. Who owns it?
 2. Where is it documented?
 3. What is the versioning or deprecation path if it changes?
+
+## Purpose
+
+This page defines the Atlas contract expectations for ownership and versioning. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+
+## Stability
+
+This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.

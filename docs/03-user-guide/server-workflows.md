@@ -67,8 +67,18 @@ curl -s http://127.0.0.1:8080/metrics
 curl -s http://127.0.0.1:8080/v1/openapi.json
 ```
 
-Those checks answer different questions. A healthy metrics endpoint does not prove that the expected dataset is published. A reachable OpenAPI document does not prove that an environment is production-ready.
+Those checks answer different questions. A healthy metrics endpoint does not prove that the expected
+dataset is published. A reachable OpenAPI document does not prove that an environment is
+production-ready.
 
 ## Operational Boundary
 
 This page explains normal usage of the runtime surface. For deployment, rollback, resource tuning, and incident handling, move to [Operations](../04-operations/index.md).
+
+## Purpose
+
+This page explains the Atlas material for server workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

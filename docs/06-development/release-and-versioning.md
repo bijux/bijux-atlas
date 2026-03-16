@@ -57,7 +57,8 @@ For deprecations:
 
 ## Practical Governance Checks
 
-Review deprecation entries in `configs/sources/governance/governance/deprecations.yaml` as part of release preparation, and use this command to inspect the broader governance state:
+Review deprecation entries in `configs/sources/governance/governance/deprecations.yaml` as part of
+release preparation, and use this command to inspect the broader governance state:
 
 ```bash
 cargo run -q -p bijux-dev-atlas -- governance doctor --format json
@@ -66,3 +67,11 @@ cargo run -q -p bijux-dev-atlas -- governance doctor --format json
 ## Practical Mindset
 
 Release discipline is not only a packaging step. It is the final check that the documented story, tested story, and shipped story still match.
+
+## Purpose
+
+This page explains the Atlas material for release and versioning and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

@@ -16,7 +16,9 @@ Atlas has two stable command identities:
 
 The fastest reliable way to start with Atlas is still to run it from the workspace with Cargo. That avoids installation drift while you are learning the system.
 
-This page verifies that the binaries, fixture paths, and local artifact roots are usable. It does not verify that ingest, publication, or runtime serving are already correct. Those come in later steps.
+This page verifies that the binaries, fixture paths, and local artifact roots are usable. It does
+not verify that ingest, publication, or runtime serving are already correct. Those come in later
+steps.
 
 ## Verification Flow
 
@@ -130,3 +132,11 @@ At this point you should be able to:
 - create an `artifacts/getting-started` directory for local outputs
 
 If all of that works, you have a usable starting environment. You do not yet have proof that Atlas can ingest, publish, or serve real dataset state.
+
+## Purpose
+
+This page explains the Atlas material for install and verify and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

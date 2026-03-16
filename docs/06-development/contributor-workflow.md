@@ -74,3 +74,11 @@ If CI fails but your narrow local check passes, reproduce the matching wrapper f
 - [Automation Control Plane](automation-control-plane.md)
 - [Testing and Evidence](testing-and-evidence.md)
 - [Change and Compatibility](change-and-compatibility.md)
+
+## Purpose
+
+This page explains the Atlas material for contributor workflow and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

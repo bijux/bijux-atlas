@@ -56,3 +56,10 @@ During incidents, do not confuse:
 - liveness with readiness
 - runtime rollback with store rollback
 
+## Purpose
+
+This page explains the Atlas material for incident response and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

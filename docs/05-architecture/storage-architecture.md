@@ -43,3 +43,10 @@ Without these storage boundaries, it becomes too easy to:
 - confuse publication state with build state
 - debug cache symptoms as if they were store corruption
 
+## Purpose
+
+This page explains the Atlas material for storage architecture and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

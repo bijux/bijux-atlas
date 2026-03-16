@@ -42,5 +42,14 @@ mindmap
 
 ## Why Query Validation Exists
 
-The dedicated validation route is not just a convenience. It exposes the classification and policy model directly so clients can understand request shape without needing to infer behavior from full execution only.
+The dedicated validation route is not just a convenience. It exposes the classification and policy
+model directly so clients can understand request shape without needing to infer behavior from full
+execution only.
 
+## Purpose
+
+This page explains the Atlas material for query architecture and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

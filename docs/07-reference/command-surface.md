@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Command Surface
 
-This page summarizes the user-facing Atlas command families. It does not document the maintainer control plane; that lives in [Automation Command Surface](automation-command-surface.md).
+This page summarizes the user-facing Atlas command families. It does not
+document the maintainer control plane; that lives in [Automation Command
+Surface](automation-command-surface.md).
 
 The installed runtime namespace is `bijux atlas ...`.
 The direct runtime binaries remain `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`.
@@ -62,8 +64,18 @@ Use the automation reference when you are asking, "Which maintainer command chec
 - structured output, error behavior, and OpenAPI are only as stable as the documented contracts behind them
 - debug-only or maintainer-only commands should not be inferred from this page
 
+## Stability
+
+This page documents the checked-in runtime-facing command namespace. Update it
+when the public CLI surface changes, and keep maintainer-only automation out of
+scope.
+
 ## Related Binaries
 
 - `bijux-atlas`
 - `bijux-atlas-server`
 - `bijux-atlas-openapi`
+
+## Purpose
+
+This page is the lookup reference for command surface. Use it when you need the current checked-in surface quickly and without extra narrative.

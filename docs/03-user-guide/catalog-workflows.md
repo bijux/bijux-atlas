@@ -75,3 +75,10 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog rollback \
 
 If the question is “can the server discover this dataset,” the answer usually lives in the catalog state, not only in the existence of artifact files.
 
+## Purpose
+
+This page explains the Atlas material for catalog workflows and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Stability
+
+This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

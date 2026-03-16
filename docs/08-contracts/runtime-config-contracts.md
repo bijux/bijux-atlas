@@ -32,3 +32,10 @@ flowchart TD
 
 Atlas should validate explicit runtime configuration rather than silently accepting malformed or contradictory input.
 
+## Purpose
+
+This page defines the Atlas contract expectations for runtime config contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+
+## Stability
+
+This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.

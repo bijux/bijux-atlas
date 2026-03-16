@@ -39,3 +39,11 @@ flowchart TD
 - [Artifact and Store Contracts](artifact-and-store-contracts.md)
 - [Operational Contracts](operational-contracts.md)
 - [Ownership and Versioning](ownership-and-versioning.md)
+
+## Purpose
+
+This page defines the Atlas contract expectations for contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+
+## Stability
+
+This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
