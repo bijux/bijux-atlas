@@ -4,14 +4,14 @@ version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
 rust-version.workspace = true
-description = "Deterministic bioinformatics atlas runtime with CLI, HTTP server, and OpenAPI export"
+description = "Genomics runtime for GFF3/FASTA ingest, immutable dataset artifacts, gene-query APIs, and OpenAPI export"
 repository.workspace = true
 homepage = "https://bijux.github.io/bijux-atlas/"
 documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
 readme = "README.md"
-categories = ["command-line-utilities", "science", "science::bioinformatics"]
+categories = ["science::bioinformatics", "command-line-utilities"]
 exclude = ["tests/fixtures/**"]
-keywords = ["bioinformatics", "genomics", "datasets", "data-service", "atlas"]
+keywords = ["bioinformatics", "genomics", "gff3", "fasta", "gene-query"]
 
 [features]
 default = ["serde", "backend-local"]

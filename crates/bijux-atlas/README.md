@@ -1,8 +1,15 @@
 # bijux-atlas
 
-`bijux-atlas` is the published Atlas runtime crate. It provides a deterministic bioinformatics
-data-service surface for immutable dataset artifacts, governed query workflows, HTTP serving, and
-OpenAPI export.
+`bijux-atlas` is the published Atlas runtime crate for genomics dataset delivery.
+It ingests GFF3 and FASTA inputs into immutable dataset artifacts, serves gene-query workflows
+through CLI and HTTP surfaces, and exports the OpenAPI contract for those APIs.
+
+This crate is the right starting point if you are looking for:
+
+- GFF3 and FASTA ingest in Rust
+- immutable genome annotation dataset artifacts
+- gene and transcript query APIs
+- a Rust HTTP server plus OpenAPI export for genomic datasets
 
 ## What Ships
 
@@ -12,9 +19,21 @@ OpenAPI export.
 - `bijux-atlas-openapi`: OpenAPI export utility
 - Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and `runtime`
 
+## How It Fits With `bijux-cli`
+
+Atlas owns the genomic dataset runtime itself.
+The sibling `bijux-cli` repository owns the umbrella command runtime that can route Atlas under
+`bijux atlas ...` and `bijux dev atlas ...`.
+
+Use this crate when you want the Atlas runtime and libraries directly.
+Use `bijux-cli` when you want a shared command root that can host Atlas alongside other Bijux tools.
+
 ## Install and Verify
 
-Install the published crate:
+Choose one install route at a time.
+
+Install the published crate directly when you want the Atlas binaries or crate APIs without the
+umbrella runtime:
 
 ```bash
 cargo install --locked bijux-atlas
@@ -51,6 +70,7 @@ for the Rust crate itself.
 
 Use this crate when you need to:
 
+- build immutable genomic dataset artifacts from GFF3 and FASTA inputs
 - run Atlas dataset and catalog workflows locally or in CI
 - serve Atlas through the HTTP runtime
 - generate the published OpenAPI description
