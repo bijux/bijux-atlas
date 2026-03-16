@@ -103,11 +103,25 @@ fn no_unwrap_or_expect_in_non_test_dev_atlas_sources() {
 #[test]
 fn no_todo_macro_anywhere_in_dev_atlas_crate() {
     let root = repo_root();
-    let output = Command::new("rg")
+    let output = Command::new("git")
         .current_dir(&root)
-        .args(["-n", r"\btodo!\(", "crates/bijux-dev-atlas"])
+        .args([
+            "grep",
+            "-n",
+            "-E",
+            r"\btodo!\(",
+            "--",
+            ":(glob)crates/bijux-dev-atlas/**/*.rs",
+            ":(glob)crates/bijux-dev-atlas/*.rs",
+        ])
         .output()
-        .expect("run rg");
+        .expect("run git grep");
+
+    assert!(
+        output.status.code().is_some_and(|code| code <= 1),
+        "git grep failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(
