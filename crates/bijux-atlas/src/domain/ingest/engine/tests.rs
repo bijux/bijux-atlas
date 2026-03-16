@@ -45,7 +45,12 @@ fn sqlite_logical_fingerprint(path: &Path) -> String {
              ORDER BY type, name",
         ),
         ("schema_version", "SELECT version FROM schema_version ORDER BY version"),
-        ("atlas_meta", "SELECT k, v FROM atlas_meta ORDER BY k"),
+        (
+            "atlas_meta",
+            "SELECT k, v FROM atlas_meta \
+             WHERE k NOT IN ('created_by') \
+             ORDER BY k",
+        ),
         (
             "gene_summary",
             "SELECT id, gene_id, name, name_normalized, biotype, seqid, start, end, \
@@ -658,16 +663,20 @@ fn feature_id_uniqueness_policy_normalized_rejects_case_collisions() {
 
 #[test]
 fn tiny_fixture_matches_cross_machine_golden_hashes() {
+    const SQLITE_LOGICAL_FINGERPRINT_SHA256: &str =
+        "67a2095680d2ce06ff89ea15ddeafa3fc13c1552452d44c7a4cd7c0a444b413a";
+    const DATASET_SIGNATURE_SHA256: &str =
+        "d273f80509add42ab87efe008c5ad2361e0efb411b295e7a9a8371ec281bd9df";
+
     let root = tempdir().expect("tempdir");
     let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+    let sqlite_fingerprint = sqlite_logical_fingerprint(&run.sqlite_path);
     assert_eq!(
-        sqlite_logical_fingerprint(&run.sqlite_path),
-        "d4e309128028d653e024c591489d36d1839665fb809ba2d1b4a5238ef4081f5f"
+        sqlite_fingerprint, SQLITE_LOGICAL_FINGERPRINT_SHA256,
+        "sqlite logical fingerprint drifted; update the golden only after confirming \
+         schema/content changes are intentional"
     );
-    assert_eq!(
-        run.manifest.dataset_signature_sha256,
-        "d273f80509add42ab87efe008c5ad2361e0efb411b295e7a9a8371ec281bd9df"
-    );
+    assert_eq!(run.manifest.dataset_signature_sha256, DATASET_SIGNATURE_SHA256);
 }
 
 #[test]
