@@ -176,8 +176,15 @@ publish-rs: ## Publish Rust crates and dry-run by default
 				continue; \
 			fi; \
 		fi; \
-		if ! cargo publish --locked $$dry_run_flag -p "$$pkg"; then \
+		publish_log="$$(mktemp)"; \
+		if ! cargo publish --locked $$dry_run_flag -p "$$pkg" >"$$publish_log" 2>&1; then \
+			cat "$$publish_log" >&2; \
 			if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
+				if grep -Eiq 'already (uploaded|exists)|previously uploaded|same version' "$$publish_log"; then \
+					echo "skipping $$pkg $(RELEASE_VERSION); cargo publish reported the version is already present"; \
+					rm -f "$$publish_log"; \
+					continue; \
+				fi; \
 				status=""; \
 				for attempt in 1 2 3 4 5; do \
 					status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
@@ -188,11 +195,15 @@ publish-rs: ## Publish Rust crates and dry-run by default
 				done; \
 				if [ "$${status}" = "200" ]; then \
 					echo "skipping $$pkg $(RELEASE_VERSION); crates.io now reports the version as published"; \
+					rm -f "$$publish_log"; \
 					continue; \
 				fi; \
 			fi; \
+			rm -f "$$publish_log"; \
 			exit 1; \
 		fi; \
+		cat "$$publish_log"; \
+		rm -f "$$publish_log"; \
 	done
 
 .PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow test-all publish-rs
