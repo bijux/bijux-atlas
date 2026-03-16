@@ -926,8 +926,85 @@ pub(super) fn collect_supply_chain_inventory(
     Ok(rows)
 }
 
+fn extend_manifest_tarball_paths(
+    repo_root: &std::path::Path,
+    manifest: &serde_json::Value,
+    files: &mut Vec<String>,
+) {
+    if let Some(action_pins_report) = manifest
+        .get("supply_chain")
+        .and_then(|value| value.get("action_pins_report"))
+        .and_then(|value| value.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        if repo_root.join(action_pins_report).exists() {
+            files.push(action_pins_report.to_string());
+        }
+    }
+    for rel in manifest
+        .get("supply_chain")
+        .and_then(|value| value.get("docs_toolchain_inventory"))
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if repo_root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+    for rel in manifest
+        .get("reports")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .chain(
+            manifest
+                .get("simulation_summaries")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("drill_summaries")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("redacted_logs")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+    {
+        if repo_root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+    for rel in manifest
+        .get("ops_evidence")
+        .and_then(serde_json::Value::as_object)
+        .into_iter()
+        .flat_map(|rows| rows.iter())
+        .filter(|(name, _)| name.as_str() != "redaction_secret_keys")
+        .filter_map(|(_, row)| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if repo_root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+}
+
 pub(super) fn build_release_evidence_tarball(
     repo_root: &std::path::Path,
+    manifest: &serde_json::Value,
 ) -> Result<std::path::PathBuf, String> {
     let evidence_root = evidence_root(repo_root)?;
     let tarball_path = evidence_root.join("bundle.tar");
@@ -983,6 +1060,7 @@ pub(super) fn build_release_evidence_tarball(
     files.push("configs/sources/repository/docs/package-lock.json".to_string());
     files.push("configs/sources/repository/docs/requirements.lock.txt".to_string());
     files.push("configs/sources/security/dependency-source-policy.json".to_string());
+    extend_manifest_tarball_paths(repo_root, manifest, &mut files);
     files.sort();
     files.dedup();
     std::fs::write(&list_path, files.join("\n"))
@@ -1087,7 +1165,7 @@ print(json.dumps(rows, sort_keys=True))
 
 #[cfg(test)]
 mod tests {
-    use super::observability_contract_checks;
+    use super::{extend_manifest_tarball_paths, observability_contract_checks};
     use std::path::PathBuf;
 
     fn repo_root() -> PathBuf {
@@ -1102,5 +1180,28 @@ mod tests {
     fn observability_contract_checks_use_current_workspace_sources() {
         let value = observability_contract_checks(&repo_root(), "").expect("observability checks");
         assert!(value.get("error_registry_aligned").is_some());
+    }
+
+    #[test]
+    fn manifest_ops_evidence_paths_are_added_to_bundle_members() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let repo_root = temp.path();
+        let rel = "artifacts/ops/evidence/ops_run/install-evidence.json";
+        let abs = repo_root.join(rel);
+        std::fs::create_dir_all(abs.parent().expect("parent")).expect("create parent");
+        std::fs::write(&abs, "{}").expect("write artifact");
+        let manifest = serde_json::json!({
+            "ops_evidence": {
+                "install_evidence": {
+                    "path": rel
+                },
+                "redaction_secret_keys": ["token"]
+            }
+        });
+
+        let mut files = Vec::new();
+        extend_manifest_tarball_paths(repo_root, &manifest, &mut files);
+
+        assert_eq!(files, vec![rel.to_string()]);
     }
 }

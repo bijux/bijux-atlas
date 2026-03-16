@@ -503,7 +503,7 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&manifest).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
-    let tarball_path = build_release_evidence_tarball(&repo_root)?;
+    let tarball_path = build_release_evidence_tarball(&repo_root, &manifest)?;
     let mut manifest_with_tarball = manifest;
     manifest_with_tarball["index_html"] = index_html;
     manifest_with_tarball["evidence_tarball"] = serde_json::json!({

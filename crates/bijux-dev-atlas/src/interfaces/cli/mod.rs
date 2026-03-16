@@ -1661,7 +1661,11 @@ pub struct ReleaseSignArgs {
 pub struct ReleaseVerifyArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
-    #[arg(long)]
+    #[arg(
+        long,
+        default_value = "ops/release/evidence",
+        help = "Evidence directory or normalized bundle tarball path"
+    )]
     pub evidence: PathBuf,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,

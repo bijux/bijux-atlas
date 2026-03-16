@@ -19,7 +19,7 @@ use regex::Regex;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
 fn sha256_file(path: &Path) -> Result<String, String> {
@@ -159,6 +159,41 @@ fn collect_tarball_members(
             files.push(rel.to_string());
         }
     }
+    for rel in manifest
+        .get("reports")
+        .and_then(serde_json::Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .chain(
+            manifest
+                .get("simulation_summaries")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("drill_summaries")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("redacted_logs")
+                .and_then(serde_json::Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
     if let Some(path) = manifest
         .get("supply_chain")
         .and_then(|v| v.get("action_pins_report"))
@@ -209,6 +244,18 @@ fn collect_tarball_members(
         .into_iter()
         .flatten()
         .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        if root.join(rel).exists() {
+            files.push(rel.to_string());
+        }
+    }
+    for rel in manifest
+        .get("ops_evidence")
+        .and_then(serde_json::Value::as_object)
+        .into_iter()
+        .flat_map(|rows| rows.iter())
+        .filter(|(name, _)| name.as_str() != "redaction_secret_keys")
+        .filter_map(|(_, row)| row.get("path").and_then(serde_json::Value::as_str))
     {
         if root.join(rel).exists() {
             files.push(rel.to_string());
@@ -4140,11 +4187,7 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
     ensure_json(&root.join("configs/schemas/contracts/release/release-verify.schema.json"))?;
     ensure_json(&root.join("configs/schemas/contracts/release/provenance.schema.json"))?;
 
-    let tarball = if args.evidence.is_absolute() {
-        args.evidence
-    } else {
-        root.join(args.evidence)
-    };
+    let tarball = resolve_release_evidence_tarball(&root, &args.evidence);
     let checksums_path = root.join("ops/release/signing/checksums.json");
     let sign_report_path = root.join("ops/release/signing/release-sign.json");
     let verify_report_path = root.join("ops/release/signing/release-verify.json");
@@ -4396,6 +4439,19 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
             1
         },
     ))
+}
+
+fn resolve_release_evidence_tarball(root: &Path, evidence: &Path) -> PathBuf {
+    let candidate = if evidence.is_absolute() {
+        evidence.to_path_buf()
+    } else {
+        root.join(evidence)
+    };
+    if candidate.is_dir() {
+        candidate.join("bundle.tar")
+    } else {
+        candidate
+    }
 }
 
 fn classify_release_diff(path: &str) -> &'static str {
@@ -6079,5 +6135,53 @@ mod tests {
         })
         .expect("runtime command verify");
         assert_eq!(exit_code, 0);
+    }
+
+    #[test]
+    fn release_verify_accepts_evidence_directory_path() {
+        let root = std::env::temp_dir().join("bijux-release-verify-dir");
+        cleanup_release_test_repo(&root);
+        fs::create_dir_all(root.join("ops/release/evidence")).expect("create evidence directory");
+        let tarball = resolve_release_evidence_tarball(&root, Path::new("ops/release/evidence"));
+        assert_eq!(tarball, root.join("ops/release/evidence/bundle.tar"));
+        cleanup_release_test_repo(&root);
+    }
+
+    #[test]
+    fn release_verify_keeps_explicit_tarball_path() {
+        let root = std::env::temp_dir().join("bijux-release-verify-tarball");
+        cleanup_release_test_repo(&root);
+        fs::create_dir_all(root.join("ops/release/evidence")).expect("create evidence directory");
+        let tarball =
+            resolve_release_evidence_tarball(&root, Path::new("ops/release/evidence/custom.tar"));
+        assert_eq!(tarball, root.join("ops/release/evidence/custom.tar"));
+        cleanup_release_test_repo(&root);
+    }
+
+    #[test]
+    fn release_tarball_members_include_ops_evidence_artifacts() {
+        let root = std::env::temp_dir().join("bijux-release-tarball-members");
+        cleanup_release_test_repo(&root);
+        let evidence_dir = root.join("ops/release/evidence");
+        fs::create_dir_all(&evidence_dir).expect("create evidence dir");
+        fs::write(evidence_dir.join("manifest.json"), "{}").expect("write manifest");
+        let rel = "artifacts/ops/evidence/ops_run/install-evidence.json";
+        let abs = root.join(rel);
+        fs::create_dir_all(abs.parent().expect("parent")).expect("create parent");
+        fs::write(&abs, "{}").expect("write artifact");
+        let manifest = serde_json::json!({
+            "ops_evidence": {
+                "install_evidence": {
+                    "path": rel
+                },
+                "redaction_secret_keys": ["token"]
+            }
+        });
+
+        let members = collect_tarball_members(&root, &manifest).expect("collect members");
+
+        assert!(members.contains(&"ops/release/evidence/manifest.json".to_string()));
+        assert!(members.contains(&rel.to_string()));
+        cleanup_release_test_repo(&root);
     }
 }
