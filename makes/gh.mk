@@ -20,7 +20,7 @@ gh-fmt: fmt ## Run GitHub formatting checks without modifying files
 gh-lint: lint ## Run GitHub lint checks
 
 gh-security: ## Run GitHub security checks through the Rust control plane
-	@mkdir -p artifacts/governance
+	@mkdir -p artifacts/governance "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "$(CURDIR)" --format json || true
 	@cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "$(CURDIR)" --format json || true
 	@cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "$(CURDIR)" --format json || true

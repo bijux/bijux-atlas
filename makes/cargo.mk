@@ -111,11 +111,11 @@ test: ## Run workspace tests with cargo nextest
 		exit 1; \
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all}"
-	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID) "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest.log"; \
 	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
 	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --workspace --config-file configs/sources/repository/nextest/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS:-$${pipestatus}}; \
+	status=$${PIPESTATUS[0]}; \
 	$(nextest_summary); \
 	trap - EXIT INT TERM; cleanup; \
 	test $$status -eq 0
@@ -126,11 +126,11 @@ test-slow: ## Run only slow_ tests with cargo nextest
 		exit 1; \
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all} -E test(/(^|::)slow_/)"
-	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID) "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest-slow.log"; \
 	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
 	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --cargo-quiet --workspace --config-file configs/sources/repository/nextest/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" -E "test(/(^|::)slow_/)" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS:-$${pipestatus}}; \
+	status=$${PIPESTATUS[0]}; \
 	$(nextest_summary); \
 	trap - EXIT INT TERM; cleanup; \
 	test $$status -eq 0
@@ -141,11 +141,11 @@ test-all: ## Run all workspace tests including slow_ and ignored tests
 		exit 1; \
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --all-features --run-ignored all --retries 0 --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all}"
-	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID) "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest-all.log"; \
 	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
 	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --cargo-quiet --workspace --all-features --config-file configs/sources/repository/nextest/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --run-ignored all --retries 0 --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS:-$${pipestatus}}; \
+	status=$${PIPESTATUS[0]}; \
 	$(nextest_summary); \
 	trap - EXIT INT TERM; cleanup; \
 	test $$status -eq 0
