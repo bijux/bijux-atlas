@@ -156,6 +156,7 @@ publish-rs: ## Publish Rust crates and dry-run by default
 		echo "RUST_PUBLISH_PACKAGES is empty; nothing to publish" >&2; \
 		exit 1; \
 	fi; \
+	mkdir -p "$(ISO_ROOT)" "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"; \
 	dry_run_flag=""; \
 	if [ "$(RUST_PUBLISH_DRY_RUN)" = "1" ]; then \
 		dry_run_flag="--dry-run"; \
