@@ -85,13 +85,14 @@ fn parse_region(raw: &str) -> Result<(String, u64, u64), ApiError> {
 }
 
 fn parse_fai(path: &std::path::Path) -> Result<HashMap<String, FaiRecord>, ApiError> {
-    let content = crate::adapters::inbound::http::effects_adapters::read_to_string(path).map_err(|e| {
-        error_json(
-            ApiErrorCode::Internal,
-            "fai read failed",
-            json!({"message": e.0}),
-        )
-    })?;
+    let content =
+        crate::adapters::inbound::http::effects_adapters::read_to_string(path).map_err(|e| {
+            error_json(
+                ApiErrorCode::Internal,
+                "fai read failed",
+                json!({"message": e.0}),
+            )
+        })?;
     let mut out = HashMap::new();
     for line in content.lines() {
         if line.trim().is_empty() {
@@ -193,7 +194,8 @@ async fn sequence_common(
     region_raw: String,
 ) -> Response {
     let started = Instant::now();
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     info!(request_id = %request_id, route = route, "request start");
     let queue_depth = state
         .queued_requests
@@ -215,7 +217,8 @@ async fn sequence_common(
     let _queue_guard = QueueGuard {
         counter: Arc::clone(&state.queued_requests),
     };
-    let overloaded_early = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    let overloaded_early =
+        crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = if overloaded_early {
         state.api.adaptive_rate_limit_factor
     } else {
@@ -273,11 +276,13 @@ async fn sequence_common(
         QueryClass::Medium
     };
     let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
-    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await
+    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+        .await
         || (state.api.shed_load_enabled && class == QueryClass::Heavy && overloaded)
     {
         crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
-        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff =
+            crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -452,7 +457,8 @@ async fn sequence_common(
     }
 
     let include_stats = bool_query_flag(&params, "include_stats");
-    let provenance = crate::adapters::inbound::http::handlers::dataset_provenance(&state, &dataset).await;
+    let provenance =
+        crate::adapters::inbound::http::handlers::dataset_provenance(&state, &dataset).await;
     let serialize_stage = Instant::now();
     if wants_text(&headers) {
         let sequence_len = sequence.len();
@@ -516,8 +522,13 @@ async fn sequence_common(
     if include_stats {
         data["sequence_meta"] = sequence_meta(&sequence);
     }
-    let payload =
-        crate::adapters::inbound::http::handlers::json_envelope(Some(json!(dataset)), None, data, None, warnings);
+    let payload = crate::adapters::inbound::http::handlers::json_envelope(
+        Some(json!(dataset)),
+        None,
+        data,
+        None,
+        warnings,
+    );
     let body =
         match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
             Ok(v) => v,
@@ -591,7 +602,8 @@ pub(crate) async fn sequence_region_handler(
     headers: HeaderMap,
     axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     let Some(region) = params.get("region").cloned() else {
         let resp = api_error_response(
             StatusCode::BAD_REQUEST,
@@ -608,7 +620,8 @@ pub(crate) async fn gene_sequence_handler(
     AxumPath(gene_id): AxumPath<String>,
     axum::extract::Query(mut params): axum::extract::Query<HashMap<String, String>>,
 ) -> Response {
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     let dataset = match parse_dataset(&params) {
         Ok(v) => v,
         Err(e) => {

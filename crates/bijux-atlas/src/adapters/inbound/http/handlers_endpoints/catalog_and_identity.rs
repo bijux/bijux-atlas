@@ -63,13 +63,21 @@ pub(crate) async fn datasets_handler(
         })
         .cloned()
         .collect::<Vec<_>>();
-    rows.sort_by(|a, b| a.dataset.canonical_string().cmp(&b.dataset.canonical_string()));
+    rows.sort_by(|a, b| {
+        a.dataset
+            .canonical_string()
+            .cmp(&b.dataset.canonical_string())
+    });
 
     let start_idx = cursor
         .as_deref()
         .and_then(|c| rows.iter().position(|r| r.dataset.canonical_string() == c))
         .map_or(0, |idx| idx.saturating_add(1));
-    let page = rows.into_iter().skip(start_idx).take(limit + 1).collect::<Vec<_>>();
+    let page = rows
+        .into_iter()
+        .skip(start_idx)
+        .take(limit + 1)
+        .collect::<Vec<_>>();
     let has_more = page.len() > limit;
     let page = if has_more {
         page[..limit].to_vec()

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::contracts::api::{list_genes_v1, ApiError, IncludeField, ListGenesParams, QueryAdapter};
+use bijux_atlas::contracts::api::{
+    list_genes_v1, ApiError, IncludeField, ListGenesParams, QueryAdapter,
+};
 use bijux_atlas::contracts::errors::ErrorCode;
 use bijux_atlas::domain::query::{GeneQueryResponse, GeneRow};
 

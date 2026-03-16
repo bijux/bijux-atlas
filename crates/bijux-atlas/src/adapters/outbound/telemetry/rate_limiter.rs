@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::config::RateLimitConfig;
 use crate::adapters::outbound::redis::RedisBackend;
+use crate::runtime::config::RateLimitConfig;
 use std::collections::HashMap;
 use std::time::Instant;
 use tokio::sync::Mutex;

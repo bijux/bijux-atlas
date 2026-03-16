@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{CacheError, DatasetCacheManager};
 use crate::domain::dataset::DatasetId;
+use crate::{CacheError, DatasetCacheManager};
 use std::sync::atomic::Ordering;
 use std::time::Instant;
 

@@ -91,7 +91,7 @@ pub(crate) fn resolve_chaos_target_node(
 #[cfg(test)]
 mod tests {
     use super::{
-        FailureInjectionRequest, resolve_chaos_target_node, resolve_failure_injection_plan,
+        resolve_chaos_target_node, resolve_failure_injection_plan, FailureInjectionRequest,
     };
     use crate::domain::cluster::resilience::FailureCategory;
 

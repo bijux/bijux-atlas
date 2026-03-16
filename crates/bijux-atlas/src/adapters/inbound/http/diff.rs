@@ -7,11 +7,11 @@ use crate::adapters::inbound::http::handlers::{
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
     with_request_id, CachePolicy,
 };
-use crate::*;
 use crate::domain::dataset::Catalog;
 use crate::domain::query::{
     DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndex, ReleaseGeneIndexEntry,
 };
+use crate::*;
 use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;
@@ -89,13 +89,14 @@ fn overlaps(entry: &ReleaseGeneIndexEntry, region: &RegionFilter) -> bool {
 }
 
 fn load_index(path: &std::path::Path) -> Result<Vec<ReleaseGeneIndexEntry>, ApiError> {
-    let bytes = crate::adapters::inbound::http::effects_adapters::read_bytes(path).map_err(|e| {
-        error_json(
-            ApiErrorCode::Internal,
-            "release index read failed",
-            json!({"message": e.0}),
-        )
-    })?;
+    let bytes =
+        crate::adapters::inbound::http::effects_adapters::read_bytes(path).map_err(|e| {
+            error_json(
+                ApiErrorCode::Internal,
+                "release index read failed",
+                json!({"message": e.0}),
+            )
+        })?;
     let idx: ReleaseGeneIndex = serde_json::from_slice(&bytes).map_err(|e| {
         error_json(
             ApiErrorCode::Internal,
@@ -137,7 +138,8 @@ async fn diff_common(
     scope: DiffScope,
 ) -> Response {
     let started = Instant::now();
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     let route = match scope {
         DiffScope::Genes => "/v1/diff/genes",
         DiffScope::Region => "/v1/diff/region",
@@ -242,11 +244,13 @@ async fn diff_common(
         .min(state.limits.max_limit);
     let class = QueryClass::Heavy;
     let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
-    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await
+    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+        .await
         || (state.api.shed_load_enabled && overloaded)
     {
         crate::record_shed_reason(&state, "bulkhead_shed_noncheap").await;
-        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff =
+            crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -513,7 +517,8 @@ async fn diff_common(
         "from_release": from_release,
         "to_release": to_release
     });
-    let provenance = crate::adapters::inbound::http::handlers::dataset_provenance(&state, &to_dataset).await;
+    let provenance =
+        crate::adapters::inbound::http::handlers::dataset_provenance(&state, &to_dataset).await;
     let payload = crate::adapters::inbound::http::handlers::json_envelope(
         Some(json!(to_dataset)),
         Some(json!({ "next_cursor": page.next_cursor.clone() })),

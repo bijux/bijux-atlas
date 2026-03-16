@@ -173,10 +173,9 @@ pub(super) fn build_dataset_query(
 ) -> Result<(DatasetId, GeneQueryRequest), ApiError> {
     let parse_map: std::collections::BTreeMap<String, String> =
         params.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
-    let parsed =
-        crate::contracts::api::params::parse_list_genes_params_with_limit(
-            &parse_map, 100, max_limit,
-        )?;
+    let parsed = crate::contracts::api::params::parse_list_genes_params_with_limit(
+        &parse_map, 100, max_limit,
+    )?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {

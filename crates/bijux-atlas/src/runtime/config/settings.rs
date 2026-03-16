@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::domain::dataset::DatasetId;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
-use crate::domain::dataset::DatasetId;
 
 pub const CONFIG_SCHEMA_VERSION: &str = "1";
-pub use crate::contracts::config::{
-    effective_config_payload, effective_runtime_config_payload, runtime_config_contract_snapshot,
-    runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
-};
 use super::env::{
     env_bool, env_dataset_list, env_duration_ms, env_f64, env_list, env_u64, env_usize,
     parse_registry_source_specs, validate_url,
+};
+pub use crate::contracts::config::{
+    effective_config_payload, effective_runtime_config_payload, runtime_config_contract_snapshot,
+    runtime_startup_config_docs_markdown, runtime_startup_config_schema_json,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -490,8 +490,7 @@ pub fn runtime_release_id() -> String {
 
 #[must_use]
 pub fn runtime_governance_version() -> String {
-    std::env::var("ATLAS_GOVERNANCE_VERSION")
-        .unwrap_or_else(|_| "unknown-governance".to_string())
+    std::env::var("ATLAS_GOVERNANCE_VERSION").unwrap_or_else(|_| "unknown-governance".to_string())
 }
 
 #[must_use]

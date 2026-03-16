@@ -11,10 +11,10 @@ pub(crate) mod output;
 use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
 use crate::domain::canonical;
 use crate::domain::dataset::{DatasetId, ShardingPlan};
-use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::domain::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
+use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::domain::query::{
     classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
     GeneFilter, GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter,

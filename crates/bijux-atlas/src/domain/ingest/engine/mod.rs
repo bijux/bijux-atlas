@@ -15,7 +15,9 @@ mod normalized;
 mod sqlite;
 mod write;
 
-use crate::domain::dataset::{ArtifactManifest, DatasetId, IngestAnomalyReport, ShardCatalog, ShardingPlan};
+use crate::domain::dataset::{
+    ArtifactManifest, DatasetId, IngestAnomalyReport, ShardCatalog, ShardingPlan,
+};
 use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::domain::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,

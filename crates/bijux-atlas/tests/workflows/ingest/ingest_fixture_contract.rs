@@ -2,10 +2,10 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{ArtifactManifest, DatasetId};
-use bijux_atlas::domain::policy::StrictnessMode;
 use bijux_atlas::domain::ingest::{ingest_dataset_with_events, IngestOptions, TimestampPolicy};
+use bijux_atlas::domain::policy::StrictnessMode;
+use bijux_atlas::domain::sha256_hex;
 use tempfile::tempdir;
 
 fn fixture(path: &str) -> PathBuf {
@@ -34,7 +34,8 @@ fn fixture_ingest_produces_expected_artifacts_and_hashes() {
 
     let manifest_bytes = std::fs::read(&result.manifest_path).expect("manifest bytes");
     let sqlite_bytes = std::fs::read(&result.sqlite_path).expect("sqlite bytes");
-    let manifest: ArtifactManifest = serde_json::from_slice(&manifest_bytes).expect("manifest json");
+    let manifest: ArtifactManifest =
+        serde_json::from_slice(&manifest_bytes).expect("manifest json");
 
     assert_eq!(manifest.checksums.sqlite_sha256, sha256_hex(&sqlite_bytes));
     assert_eq!(

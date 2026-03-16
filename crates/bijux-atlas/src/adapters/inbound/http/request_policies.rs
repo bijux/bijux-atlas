@@ -8,7 +8,6 @@ use crate::domain::security::authorization::{
     PermissionEvaluator, RoleCatalog, RoleRegistry,
 };
 use crate::domain::security::data_protection::https_enforced;
-use base64::Engine as _;
 use crate::sha256_hex;
 use axum::body::Body;
 use axum::extract::State;
@@ -16,6 +15,7 @@ use axum::http::{HeaderMap, HeaderValue, Request, StatusCode, Uri};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
+use base64::Engine as _;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use std::sync::atomic::Ordering;
@@ -86,7 +86,11 @@ impl ApiKeyStore {
 
     fn validate(&self, raw_key: &str, now_unix_s: u64) -> Result<(), ApiKeyValidationError> {
         let candidate_hash = hash_api_key(raw_key);
-        let Some(record) = self.records.iter().find(|item| item.key_hash == candidate_hash) else {
+        let Some(record) = self
+            .records
+            .iter()
+            .find(|item| item.key_hash == candidate_hash)
+        else {
             return Err(ApiKeyValidationError::Unknown);
         };
         if record.revoked {
@@ -216,8 +220,8 @@ fn validate_signed_token(
         return Err(TokenValidationError::Malformed);
     };
     let signed_content = format!("{header_b64}.{payload_b64}");
-    let mut mac =
-        Hmac::<Sha256>::new_from_slice(secret.as_bytes()).map_err(|_| TokenValidationError::Malformed)?;
+    let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes())
+        .map_err(|_| TokenValidationError::Malformed)?;
     mac.update(signed_content.as_bytes());
     let expected = mac.finalize().into_bytes();
     let parsed_sig = base64::engine::general_purpose::URL_SAFE_NO_PAD
@@ -286,13 +290,7 @@ fn validate_signed_token(
 pub fn route_sli_class(route: &str) -> &'static str {
     if matches!(
         route,
-        "/health"
-            | "/healthz"
-            | "/ready"
-            | "/readyz"
-            | "/live"
-            | "/metrics"
-            | "/v1/version"
+        "/health" | "/healthz" | "/ready" | "/readyz" | "/live" | "/metrics" | "/v1/version"
     ) {
         return "cheap";
     }
@@ -387,19 +385,14 @@ fn build_embedded_authorization_engine(
     ] {
         registry.assign_role(principal_id, role_id);
     }
-    Ok(AuthorizationEngine::new(
-        registry, evaluator, policy,
-    ))
+    Ok(AuthorizationEngine::new(registry, evaluator, policy))
 }
 
-fn embedded_policy_allows(
-    principal: &str,
-    action: &str,
-    resource_kind: &str,
-    route: &str,
-) -> bool {
-    const EMBEDDED_AUTH_POLICY: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/policy.yaml"));
+fn embedded_policy_allows(principal: &str, action: &str, resource_kind: &str, route: &str) -> bool {
+    const EMBEDDED_AUTH_POLICY: &str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../configs/sources/security/policy.yaml"
+    ));
     static POLICY: std::sync::OnceLock<Result<serde_yaml::Value, String>> =
         std::sync::OnceLock::new();
     let policy = match POLICY.get_or_init(|| parse_embedded_auth_policy(EMBEDDED_AUTH_POLICY)) {
@@ -490,10 +483,14 @@ fn embedded_authorization_allows(
         env!("CARGO_MANIFEST_DIR"),
         "/../../configs/sources/security/permissions.yaml"
     ));
-    const EMBEDDED_ROLES: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/roles.yaml"));
-    const EMBEDDED_AUTHZ_POLICY: &str =
-        include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../configs/sources/security/policy.yaml"));
+    const EMBEDDED_ROLES: &str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../configs/sources/security/roles.yaml"
+    ));
+    const EMBEDDED_AUTHZ_POLICY: &str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../configs/sources/security/policy.yaml"
+    ));
     static ENGINE: std::sync::OnceLock<Result<AuthorizationEngine, String>> =
         std::sync::OnceLock::new();
     let engine = match ENGINE.get_or_init(|| {
@@ -633,17 +630,17 @@ fn build_audit_event(
         serde_json::Value::String(resource_kind.to_string()),
     );
     if let Some(redacted) = redacted_audit_field("resource_id", resource_id) {
-        object.insert("resource_id".to_string(), serde_json::Value::String(redacted));
+        object.insert(
+            "resource_id".to_string(),
+            serde_json::Value::String(redacted),
+        );
     }
     for (key, value) in fields {
         if !audit_dynamic_field_allowed(key) {
             continue;
         }
         if let Some(redacted) = redacted_audit_field(key, value) {
-            object.insert(
-                (*key).to_string(),
-                serde_json::Value::String(redacted),
-            );
+            object.insert((*key).to_string(), serde_json::Value::String(redacted));
         }
     }
     serde_json::Value::Object(object)
@@ -740,7 +737,8 @@ pub(crate) async fn cors_middleware(
                 .any(|allowed| allowed == &origin_value)
             {
                 if let Ok(value) = HeaderValue::from_str(&origin_value) {
-                    resp.headers_mut().insert("access-control-allow-origin", value);
+                    resp.headers_mut()
+                        .insert("access-control-allow-origin", value);
                 }
                 resp.headers_mut().insert(
                     "access-control-allow-methods",
@@ -766,7 +764,8 @@ pub(crate) async fn cors_middleware(
             .any(|allowed| allowed == &origin_value)
         {
             if let Ok(value) = HeaderValue::from_str(&origin_value) {
-                resp.headers_mut().insert("access-control-allow-origin", value);
+                resp.headers_mut()
+                    .insert("access-control-allow-origin", value);
             }
             resp.headers_mut()
                 .insert("vary", HeaderValue::from_static("Origin"));
@@ -785,17 +784,17 @@ pub(crate) async fn provenance_headers_middleware(
 
     let (dataset_hash, release, artifact_hash): (Option<String>, Option<String>, Option<String>) =
         if let Some(ds) = dataset {
-        let artifact_hash = state
-            .cache
-            .fetch_manifest_summary(&ds)
-            .await
-            .ok()
-            .map(|m| m.dataset_signature_sha256);
-        (
-            Some(sha256_hex(ds.canonical_string().as_bytes())),
-            Some(ds.release.to_string()),
-            artifact_hash,
-        )
+            let artifact_hash = state
+                .cache
+                .fetch_manifest_summary(&ds)
+                .await
+                .ok()
+                .map(|m| m.dataset_signature_sha256);
+            (
+                Some(sha256_hex(ds.canonical_string().as_bytes())),
+                Some(ds.release.to_string()),
+                artifact_hash,
+            )
         } else {
             (None, None, None)
         };
@@ -824,7 +823,8 @@ pub(crate) async fn resilience_middleware(
     next: Next,
 ) -> Response {
     let path = req.uri().path().to_string();
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
     if state.api.emergency_global_breaker
         && path != "/healthz"
         && path != "/healthz/overload"
@@ -904,10 +904,10 @@ fn proxy_authenticated_principal(
 ) -> Option<&'static str> {
     match auth_mode {
         crate::runtime::config::AuthMode::Oidc => {
-            normalized_header_value(headers, "x-forwarded-user", 256)
+            { normalized_header_value(headers, "x-forwarded-user", 256) }
+                .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
+                .map(|_| "user")
         }
-            .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
-            .map(|_| "user"),
         crate::runtime::config::AuthMode::Mtls => {
             normalized_header_value(headers, "x-forwarded-client-cert", 512)
                 .or_else(|| normalized_header_value(headers, "x-atlas-mtls-subject", 256))
@@ -952,7 +952,12 @@ async fn record_auth_failure(state: &AppState, reason: &str, route: &str) {
     }
 }
 
-async fn record_authorization_denial(state: &AppState, route: &str, action: &str, resource_kind: &str) {
+async fn record_authorization_denial(
+    state: &AppState,
+    route: &str,
+    action: &str,
+    resource_kind: &str,
+) {
     record_policy_violation(state, "authorization.denied").await;
     let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
     let count = by.entry("authorization.denied".to_string()).or_insert(0);
@@ -975,7 +980,12 @@ pub async fn record_shed_reason(state: &AppState, reason: &str) {
 
 #[allow(dead_code)] // ATLAS-EXC-0001
 pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str) {
-    let mut by = state.cache.metrics.invariant_violations_by_name.lock().await;
+    let mut by = state
+        .cache
+        .metrics
+        .invariant_violations_by_name
+        .lock()
+        .await;
     *by.entry(invariant.to_string()).or_insert(0) += 1;
 }
 
@@ -986,7 +996,8 @@ pub(crate) async fn security_middleware(
 ) -> Response {
     let uri_text = req.uri().to_string();
     let route = req.uri().path().to_string();
-    let request_id = crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
+    let request_id =
+        crate::adapters::inbound::http::handlers::propagated_request_id(req.headers(), &state);
     info!(
         event_id = "authentication_evaluation_started",
         event = "authentication_evaluation_started",
@@ -1075,8 +1086,10 @@ pub(crate) async fn security_middleware(
         .await;
 
     let api_key = normalized_header_value(req.headers(), "x-api-key", 512);
-    let api_key_store =
-        ApiKeyStore::from_allowed_entries(&state.api.allowed_api_keys, state.api.api_key_expiration_days);
+    let api_key_store = ApiKeyStore::from_allowed_entries(
+        &state.api.allowed_api_keys,
+        state.api.api_key_expiration_days,
+    );
     if !auth_exempt && state.api.require_api_key && api_key.is_none() {
         emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
         record_auth_failure(&state, "api_key_required", &route).await;
@@ -1093,7 +1106,9 @@ pub(crate) async fn security_middleware(
     }
     if let Some(key) = &api_key {
         if !api_key_store.records.is_empty()
-            && api_key_store.validate(key, chrono_like_unix_secs()).is_err()
+            && api_key_store
+                .validate(key, chrono_like_unix_secs())
+                .is_err()
         {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_auth_failure(&state, "api_key_invalid", &route).await;
@@ -1111,10 +1126,7 @@ pub(crate) async fn security_middleware(
     }
 
     let token = token_header_value(req.headers());
-    let token_context = if matches!(
-        state.api.auth_mode,
-        crate::runtime::config::AuthMode::Token
-    ) {
+    let token_context = if matches!(state.api.auth_mode, crate::runtime::config::AuthMode::Token) {
         let Some(raw_token) = token.as_deref() else {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_auth_failure(&state, "token_missing", &route).await;
@@ -1227,9 +1239,7 @@ pub(crate) async fn security_middleware(
             issuer: None,
             scopes: Vec::new(),
         }
-    } else if auth_exempt
-        || state.api.auth_mode == crate::runtime::config::AuthMode::Disabled
-    {
+    } else if auth_exempt || state.api.auth_mode == crate::runtime::config::AuthMode::Disabled {
         AuthenticationContext {
             principal: "user",
             mechanism: "none",
@@ -1241,8 +1251,7 @@ pub(crate) async fn security_middleware(
         context
     } else if matches!(
         state.api.auth_mode,
-        crate::runtime::config::AuthMode::Oidc
-            | crate::runtime::config::AuthMode::Mtls
+        crate::runtime::config::AuthMode::Oidc | crate::runtime::config::AuthMode::Mtls
     ) {
         let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
         else {
@@ -1327,7 +1336,11 @@ pub(crate) async fn security_middleware(
                 route_action_id(&route),
                 route_resource_kind(&route),
                 &route,
-                &[("decision", "deny"), ("reason", "policy_denied"), ("route", route.as_str())],
+                &[
+                    ("decision", "deny"),
+                    ("reason", "policy_denied"),
+                    ("route", route.as_str()),
+                ],
             );
         }
         let err = Json(ApiError::new(
@@ -1385,8 +1398,8 @@ pub(crate) async fn security_middleware(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::time::Duration;
     use crate::runtime::config::AuthMode;
+    use std::time::Duration;
 
     #[test]
     fn health_endpoints_stay_auth_exempt_in_all_modes() {
@@ -1397,9 +1410,15 @@ mod tests {
             AuthMode::Oidc,
             AuthMode::Mtls,
         ] {
-            assert!(route_auth_exempt("/healthz"), "{mode:?} must allow /healthz");
+            assert!(
+                route_auth_exempt("/healthz"),
+                "{mode:?} must allow /healthz"
+            );
             assert!(route_auth_exempt("/readyz"), "{mode:?} must allow /readyz");
-            assert!(route_auth_exempt("/v1/version"), "{mode:?} must allow /v1/version");
+            assert!(
+                route_auth_exempt("/v1/version"),
+                "{mode:?} must allow /v1/version"
+            );
             assert!(
                 !route_auth_exempt("/v1/datasets"),
                 "{mode:?} must not mark data routes as auth exempt"
@@ -1423,10 +1442,19 @@ mod tests {
     #[test]
     fn proxy_modes_require_boundary_identity_headers() {
         let mut headers = HeaderMap::new();
-        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Oidc), None);
-        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Mtls), None);
+        assert_eq!(
+            proxy_authenticated_principal(&headers, AuthMode::Oidc),
+            None
+        );
+        assert_eq!(
+            proxy_authenticated_principal(&headers, AuthMode::Mtls),
+            None
+        );
         headers.insert("x-forwarded-user", HeaderValue::from_static("alice"));
-        assert_eq!(proxy_authenticated_principal(&headers, AuthMode::Oidc), Some("user"));
+        assert_eq!(
+            proxy_authenticated_principal(&headers, AuthMode::Oidc),
+            Some("user")
+        );
         headers.clear();
         headers.insert(
             "x-atlas-mtls-subject",
@@ -1562,7 +1590,8 @@ mod tests {
             Hmac::<Sha256>::new_from_slice(b"default").expect("static hmac key")
         });
         mac.update(signed.as_bytes());
-        let sig = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(mac.finalize().into_bytes());
+        let sig =
+            base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(mac.finalize().into_bytes());
         format!("{signed}.{sig}")
     }
 
@@ -1585,7 +1614,11 @@ mod tests {
         let store = ApiKeyStore::from_allowed_entries(
             &[
                 active.clone(),
-                format!("hash={}|not_before={}", hash_api_key(&future), now.saturating_add(60)),
+                format!(
+                    "hash={}|not_before={}",
+                    hash_api_key(&future),
+                    now.saturating_add(60)
+                ),
                 format!("hash={}|revoked=true", hash_api_key(&revoked)),
                 format!(
                     "hash={}|expires={}",

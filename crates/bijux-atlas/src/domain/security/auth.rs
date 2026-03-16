@@ -310,10 +310,7 @@ pub fn extract_request_identity(headers: &BTreeMap<String, String>) -> RequestId
         .filter(|value| !value.is_empty())
         .map(ToString::to_string)
         .unwrap_or_default();
-    let user_agent = headers
-        .get("user-agent")
-        .cloned()
-        .unwrap_or_default();
+    let user_agent = headers.get("user-agent").cloned().unwrap_or_default();
     RequestIdentity {
         request_id,
         client_ip,

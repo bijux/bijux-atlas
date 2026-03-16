@@ -3,11 +3,11 @@
 use super::extract::ExtractResult;
 use super::IngestError;
 use crate::domain::canonical;
-use crate::domain::sha256_hex;
 use crate::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
     ShardingPlan, ValidationError,
 };
+use crate::domain::sha256_hex;
 use serde_json::json;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -73,8 +73,12 @@ pub fn build_and_write_manifest_and_reports(
         ),
     );
     manifest.dataset_signature_sha256 = dataset_signature_merkle(extract)?;
-    let policy_hash =
-        sha256_hex(&fs::read(workspace_file("configs/sources/governance/policy/policy.json")).unwrap_or_default());
+    let policy_hash = sha256_hex(
+        &fs::read(workspace_file(
+            "configs/sources/governance/policy/policy.json",
+        ))
+        .unwrap_or_default(),
+    );
     manifest.input_hashes = ManifestInputHashes::new(
         manifest.checksums.gff3_sha256.clone(),
         manifest.checksums.fasta_sha256.clone(),

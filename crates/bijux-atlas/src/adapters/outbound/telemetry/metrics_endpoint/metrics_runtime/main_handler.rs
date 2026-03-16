@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
 use super::request_and_latency_metrics::append_request_and_latency_metrics;
+use super::*;
 
 #[cfg(target_os = "linux")]
 fn current_process_rss_bytes() -> u64 {

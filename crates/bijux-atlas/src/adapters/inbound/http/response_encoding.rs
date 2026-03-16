@@ -2,8 +2,8 @@
 
 use crate::*;
 use brotli::CompressorWriter;
-use flate2::{Compression, write::GzEncoder};
-use serde_json::{Value, json};
+use flate2::{write::GzEncoder, Compression};
+use serde_json::{json, Value};
 use std::io::Write;
 
 pub(crate) fn is_gene_id_exact_query(req: &GeneQueryRequest) -> Option<&str> {

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use crate::adapters::outbound::store::testing::FakeStore;
 use crate::app::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
 use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
-use crate::adapters::outbound::store::testing::FakeStore;
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;
 use std::sync::Arc;
@@ -35,12 +35,7 @@ fn mk_dataset() -> (DatasetId, ArtifactManifest, Vec<u8>) {
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            sqlite_sha,
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), sqlite_sha),
         ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)
@@ -54,12 +49,7 @@ fn mk_dataset_for(release: &str) -> (DatasetId, ArtifactManifest, Vec<u8>) {
         "1".to_string(),
         "1".to_string(),
         ds.clone(),
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            sqlite_sha,
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), sqlite_sha),
         ManifestStats::new(1, 1, 1),
     );
     (ds, manifest, sqlite)

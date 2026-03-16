@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::app::ports::store::{
-    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
-    StoreInstrumentation,
-};
 use super::super::catalog::validate_catalog_strict;
 use super::super::manifest::ManifestLock;
 use super::super::paths::{
     dataset_artifact_paths, manifest_lock_path, publish_lock_path, CATALOG_FILE,
+};
+use crate::app::ports::store::{
+    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
+    StoreInstrumentation,
 };
 use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
 use std::fs::{self, OpenOptions};

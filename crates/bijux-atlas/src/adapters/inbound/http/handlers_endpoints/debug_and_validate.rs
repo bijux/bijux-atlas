@@ -206,23 +206,25 @@ pub(crate) async fn query_validate_handler(
 ) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
-    let (dataset, req) =
-        match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, state.limits.max_limit) {
-            Ok(v) => v,
-            Err(e) => {
-                let resp = api_error_response(StatusCode::BAD_REQUEST, e);
-                state
-                    .metrics
-                    .observe_request_with_method(
-                        "/v1/query/validate",
-                        "POST",
-                        StatusCode::BAD_REQUEST,
-                        started.elapsed(),
-                    )
-                    .await;
-                return with_request_id(resp, &request_id);
-            }
-        };
+    let (dataset, req) = match crate::adapters::inbound::http::genes_support::build_dataset_query(
+        &params,
+        state.limits.max_limit,
+    ) {
+        Ok(v) => v,
+        Err(e) => {
+            let resp = api_error_response(StatusCode::BAD_REQUEST, e);
+            state
+                .metrics
+                .observe_request_with_method(
+                    "/v1/query/validate",
+                    "POST",
+                    StatusCode::BAD_REQUEST,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
     let class = classify_query(&req);
     let cost = estimate_query_cost(&req);
     tracing::info!(
@@ -321,13 +323,19 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
         );
         state
             .metrics
-            .observe_request("/debug/diagnostics", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/diagnostics",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
     let catalog_present = state.cache.current_catalog().await.is_some();
     let ready = state.ready.load(std::sync::atomic::Ordering::Relaxed);
-    let live = state.accepting_requests.load(std::sync::atomic::Ordering::Relaxed);
+    let live = state
+        .accepting_requests
+        .load(std::sync::atomic::Ordering::Relaxed);
     let runtime_stats = state.metrics.runtime_stats_snapshot().await;
     let cache_stats = state.cache.cache_stats_snapshot().await;
     let response = Json(json!({
@@ -366,7 +374,11 @@ pub(crate) async fn runtime_stats_handler(State(state): State<AppState>) -> impl
         );
         state
             .metrics
-            .observe_request("/debug/runtime-stats", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/runtime-stats",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
@@ -393,7 +405,11 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
         );
         state
             .metrics
-            .observe_request("/debug/system-info", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/system-info",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
@@ -426,7 +442,11 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
         );
         state
             .metrics
-            .observe_request("/debug/build-metadata", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/build-metadata",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
@@ -443,7 +463,9 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
     with_request_id(response, &request_id)
 }
 
-pub(crate) async fn runtime_config_dump_handler(State(state): State<AppState>) -> impl IntoResponse {
+pub(crate) async fn runtime_config_dump_handler(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = make_request_id(&state);
     if !state.api.enable_debug_datasets {
@@ -457,7 +479,11 @@ pub(crate) async fn runtime_config_dump_handler(State(state): State<AppState>) -
         );
         state
             .metrics
-            .observe_request("/debug/runtime-config", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/runtime-config",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
@@ -503,7 +529,11 @@ pub(crate) async fn dataset_registry_dump_handler(
         );
         state
             .metrics
-            .observe_request("/debug/dataset-registry", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/dataset-registry",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }
@@ -568,7 +598,11 @@ pub(crate) async fn query_planner_stats_dump_handler(
     let response = Json(state.metrics.query_planner_stats_snapshot().await).into_response();
     state
         .metrics
-        .observe_request("/debug/query-planner-stats", StatusCode::OK, started.elapsed())
+        .observe_request(
+            "/debug/query-planner-stats",
+            StatusCode::OK,
+            started.elapsed(),
+        )
         .await;
     with_request_id(response, &request_id)
 }
@@ -587,7 +621,11 @@ pub(crate) async fn cache_stats_dump_handler(State(state): State<AppState>) -> i
         );
         state
             .metrics
-            .observe_request("/debug/cache-stats", StatusCode::NOT_FOUND, started.elapsed())
+            .observe_request(
+                "/debug/cache-stats",
+                StatusCode::NOT_FOUND,
+                started.elapsed(),
+            )
             .await;
         return with_request_id(resp, &request_id);
     }

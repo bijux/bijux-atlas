@@ -40,6 +40,8 @@ fn main() {
     );
     version_support::emit_optional_env(
         "BIJUX_ATLAS_BUILD_GIT_DIRTY",
-        metadata.git_dirty.map(|dirty| if dirty { "1" } else { "0" }),
+        metadata
+            .git_dirty
+            .map(|dirty| if dirty { "1" } else { "0" }),
     );
 }

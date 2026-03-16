@@ -29,8 +29,7 @@ pub fn normalized_ast_format(ast: &GeneQueryAst) -> Result<String, String> {
         has_cursor: ast.has_cursor,
         sort_key: ast.sort_key,
     };
-    serde_json::to_string(&ordered)
-        .map_err(|err| format!("serialize normalized query ast: {err}"))
+    serde_json::to_string(&ordered).map_err(|err| format!("serialize normalized query ast: {err}"))
 }
 
 fn predicate_sort_key(predicate: &Predicate) -> String {

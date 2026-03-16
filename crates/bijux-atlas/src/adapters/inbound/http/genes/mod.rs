@@ -3,7 +3,7 @@
 #![deny(clippy::redundant_clone)]
 
 pub(crate) mod admission;
-pub(crate) mod response;
 mod handler;
+pub(crate) mod response;
 
 pub(crate) use self::handler::genes_handler;

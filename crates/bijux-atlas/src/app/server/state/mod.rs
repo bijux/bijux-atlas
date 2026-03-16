@@ -2,16 +2,16 @@
 
 use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
-use crate::{chrono_like_unix_millis, route_sli_class};
-use crate::StatusCode;
 use crate::app::server::cache;
-use crate::runtime::config::ApiConfig;
 use crate::domain::cluster::membership::MembershipRegistry;
 use crate::domain::cluster::replication::ReplicaRegistry;
 use crate::domain::cluster::resilience::FailureRecoveryRegistry;
 use crate::domain::cluster::sharding::ShardRegistry;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use crate::domain::sha256_hex;
+use crate::runtime::config::ApiConfig;
+use crate::StatusCode;
+use crate::{chrono_like_unix_millis, route_sli_class};
 use bijux_atlas::domain::query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -395,8 +395,8 @@ pub(crate) struct StoreBreakerState {
     pub(crate) open_until: Option<Instant>,
 }
 
-use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::adapters::outbound::redis::RedisBackend;
+use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 
 pub struct DatasetConnection {
     pub conn: Connection,

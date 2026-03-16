@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::sha256_hex;
-use bijux_atlas::domain::dataset::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats,
-};
 #[cfg(feature = "backend-s3")]
 use bijux_atlas::adapters::outbound::store::HttpReadonlyStore;
 use bijux_atlas::adapters::outbound::store::{ArtifactStore, LocalFsStore};
+use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::sha256_hex;
 use tempfile::tempdir;
 
 fn dataset() -> DatasetId {
@@ -67,7 +65,10 @@ fn http_backend_reads_from_hermetic_cached_objects() {
     let ds = dataset();
     let m = manifest(ds.clone());
     let manifest_bytes = serde_json::to_vec(&m).expect("manifest json");
-    let lock = bijux_atlas::adapters::outbound::store::ManifestLock::from_bytes(&manifest_bytes, b"sqlite");
+    let lock = bijux_atlas::adapters::outbound::store::ManifestLock::from_bytes(
+        &manifest_bytes,
+        b"sqlite",
+    );
     let lock_bytes = serde_json::to_vec(&lock).expect("lock bytes");
 
     let catalog_json = "{\"model_version\":\"v1\",\"datasets\":[{\"dataset\":{\"release\":\"110\",\"species\":\"homo_sapiens\",\"assembly\":\"GRCh38\"},\"manifest_path\":\"110/homo_sapiens/GRCh38/manifest.json\",\"sqlite_path\":\"110/homo_sapiens/GRCh38/gene_summary.sqlite\"}]}";

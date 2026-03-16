@@ -214,7 +214,10 @@ impl DatasetCacheManager {
     }
 
     pub async fn dataset_registry_dump(&self) -> serde_json::Value {
-        let catalog = self.current_catalog().await.unwrap_or_else(|| Catalog::new(vec![]));
+        let catalog = self
+            .current_catalog()
+            .await
+            .unwrap_or_else(|| Catalog::new(vec![]));
         let mut datasets = catalog
             .datasets
             .into_iter()

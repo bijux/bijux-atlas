@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 
 pub(crate) struct RequestQueueGuard {
     pub(crate) counter: Arc<AtomicU64>,
@@ -20,7 +20,8 @@ pub(crate) fn make_request_id(state: &AppState) -> String {
 }
 
 pub(crate) fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> String {
-    crate::adapters::inbound::http::request_tracing::extract_request_trace(headers, state).request_id
+    crate::adapters::inbound::http::request_tracing::extract_request_trace(headers, state)
+        .request_id
 }
 
 pub(crate) fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {

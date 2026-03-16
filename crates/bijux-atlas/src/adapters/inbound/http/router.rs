@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::app::server::cache;
-use crate::app::server::state::{
-    AppState, DatasetCacheManager, RequestMetrics,
-};
+use crate::adapters::inbound::http;
 use crate::adapters::inbound::http::request_policies::{
     cors_middleware, provenance_headers_middleware, resilience_middleware, security_middleware,
 };
 use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
-use crate::runtime::config::ApiConfig;
-use crate::domain::cluster::config::load_cluster_config_from_path;
+use crate::app::server::cache;
+use crate::app::server::state::{AppState, DatasetCacheManager, RequestMetrics};
 use crate::domain::canonical;
+use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::cluster::membership::{MembershipPolicy, MembershipRegistry};
 use crate::domain::cluster::replication::{
     ConsistencyGuarantee, ConsistencyLevel, ReplicaRegistry, ReplicationPolicy,
@@ -21,7 +19,7 @@ use crate::domain::cluster::resilience::{
 };
 use crate::domain::cluster::sharding::ShardRegistry;
 use crate::domain::sha256_hex;
-use crate::adapters::inbound::http;
+use crate::runtime::config::ApiConfig;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
 use axum::routing::{get, post};
@@ -359,7 +357,6 @@ pub fn build_router(state: AppState) -> Router {
         .with_state(state)
 }
 
-
 #[cfg(test)]
 mod bulkhead_tests {
     use super::*;
@@ -429,10 +426,18 @@ mod bulkhead_tests {
         let state = AppState::with_config(cache, ApiConfig::default(), QueryLimits::default());
 
         let shard_count = state.shard_registry.lock().await.metrics().shard_count;
-        let replica_groups = state.replica_registry.lock().await.metrics().replica_groups_total;
+        let replica_groups = state
+            .replica_registry
+            .lock()
+            .await
+            .metrics()
+            .replica_groups_total;
 
         assert_eq!(shard_count, 0, "runtime must not fabricate shard ownership");
-        assert_eq!(replica_groups, 0, "runtime must not fabricate replica groups");
+        assert_eq!(
+            replica_groups, 0,
+            "runtime must not fabricate replica groups"
+        );
     }
 
     #[tokio::test]

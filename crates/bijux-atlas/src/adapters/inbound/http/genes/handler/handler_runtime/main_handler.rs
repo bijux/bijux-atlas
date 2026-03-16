@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::ShardCatalog;
-use crate::domain::dataset::artifact_paths;
-use crate::domain::sha256_hex;
-use crate::adapters::inbound::http::genes::{admission as genes_admission, response as genes_response};
+use crate::adapters::inbound::http::genes::{
+    admission as genes_admission, response as genes_response,
+};
 use crate::adapters::inbound::http::{genes_support, handlers};
+use crate::domain::dataset::artifact_paths;
+use crate::domain::dataset::ShardCatalog;
+use crate::domain::sha256_hex;
 use crate::*;
 use bijux_atlas::domain::query::{
     estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,
@@ -45,7 +47,8 @@ pub(crate) async fn genes_handler(
         return handlers::with_request_id(resp, &request_id);
     }
     info!(request_id = %request_id, "request start");
-    let overloaded_early = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    let overloaded_early =
+        crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = genes_support::adaptive_rl_factor(&state, overloaded_early);
     if let Some(resp) = async {
         genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
@@ -165,10 +168,12 @@ pub(crate) async fn genes_handler(
     genes_support::cap_heavy_limit(&mut req, &state, class, overloaded);
     let (exact_gene_id, redis_cache_key) = genes_support::exact_lookup_cache_keys(&dataset, &req);
     if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
-        || crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await
+        || crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+            .await
     {
         crate::record_shed_reason(&state, "bulkhead_shed_heavy").await;
-        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
+        let backoff =
+            crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = handlers::api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -298,9 +303,7 @@ pub(crate) async fn genes_handler(
                     let guard = redis.acquire_fill_lock(cache_key).await;
                     match redis.get_gene_cache(cache_key).await {
                         Ok(Some(cached_bytes)) => {
-                            if handlers::if_none_match(&headers).as_deref()
-                                == Some(etag.as_str())
-                            {
+                            if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
                                 let mut resp = StatusCode::NOT_MODIFIED.into_response();
                                 handlers::put_cache_headers(
                                     resp.headers_mut(),
@@ -528,22 +531,19 @@ pub(crate) async fn genes_handler(
                     dataset_id = %dataset.canonical_string(),
                     "shard routing started"
                 );
-                let catalog_path = artifact_paths(
-                    state.cache.disk_root(),
-                    &dataset,
-                )
-                .derived_dir
-                .join("catalog_shards.json");
+                let catalog_path = artifact_paths(state.cache.disk_root(), &dataset)
+                    .derived_dir
+                    .join("catalog_shards.json");
                 if catalog_path.exists() {
-                    let raw = crate::adapters::inbound::http::effects_adapters::read_bytes(&catalog_path)?;
+                    let raw = crate::adapters::inbound::http::effects_adapters::read_bytes(
+                        &catalog_path,
+                    )?;
                     if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
                         let selected_rel = select_shards_for_request(&req, &catalog);
                         let selected_all = shard_candidates.clone().unwrap_or_default();
                         let selected: Vec<std::path::PathBuf> = selected_all
                             .into_iter()
-                            .filter(|p| {
-                                selected_rel.iter().any(|r| p.ends_with(r))
-                            })
+                            .filter(|p| selected_rel.iter().any(|r| p.ends_with(r)))
                             .collect();
                         if !selected.is_empty() {
                             let mut shard_conns = Vec::new();
@@ -555,13 +555,14 @@ pub(crate) async fn genes_handler(
                                 tracing::Span::current()
                                     .record("shard_id", tracing::field::display(shard.display()));
                                 permits.push(state.cache.try_acquire_shard_permit()?);
-                                let conn = crate::adapters::outbound::sqlite::open_readonly_no_mutex(&shard)?;
+                                let conn =
+                                    crate::adapters::outbound::sqlite::open_readonly_no_mutex(
+                                        &shard,
+                                    )?;
                                 let (cache_kib, shard_mmap) =
                                     state.cache.sqlite_pragmas_for_shard_open();
                                 let _ = crate::adapters::outbound::sqlite::apply_readonly_pragmas(
-                                    &conn,
-                                    cache_kib,
-                                    shard_mmap,
+                                    &conn, cache_kib, shard_mmap,
                                 );
                                 shard_conns.push(conn);
                             }
@@ -622,12 +623,12 @@ pub(crate) async fn genes_handler(
             )
             .in_scope(|| {
                 genes_response::build_success_payload(
-                &dataset,
-                &req,
-                class,
-                resp,
-                explain_mode,
-                provenance,
+                    &dataset,
+                    &req,
+                    class,
+                    resp,
+                    explain_mode,
+                    provenance,
                 )
             })
         }

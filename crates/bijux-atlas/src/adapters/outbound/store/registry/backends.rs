@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
-use async_trait::async_trait;
 use crate::domain::dataset::{artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId};
 use crate::domain::sha256_hex;
+use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
+use async_trait::async_trait;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
 use std::net::IpAddr;
@@ -36,10 +36,7 @@ impl LocalFsBackend {
         Self { root }
     }
 
-    fn safe_dataset_paths(
-        &self,
-        dataset: &DatasetId,
-    ) -> Result<ArtifactPaths, CacheError> {
+    fn safe_dataset_paths(&self, dataset: &DatasetId) -> Result<ArtifactPaths, CacheError> {
         let paths = artifact_paths(Path::new(&self.root), dataset);
         Ok(paths)
     }

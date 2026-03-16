@@ -2,8 +2,8 @@
 
 use super::*;
 
-mod cache_paths_and_io;
 mod cache_lifecycle;
+mod cache_paths_and_io;
 
 mod sqlite_statement_warmup;
 mod storage_methods;

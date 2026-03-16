@@ -6,15 +6,15 @@ use bijux_atlas::adapters::outbound::store::{
 };
 use bijux_atlas::adapters::outbound::telemetry::logging::LoggingConfig;
 use bijux_atlas::adapters::outbound::telemetry::tracing::{
-    TraceConfig, TraceExporterKind, init_tracing,
+    init_tracing, TraceConfig, TraceExporterKind,
 };
 use bijux_atlas::app::ports::DatasetStoreBackend;
 use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::runtime::config::{
-    StoreMode, effective_runtime_config_payload, load_runtime_config,
-    runtime_governance_version, runtime_release_id,
+    effective_runtime_config_payload, load_runtime_config, runtime_governance_version,
+    runtime_release_id, StoreMode,
 };
 use clap::Parser;
 use std::path::PathBuf;
@@ -495,65 +495,62 @@ async fn main() -> Result<(), String> {
         max_attempts: runtime.store.retry.max_attempts,
         base_backoff_ms: runtime.store.retry.base_backoff_ms,
     };
-    let backend: Arc<dyn DatasetStoreBackend> =
-        if !runtime.store.registry_sources.is_empty() {
-            let ttl = cache_cfg.registry_ttl;
-            let registries: Result<Vec<RegistrySource>, String> = runtime
-                .store
-                .registry_sources
-                .iter()
-                .map(|row| {
-                    let backend: Arc<dyn DatasetStoreBackend> =
-                        match row.scheme.as_str() {
-                            "local" => Arc::new(LocalFsBackend::new(std::path::PathBuf::from(
-                                &row.endpoint,
-                            ))),
-                            "s3" => Arc::new(S3LikeBackend::new(
-                                row.endpoint.clone(),
-                                runtime.store.s3_presigned_base_url.clone(),
-                                runtime.store.s3_bearer.clone(),
-                                retry.clone(),
-                                runtime.store.allow_private_hosts,
-                            )),
-                            "http" => Arc::new(S3LikeBackend::new(
-                                row.endpoint.clone(),
-                                None,
-                                runtime.store.http_bearer.clone(),
-                                retry.clone(),
-                                runtime.store.allow_private_hosts,
-                            )),
-                            other => {
-                                return Err(format!("unsupported registry source scheme: {other}"))
-                            }
-                        };
-                    Ok(RegistrySource::new(
-                        &row.name,
-                        backend,
-                        ttl,
-                        row.signature.clone(),
-                    ))
-                })
-                .collect();
-            if let Some(registries) = Some(registries?) {
-                Arc::new(FederatedBackend::new(registries))
-            } else {
-                unreachable!()
-            }
-        } else if matches!(runtime.store.mode, StoreMode::S3) {
-            let base_url =
-                runtime.store.s3_base_url.clone().ok_or_else(|| {
-                    "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string()
-                })?;
-            Arc::new(S3LikeBackend::new(
-                base_url,
-                runtime.store.s3_presigned_base_url.clone(),
-                runtime.store.s3_bearer.clone(),
-                retry,
-                runtime.store.allow_private_hosts,
-            ))
+    let backend: Arc<dyn DatasetStoreBackend> = if !runtime.store.registry_sources.is_empty() {
+        let ttl = cache_cfg.registry_ttl;
+        let registries: Result<Vec<RegistrySource>, String> = runtime
+            .store
+            .registry_sources
+            .iter()
+            .map(|row| {
+                let backend: Arc<dyn DatasetStoreBackend> = match row.scheme.as_str() {
+                    "local" => {
+                        Arc::new(LocalFsBackend::new(std::path::PathBuf::from(&row.endpoint)))
+                    }
+                    "s3" => Arc::new(S3LikeBackend::new(
+                        row.endpoint.clone(),
+                        runtime.store.s3_presigned_base_url.clone(),
+                        runtime.store.s3_bearer.clone(),
+                        retry.clone(),
+                        runtime.store.allow_private_hosts,
+                    )),
+                    "http" => Arc::new(S3LikeBackend::new(
+                        row.endpoint.clone(),
+                        None,
+                        runtime.store.http_bearer.clone(),
+                        retry.clone(),
+                        runtime.store.allow_private_hosts,
+                    )),
+                    other => return Err(format!("unsupported registry source scheme: {other}")),
+                };
+                Ok(RegistrySource::new(
+                    &row.name,
+                    backend,
+                    ttl,
+                    row.signature.clone(),
+                ))
+            })
+            .collect();
+        if let Some(registries) = Some(registries?) {
+            Arc::new(FederatedBackend::new(registries))
         } else {
-            Arc::new(LocalFsBackend::new(runtime.store.local_root.clone()))
-        };
+            unreachable!()
+        }
+    } else if matches!(runtime.store.mode, StoreMode::S3) {
+        let base_url = runtime
+            .store
+            .s3_base_url
+            .clone()
+            .ok_or_else(|| "ATLAS_STORE_S3_BASE_URL is required when S3 enabled".to_string())?;
+        Arc::new(S3LikeBackend::new(
+            base_url,
+            runtime.store.s3_presigned_base_url.clone(),
+            runtime.store.s3_bearer.clone(),
+            retry,
+            runtime.store.allow_private_hosts,
+        ))
+    } else {
+        Arc::new(LocalFsBackend::new(runtime.store.local_root.clone()))
+    };
     let cache = DatasetCacheManager::new(cache_cfg.clone(), backend);
     cache
         .metrics

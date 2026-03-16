@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::{ArtifactManifest, DatasetId};
 use crate::contracts::errors::ErrorCode;
+use crate::domain::dataset::{ArtifactManifest, DatasetId};
 use std::collections::BTreeMap;
 use std::fmt::{Display, Formatter};
 use std::fs;
@@ -128,7 +128,9 @@ impl StoreInstrumentation for StoreMetricsCollector {
     fn observe_error(&self, _backend: &str, code: StoreErrorCode) {
         if let Ok(mut m) = self.inner.lock() {
             m.request_count = m.request_count.saturating_add(1);
-            *m.failures_by_class.entry(code.as_str().to_string()).or_insert(0) += 1;
+            *m.failures_by_class
+                .entry(code.as_str().to_string())
+                .or_insert(0) += 1;
         }
     }
 }

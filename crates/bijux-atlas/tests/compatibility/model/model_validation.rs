@@ -4,9 +4,7 @@ use bijux_atlas::domain::dataset::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, DatasetId,
     ManifestStats,
 };
-use bijux_atlas::domain::query::{
-    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, SeqId,
-};
+use bijux_atlas::domain::query::{DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, SeqId};
 
 #[test]
 fn manifest_validate_rejects_empty_hashes() {

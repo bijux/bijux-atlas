@@ -18,12 +18,8 @@ fn fixture(path: &str) -> String {
 
 #[test]
 fn top_level_models_roundtrip_and_validate() {
-    let dataset = bijux_atlas::domain::dataset::DatasetId::new(
-        "110",
-        "homo_sapiens",
-        "GRCh38",
-    )
-    .expect("dataset");
+    let dataset = bijux_atlas::domain::dataset::DatasetId::new("110", "homo_sapiens", "GRCh38")
+        .expect("dataset");
 
     let mut manifest = ArtifactManifest::new(
         "1".to_string(),

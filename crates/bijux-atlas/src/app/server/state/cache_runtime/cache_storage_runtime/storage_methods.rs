@@ -2,9 +2,7 @@ use super::*;
 
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
-        let disk_root = crate::runtime::config::resolve_runtime_path(
-            cfg.disk_root.clone(),
-        );
+        let disk_root = crate::runtime::config::resolve_runtime_path(cfg.disk_root.clone());
         let cfg = DatasetCacheConfig { disk_root, ..cfg };
         let max_concurrent_downloads = cfg
             .max_concurrent_downloads_node
@@ -220,7 +218,10 @@ impl DatasetCacheManager {
         }
     }
 
-    pub(crate) async fn ensure_dataset_cached(&self, dataset: &DatasetId) -> Result<(), CacheError> {
+    pub(crate) async fn ensure_dataset_cached(
+        &self,
+        dataset: &DatasetId,
+    ) -> Result<(), CacheError> {
         self.check_quarantine(dataset).await?;
         if self.is_cached_and_verified(dataset).await? {
             self.metrics
@@ -391,7 +392,7 @@ impl DatasetCacheManager {
                 self.store.backend_tag(),
                 "checksum verification failed",
             )
-                .await;
+            .await;
             return Err(CacheError(
                 "sqlite checksum verification failed".to_string(),
             ));

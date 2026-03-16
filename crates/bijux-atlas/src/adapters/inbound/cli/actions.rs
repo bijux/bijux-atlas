@@ -461,8 +461,9 @@ pub(super) fn smoke_dataset(
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
         let req = output::query_request_from_json(body)?;
-        let resp = crate::domain::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
-            .map_err(|e| e.to_string())?;
+        let resp =
+            crate::domain::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
+                .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
             return Err("smoke failed: by_gene_id returned zero rows".to_string());
         }

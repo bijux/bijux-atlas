@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::DatasetId;
 use crate::adapters::inbound::http::handlers;
+use crate::domain::dataset::DatasetId;
 use crate::domain::query::{BiotypePolicy, GeneNamePolicy, GeneQueryRequest, QueryClass};
 use serde_json::json;
 

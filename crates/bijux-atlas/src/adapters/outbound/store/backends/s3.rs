@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #[cfg(feature = "backend-s3")]
-use crate::app::ports::store::{
-    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
-    StoreInstrumentation,
-};
-#[cfg(feature = "backend-s3")]
 use super::super::catalog::validate_catalog_strict;
 #[cfg(feature = "backend-s3")]
 use super::super::manifest::{verify_expected_sha256, ManifestLock};
@@ -16,6 +11,11 @@ use super::super::paths::{
 };
 #[cfg(feature = "backend-s3")]
 use super::super::retry::{BackoffPolicy, RetryPolicy};
+#[cfg(feature = "backend-s3")]
+use crate::app::ports::store::{
+    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
+    StoreInstrumentation,
+};
 #[cfg(feature = "backend-s3")]
 use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
 #[cfg(feature = "backend-s3")]
@@ -130,7 +130,8 @@ impl S3LikeStore {
             let started = Instant::now();
             let mut request = self.client.get(self.object_url(key));
             if !buffer.is_empty() {
-                request = request.header(reqwest::header::RANGE, format!("bytes={}-", buffer.len()));
+                request =
+                    request.header(reqwest::header::RANGE, format!("bytes={}-", buffer.len()));
             }
             if let Some(token) = &self.bearer_token {
                 request = request.bearer_auth(token);

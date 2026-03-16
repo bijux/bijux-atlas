@@ -215,7 +215,10 @@ atlas_query_cache_misses_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\"}}
         METRIC_SUBSYSTEM,
         METRIC_VERSION,
         METRIC_DATASET_ALL,
-        state.metrics.query_cache_misses_total.load(Ordering::Relaxed),
+        state
+            .metrics
+            .query_cache_misses_total
+            .load(Ordering::Relaxed),
     ));
     let registry_refresh_age_seconds = state.cache.registry_refresh_age_seconds().await;
     body.push_str(&format!(

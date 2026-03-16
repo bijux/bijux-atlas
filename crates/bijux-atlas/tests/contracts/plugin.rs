@@ -115,9 +115,8 @@ fn json_error_contract_is_stable() {
 #[test]
 fn atlas_validate_deep_requires_manifest_lock() {
     let root = tempdir().expect("tempdir");
-    let dataset =
-        bijux_atlas::domain::dataset::DatasetId::new("110", "homo_sapiens", "GRCh38")
-            .expect("dataset");
+    let dataset = bijux_atlas::domain::dataset::DatasetId::new("110", "homo_sapiens", "GRCh38")
+        .expect("dataset");
     let paths = bijux_atlas::domain::dataset::artifact_paths(root.path(), &dataset);
     fs::create_dir_all(&paths.inputs_dir).expect("inputs dir");
     fs::create_dir_all(&paths.derived_dir).expect("derived dir");

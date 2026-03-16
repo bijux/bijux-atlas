@@ -4,8 +4,7 @@ fn main() {
     let base_url =
         std::env::var("ATLAS_BASE_URL").unwrap_or_else(|_| "http://127.0.0.1:8080".to_string());
     let release = std::env::var("ATLAS_RELEASE").unwrap_or_else(|_| "110".to_string());
-    let species =
-        std::env::var("ATLAS_SPECIES").unwrap_or_else(|_| "homo_sapiens".to_string());
+    let species = std::env::var("ATLAS_SPECIES").unwrap_or_else(|_| "homo_sapiens".to_string());
     let assembly = std::env::var("ATLAS_ASSEMBLY").unwrap_or_else(|_| "GRCh38".to_string());
 
     let mut args = std::env::args().skip(1);

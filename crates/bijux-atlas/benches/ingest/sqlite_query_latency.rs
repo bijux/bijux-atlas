@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{IngestOptions, ingest_dataset};
 use bijux_atlas::domain::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use bijux_atlas::domain::query::{
-    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
-    FeatureIdUniquenessPolicy, GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy,
-    TranscriptTypePolicy, UnknownFeaturePolicy,
+    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
+    UnknownFeaturePolicy,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;

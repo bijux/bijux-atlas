@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::adapters::inbound::client::{run_with_retry, ClientConfig, ClientError, ErrorClass};
+use bijux_atlas::adapters::inbound::client::{
+    run_with_retry, ClientConfig, ClientError, ErrorClass,
+};
 use reqwest as _;
 use serde as _;
 use serde_json as _;

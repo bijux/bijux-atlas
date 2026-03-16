@@ -2,15 +2,15 @@
 
 use async_trait::async_trait;
 use bijux_atlas::adapters::outbound::store::{FederatedBackend, RegistrySource};
+use bijux_atlas::app::cache::CacheError;
 use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
 use bijux_atlas::app::server::{DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::app::cache::CacheError;
-use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use std::sync::Arc;
+use bijux_atlas::domain::sha256_hex;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 use std::time::Duration;
 
 #[derive(Clone)]
@@ -311,8 +311,14 @@ async fn catalog_corruption_keeps_last_good_catalog_as_fallback() {
     };
     let cache = DatasetCacheManager::new(cfg, store);
 
-    cache.refresh_catalog().await.expect("initial catalog refresh");
-    let first = cache.current_catalog().await.expect("catalog after first refresh");
+    cache
+        .refresh_catalog()
+        .await
+        .expect("initial catalog refresh");
+    let first = cache
+        .current_catalog()
+        .await
+        .expect("catalog after first refresh");
     assert_eq!(first.datasets, catalog.datasets);
 
     let err = cache

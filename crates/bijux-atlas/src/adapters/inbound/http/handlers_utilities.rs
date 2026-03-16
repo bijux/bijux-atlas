@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::*;
+pub(crate) use crate::adapters::inbound::http::cache_headers::*;
+pub(crate) use crate::adapters::inbound::http::dto::*;
+pub(crate) use crate::adapters::inbound::http::presenters::*;
+pub(crate) use crate::adapters::inbound::http::request_identity::*;
+pub(crate) use crate::adapters::inbound::http::response_encoding::*;
 use crate::domain::cluster::config::{load_cluster_config_from_path, load_node_config_from_path};
 use crate::domain::cluster::distributed::{
     NodeDescriptor, NodeIdentity, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
@@ -8,13 +12,9 @@ use crate::domain::cluster::distributed::{
 use crate::domain::cluster::membership::HeartbeatMessage;
 use crate::domain::cluster::resilience::FailureCategory;
 use crate::domain::cluster::state::{ClusterStateRegistry, NodeMetadata};
+use crate::*;
 use serde_json::json;
 use serde_json::Value;
-pub(crate) use crate::adapters::inbound::http::cache_headers::*;
-pub(crate) use crate::adapters::inbound::http::dto::*;
-pub(crate) use crate::adapters::inbound::http::presenters::*;
-pub(crate) use crate::adapters::inbound::http::request_identity::*;
-pub(crate) use crate::adapters::inbound::http::response_encoding::*;
 
 pub(crate) async fn landing_handler(
     State(state): State<AppState>,
@@ -178,46 +178,46 @@ pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> imp
             load_cluster_config_from_path(std::path::Path::new(cluster_path)),
             load_node_config_from_path(std::path::Path::new(node_path)),
         ) {
-        (Ok(cluster_cfg), Ok(node_cfg)) => {
-            let cluster = cluster_cfg.to_descriptor();
-            let node = node_cfg.to_descriptor();
-            let mut registry = ClusterStateRegistry::new(cluster.clone());
-            registry.register_node(NodeMetadata {
-                descriptor: node,
-                state: NodeState::Ready,
-                last_heartbeat_unix_ms: chrono_like_unix_millis() as u64,
-            });
-            let snapshot = registry.snapshot();
-            let membership = state.membership.lock().await;
-            let membership_metrics = membership.metrics();
-            json!({
-                "cluster_id": cluster.cluster_id,
-                "topology_mode": cluster.topology_mode,
-                "discovery_strategy": cluster.discovery_strategy,
-                "seed_nodes": cluster.seed_nodes,
-                "metadata_store": cluster.metadata_store,
-                "health": snapshot.health,
-                "topology_version": snapshot.topology_version,
-                "node_count": snapshot.node_count,
-                "membership": {
-                    "total_nodes": membership_metrics.total_nodes,
-                    "active_nodes": membership_metrics.active_nodes,
-                    "timed_out_nodes": membership_metrics.timed_out_nodes,
-                    "average_load_percent": membership_metrics.average_load_percent
-                }
-            })
-        }
-        (cluster_result, node_result) => {
-            response_status = StatusCode::SERVICE_UNAVAILABLE;
-            json!({
-                "cluster_id": Value::Null,
-                "health": "unavailable",
-                "error": {
-                    "cluster_config": cluster_result.err().unwrap_or_default(),
-                    "node_config": node_result.err().unwrap_or_default()
-                }
-            })
-        }
+            (Ok(cluster_cfg), Ok(node_cfg)) => {
+                let cluster = cluster_cfg.to_descriptor();
+                let node = node_cfg.to_descriptor();
+                let mut registry = ClusterStateRegistry::new(cluster.clone());
+                registry.register_node(NodeMetadata {
+                    descriptor: node,
+                    state: NodeState::Ready,
+                    last_heartbeat_unix_ms: chrono_like_unix_millis() as u64,
+                });
+                let snapshot = registry.snapshot();
+                let membership = state.membership.lock().await;
+                let membership_metrics = membership.metrics();
+                json!({
+                    "cluster_id": cluster.cluster_id,
+                    "topology_mode": cluster.topology_mode,
+                    "discovery_strategy": cluster.discovery_strategy,
+                    "seed_nodes": cluster.seed_nodes,
+                    "metadata_store": cluster.metadata_store,
+                    "health": snapshot.health,
+                    "topology_version": snapshot.topology_version,
+                    "node_count": snapshot.node_count,
+                    "membership": {
+                        "total_nodes": membership_metrics.total_nodes,
+                        "active_nodes": membership_metrics.active_nodes,
+                        "timed_out_nodes": membership_metrics.timed_out_nodes,
+                        "average_load_percent": membership_metrics.average_load_percent
+                    }
+                })
+            }
+            (cluster_result, node_result) => {
+                response_status = StatusCode::SERVICE_UNAVAILABLE;
+                json!({
+                    "cluster_id": Value::Null,
+                    "health": "unavailable",
+                    "error": {
+                        "cluster_config": cluster_result.err().unwrap_or_default(),
+                        "node_config": node_result.err().unwrap_or_default()
+                    }
+                })
+            }
         },
         _ => {
             response_status = StatusCode::SERVICE_UNAVAILABLE;

@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #[cfg(feature = "backend-s3")]
-use crate::app::ports::store::{
-    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
-    StoreInstrumentation,
-};
-#[cfg(feature = "backend-s3")]
 use super::super::catalog::validate_catalog_strict;
 #[cfg(feature = "backend-s3")]
 use super::super::manifest::ManifestLock;
 #[cfg(feature = "backend-s3")]
 use super::super::paths::{
     dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
+};
+#[cfg(feature = "backend-s3")]
+use crate::app::ports::store::{
+    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
+    StoreInstrumentation,
 };
 #[cfg(feature = "backend-s3")]
 use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};

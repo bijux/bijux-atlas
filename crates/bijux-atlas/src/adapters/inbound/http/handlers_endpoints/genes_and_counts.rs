@@ -35,21 +35,22 @@ pub(crate) async fn genes_count_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let (dataset, req) = match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, 500) {
-        Ok(v) => v,
-        Err(e) => {
-            let resp = api_error_response(StatusCode::BAD_REQUEST, e);
-            state
-                .metrics
-                .observe_request(
-                    "/v1/genes/count",
-                    StatusCode::BAD_REQUEST,
-                    started.elapsed(),
-                )
-                .await;
-            return with_request_id(resp, &request_id);
-        }
-    };
+    let (dataset, req) =
+        match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, 500) {
+            Ok(v) => v,
+            Err(e) => {
+                let resp = api_error_response(StatusCode::BAD_REQUEST, e);
+                state
+                    .metrics
+                    .observe_request(
+                        "/v1/genes/count",
+                        StatusCode::BAD_REQUEST,
+                        started.elapsed(),
+                    )
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        };
 
     match state.cache.open_dataset_connection(&dataset).await {
         Ok(c) => {
@@ -142,7 +143,9 @@ fn query_gene_count_with_filters(
         where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
         params.push(rusqlite::types::Value::Text(format!(
             "{}%",
-            bijux_atlas::domain::query::escape_like_prefix(&bijux_atlas::domain::query::normalize_name_lookup(prefix))
+            bijux_atlas::domain::query::escape_like_prefix(
+                &bijux_atlas::domain::query::normalize_name_lookup(prefix)
+            )
         )));
     }
     if let Some(biotype) = &req.filter.biotype {

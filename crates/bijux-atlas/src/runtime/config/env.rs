@@ -3,8 +3,8 @@
 use std::collections::HashMap;
 use std::time::Duration;
 
-use super::*;
 use super::settings::{RegistrySourceSpec, StoreRetryConfig};
+use super::*;
 use crate::domain::dataset::DatasetId;
 
 pub(super) fn invalid_format(name: &str, value: String, message: String) -> RuntimeConfigError {
@@ -85,9 +85,7 @@ pub(super) fn env_list(name: &str) -> Vec<String> {
         .collect()
 }
 
-pub(super) fn env_dataset_list(
-    name: &str,
-) -> Result<Vec<DatasetId>, RuntimeConfigError> {
+pub(super) fn env_dataset_list(name: &str) -> Result<Vec<DatasetId>, RuntimeConfigError> {
     let Some(value) = std::env::var(name).ok() else {
         return Ok(Vec::new());
     };
@@ -107,14 +105,13 @@ pub(super) fn env_dataset_list(
                 ),
             ));
         }
-        let dataset =
-            DatasetId::new(parts[0], parts[1], parts[2]).map_err(|err| {
-                invalid_format(
-                    name,
-                    value.clone(),
-                    format!("invalid dataset list entry for {name}: {item} ({err})"),
-                )
-            })?;
+        let dataset = DatasetId::new(parts[0], parts[1], parts[2]).map_err(|err| {
+            invalid_format(
+                name,
+                value.clone(),
+                format!("invalid dataset list entry for {name}: {item} ({err})"),
+            )
+        })?;
         datasets.push(dataset);
     }
     Ok(datasets)

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::*;
 use crate::adapters::inbound::http::handlers_utilities::*;
+use crate::*;
 use serde_json::json;
 
 pub(crate) async fn gene_transcripts_handler(
@@ -73,8 +73,11 @@ pub(crate) async fn gene_transcripts_handler(
         cursor: params.get("cursor").cloned(),
     };
     let class = QueryClass::Heavy;
-    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await {
-        let backoff = crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
+    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+        .await
+    {
+        let backoff =
+            crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
         tokio::time::sleep(Duration::from_millis(backoff)).await;
         let mut resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -128,21 +131,17 @@ pub(crate) async fn gene_transcripts_handler(
             } else if msg.contains("corrupt") {
                 (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
             } else {
-                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+                (
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    ApiErrorCode::UpstreamStoreUnavailable,
+                )
             };
             let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
                 json!({"message": msg, "retryable": true})
             } else {
                 json!({"message": msg})
             };
-            let resp = api_error_response(
-                status,
-                error_json(
-                    code,
-                    "dataset unavailable",
-                    details,
-                ),
-            );
+            let resp = api_error_response(status, error_json(code, "dataset unavailable", details));
             state
                 .metrics
                 .observe_request(
@@ -236,7 +235,9 @@ pub(crate) async fn transcript_summary_handler(
         }
     };
     let class = QueryClass::Medium;
-    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class).await {
+    if crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+        .await
+    {
         let resp = api_error_response(
             StatusCode::SERVICE_UNAVAILABLE,
             error_json(
@@ -286,21 +287,17 @@ pub(crate) async fn transcript_summary_handler(
             } else if msg.contains("corrupt") {
                 (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
             } else {
-                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
+                (
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    ApiErrorCode::UpstreamStoreUnavailable,
+                )
             };
             let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
                 json!({"message": msg, "retryable": true})
             } else {
                 json!({"message": msg})
             };
-            let resp = api_error_response(
-                status,
-                error_json(
-                    code,
-                    "dataset unavailable",
-                    details,
-                ),
-            );
+            let resp = api_error_response(status, error_json(code, "dataset unavailable", details));
             state
                 .metrics
                 .observe_request(
