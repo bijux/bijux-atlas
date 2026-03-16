@@ -22,7 +22,6 @@ include = [
   "ops/report/generated/ops-artifact-lineage.json",
   "ops/report/generated/release-evidence-bundle.json",
   "docs/06-development/release-and-versioning.md",
-  "docs/06-development/release-and-versioning.md",
   "ops/release/evidence/ops-distribution"
 ]
 checksum = "sha256"
