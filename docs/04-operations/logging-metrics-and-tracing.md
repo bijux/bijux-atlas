@@ -41,7 +41,7 @@ Each signal also has limits:
 
 ```mermaid
 flowchart TD
-    Runtime[Runtime] --> MetricsEndpoint[/metrics]
+    Runtime[Runtime] --> MetricsEndpoint[Metrics endpoint]
     MetricsEndpoint --> Scrape[Prometheus-style scraping]
     Scrape --> Alerting[Dashboards and alerts]
 ```

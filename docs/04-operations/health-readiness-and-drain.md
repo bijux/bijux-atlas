@@ -19,10 +19,10 @@ Atlas exposes separate ideas that operators should not collapse into one boolean
 
 ```mermaid
 flowchart LR
-    Runtime[Atlas runtime] --> Health[/healthz]
-    Runtime --> Ready[/readyz]
-    Runtime --> Overload[/healthz/overload]
-    Runtime --> Live[/live]
+    Runtime[Atlas runtime] --> Health[Health route]
+    Runtime --> Ready[Readiness route]
+    Runtime --> Overload[Overload route]
+    Runtime --> Live[Liveness route]
 ```
 
 ## Why the Distinction Matters

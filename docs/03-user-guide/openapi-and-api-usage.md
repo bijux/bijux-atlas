@@ -19,7 +19,7 @@ OpenAPI is useful, but it is not magic. It describes contract-owned API shape. I
 flowchart LR
     Contracts[API contracts] --> Generate[openapi generate]
     Generate --> File[openapi.json]
-    Runtime[Running server] --> Endpoint[/v1/openapi.json]
+    Runtime[Running server] --> Endpoint[OpenAPI endpoint]
     File --> Consumers[Client generation and review]
     Endpoint --> Consumers
 ```

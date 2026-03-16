@@ -15,10 +15,10 @@ After the server is running, the quickest way to understand Atlas is to hit a sm
 
 ```mermaid
 flowchart LR
-    Version[/v1/version/] --> Confidence[Server identity]
-    Datasets[/v1/datasets/] --> Discovery[Published datasets]
-    Genes[/v1/genes/] --> Retrieval[Gene lookup]
-    Validate[/v1/query/validate/] --> Guardrails[Query validation]
+    Version[Version endpoint] --> Confidence[Server identity]
+    Datasets[Datasets endpoint] --> Discovery[Published datasets]
+    Genes[Genes endpoint] --> Retrieval[Gene lookup]
+    Validate[Query validation endpoint] --> Guardrails[Query validation]
 ```
 
 ## 1. Check Server Identity

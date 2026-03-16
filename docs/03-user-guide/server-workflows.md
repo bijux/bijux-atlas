@@ -27,11 +27,11 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    Runtime[Server runtime] --> Health[/healthz /readyz]
-    Runtime --> Metrics[/metrics]
-    Runtime --> Version[/v1/version]
-    Runtime --> Data[/v1/datasets and query routes]
-    Runtime --> OpenAPI[/v1/openapi.json]
+    Runtime[Server runtime] --> Health[Health and readiness routes]
+    Runtime --> Metrics[Metrics route]
+    Runtime --> Version[Version route]
+    Runtime --> Data[Dataset and query routes]
+    Runtime --> OpenAPI[OpenAPI route]
 ```
 
 Not every surface has the same audience:

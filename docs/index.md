@@ -7,130 +7,46 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# bijux-atlas Documentation
+# Docs Index
 
-Atlas is a contract-governed data platform for validating genomic dataset inputs, producing
-immutable release artifacts, and serving stable query surfaces over HTTP and CLI workflows.
+This is the canonical documentation home for `bijux-atlas`.
 
-This site is written as engineering documentation, not product marketing. It aims to be specific
-about where Atlas is strong, where it is intentionally narrow, and which behaviors are documented
-contracts versus current implementation.
+## Canonical Sections
 
-This site is organized for three reader groups:
+- [Introduction](01-introduction/index.md)
+- [Getting Started](02-getting-started/index.md)
+- [User Guide](03-user-guide/index.md)
+- [Operations](04-operations/index.md)
+- [Architecture](05-architecture/index.md)
+- [Development](06-development/index.md)
+- [Reference](07-reference/index.md)
+- [Contracts](08-contracts/index.md)
 
-- users who need to ingest, validate, query, and serve data
-- operators who need to run Atlas safely in real environments
-- contributors who need to understand the architecture, code ownership, and change model
+## Start Here
 
-## How to Read This Site
+- new to Atlas: [What Atlas Is](01-introduction/what-atlas-is.md)
+- installing and validating a local runtime: [Install and Verify](02-getting-started/install-and-verify.md)
+- loading and serving your first dataset: [Run Atlas Locally](02-getting-started/run-atlas-locally.md)
+- running Atlas in real environments: [Operations](04-operations/index.md)
+- checking exact surfaces and limits: [Reference](07-reference/index.md)
+- reviewing stable promises: [Contracts](08-contracts/index.md)
 
-If you want the shortest route:
+## Current Review
 
-- new runtime users should read [What Atlas Is](01-introduction/what-atlas-is.md) and then [Install and Verify](02-getting-started/install-and-verify.md)
-- operators should continue into [04 Operations](04-operations/index.md)
-- contributors should continue into [05 Architecture](05-architecture/index.md) and [06 Development](06-development/index.md)
-- reviewers and integrators should use [07 Reference](07-reference/index.md) and [08 Contracts](08-contracts/index.md)
-
-If you are new to Atlas, start in `01-introduction`, then move through `02-getting-started`, and only after that branch into `03-user-guide` or `04-operations`.
-
-If you are maintaining Atlas, treat `05-architecture`, `06-development`, `07-reference`, and
-`08-contracts` as the canonical explanation of how the system is designed and what behavior is
-promised.
-
-```mermaid
-flowchart TD
-    A[New reader] --> B[01 Introduction]
-    B --> C[02 Getting Started]
-    C --> D[03 User Guide]
-    C --> E[04 Operations]
-    D --> F[07 Reference]
-    E --> F
-    B --> G[05 Architecture]
-    G --> H[06 Development]
-    G --> I[08 Contracts]
-```
-
-The documentation is intentionally split by reader intent:
-
-- introduction explains what Atlas is and why it exists
-- getting started gets a real workflow running
-- user guide covers normal product usage
-- operations covers deployment, observability, and incident handling
-- architecture explains the shape of the system
-- development explains how to change it safely
-- reference answers lookup questions
-- contracts define stable promises
-
-```mermaid
-flowchart LR
-    U[User intent] --> I[Introduction]
-    U --> G[Getting Started]
-    U --> Y[User Guide]
-    O[Operator intent] --> P[Operations]
-    C[Contributor intent] --> A[Architecture]
-    C --> D[Development]
-    X[Lookup intent] --> R[Reference]
-    V[Compatibility intent] --> K[Contracts]
-```
-
-## Before You Invest Time
-
-Atlas is a strong fit when you want:
-
-- explicit validation before data becomes serveable
-- immutable release artifacts instead of mutable runtime truth
-- stable query and operational surfaces around published dataset state
-- contract-owned behavior that can be reviewed and tested
-
-Atlas is a weak fit when you want:
-
-- a generic ETL or workflow orchestration framework
-- a server that mutates live release content as part of normal request handling
-- a low-ceremony tool with minimal policy, validation, or compatibility boundaries
-- undocumented internal behavior to count as a stable integration surface
-
-## Atlas at a Glance
-
-Atlas turns source inputs such as GFF3, FASTA, and FAI into validated, release-shaped artifacts and exposes those artifacts through stable APIs and deterministic command outputs.
-
-```mermaid
-flowchart LR
-    Inputs[GFF3 / FASTA / FAI inputs] --> Validate[Validation and normalization]
-    Validate --> Build[Immutable release artifacts]
-    Build --> Store[Store and catalog]
-    Store --> Serve[HTTP and CLI surfaces]
-    Serve --> Observe[Metrics, traces, and evidence]
-```
-
-## Documentation Spine
-
-- [01 Introduction](01-introduction/index.md)
-- [02 Getting Started](02-getting-started/index.md)
-- [03 User Guide](03-user-guide/index.md)
-- [04 Operations](04-operations/index.md)
-- [05 Architecture](05-architecture/index.md)
-- [06 Development](06-development/index.md)
-- [07 Reference](07-reference/index.md)
-- [08 Contracts](08-contracts/index.md)
-
-## What This Site Optimizes For
-
-- one obvious place for each topic
-- separation between explanation, procedure, reference, and compatibility promises
-- reader-first organization rather than repo-history organization
-- examples tied to real Atlas commands and real repository fixtures
+- [Server Workflows](03-user-guide/server-workflows.md)
+- [System Overview](05-architecture/system-overview.md)
+- [Testing and Evidence](06-development/testing-and-evidence.md)
+- [API Compatibility](08-contracts/api-compatibility.md)
 
 ## Reading Rule
 
-If a behavior is described in `07-reference` or `08-contracts`, it is intended to be relied on more strongly.
+Behavior documented in `07-reference` and `08-contracts` is intended to be relied on more strongly.
 
-If it appears only in examples, source code, or debug output, treat it as current behavior unless the contracts say otherwise.
+If something appears only in examples, source code, or debug output, treat it as current behavior unless the contracts say otherwise.
 
-## First Three Pages to Read
+## Maintenance Rule
 
-- [What Atlas Is](01-introduction/what-atlas-is.md)
-- [Run Atlas Locally](02-getting-started/run-atlas-locally.md)
-- [System Overview](05-architecture/system-overview.md)
+Keep one canonical home per topic. When a page becomes redundant, fold its durable content into the existing docs spine instead of creating a parallel doc tree.
 
 ## Purpose
 

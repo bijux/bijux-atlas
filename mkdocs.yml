@@ -21,6 +21,22 @@ theme:
   name: material
   logo: assets/bijux_logo_hq.png
   favicon: assets/bijux_icon.png
+  font:
+    text: Roboto
+    code: Roboto Mono
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: lime
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -33,26 +49,13 @@ theme:
     - toc.follow
     - search.suggest
     - search.highlight
+    - content.tabs.link
+    - content.code.annotate
     - content.code.copy
+    - content.code.select
     - content.action.edit
     - content.action.view
     - navigation.footer
-  font:
-    text: IBM Plex Sans
-    code: IBM Plex Mono
-  palette:
-    - scheme: default
-      primary: teal
-      accent: amber
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - scheme: slate
-      primary: blue grey
-      accent: lime
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
   icon:
     repo: fontawesome/brands/github
 
@@ -61,11 +64,14 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
+  - md_in_html
   - tables
   - toc:
       permalink: true
   - pymdownx.highlight:
       anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -84,27 +90,27 @@ extra_css:
   - assets/styles/extra.css
 
 extra_javascript:
-  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
   - assets/javascripts/mermaid-init.js
 
 nav:
   - Home: index.md
-  - 01 Introduction:
-      - Introduction Overview: 01-introduction/index.md
+  - Introduction:
+      - Overview: 01-introduction/index.md
       - What Atlas Is: 01-introduction/what-atlas-is.md
       - Core Concepts: 01-introduction/core-concepts.md
       - Boundaries and Non-Goals: 01-introduction/boundaries-and-non-goals.md
       - Guarantees and Stability: 01-introduction/guarantees-and-stability.md
-  - 02 Getting Started:
-      - Getting Started Overview: 02-getting-started/index.md
+  - Getting Started:
+      - Overview: 02-getting-started/index.md
       - Install and Verify: 02-getting-started/install-and-verify.md
       - Run Atlas Locally: 02-getting-started/run-atlas-locally.md
       - Load a Sample Dataset: 02-getting-started/load-a-sample-dataset.md
       - Start the Server: 02-getting-started/start-the-server.md
       - Run Your First Queries: 02-getting-started/run-your-first-queries.md
       - Troubleshoot Early Problems: 02-getting-started/troubleshoot-early-problems.md
-  - 03 User Guide:
-      - User Guide Overview: 03-user-guide/index.md
+  - User Guide:
+      - Overview: 03-user-guide/index.md
       - Configuration and Output: 03-user-guide/configuration-and-output.md
       - Catalog Workflows: 03-user-guide/catalog-workflows.md
       - Dataset Workflows: 03-user-guide/dataset-workflows.md
@@ -114,8 +120,8 @@ nav:
       - OpenAPI and API Usage: 03-user-guide/openapi-and-api-usage.md
       - Policy Workflows: 03-user-guide/policy-workflows.md
       - Troubleshooting: 03-user-guide/troubleshooting.md
-  - 04 Operations:
-      - Operations Overview: 04-operations/index.md
+  - Operations:
+      - Overview: 04-operations/index.md
       - Deployment Models: 04-operations/deployment-models.md
       - Runtime Configuration: 04-operations/runtime-configuration.md
       - Health, Readiness, and Drain: 04-operations/health-readiness-and-drain.md
@@ -126,8 +132,8 @@ nav:
       - Performance and Load: 04-operations/performance-and-load.md
       - Security Operations: 04-operations/security-operations.md
       - Incident Response: 04-operations/incident-response.md
-  - 05 Architecture:
-      - Architecture Overview: 05-architecture/index.md
+  - Architecture:
+      - Overview: 05-architecture/index.md
       - System Overview: 05-architecture/system-overview.md
       - Source Layout and Ownership: 05-architecture/source-layout-and-ownership.md
       - Automation Architecture: 05-architecture/automation-architecture.md
@@ -137,8 +143,8 @@ nav:
       - Storage Architecture: 05-architecture/storage-architecture.md
       - Runtime Composition: 05-architecture/runtime-composition.md
       - Contracts and Boundaries: 05-architecture/contracts-and-boundaries.md
-  - 06 Development:
-      - Development Overview: 06-development/index.md
+  - Development:
+      - Overview: 06-development/index.md
       - Workspace and Tooling: 06-development/workspace-and-tooling.md
       - Local Development: 06-development/local-development.md
       - Contributor Workflow: 06-development/contributor-workflow.md
@@ -151,8 +157,8 @@ nav:
       - Change and Compatibility: 06-development/change-and-compatibility.md
       - Release and Versioning: 06-development/release-and-versioning.md
       - Documentation Standards: 06-development/documentation-standards.md
-  - 07 Reference:
-      - Reference Overview: 07-reference/index.md
+  - Reference:
+      - Overview: 07-reference/index.md
       - Command Surface: 07-reference/command-surface.md
       - Automation Command Surface: 07-reference/automation-command-surface.md
       - Automation Reports Reference: 07-reference/automation-reports-reference.md
@@ -163,8 +169,8 @@ nav:
       - Feature Flags: 07-reference/feature-flags.md
       - Artifact Layout: 07-reference/artifact-layout.md
       - Glossary: 07-reference/glossary.md
-  - 08 Contracts:
-      - Contracts Overview: 08-contracts/index.md
+  - Contracts:
+      - Overview: 08-contracts/index.md
       - API Compatibility: 08-contracts/api-compatibility.md
       - Automation Contracts: 08-contracts/automation-contracts.md
       - Structured Output Contracts: 08-contracts/structured-output-contracts.md
