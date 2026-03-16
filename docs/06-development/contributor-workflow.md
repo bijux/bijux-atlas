@@ -42,6 +42,16 @@ If those commands fail, fix the environment first instead of trying to work arou
 3. Run the narrowest targeted validation that proves the change is correct.
 4. Run the lane wrapper or suite that matches the review path before you ask for approval.
 
+## Governance Baseline
+
+Every contributor should understand the repository governance baseline before
+submitting a cross-cutting change.
+
+- run `cargo run -q -p bijux-dev-atlas -- governance check --format json`
+- run `cargo run -q -p bijux-dev-atlas -- governance validate --format json`
+- get maintainer signoff when the change affects contracts, ownership, or
+  repository-wide automation behavior
+
 ## Review Expectations
 
 - make the scope and user-visible intent explicit

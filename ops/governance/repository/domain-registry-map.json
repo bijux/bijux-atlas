@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "approved_registry_json_paths": [
-    "docs/_internal/registry/registry.json",
+    "configs/registry/docs/registry.json",
     "ops/invariants/registry.json"
   ],
   "domains": {
@@ -19,8 +19,8 @@
     },
     "docs": {
       "registries": [
-        "docs/_internal/registry/registry.json",
-        "docs/_internal/registry/owners.json"
+        "configs/registry/docs/registry.json",
+        "configs/registry/docs/owners.json"
       ]
     },
     "make": {

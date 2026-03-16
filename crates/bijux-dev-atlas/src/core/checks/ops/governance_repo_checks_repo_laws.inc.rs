@@ -238,7 +238,7 @@ pub(super) fn check_repo_duplicate_ssot_registries_absent(
 pub(super) fn check_repo_law_metadata_complete_and_unique(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/_internal/contracts/repo-laws.json");
+    let rel = Path::new("configs/sources/repository/repo-laws.json");
     let payload = read_json_value(&ctx.repo_root.join(rel))?;
     let laws = payload["laws"]
         .as_array()

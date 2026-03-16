@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "pages": [
+    "docs/index.md",
+    "docs/01-introduction/index.md",
+    "docs/02-getting-started/index.md",
+    "docs/03-user-guide/index.md",
+    "docs/04-operations/index.md",
+    "docs/05-architecture/index.md",
+    "docs/06-development/index.md",
+    "docs/07-reference/index.md",
+    "docs/08-contracts/index.md"
+  ]
+}

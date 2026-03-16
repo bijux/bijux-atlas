@@ -7,7 +7,7 @@
   "scripts": {
     "markdownlint": "markdownlint-cli2 \"../../docs/**/*.md\" \"../../ops/**/*.md\"",
     "link-check": "cargo run -q -p bijux-dev-atlas -- docs external-links --repo-root ../.. --allow-network --allowlist configs/sources/repository/docs/external-link-allowlist.json --format json",
-    "cspell": "cspell lint --config cspell.config.json \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\""
+    "cspell": "cspell lint --config cspell.config.json \"../../docs/04-operations/*.md\" \"../../docs/07-reference/*.md\" \"../../docs/08-contracts/*.md\" \"../../ops/*.md\""
   },
   "devDependencies": {
     "cspell": "8.14.4",

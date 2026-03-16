@@ -92,8 +92,7 @@ pub(super) fn collect_governance_objects(
             continue;
         };
         let rel = rel.display().to_string();
-        if rel.starts_with("docs/_internal/")
-            || rel.starts_with("docs/_drafts/")
+        if rel.starts_with("docs/_drafts/")
             || rel.starts_with("docs/_assets/")
         {
             continue;

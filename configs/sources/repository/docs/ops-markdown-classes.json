@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "classes": [
+    {
+      "class": "entrypoint",
+      "paths": [
+        "ops/INDEX.md",
+        "ops/SSOT.md"
+      ]
+    },
+    {
+      "class": "generated-example",
+      "paths": [
+        "ops/_generated.example/"
+      ]
+    }
+  ]
+}

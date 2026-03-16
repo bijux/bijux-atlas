@@ -5,17 +5,17 @@
     {
       "contract_id": "OPS-INV-003",
       "policy_id": "ops-profile-safety",
-      "authority": "docs/reference/contracts/ops/profile-matrix.md"
+      "authority": "docs/04-operations/deployment-models.md"
     },
     {
       "contract_id": "OPS-STACK-007",
       "policy_id": "release-bundle-integrity",
-      "authority": "docs/reference/contracts/ops/release/evidence.md"
+      "authority": "docs/08-contracts/operational-contracts.md"
     },
     {
       "contract_id": "OPS-*",
       "policy_id": "ops-profile-safety",
-      "authority": "docs/reference/contracts/ops/profile-matrix.md"
+      "authority": "docs/04-operations/deployment-models.md"
     }
   ]
 }

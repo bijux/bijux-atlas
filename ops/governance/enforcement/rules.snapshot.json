@@ -111,10 +111,10 @@
       "severity": "high",
       "rule_type": "required_files_exist",
       "paths": [
-        "docs/governance/governance-charter.md",
-        "docs/governance/project-governance-model.md",
-        "docs/governance/maintainers-and-roles.md",
-        "docs/governance/decision-process.md"
+        "docs/05-architecture/source-layout-and-ownership.md",
+        "docs/06-development/decision-records-and-ownership.md",
+        "docs/06-development/automation-control-plane.md",
+        "docs/06-development/contributor-workflow.md"
       ],
       "classification": "documentation"
     },
@@ -124,9 +124,8 @@
       "severity": "high",
       "rule_type": "required_files_exist",
       "paths": [
-        "docs/governance/contributor-onboarding-workflow.md",
-        "docs/governance/adr-registry.md",
-        "docs/governance/adr-template.md"
+        "docs/06-development/contributor-workflow.md",
+        "docs/06-development/decision-records-and-ownership.md"
       ],
       "classification": "documentation"
     }

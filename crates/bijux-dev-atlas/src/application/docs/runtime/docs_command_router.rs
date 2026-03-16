@@ -62,8 +62,9 @@ struct DocsRealDataProvenance {
 fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
     let mkdocs_path = repo_root.join("mkdocs.yml");
     let redirects_path = repo_root.join("docs/redirects.json");
-    let redirect_registry_path = repo_root.join("docs/_internal/governance/redirect-registry.json");
-    let legacy_inventory_path = repo_root.join("docs/_internal/generated/legacy-url-inventory.md");
+    let redirect_registry_path =
+        repo_root.join("configs/sources/repository/docs/redirect-registry.json");
+    let legacy_inventory_path = repo_root.join("artifacts/docs/generated/legacy-url-inventory.md");
     let start = "      # redirect_maps generated from docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write";
     let end = "      # end generated redirect_maps";
 
@@ -105,8 +106,8 @@ fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value,
     }
     block.push_str(end);
 
-    let mkdocs_text =
-        fs::read_to_string(&mkdocs_path).map_err(|e| format!("read {} failed: {e}", mkdocs_path.display()))?;
+    let mkdocs_text = fs::read_to_string(&mkdocs_path)
+        .map_err(|e| format!("read {} failed: {e}", mkdocs_path.display()))?;
     let start_index = mkdocs_text
         .find(start)
         .ok_or_else(|| format!("{} missing redirect start marker", mkdocs_path.display()))?;
@@ -147,7 +148,10 @@ fn render_legacy_url_inventory_markdown(
     redirects: &std::collections::BTreeMap<String, String>,
     registry: &serde_json::Value,
 ) -> String {
-    fn match_rule<'a>(source: &str, rules: &'a [serde_json::Value]) -> Option<&'a serde_json::Value> {
+    fn match_rule<'a>(
+        source: &str,
+        rules: &'a [serde_json::Value],
+    ) -> Option<&'a serde_json::Value> {
         for rule in rules {
             if let Some(path) = rule.get("matchPath").and_then(|value| value.as_str()) {
                 if source == path {
@@ -170,9 +174,13 @@ fn render_legacy_url_inventory_markdown(
     out.push_str("| Legacy Path | Current Path | Owner | Reason | Temporary Until |\n");
     out.push_str("| --- | --- | --- | --- | --- |\n");
     for (source, target) in redirects {
-        let rule = match_rule(source, &rules).cloned().unwrap_or(serde_json::json!({}));
+        let rule = match_rule(source, &rules)
+            .cloned()
+            .unwrap_or(serde_json::json!({}));
         let owner = rule["owner"].as_str().unwrap_or("unassigned");
-        let reason = rule["reason"].as_str().unwrap_or("missing redirect metadata");
+        let reason = rule["reason"]
+            .as_str()
+            .unwrap_or("missing redirect metadata");
         let expiry = rule["expiresOn"].as_str().unwrap_or("none");
         out.push_str(&format!(
             "| `{}` | `{}` | `{}` | {} | `{}` |\n",
@@ -188,10 +196,7 @@ fn render_summary_table(
     empty_row: &str,
     line_builder: impl Fn(&serde_json::Value) -> String,
 ) -> String {
-    let mut lines = vec![
-        format!("# {title}"),
-        String::new(),
-    ];
+    let mut lines = vec![format!("# {title}"), String::new()];
     if rows.is_empty() {
         lines.push(empty_row.to_string());
     } else {
@@ -211,7 +216,8 @@ fn docs_write_summary_table(
 ) -> Result<serde_json::Value, String> {
     let rows = if input.exists() {
         let payload: serde_json::Value = serde_json::from_str(
-            &fs::read_to_string(input).map_err(|e| format!("read {} failed: {e}", input.display()))?,
+            &fs::read_to_string(input)
+                .map_err(|e| format!("read {} failed: {e}", input.display()))?,
         )
         .map_err(|e| format!("parse {} failed: {e}", input.display()))?;
         payload[field].as_array().cloned().unwrap_or_default()
@@ -219,7 +225,8 @@ fn docs_write_summary_table(
         Vec::new()
     };
     if let Some(parent) = output.parent() {
-        fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
     }
     fs::write(output, content(rows.clone()))
         .map_err(|e| format!("write {} failed: {e}", output.display()))?;
@@ -233,35 +240,35 @@ fn docs_write_summary_table(
 }
 
 fn docs_spine_path(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("docs/_internal/governance/docs-spine.md")
+    repo_root.join("configs/sources/repository/docs/docs-spine.json")
 }
 
 fn parse_spine_pages(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
     let path = docs_spine_path(repo_root);
-    let text =
-        fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
-    let mut pages = Vec::<String>::new();
-    for line in text.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with("- `docs/") && trimmed.ends_with('`') {
-            pages.push(
-                trimmed
-                    .trim_start_matches("- `")
-                    .trim_end_matches('`')
-                    .to_string(),
-            );
-        }
-    }
+    let value: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?,
+    )
+    .map_err(|e| format!("failed to parse {}: {e}", path.display()))?;
+    let pages = value["pages"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|row| row.as_str().map(str::to_string))
+        .collect::<Vec<_>>();
     if pages.is_empty() {
         return Err(format!(
-            "{} must list spine pages using `- `docs/...`` entries",
+            "{} must list spine pages in `pages`",
             path.display()
         ));
     }
     Ok(pages)
 }
 
-fn docs_spine_report_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+fn docs_spine_report_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
     let spine_pages = parse_spine_pages(&ctx.repo_root)?;
     let docs_root = ctx.repo_root.join("docs");
     let markdown_files = docs_markdown_files(&docs_root, common.include_drafts);
@@ -275,12 +282,12 @@ fn docs_spine_report_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Resu
             .unwrap_or(file)
             .display()
             .to_string();
-        if rel.starts_with("docs/_internal/") || rel.starts_with("docs/_assets/") {
+        if rel.starts_with("docs/_assets/") {
             continue;
         }
         pages.insert(rel.clone());
-        let text =
-            fs::read_to_string(file).map_err(|e| format!("failed to read {}: {e}", file.display()))?;
+        let text = fs::read_to_string(file)
+            .map_err(|e| format!("failed to read {}: {e}", file.display()))?;
         for capture in link_re.captures_iter(&text) {
             let target = capture.get(1).map(|m| m.as_str()).unwrap_or_default();
             if target.starts_with("http://")
@@ -306,7 +313,7 @@ fn docs_spine_report_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Resu
         if spine_pages.iter().any(|spine| spine == &page) {
             continue;
         }
-        if page == "docs/index.md" || page == "docs/start-here.md" || page.ends_with("/index.md") {
+        if page == "docs/index.md" || page.ends_with("/index.md") {
             continue;
         }
         if !linked.contains(&page) {
@@ -315,7 +322,9 @@ fn docs_spine_report_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Resu
     }
     orphans.sort();
 
-    let generated_path = ctx.repo_root.join("docs/_internal/generated/orphan-pages.md");
+    let generated_path = ctx
+        .repo_root
+        .join("artifacts/docs/generated/orphan-pages.md");
     if common.allow_write {
         if let Some(parent) = generated_path.parent() {
             fs::create_dir_all(parent)
@@ -420,8 +429,8 @@ fn build_docs_link_graph(
         if src_rel.starts_with("_internal/") || src_rel.starts_with("_assets/") {
             continue;
         }
-        let text =
-            fs::read_to_string(file).map_err(|e| format!("failed to read {}: {e}", file.display()))?;
+        let text = fs::read_to_string(file)
+            .map_err(|e| format!("failed to read {}: {e}", file.display()))?;
         for capture in link_re.captures_iter(&text) {
             let target = capture.get(1).map(|m| m.as_str()).unwrap_or_default();
             if target.starts_with("http://")
@@ -453,7 +462,10 @@ fn build_docs_link_graph(
     Ok(inbound)
 }
 
-fn docs_graph_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+fn docs_graph_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
     let inbound = build_docs_link_graph(ctx, common)?;
     let rows = inbound
         .iter()
@@ -492,13 +504,14 @@ fn docs_top_payload(
     }))
 }
 
-fn docs_dead_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+fn docs_dead_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
     let inbound = build_docs_link_graph(ctx, common)?;
     let rows = inbound
         .into_iter()
-        .filter(|(path, count)| {
-            *count == 0 && path != "index.md" && path != "start-here.md" && !path.ends_with("/index.md")
-        })
+        .filter(|(path, count)| *count == 0 && path != "index.md" && !path.ends_with("/index.md"))
         .map(|(path, count)| serde_json::json!({"path": path, "inbound_links": count}))
         .collect::<Vec<_>>();
     Ok(serde_json::json!({
@@ -509,7 +522,10 @@ fn docs_dead_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde
     }))
 }
 
-fn docs_duplicates_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+fn docs_duplicates_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
     let docs_root = ctx.repo_root.join("docs");
     let mut heading_map = std::collections::BTreeMap::<String, Vec<String>>::new();
     for file in docs_markdown_files(&docs_root, common.include_drafts) {
@@ -555,34 +571,10 @@ fn docs_merge_validate_payload(
     let redirects_path = ctx.repo_root.join("docs/redirects.json");
     let redirects_text = fs::read_to_string(&redirects_path)
         .map_err(|e| format!("failed to read {}: {e}", redirects_path.display()))?;
-    let redirects: std::collections::BTreeMap<String, String> = serde_json::from_str(&redirects_text)
-        .map_err(|e| format!("failed to parse {}: {e}", redirects_path.display()))?;
-    let merge_plan_path = ctx
-        .repo_root
-        .join("docs/_internal/governance/docs-merge-plan.md");
-    let merge_plan_text = fs::read_to_string(&merge_plan_path)
-        .map_err(|e| format!("failed to read {}: {e}", merge_plan_path.display()))?;
-    let mut source_paths = Vec::<String>::new();
-    for line in merge_plan_text.lines() {
-        let trimmed = line.trim();
-        if !trimmed.starts_with('|') {
-            continue;
-        }
-        let cols = trimmed
-            .split('|')
-            .map(str::trim)
-            .filter(|v| !v.is_empty())
-            .collect::<Vec<_>>();
-        if cols.len() < 3 || cols[0] == "Source page" {
-            continue;
-        }
-        for token in cols[0].split('+') {
-            let value = token.trim().trim_matches('`');
-            if value.starts_with("docs/") {
-                source_paths.push(value.to_string());
-            }
-        }
-    }
+    let redirects: std::collections::BTreeMap<String, String> =
+        serde_json::from_str(&redirects_text)
+            .map_err(|e| format!("failed to parse {}: {e}", redirects_path.display()))?;
+    let mut source_paths = redirects.keys().cloned().collect::<Vec<_>>();
     let mut issues = Vec::<String>::new();
     let mut checks = Vec::<serde_json::Value>::new();
     source_paths.sort();
@@ -610,7 +602,10 @@ fn docs_merge_validate_payload(
     }))
 }
 
-fn docs_includes_check_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
+fn docs_includes_check_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
     let docs_root = ctx.repo_root.join("docs");
     let markdown_files = docs_markdown_files(&docs_root, common.include_drafts);
     let include_re = regex::Regex::new(r#"--8<--\s*"([^"]+)""#).map_err(|e| e.to_string())?;
@@ -657,7 +652,9 @@ fn docs_nav_integrity_payload(ctx: &DocsContext) -> Result<serde_json::Value, St
         let path = ctx.repo_root.join("docs").join(&rel);
         let exists = path.is_file();
         if !exists {
-            errors.push(format!("mkdocs nav entry `{label}` points to missing file `docs/{rel}`"));
+            errors.push(format!(
+                "mkdocs nav entry `{label}` points to missing file `docs/{rel}`"
+            ));
         }
         rows.push(serde_json::json!({
             "label": label,
@@ -674,10 +671,13 @@ fn docs_nav_integrity_payload(ctx: &DocsContext) -> Result<serde_json::Value, St
     }))
 }
 
-fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+fn docs_generate_health_dashboard(
+    repo_root: &std::path::Path,
+) -> Result<serde_json::Value, String> {
     let docs_root = repo_root.join("docs");
-    let output_path = docs_root.join("_internal/generated/docs-health-dashboard.md");
-    let allowlist_path = repo_root.join("configs/sources/repository/docs/external-link-allowlist.json");
+    let output_path = repo_root.join("artifacts/docs/generated/docs-health-dashboard.md");
+    let allowlist_path =
+        repo_root.join("configs/sources/repository/docs/external-link-allowlist.json");
     let allowlist: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&allowlist_path)
             .map_err(|e| format!("read {} failed: {e}", allowlist_path.display()))?,
@@ -690,7 +690,8 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
         .filter_map(|v| v.as_str())
         .collect::<std::collections::BTreeSet<_>>();
     let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
-    let orphan_allowlist_path = docs_root.join("_internal/policies/orphan-allowlist.json");
+    let orphan_allowlist_path =
+        repo_root.join("configs/sources/repository/docs/orphan-allowlist.json");
     let orphan_allowlist = load_orphan_allowlist(&orphan_allowlist_path)?;
 
     let mut docs_files = docs_markdown_files(&docs_root, true);
@@ -707,7 +708,8 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
             .unwrap_or(path)
             .display()
             .to_string();
-        let text = fs::read_to_string(path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+        let text =
+            fs::read_to_string(path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
         let lines = text.lines().collect::<Vec<_>>();
         if !text.contains("Last verified against:") {
             missing_verified.push(rel.clone());
@@ -757,11 +759,7 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
             .unwrap_or(path)
             .display()
             .to_string();
-        if rel.starts_with("_internal/")
-            || rel == "index.md"
-            || rel.ends_with("/index.md")
-            || rel == "start-here.md"
-        {
+        if rel.starts_with("_internal/") || rel == "index.md" || rel.ends_with("/index.md") {
             continue;
         }
         if !linked_local.contains(&rel) {
@@ -822,7 +820,10 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
             unique_domains.len()
         ),
         format!("- Orphan pages: `{}`", orphan_pages.len()),
-        format!("- Allowlisted orphan pages: `{}`", allowlisted_orphans.len()),
+        format!(
+            "- Allowlisted orphan pages: `{}`",
+            allowlisted_orphans.len()
+        ),
         format!(
             "- Expired orphan allowlist entries: `{}`",
             orphan_allowlist_expired.len()
@@ -891,7 +892,8 @@ fn docs_generate_health_dashboard(repo_root: &std::path::Path) -> Result<serde_j
     lines.push(String::new());
 
     if let Some(parent) = output_path.parent() {
-        fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
     }
     fs::write(&output_path, lines.join("\n"))
         .map_err(|e| format!("write {} failed: {e}", output_path.display()))?;
@@ -978,7 +980,8 @@ fn write_generated_docs_file(
 ) -> Result<String, String> {
     let path = repo_root.join(rel_path);
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
     }
     fs::write(&path, format_generated_doc_content(&body))
         .map_err(|e| format!("write {} failed: {e}", path.display()))?;
@@ -1004,7 +1007,17 @@ fn build_generated_command_lists_body(repo_root: &std::path::Path) -> Result<Str
     }
     let make_list = std::process::Command::new("cargo")
         .current_dir(repo_root)
-        .args(["run", "-q", "-p", "bijux-dev-atlas", "--", "makes", "list", "--format", "text"])
+        .args([
+            "run",
+            "-q",
+            "-p",
+            "bijux-dev-atlas",
+            "--",
+            "makes",
+            "list",
+            "--format",
+            "text",
+        ])
         .output()
         .map_err(|e| format!("run makes list failed: {e}"))?;
     if !make_list.status.success() {
@@ -1027,8 +1040,8 @@ fn docs_generate_command_lists(repo_root: &std::path::Path) -> Result<Vec<String
 }
 
 fn build_generated_schema_snippets_body(repo_root: &std::path::Path) -> Result<String, String> {
-    let schema_path =
-        repo_root.join("docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json");
+    let schema_path = repo_root
+        .join("docs/bijux-atlas-crate/server/generated/runtime-startup-config.schema.json");
     let schema = fs::read_to_string(&schema_path)
         .map_err(|e| format!("read {} failed: {e}", schema_path.display()))?;
     let value: serde_json::Value =
@@ -1096,7 +1109,9 @@ fn build_generated_ops_snippets_body(repo_root: &std::path::Path) -> Result<Stri
     let values_dir = repo_root.join("ops/k8s/values");
     let mut values_files = Vec::new();
     if values_dir.exists() {
-        for entry in fs::read_dir(&values_dir).map_err(|e| format!("read {} failed: {e}", values_dir.display()))? {
+        for entry in fs::read_dir(&values_dir)
+            .map_err(|e| format!("read {} failed: {e}", values_dir.display()))?
+        {
             let path = entry.map_err(|e| e.to_string())?.path();
             if path.extension().and_then(|v| v.to_str()) == Some("yaml") {
                 values_files.push(
@@ -1150,7 +1165,7 @@ fn build_real_data_runs_table_body(catalog: &DocsRealDataCatalog) -> String {
 
 fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     let mut out = String::from(
-        "# Real Data Runs Overview\n\nYou are here: `docs/_internal/generated/real-data-runs-overview.md`\n\nReturn to: [Real Data Runs index](../../ops/tutorials/real-data/index.md)\n\nThis page is generated from `configs/sources/tutorials/real-data-runs.json`.\n\n",
+        "# Real Data Runs Overview\n\nGenerated artifact: `artifacts/docs/generated/real-data-runs-overview.md`\n\nSource catalog: `configs/sources/tutorials/real-data-runs.json`\n\n",
     );
     out.push_str("## Coverage Summary\n\n");
     out.push_str(&format!("- Total runs: `{}`\n", catalog.runs.len()));
@@ -1174,19 +1189,17 @@ fn build_real_data_overview_body(catalog: &DocsRealDataCatalog) -> String {
     out.push_str(&format!("- Large-sample runs: `{large_sample}`\n\n"));
     out.push_str("## Run Links\n\n");
     for run in &catalog.runs {
-        out.push_str(&format!(
-            "- `{}`: [ops/tutorials/real-data/runs/{}.md](../../ops/tutorials/real-data/runs/{}.md)\n",
-            run.run_label, run.id, run.id
-        ));
+        out.push_str(&format!("- `{}`: `ops/tutorials/real-data/runs/{}.md`\n", run.run_label, run.id));
     }
     out.push_str("\n## Related pages\n\n");
-    out.push_str("- [Real Data Runs table](../../_generated/real-data-runs-table.md)\n");
-    out.push_str("- [Real Data Runs report](../../reference/reports/real-data-runs.md)\n");
-    out.push_str("\n---\nParent index: [Tutorials](../../ops/tutorials/index.md)\n");
+    out.push_str("- `docs/_generated/real-data-runs-table.md`\n");
+    out.push_str("- `artifacts/docs/generated/real-data-runs-overview.json`\n");
     out
 }
 
-fn docs_markdown_link_inventory(repo_root: &std::path::Path) -> Result<Vec<(String, String)>, String> {
+fn docs_markdown_link_inventory(
+    repo_root: &std::path::Path,
+) -> Result<Vec<(String, String)>, String> {
     let docs_root = repo_root.join("docs");
     let files = docs_markdown_files(&docs_root, false);
     let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
@@ -1199,7 +1212,11 @@ fn docs_markdown_link_inventory(repo_root: &std::path::Path) -> Result<Vec<(Stri
             .to_string();
         let text = fs::read_to_string(&file).unwrap_or_default();
         for cap in link_re.captures_iter(&text) {
-            let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default().to_string();
+            let target = cap
+                .get(1)
+                .map(|m| m.as_str())
+                .unwrap_or_default()
+                .to_string();
             rows.push((rel.clone(), target));
         }
     }
@@ -1227,7 +1244,7 @@ fn build_artifact_link_inventory_body(rows: &[(String, String)]) -> String {
         }
     }
     let mut out = String::from(
-        "# Docs Artifact Link Inventory\n\nYou are here: `docs/_internal/generated/docs-artifact-link-inventory.md`\n\nReturn to: [Docs governance index](../ops/governance/repository/index.md)\n\n",
+        "# Docs Artifact Link Inventory\n\nGenerated artifact: `artifacts/docs/generated/docs-artifact-link-inventory.md`\n\n",
     );
     out.push_str("## Links Containing `artifacts/`\n\n");
     if artifacts.is_empty() {
@@ -1245,7 +1262,6 @@ fn build_artifact_link_inventory_body(rows: &[(String, String)]) -> String {
             out.push_str(&format!("- `{page}` -> `{link}`\n"));
         }
     }
-    out.push_str("\n---\nParent index: [Reference reports](../../reference/reports/index.md)\n");
     out
 }
 
@@ -1259,7 +1275,7 @@ fn docs_generate_real_data_pages(repo_root: &std::path::Path) -> Result<Vec<Stri
     )?);
     generated.push(write_generated_docs_file(
         repo_root,
-        "docs/_internal/generated/real-data-runs-overview.md",
+        "artifacts/docs/generated/real-data-runs-overview.md",
         build_real_data_overview_body(&catalog),
     )?);
     let overview_json = serde_json::json!({
@@ -1279,7 +1295,7 @@ fn docs_generate_real_data_pages(repo_root: &std::path::Path) -> Result<Vec<Stri
             }
         })).collect::<Vec<_>>()
     });
-    let overview_json_path = repo_root.join("docs/_internal/generated/real-data-runs-overview.json");
+    let overview_json_path = repo_root.join("artifacts/docs/generated/real-data-runs-overview.json");
     fs::write(
         &overview_json_path,
         format!(
@@ -1289,11 +1305,11 @@ fn docs_generate_real_data_pages(repo_root: &std::path::Path) -> Result<Vec<Stri
         ),
     )
     .map_err(|e| format!("write {} failed: {e}", overview_json_path.display()))?;
-    generated.push("docs/_internal/generated/real-data-runs-overview.json".to_string());
+    generated.push("artifacts/docs/generated/real-data-runs-overview.json".to_string());
     let link_rows = docs_markdown_link_inventory(repo_root)?;
     generated.push(write_generated_docs_file(
         repo_root,
-        "docs/_internal/generated/docs-artifact-link-inventory.md",
+        "artifacts/docs/generated/docs-artifact-link-inventory.md",
         build_artifact_link_inventory_body(&link_rows),
     )?);
     Ok(generated)
@@ -1338,7 +1354,11 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
     let link_rows = docs_markdown_link_inventory(repo_root)?;
     let workspace_version = fs::read_to_string(repo_root.join("Cargo.toml"))
         .ok()
-        .and_then(|text| text.lines().find(|line| line.trim_start().starts_with("version = ")).map(str::to_string))
+        .and_then(|text| {
+            text.lines()
+                .find(|line| line.trim_start().starts_with("version = "))
+                .map(str::to_string)
+        })
         .and_then(|line| line.split('"').nth(1).map(str::to_string))
         .unwrap_or_else(|| "0.1.0".to_string());
     let ops_manifest_path = repo_root.join("ops/release/ops-release-manifest.json");
@@ -1398,15 +1418,15 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
             format_generated_doc_content(&build_real_data_runs_table_body(&catalog)),
         ),
         (
-            "docs/_internal/generated/docs-artifact-link-inventory.md",
+            "artifacts/docs/generated/docs-artifact-link-inventory.md",
             format_generated_doc_content(&build_artifact_link_inventory_body(&link_rows)),
         ),
         (
-            "docs/_internal/generated/ops-compatibility-matrix.md",
+            "artifacts/docs/generated/ops-compatibility-matrix.md",
             format_generated_doc_content(&ops_matrix_md),
         ),
         (
-            "docs/_internal/generated/ops-compatibility-matrix.json",
+            "artifacts/docs/generated/ops-compatibility-matrix.json",
             format!(
                 "{}\n",
                 serde_json::to_string_pretty(&ops_matrix_json)
@@ -1440,7 +1460,8 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
             stale.push((*rel).to_string());
         }
     }
-    let registry_path = repo_root.join("configs/sources/repository/docs/generated-files-registry.json");
+    let registry_path =
+        repo_root.join("configs/sources/repository/docs/generated-files-registry.json");
     let registry_json: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&registry_path)
             .map_err(|e| format!("read {} failed: {e}", registry_path.display()))?,
@@ -1469,8 +1490,8 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         }
     }
     let allowed_registry_only = std::collections::BTreeSet::from([
-        "docs/_internal/generated/real-data-runs-overview.md".to_string(),
-        "docs/_internal/generated/real-data-runs-overview.json".to_string(),
+        "artifacts/docs/generated/real-data-runs-overview.md".to_string(),
+        "artifacts/docs/generated/real-data-runs-overview.json".to_string(),
     ]);
     for path in &registry_paths {
         if !required_set.contains(path) && !allowed_registry_only.contains(path) {
@@ -1478,7 +1499,8 @@ fn docs_verify_generated(repo_root: &std::path::Path) -> Result<serde_json::Valu
         }
     }
 
-    let freshness_path = repo_root.join("configs/sources/repository/docs/generated-files-freshness-policy.json");
+    let freshness_path =
+        repo_root.join("configs/sources/repository/docs/generated-files-freshness-policy.json");
     let freshness_json: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(&freshness_path)
             .map_err(|e| format!("read {} failed: {e}", freshness_path.display()))?,
@@ -1659,7 +1681,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let ctx = docs_context(&args.common)?;
                 let mut payload = docs_top_payload(&ctx, &args.common, args.limit)?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
-                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+                Ok((
+                    emit_payload(args.common.format, args.common.out, &payload)?,
+                    0,
+                ))
             }
             DocsCommand::Dead(common) => {
                 let ctx = docs_context(&common)?;
@@ -1703,9 +1728,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         .repo_root
                         .join("ops/_generated.example/docs-shrink-report.json");
                     if let Some(parent) = report_path.parent() {
-                        fs::create_dir_all(parent).map_err(|e| {
-                            format!("failed to create {}: {e}", parent.display())
-                        })?;
+                        fs::create_dir_all(parent)
+                            .map_err(|e| format!("failed to create {}: {e}", parent.display()))?;
                     }
                     fs::write(
                         &report_path,
@@ -1736,7 +1760,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     &args.output,
                     "profiles",
                     |mut rows| {
-                        rows.sort_by_key(|row| row["profile"].as_str().unwrap_or_default().to_string());
+                        rows.sort_by_key(|row| {
+                            row["profile"].as_str().unwrap_or_default().to_string()
+                        });
                         let header = vec![
                             "<!-- Generated by bijux-dev-atlas docs lifecycle-summary-table --allow-write. Do not edit by hand. -->".to_string(),
                             String::new(),
@@ -1765,49 +1791,50 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     },
                 )?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
-                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+                Ok((
+                    emit_payload(args.common.format, args.common.out, &payload)?,
+                    0,
+                ))
             }
             DocsCommand::DrillSummaryTable(args) => {
                 if !args.common.allow_write {
                     return Err("docs drill-summary-table requires --allow-write".to_string());
                 }
-                let mut payload = docs_write_summary_table(
-                    &args.input,
-                    &args.output,
-                    "drills",
-                    |mut rows| {
-                        rows.sort_by_key(|row| row["name"].as_str().unwrap_or_default().to_string());
+                let mut payload =
+                    docs_write_summary_table(&args.input, &args.output, "drills", |mut rows| {
+                        rows.sort_by_key(|row| {
+                            row["name"].as_str().unwrap_or_default().to_string()
+                        });
                         let lines = vec![
                             "# Drill Summary".to_string(),
                             String::new(),
                             "| Drill | Status | Report |".to_string(),
                             "| --- | --- | --- |".to_string(),
                         ];
-                        let table = render_summary_table(
-                            &rows,
-                            "",
-                            "| (none) | n/a | n/a |",
-                            |row| {
+                        let table =
+                            render_summary_table(&rows, "", "| (none) | n/a | n/a |", |row| {
                                 format!(
                                     "| {} | {} | `{}` |",
                                     row["name"].as_str().unwrap_or_default(),
                                     row["status"].as_str().unwrap_or_default(),
                                     row["report_path"].as_str().unwrap_or_default()
                                 )
-                            },
-                        );
+                            });
                         let mut out = lines;
                         out.extend(table.lines().skip(2).map(str::to_string));
                         out.join("\n")
-                    },
-                )?;
+                    })?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
-                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+                Ok((
+                    emit_payload(args.common.format, args.common.out, &payload)?,
+                    0,
+                ))
             }
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(common) => {
                     let ctx = docs_context(&common)?;
-                    let (changed, generated) = docs_reference_generate_or_check(&ctx.repo_root, true)?;
+                    let (changed, generated) =
+                        docs_reference_generate_or_check(&ctx.repo_root, true)?;
                     let payload = serde_json::json!({
                         "schema_version": 1,
                         "run_id": ctx.run_id.as_str(),
@@ -1821,7 +1848,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 crate::cli::DocsReferenceCommand::Check(common) => {
                     let ctx = docs_context(&common)?;
-                    let (changed, generated) = docs_reference_generate_or_check(&ctx.repo_root, false)?;
+                    let (changed, generated) =
+                        docs_reference_generate_or_check(&ctx.repo_root, false)?;
                     let code = if changed.is_empty() { 0 } else { 1 };
                     let payload = serde_json::json!({
                         "schema_version": 1,
@@ -1853,7 +1881,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 crate::cli::DocsGenerateCommand::CommandLists(common) => {
                     if !common.allow_write || !common.allow_subprocess {
-                        return Err("docs generate command-lists requires --allow-write --allow-subprocess".to_string());
+                        return Err(
+                            "docs generate command-lists requires --allow-write --allow-subprocess"
+                                .to_string(),
+                        );
                     }
                     let ctx = docs_context(&common)?;
                     let generated = docs_generate_command_lists(&ctx.repo_root)?;
@@ -1868,7 +1899,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 crate::cli::DocsGenerateCommand::SchemaSnippets(common) => {
                     if !common.allow_write {
-                        return Err("docs generate schema-snippets requires --allow-write".to_string());
+                        return Err(
+                            "docs generate schema-snippets requires --allow-write".to_string()
+                        );
                     }
                     let ctx = docs_context(&common)?;
                     let generated = docs_generate_schema_snippets(&ctx.repo_root)?;
@@ -1883,7 +1916,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 }
                 crate::cli::DocsGenerateCommand::OpenapiSnippets(common) => {
                     if !common.allow_write {
-                        return Err("docs generate openapi-snippets requires --allow-write".to_string());
+                        return Err(
+                            "docs generate openapi-snippets requires --allow-write".to_string()
+                        );
                     }
                     let ctx = docs_context(&common)?;
                     let generated = docs_generate_openapi_snippets(&ctx.repo_root)?;
@@ -1937,7 +1972,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let ctx = docs_context(&common)?;
                     let mut payload = docs_sync_redirects(&ctx.repo_root)?;
                     payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     Ok((emit_payload(common.format, common.out, &payload)?, 0))
                 }
             },
@@ -1945,7 +1981,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 crate::cli::DocsMergeCommand::Validate(common) => {
                     let ctx = docs_context(&common)?;
                     let mut payload = docs_merge_validate_payload(&ctx, &common)?;
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                         1
                     } else {
@@ -1961,7 +1998,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 crate::cli::DocsSpineCommand::Validate(common) => {
                     let ctx = docs_context(&common)?;
                     let mut payload = docs_spine_validate_payload(&ctx, &common)?;
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                         1
                     } else {
@@ -1972,7 +2010,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 crate::cli::DocsSpineCommand::Report(common) => {
                     let ctx = docs_context(&common)?;
                     let mut payload = docs_spine_report_payload(&ctx, &common)?;
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     let code = if payload["orphans"].as_array().is_some_and(|v| !v.is_empty()) {
                         1
                     } else {
@@ -1986,7 +2025,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let ctx = docs_context(&common)?;
                     let mut payload = docs_links_payload(&ctx, &common)?;
                     payload["kind"] = serde_json::json!("docs_toc_verify");
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                         1
                     } else {
@@ -2025,8 +2065,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
             }
             DocsCommand::ExternalLinks(args) => {
                 let ctx = docs_context(&args.common)?;
-                let mut payload =
-                    docs_external_links_payload(&ctx, &args.common, &args.allowlist)?;
+                let mut payload = docs_external_links_payload(&ctx, &args.common, &args.allowlist)?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                     1
@@ -2036,7 +2075,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 if code != 0 {
                     payload["error_code"] = serde_json::json!("DOCS_EXTERNAL_LINK_ERROR");
                 }
-                Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
+                Ok((
+                    emit_payload(args.common.format, args.common.out, &payload)?,
+                    code,
+                ))
             }
             DocsCommand::Lint(common) => {
                 let ctx = docs_context(&common)?;
@@ -2144,46 +2186,49 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
                 let code = if status < 400 && marker_found { 0 } else { 1 };
-                Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
+                Ok((
+                    emit_payload(args.common.format, args.common.out, &payload)?,
+                    code,
+                ))
             }
             DocsCommand::UxSmoke(common) => {
                 if !common.allow_subprocess || !common.allow_write {
-                    return Err("docs ux-smoke requires --allow-subprocess --allow-write".to_string());
+                    return Err(
+                        "docs ux-smoke requires --allow-subprocess --allow-write".to_string()
+                    );
                 }
                 let ctx = docs_context(&common)?;
-                docs_build_or_serve_subprocess(
-                    &["build".to_string()],
-                    &common,
-                    "docs build",
-                )?;
+                docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
                 let site_paths =
                     bijux_dev_atlas::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
                 let site_dir = ctx.repo_root.join(&site_paths.site_dir);
                 let breadcrumbs_path = ctx
                     .repo_root
-                    .join("docs/_internal/generated/breadcrumbs.json");
-                let breadcrumb_map: std::collections::BTreeSet<String> = if breadcrumbs_path.exists()
-                {
-                    let value: serde_json::Value = serde_json::from_str(
-                        &fs::read_to_string(&breadcrumbs_path).unwrap_or_default(),
-                    )
-                    .unwrap_or_default();
-                    value
-                        .get("rows")
-                        .and_then(|v| v.as_array())
-                        .cloned()
-                        .unwrap_or_default()
-                        .into_iter()
-                        .filter_map(|row| row.get("path").and_then(|v| v.as_str()).map(str::to_string))
-                        .collect()
-                } else {
-                    std::collections::BTreeSet::new()
-                };
+                    .join("artifacts/docs/generated/breadcrumbs.json");
+                let breadcrumb_map: std::collections::BTreeSet<String> =
+                    if breadcrumbs_path.exists() {
+                        let value: serde_json::Value = serde_json::from_str(
+                            &fs::read_to_string(&breadcrumbs_path).unwrap_or_default(),
+                        )
+                        .unwrap_or_default();
+                        value
+                            .get("rows")
+                            .and_then(|v| v.as_array())
+                            .cloned()
+                            .unwrap_or_default()
+                            .into_iter()
+                            .filter_map(|row| {
+                                row.get("path").and_then(|v| v.as_str()).map(str::to_string)
+                            })
+                            .collect()
+                    } else {
+                        std::collections::BTreeSet::new()
+                    };
                 let samples = [
                     "index.html",
-                    "ops/tutorials/real-data/index.html",
+                    "07-reference/index.html",
                     "_generated/real-data-runs-table/index.html",
-                    "_internal/generated/real-data-runs-overview/index.html",
+                    "08-contracts/index.html",
                 ];
                 let mut rows = Vec::new();
                 let mut failures = Vec::new();
@@ -2202,8 +2247,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         continue;
                     }
                     let text = fs::read_to_string(&page).unwrap_or_default();
-                    let has_top_nav =
-                        text.contains("md-header") || text.contains("md-tabs") || text.contains("md-tabs__item");
+                    let has_top_nav = text.contains("md-header")
+                        || text.contains("md-tabs")
+                        || text.contains("md-tabs__item");
                     let has_side_nav = text.contains("md-nav") || text.contains("md-sidebar");
                     let expected_doc_path = if sample == "index.html" {
                         "docs/index.md".to_string()
@@ -2252,9 +2298,14 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
             }
             DocsCommand::SiteDir(common) => {
                 let ctx = docs_context(&common)?;
-                let mut payload = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
+                let mut payload =
+                    bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
-                let code = if payload["status"].as_str() == Some("pass") { 0 } else { 1 };
+                let code = if payload["status"].as_str() == Some("pass") {
+                    0
+                } else {
+                    1
+                };
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Build(common) => {
@@ -2344,15 +2395,17 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "docs build",
                     )?;
                     build_status = if code == 0 { "ok" } else { "failed" };
-                    site_output = bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
+                    site_output =
+                        bijux_dev_atlas::docs::site_output::site_output_report(&ctx.repo_root)?;
                 }
-                let site_output_status = site_output["status"].as_str().unwrap_or(
-                    if build_status == "skipped" {
-                        "skipped"
-                    } else {
-                        "missing"
-                    },
-                );
+                let site_output_status =
+                    site_output["status"]
+                        .as_str()
+                        .unwrap_or(if build_status == "skipped" {
+                            "skipped"
+                        } else {
+                            "missing"
+                        });
                 rows.push(serde_json::json!({"name":"build","status":build_status}));
                 rows.push(serde_json::json!({
                     "name":"site_output",
@@ -2397,10 +2450,12 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let closure_summary_path = out_dir.join("docs-build-closure-summary.json");
                     let site_output_path = out_dir.join("site-output.json");
                     let manifest_path = out_dir.join("report-manifest.json");
-                    let closure_index_json_path =
-                        ctx.repo_root.join("docs/_internal/generated/closure-index.json");
-                    let closure_index_md_path =
-                        ctx.repo_root.join("docs/_internal/generated/closure-index.md");
+                    let closure_index_json_path = ctx
+                        .repo_root
+                        .join("artifacts/docs/generated/closure-index.json");
+                    let closure_index_md_path = ctx
+                        .repo_root
+                        .join("artifacts/docs/generated/closure-index.md");
                     let closure_index = bijux_dev_atlas::docs::site_output::closure_index_report();
                     let closure_index_markdown =
                         bijux_dev_atlas::docs::site_output::closure_index_markdown(&closure_index)?;
@@ -2414,9 +2469,15 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "closure-summary.schema.json",
                         &closure_summary,
                     )?;
-                    let manifest = bijux_dev_atlas::docs::site_output::report_manifest(&[
-                        ("closure-index", "docs/_internal/generated/closure-index.json"),
-                        ("docs-build-closure-summary", "docs-build-closure-summary.json"),
+                        let manifest = bijux_dev_atlas::docs::site_output::report_manifest(&[
+                        (
+                            "closure-index",
+                            "artifacts/docs/generated/closure-index.json",
+                        ),
+                        (
+                            "docs-build-closure-summary",
+                            "docs-build-closure-summary.json",
+                        ),
                         ("docs-site-output", "site-output.json"),
                     ]);
                     write_docs_gate_artifact(&site_output_path, &site_output)?;
@@ -2427,8 +2488,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         fs::create_dir_all(parent)
                             .map_err(|e| format!("failed to create {}: {e}", parent.display()))?;
                     }
-                    fs::write(&closure_index_md_path, closure_index_markdown)
-                        .map_err(|e| format!("write {} failed: {e}", closure_index_md_path.display()))?;
+                    fs::write(&closure_index_md_path, closure_index_markdown).map_err(|e| {
+                        format!("write {} failed: {e}", closure_index_md_path.display())
+                    })?;
                 }
                 let payload = serde_json::json!({
                     "schema_version":1,
@@ -2445,7 +2507,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "closure_summary": docs_gate_artifact_dir(&ctx).join("docs-build-closure-summary.json").display().to_string(),
                         "site_output": docs_gate_artifact_dir(&ctx).join("site-output.json").display().to_string(),
                         "report_manifest": docs_gate_artifact_dir(&ctx).join("report-manifest.json").display().to_string(),
-                        "closure_index": ctx.repo_root.join("docs/_internal/generated/closure-index.json").display().to_string()
+                        "closure_index": ctx.repo_root.join("artifacts/docs/generated/closure-index.json").display().to_string()
                     },
                     "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "options":{"strict": common.strict, "include_drafts": common.include_drafts},

@@ -3,7 +3,7 @@
   "stale_days": 90,
   "stale_fail_grace_days": 30,
   "reference_date": "2026-02-25",
-  "stale_override_policy_path": "docs/_internal/policies/stale-page-overrides.json",
+  "stale_override_policy_path": "configs/sources/repository/docs/stale-page-overrides.json",
   "default_area_budget": 20,
   "area_budgets": {
     "docs-root": 800,

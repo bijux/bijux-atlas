@@ -26,7 +26,7 @@
 
 - `docs/` may reference stable operational specs in the five root docs or machine-readable ops authorities.
 - `ops/` may reference stable public docs pages when necessary.
-- `ops/` must not use `docs/_internal/` as canonical user guidance.
+- `ops/` must not use `docs/` internals as canonical user guidance.
 
 ## Rationale
 

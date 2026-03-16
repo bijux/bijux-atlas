@@ -3,7 +3,7 @@
   "governance_version": 3,
   "compatibility_policy": "configs/sources/governance/governance/compatibility.yaml",
   "contract_evolution_policy": {
-    "authority": "docs/_internal/governance/compatibility-and-deprecation-process.md",
+    "authority": "configs/sources/governance/governance/compatibility.yaml",
     "compatibility_mode": "backward-compatible-with-announced-deprecations"
   },
   "components": {
@@ -19,7 +19,7 @@
   "policies": [
     {
       "id": "docs-internal-link-integrity",
-      "authority": "docs/_internal/governance/broken-link-policy.md",
+      "authority": "configs/sources/repository/docs/quality-policy.json",
       "enforcement": [
         "CHECK-DOCS-LINKS",
         "CHECK-DOCS-NAV",
@@ -28,7 +28,7 @@
     },
     {
       "id": "release-bundle-integrity",
-      "authority": "docs/reference/contracts/ops/release/evidence.md",
+      "authority": "docs/08-contracts/operational-contracts.md",
       "enforcement": [
         "release manifest validate",
         "release bundle verify",
@@ -37,7 +37,7 @@
     },
     {
       "id": "ops-profile-safety",
-      "authority": "docs/reference/contracts/ops/profile-matrix.md",
+      "authority": "docs/04-operations/deployment-models.md",
       "enforcement": [
         "ops validate",
         "CHECK-OPS-K8S-CONTRACTS",

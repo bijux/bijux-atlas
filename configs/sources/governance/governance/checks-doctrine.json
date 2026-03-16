@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "checks": {
+    "idempotent": true,
+    "selection_command": "bijux dev atlas check run"
+  },
+  "contracts": {
+    "selection_command": "bijux dev atlas suites run --suite contracts"
+  },
+  "execution_modes": {
+    "pure": "Reads state and emits evidence without mutating the environment.",
+    "effect": "May write artifacts, call subprocesses, or interact with live substrates."
+  },
+  "suite_boundaries": {
+    "checks": "Repository validation and lane composition.",
+    "contracts": "Boundary verification and contract evidence."
+  },
+  "validation_system": [
+    {
+      "surface": "checks",
+      "command_family": "check run",
+      "selection_model": "suite, id, group, tag",
+      "capability_model": "static or effect per check"
+    },
+    {
+      "surface": "contracts",
+      "command_family": "suites run --suite contracts",
+      "selection_model": "suite, group, tag, mode",
+      "capability_model": "pure, effect, or all"
+    },
+    {
+      "surface": "make wrappers",
+      "command_family": "make <target>",
+      "selection_model": "curated public entrypoints",
+      "capability_model": "delegated to bijux-dev-atlas"
+    }
+  ]
+}

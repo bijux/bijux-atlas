@@ -31,7 +31,6 @@
     "readyz"
   ],
   "ignorePaths": [
-    "docs/_internal/generated/**",
     "ops/_generated.example/**",
     "artifacts/**",
     "target/**"

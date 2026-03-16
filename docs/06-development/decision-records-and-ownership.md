@@ -37,6 +37,31 @@ The most reliable ownership signals in this repository are:
 
 If those signals disagree, resolve the ownership drift before merging the change.
 
+## Governance Rules
+
+Atlas governance stays honest when one checked-in source owns each durable rule.
+
+- public behavior belongs in canonical docs and contracts, not in ad hoc notes
+- generated evidence must point back to the checked-in source that defines it
+- ownership changes should update the owning registry or metadata in the same
+  change
+
+## ADR Template
+
+Use this minimum structure when a decision needs durable recordkeeping:
+
+```md
+# ADR: <clear decision title>
+
+## Context
+
+## Decision
+
+## Consequences
+
+## Source-of-Truth Files
+```
+
 ## When to Record a Decision
 
 Capture a durable decision record when you:

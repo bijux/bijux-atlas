@@ -272,7 +272,7 @@
       "schemas": [],
       "stability": "stable",
       "tool_entrypoints": [
-        "shellcheck",
+        "make lint-make",
         "bijux dev atlas configs validate"
       ]
     },
@@ -331,7 +331,7 @@
       "stability": "stable",
       "tool_entrypoints": [
         "bijux dev atlas configs validate",
-        "make"
+        "make help"
       ]
     },
     {

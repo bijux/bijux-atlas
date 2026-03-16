@@ -20,16 +20,8 @@ struct ArtifactLinkAllowlistEntry {
 }
 
 fn docs_budget_exempt(rel: &str) -> bool {
-    rel.starts_with("_internal/")
-        || rel.starts_with("_assets/")
-        || rel.starts_with("operations/reference/")
-        || matches!(
-            rel,
-            "reference/repo-map.md"
-                | "reference/contracts/config-keys.md"
-                | "reference/contracts/errors.md"
-                | "reference/makes-targets.md"
-        )
+    rel.starts_with("_assets/")
+        || matches!(rel, "reference/contracts/config-keys.md" | "reference/contracts/errors.md")
 }
 
 pub(crate) fn docs_validate_payload(
@@ -84,7 +76,7 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs not_in_nav must not exclude docs/_generated/**".to_string(),
         );
     }
-    for required in ["index.md", "start-here.md"] {
+    for required in ["index.md"] {
         if !ctx.docs_root.join(required).exists() {
             issues.errors.push(format!(
                 "DOCS_STRUCTURE_ERROR: missing required docs entrypoint `docs/{required}`"
@@ -136,19 +128,9 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
-    for rel in [
-        "reference/commands.md",
-        "reference/schemas.md",
-        "reference/configs.md",
-        "reference/makes-targets.md",
-    ] {
-        if !ctx.docs_root.join(rel).exists() {
-            issues.errors.push(format!(
-                "DOCS_REFERENCE_ERROR: missing generated docs reference page `docs/{rel}`"
-            ));
-        }
-    }
-    let requirements_lock = ctx.repo_root.join("configs/sources/repository/docs/requirements.lock.txt");
+    let requirements_lock = ctx
+        .repo_root
+        .join("configs/sources/repository/docs/requirements.lock.txt");
     if requirements_lock.exists() {
         let requirements_text = fs::read_to_string(&requirements_lock)
             .map_err(|e| format!("failed to read {}: {e}", requirements_lock.display()))?;
@@ -209,7 +191,7 @@ pub(crate) fn docs_validate_payload(
                 ));
             }
         }
-        if !rel.starts_with("reference/") {
+        if !rel.starts_with("07-reference/") {
             let stem = std::path::Path::new(&rel)
                 .file_stem()
                 .and_then(|v| v.to_str())
@@ -221,11 +203,15 @@ pub(crate) fn docs_validate_payload(
                     .is_some_and(|value| value.eq_ignore_ascii_case("reference"))
             {
                 issues.warnings.push(format!(
-                    "DOCS_REFERENCE_LOCATION_ERROR: reference-like page `{rel}` must live under docs/reference/"
+                    "DOCS_REFERENCE_LOCATION_ERROR: reference-like page `{rel}` must live under docs/07-reference/"
                 ));
             }
         }
-        if rel.ends_with("INDEX.md") || rel == "INDEX.md" || rel == "index.md" {
+        if rel.ends_with("INDEX.md")
+            || rel == "INDEX.md"
+            || rel == "index.md"
+            || rel.ends_with("/index.md")
+        {
             for cap in link_re.captures_iter(&text) {
                 let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
                 if target.starts_with("http://")
@@ -246,9 +232,9 @@ pub(crate) fn docs_validate_payload(
             }
         }
         if text.contains("TODO") || text.contains("TBD") {
-            issues.errors.push(format!(
-                "DOCS_TODO_ERROR: `{rel}` contains TODO/TBD marker"
-            ));
+            issues
+                .errors
+                .push(format!("DOCS_TODO_ERROR: `{rel}` contains TODO/TBD marker"));
         }
         let line_count = text.lines().count();
         if !docs_budget_exempt(&rel) && line_count > 300 {
@@ -460,26 +446,16 @@ pub(crate) fn docs_links_payload(
         .unwrap_or_default()
         .trim_end_matches('/')
         .to_string();
-    let artifact_rewrites = std::collections::BTreeMap::from([
-        (
-            "artifacts/docs/generated/",
-            "docs/_internal/generated/".to_string(),
-        ),
-        (
-            "artifacts/tutorials/real-data-overview.md",
-            "docs/_internal/generated/real-data-runs-overview.md".to_string(),
-        ),
-    ]);
-    let artifact_allowlist_path = ctx.repo_root.join("configs/sources/repository/docs/artifact-link-allowlist.json");
-    let artifact_allowlist: std::collections::BTreeSet<String> = if artifact_allowlist_path.exists() {
+    let artifact_rewrites = std::collections::BTreeMap::<&str, String>::new();
+    let artifact_allowlist_path = ctx
+        .repo_root
+        .join("configs/sources/repository/docs/artifact-link-allowlist.json");
+    let artifact_allowlist: std::collections::BTreeSet<String> = if artifact_allowlist_path.exists()
+    {
         let text = fs::read_to_string(&artifact_allowlist_path)
             .map_err(|e| format!("failed to read {}: {e}", artifact_allowlist_path.display()))?;
-        let parsed: ArtifactLinkAllowlist = serde_json::from_str(&text).map_err(|e| {
-            format!(
-                "failed to parse {}: {e}",
-                artifact_allowlist_path.display()
-            )
-        })?;
+        let parsed: ArtifactLinkAllowlist = serde_json::from_str(&text)
+            .map_err(|e| format!("failed to parse {}: {e}", artifact_allowlist_path.display()))?;
         parsed
             .entries
             .into_iter()
@@ -712,7 +688,9 @@ fn docs_external_targets(
                 let target = cap.get(1).map(|m| m.as_str()).unwrap_or("").trim();
                 let cleaned = target.split('#').next().unwrap_or("").trim();
                 if cleaned.starts_with("http://") || cleaned.starts_with("https://") {
-                    seen.entry(cleaned.to_string()).or_default().push(rel.clone());
+                    seen.entry(cleaned.to_string())
+                        .or_default()
+                        .push(rel.clone());
                 }
             }
         }
@@ -737,7 +715,11 @@ fn docs_external_link_allowlist(
         .map_err(|e| format!("failed to read {}: {e}", allowlist_path.display()))?;
     let payload: ExternalLinkAllowlist =
         serde_json::from_str(&text).map_err(|e| format!("invalid allowlist json: {e}"))?;
-    Ok(payload.entries.into_iter().map(|entry| entry.pattern).collect())
+    Ok(payload
+        .entries
+        .into_iter()
+        .map(|entry| entry.pattern)
+        .collect())
 }
 
 fn docs_probe_external_link(url: &str) -> Result<(bool, String), String> {

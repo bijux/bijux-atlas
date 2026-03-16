@@ -1239,7 +1239,8 @@ fn validate_command_order(commands: &[String]) -> bool {
 
 fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     let mut commands = BTreeSet::new();
-    let public_targets = read_json_value(&root.join("configs/sources/repository/makes/public-targets.json"))?;
+    let public_targets =
+        read_json_value(&root.join("configs/sources/repository/makes/public-targets.json"))?;
     for row in public_targets
         .get("public_targets")
         .and_then(serde_json::Value::as_array)
@@ -1251,7 +1252,7 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
         }
     }
 
-    let command_index = read_json_value(&root.join("docs/_internal/generated/command-index.json"))?;
+    let command_index = read_json_value(&root.join("configs/generated/docs/command-index.json"))?;
     for row in command_index
         .get("commands")
         .and_then(serde_json::Value::as_array)
@@ -1320,6 +1321,23 @@ fn known_commands(root: &Path) -> Result<BTreeSet<String>, String> {
     Ok(commands)
 }
 
+fn normalize_known_command(command: &str) -> String {
+    let trimmed = command.trim();
+    if let Some(rest) = trimmed.strip_prefix("bijux-dev-atlas ") {
+        format!("bijux dev atlas {rest}")
+    } else {
+        trimmed.to_string()
+    }
+}
+
+fn command_is_resolvable(resolvable_commands: &BTreeSet<String>, candidate: &str) -> bool {
+    let candidate = normalize_known_command(candidate);
+    resolvable_commands.iter().any(|command| {
+        let command = normalize_known_command(command);
+        candidate == command || candidate.strip_prefix(&format!("{command} ")).is_some()
+    })
+}
+
 fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let checks_suite_schema = read_json_value(&suite_schema_path(root))?;
     let checks_registry_schema = read_json_value(&checks_registry_schema_path(root))?;
@@ -1381,12 +1399,12 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
     let exceptions_registry: ExceptionsRegistry = read_yaml_file(&exceptions_registry_path(root))?;
     let deprecations_registry: serde_yaml::Value =
         read_yaml_file(&deprecations_registry_path(root))?;
-    let checks_docs =
-        fs::read_to_string(root.join("docs/_internal/governance/checks-and-contracts.md"))
-            .map_err(|err| format!("read checks-and-contracts.md failed: {err}"))?;
-    let suite_membership_policy =
-        fs::read_to_string(root.join("docs/_internal/governance/suite-membership-policy.md"))
-            .map_err(|err| format!("read suite-membership-policy.md failed: {err}"))?;
+    let checks_doctrine = read_json_value(
+        &root.join("configs/sources/governance/governance/checks-doctrine.json"),
+    )?;
+    let suite_membership_policy = read_json_value(
+        &root.join("configs/sources/governance/governance/suite-membership-policy.json"),
+    )?;
 
     let mut errors = Vec::<String>::new();
     let mut check_ids = BTreeSet::new();
@@ -1705,7 +1723,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             ));
         }
         for command in &check.commands {
-            if !resolvable_commands.contains(command) {
+            if !command_is_resolvable(&resolvable_commands, command) {
                 errors.push(format!(
                     "{} command `{}` is not resolvable from known makes/control-plane inventory",
                     check.check_id, command
@@ -1968,7 +1986,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         if contract.runner.trim().is_empty() {
             errors.push(format!("{} missing runner", contract.contract_id));
             missing_rows.push(serde_json::json!({"kind":"contract","id":contract.contract_id,"missing":["runner"]}));
-        } else if !resolvable_commands.contains(&contract.runner) {
+        } else if !command_is_resolvable(&resolvable_commands, &contract.runner) {
             errors.push(format!(
                 "{} runner `{}` is not resolvable from known makes/control-plane inventory",
                 contract.contract_id, contract.runner
@@ -2053,34 +2071,50 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
         }
     }
 
-    if !checks_docs.contains("## Checks")
-        || !checks_docs.contains("## Contracts")
-        || !checks_docs.contains("## Pure And Effect")
+    if checks_doctrine
+        .get("checks")
+        .and_then(|value| value.get("idempotent"))
+        .and_then(serde_json::Value::as_bool)
+        != Some(true)
+        || checks_doctrine.get("contracts").is_none()
+        || checks_doctrine.get("execution_modes").is_none()
     {
         errors.push(
-            "docs/_internal/governance/checks-and-contracts.md must define checks, contracts, and pure/effect semantics"
+            "configs/sources/governance/governance/checks-doctrine.json must define checks, contracts, and execution modes"
                 .to_string(),
         );
     }
-    if !checks_docs.contains("idempotent") {
+    if checks_doctrine
+        .get("checks")
+        .and_then(|value| value.get("idempotent"))
+        .and_then(serde_json::Value::as_bool)
+        != Some(true)
+    {
         errors.push(
-            "docs/_internal/governance/checks-and-contracts.md must define the idempotent checks rule"
+            "configs/sources/governance/governance/checks-doctrine.json must define the idempotent checks rule"
                 .to_string(),
         );
     }
-    if !checks_docs.contains("## Suite Boundaries") || !checks_docs.contains("## Validation System")
+    if checks_doctrine.get("suite_boundaries").is_none()
+        || checks_doctrine
+            .get("validation_system")
+            .and_then(serde_json::Value::as_array)
+            .is_none()
     {
         errors.push(
-            "docs/_internal/governance/checks-and-contracts.md must define suite boundaries and the validation system table"
+            "configs/sources/governance/governance/checks-doctrine.json must define suite boundaries and the validation system"
                 .to_string(),
         );
     }
-    if !suite_membership_policy.contains("## Membership boundary")
-        || !suite_membership_policy.contains("## Allowed overlap")
-        || !suite_membership_policy.contains("## How to move an entry")
+    if suite_membership_policy.get("membership_boundary").is_none()
+        || suite_membership_policy.get("allowed_overlap").is_none()
+        || suite_membership_policy
+            .get("move_procedure")
+            .and_then(serde_json::Value::as_array)
+            .is_none()
     {
         errors.push(
-            "docs/_internal/governance/suite-membership-policy.md must define membership boundary, allowed overlap, and move procedure"
+            "configs/sources/governance/governance/suite-membership-policy.json must define membership boundary, allowed overlap, and move procedure"
                 .to_string(),
         );
     }
@@ -2344,7 +2378,7 @@ fn validate_checks_inventory(root: &Path) -> Result<serde_json::Value, String> {
             "checks_suite": checks_suite_path(root).strip_prefix(root).unwrap_or(&checks_suite_path(root)).display().to_string(),
             "contracts_suite": contracts_suite_path(root).strip_prefix(root).unwrap_or(&contracts_suite_path(root)).display().to_string(),
             "tests_suite": tests_suite_path(root).strip_prefix(root).unwrap_or(&tests_suite_path(root)).display().to_string(),
-            "guide": "docs/_internal/governance/checks-and-contracts.md",
+            "guide": "configs/sources/governance/governance/checks-doctrine.json",
             "suites_index": suites_index_path(root).strip_prefix(root).unwrap_or(&suites_index_path(root)).display().to_string(),
             "tags_taxonomy": tags_taxonomy_path(root).strip_prefix(root).unwrap_or(&tags_taxonomy_path(root)).display().to_string(),
             "check_groups": check_groups_path(root).strip_prefix(root).unwrap_or(&check_groups_path(root)).display().to_string(),
@@ -2610,7 +2644,7 @@ fn adr_field_from_markdown(markdown: &str, key: &str) -> Option<String> {
 }
 
 fn governance_adr_index_payload(root: &Path) -> Result<serde_json::Value, String> {
-    let decisions_dir = root.join("docs/governance/decisions");
+    let decisions_dir = root.join("ops/governance/decisions");
     let mut rows = Vec::new();
     if decisions_dir.exists() {
         for entry in fs::read_dir(&decisions_dir)
@@ -2662,13 +2696,10 @@ fn governance_adr_index_payload(root: &Path) -> Result<serde_json::Value, String
 
 fn required_governance_docs() -> &'static [&'static str] {
     &[
-        "docs/governance/governance-charter.md",
-        "docs/governance/project-governance-model.md",
-        "docs/governance/maintainers-and-roles.md",
-        "docs/governance/decision-process.md",
-        "docs/governance/contributor-onboarding-workflow.md",
-        "docs/governance/adr-registry.md",
-        "docs/governance/adr-template.md",
+        "docs/05-architecture/source-layout-and-ownership.md",
+        "docs/06-development/decision-records-and-ownership.md",
+        "docs/06-development/automation-control-plane.md",
+        "docs/06-development/contributor-workflow.md",
     ]
 }
 
@@ -2684,7 +2715,7 @@ fn governance_docs_validation_errors(root: &Path) -> Vec<String> {
 
 fn contributor_guideline_validation_errors(root: &Path) -> Vec<String> {
     let mut errors = Vec::new();
-    let onboarding_path = root.join("docs/governance/contributor-onboarding-workflow.md");
+    let onboarding_path = root.join("docs/06-development/contributor-workflow.md");
     let text = match fs::read_to_string(&onboarding_path) {
         Ok(value) => value,
         Err(_) => {
@@ -3669,7 +3700,8 @@ pub(crate) fn run_governance_command(
                 let deprecations = load_deprecations_registry(&root)?;
                 let values_schema =
                     read_json_value(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"))?;
-                let env_schema = read_json_value(&root.join("configs/schemas/contracts/env.schema.json"))?;
+                let env_schema =
+                    read_json_value(&root.join("configs/schemas/contracts/env.schema.json"))?;
                 let redirects = read_json_value(&root.join("docs/redirects.json"))?;
                 let redirects_map = redirects
                     .as_object()
@@ -3954,7 +3986,7 @@ pub(crate) fn run_governance_command(
                 let mut gov_rep_001 = true;
                 for entry in &report_schema_deprecations {
                     let migration_path =
-                        root.join(format!("docs/reference/reports/migrations/{}.md", entry.id));
+                        root.join(format!("artifacts/governance/report-migrations/{}.md", entry.id));
                     if !migration_path.exists() {
                         gov_rep_001 = false;
                         errors.push(format!(
@@ -4273,9 +4305,10 @@ pub(crate) fn run_governance_command(
                 "deprecations": active_deprecations
             });
             let delta_inputs_path = institutional_delta_inputs_path(&root);
-            let delta_inputs_schema = read_json_value(
-                &root.join("configs/schemas/contracts/reports/institutional-delta-inputs.schema.json"),
-            )?;
+            let delta_inputs_schema =
+                read_json_value(&root.join(
+                    "configs/schemas/contracts/reports/institutional-delta-inputs.schema.json",
+                ))?;
             if delta_inputs_schema
                 .get("properties")
                 .and_then(|value| value.get("schema_version"))

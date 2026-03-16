@@ -12,7 +12,7 @@ fn load_owner_ids(repo_root: &Path) -> BTreeSet<String> {
             ids.insert(key.clone());
         }
     }
-    if let Ok(value) = read_json(&repo_root.join("docs/_internal/registry/owners.json")) {
+    if let Ok(value) = read_json(&repo_root.join("configs/registry/docs/owners.json")) {
         for owner in value["section_owners"]
             .as_object()
             .cloned()

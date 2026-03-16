@@ -3206,31 +3206,6 @@
         "contracts",
         "stack"
       ]
-    },
-    {
-      "contract_id": "AUTOMATION-BOUNDARIES-001",
-      "summary": "Enforce automation-boundary doctrine contract including forbidden tooling/script patterns and automation-boundary completion criteria.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "group": "governance",
-      "runner": "bijux dev atlas contract automation-boundaries --format json",
-      "reports": [
-        "artifacts/atlas-dev/doctrine/contract-automation-boundaries.report.json"
-      ],
-      "suite_membership": [
-        "contracts"
-      ],
-      "tags": [
-        "contracts",
-        "governance",
-        "automation"
-      ],
-      "retries": 0,
-      "overlaps_with": [],
-      "requires_tools": [
-        "bijux-dev-atlas"
-      ],
-      "missing_tools_policy": "fail"
     }
   ]
 }

@@ -9,12 +9,12 @@
     },
     {
       "topic": "markdown_outside_docs",
-      "policy": "docs/_internal/policies/allowed-non-docs-markdown.json",
+      "policy": "configs/sources/repository/docs/allowed-non-docs-markdown.json",
       "applies_to": ["CHECK-DOCS-OPS-*", "CHECK-DOCS-INDEX-*"]
     },
     {
       "topic": "ops_markdown_classes",
-      "policy": "docs/_internal/policies/ops-docs-classes.json",
+      "policy": "configs/sources/repository/docs/ops-markdown-classes.json",
       "applies_to": ["CHECK-OPS-DOCS-*", "CHECK-OPS-GOV-*"]
     },
     {

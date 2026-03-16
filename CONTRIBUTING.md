@@ -12,7 +12,7 @@ Start here before opening a broad change:
 - testing expectations: [`docs/06-development/testing-and-evidence.md`](docs/06-development/testing-and-evidence.md)
 - change and compatibility model: [`docs/06-development/change-and-compatibility.md`](docs/06-development/change-and-compatibility.md)
 - source layout and ownership: [`docs/05-architecture/source-layout-and-ownership.md`](docs/05-architecture/source-layout-and-ownership.md)
-- repository laws: [`docs/_internal/contracts/repo-laws.json`](docs/_internal/contracts/repo-laws.json)
+- repository laws: [`configs/sources/repository/repo-laws.json`](configs/sources/repository/repo-laws.json)
 
 ## Working Rules
 
