@@ -44,7 +44,10 @@ fn sqlite_logical_fingerprint(path: &Path) -> String {
              WHERE type IN ('table','index','trigger','view') AND name NOT LIKE 'sqlite_%' \
              ORDER BY type, name",
         ),
-        ("schema_version", "SELECT version FROM schema_version ORDER BY version"),
+        (
+            "schema_version",
+            "SELECT version FROM schema_version ORDER BY version",
+        ),
         (
             "atlas_meta",
             "SELECT k, v FROM atlas_meta \
@@ -676,7 +679,10 @@ fn tiny_fixture_matches_cross_machine_golden_hashes() {
         "sqlite logical fingerprint drifted; update the golden only after confirming \
          schema/content changes are intentional"
     );
-    assert_eq!(run.manifest.dataset_signature_sha256, DATASET_SIGNATURE_SHA256);
+    assert_eq!(
+        run.manifest.dataset_signature_sha256,
+        DATASET_SIGNATURE_SHA256
+    );
 }
 
 #[test]
