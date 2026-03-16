@@ -1,4 +1,17 @@
 {
   "schema_version": 1,
-  "rules": []
+  "rules": [
+    {
+      "matchPath": "docs/contracts/compatibility.md",
+      "owner": "atlas-docs",
+      "reason": "Moved compatibility guidance into the canonical ownership and versioning contract page.",
+      "expiresOn": "2027-03-03"
+    },
+    {
+      "matchPath": "docs/root/compatibility-policy.md",
+      "owner": "atlas-docs",
+      "reason": "Moved root compatibility policy guidance into the canonical ownership and versioning contract page.",
+      "expiresOn": "2027-03-03"
+    }
+  ]
 }

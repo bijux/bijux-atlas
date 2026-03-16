@@ -33,6 +33,13 @@ compatibility_rules:
     rename_requirements:
       - compatibility entry
       - compatibility note when schema version changes
+  check_ids:
+    breaking_changes:
+      - remove governed check without replacement or archival note
+      - rename check id without overlap window
+    rename_requirements:
+      - compatibility registry entry
+      - old and new check ids remain runnable during the deprecation window
   docs_urls:
     breaking_changes:
       - move reader URL without redirect
@@ -45,4 +52,5 @@ deprecation_window_days:
   chart_values: 180
   profile_keys: 180
   report_schemas: 180
+  check_ids: 180
   docs_urls: 365

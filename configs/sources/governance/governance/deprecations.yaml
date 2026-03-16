@@ -56,11 +56,3 @@ deprecations:
     removal_target: 2027-03-03
     redirect_required: true
     comms_required: false
-  - id: DEP-CLI-CONTRACTS-COMMAND
-    surface: command
-    old_name: bijux-dev-atlas contracts
-    new_name: bijux-dev-atlas contract
-    introduced: 2026-03-03
-    removal_target: 2026-09-01
-    redirect_required: false
-    comms_required: true

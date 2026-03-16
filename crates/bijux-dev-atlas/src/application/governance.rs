@@ -3705,6 +3705,7 @@ pub(crate) fn run_governance_command(
                 let redirects_map = redirects
                     .as_object()
                     .ok_or_else(|| "docs/redirects.json must be a JSON object".to_string())?;
+                let known_checks = known_check_ids(&root)?;
                 let summary_path = deprecations_summary_path(&root);
                 let compat_path = compat_warnings_path(&root);
                 let today = current_utc_day()?;
@@ -3742,6 +3743,7 @@ pub(crate) fn run_governance_command(
                     "chart_values",
                     "profile_keys",
                     "report_schemas",
+                    "check_ids",
                     "docs_urls",
                 ];
                 for rule_set in required_rule_sets {
@@ -3859,6 +3861,20 @@ pub(crate) fn run_governance_command(
                                 errors.push(format!(
                                     "{} docs move requires redirect {} -> {}",
                                     entry.id, entry.old_name, entry.new_name
+                                ));
+                            }
+                        }
+                        "check-id" => {
+                            let old_supported = known_checks.contains(&entry.old_name);
+                            let new_supported = known_checks.contains(&entry.new_name);
+                            checks.insert(
+                                "registry_overlap".to_string(),
+                                old_supported && new_supported,
+                            );
+                            if !old_supported || !new_supported {
+                                errors.push(format!(
+                                    "{} check rename requires old and new ids in the checks registry",
+                                    entry.id
                                 ));
                             }
                         }
