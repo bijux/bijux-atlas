@@ -21,6 +21,9 @@ flowchart LR
     Runtime --> Server[Running server]
 ```
 
+This composition model explains what runtime owns: taking abstract services, concrete adapters, and
+configuration and turning them into one running process.
+
 ## Runtime Responsibilities
 
 ```mermaid
@@ -30,6 +33,9 @@ flowchart TD
     Runtime --> Limits[Apply limits and policy mode]
     Runtime --> Backends[Choose concrete backends]
 ```
+
+This responsibility map is useful because runtime composition often grows opportunistically over
+time. The diagram keeps the intended boundary visible for future changes.
 
 ## Architectural Boundary
 
@@ -41,6 +47,12 @@ Runtime is where concrete choices belong:
 - telemetry backends
 
 Those choices should not leak backward and become domain rules.
+
+## Runtime Composition Smell Test
+
+- are you wiring concrete behavior or redefining domain meaning?
+- are you selecting a backend or sneaking infrastructure detail into a contract?
+- are you composing limits and middleware where operators expect them to live?
 
 ## Purpose
 

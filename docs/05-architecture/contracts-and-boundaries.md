@@ -24,6 +24,10 @@ flowchart LR
     Runtime --> Adapters
 ```
 
+This boundary model shows the relationship between code placement and stable promises. Contracts
+define what outside consumers can rely on, while the architectural layers decide where behavior
+should live internally.
+
 ## Contract Purpose
 
 ```mermaid
@@ -33,6 +37,9 @@ flowchart TD
     Promise --> Tests[Compatibility tests]
     Promise --> Release[Release confidence]
 ```
+
+This contract-purpose diagram exists so maintainers remember that a contract is more than a page in
+the docs. It should connect documentation, enforcement, and release confidence.
 
 ## The Main Architectural Idea
 
@@ -55,6 +62,13 @@ Those are related, but they are not the same thing.
 - contracts have one owner path
 - compatibility is test-backed
 - internal refactors do not quietly redefine public promises
+
+## Two Questions That Prevent Drift
+
+- where should this code live?
+- what, if anything, should an outside consumer be able to rely on?
+
+Those questions sound similar, but Atlas treats them differently on purpose.
 
 ## Purpose
 

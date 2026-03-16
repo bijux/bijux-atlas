@@ -21,6 +21,10 @@ flowchart LR
     Execute --> Present[Present response]
 ```
 
+This query path highlights the stages Atlas wants to keep visible: request classification, dataset
+resolution, execution, and presentation. That visibility is what makes rejection reasons and result
+shape easier to explain.
+
 ## Query Concerns
 
 ```mermaid
@@ -32,6 +36,9 @@ mindmap
     Policy enforcement
     Result presentation
 ```
+
+This concern map shows the five themes that shape most query changes. It helps maintainers avoid
+mixing request transport, cost policy, and result presentation into one indistinct layer.
 
 ## Architectural Priorities
 
@@ -45,6 +52,12 @@ mindmap
 The dedicated validation route is not just a convenience. It exposes the classification and policy
 model directly so clients can understand request shape without needing to infer behavior from full
 execution only.
+
+## Healthy Query Architecture Traits
+
+- explicit dataset identity remains part of the request contract
+- policy rejection is explainable before expensive execution starts
+- presentation does not smuggle transport concerns into core query rules
 
 ## Purpose
 

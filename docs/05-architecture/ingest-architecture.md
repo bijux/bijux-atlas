@@ -21,6 +21,10 @@ flowchart LR
     Derive --> BuildRoot[Build root]
 ```
 
+This ingest pipeline shows why Atlas treats ingest as an architectural boundary. The layer receives
+raw supported inputs and emits validated build state plus derived artifacts that later workflows can
+trust more than the original files.
+
 ## Architectural Outcome
 
 ```mermaid
@@ -29,6 +33,9 @@ flowchart TD
     Verify --> Publish[Publish into serving store]
     Publish --> Serve[Serve through runtime]
 ```
+
+This outcome diagram makes the stop point explicit. Ingest ends at the build root so validation,
+publication, and runtime serving stay separate and reviewable.
 
 ## Why Ingest Stops at a Build Root
 
@@ -49,6 +56,12 @@ It does not own:
 - catalog discoverability
 - runtime serving policy
 - long-lived cache behavior
+
+## Why This Boundary Saves Pain
+
+- ingest bugs stay distinguishable from serving-store bugs
+- publication remains an explicit gate instead of an implicit side effect
+- runtime behavior does not have to compensate for half-defined ingest output
 
 ## Purpose
 

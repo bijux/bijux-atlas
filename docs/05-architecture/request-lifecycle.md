@@ -28,6 +28,9 @@ sequenceDiagram
     App-->>Client: structured response
 ```
 
+This lifecycle sequence keeps the request path concrete. It shows that policy, normalization,
+dataset resolution, execution, and presentation are distinct stages rather than one opaque handler.
+
 ## Main Request Stages
 
 ```mermaid
@@ -40,6 +43,9 @@ flowchart TD
     F --> G[Metrics and trace emission]
 ```
 
+This stage map is useful when debugging or refactoring. If you know which stage is wrong, you can
+usually find the owning code and the right test surface much faster.
+
 ## Key Architectural Point
 
 The router should remain declarative. Request shaping, policy enforcement, execution, and presentation each have different reasons to change.
@@ -50,6 +56,12 @@ The router should remain declarative. Request shaping, policy enforcement, execu
 - dataset resolution explains many serving misses
 - presentation explains why structured output looks the way it does
 - metrics and tracing explain what happened after the fact
+
+## A Healthy Request Boundary
+
+- routers stay declarative
+- policy explains many rejections before execution begins
+- presentation shapes the response without redefining domain meaning
 
 ## Purpose
 

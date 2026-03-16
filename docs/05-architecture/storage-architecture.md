@@ -21,6 +21,10 @@ flowchart TD
     Runtime --> Cache[Transient cache]
 ```
 
+This storage-layer diagram shows the order Atlas expects operators and maintainers to preserve. The
+runtime reads published store state, and the cache sits downstream as acceleration rather than as a
+second source of truth.
+
 ## Durable vs Transient
 
 ```mermaid
@@ -28,6 +32,9 @@ flowchart LR
     Durable[Durable state] --> Store[Serving store and catalog]
     Transient[Transient state] --> Cache[Cache and in-memory acceleration]
 ```
+
+This durable-versus-transient split is worth making explicit because storage bugs become much easier
+to classify when everyone uses the same boundary language.
 
 ## Architectural Rules
 
@@ -42,6 +49,11 @@ Without these storage boundaries, it becomes too easy to:
 - point the runtime at the wrong directory
 - confuse publication state with build state
 - debug cache symptoms as if they were store corruption
+
+## A Storage Question Worth Asking
+
+When a storage-related issue appears, ask first whether the problem is in build output, serving
+store state, catalog discoverability, or cache behavior. Those are different failure classes.
 
 ## Purpose
 

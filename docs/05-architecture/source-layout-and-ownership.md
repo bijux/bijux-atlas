@@ -23,6 +23,9 @@ flowchart LR
     Runtime[src/runtime] --> Wiring[Runtime config and composition]
 ```
 
+This ownership map gives contributors a direct translation from architectural idea to source-tree
+location. It exists so new code placement does not depend on local folklore or past directory names.
+
 ## Why These Roots Exist
 
 ```mermaid
@@ -34,6 +37,9 @@ flowchart TD
     Runtime --> App
     Runtime --> Adapters
 ```
+
+This diagram explains the dependency intent behind the root layout. The point is not just tidy
+directories; it is making responsibility and change impact easier to reason about.
 
 The canonical roots are:
 
@@ -56,6 +62,14 @@ These are the roots contributors should optimize for when placing new code.
 ## Architectural Benefit
 
 This layout makes it harder to hide source of truth behind historical barrels or convenience shims.
+
+## Quick Placement Test
+
+- if you are translating HTTP, CLI, filesystem, or network concerns, start in `adapters`
+- if you are composing use cases or ports, start in `app`
+- if you are defining stable promises, start in `contracts`
+- if you are defining rules that should not depend on transport, start in `domain`
+- if you are wiring concrete runtime behavior, start in `runtime`
 
 ## Purpose
 

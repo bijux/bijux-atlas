@@ -27,6 +27,10 @@ flowchart LR
 
 The intent is to keep command parsing, orchestration, registry lookup, and host effects in visibly separate places.
 
+This architectural zone map explains why `bijux-dev-atlas` does not look like a pile of shell
+wrappers. The control plane stays reviewable by giving command parsing, registry logic, execution,
+and host effects different homes.
+
 ## Main Responsibilities
 
 - `interfaces/cli` and `ui/terminal` expose command parsing and human-facing rendering
@@ -51,6 +55,9 @@ flowchart TD
     World --> Net[network]
 ```
 
+This effect boundary is the key design constraint for the control plane. Commands should describe
+intent while the runtime world owns the actual host interactions.
+
 The critical boundary is that host effects are mediated through the runtime world and its capability model instead of being scattered through command code.
 
 ## Extension Rules
@@ -66,6 +73,12 @@ When you add new automation behavior:
 
 This structure lets Atlas keep one control plane for docs, governance, checks, suites, and report
 validation without turning the crate into an unreviewable pile of scripts and special cases.
+
+## Maintainer Shortcut
+
+When you are unsure where new control-plane behavior belongs, ask whether you are adding interface,
+orchestration, registry knowledge, execution logic, stable types, or host effects. That answer
+usually points to the right zone immediately.
 
 ## Where to Go Next
 

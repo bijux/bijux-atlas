@@ -37,6 +37,10 @@ flowchart LR
     Evidence --> Release[Release or remediation decisions]
 ```
 
+This second system view matters because Atlas has both a product runtime and a maintainer control
+plane. The architecture works best when those systems meet through artifacts, contracts, and
+evidence instead of through hidden cross-dependencies.
+
 Atlas is really two related systems:
 
 - the product system that validates, publishes, and serves dataset state
@@ -54,6 +58,9 @@ flowchart TD
     Runtime[Runtime] --> Adapters
     Runtime --> App
 ```
+
+This zone diagram gives maintainers the mental map for the main source roots. It is intentionally
+simple because the deeper pages in this section explain each zone in more detail.
 
 ## Design Intent
 
@@ -81,6 +88,12 @@ Atlas becomes hard to maintain when:
 - repository diagnostics start distorting the user-facing runtime
 
 The architecture is designed to make those mistakes more visible and less normal.
+
+## What This Overview Should Leave You With
+
+- Atlas turns source inputs into published serving state through explicit boundaries.
+- The runtime surface and the maintainer control plane are related but intentionally different.
+- Domain, app, adapters, runtime, and contracts each have a distinct reason to exist.
 
 ## Honest Simplification
 
