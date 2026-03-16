@@ -22,7 +22,7 @@ semver.workspace = true
 sha2 = "0.10"
 tar = "0.4"
 regex = "1"
-toml = "0.8"
+toml = "1.0"
 base64 = "0.22"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 bijux-atlas = { workspace = true }
