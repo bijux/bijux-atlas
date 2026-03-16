@@ -2,6 +2,7 @@
   "checksums_path": "ops/release/signing/checksums.json",
   "contracts": {
     "REL-MAN-001": true,
+    "REL-OPS-001": true,
     "REL-PROV-001": true,
     "REL-SIGN-001": true,
     "REL-SIGN-002": true,

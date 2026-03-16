@@ -1,0 +1,32 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "1970-01-01T00:00:00Z",
+    "creators": [
+      "Tool: bijux-dev-atlas release evidence"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://bijux.dev/evidence/sbom/local/sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb",
+  "name": "bijux-atlas local image evidence",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-local",
+      "downloadLocation": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "ghcr.io/bijux/bijux-atlas@sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb",
+          "referenceType": "purl"
+        }
+      ],
+      "filesAnalyzed": false,
+      "name": "bijux-atlas-local",
+      "primaryPackagePurpose": "CONTAINER",
+      "versionInfo": "sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb"
+    }
+  ],
+  "relationships": [],
+  "spdxVersion": "SPDX-2.3"
+}

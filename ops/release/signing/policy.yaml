@@ -67,7 +67,7 @@ signed_items:
   - path: artifacts/security/log-field-inventory.json
     kind: audit-log-field-inventory
     required: true
-  - path: ops/release/evidence/packages/bijux-atlas-0.1.0.tgz
+  - path: ops/release/evidence/packages/bijux-atlas-0.2.0.tgz
     kind: chart-package
     required: true
   - path: ops/release/evidence/bundle.tar

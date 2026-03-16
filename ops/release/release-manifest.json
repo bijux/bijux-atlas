@@ -2,7 +2,7 @@
   "schema_version": 1,
   "manifest_name": "release-surfaces",
   "versioning": {
-    "workspace_version": "0.1.0",
+    "workspace_version": "0.2.0",
     "policy": "configs/sources/release/version-policy.json"
   },
   "artifacts": {

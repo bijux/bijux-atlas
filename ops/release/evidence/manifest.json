@@ -24,16 +24,16 @@
   "auth_policy": {
     "access_policy": {
       "path": "configs/sources/security/policy.yaml",
-      "sha256": "8f079d16ad9a7390c5daf4d876ca3a6b5eecb081b09cadc951a8c652801a8325"
+      "sha256": "9cf381b4554e0a7f44ffd6e0a958cda3fa186e888494ef3770194bb87ed4dd2a"
     },
     "auth_model": {
       "path": "configs/sources/security/auth-model.yaml",
-      "sha256": "6c0bd46330edb353802b54819269e03866badc8ac44f8a53fcd23d11f9874400"
+      "sha256": "d06f04be26e55412077df1baecd2d655b5cb1272715f310712631f6914fd6bfb"
     }
   },
   "chart_package": {
-    "path": "ops/release/evidence/packages/bijux-atlas-0.1.0.tgz",
-    "sha256": "98881e617477796334454fe48c937d68a230dfed47872392b27b4a3d36af70c8"
+    "path": "ops/release/evidence/packages/bijux-atlas-0.2.0.tgz",
+    "sha256": "2e7be14e1b5d47e5e34ecec9fd8e80b6fc2f2994bd0b936acd2417a514ca55d5"
   },
   "dataset_assets": [
     "configs/sources/runtime/datasets/manifest.yaml",
@@ -53,28 +53,28 @@
     "sha256": "4b9996348cba7a04aa56e8617aab6bba5dec62e950819626bbd15abd7145e8e1"
   },
   "docs_site_summary": {
-    "file_count": 650,
-    "sha256": "d758e43fd4b0e02a4f563069fd7ecaa05de1b8fd60c399d0ddf4134c31d63aef",
+    "file_count": 128,
+    "sha256": "2b11af5a75472f0df32a7e62f29782fe67e3d619534cef5f50e7195de16dd164",
     "site_dir": "artifacts/docs/site"
   },
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "ops/release/evidence/bundle.tar",
-    "sha256": "1944f675d191abafd92e47b7c8d42030a84ff738ed93d5645be4e4f1c72a301e"
+    "sha256": "2c1a94db5dee0e6ed665e480173bd384e7527ac5c9fd014a715001460700c853"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "governance_assets": {
     "breaking_changes": {
       "path": "artifacts/governance/breaking-changes.json",
-      "sha256": "caa22ca8dfc17e8ea3686707ca2f199f3eae00b1bbbdbbc034fa431e2baf8118"
+      "sha256": "c3072c3bb430ecce7aab7941d47a5f62e513e3553aa6532853d22d9bb692d572"
     },
     "compat_warnings": {
       "path": "artifacts/governance/compat-warnings.json",
-      "sha256": "7e72dc3ff428e1b0d85ed781fe9cc1132066c43f587b69421e23c5b6f4dca48e"
+      "sha256": "3332e946ecfeafa71585ab3bbd2e1575c93965f6adc383e523e1d3e8d1d4363a"
     },
     "deprecations_summary": {
       "path": "artifacts/governance/deprecations-summary.json",
-      "sha256": "ce7fcda0bcce6a1d90cf837c9f6e2538d7ea6801ea1c5594986dc731efefc645"
+      "sha256": "97b81759c448073e7bfac60f6b8ac640d5a106d85f900840eb1c8ea322fcc3c5"
     },
     "exceptions_archive": {
       "path": "configs/sources/governance/governance/exceptions-archive.yaml",
@@ -82,41 +82,48 @@
     },
     "exceptions_churn": {
       "path": "artifacts/governance/exceptions-churn.json",
-      "sha256": "e49657b018f1374abd50eda32ceefe88a2cd646a66fff240701c81575127a415"
+      "sha256": "ed805eb79223ea877b3fd48bda9bfbe6e5cbd21363ad09ff7db19b240248d323"
     },
     "exceptions_expiry_warning": {
       "path": "artifacts/governance/exceptions-expiry-warning.json",
-      "sha256": "2bea370260114e65a4042b635672d5ec97af14a442722cfb8e4aaf8f54906a7b"
+      "sha256": "ae4cf53aa540c85c20552abb4436ddc436a90fd345ee6f0afd318eb626213220"
     },
     "exceptions_registry": {
       "path": "configs/sources/governance/governance/exceptions.yaml",
-      "sha256": "66f19a0cdeb024f982932f994150191ec2dce3945452b6595ba981996a38fac9"
+      "sha256": "3ba37d0752842b3b8cd574e2a6ded3b2f3d0110305bfe2301bbc067e9abd51b0"
     },
     "exceptions_summary": {
       "path": "artifacts/governance/exceptions-summary.json",
-      "sha256": "43de57dff02b7be6a6129072be63edd0f0ec1dc067b2573920bf525988377f4e"
+      "sha256": "b7853c4e54ae692d92c0dfe18d1c0b236cabae9b50d35b4d04679410fe6ff901"
     },
     "governance_doctor": {
       "path": "artifacts/governance/governance-doctor.json",
-      "sha256": "5aeed9a54b0791261dbd73b5c09e4660bf19c9f6ec3013190265bb7b11594661"
+      "sha256": "2a39baf5d4a381b5c92d61e1c4e54966793f32bfed174aa3daa70cd28c56d0a4"
     },
     "institutional_delta": {
       "path": "artifacts/governance/institutional-delta.md",
-      "sha256": "2006ec33f872913f4b9536e16e5f41d5f3e4f9988c1cb64969cd6ecafac5e2f7"
+      "sha256": "63634612c1f5924a57069d8272a8bf7f5e1c4059a0e43b20928f7c30c8ae6204"
     },
     "institutional_delta_inputs": {
       "path": "artifacts/governance/institutional-delta-inputs.json",
-      "sha256": "7858eeea4330d83f3a28f26d6893a75d90ce2b8d3cb6f97920cc6bf78b2a75ba"
+      "sha256": "9fdb60c2103d7bb4a82c506f88bb5ef3d757de50ab83efa8c7683819e8baa61a"
     }
   },
   "identity_path": "ops/release/evidence/identity.json",
   "image_artifacts": [
     {
-      "digest": "",
+      "digest": "sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb",
       "profile": "local",
       "repository": "ghcr.io/bijux/bijux-atlas",
       "source_path": "ops/k8s/values/local.yaml",
-      "tag": "0.1.0"
+      "tag": ""
+    },
+    {
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "profile": "offline",
+      "repository": "",
+      "source_path": "ops/k8s/values/offline.yaml",
+      "tag": ""
     },
     {
       "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
@@ -156,7 +163,7 @@
   ],
   "index_html": {
     "path": "ops/release/evidence/index.html",
-    "sha256": "96636104d2338a8517a16e7ab41c4190aa5c4579811ebf3b55bdb2070939cd9f"
+    "sha256": "bc857fe78af9691744392a0ec058a72901423ad910b8b55ddae79bf21901c6a3"
   },
   "observability_assets": [
     "configs/schemas/contracts/observability/log.schema.json",
@@ -170,6 +177,54 @@
     "ops/schema/observe/dashboard.schema.json",
     "ops/schema/observe/prometheus-rule.schema.json"
   ],
+  "ops_evidence": {
+    "install_evidence": {
+      "path": "artifacts/ops/evidence/ops_run/install-evidence.json",
+      "sha256": "f98fcc54d47c639dc07cc9632a7b6ed12b1f7cf3df6e763cc83299a6ce1f7d3f"
+    },
+    "install_matrix_report": {
+      "path": "artifacts/ops/evidence/ops_run/install-matrix-report.json",
+      "sha256": "577e859225fe13e6940cb6d42c9d8b807e71837014ffae561c14371431020c71"
+    },
+    "inventory_snapshot": {
+      "path": "artifacts/ops/evidence/ops_run/inventory-snapshot.json",
+      "sha256": "ab1f836d394497cd1962dc7478794755ae0a7b5d3e7ea3853c8f3d9609cf3c39"
+    },
+    "network_policy_coverage_report": {
+      "path": "artifacts/ops/evidence/ops_run/network-policy-coverage-report.json",
+      "sha256": "85b5f3d8082b5985d808feea7559d7a6cbc015d97b031d1f8bb2c6eaf1d949f8"
+    },
+    "rbac_coverage_report": {
+      "path": "artifacts/ops/evidence/ops_run/rbac-coverage-report.json",
+      "sha256": "5d08432cdcb1b2c41f5f2e98856c89ebe1fd3c7f824eca33ab23d0caa83acd77"
+    },
+    "redaction_secret_keys": [
+      "password",
+      "secret",
+      "token",
+      "api_key"
+    ],
+    "render_evidence": {
+      "path": "artifacts/ops/evidence/ops_run/render-evidence.json",
+      "sha256": "da702e0b2e32aa0f5f447acffbe7957249f5c1dea40d2cd5f8ca4f092a68119f"
+    },
+    "render_matrix_report": {
+      "path": "artifacts/ops/evidence/ops_run/render-matrix-report.json",
+      "sha256": "cc5cf584acd7c12e6d182f1a3b63c7aa592a7009b2b56c60694ef00c9aa1c23e"
+    },
+    "schema_coverage_report": {
+      "path": "artifacts/ops/evidence/ops_run/schema-coverage-report.json",
+      "sha256": "a523db9a63ba551b9ddc27f2a111d41c340c4d56c0065ba0ee0f2a28eb098590"
+    },
+    "tool_versions": {
+      "path": "artifacts/ops/evidence/ops_run/tool-versions.json",
+      "sha256": "c1c6c7019970d403e15c2260aa8b8627c434ac79c4fb89a2eb31b47f224d7eac"
+    },
+    "validate_evidence": {
+      "path": "artifacts/ops/evidence/ops_run/validate-evidence.json",
+      "sha256": "73af01a5cf304b14623df7d39057482f92679bb62920160416dcd2f09d997494"
+    }
+  },
   "perf_assets": [
     "configs/sources/operations/perf/slo.yaml",
     "configs/sources/operations/perf/budgets.yaml",
@@ -191,20 +246,48 @@
   "policy_path": "ops/release/evidence/policy.json",
   "provenance": {
     "path": "ops/release/provenance.json",
-    "sha256": "979a1cd95d9707629c6e7ba1e33744a0d116f45880b087028c94abda8725968f"
+    "sha256": "90b906d2194dd420d47a62ba8a3f610122bd840cf7c199e355fd013ee18d063c"
   },
   "redacted_logs": [],
   "reports": [
     "ops/report/generated/historical-comparison.json",
+    "ops/report/generated/ops-artifact-lineage.json",
+    "ops/report/generated/ops-release-readiness-summary.json",
+    "ops/report/generated/ops-values-coverage.json",
+    "ops/report/generated/performance-anomalies.json",
+    "ops/report/generated/performance-audit-report.json",
+    "ops/report/generated/performance-badges.json",
+    "ops/report/generated/performance-baseline-verification.json",
+    "ops/report/generated/performance-ci-artifacts.json",
+    "ops/report/generated/performance-ci-summary.json",
+    "ops/report/generated/performance-completion-report.json",
+    "ops/report/generated/performance-dashboard.json",
+    "ops/report/generated/performance-history.json",
+    "ops/report/generated/performance-metadata.json",
+    "ops/report/generated/performance-regression-report.json",
+    "ops/report/generated/performance-trend-graph.json",
+    "ops/report/generated/performance-trend.json",
     "ops/report/generated/readiness-score.json",
     "ops/report/generated/release-evidence-bundle.json",
     "ops/report/generated/report-diff.json"
   ],
   "runtime_env_allowlist": {
     "path": "configs/schemas/contracts/env.schema.json",
-    "sha256": "66e2ec32308bc546a3d9574416e075ec5bab89621e3c17be4435e03abdfd2123"
+    "sha256": "41d8cd79c0beed017267b7a974cb6bc3936ae221aa5e52e36b1c9ed96c1f4304"
   },
   "sboms": [
+    {
+      "format": "spdx-json",
+      "image_ref": "ghcr.io/bijux/bijux-atlas@sha256:db683a63110a7310ab949a21231845a9abce1aec04c05edbc44023875a9e4adb",
+      "path": "ops/release/evidence/sboms/local.spdx.json",
+      "sha256": "8445e22f869ea4b94fb7e6558e42caffe18242f8b74e287fc3e51b889eced614"
+    },
+    {
+      "format": "spdx-json",
+      "image_ref": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "path": "ops/release/evidence/sboms/offline.spdx.json",
+      "sha256": "085d784c96bcf74e3bc8f33cdc6912c42766fc78a98f0affbd976de319bb0ff5"
+    },
     {
       "format": "spdx-json",
       "image_ref": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
@@ -242,16 +325,16 @@
   "supply_chain": {
     "action_pins_report": {
       "path": "artifacts/security/security-github-actions.json",
-      "sha256": "a41e7668e4149d739e6fff4679dd2b2587f91288b9c0e5912d22e325678512eb"
+      "sha256": "1bf92956a6e2f782eb263a764f4b4c3a1cdfc4a7600b48fbd0483a9c4b0f8b86"
     },
     "docs_toolchain_inventory": [
       {
         "path": ".github/dependabot.yml",
-        "sha256": "51f44773015775870e8bff185cc08b2077a8dc02479787d3fb3495b2be758262"
+        "sha256": "d16a9b7a0e9e9e8a52a8161bcf0da8cdfd647205f36d8f4706327793b4232d37"
       },
       {
         "path": "configs/sources/repository/docs/package-lock.json",
-        "sha256": "abe9ded461894e1955ab5d4c777340613a1769f86c077997c550def7dc00589b"
+        "sha256": "6b0ea2f6a6e90bb6e409f9b5458504fdb468f527c370fef378ccb47ab27a0851"
       },
       {
         "path": "configs/sources/repository/docs/requirements.lock.txt",
@@ -259,12 +342,12 @@
       },
       {
         "path": "configs/sources/security/dependency-source-policy.json",
-        "sha256": "cacaa7b96599babc9aa59c75472defcff01589d77a64da40cddecfbd7c1858d0"
+        "sha256": "d1642c136e9924908b6852abc3d86219ec56243a8b030c174b4ab98a25029bac"
       }
     ]
   },
   "toolchain_inventory": {
     "path": "configs/sources/repository/rust-tooling/toolchain.json",
-    "sha256": "c3c66958ac518576718c5f38c71faa105f394e9559b9ef9567f3059b08cb82a0"
+    "sha256": "31252ae2f5da854a0c9da9f69ba6197e5c1d177c2eabc10dd6ba9570ea44e408"
   }
 }
