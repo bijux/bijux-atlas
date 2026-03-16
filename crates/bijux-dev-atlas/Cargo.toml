@@ -34,7 +34,7 @@ semver.workspace = true
 assert_cmd = "2"
 bijux-cli = { workspace = true }
 tempfile = "=3.13.0"
-criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
 
 [lib]
 path = "src/lib.rs"
