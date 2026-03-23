@@ -65,7 +65,7 @@ criterion = "0.5"
 predicates = "3"
 proptest = "1"
 regex = "1.11"
-tempfile = "=3.13.0"
+tempfile = "=3.25.0"
 tiny_http = "0.12"
 walkdir = "2"
 
