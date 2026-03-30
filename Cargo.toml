@@ -34,5 +34,5 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 bijux-atlas = { version = "=0.2.0", path = "crates/bijux-atlas" }
 bijux-dev-atlas = { version = "=0.2.0", path = "crates/bijux-dev-atlas" }
-bijux-cli = "0.3.2"
+bijux-cli = "0.3.3"
 semver = "1"
