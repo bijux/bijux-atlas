@@ -50,6 +50,14 @@
       "allowed": true
     },
     {
+      "pattern_id": "ci-workflow-pattern-setup-node",
+      "step_kind": "uses",
+      "classification": "orchestration",
+      "match_mode": "starts_with",
+      "needle": "actions/setup-node@",
+      "allowed": true
+    },
+    {
       "pattern_id": "ci-workflow-pattern-kind-action",
       "step_kind": "uses",
       "classification": "orchestration",
@@ -105,6 +113,15 @@
       "match_mode": "contains",
       "needle": "python3 -m pip install",
       "allowed": true
+    },
+    {
+      "pattern_id": "ci-workflow-pattern-python-heredoc-check",
+      "step_kind": "run",
+      "classification": "orchestration",
+      "match_mode": "contains",
+      "needle": "python3 - <<'PY'",
+      "allowed": true,
+      "notes": "Inline Python validations are allowed for static docs and workflow contract checks."
     },
     {
       "pattern_id": "ci-workflow-pattern-git-fetch-base",

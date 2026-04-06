@@ -14,6 +14,7 @@ concurrency:
 env:
   RUN_ID: pr-${{ github.event.pull_request.number || github.run_id }}-${{ github.run_attempt }}
   CARGO_TERM_COLOR: always
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   route-changes:
