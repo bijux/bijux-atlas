@@ -15,6 +15,7 @@ concurrency:
 env:
   RUN_ID: nightly-${{ github.run_id }}-${{ github.run_attempt }}
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
 
 jobs:
   nightly-validation:
@@ -64,9 +65,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          on_error() {
+            local exit_code="$1"
+            local line_number="$2"
+            echo "Nightly lane failed with exit code ${exit_code} on line ${line_number}." | tee -a "${logs_root}/lane-error.log"
+            exit "${exit_code}"
+          }
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ci-nightly"
           mkdir -p "${report_root}" "${logs_root}"
+          trap 'on_error $? $LINENO' ERR
           contracts_root="${report_root}/contracts"
           mkdir -p "${contracts_root}"
           cargo run --locked -q -p bijux-dev-atlas -- contracts self-check --format json > "${contracts_root}/self-check.json" 2> "${logs_root}/contracts-self-check.stderr.log"
