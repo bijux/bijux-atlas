@@ -8,6 +8,7 @@ validation:
 theme:
   name: material
   language: en
+  custom_dir: docs/overrides
   logo: assets/bijux_logo_hq.png
   favicon: assets/bijux_icon.png
   font: false
@@ -81,3 +82,6 @@ extra:
 
 extra_css:
   - assets/styles/extra.css
+
+hooks:
+  - docs/hooks/publish_site_assets.py
