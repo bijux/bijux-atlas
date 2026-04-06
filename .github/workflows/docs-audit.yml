@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
-          toolchain: 1.85.0
+          toolchain: 1.86.0
       - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version: "22"
@@ -52,13 +52,13 @@ jobs:
           path: |
             .cache/cargo/home/docs-audit/registry
             .cache/cargo/home/docs-audit/git
-          key: cargo-registry-nightly-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-nightly-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docs-audit
-          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Install docs toolchain
         shell: bash
         run: |
@@ -111,13 +111,13 @@ jobs:
           path: |
             .cache/cargo/home/docs-audit/registry
             .cache/cargo/home/docs-audit/git
-          key: cargo-registry-nightly-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-nightly-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docs-audit
-          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.85.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:

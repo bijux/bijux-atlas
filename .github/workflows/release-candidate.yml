@@ -55,7 +55,7 @@ jobs:
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
-          toolchain: 1.85.0
+          toolchain: 1.86.0
       - name: Run release candidate preflight
         shell: bash
         run: |

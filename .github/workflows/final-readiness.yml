@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
-          toolchain: 1.85.0
+          toolchain: 1.86.0
       - name: Build audit and readiness artifacts
         shell: bash
         run: |
