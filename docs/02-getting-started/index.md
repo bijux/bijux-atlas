@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Getting Started
+# Bijux Atlas Getting Started
 
 This section gets Atlas running with real commands and real repository fixtures.
 

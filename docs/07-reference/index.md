@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Reference
+# Bijux Atlas Reference
 
 Use this section when you already know what you are trying to do and need a factual lookup page.
 

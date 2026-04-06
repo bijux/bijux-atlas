@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# User Guide
+# Bijux Atlas User Guide
 
 This section explains how to use Atlas once you already understand the basics and can complete the first-run flow.
 

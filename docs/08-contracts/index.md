@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Contracts
+# Bijux Atlas Contracts
 
 This section describes the stable promises Atlas intentionally makes.
 

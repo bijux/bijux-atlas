@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Docs Index
+# Bijux Atlas Documentation
 
 This is the canonical documentation home for `bijux-atlas`.
 

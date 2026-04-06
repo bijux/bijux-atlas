@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Operations
+# Bijux Atlas Operations
 
 This section is for running Atlas safely and predictably outside a toy local session.
 

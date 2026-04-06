@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Introduction
+# Bijux Atlas Introduction
 
 This section builds the mental model you need before you start running commands or reading source code.
 

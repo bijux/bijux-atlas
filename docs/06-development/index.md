@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Development
+# Bijux Atlas Development
 
 This section explains how to change Atlas safely.
 

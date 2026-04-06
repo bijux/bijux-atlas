@@ -7,7 +7,7 @@ owner: atlas-docs
 last_reviewed: 2026-03-15
 ---
 
-# Architecture
+# Bijux Atlas Architecture
 
 This section explains why Atlas is shaped the way it is and how the main runtime and data flows fit together.
 
