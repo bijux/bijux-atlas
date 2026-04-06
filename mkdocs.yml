@@ -1,3 +1,5 @@
+INHERIT: mkdocs.shared.yml
+
 site_name: Bijux Atlas
 site_description: Genomics dataset delivery docs for GFF3 and FASTA ingest, immutable gene-query artifacts, runtime APIs, and repository operations.
 site_url: !ENV [SITE_URL, https://bijux.io/bijux-atlas/]
@@ -5,87 +7,15 @@ site_author: Bijan Mousavi
 repo_name: bijux/bijux-atlas
 repo_url: https://github.com/bijux/bijux-atlas
 edit_uri: edit/main/docs/
-strict: true
-use_directory_urls: true
-dev_addr: 127.0.0.1:8000
 docs_dir: docs
 site_dir: artifacts/docs/site
-
-validation:
-  omitted_files: ignore
 
 exclude_docs: |
   _drafts/**
   automation/**
   README.md
 
-theme:
-  name: material
-  logo: assets/bijux_logo_hq.png
-  favicon: assets/bijux_icon.png
-  font:
-    text: Roboto
-    code: Roboto Mono
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-    - scheme: slate
-      primary: teal
-      accent: lime
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
-  features:
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.indexes
-    - navigation.top
-    - navigation.path
-    - navigation.tracking
-    - navigation.instant
-    - toc.follow
-    - search.suggest
-    - search.highlight
-    - content.tabs.link
-    - content.code.annotate
-    - content.code.copy
-    - content.code.select
-    - content.action.edit
-    - content.action.view
-    - navigation.footer
-  icon:
-    repo: fontawesome/brands/github
-
-markdown_extensions:
-  - admonition
-  - attr_list
-  - def_list
-  - footnotes
-  - md_in_html
-  - tables
-  - toc:
-      permalink: true
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-
 plugins:
-  - search
-  - autorefs
-  - git-revision-date-localized:
-      enable_creation_date: false
-      fallback_to_build_date: true
   - social:
       enabled: !ENV [ENABLE_SOCIAL_CARDS, false]
       cache_dir: artifacts/docs/.cache/social
@@ -100,9 +30,6 @@ not_in_nav: |
   assets/**
   automation/**
   overrides/**
-
-extra_css:
-  - assets/styles/extra.css
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
