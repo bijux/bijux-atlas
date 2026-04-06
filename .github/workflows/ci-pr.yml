@@ -73,7 +73,7 @@ jobs:
           mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -81,7 +81,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1016,7 +1016,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -1024,7 +1024,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1056,7 +1056,7 @@ jobs:
           toolchain: 1.86.0
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -1064,7 +1064,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1125,7 +1125,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -1133,7 +1133,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1175,7 +1175,7 @@ jobs:
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -1183,7 +1183,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1223,7 +1223,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -1231,7 +1231,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
