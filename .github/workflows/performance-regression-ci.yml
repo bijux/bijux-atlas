@@ -48,6 +48,8 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        with:
+          toolchain: 1.86.0
 
       - name: Run regression detector and validation via control-plane
         run: |
