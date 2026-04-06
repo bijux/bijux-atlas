@@ -66,17 +66,34 @@ jobs:
           python3 - <<'PY'
           import pathlib
           import re
-          text = pathlib.Path("mkdocs.yml").read_text()
-          site_dir_match = re.search(r"(?m)^site_dir:\s*(\S+)\s*$", text)
+          mkdocs_text = pathlib.Path("mkdocs.yml").read_text()
+          shared_text = pathlib.Path("mkdocs.shared.yml").read_text()
+          site_dir_match = re.search(r"(?m)^site_dir:\s*(\S+)\s*$", mkdocs_text)
           site_dir = site_dir_match.group(1) if site_dir_match else "site"
           if site_dir != "artifacts/docs/site":
               raise SystemExit(f"mkdocs site_dir must be artifacts/docs/site, got: {site_dir}")
-          if "_drafts/**" not in text:
+          if "_drafts/**" not in mkdocs_text:
               raise SystemExit("mkdocs exclude_docs must include _drafts/**")
+          if "strict: true" not in shared_text:
+              raise SystemExit("mkdocs strict must be true in mkdocs.shared.yml")
+          if "custom_dir: docs/overrides" not in shared_text:
+              raise SystemExit("mkdocs theme.custom_dir must point at docs/overrides")
+          if "hooks:" not in shared_text or "docs/hooks/publish_site_assets.py" not in shared_text:
+              raise SystemExit("mkdocs must publish site assets through docs/hooks/publish_site_assets.py")
+          if "assets/javascripts/vendor/mermaid-11.6.0.min.js" not in mkdocs_text:
+              raise SystemExit("mkdocs must use local mermaid vendor bundle")
           PY
 
       - name: Build docs site
         run: make docs-check
+
+      - name: Validate published site root assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f artifacts/docs/site/favicon.ico
+          test -f artifacts/docs/site/apple-touch-icon.png
+          test -f artifacts/docs/site/apple-touch-icon-precomposed.png
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
