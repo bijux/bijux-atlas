@@ -74,6 +74,7 @@ markdown_extensions:
 
 extra:
   homepage: https://bijux.io/
+  generator: true
   bijux:
     repository: bijux-atlas
   social:
@@ -85,3 +86,5 @@ extra_css:
 
 hooks:
   - docs/hooks/publish_site_assets.py
+
+copyright: "© 2026 Bijan Mousavi <bijan@bijux.io>"
