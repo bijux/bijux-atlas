@@ -61,7 +61,14 @@ pub(crate) fn docs_validate_payload(
             })
         })
         .unwrap_or(false);
-    if !has_navigation_path {
+    let has_navigation_path_inherited = yaml
+        .get("INHERIT")
+        .and_then(|value| value.as_str())
+        .map(|inherit_path| ctx.repo_root.join(inherit_path))
+        .and_then(|path| fs::read_to_string(&path).ok())
+        .map(|text| text.contains("navigation.path"))
+        .unwrap_or(false);
+    if !(has_navigation_path || has_navigation_path_inherited) {
         issues.errors.push(
             "DOCS_NAV_ERROR: mkdocs theme.features must include `navigation.path`".to_string(),
         );
@@ -83,7 +90,9 @@ pub(crate) fn docs_validate_payload(
         "07-reference".to_string(),
         "08-contracts".to_string(),
         "assets".to_string(),
+        "hooks".to_string(),
         "index.md".to_string(),
+        "overrides".to_string(),
     ]);
     let mut actual_docs_roots = BTreeSet::new();
     for entry in fs::read_dir(&ctx.docs_root)
