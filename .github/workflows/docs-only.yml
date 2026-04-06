@@ -5,6 +5,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'mkdocs.shared.yml'
       - 'makes/docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_internal/generated/openapi/**'
@@ -77,6 +78,21 @@ jobs:
         run: |
           set -euo pipefail
           cargo run --locked -q -p bijux-dev-atlas -- docs reference check --allow-subprocess --format json
+      - name: Validate mkdocs contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib
+          mkdocs_text = pathlib.Path("mkdocs.yml").read_text()
+          shared_text = pathlib.Path("mkdocs.shared.yml").read_text()
+          if "assets/javascripts/vendor/mermaid-11.6.0.min.js" not in mkdocs_text:
+              raise SystemExit("mkdocs must use the local Mermaid bundle")
+          if "custom_dir: docs/overrides" not in shared_text:
+              raise SystemExit("mkdocs theme.custom_dir must point at docs/overrides")
+          if "docs/hooks/publish_site_assets.py" not in shared_text:
+              raise SystemExit("mkdocs must publish root icons via docs/hooks/publish_site_assets.py")
+          PY
       - name: Run docs strict build
         shell: bash
         run: |
