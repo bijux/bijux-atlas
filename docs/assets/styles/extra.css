@@ -1,7 +1,26 @@
 :root {
-  --atlas-border: rgba(15, 23, 42, 0.12);
-  --atlas-panel: rgba(15, 23, 42, 0.04);
-  --atlas-panel-strong: rgba(15, 23, 42, 0.06);
+  --bijux-ink: #1e2852;
+  --bijux-muted: #5f6d8d;
+  --bijux-border: rgba(49, 46, 129, 0.16);
+  --bijux-panel: rgba(79, 70, 229, 0.05);
+  --bijux-panel-strong: rgba(79, 70, 229, 0.08);
+  --bijux-map-shadow: 0 22px 54px rgba(30, 41, 89, 0.14);
+  --bijux-surface-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0));
+}
+
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #f5f7fd;
+  --md-default-bg-color--light: #fbfcff;
+  --md-default-fg-color: var(--bijux-ink);
+  --md-primary-fg-color: #3f51b5;
+  --md-accent-fg-color: #4f46e5;
+  --md-typeset-a-color: #3949ab;
+}
+
+body,
+input,
+button {
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
 .md-typeset h1,
@@ -10,9 +29,15 @@
   letter-spacing: -0.02em;
 }
 
+.md-typeset h1 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-weight: 700;
+}
+
 .md-typeset p,
 .md-typeset li {
   line-height: 1.75;
+  color: var(--bijux-ink);
 }
 
 .md-typeset code {
@@ -29,22 +54,22 @@
 }
 
 .md-typeset table:not([class]) {
-  border: 1px solid var(--atlas-border);
+  border: 1px solid var(--bijux-border);
 }
 
 .md-typeset blockquote {
-  border-left: 0.2rem solid rgb(63, 81, 181);
-  background: var(--atlas-panel);
+  border-left: 0.2rem solid #4f46e5;
+  background: var(--bijux-panel);
   padding: 0.1rem 0.8rem;
 }
 
 .md-typeset hr {
-  border-bottom: 1px solid var(--atlas-border);
+  border-bottom: 1px solid var(--bijux-border);
 }
 
 .md-typeset .mermaid {
-  background: var(--atlas-panel-strong);
-  border: 1px solid var(--atlas-border);
+  background: var(--bijux-panel-strong);
+  border: 1px solid var(--bijux-border);
   border-radius: 0.9rem;
   padding: 1rem;
   overflow-x: auto;
