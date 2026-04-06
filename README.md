@@ -16,13 +16,13 @@ Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-c
 
 [![crates.io](https://img.shields.io/crates/v/bijux-atlas.svg)](https://crates.io/crates/bijux-atlas)
 [![Rust Docs](https://img.shields.io/badge/docs-Rust%20Docs-blue)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
-[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen)](https://bijux.github.io/bijux-atlas/)
+[![Documentation](https://img.shields.io/badge/docs-bijux.io-brightgreen)](https://bijux.io/bijux-atlas/)
 [![CI Status](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 Rust crate: [crates.io](https://crates.io/crates/bijux-atlas)
 Rust API docs: [docs.rs](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
-Project docs: [GitHub Pages](https://bijux.github.io/bijux-atlas/)
+Project docs: [bijux.io](https://bijux.io/bijux-atlas/)
 Source docs spine: [`docs/index.md`](docs/index.md)
 
 > **At a glance**

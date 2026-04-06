@@ -78,7 +78,7 @@ jobs:
 
           Published package surfaces:
           - crates.io: https://crates.io/crates/bijux-atlas/${RELEASE_VERSION}
-          - docs site: https://bijux.github.io/bijux-atlas/
+          - docs site: https://bijux.io/bijux-atlas/
           - Rust docs: https://docs.rs/bijux-atlas/latest/bijux_atlas/
 
           Attached assets:
