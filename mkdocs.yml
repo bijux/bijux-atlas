@@ -32,7 +32,7 @@ not_in_nav: |
   overrides/**
 
 extra_javascript:
-  - https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
+  - assets/javascripts/vendor/mermaid-11.6.0.min.js
   - assets/javascripts/mermaid-init.js
 
 nav:
