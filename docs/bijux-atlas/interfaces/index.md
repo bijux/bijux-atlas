@@ -4,12 +4,29 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Interfaces
 
 `bijux-atlas/interfaces` is the section home for this handbook slice.
+
+```mermaid
+flowchart TD
+    Interfaces[Interfaces section] --> CLI[CLI and binaries]
+    Interfaces --> HTTP[HTTP and API routes]
+    Interfaces --> Config[Config and env input]
+    Interfaces --> Output[Structured output and errors]
+    CLI --> Surface[User-facing repository surfaces]
+    HTTP --> Surface
+    Config --> Surface
+    Output --> Surface
+```
+
+This section is where readers meet Atlas as a usable system rather than an
+architecture. The goal is to show the exact surfaces users, operators, and
+automation consumers touch, and to map those surfaces back to the code and
+generated references that keep them honest.
 
 Use this section when the question is exact rather than conceptual.
 
@@ -19,6 +36,17 @@ Use this section when the question is exact rather than conceptual.
 - which HTTP endpoints exist and what kind of question each route answers
 - which config inputs, env vars, and flags shape runtime behavior
 - which outputs, errors, and feature flags are part of the visible runtime surface
+
+## User-Facing Surfaces In This Repository
+
+- CLI surface: `crates/bijux-atlas/src/adapters/inbound/cli/` and
+  `crates/bijux-atlas/src/bin/`
+- HTTP and API surface:
+  `crates/bijux-atlas/src/adapters/inbound/http/`
+- runtime configuration surface: `crates/bijux-atlas/src/runtime/config/` and
+  `configs/generated/runtime/`
+- generated interface references: `configs/generated/openapi/` and
+  `configs/generated/docs/`
 
 ## Fast Navigation
 
