@@ -144,6 +144,7 @@ nav:
               - Artifact and Store Contracts: 08-contracts/artifact-and-store-contracts.md
               - Operational Contracts: 08-contracts/operational-contracts.md
               - Ownership and Versioning: 08-contracts/ownership-and-versioning.md
+      - bijux-atlas: runtime/packages/bijux-atlas/index.md
   - Maintainer Handbook:
       - Home:
           - Overview: maintainer/index.md
