@@ -7,6 +7,12 @@ function bijuxSiteBasePath() {
   return path === "/" ? "" : path;
 }
 
+function bijuxNormalizeNavPath(target) {
+  const url = new URL(target, window.location.href);
+  const path = url.pathname.replace(/\/+$/, "");
+  return path || "/";
+}
+
 function bijuxNormalizePath(target) {
   const url = new URL(target, window.location.href);
   const basePath = bijuxSiteBasePath();
@@ -15,6 +21,37 @@ function bijuxNormalizePath(target) {
     path = path.slice(basePath.length) || "/";
   }
   return path || "/";
+}
+
+const BIJUX_DETAIL_SELECTION_KEY = "bijux.detailSelectionBySite";
+
+function bijuxReadDetailSelectionMap() {
+  try {
+    return JSON.parse(window.sessionStorage.getItem(BIJUX_DETAIL_SELECTION_KEY) || "{}");
+  } catch (_error) {
+    return {};
+  }
+}
+
+function bijuxReadDetailSelection(sitePath) {
+  if (!sitePath) {
+    return null;
+  }
+  const state = bijuxReadDetailSelectionMap();
+  return typeof state[sitePath] === "string" ? state[sitePath] : null;
+}
+
+function bijuxWriteDetailSelection(sitePath, detailPath) {
+  if (!sitePath || !detailPath) {
+    return;
+  }
+  const state = bijuxReadDetailSelectionMap();
+  state[sitePath] = detailPath;
+  try {
+    window.sessionStorage.setItem(BIJUX_DETAIL_SELECTION_KEY, JSON.stringify(state));
+  } catch (_error) {
+    // Ignore persistence failures and keep navigation behavior functional.
+  }
 }
 
 function bijuxBestMatchingLink(links, pathAttribute) {
@@ -35,11 +72,41 @@ function bijuxBestMatchingLink(links, pathAttribute) {
   return activeLink;
 }
 
-function bijuxBestSitePath() {
-  const activeLink = bijuxBestMatchingLink(
-    document.querySelectorAll(".bijux-site-tabs [data-bijux-site-path]"),
-    "data-bijux-site-path"
+function bijuxResolveLinkPath(link, pathAttribute) {
+  const href = link.getAttribute("href");
+  if (href) {
+    return bijuxNormalizeNavPath(href);
+  }
+  return bijuxNormalizeNavPath(link.getAttribute(pathAttribute) || "/");
+}
+
+function bijuxResolveDetailStripRootPath(strip) {
+  const firstLink = strip.querySelector("[data-bijux-detail-path]");
+  if (firstLink?.getAttribute("href")) {
+    return bijuxNormalizeNavPath(firstLink.getAttribute("href"));
+  }
+  return bijuxNormalizeNavPath(
+    strip.getAttribute("data-bijux-detail-root-path") || "/"
   );
+}
+
+function bijuxBestSitePath() {
+  const currentPath = bijuxNormalizeNavPath(window.location.pathname);
+  let activeLink = null;
+
+  for (const link of document.querySelectorAll(
+    ".bijux-site-tabs [data-bijux-site-path]"
+  )) {
+    const linkPath = bijuxResolveLinkPath(link, "data-bijux-site-path");
+    const isMatch =
+      currentPath === linkPath ||
+      (linkPath !== "/" && currentPath.startsWith(`${linkPath}/`));
+
+    if (isMatch && (!activeLink || linkPath.length > activeLink.path.length)) {
+      activeLink = { path: linkPath, node: link };
+    }
+  }
+
   if (activeLink) {
     return activeLink.path;
   }
@@ -48,9 +115,7 @@ function bijuxBestSitePath() {
     ".bijux-site-tabs [data-bijux-site-path][aria-current='page'], .bijux-site-tabs .bijux-tabs__item--active [data-bijux-site-path]"
   );
   if (authoredActiveLink) {
-    return bijuxNormalizePath(
-      authoredActiveLink.getAttribute("data-bijux-site-path") || "/"
-    );
+    return bijuxResolveLinkPath(authoredActiveLink, "data-bijux-site-path");
   }
   return null;
 }
@@ -74,9 +139,7 @@ function bijuxSyncSiteTabActiveState() {
   for (const link of document.querySelectorAll(
     ".bijux-site-tabs [data-bijux-site-path]"
   )) {
-    const linkPath = bijuxNormalizePath(
-      link.getAttribute("data-bijux-site-path") || "/"
-    );
+    const linkPath = bijuxResolveLinkPath(link, "data-bijux-site-path");
     if (linkPath === activeSitePath) {
       link.closest(".bijux-tabs__item")?.classList.add(
         "md-tabs__item--active",
@@ -94,15 +157,16 @@ function bijuxSyncDetailStripVisibility() {
   const strips = document.querySelectorAll("[data-bijux-detail-strip]");
 
   for (const strip of strips) {
-    const rootPath = bijuxNormalizePath(
-      strip.getAttribute("data-bijux-detail-root-path") || "/"
-    );
+    const rootPath = bijuxResolveDetailStripRootPath(strip);
     strip.hidden = rootPath !== activeSitePath;
   }
 }
 
 function bijuxSyncDetailStripActiveState() {
   const activeStrip = document.querySelector("[data-bijux-detail-strip]:not([hidden])");
+  const currentPath = bijuxNormalizeNavPath(window.location.pathname);
+  const sitePath = activeStrip ? bijuxResolveDetailStripRootPath(activeStrip) : "/";
+  const preferredPath = bijuxReadDetailSelection(sitePath);
   const authoredActiveLink = activeStrip?.querySelector(
     "[data-bijux-detail-path][aria-current='page'], .bijux-tabs__item--active [data-bijux-detail-path]"
   );
@@ -122,16 +186,32 @@ function bijuxSyncDetailStripActiveState() {
     return;
   }
 
-  let activeLink = bijuxBestMatchingLink(
-    activeStrip.querySelectorAll("[data-bijux-detail-path]"),
-    "data-bijux-detail-path"
-  );
+  let activeLink = null;
+  if (preferredPath) {
+    const preferredNode = activeStrip.querySelector(
+      `[data-bijux-detail-path="${preferredPath}"]`
+    );
+    if (preferredNode) {
+      activeLink = { path: preferredPath, node: preferredNode };
+    }
+  }
+
+  if (!activeLink) {
+    for (const link of activeStrip.querySelectorAll("[data-bijux-detail-path]")) {
+      const linkPath = bijuxResolveLinkPath(link, "data-bijux-detail-path");
+      const isMatch =
+        currentPath === linkPath ||
+        (linkPath !== "/" && currentPath.startsWith(`${linkPath}/`));
+
+      if (isMatch && (!activeLink || linkPath.length > activeLink.path.length)) {
+        activeLink = { path: linkPath, node: link };
+      }
+    }
+  }
 
   if (!activeLink && authoredActiveLink) {
     activeLink = {
-      path: bijuxNormalizePath(
-        authoredActiveLink.getAttribute("data-bijux-detail-path") || "/"
-      ),
+      path: bijuxResolveLinkPath(authoredActiveLink, "data-bijux-detail-path"),
       node: authoredActiveLink,
     };
   }
@@ -141,6 +221,7 @@ function bijuxSyncDetailStripActiveState() {
       "bijux-tabs__item--active"
     );
     activeLink.node.setAttribute("aria-current", "page");
+    bijuxWriteDetailSelection(sitePath, activeLink.path);
   }
 }
 
@@ -212,7 +293,23 @@ function bijuxBindMobileDrawerReveal() {
   });
 }
 
+function bijuxBindDetailStripSelectionPersistence() {
+  for (const link of document.querySelectorAll("[data-bijux-detail-strip] [data-bijux-detail-path]")) {
+    if (link.dataset.bijuxDetailSelectionBound === "true") {
+      continue;
+    }
+    link.dataset.bijuxDetailSelectionBound = "true";
+    link.addEventListener("click", () => {
+      const strip = link.closest("[data-bijux-detail-strip]");
+      const sitePath = strip ? bijuxResolveDetailStripRootPath(strip) : "/";
+      const detailPath = bijuxResolveLinkPath(link, "data-bijux-detail-path");
+      bijuxWriteDetailSelection(sitePath, detailPath);
+    });
+  }
+}
+
 document$.subscribe(() => {
+  bijuxBindDetailStripSelectionPersistence();
   bijuxSyncDetailStripVisibility();
   bijuxSyncDetailStripActiveState();
   bijuxRevealActiveNavigationTarget();
