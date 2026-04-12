@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # What Atlas Is
@@ -143,6 +143,25 @@ Atlas is opinionated in ways that matter operationally:
 ## Purpose
 
 This page explains the Atlas material for what atlas is and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## How The Repo Reflects This Product Shape
+
+- ingest and validation concerns live under
+  `crates/bijux-atlas/src/domain/ingest/` and
+  `crates/bijux-atlas/src/domain/dataset/`
+- query and runtime-serving concerns live under
+  `crates/bijux-atlas/src/domain/query/` and
+  `crates/bijux-atlas/src/runtime/`
+- user-facing interfaces live under
+  `crates/bijux-atlas/src/adapters/inbound/` and `crates/bijux-atlas/src/bin/`
+
+## Main Takeaway
+
+Atlas is best understood as one coherent product with three linked faces:
+building governed dataset artifacts, publishing release-backed serving state,
+and exposing stable runtime surfaces over that published state. The repository
+is structured to make those faces visible rather than hiding them behind one
+binary or one command path.
 
 ## Stability
 
