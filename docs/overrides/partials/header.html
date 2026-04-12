@@ -8,12 +8,13 @@
 {% set hub_links = bijux.hub_links if bijux and bijux.hub_links else [] %}
 {% set active_repository = bijux.repository if bijux and bijux.repository else "" %}
 {% set active_section = namespace(item=None) %}
-{% set current_page = page if page is defined else none %}
 {% import "partials/bijux-nav.html" as bijux_nav with context %}
 {% macro site_label(title) -%}
   {% if title == "Repository Handbook" -%}
     Repository
-  {%- elif title == "Maintainer Handbook" -%}
+  {%- elif title == "Runtime Handbook" -%}
+    Runtime
+  {%- elif title == "Maintainer Handbook" or title == "Maintenance Handbook" -%}
     Maintainer
   {%- elif active_repository and title.startswith(active_repository ~ "-") -%}
     {{ title | replace(active_repository ~ "-", "") | replace("-", " ") | title }}
@@ -48,12 +49,10 @@
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
-            {% if current_page and current_page.meta and current_page.meta.title %}
-              {{ current_page.meta.title }}
-            {% elif current_page %}
-              {{ current_page.title }}
+            {% if page.meta and page.meta.title %}
+              {{ page.meta.title }}
             {% else %}
-              {{ config.site_name }}
+              {{ page.title }}
             {% endif %}
           </span>
         </div>
