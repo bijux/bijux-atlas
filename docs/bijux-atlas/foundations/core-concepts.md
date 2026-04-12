@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Core Concepts
@@ -140,6 +140,24 @@ When in doubt, ask three questions:
 - artifact: immutable durable release output
 - catalog: published discoverability layer for dataset identities
 - store: persistence layer for immutable artifacts used by the runtime
+
+## Code And Config Authority
+
+- dataset: `crates/bijux-atlas/src/domain/dataset/` and
+  `configs/sources/runtime/datasets/`
+- query: `crates/bijux-atlas/src/domain/query/`
+- release and published artifact shape:
+  `configs/schemas/contracts/release/` and
+  `configs/schemas/contracts/datasets/`
+- runtime-facing config and output:
+  `crates/bijux-atlas/src/runtime/config/` and `configs/generated/runtime/`
+
+## Main Takeaway
+
+These terms are not decorative vocabulary. They are the project’s architectural
+words. If a change cannot say whether it touches source input, build root,
+artifact, catalog, store, query, or runtime behavior, it is usually not yet
+described clearly enough.
 
 ## Purpose
 
