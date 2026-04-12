@@ -138,7 +138,7 @@ Atlas is opinionated in ways that matter operationally:
 
 - [Core Concepts](core-concepts.md)
 - [Boundaries and Non-Goals](boundaries-and-non-goals.md)
-- [Run Atlas Locally](../02-getting-started/run-atlas-locally.md)
+- [Dataset Model](dataset-model.md)
 
 ## Purpose
 

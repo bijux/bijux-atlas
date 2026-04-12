@@ -80,6 +80,17 @@ nav:
   - Home: index.md
   - Repository:
       - Repository Home: repository/index.md
+      - Foundations:
+          - What Atlas Is: repository/bijux-atlas/foundations/what-atlas-is.md
+          - Core Concepts: repository/bijux-atlas/foundations/core-concepts.md
+          - Boundaries and Non-Goals: repository/bijux-atlas/foundations/boundaries-and-non-goals.md
+          - Guarantees and Stability: repository/bijux-atlas/foundations/guarantees-and-stability.md
+          - Package Ownership: repository/bijux-atlas/foundations/package-ownership.md
+          - Dataset Model: repository/bijux-atlas/foundations/dataset-model.md
+          - Release Model: repository/bijux-atlas/foundations/release-model.md
+          - Query Model: repository/bijux-atlas/foundations/query-model.md
+          - Runtime Surfaces: repository/bijux-atlas/foundations/runtime-surfaces.md
+          - Documentation Map: repository/bijux-atlas/foundations/documentation-map.md
   - Operations:
       - Operations Home: operations/index.md
   - Maintainer:
