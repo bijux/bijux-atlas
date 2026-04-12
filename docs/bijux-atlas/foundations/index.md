@@ -4,12 +4,29 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Foundations
 
 `bijux-atlas/foundations` is the section home for this handbook slice.
+
+```mermaid
+flowchart TD
+    Foundations[Foundations section] --> Identity[What Atlas is]
+    Foundations --> Boundaries[Boundaries and non-goals]
+    Foundations --> Concepts[Core concepts]
+    Foundations --> Stability[Guarantees and stability]
+    Identity --> Shared[Shared architectural language]
+    Boundaries --> Shared
+    Concepts --> Shared
+    Stability --> Shared
+```
+
+Foundations is where the repository vocabulary becomes stable enough for the
+rest of the handbook to reuse without re-explaining itself. These pages should
+define terms and boundaries once, then hand readers off to runtime, contracts,
+interfaces, or workflows when the question becomes more concrete.
 
 Use this section when you are trying to answer:
 
@@ -36,6 +53,13 @@ product-model questions.
 - the conceptual model for datasets, releases, and query behavior
 - the difference between documented promises and current implementation detail
 - the handoff from product foundations into workflows, interfaces, runtime, and contracts
+
+## What This Section Is Allowed To Do
+
+This section may define terms, architectural boundaries, and stability posture.
+It should not become a duplicate command reference, an API index, or an ops
+runbook. When a concept turns into exact runtime behavior or exact user-facing
+surface, the reader should move to the matching section instead of staying here.
 
 ## Pages
 
