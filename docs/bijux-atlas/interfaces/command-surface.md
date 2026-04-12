@@ -4,7 +4,7 @@ audience: mixed
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Command Surface
@@ -63,6 +63,23 @@ Use the automation reference when you are asking, "Which maintainer command chec
 - `policy`: validate and explain active policy
 - `ingest`: build validated dataset state from source inputs
 - `openapi`: generate the OpenAPI description
+
+## Code Authority
+
+- command tree and argument structure:
+  `crates/bijux-atlas/src/adapters/inbound/cli/args.rs`
+- runtime binaries:
+  `crates/bijux-atlas/src/bin/bijux-atlas.rs`,
+  `crates/bijux-atlas/src/bin/bijux-atlas-server.rs`, and
+  `crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs`
+- generated command references: `configs/generated/docs/command-index.json` and
+  `configs/generated/docs/configs-command-list.txt`
+
+## Main Takeaway
+
+This page should be read as the public command map for the product runtime.
+When the command tree changes, this page, the Clap structures, and the generated
+command references should all continue to agree.
 
 ## Stability Reading
 
