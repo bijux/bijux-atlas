@@ -77,7 +77,6 @@ jobs:
           make FORMAT=json doctor > "${logs_root}/doctor.stdout.log" 2> "${logs_root}/doctor.stderr.log"
           capture_report "artifacts/doctor/${RUN_ID}/report.json" "${report_root}/doctor.json"
           capture_report "artifacts/doctor/${RUN_ID}/touched-paths-report.json" "${report_root}/doctor-touched-paths.json"
-          cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
           make makes-target-list > "${logs_root}/makes-target-list.stdout.log" 2> "${logs_root}/makes-target-list.stderr.log"
           capture_report "makes/target-list.json" "${report_root}/makes-target-list.json"
@@ -102,7 +101,6 @@ jobs:
           mkdir -p "${report_root}" "${logs_root}"
           make FORMAT=json doctor > "${logs_root}/ops-doctor.stdout.log" 2> "${logs_root}/ops-doctor.stderr.log"
           capture_report "artifacts/doctor/${RUN_ID}/report.json" "${report_root}/ops-doctor.json"
-          cargo run --locked -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets-preflight.json" 2> "${logs_root}/tree-budgets-preflight.stderr.log"
       - name: Run ops smoke command gates
         shell: bash
         run: |

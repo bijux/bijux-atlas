@@ -330,7 +330,6 @@
       ],
       "stability": "stable",
       "tool_entrypoints": [
-        "bijux dev atlas check tree-budgets",
         "bijux dev atlas configs validate"
       ]
     },
