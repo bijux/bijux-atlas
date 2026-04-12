@@ -29,88 +29,88 @@ plugins:
   - redirects:
       # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
       redirect_maps:
-        01-introduction/boundaries-and-non-goals.md: repository/bijux-atlas/foundations/boundaries-and-non-goals.md
-        01-introduction/core-concepts.md: repository/bijux-atlas/foundations/core-concepts.md
-        01-introduction/guarantees-and-stability.md: repository/bijux-atlas/foundations/guarantees-and-stability.md
-        01-introduction/index.md: repository/index.md
-        01-introduction/what-atlas-is.md: repository/bijux-atlas/foundations/what-atlas-is.md
-        02-getting-started/index.md: repository/index.md
-        02-getting-started/install-and-verify.md: repository/bijux-atlas/workflows/install-and-verify.md
-        02-getting-started/load-a-sample-dataset.md: repository/bijux-atlas/workflows/load-a-sample-dataset.md
-        02-getting-started/run-atlas-locally.md: repository/bijux-atlas/workflows/run-atlas-locally.md
-        02-getting-started/run-your-first-queries.md: repository/bijux-atlas/workflows/run-your-first-queries.md
-        02-getting-started/start-the-server.md: repository/bijux-atlas/workflows/start-the-server.md
-        02-getting-started/troubleshoot-early-problems.md: repository/bijux-atlas/workflows/troubleshoot-early-problems.md
-        03-user-guide/catalog-workflows.md: repository/bijux-atlas/workflows/catalog-workflows.md
-        03-user-guide/configuration-and-output.md: repository/bijux-atlas/interfaces/configuration-and-output.md
-        03-user-guide/dataset-workflows.md: repository/bijux-atlas/workflows/dataset-workflows.md
-        03-user-guide/index.md: repository/index.md
-        03-user-guide/ingest-workflows.md: repository/bijux-atlas/workflows/ingest-workflows.md
-        03-user-guide/openapi-and-api-usage.md: repository/bijux-atlas/interfaces/openapi-and-api-usage.md
-        03-user-guide/policy-workflows.md: repository/bijux-atlas/interfaces/policy-workflows.md
-        03-user-guide/query-workflows.md: repository/bijux-atlas/workflows/query-workflows.md
-        03-user-guide/server-workflows.md: repository/bijux-atlas/interfaces/server-workflows.md
-        03-user-guide/troubleshooting.md: repository/bijux-atlas/workflows/troubleshoot-early-problems.md
-        04-operations/backup-and-recovery.md: operations/bijux-atlas-ops/release/backup-and-recovery.md
-        04-operations/cache-and-store-operations.md: operations/bijux-atlas-ops/stack/cache-and-store-operations.md
-        04-operations/deployment-models.md: operations/bijux-atlas-ops/stack/deployment-models.md
-        04-operations/health-readiness-and-drain.md: operations/bijux-atlas-ops/observability/health-readiness-and-drain.md
-        04-operations/incident-response.md: operations/bijux-atlas-ops/observability/incident-response.md
-        04-operations/index.md: operations/index.md
-        04-operations/logging-metrics-and-tracing.md: operations/bijux-atlas-ops/observability/logging-metrics-and-tracing.md
-        04-operations/performance-and-load.md: operations/bijux-atlas-ops/load/performance-and-load.md
-        04-operations/runtime-configuration.md: operations/bijux-atlas-ops/kubernetes/runtime-configuration.md
-        04-operations/security-operations.md: operations/bijux-atlas-ops/kubernetes/security-operations.md
-        04-operations/upgrades-and-rollback.md: operations/bijux-atlas-ops/release/upgrades-and-rollback.md
-        05-architecture/automation-architecture.md: maintainer/bijux-atlas-dev/governance/automation-architecture.md
-        05-architecture/contracts-and-boundaries.md: repository/bijux-atlas/contracts/contracts-and-boundaries.md
-        05-architecture/index.md: repository/index.md
-        05-architecture/ingest-architecture.md: repository/bijux-atlas/runtime/ingest-architecture.md
-        05-architecture/query-architecture.md: repository/bijux-atlas/runtime/query-architecture.md
-        05-architecture/request-lifecycle.md: repository/bijux-atlas/runtime/request-lifecycle.md
-        05-architecture/runtime-composition.md: repository/bijux-atlas/runtime/runtime-composition.md
-        05-architecture/source-layout-and-ownership.md: repository/bijux-atlas/runtime/source-layout-and-ownership.md
-        05-architecture/storage-architecture.md: repository/bijux-atlas/runtime/storage-architecture.md
-        05-architecture/system-overview.md: repository/bijux-atlas/runtime/system-overview.md
-        06-development/adding-cli-surface.md: maintainer/bijux-atlas-dev/automation/adding-cli-surface.md
-        06-development/adding-contracts.md: maintainer/bijux-atlas-dev/automation/adding-contracts.md
-        06-development/adding-http-surface.md: maintainer/bijux-atlas-dev/automation/adding-http-surface.md
-        06-development/automation-control-plane.md: maintainer/bijux-atlas-dev/automation/automation-control-plane.md
-        06-development/change-and-compatibility.md: maintainer/bijux-atlas-dev/governance/change-and-compatibility.md
-        06-development/contributor-workflow.md: maintainer/bijux-atlas-dev/workspace/contributor-workflow.md
-        06-development/decision-records-and-ownership.md: maintainer/bijux-atlas-dev/workspace/decision-records-and-ownership.md
-        06-development/documentation-standards.md: maintainer/bijux-atlas-dev/governance/documentation-standards.md
-        06-development/index.md: maintainer/index.md
-        06-development/local-development.md: maintainer/bijux-atlas-dev/workspace/local-development.md
-        06-development/release-and-versioning.md: maintainer/bijux-atlas-dev/delivery/release-and-versioning.md
-        06-development/testing-and-evidence.md: maintainer/bijux-atlas-dev/governance/testing-and-evidence.md
-        06-development/workspace-and-tooling.md: maintainer/bijux-atlas-dev/workspace/workspace-and-tooling.md
-        07-reference/api-endpoint-index.md: repository/bijux-atlas/interfaces/api-endpoint-index.md
-        07-reference/artifact-layout.md: repository/bijux-atlas/contracts/artifact-and-store-contracts.md
-        07-reference/automation-command-surface.md: maintainer/bijux-atlas-dev/automation/automation-command-surface.md
-        07-reference/automation-reports-reference.md: maintainer/bijux-atlas-dev/automation/automation-reports-reference.md
-        07-reference/command-surface.md: repository/bijux-atlas/interfaces/command-surface.md
-        07-reference/environment-variables.md: repository/bijux-atlas/interfaces/environment-variables.md
-        07-reference/error-codes-and-exit-codes.md: repository/bijux-atlas/interfaces/error-codes-and-exit-codes.md
-        07-reference/feature-flags.md: repository/bijux-atlas/interfaces/feature-flags.md
-        07-reference/glossary.md: repository/bijux-atlas/foundations/core-concepts.md
-        07-reference/index.md: repository/index.md
-        07-reference/runtime-config-reference.md: repository/bijux-atlas/interfaces/runtime-config-reference.md
-        08-contracts/api-compatibility.md: repository/bijux-atlas/contracts/api-compatibility.md
-        08-contracts/artifact-and-store-contracts.md: repository/bijux-atlas/contracts/artifact-and-store-contracts.md
-        08-contracts/automation-contracts.md: maintainer/bijux-atlas-dev/governance/automation-contracts.md
-        08-contracts/index.md: repository/bijux-atlas/contracts/contract-reading-guide.md
-        08-contracts/operational-contracts.md: repository/bijux-atlas/contracts/operational-contracts.md
-        08-contracts/ownership-and-versioning.md: repository/bijux-atlas/contracts/ownership-and-versioning.md
-        08-contracts/plugin-contracts.md: repository/bijux-atlas/contracts/plugin-contracts.md
-        08-contracts/runtime-config-contracts.md: repository/bijux-atlas/contracts/runtime-config-contracts.md
-        08-contracts/structured-output-contracts.md: repository/bijux-atlas/contracts/structured-output-contracts.md
-        contracts/compatibility.md: repository/bijux-atlas/contracts/ownership-and-versioning.md
-        maintainer/packages/bijux-dev-atlas/index.md: maintainer/index.md
-        repository/packages/index.md: repository/index.md
-        root/compatibility-policy.md: repository/bijux-atlas/contracts/ownership-and-versioning.md
-        runtime/index.md: repository/index.md
-        runtime/packages/bijux-atlas/index.md: repository/index.md
+        01-introduction/boundaries-and-non-goals.md: bijux-atlas/foundations/boundaries-and-non-goals.md
+        01-introduction/core-concepts.md: bijux-atlas/foundations/core-concepts.md
+        01-introduction/guarantees-and-stability.md: bijux-atlas/foundations/guarantees-and-stability.md
+        01-introduction/index.md: bijux-atlas/index.md
+        01-introduction/what-atlas-is.md: bijux-atlas/foundations/what-atlas-is.md
+        02-getting-started/index.md: bijux-atlas/index.md
+        02-getting-started/install-and-verify.md: bijux-atlas/workflows/install-and-verify.md
+        02-getting-started/load-a-sample-dataset.md: bijux-atlas/workflows/load-a-sample-dataset.md
+        02-getting-started/run-atlas-locally.md: bijux-atlas/workflows/run-atlas-locally.md
+        02-getting-started/run-your-first-queries.md: bijux-atlas/workflows/run-your-first-queries.md
+        02-getting-started/start-the-server.md: bijux-atlas/workflows/start-the-server.md
+        02-getting-started/troubleshoot-early-problems.md: bijux-atlas/workflows/troubleshoot-early-problems.md
+        03-user-guide/catalog-workflows.md: bijux-atlas/workflows/catalog-workflows.md
+        03-user-guide/configuration-and-output.md: bijux-atlas/interfaces/configuration-and-output.md
+        03-user-guide/dataset-workflows.md: bijux-atlas/workflows/dataset-workflows.md
+        03-user-guide/index.md: bijux-atlas/index.md
+        03-user-guide/ingest-workflows.md: bijux-atlas/workflows/ingest-workflows.md
+        03-user-guide/openapi-and-api-usage.md: bijux-atlas/interfaces/openapi-and-api-usage.md
+        03-user-guide/policy-workflows.md: bijux-atlas/interfaces/policy-workflows.md
+        03-user-guide/query-workflows.md: bijux-atlas/workflows/query-workflows.md
+        03-user-guide/server-workflows.md: bijux-atlas/interfaces/server-workflows.md
+        03-user-guide/troubleshooting.md: bijux-atlas/workflows/troubleshoot-early-problems.md
+        04-operations/backup-and-recovery.md: bijux-atlas-ops/release/backup-and-recovery.md
+        04-operations/cache-and-store-operations.md: bijux-atlas-ops/stack/cache-and-store-operations.md
+        04-operations/deployment-models.md: bijux-atlas-ops/stack/deployment-models.md
+        04-operations/health-readiness-and-drain.md: bijux-atlas-ops/observability/health-readiness-and-drain.md
+        04-operations/incident-response.md: bijux-atlas-ops/observability/incident-response.md
+        04-operations/index.md: bijux-atlas-ops/index.md
+        04-operations/logging-metrics-and-tracing.md: bijux-atlas-ops/observability/logging-metrics-and-tracing.md
+        04-operations/performance-and-load.md: bijux-atlas-ops/load/performance-and-load.md
+        04-operations/runtime-configuration.md: bijux-atlas-ops/kubernetes/runtime-configuration.md
+        04-operations/security-operations.md: bijux-atlas-ops/kubernetes/security-operations.md
+        04-operations/upgrades-and-rollback.md: bijux-atlas-ops/release/upgrades-and-rollback.md
+        05-architecture/automation-architecture.md: bijux-atlas-dev/governance/automation-architecture.md
+        05-architecture/contracts-and-boundaries.md: bijux-atlas/contracts/contracts-and-boundaries.md
+        05-architecture/index.md: bijux-atlas/index.md
+        05-architecture/ingest-architecture.md: bijux-atlas/runtime/ingest-architecture.md
+        05-architecture/query-architecture.md: bijux-atlas/runtime/query-architecture.md
+        05-architecture/request-lifecycle.md: bijux-atlas/runtime/request-lifecycle.md
+        05-architecture/runtime-composition.md: bijux-atlas/runtime/runtime-composition.md
+        05-architecture/source-layout-and-ownership.md: bijux-atlas/runtime/source-layout-and-ownership.md
+        05-architecture/storage-architecture.md: bijux-atlas/runtime/storage-architecture.md
+        05-architecture/system-overview.md: bijux-atlas/runtime/system-overview.md
+        06-development/adding-cli-surface.md: bijux-atlas-dev/automation/adding-cli-surface.md
+        06-development/adding-contracts.md: bijux-atlas-dev/automation/adding-contracts.md
+        06-development/adding-http-surface.md: bijux-atlas-dev/automation/adding-http-surface.md
+        06-development/automation-control-plane.md: bijux-atlas-dev/automation/automation-control-plane.md
+        06-development/change-and-compatibility.md: bijux-atlas-dev/governance/change-and-compatibility.md
+        06-development/contributor-workflow.md: bijux-atlas-dev/workspace/contributor-workflow.md
+        06-development/decision-records-and-ownership.md: bijux-atlas-dev/workspace/decision-records-and-ownership.md
+        06-development/documentation-standards.md: bijux-atlas-dev/governance/documentation-standards.md
+        06-development/index.md: bijux-atlas-dev/index.md
+        06-development/local-development.md: bijux-atlas-dev/workspace/local-development.md
+        06-development/release-and-versioning.md: bijux-atlas-dev/delivery/release-and-versioning.md
+        06-development/testing-and-evidence.md: bijux-atlas-dev/governance/testing-and-evidence.md
+        06-development/workspace-and-tooling.md: bijux-atlas-dev/workspace/workspace-and-tooling.md
+        07-reference/api-endpoint-index.md: bijux-atlas/interfaces/api-endpoint-index.md
+        07-reference/artifact-layout.md: bijux-atlas/contracts/artifact-and-store-contracts.md
+        07-reference/automation-command-surface.md: bijux-atlas-dev/automation/automation-command-surface.md
+        07-reference/automation-reports-reference.md: bijux-atlas-dev/automation/automation-reports-reference.md
+        07-reference/command-surface.md: bijux-atlas/interfaces/command-surface.md
+        07-reference/environment-variables.md: bijux-atlas/interfaces/environment-variables.md
+        07-reference/error-codes-and-exit-codes.md: bijux-atlas/interfaces/error-codes-and-exit-codes.md
+        07-reference/feature-flags.md: bijux-atlas/interfaces/feature-flags.md
+        07-reference/glossary.md: bijux-atlas/foundations/core-concepts.md
+        07-reference/index.md: bijux-atlas/index.md
+        07-reference/runtime-config-reference.md: bijux-atlas/interfaces/runtime-config-reference.md
+        08-contracts/api-compatibility.md: bijux-atlas/contracts/api-compatibility.md
+        08-contracts/artifact-and-store-contracts.md: bijux-atlas/contracts/artifact-and-store-contracts.md
+        08-contracts/automation-contracts.md: bijux-atlas-dev/governance/automation-contracts.md
+        08-contracts/index.md: bijux-atlas/contracts/contract-reading-guide.md
+        08-contracts/operational-contracts.md: bijux-atlas/contracts/operational-contracts.md
+        08-contracts/ownership-and-versioning.md: bijux-atlas/contracts/ownership-and-versioning.md
+        08-contracts/plugin-contracts.md: bijux-atlas/contracts/plugin-contracts.md
+        08-contracts/runtime-config-contracts.md: bijux-atlas/contracts/runtime-config-contracts.md
+        08-contracts/structured-output-contracts.md: bijux-atlas/contracts/structured-output-contracts.md
+        contracts/compatibility.md: bijux-atlas/contracts/ownership-and-versioning.md
+        maintainer/packages/bijux-dev-atlas/index.md: bijux-atlas-dev/index.md
+        repository/packages/index.md: bijux-atlas/index.md
+        root/compatibility-policy.md: bijux-atlas/contracts/ownership-and-versioning.md
+        runtime/index.md: bijux-atlas/index.md
+        runtime/packages/bijux-atlas/index.md: bijux-atlas/index.md
       # end generated redirect_maps
 
 not_in_nav: |
@@ -152,174 +152,192 @@ extra:
 
 nav:
   - Home: index.md
-  - Repository:
-      - Repository Home: repository/index.md
-      - Foundations:
-          - What Atlas Is: repository/bijux-atlas/foundations/what-atlas-is.md
-          - Core Concepts: repository/bijux-atlas/foundations/core-concepts.md
-          - Boundaries and Non-Goals: repository/bijux-atlas/foundations/boundaries-and-non-goals.md
-          - Guarantees and Stability: repository/bijux-atlas/foundations/guarantees-and-stability.md
-          - Package Ownership: repository/bijux-atlas/foundations/package-ownership.md
-          - Dataset Model: repository/bijux-atlas/foundations/dataset-model.md
-          - Release Model: repository/bijux-atlas/foundations/release-model.md
-          - Query Model: repository/bijux-atlas/foundations/query-model.md
-          - Runtime Surfaces: repository/bijux-atlas/foundations/runtime-surfaces.md
-          - Documentation Map: repository/bijux-atlas/foundations/documentation-map.md
-      - Workflows:
-          - Install and Verify: repository/bijux-atlas/workflows/install-and-verify.md
-          - Run Atlas Locally: repository/bijux-atlas/workflows/run-atlas-locally.md
-          - Load a Sample Dataset: repository/bijux-atlas/workflows/load-a-sample-dataset.md
-          - Start the Server: repository/bijux-atlas/workflows/start-the-server.md
-          - Run Your First Queries: repository/bijux-atlas/workflows/run-your-first-queries.md
-          - Troubleshoot Early Problems: repository/bijux-atlas/workflows/troubleshoot-early-problems.md
-          - Catalog Workflows: repository/bijux-atlas/workflows/catalog-workflows.md
-          - Dataset Workflows: repository/bijux-atlas/workflows/dataset-workflows.md
-          - Ingest Workflows: repository/bijux-atlas/workflows/ingest-workflows.md
-          - Query Workflows: repository/bijux-atlas/workflows/query-workflows.md
-      - Interfaces:
-          - Configuration and Output: repository/bijux-atlas/interfaces/configuration-and-output.md
-          - Server Workflows: repository/bijux-atlas/interfaces/server-workflows.md
-          - OpenAPI and API Usage: repository/bijux-atlas/interfaces/openapi-and-api-usage.md
-          - Policy Workflows: repository/bijux-atlas/interfaces/policy-workflows.md
-          - Command Surface: repository/bijux-atlas/interfaces/command-surface.md
-          - Environment Variables: repository/bijux-atlas/interfaces/environment-variables.md
-          - Runtime Config Reference: repository/bijux-atlas/interfaces/runtime-config-reference.md
-          - API Endpoint Index: repository/bijux-atlas/interfaces/api-endpoint-index.md
-          - Error Codes and Exit Codes: repository/bijux-atlas/interfaces/error-codes-and-exit-codes.md
-          - Feature Flags: repository/bijux-atlas/interfaces/feature-flags.md
-      - Runtime:
-          - System Overview: repository/bijux-atlas/runtime/system-overview.md
-          - Source Layout and Ownership: repository/bijux-atlas/runtime/source-layout-and-ownership.md
-          - Request Lifecycle: repository/bijux-atlas/runtime/request-lifecycle.md
-          - Ingest Architecture: repository/bijux-atlas/runtime/ingest-architecture.md
-          - Query Architecture: repository/bijux-atlas/runtime/query-architecture.md
-          - Storage Architecture: repository/bijux-atlas/runtime/storage-architecture.md
-          - Runtime Composition: repository/bijux-atlas/runtime/runtime-composition.md
-          - Artifact Lifecycle: repository/bijux-atlas/runtime/artifact-lifecycle.md
-          - Serving Store Model: repository/bijux-atlas/runtime/serving-store-model.md
-          - Runtime Process Model: repository/bijux-atlas/runtime/runtime-process-model.md
-      - Contracts:
-          - Contracts and Boundaries: repository/bijux-atlas/contracts/contracts-and-boundaries.md
-          - API Compatibility: repository/bijux-atlas/contracts/api-compatibility.md
-          - Structured Output Contracts: repository/bijux-atlas/contracts/structured-output-contracts.md
-          - Runtime Config Contracts: repository/bijux-atlas/contracts/runtime-config-contracts.md
-          - Plugin Contracts: repository/bijux-atlas/contracts/plugin-contracts.md
-          - Artifact and Store Contracts: repository/bijux-atlas/contracts/artifact-and-store-contracts.md
-          - Operational Contracts: repository/bijux-atlas/contracts/operational-contracts.md
-          - Ownership and Versioning: repository/bijux-atlas/contracts/ownership-and-versioning.md
-          - Contract Reading Guide: repository/bijux-atlas/contracts/contract-reading-guide.md
-          - Compatibility Review Checklist: repository/bijux-atlas/contracts/compatibility-review-checklist.md
-  - Operations:
-      - Operations Home: operations/index.md
-      - Stack:
-          - Deployment Models: operations/bijux-atlas-ops/stack/deployment-models.md
-          - Service Topology: operations/bijux-atlas-ops/stack/service-topology.md
-          - Local Stack Profiles: operations/bijux-atlas-ops/stack/local-stack-profiles.md
-          - Stack Components: operations/bijux-atlas-ops/stack/stack-components.md
-          - Kind Clusters: operations/bijux-atlas-ops/stack/kind-clusters.md
-          - Dependency Graph: operations/bijux-atlas-ops/stack/dependency-graph.md
-          - Cache and Store Operations: operations/bijux-atlas-ops/stack/cache-and-store-operations.md
-          - Environment Overlays: operations/bijux-atlas-ops/stack/environment-overlays.md
-          - Toolchain Pins: operations/bijux-atlas-ops/stack/toolchain-pins.md
-          - Offline Assets: operations/bijux-atlas-ops/stack/offline-assets.md
-      - Kubernetes:
-          - Runtime Configuration: operations/bijux-atlas-ops/kubernetes/runtime-configuration.md
-          - Helm Values Model: operations/bijux-atlas-ops/kubernetes/helm-values-model.md
-          - Chart Layout: operations/bijux-atlas-ops/kubernetes/chart-layout.md
-          - Install Matrix: operations/bijux-atlas-ops/kubernetes/install-matrix.md
-          - Render and Validate: operations/bijux-atlas-ops/kubernetes/render-and-validate.md
-          - Conformance Suites: operations/bijux-atlas-ops/kubernetes/conformance-suites.md
-          - Rollout Safety: operations/bijux-atlas-ops/kubernetes/rollout-safety.md
-          - Security Operations: operations/bijux-atlas-ops/kubernetes/security-operations.md
-          - Debug Bundles: operations/bijux-atlas-ops/kubernetes/debug-bundles.md
-          - Admin Endpoints Exceptions: operations/bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md
-      - Release:
-          - Upgrades and Rollback: operations/bijux-atlas-ops/release/upgrades-and-rollback.md
-          - Backup and Recovery: operations/bijux-atlas-ops/release/backup-and-recovery.md
-          - Release Evidence: operations/bijux-atlas-ops/release/release-evidence.md
-          - Release Packets: operations/bijux-atlas-ops/release/release-packets.md
-          - Reproducibility: operations/bijux-atlas-ops/release/reproducibility.md
-          - Drift Detection: operations/bijux-atlas-ops/release/drift-detection.md
-          - Distribution Channels: operations/bijux-atlas-ops/release/distribution-channels.md
-          - Version Manifests: operations/bijux-atlas-ops/release/version-manifests.md
-          - Signing and Provenance: operations/bijux-atlas-ops/release/signing-and-provenance.md
-          - Rollback Drills: operations/bijux-atlas-ops/release/rollback-drills.md
-      - Observability:
-          - Health Readiness and Drain: operations/bijux-atlas-ops/observability/health-readiness-and-drain.md
-          - Logging Metrics and Tracing: operations/bijux-atlas-ops/observability/logging-metrics-and-tracing.md
-          - Incident Response: operations/bijux-atlas-ops/observability/incident-response.md
-          - Dashboards and Panels: operations/bijux-atlas-ops/observability/dashboards-and-panels.md
-          - Alert Rules: operations/bijux-atlas-ops/observability/alert-rules.md
-          - Telemetry Drills: operations/bijux-atlas-ops/observability/telemetry-drills.md
-          - Tracing Pipelines: operations/bijux-atlas-ops/observability/tracing-pipelines.md
-          - Metrics Packages: operations/bijux-atlas-ops/observability/metrics-packages.md
-          - Logging Contracts: operations/bijux-atlas-ops/observability/logging-contracts.md
-          - Operational Evidence Reports: operations/bijux-atlas-ops/observability/operational-evidence-reports.md
-      - Load:
-          - Performance and Load: operations/bijux-atlas-ops/load/performance-and-load.md
-          - Load Suites: operations/bijux-atlas-ops/load/load-suites.md
-          - Scenario Registry: operations/bijux-atlas-ops/load/scenario-registry.md
-          - Thresholds and Budgets: operations/bijux-atlas-ops/load/thresholds-and-budgets.md
-          - Concurrency Stress: operations/bijux-atlas-ops/load/concurrency-stress.md
-          - Rollout Under Load: operations/bijux-atlas-ops/load/rollout-under-load.md
-          - Pod Churn Resilience: operations/bijux-atlas-ops/load/pod-churn-resilience.md
-          - Benchmark CI: operations/bijux-atlas-ops/load/benchmark-ci.md
-          - Baseline Management: operations/bijux-atlas-ops/load/baseline-management.md
-          - Failure Injection Load: operations/bijux-atlas-ops/load/failure-injection-load.md
-  - Maintainer:
-      - Maintainer Home: maintainer/index.md
-      - Workspace:
-          - Workspace and Tooling: maintainer/bijux-atlas-dev/workspace/workspace-and-tooling.md
-          - Local Development: maintainer/bijux-atlas-dev/workspace/local-development.md
-          - Contributor Workflow: maintainer/bijux-atlas-dev/workspace/contributor-workflow.md
-          - Decision Records and Ownership: maintainer/bijux-atlas-dev/workspace/decision-records-and-ownership.md
-          - Package Surface: maintainer/bijux-atlas-dev/workspace/package-surface.md
-          - Maintainer Entrypoints: maintainer/bijux-atlas-dev/workspace/maintainer-entrypoints.md
-          - Repository Laws: maintainer/bijux-atlas-dev/workspace/repository-laws.md
-          - Artifact Roots: maintainer/bijux-atlas-dev/workspace/artifact-roots.md
-          - Generated Files: maintainer/bijux-atlas-dev/workspace/generated-files.md
-          - Inventory Registry: maintainer/bijux-atlas-dev/workspace/inventory-registry.md
-      - Automation:
-          - Automation Control Plane: maintainer/bijux-atlas-dev/automation/automation-control-plane.md
-          - Adding CLI Surface: maintainer/bijux-atlas-dev/automation/adding-cli-surface.md
-          - Adding HTTP Surface: maintainer/bijux-atlas-dev/automation/adding-http-surface.md
-          - Adding Contracts: maintainer/bijux-atlas-dev/automation/adding-contracts.md
-          - Automation Command Surface: maintainer/bijux-atlas-dev/automation/automation-command-surface.md
-          - Automation Reports Reference: maintainer/bijux-atlas-dev/automation/automation-reports-reference.md
-          - Command Routing: maintainer/bijux-atlas-dev/automation/command-routing.md
-          - Subprocess Allowance: maintainer/bijux-atlas-dev/automation/subprocess-allowance.md
-          - Generated Reference Workflows: maintainer/bijux-atlas-dev/automation/generated-reference-workflows.md
-          - Tutorial Runs: maintainer/bijux-atlas-dev/automation/tutorial-runs.md
-      - Governance:
-          - Documentation Standards: maintainer/bijux-atlas-dev/governance/documentation-standards.md
-          - Change and Compatibility: maintainer/bijux-atlas-dev/governance/change-and-compatibility.md
-          - Testing and Evidence: maintainer/bijux-atlas-dev/governance/testing-and-evidence.md
-          - Automation Architecture: maintainer/bijux-atlas-dev/governance/automation-architecture.md
-          - Automation Contracts: maintainer/bijux-atlas-dev/governance/automation-contracts.md
-          - Docs Spine Governance: maintainer/bijux-atlas-dev/governance/docs-spine-governance.md
-          - Redirects and Navigation: maintainer/bijux-atlas-dev/governance/redirects-and-navigation.md
-          - Policy Loading: maintainer/bijux-atlas-dev/governance/policy-loading.md
-          - Rule Enforcement: maintainer/bijux-atlas-dev/governance/rule-enforcement.md
-          - Evidence Contracts: maintainer/bijux-atlas-dev/governance/evidence-contracts.md
-      - Delivery:
-          - Release and Versioning: maintainer/bijux-atlas-dev/delivery/release-and-versioning.md
-          - CI Lanes and Status Checks: maintainer/bijux-atlas-dev/delivery/ci-lanes-and-status-checks.md
-          - GitHub Release Workflows: maintainer/bijux-atlas-dev/delivery/github-release-workflows.md
-          - Docker and Crate Publish: maintainer/bijux-atlas-dev/delivery/docker-and-crate-publish.md
-          - Compatibility Matrix: maintainer/bijux-atlas-dev/delivery/compatibility-matrix.md
-          - Security Validation Lanes: maintainer/bijux-atlas-dev/delivery/security-validation-lanes.md
-          - Docs Deploy Pipeline: maintainer/bijux-atlas-dev/delivery/docs-deploy-pipeline.md
-          - Load and Benchmark Workflows: maintainer/bijux-atlas-dev/delivery/load-and-benchmark-workflows.md
-          - Final Readiness: maintainer/bijux-atlas-dev/delivery/final-readiness.md
-          - Dependency Updates: maintainer/bijux-atlas-dev/delivery/dependency-updates.md
-      - Workflow Ownership:
-          - Pull Request Templates: maintainer/bijux-atlas-dev/workflow-ownership/pull-request-templates.md
-          - Issue Templates: maintainer/bijux-atlas-dev/workflow-ownership/issue-templates.md
-          - Codeowners and Review: maintainer/bijux-atlas-dev/workflow-ownership/codeowners-and-review.md
-          - Required Status Checks: maintainer/bijux-atlas-dev/workflow-ownership/required-status-checks.md
-          - Workflow Entrypoints: maintainer/bijux-atlas-dev/workflow-ownership/workflow-entrypoints.md
-          - Docs Governance Workflow: maintainer/bijux-atlas-dev/workflow-ownership/docs-governance-workflow.md
-          - Ops Validation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/ops-validation-workflow.md
-          - Release Candidate Workflow: maintainer/bijux-atlas-dev/workflow-ownership/release-candidate-workflow.md
-          - System Simulation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/system-simulation-workflow.md
-          - Sustainability Validation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/sustainability-validation-workflow.md
+  - bijux-atlas:
+      - Home:
+          - Overview: bijux-atlas/index.md
+          - Foundations:
+              - Foundations: bijux-atlas/foundations/index.md
+              - What Atlas Is: bijux-atlas/foundations/what-atlas-is.md
+              - Core Concepts: bijux-atlas/foundations/core-concepts.md
+              - Boundaries and Non-Goals: bijux-atlas/foundations/boundaries-and-non-goals.md
+              - Guarantees and Stability: bijux-atlas/foundations/guarantees-and-stability.md
+              - Package Ownership: bijux-atlas/foundations/package-ownership.md
+              - Dataset Model: bijux-atlas/foundations/dataset-model.md
+              - Release Model: bijux-atlas/foundations/release-model.md
+              - Query Model: bijux-atlas/foundations/query-model.md
+              - Runtime Surfaces: bijux-atlas/foundations/runtime-surfaces.md
+              - Documentation Map: bijux-atlas/foundations/documentation-map.md
+          - Workflows:
+              - Workflows: bijux-atlas/workflows/index.md
+              - Install and Verify: bijux-atlas/workflows/install-and-verify.md
+              - Run Atlas Locally: bijux-atlas/workflows/run-atlas-locally.md
+              - Load a Sample Dataset: bijux-atlas/workflows/load-a-sample-dataset.md
+              - Start the Server: bijux-atlas/workflows/start-the-server.md
+              - Run Your First Queries: bijux-atlas/workflows/run-your-first-queries.md
+              - Troubleshoot Early Problems: bijux-atlas/workflows/troubleshoot-early-problems.md
+              - Catalog Workflows: bijux-atlas/workflows/catalog-workflows.md
+              - Dataset Workflows: bijux-atlas/workflows/dataset-workflows.md
+              - Ingest Workflows: bijux-atlas/workflows/ingest-workflows.md
+              - Query Workflows: bijux-atlas/workflows/query-workflows.md
+          - Interfaces:
+              - Interfaces: bijux-atlas/interfaces/index.md
+              - Configuration and Output: bijux-atlas/interfaces/configuration-and-output.md
+              - Server Workflows: bijux-atlas/interfaces/server-workflows.md
+              - OpenAPI and API Usage: bijux-atlas/interfaces/openapi-and-api-usage.md
+              - Policy Workflows: bijux-atlas/interfaces/policy-workflows.md
+              - Command Surface: bijux-atlas/interfaces/command-surface.md
+              - Environment Variables: bijux-atlas/interfaces/environment-variables.md
+              - Runtime Config Reference: bijux-atlas/interfaces/runtime-config-reference.md
+              - API Endpoint Index: bijux-atlas/interfaces/api-endpoint-index.md
+              - Error Codes and Exit Codes: bijux-atlas/interfaces/error-codes-and-exit-codes.md
+              - Feature Flags: bijux-atlas/interfaces/feature-flags.md
+          - Runtime:
+              - Runtime: bijux-atlas/runtime/index.md
+              - System Overview: bijux-atlas/runtime/system-overview.md
+              - Source Layout and Ownership: bijux-atlas/runtime/source-layout-and-ownership.md
+              - Request Lifecycle: bijux-atlas/runtime/request-lifecycle.md
+              - Ingest Architecture: bijux-atlas/runtime/ingest-architecture.md
+              - Query Architecture: bijux-atlas/runtime/query-architecture.md
+              - Storage Architecture: bijux-atlas/runtime/storage-architecture.md
+              - Runtime Composition: bijux-atlas/runtime/runtime-composition.md
+              - Artifact Lifecycle: bijux-atlas/runtime/artifact-lifecycle.md
+              - Serving Store Model: bijux-atlas/runtime/serving-store-model.md
+              - Runtime Process Model: bijux-atlas/runtime/runtime-process-model.md
+          - Contracts:
+              - Contracts: bijux-atlas/contracts/index.md
+              - Contracts and Boundaries: bijux-atlas/contracts/contracts-and-boundaries.md
+              - API Compatibility: bijux-atlas/contracts/api-compatibility.md
+              - Structured Output Contracts: bijux-atlas/contracts/structured-output-contracts.md
+              - Runtime Config Contracts: bijux-atlas/contracts/runtime-config-contracts.md
+              - Plugin Contracts: bijux-atlas/contracts/plugin-contracts.md
+              - Artifact and Store Contracts: bijux-atlas/contracts/artifact-and-store-contracts.md
+              - Operational Contracts: bijux-atlas/contracts/operational-contracts.md
+              - Ownership and Versioning: bijux-atlas/contracts/ownership-and-versioning.md
+              - Contract Reading Guide: bijux-atlas/contracts/contract-reading-guide.md
+              - Compatibility Review Checklist: bijux-atlas/contracts/compatibility-review-checklist.md
+  - bijux-atlas-ops:
+      - Home:
+          - Overview: bijux-atlas-ops/index.md
+          - Stack:
+              - Stack: bijux-atlas-ops/stack/index.md
+              - Deployment Models: bijux-atlas-ops/stack/deployment-models.md
+              - Service Topology: bijux-atlas-ops/stack/service-topology.md
+              - Local Stack Profiles: bijux-atlas-ops/stack/local-stack-profiles.md
+              - Stack Components: bijux-atlas-ops/stack/stack-components.md
+              - Kind Clusters: bijux-atlas-ops/stack/kind-clusters.md
+              - Dependency Graph: bijux-atlas-ops/stack/dependency-graph.md
+              - Cache and Store Operations: bijux-atlas-ops/stack/cache-and-store-operations.md
+              - Environment Overlays: bijux-atlas-ops/stack/environment-overlays.md
+              - Toolchain Pins: bijux-atlas-ops/stack/toolchain-pins.md
+              - Offline Assets: bijux-atlas-ops/stack/offline-assets.md
+          - Kubernetes:
+              - Kubernetes: bijux-atlas-ops/kubernetes/index.md
+              - Runtime Configuration: bijux-atlas-ops/kubernetes/runtime-configuration.md
+              - Helm Values Model: bijux-atlas-ops/kubernetes/helm-values-model.md
+              - Chart Layout: bijux-atlas-ops/kubernetes/chart-layout.md
+              - Install Matrix: bijux-atlas-ops/kubernetes/install-matrix.md
+              - Render and Validate: bijux-atlas-ops/kubernetes/render-and-validate.md
+              - Conformance Suites: bijux-atlas-ops/kubernetes/conformance-suites.md
+              - Rollout Safety: bijux-atlas-ops/kubernetes/rollout-safety.md
+              - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
+              - Debug Bundles: bijux-atlas-ops/kubernetes/debug-bundles.md
+              - Admin Endpoints Exceptions: bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md
+          - Release:
+              - Release: bijux-atlas-ops/release/index.md
+              - Upgrades and Rollback: bijux-atlas-ops/release/upgrades-and-rollback.md
+              - Backup and Recovery: bijux-atlas-ops/release/backup-and-recovery.md
+              - Release Evidence: bijux-atlas-ops/release/release-evidence.md
+              - Release Packets: bijux-atlas-ops/release/release-packets.md
+              - Reproducibility: bijux-atlas-ops/release/reproducibility.md
+              - Drift Detection: bijux-atlas-ops/release/drift-detection.md
+              - Distribution Channels: bijux-atlas-ops/release/distribution-channels.md
+              - Version Manifests: bijux-atlas-ops/release/version-manifests.md
+              - Signing and Provenance: bijux-atlas-ops/release/signing-and-provenance.md
+              - Rollback Drills: bijux-atlas-ops/release/rollback-drills.md
+          - Observability:
+              - Observability: bijux-atlas-ops/observability/index.md
+              - Health Readiness and Drain: bijux-atlas-ops/observability/health-readiness-and-drain.md
+              - Logging Metrics and Tracing: bijux-atlas-ops/observability/logging-metrics-and-tracing.md
+              - Incident Response: bijux-atlas-ops/observability/incident-response.md
+              - Dashboards and Panels: bijux-atlas-ops/observability/dashboards-and-panels.md
+              - Alert Rules: bijux-atlas-ops/observability/alert-rules.md
+              - Telemetry Drills: bijux-atlas-ops/observability/telemetry-drills.md
+              - Tracing Pipelines: bijux-atlas-ops/observability/tracing-pipelines.md
+              - Metrics Packages: bijux-atlas-ops/observability/metrics-packages.md
+              - Logging Contracts: bijux-atlas-ops/observability/logging-contracts.md
+              - Operational Evidence Reports: bijux-atlas-ops/observability/operational-evidence-reports.md
+          - Load:
+              - Load: bijux-atlas-ops/load/index.md
+              - Performance and Load: bijux-atlas-ops/load/performance-and-load.md
+              - Load Suites: bijux-atlas-ops/load/load-suites.md
+              - Scenario Registry: bijux-atlas-ops/load/scenario-registry.md
+              - Thresholds and Budgets: bijux-atlas-ops/load/thresholds-and-budgets.md
+              - Concurrency Stress: bijux-atlas-ops/load/concurrency-stress.md
+              - Rollout Under Load: bijux-atlas-ops/load/rollout-under-load.md
+              - Pod Churn Resilience: bijux-atlas-ops/load/pod-churn-resilience.md
+              - Benchmark CI: bijux-atlas-ops/load/benchmark-ci.md
+              - Baseline Management: bijux-atlas-ops/load/baseline-management.md
+              - Failure Injection Load: bijux-atlas-ops/load/failure-injection-load.md
+  - bijux-atlas-dev:
+      - Home:
+          - Overview: bijux-atlas-dev/index.md
+          - Workspace:
+              - Workspace: bijux-atlas-dev/workspace/index.md
+              - Workspace and Tooling: bijux-atlas-dev/workspace/workspace-and-tooling.md
+              - Local Development: bijux-atlas-dev/workspace/local-development.md
+              - Contributor Workflow: bijux-atlas-dev/workspace/contributor-workflow.md
+              - Decision Records and Ownership: bijux-atlas-dev/workspace/decision-records-and-ownership.md
+              - Package Surface: bijux-atlas-dev/workspace/package-surface.md
+              - Maintainer Entrypoints: bijux-atlas-dev/workspace/maintainer-entrypoints.md
+              - Repository Laws: bijux-atlas-dev/workspace/repository-laws.md
+              - Artifact Roots: bijux-atlas-dev/workspace/artifact-roots.md
+              - Generated Files: bijux-atlas-dev/workspace/generated-files.md
+              - Inventory Registry: bijux-atlas-dev/workspace/inventory-registry.md
+          - Automation:
+              - Automation: bijux-atlas-dev/automation/index.md
+              - Automation Control Plane: bijux-atlas-dev/automation/automation-control-plane.md
+              - Adding CLI Surface: bijux-atlas-dev/automation/adding-cli-surface.md
+              - Adding HTTP Surface: bijux-atlas-dev/automation/adding-http-surface.md
+              - Adding Contracts: bijux-atlas-dev/automation/adding-contracts.md
+              - Automation Command Surface: bijux-atlas-dev/automation/automation-command-surface.md
+              - Automation Reports Reference: bijux-atlas-dev/automation/automation-reports-reference.md
+              - Command Routing: bijux-atlas-dev/automation/command-routing.md
+              - Subprocess Allowance: bijux-atlas-dev/automation/subprocess-allowance.md
+              - Generated Reference Workflows: bijux-atlas-dev/automation/generated-reference-workflows.md
+              - Tutorial Runs: bijux-atlas-dev/automation/tutorial-runs.md
+          - Governance:
+              - Governance: bijux-atlas-dev/governance/index.md
+              - Documentation Standards: bijux-atlas-dev/governance/documentation-standards.md
+              - Change and Compatibility: bijux-atlas-dev/governance/change-and-compatibility.md
+              - Testing and Evidence: bijux-atlas-dev/governance/testing-and-evidence.md
+              - Automation Architecture: bijux-atlas-dev/governance/automation-architecture.md
+              - Automation Contracts: bijux-atlas-dev/governance/automation-contracts.md
+              - Docs Spine Governance: bijux-atlas-dev/governance/docs-spine-governance.md
+              - Redirects and Navigation: bijux-atlas-dev/governance/redirects-and-navigation.md
+              - Policy Loading: bijux-atlas-dev/governance/policy-loading.md
+              - Rule Enforcement: bijux-atlas-dev/governance/rule-enforcement.md
+              - Evidence Contracts: bijux-atlas-dev/governance/evidence-contracts.md
+          - Delivery:
+              - Delivery: bijux-atlas-dev/delivery/index.md
+              - Release and Versioning: bijux-atlas-dev/delivery/release-and-versioning.md
+              - CI Lanes and Status Checks: bijux-atlas-dev/delivery/ci-lanes-and-status-checks.md
+              - GitHub Release Workflows: bijux-atlas-dev/delivery/github-release-workflows.md
+              - Docker and Crate Publish: bijux-atlas-dev/delivery/docker-and-crate-publish.md
+              - Compatibility Matrix: bijux-atlas-dev/delivery/compatibility-matrix.md
+              - Security Validation Lanes: bijux-atlas-dev/delivery/security-validation-lanes.md
+              - Docs Deploy Pipeline: bijux-atlas-dev/delivery/docs-deploy-pipeline.md
+              - Load and Benchmark Workflows: bijux-atlas-dev/delivery/load-and-benchmark-workflows.md
+              - Final Readiness: bijux-atlas-dev/delivery/final-readiness.md
+              - Dependency Updates: bijux-atlas-dev/delivery/dependency-updates.md
+          - Workflow Ownership:
+              - Workflow Ownership: bijux-atlas-dev/workflow-ownership/index.md
+              - Pull Request Templates: bijux-atlas-dev/workflow-ownership/pull-request-templates.md
+              - Issue Templates: bijux-atlas-dev/workflow-ownership/issue-templates.md
+              - Codeowners and Review: bijux-atlas-dev/workflow-ownership/codeowners-and-review.md
+              - Required Status Checks: bijux-atlas-dev/workflow-ownership/required-status-checks.md
+              - Workflow Entrypoints: bijux-atlas-dev/workflow-ownership/workflow-entrypoints.md
+              - Docs Governance Workflow: bijux-atlas-dev/workflow-ownership/docs-governance-workflow.md
+              - Ops Validation Workflow: bijux-atlas-dev/workflow-ownership/ops-validation-workflow.md
+              - Release Candidate Workflow: bijux-atlas-dev/workflow-ownership/release-candidate-workflow.md
+              - System Simulation Workflow: bijux-atlas-dev/workflow-ownership/system-simulation-workflow.md
+              - Sustainability Validation Workflow: bijux-atlas-dev/workflow-ownership/sustainability-validation-workflow.md

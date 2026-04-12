@@ -2,8 +2,8 @@
   "schema_version": 1,
   "pages": [
     "docs/index.md",
-    "docs/repository/index.md",
-    "docs/operations/index.md",
-    "docs/maintainer/index.md"
+    "docs/bijux-atlas/index.md",
+    "docs/bijux-atlas-ops/index.md",
+    "docs/bijux-atlas-dev/index.md"
   ]
 }
