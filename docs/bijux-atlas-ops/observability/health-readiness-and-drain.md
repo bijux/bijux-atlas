@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Health, Readiness, and Drain
@@ -82,6 +82,36 @@ curl -s http://127.0.0.1:8080/healthz/overload
 ## Purpose
 
 This page explains the Atlas material for health, readiness, and drain and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/observe/readiness.json`
+- `ops/observe/contracts/endpoint-observability-contract.json`
+- `ops/observe/contracts/overload-behavior-contract.json`
+- `docs/bijux-atlas-ops/kubernetes/rollout-safety.md`
+
+## Probe and Decision Map
+
+Use the endpoint surfaces for different operational decisions:
+
+- liveness decides whether the process should be restarted
+- readiness decides whether the instance should receive normal traffic
+- overload or drain state decides whether the instance should shed or limit work
+  even while it remains alive
+
+These signals should feed rollout and service-routing decisions differently.
+
+## When Readiness Passes but User Latency Fails
+
+Treat this as a real operational mismatch, not as a false alarm. It usually
+means:
+
+- the instance is technically available but overloaded
+- the readiness contract is narrower than the user-facing performance contract
+- load, alert, or dashboard evidence must be consulted before promotion
+
+In that situation, do not promote just because readiness is green. Cross-check
+overload behavior, latency alerts, and rollout-under-load evidence first.
 
 ## Stability
 
