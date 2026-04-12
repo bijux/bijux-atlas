@@ -92,9 +92,9 @@ If CI fails but your narrow local check passes, reproduce the matching wrapper f
 ## Where to Go Next
 
 - [Workspace and Tooling](workspace-and-tooling.md)
-- [Automation Control Plane](automation-control-plane.md)
-- [Testing and Evidence](testing-and-evidence.md)
-- [Change and Compatibility](change-and-compatibility.md)
+- [Automation Control Plane](../automation/automation-control-plane.md)
+- [Testing and Evidence](../governance/testing-and-evidence.md)
+- [Change and Compatibility](../governance/change-and-compatibility.md)
 
 ## Purpose
 

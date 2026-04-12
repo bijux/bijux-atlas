@@ -67,7 +67,7 @@ These details may change without becoming compatibility commitments:
 
 - [Automation Command Surface](../automation/automation-command-surface.md)
 - [Automation Reports Reference](../automation/automation-reports-reference.md)
-- [Ownership and Versioning](ownership-and-versioning.md)
+- [Ownership and Versioning](../../bijux-atlas/contracts/ownership-and-versioning.md)
 
 ## Purpose
 

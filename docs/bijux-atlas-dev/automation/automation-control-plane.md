@@ -117,8 +117,8 @@ cargo run -q -p bijux-dev-atlas -- reports index --format json
 
 ## Where to Go Next
 
-- [Contributor Workflow](contributor-workflow.md)
-- [Testing and Evidence](testing-and-evidence.md)
+- [Contributor Workflow](../workspace/contributor-workflow.md)
+- [Testing and Evidence](../governance/testing-and-evidence.md)
 - [Automation Command Surface](automation-command-surface.md)
 
 ## Purpose

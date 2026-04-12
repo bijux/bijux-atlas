@@ -82,8 +82,8 @@ usually points to the right zone immediately.
 
 ## Where to Go Next
 
-- [System Overview](system-overview.md)
-- [Contracts and Boundaries](contracts-and-boundaries.md)
+- [System Overview](../../bijux-atlas/runtime/system-overview.md)
+- [Contracts and Boundaries](../../bijux-atlas/contracts/contracts-and-boundaries.md)
 - [Automation Control Plane](../automation/automation-control-plane.md)
 
 ## Purpose

@@ -11,7 +11,7 @@ last_reviewed: 2026-03-15
 
 This page summarizes the user-facing Atlas command families. It does not
 document the maintainer control plane; that lives in [Automation Command
-Surface](automation-command-surface.md).
+Surface](../../bijux-atlas-dev/automation/automation-command-surface.md).
 
 The installed runtime namespace is `bijux atlas ...`.
 The direct runtime binaries remain `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`.
