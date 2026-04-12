@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Security Operations
@@ -59,6 +59,55 @@ depends on configuration clarity, auditability, and the ability to observe the r
 ## Purpose
 
 This page explains the Atlas material for security operations and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/k8s/profile-security-contract.json`
+- `ops/k8s/admin-endpoints-exceptions.json`
+- `ops/k8s/examples/networkpolicy/`
+- `ops/k8s/values/profiles.json`
+- `ops/k8s/values/prod-airgap.yaml`
+- `ops/k8s/values/perf.yaml`
+
+## What Is Governed
+
+The Kubernetes security surface is governed by profile rules, network policy
+examples, values restrictions, and explicit exception tracking. For example,
+`ops/k8s/profile-security-contract.json` currently requires
+`podSecurityContext.runAsNonRoot=true` for production-oriented profiles such as
+`prod`, `prod-minimal`, `prod-ha`, and `prod-airgap`.
+
+## Secure Deploy Checklist
+
+- confirm the selected profile satisfies the profile security contract
+- verify debug or admin surfaces are disabled unless there is a governed
+  exception
+- confirm the network policy mode matches the intended environment
+- verify the service account and RBAC scope stayed aligned with the chart’s
+  least-privilege assumptions
+- confirm observability coverage exists for authentication, policy, and audit
+  signals
+
+## Secure Review Checklist
+
+- inspect changes to `networkPolicy`, `serviceAccount`, `rbac`, `securityContext`,
+  `podSecurityContext`, `envFromSecrets`, and `audit`
+- review `ops/k8s/examples/networkpolicy/cluster-aware.yaml`,
+  `custom.yaml`, `disabled.yaml`, and `internet-only.yaml` against the profile
+  intent before allowing broader egress or ingress
+- confirm any admin endpoint exception is explicit, bounded, and reviewed
+- escalate high-risk profile changes in `perf`, `prod`, or air-gapped paths
+
+## Security Incident Triage
+
+When a security issue lands in the Kubernetes slice:
+
+1. confirm whether the affected profile violated the security contract or used
+   an approved exception
+2. inspect the rendered network and identity resources
+3. capture a debug bundle if cluster state may change during investigation
+4. review observability evidence for audit trails and exposure scope
+5. remove or expire temporary exceptions once the incident is contained
 
 ## Stability
 
