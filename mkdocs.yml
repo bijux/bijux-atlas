@@ -137,5 +137,38 @@ nav:
           - Compatibility Review Checklist: repository/bijux-atlas/contracts/compatibility-review-checklist.md
   - Operations:
       - Operations Home: operations/index.md
+      - Stack:
+          - Deployment Models: operations/bijux-atlas-ops/stack/deployment-models.md
+          - Service Topology: operations/bijux-atlas-ops/stack/service-topology.md
+          - Local Stack Profiles: operations/bijux-atlas-ops/stack/local-stack-profiles.md
+          - Stack Components: operations/bijux-atlas-ops/stack/stack-components.md
+          - Kind Clusters: operations/bijux-atlas-ops/stack/kind-clusters.md
+          - Dependency Graph: operations/bijux-atlas-ops/stack/dependency-graph.md
+          - Cache and Store Operations: operations/bijux-atlas-ops/stack/cache-and-store-operations.md
+          - Environment Overlays: operations/bijux-atlas-ops/stack/environment-overlays.md
+          - Toolchain Pins: operations/bijux-atlas-ops/stack/toolchain-pins.md
+          - Offline Assets: operations/bijux-atlas-ops/stack/offline-assets.md
+      - Kubernetes:
+          - Runtime Configuration: operations/bijux-atlas-ops/kubernetes/runtime-configuration.md
+          - Helm Values Model: operations/bijux-atlas-ops/kubernetes/helm-values-model.md
+          - Chart Layout: operations/bijux-atlas-ops/kubernetes/chart-layout.md
+          - Install Matrix: operations/bijux-atlas-ops/kubernetes/install-matrix.md
+          - Render and Validate: operations/bijux-atlas-ops/kubernetes/render-and-validate.md
+          - Conformance Suites: operations/bijux-atlas-ops/kubernetes/conformance-suites.md
+          - Rollout Safety: operations/bijux-atlas-ops/kubernetes/rollout-safety.md
+          - Security Operations: operations/bijux-atlas-ops/kubernetes/security-operations.md
+          - Debug Bundles: operations/bijux-atlas-ops/kubernetes/debug-bundles.md
+          - Admin Endpoints Exceptions: operations/bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md
+      - Release:
+          - Upgrades and Rollback: operations/bijux-atlas-ops/release/upgrades-and-rollback.md
+          - Backup and Recovery: operations/bijux-atlas-ops/release/backup-and-recovery.md
+          - Release Evidence: operations/bijux-atlas-ops/release/release-evidence.md
+          - Release Packets: operations/bijux-atlas-ops/release/release-packets.md
+          - Reproducibility: operations/bijux-atlas-ops/release/reproducibility.md
+          - Drift Detection: operations/bijux-atlas-ops/release/drift-detection.md
+          - Distribution Channels: operations/bijux-atlas-ops/release/distribution-channels.md
+          - Version Manifests: operations/bijux-atlas-ops/release/version-manifests.md
+          - Signing and Provenance: operations/bijux-atlas-ops/release/signing-and-provenance.md
+          - Rollback Drills: operations/bijux-atlas-ops/release/rollback-drills.md
   - Maintainer:
       - Maintainer Home: maintainer/index.md
