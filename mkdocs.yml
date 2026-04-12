@@ -30,13 +30,13 @@ plugins:
       # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
       redirect_maps:
         contracts/compatibility.md: 08-contracts/ownership-and-versioning.md
-        root/compatibility-policy.md: 08-contracts/ownership-and-versioning.md
-        repository/index.md: 05-architecture/source-layout-and-ownership.md
-        repository/packages/index.md: 05-architecture/source-layout-and-ownership.md
-        runtime/index.md: 01-introduction/index.md
-        runtime/packages/bijux-atlas/index.md: 05-architecture/source-layout-and-ownership.md
         maintainer/index.md: 06-development/index.md
         maintainer/packages/bijux-dev-atlas/index.md: 06-development/automation-control-plane.md
+        repository/index.md: 05-architecture/source-layout-and-ownership.md
+        repository/packages/index.md: 05-architecture/source-layout-and-ownership.md
+        root/compatibility-policy.md: 08-contracts/ownership-and-versioning.md
+        runtime/index.md: 01-introduction/index.md
+        runtime/packages/bijux-atlas/index.md: 05-architecture/source-layout-and-ownership.md
       # end generated redirect_maps
 
 not_in_nav: |

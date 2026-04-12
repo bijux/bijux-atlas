@@ -1,4 +1,10 @@
 {
   "docs/contracts/compatibility.md": "docs/08-contracts/ownership-and-versioning.md",
-  "docs/root/compatibility-policy.md": "docs/08-contracts/ownership-and-versioning.md"
+  "docs/maintainer/index.md": "docs/06-development/index.md",
+  "docs/maintainer/packages/bijux-dev-atlas/index.md": "docs/06-development/automation-control-plane.md",
+  "docs/repository/index.md": "docs/05-architecture/source-layout-and-ownership.md",
+  "docs/repository/packages/index.md": "docs/05-architecture/source-layout-and-ownership.md",
+  "docs/root/compatibility-policy.md": "docs/08-contracts/ownership-and-versioning.md",
+  "docs/runtime/index.md": "docs/01-introduction/index.md",
+  "docs/runtime/packages/bijux-atlas/index.md": "docs/05-architecture/source-layout-and-ownership.md"
 }
