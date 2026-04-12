@@ -13,12 +13,29 @@
 {% endfor %}
 
 {% if current_page and current_page.parent and current_page.parent.children %}
+  {% set current_page_path = (current_page.url | trim("/")) if current_page.url else "" %}
+  {% set matched_section = namespace(item=None) %}
   {% for child in current_page.parent.children %}
-    {% if not child.children %}
-      {% set _ = scoped.items.append(child) %}
+    {% set child_path = (child.url | trim("/")) if child.url else "" %}
+    {% if child_path == current_page_path and child.children %}
+      {% set matched_section.item = child %}
     {% endif %}
   {% endfor %}
-  {% set scoped.title = current_page.parent.title %}
+  {% if matched_section.item %}
+    {% for child in matched_section.item.children %}
+      {% if not child.children %}
+        {% set _ = scoped.items.append(child) %}
+      {% endif %}
+    {% endfor %}
+    {% set scoped.title = matched_section.item.title %}
+  {% else %}
+    {% for child in current_page.parent.children %}
+      {% if not child.children %}
+        {% set _ = scoped.items.append(child) %}
+      {% endif %}
+    {% endfor %}
+    {% set scoped.title = current_page.parent.title %}
+  {% endif %}
   {% set scoped.visible = scoped.items | length > 0 %}
 {% elif active_root.item and active_root.item.children %}
   {% for child in active_root.item.children %}
@@ -33,7 +50,7 @@
 {% set current_page_src_uri = current_page.file.src_uri if current_page and current_page.file else "" %}
 {% set current_page_url = current_page.url if current_page else "" %}
 {% set bijux_index_page = current_page and (current_page.is_index or current_page_src_uri.endswith('/index.md') or current_page_src_uri == 'index.md') %}
-{% set bijux_root_home_page = bijux_index_page and (current_page_url in ["", "index.html"] or current_page_url.count('/') <= 1) %}
+{% set bijux_root_home_page = bijux_index_page and (current_page_url in ["", "index.html"]) %}
 {% if bijux_root_home_page %}
   {% set scoped.visible = false %}
 {% endif %}
