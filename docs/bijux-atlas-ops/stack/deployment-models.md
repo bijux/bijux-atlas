@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Deployment Models
@@ -112,6 +112,28 @@ If you are unsure, start with the simplest model that still preserves:
 ## Purpose
 
 This page explains the Atlas material for deployment models and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/stack/profiles.json`
+- `ops/stack/profile-intent.json`
+- `ops/stack/profile-registry.json`
+- `ops/stack/stack.toml`
+
+## Supported Model Matrix
+
+| Profile class | Intent | Required components | Observability minimum | Not supported |
+| --- | --- | --- | --- | --- |
+| `minimal` and `small` | lightweight contract coverage | chart, namespace, MinIO, Redis | basic health only | treating as production-like rollout proof |
+| `kind`, `dev`, `developer` | realistic local cluster verification | chart, namespace, MinIO, Redis, plus broader local ergonomics | health, readiness, optional metrics | skipping explicit cluster or values ownership |
+| `perf` | performance and autoscaling validation | chart, namespace, MinIO, Redis, metrics prerequisites | metrics and readiness are mandatory | using mutable or underspecified runtime identity |
+
+## Main Takeaway
+
+Atlas deployment models should be described by real profile classes and their
+required components, not by abstract maturity labels. A deployment model is only
+supported when its profile, cluster config, and operational evidence all line
+up.
 
 ## Stability
 
