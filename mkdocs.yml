@@ -124,6 +124,17 @@ nav:
           - Artifact Lifecycle: repository/bijux-atlas/runtime/artifact-lifecycle.md
           - Serving Store Model: repository/bijux-atlas/runtime/serving-store-model.md
           - Runtime Process Model: repository/bijux-atlas/runtime/runtime-process-model.md
+      - Contracts:
+          - Contracts and Boundaries: repository/bijux-atlas/contracts/contracts-and-boundaries.md
+          - API Compatibility: repository/bijux-atlas/contracts/api-compatibility.md
+          - Structured Output Contracts: repository/bijux-atlas/contracts/structured-output-contracts.md
+          - Runtime Config Contracts: repository/bijux-atlas/contracts/runtime-config-contracts.md
+          - Plugin Contracts: repository/bijux-atlas/contracts/plugin-contracts.md
+          - Artifact and Store Contracts: repository/bijux-atlas/contracts/artifact-and-store-contracts.md
+          - Operational Contracts: repository/bijux-atlas/contracts/operational-contracts.md
+          - Ownership and Versioning: repository/bijux-atlas/contracts/ownership-and-versioning.md
+          - Contract Reading Guide: repository/bijux-atlas/contracts/contract-reading-guide.md
+          - Compatibility Review Checklist: repository/bijux-atlas/contracts/compatibility-review-checklist.md
   - Operations:
       - Operations Home: operations/index.md
   - Maintainer:

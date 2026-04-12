@@ -59,3 +59,7 @@ surface for commands, API shape, config, flags, and machine-facing reference.
 The `repository/bijux-atlas/runtime/` slice carries the product architecture
 for ingest, storage, request flow, artifact movement, and runtime process
 composition.
+
+The `repository/bijux-atlas/contracts/` slice carries the stable promises for
+API behavior, runtime configuration, artifacts, operations, and compatibility
+decisions.
