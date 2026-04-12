@@ -89,7 +89,7 @@ production-ready.
 
 This page explains normal usage of the runtime surface. For deployment,
 rollback, resource tuning, and incident handling, move to
-[Operations](../../../operations/index.md).
+[Operations](../../../bijux-atlas-ops/index.md).
 
 ## Purpose
 
