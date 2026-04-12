@@ -177,9 +177,7 @@
         "makes/ci.mk"
       ],
       "visibility": "public",
-      "used_in": [
-        ".github/workflows/ci-nightly.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ci-pr",
@@ -412,7 +410,6 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-nightly.yml",
         ".github/workflows/ci-pr.yml",
         ".github/workflows/docker-gate.yml"
       ]
@@ -496,9 +493,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-nightly.yml",
         ".github/workflows/ci-pr.yml",
-        ".github/workflows/ops-integration-kind.yml",
         ".github/workflows/ops-validate.yml"
       ]
     },
@@ -517,7 +512,6 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-nightly.yml",
         ".github/workflows/ci-pr.yml",
         ".github/workflows/ops-validate.yml"
       ]
@@ -547,7 +541,6 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ops-integration-kind.yml",
         ".github/workflows/ops-validate.yml"
       ]
     },
@@ -638,7 +631,6 @@
       ],
       "visibility": "internal",
       "used_in": [
-        ".github/workflows/ci-nightly.yml",
         ".github/workflows/ci-pr.yml",
         ".github/workflows/ops-validate.yml"
       ]
@@ -691,9 +683,7 @@
         "makes/ops.mk"
       ],
       "visibility": "public",
-      "used_in": [
-        ".github/workflows/ci-nightly.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "ops-doctor",
@@ -949,9 +939,7 @@
         "makes/entrypoints.mk"
       ],
       "visibility": "public",
-      "used_in": [
-        ".github/workflows/ops-integration-kind.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "stack-up",
@@ -959,9 +947,7 @@
         "makes/entrypoints.mk"
       ],
       "visibility": "public",
-      "used_in": [
-        ".github/workflows/ops-integration-kind.yml"
-      ]
+      "used_in": []
     },
     {
       "name": "suites-list",

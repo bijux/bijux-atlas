@@ -12,11 +12,6 @@
       "summary_hint": "ci-pr"
     },
     {
-      "id": "ci-nightly",
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "summary_hint": "ci-nightly"
-    },
-    {
       "id": "docs-only",
       "workflow": ".github/workflows/docs-only.yml",
       "summary_hint": "docs"
@@ -30,11 +25,6 @@
       "id": "ops-validate",
       "workflow": ".github/workflows/ops-validate.yml",
       "summary_hint": "ops-validate"
-    },
-    {
-      "id": "ops-kind-integration",
-      "workflow": ".github/workflows/ops-integration-kind.yml",
-      "summary_hint": "ops-kind"
     },
     {
       "id": "release-candidate",

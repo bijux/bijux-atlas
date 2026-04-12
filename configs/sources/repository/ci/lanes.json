@@ -24,24 +24,6 @@
   },
   "lanes": [
     {
-      "id": "ci-nightly",
-      "description": "Nightly extended validation lane",
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "mode": "verify",
-      "aliases": [],
-      "required_env": [
-        "CARGO_TERM_COLOR"
-      ],
-      "artifacts_expected": [
-        "reports/ci-nightly.json",
-        "reports/docs-reference-generate.json"
-      ],
-      "evidence_bundle": "artifacts/ci/evidence/ci-nightly.json",
-      "timeout_class": "large",
-      "concurrency_class": "large",
-      "command": "bijux dev atlas ci report --kind lane-parity --format json"
-    },
-    {
       "id": "ci-pr-fast",
       "description": "Fast pull request validation",
       "workflow": ".github/workflows/ci-pr.yml",
@@ -139,27 +121,6 @@
       "timeout_class": "small",
       "concurrency_class": "small",
       "command": "bijux dev atlas ci verify docs-preview --allow-subprocess --allow-write --format json"
-    },
-    {
-      "id": "ops-kind-integration",
-      "description": "Kind integration and smoke lane",
-      "workflow": ".github/workflows/ops-integration-kind.yml",
-      "mode": "effect",
-      "aliases": [
-        "ops-kind"
-      ],
-      "required_env": [
-        "KUBECONFIG"
-      ],
-      "artifacts_expected": [
-        "reports/ops-kind-up.json",
-        "reports/ops-k8s-smoke.json",
-        "reports/ops-kind-down.json"
-      ],
-      "evidence_bundle": "artifacts/ci/evidence/ops-kind-integration.json",
-      "timeout_class": "large",
-      "concurrency_class": "large",
-      "command": "bijux dev atlas ci verify workflow-policy --format json"
     },
     {
       "id": "ops-validate",

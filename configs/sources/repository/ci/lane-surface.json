@@ -46,21 +46,6 @@
       ]
     },
     {
-      "lane": "ci-nightly",
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "commands": [
-        {
-          "id": "ci-nightly",
-          "kind": "command",
-          "command": "make ci-nightly"
-        }
-      ],
-      "reports": [
-        "reports/ci-nightly.json",
-        "reports/docs-reference-generate.json"
-      ]
-    },
-    {
       "lane": "docs-only",
       "workflow": ".github/workflows/docs-only.yml",
       "commands": [
@@ -126,27 +111,6 @@
         "reports/ops-validate.json",
         "reports/ops-k8s-render.json",
         "reports/ops-inventory-validate.json"
-      ]
-    },
-    {
-      "lane": "ops-kind-integration",
-      "workflow": ".github/workflows/ops-integration-kind.yml",
-      "commands": [
-        {
-          "id": "stack-up",
-          "kind": "command",
-          "command": "make stack-up"
-        },
-        {
-          "id": "ops-k8s-smoke",
-          "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ops k8s smoke --profile kind --allow-subprocess --format json"
-        }
-      ],
-      "reports": [
-        "reports/ops-kind-up.json",
-        "reports/ops-k8s-smoke.json",
-        "reports/ops-kind-down.json"
       ]
     },
     {

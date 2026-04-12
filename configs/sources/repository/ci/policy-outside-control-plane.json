@@ -2,19 +2,6 @@
   "schema_version": 1,
   "entries": [
     {
-      "policy_id": "ci-policy-ci-nightly-run-nightly-lane",
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "job": "nightly-validation",
-      "step": "Run nightly lane",
-      "classification": "policy",
-      "owner": "bijux-atlas-governance",
-      "status": "planned",
-      "authoritative_implementation": "bijux-dev-atlas ci lane ci-nightly",
-      "replacement_plan": "Split the mixed shell lane into atlas-owned ci lane execution and summary emission.",
-      "docs": "docs/06-development/automation-control-plane.md",
-      "notes": "This step still mixes contract execution, docs drift checks, and secret scanning in workflow-local shell."
-    },
-    {
       "policy_id": "ci-policy-ci-pr-run-minimal-lane",
       "workflow": ".github/workflows/ci-pr.yml",
       "job": "minimal-root-policies",

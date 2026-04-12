@@ -2,15 +2,6 @@
   "schema_version": 1,
   "entries": [
     {
-      "workflow": ".github/workflows/ci-nightly.yml",
-      "job": "nightly-validation",
-      "step": "Run nightly lane",
-      "owner": "bijux-atlas-governance",
-      "reason": "Nightly still aggregates multiple atlas and make delegates in one shell step until lane execution is fully centralized.",
-      "expires_on": "2026-06-01",
-      "renewal_reference": "configs/sources/repository/ci/policy-outside-control-plane.json"
-    },
-    {
       "workflow": ".github/workflows/ci-pr.yml",
       "job": "minimal-root-policies",
       "step": "Run minimal lane",

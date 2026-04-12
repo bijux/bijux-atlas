@@ -2644,10 +2644,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     for rel in [
         "Makefile",
         ".github/workflows/ci-pr.yml",
-        ".github/workflows/ci-nightly.yml",
         ".github/workflows/release-candidate.yml",
         ".github/workflows/ops-validate.yml",
-        ".github/workflows/ops-integration-kind.yml",
         ".github/workflows/dependency-lock.yml",
         ".github/workflows/docs-audit.yml",
         ".github/workflows/docs-only.yml",
