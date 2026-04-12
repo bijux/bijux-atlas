@@ -314,6 +314,7 @@ nav:
               - Automation Contracts: bijux-atlas-dev/governance/automation-contracts.md
               - Docs Spine Governance: bijux-atlas-dev/governance/docs-spine-governance.md
               - Redirects and Navigation: bijux-atlas-dev/governance/redirects-and-navigation.md
+              - Badge Catalog: badges.md
               - Policy Loading: bijux-atlas-dev/governance/policy-loading.md
               - Rule Enforcement: bijux-atlas-dev/governance/rule-enforcement.md
               - Evidence Contracts: bijux-atlas-dev/governance/evidence-contracts.md
