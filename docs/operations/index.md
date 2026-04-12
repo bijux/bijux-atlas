@@ -45,9 +45,26 @@ The active operations slices are:
 - `operations/bijux-atlas-ops/stack/`
 - `operations/bijux-atlas-ops/kubernetes/`
 - `operations/bijux-atlas-ops/release/`
+- `operations/bijux-atlas-ops/observability/`
+- `operations/bijux-atlas-ops/load/`
 
 They cover the platform topology, Kubernetes and Helm surface, and release
-evidence path that already exist throughout `ops/`.
+evidence path that already exist throughout `ops/`, plus the observability and
+stress surfaces that make Atlas operationally heavy.
+*** Add File: /Users/bijan/bijux/bijux-atlas/docs/operations/bijux-atlas-ops/observability/dashboards-and-panels.md
+---
+title: Dashboards and Panels
+audience: operators
+type: reference
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-04-12
+---
+
+# Dashboards and Panels
+
+Grafana dashboards under `ops/observe/dashboards/` capture the curated
+operational views for Atlas runtime and supporting systems.
 *** Add File: /Users/bijan/bijux/bijux-atlas/docs/operations/bijux-atlas-ops/stack/service-topology.md
 ---
 title: Service Topology

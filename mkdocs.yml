@@ -170,5 +170,27 @@ nav:
           - Version Manifests: operations/bijux-atlas-ops/release/version-manifests.md
           - Signing and Provenance: operations/bijux-atlas-ops/release/signing-and-provenance.md
           - Rollback Drills: operations/bijux-atlas-ops/release/rollback-drills.md
+      - Observability:
+          - Health Readiness and Drain: operations/bijux-atlas-ops/observability/health-readiness-and-drain.md
+          - Logging Metrics and Tracing: operations/bijux-atlas-ops/observability/logging-metrics-and-tracing.md
+          - Incident Response: operations/bijux-atlas-ops/observability/incident-response.md
+          - Dashboards and Panels: operations/bijux-atlas-ops/observability/dashboards-and-panels.md
+          - Alert Rules: operations/bijux-atlas-ops/observability/alert-rules.md
+          - Telemetry Drills: operations/bijux-atlas-ops/observability/telemetry-drills.md
+          - Tracing Pipelines: operations/bijux-atlas-ops/observability/tracing-pipelines.md
+          - Metrics Packages: operations/bijux-atlas-ops/observability/metrics-packages.md
+          - Logging Contracts: operations/bijux-atlas-ops/observability/logging-contracts.md
+          - Operational Evidence Reports: operations/bijux-atlas-ops/observability/operational-evidence-reports.md
+      - Load:
+          - Performance and Load: operations/bijux-atlas-ops/load/performance-and-load.md
+          - Load Suites: operations/bijux-atlas-ops/load/load-suites.md
+          - Scenario Registry: operations/bijux-atlas-ops/load/scenario-registry.md
+          - Thresholds and Budgets: operations/bijux-atlas-ops/load/thresholds-and-budgets.md
+          - Concurrency Stress: operations/bijux-atlas-ops/load/concurrency-stress.md
+          - Rollout Under Load: operations/bijux-atlas-ops/load/rollout-under-load.md
+          - Pod Churn Resilience: operations/bijux-atlas-ops/load/pod-churn-resilience.md
+          - Benchmark CI: operations/bijux-atlas-ops/load/benchmark-ci.md
+          - Baseline Management: operations/bijux-atlas-ops/load/baseline-management.md
+          - Failure Injection Load: operations/bijux-atlas-ops/load/failure-injection-load.md
   - Maintainer:
       - Maintainer Home: maintainer/index.md
