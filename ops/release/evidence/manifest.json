@@ -43,7 +43,6 @@
     "configs/schemas/contracts/datasets/ingest-plan.schema.json",
     "configs/schemas/contracts/datasets/ingest-run.schema.json",
     "configs/schemas/contracts/datasets/endtoend.schema.json",
-    "artifacts/datasets/datasets-manifest.json",
     "artifacts/ingest/ingest-plan.json",
     "artifacts/ingest/ingest-run.json",
     "artifacts/ingest/endtoend-ingest-query.json"
@@ -60,13 +59,13 @@
   "drill_summaries": [],
   "evidence_tarball": {
     "path": "ops/release/evidence/bundle.tar",
-    "sha256": "2c1a94db5dee0e6ed665e480173bd384e7527ac5c9fd014a715001460700c853"
+    "sha256": "c71d0f8be7291cc4a79c7fff7df4d70efc1147bf3ec0b3f288df2463cd2fc845"
   },
   "generated_by": "bijux dev atlas ops evidence collect",
   "governance_assets": {
     "breaking_changes": {
       "path": "artifacts/governance/breaking-changes.json",
-      "sha256": "c3072c3bb430ecce7aab7941d47a5f62e513e3553aa6532853d22d9bb692d572"
+      "sha256": "5b5b1820ce3d2a3b2c8f8ae2f20eb4df3ca5add5a9b8d155c71dded3d83823c3"
     },
     "compat_warnings": {
       "path": "artifacts/governance/compat-warnings.json",
@@ -74,7 +73,7 @@
     },
     "deprecations_summary": {
       "path": "artifacts/governance/deprecations-summary.json",
-      "sha256": "97b81759c448073e7bfac60f6b8ac640d5a106d85f900840eb1c8ea322fcc3c5"
+      "sha256": "fa6d8ee394bb13853d3c679505ff1de21650d74611e675c71a3734b7dc763266"
     },
     "exceptions_archive": {
       "path": "configs/sources/governance/governance/exceptions-archive.yaml",
@@ -178,52 +177,12 @@
     "ops/schema/observe/prometheus-rule.schema.json"
   ],
   "ops_evidence": {
-    "install_evidence": {
-      "path": "artifacts/ops/evidence/ops_run/install-evidence.json",
-      "sha256": "f98fcc54d47c639dc07cc9632a7b6ed12b1f7cf3df6e763cc83299a6ce1f7d3f"
-    },
-    "install_matrix_report": {
-      "path": "artifacts/ops/evidence/ops_run/install-matrix-report.json",
-      "sha256": "577e859225fe13e6940cb6d42c9d8b807e71837014ffae561c14371431020c71"
-    },
-    "inventory_snapshot": {
-      "path": "artifacts/ops/evidence/ops_run/inventory-snapshot.json",
-      "sha256": "ab1f836d394497cd1962dc7478794755ae0a7b5d3e7ea3853c8f3d9609cf3c39"
-    },
-    "network_policy_coverage_report": {
-      "path": "artifacts/ops/evidence/ops_run/network-policy-coverage-report.json",
-      "sha256": "85b5f3d8082b5985d808feea7559d7a6cbc015d97b031d1f8bb2c6eaf1d949f8"
-    },
-    "rbac_coverage_report": {
-      "path": "artifacts/ops/evidence/ops_run/rbac-coverage-report.json",
-      "sha256": "5d08432cdcb1b2c41f5f2e98856c89ebe1fd3c7f824eca33ab23d0caa83acd77"
-    },
     "redaction_secret_keys": [
       "password",
       "secret",
       "token",
       "api_key"
-    ],
-    "render_evidence": {
-      "path": "artifacts/ops/evidence/ops_run/render-evidence.json",
-      "sha256": "da702e0b2e32aa0f5f447acffbe7957249f5c1dea40d2cd5f8ca4f092a68119f"
-    },
-    "render_matrix_report": {
-      "path": "artifacts/ops/evidence/ops_run/render-matrix-report.json",
-      "sha256": "cc5cf584acd7c12e6d182f1a3b63c7aa592a7009b2b56c60694ef00c9aa1c23e"
-    },
-    "schema_coverage_report": {
-      "path": "artifacts/ops/evidence/ops_run/schema-coverage-report.json",
-      "sha256": "a523db9a63ba551b9ddc27f2a111d41c340c4d56c0065ba0ee0f2a28eb098590"
-    },
-    "tool_versions": {
-      "path": "artifacts/ops/evidence/ops_run/tool-versions.json",
-      "sha256": "c1c6c7019970d403e15c2260aa8b8627c434ac79c4fb89a2eb31b47f224d7eac"
-    },
-    "validate_evidence": {
-      "path": "artifacts/ops/evidence/ops_run/validate-evidence.json",
-      "sha256": "73af01a5cf304b14623df7d39057482f92679bb62920160416dcd2f09d997494"
-    }
+    ]
   },
   "perf_assets": [
     "configs/sources/operations/perf/slo.yaml",
@@ -238,10 +197,7 @@
     "configs/schemas/contracts/perf/cold-start-report.schema.json",
     "ops/report/gene-lookup-baseline.json",
     "ops/schema/k8s/perf-on-kind.schema.json",
-    "artifacts/perf/perf-slo.json",
-    "artifacts/perf/gene-lookup-load.json",
-    "artifacts/perf/cold-start.json",
-    "artifacts/perf/perf-on-kind.json"
+    "artifacts/perf/gene-lookup-load.json"
   ],
   "policy_path": "ops/release/evidence/policy.json",
   "provenance": {
@@ -325,7 +281,7 @@
   "supply_chain": {
     "action_pins_report": {
       "path": "artifacts/security/security-github-actions.json",
-      "sha256": "1bf92956a6e2f782eb263a764f4b4c3a1cdfc4a7600b48fbd0483a9c4b0f8b86"
+      "sha256": "39abfada0d1afa6d8fbe18fe2e0f93d7d2b118d8e48ca3132dc7c40352c6d1ed"
     },
     "docs_toolchain_inventory": [
       {
@@ -334,11 +290,11 @@
       },
       {
         "path": "configs/sources/repository/docs/package-lock.json",
-        "sha256": "6b0ea2f6a6e90bb6e409f9b5458504fdb468f527c370fef378ccb47ab27a0851"
+        "sha256": "b3afb5052070e8b0900d0cb802723302a39871edc342dcfc4a322c61b940ead2"
       },
       {
         "path": "configs/sources/repository/docs/requirements.lock.txt",
-        "sha256": "3c91e19de28d2d6f761e851a01be0349a304ce94692b3f16cf36b29d77a90f22"
+        "sha256": "46e647dd9c825809359bb240044a309ef29511878031818f4827854eb61323b4"
       },
       {
         "path": "configs/sources/security/dependency-source-policy.json",
@@ -348,6 +304,6 @@
   },
   "toolchain_inventory": {
     "path": "configs/sources/repository/rust-tooling/toolchain.json",
-    "sha256": "31252ae2f5da854a0c9da9f69ba6197e5c1d177c2eabc10dd6ba9570ea44e408"
+    "sha256": "3e0987536d1acd31ba4d4307d71916e2ed14c086c4837278f24ae0f4fc1bf2f0"
   }
 }

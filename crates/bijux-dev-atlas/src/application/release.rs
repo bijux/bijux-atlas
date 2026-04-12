@@ -4483,8 +4483,8 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
         serde_json::from_slice(&evidence_out.stdout).unwrap_or_else(|_| {
             serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&evidence_out.stderr)})
         });
-    let readiness_report_path =
-        root.join("artifacts/ops/ops_run/observe/operational-readiness-report.json");
+    let readiness_report_path = root.join("artifacts/observe/operational-readiness-report.json");
+    let readiness_score_path = root.join("ops/report/generated/readiness-score.json");
     let rel_ops_001 = std::fs::read_to_string(&readiness_report_path)
         .ok()
         .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
@@ -4494,7 +4494,17 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
                     .get("completeness")
                     .and_then(serde_json::Value::as_f64)
                     .is_some_and(|value| value >= 1.0)
-        });
+        })
+        || std::fs::read_to_string(&readiness_score_path)
+            .ok()
+            .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+            .is_some_and(|report| {
+                report.get("status").and_then(serde_json::Value::as_str) == Some("ready")
+                    && report
+                        .get("score")
+                        .and_then(serde_json::Value::as_u64)
+                        .is_some_and(|value| value >= 100)
+            });
     let rel_sign_004 = rel_sign_001
         && rel_sign_002
         && rel_sign_003
@@ -4535,8 +4545,9 @@ fn run_release_verify(args: ReleaseVerifyArgs) -> Result<(String, i32), String> 
     }
     if !rel_ops_001 {
         errors.push(format!(
-            "operational readiness report is missing or below threshold: {}",
-            readiness_report_path.display()
+            "operational readiness evidence is missing or below threshold: {}, {}",
+            readiness_report_path.display(),
+            readiness_score_path.display()
         ));
     }
 

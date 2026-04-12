@@ -40,7 +40,7 @@
     {
       "kind": "deprecations-summary",
       "path": "artifacts/governance/deprecations-summary.json",
-      "sha256": "97b81759c448073e7bfac60f6b8ac640d5a106d85f900840eb1c8ea322fcc3c5"
+      "sha256": "fa6d8ee394bb13853d3c679505ff1de21650d74611e675c71a3734b7dc763266"
     },
     {
       "kind": "compat-warnings",
@@ -50,7 +50,7 @@
     {
       "kind": "breaking-changes",
       "path": "artifacts/governance/breaking-changes.json",
-      "sha256": "c3072c3bb430ecce7aab7941d47a5f62e513e3553aa6532853d22d9bb692d572"
+      "sha256": "5b5b1820ce3d2a3b2c8f8ae2f20eb4df3ca5add5a9b8d155c71dded3d83823c3"
     },
     {
       "kind": "governance-doctor",
@@ -105,12 +105,12 @@
     {
       "kind": "evidence-tarball",
       "path": "ops/release/evidence/bundle.tar",
-      "sha256": "2c1a94db5dee0e6ed665e480173bd384e7527ac5c9fd014a715001460700c853"
+      "sha256": "c71d0f8be7291cc4a79c7fff7df4d70efc1147bf3ec0b3f288df2463cd2fc845"
     },
     {
       "kind": "evidence-manifest",
       "path": "ops/release/evidence/manifest.json",
-      "sha256": "476e00a640720e29b671833b2a87548335ae2130a346158c556deff63f287369"
+      "sha256": "3d589e0f0175b762ac9d1f5742eacaab8df628c1c967c5771f1bd1637d410e64"
     },
     {
       "kind": "sbom",
