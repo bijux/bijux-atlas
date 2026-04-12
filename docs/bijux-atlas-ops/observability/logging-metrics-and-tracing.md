@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Logging, Metrics, and Tracing
@@ -88,6 +88,33 @@ Good telemetry shortens diagnosis. It does not remove the need to ask whether th
 ## Purpose
 
 This page explains the Atlas material for logging, metrics, and tracing and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/observe/contracts/logs-fields-contract.json`
+- `ops/observe/metrics/registry.snapshot.json`
+- `ops/observe/metrics/label-cardinality-budget.json`
+- `ops/observe/contracts/trace-structure.golden.json`
+- `ops/observe/tracing/span-registry.json`
+
+## Signal Source Table
+
+| Signal | Main source of truth | What it is best for |
+| --- | --- | --- |
+| logs | `logs-fields-contract.json` and classification contracts | event context, request history, policy outcomes |
+| metrics | registry snapshot, label budget, SLO measurement | aggregate health, saturation, alerting, trend review |
+| traces | trace structure golden and span registry | request path diagnosis and cross-component timing |
+
+## Signal Priority During Diagnosis
+
+- trust metrics first for aggregate impact and alert confirmation
+- trust traces first when the user-visible problem is path-specific or
+  intermittent
+- trust logs first for event context, policy reasons, and discrete failure
+  explanations
+
+When the signals disagree, treat the disagreement itself as an operational
+finding and verify whether instrumentation drift or sampling gaps are involved.
 
 ## Stability
 
