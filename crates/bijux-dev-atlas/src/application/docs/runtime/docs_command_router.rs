@@ -2273,7 +2273,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "has_side_nav": false,
                             "has_breadcrumb": false,
                             "has_shared_chrome": false,
-                            "has_fourth_row": false,
+                            "has_detail_strip": false,
                             "has_package_tabs": false
                         }));
                         continue;
@@ -2286,7 +2286,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let has_shared_chrome = text.contains("bijux-hub-strip")
                         && text.contains("bijux-site-tabs")
                         && text.contains("data-bijux-detail-strip");
-                    let has_fourth_row = text.contains("data-bijux-course-strip");
+                    let has_detail_strip = text.contains("data-bijux-detail-strip");
                     let has_package_tabs = text.contains("/repository/packages/")
                         || text.contains("/runtime/packages/bijux-atlas/")
                         || text.contains("/maintainer/packages/bijux-dev-atlas/");
@@ -2309,8 +2309,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     if !has_shared_chrome {
                         failures.push(format!("sample `{sample}` missing shared Bijux chrome markers"));
                     }
-                    if !has_fourth_row {
-                        failures.push(format!("sample `{sample}` missing fourth-row section navigation markers"));
+                    if !has_detail_strip {
+                        failures.push(format!("sample `{sample}` missing detail-strip navigation markers"));
                     }
                     if !has_package_tabs {
                         failures.push(format!("sample `{sample}` missing package navigation markers"));
@@ -2325,7 +2325,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "has_side_nav": has_side_nav,
                         "has_breadcrumb": has_breadcrumb,
                         "has_shared_chrome": has_shared_chrome,
-                        "has_fourth_row": has_fourth_row,
+                        "has_detail_strip": has_detail_strip,
                         "has_package_tabs": has_package_tabs
                     }));
                 }
