@@ -97,10 +97,35 @@ The architecture is designed to make those mistakes more visible and less normal
 
 ## Honest Simplification
 
-This page is intentionally high-level. It tells you which boundaries matter most. For crate layout and control-plane structure, keep reading:
+This page is intentionally high-level. It tells you which boundaries matter
+most. For crate layout and deeper runtime structure, keep reading:
 
 - [Source Layout and Ownership](source-layout-and-ownership.md)
-- [Automation Architecture](automation-architecture.md)
+- [Runtime Composition](runtime-composition.md)
+*** Add File: /Users/bijan/bijux/bijux-atlas/docs/repository/bijux-atlas/runtime/artifact-lifecycle.md
+---
+title: Artifact Lifecycle
+audience: mixed
+type: concept
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-04-12
+---
+
+# Artifact Lifecycle
+
+Atlas artifacts move through a predictable lifecycle:
+
+- build from validated inputs
+- verify the produced shape
+- publish into a serving store
+- expose through catalog and runtime lookup
+- compare or retire through release-aware workflows
+
+## Why This Matters
+
+The lifecycle is the hinge between ingest work and serving work. If artifact
+state is unclear, both runtime behavior and operations drift.
 
 ## Purpose
 

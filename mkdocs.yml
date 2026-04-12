@@ -113,6 +113,17 @@ nav:
           - API Endpoint Index: repository/bijux-atlas/interfaces/api-endpoint-index.md
           - Error Codes and Exit Codes: repository/bijux-atlas/interfaces/error-codes-and-exit-codes.md
           - Feature Flags: repository/bijux-atlas/interfaces/feature-flags.md
+      - Runtime:
+          - System Overview: repository/bijux-atlas/runtime/system-overview.md
+          - Source Layout and Ownership: repository/bijux-atlas/runtime/source-layout-and-ownership.md
+          - Request Lifecycle: repository/bijux-atlas/runtime/request-lifecycle.md
+          - Ingest Architecture: repository/bijux-atlas/runtime/ingest-architecture.md
+          - Query Architecture: repository/bijux-atlas/runtime/query-architecture.md
+          - Storage Architecture: repository/bijux-atlas/runtime/storage-architecture.md
+          - Runtime Composition: repository/bijux-atlas/runtime/runtime-composition.md
+          - Artifact Lifecycle: repository/bijux-atlas/runtime/artifact-lifecycle.md
+          - Serving Store Model: repository/bijux-atlas/runtime/serving-store-model.md
+          - Runtime Process Model: repository/bijux-atlas/runtime/runtime-process-model.md
   - Operations:
       - Operations Home: operations/index.md
   - Maintainer:

@@ -55,3 +55,7 @@ server startup, and first queries.
 
 The `repository/bijux-atlas/interfaces/` slice carries the exact runtime
 surface for commands, API shape, config, flags, and machine-facing reference.
+
+The `repository/bijux-atlas/runtime/` slice carries the product architecture
+for ingest, storage, request flow, artifact movement, and runtime process
+composition.
