@@ -30,10 +30,7 @@ fn slow_doctor_smoke() {
         payload.get("schema_version").and_then(|v| v.as_u64()),
         Some(1)
     );
-    assert!(payload
-        .get("rows")
-        .and_then(|v| v.as_array())
-        .is_some());
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
     assert!(payload.get("counts").is_some());
 }
 
