@@ -4,12 +4,29 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Contracts
 
 `bijux-atlas/contracts` is the section home for this handbook slice.
+
+```mermaid
+flowchart TD
+    Contracts[Contracts section] --> Narrative[Narrative contract docs]
+    Contracts --> Schemas[Machine-checked schemas]
+    Contracts --> Snapshots[Generated snapshots]
+    Contracts --> Review[Compatibility review rules]
+    Narrative --> Promise[Stable public promise]
+    Schemas --> Promise
+    Snapshots --> Promise
+    Review --> Promise
+```
+
+This section explains where Atlas turns “we intend this to stay stable” into a
+checkable repository promise. The key idea is that narrative docs, schemas,
+snapshots, and review rules all matter, but they do different jobs and should
+not be confused with each other.
 
 Use this section when the question is about what Atlas is intentionally trying
 to keep stable for downstream users, operators, or automation consumers.
@@ -20,6 +37,15 @@ to keep stable for downstream users, operators, or automation consumers.
 - runtime configuration and structured-output commitments
 - plugin, artifact, and ownership boundaries
 - the review rules maintainers should use before changing a documented surface
+
+## Human Docs Versus Machine Contracts
+
+- narrative contract pages explain meaning, scope, and compatibility posture
+- schemas under `configs/schemas/contracts/` define machine-checkable shape
+- generated artifacts under `configs/generated/` act as comparison points for
+  drift and compatibility review
+- code under `crates/bijux-atlas/src/contracts/` and neighboring runtime or
+  adapter code is where the contract is implemented
 
 ## Reading Rule
 
