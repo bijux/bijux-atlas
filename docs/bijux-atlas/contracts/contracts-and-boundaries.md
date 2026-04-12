@@ -4,7 +4,7 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Contracts and Boundaries
@@ -73,6 +73,28 @@ Those questions sound similar, but Atlas treats them differently on purpose.
 ## Purpose
 
 This page explains the Atlas material for contracts and boundaries and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Repository-Specific Boundary Failures
+
+- domain logic placed in `src/adapters/` instead of `src/domain/`
+- transport semantics from HTTP or CLI leaking into domain types
+- runtime startup behavior being documented as if it were a public contract by
+  default
+- helper or generated artifact paths being treated as stable API without a
+  contract owner
+
+## Enforcement Anchors
+
+- code placement boundaries: `crates/bijux-atlas/src/domain/`,
+  `src/app/`, `src/adapters/`, `src/runtime/`
+- stable contract implementation: `crates/bijux-atlas/src/contracts/`
+- machine-checked shape: `configs/schemas/contracts/` and `configs/generated/`
+
+## Main Takeaway
+
+Atlas stays teachable when boundary rules answer “where should this live?” and
+contracts answer “what may an outside consumer rely on?”. Mixing those two
+questions is one of the fastest ways to create accidental public surfaces.
 
 ## Stability
 
