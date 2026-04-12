@@ -2333,12 +2333,12 @@ fn run_release_ops_lineage_generate(args: ReleaseOpsPackageArgs) -> Result<(Stri
 
 fn run_release_ops_provenance_verify(args: ReleaseOpsPackageArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
-    let doc_path = root.join("docs/06-development/release-and-versioning.md");
+    let doc_path = root.join("docs/bijux-atlas-dev/delivery/release-and-versioning.md");
     let manifest_path = root.join("ops/release/ops-release-manifest.json");
     let digest_path = root.join("ops/release/ops-chart-digest.json");
     let mut errors = Vec::<String>::new();
     if !doc_path.exists() {
-        errors.push("missing docs/06-development/release-and-versioning.md".to_string());
+        errors.push("missing docs/bijux-atlas-dev/delivery/release-and-versioning.md".to_string());
     }
     if !manifest_path.exists() {
         errors.push("missing ops/release/ops-release-manifest.json".to_string());
@@ -3335,9 +3335,9 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
         .and_then(toml::Value::as_str)
         .unwrap_or_default()
         .to_string();
-    let msrv_doc = fs::read_to_string(root.join("docs/06-development/workspace-and-tooling.md"))
+    let msrv_doc = fs::read_to_string(root.join("docs/bijux-atlas-dev/workspace/workspace-and-tooling.md"))
         .map_err(|err| {
-            format!("failed to read docs/06-development/workspace-and-tooling.md: {err}")
+            format!("failed to read docs/bijux-atlas-dev/workspace/workspace-and-tooling.md: {err}")
         })?;
     let mut errors = Vec::<String>::new();
     if workspace_msrv != toolchain_channel {
@@ -3347,7 +3347,7 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
     }
     if !msrv_doc.contains(&workspace_msrv) {
         errors.push(format!(
-            "docs/06-development/workspace-and-tooling.md does not mention workspace MSRV `{workspace_msrv}`"
+            "docs/bijux-atlas-dev/workspace/workspace-and-tooling.md does not mention workspace MSRV `{workspace_msrv}`"
         ));
     }
     let status = if errors.is_empty() { "ok" } else { "failed" };
@@ -3683,8 +3683,8 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let missing_docs_policy =
         read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
     let dependency_policy = dependency_policy(&root)?;
-    let feature_doc = fs::read_to_string(root.join("docs/07-reference/feature-flags.md"))
-        .map_err(|err| format!("failed to read docs/07-reference/feature-flags.md: {err}"))?;
+    let feature_doc = fs::read_to_string(root.join("docs/bijux-atlas/interfaces/feature-flags.md"))
+        .map_err(|err| format!("failed to read docs/bijux-atlas/interfaces/feature-flags.md: {err}"))?;
     let workspace_manifest: toml::Value = toml::from_str(
         &fs::read_to_string(root.join("Cargo.toml"))
             .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
@@ -3714,6 +3714,9 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
     let mut checked_crates = Vec::<String>::new();
     if !root.join("LICENSE").exists() {
         errors.push("missing root LICENSE file".to_string());
+    }
+    if !root.join("NOTICE").exists() {
+        errors.push("missing root NOTICE file".to_string());
     }
     if !root.join("CHANGELOG.md").exists() {
         errors.push("missing CHANGELOG.md".to_string());
@@ -3878,7 +3881,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
                 || !feature_doc.contains(&format!("`{feature_name}`"))
             {
                 errors.push(format!(
-                    "crate `{crate_name}` feature `{feature_name}` is not documented in docs/07-reference/feature-flags.md"
+                    "crate `{crate_name}` feature `{feature_name}` is not documented in docs/bijux-atlas/interfaces/feature-flags.md"
                 ));
             }
         }

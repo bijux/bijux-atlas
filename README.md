@@ -215,9 +215,9 @@ bijux-atlas-server --help
 
 For the canonical runtime references, start with:
 
-* [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
-* [`docs/04-operations/index.md`](docs/04-operations/index.md)
-* [`docs/07-reference/command-surface.md`](docs/07-reference/command-surface.md)
+* [`docs/bijux-atlas/workflows/index.md`](docs/bijux-atlas/workflows/index.md)
+* [`docs/bijux-atlas-ops/index.md`](docs/bijux-atlas-ops/index.md)
+* [`docs/bijux-atlas/interfaces/command-surface.md`](docs/bijux-atlas/interfaces/command-surface.md)
 
 ```mermaid
 flowchart LR
@@ -275,7 +275,7 @@ That is intentional, but the boundaries stay explicit:
 * `crates/` owns runtime and maintainer binaries,
 * `configs/` owns policy, schema, registry, and repository inputs,
 * `ops/` owns deployment, observability, release, and scenario data,
-* `docs/` owns the numbered documentation spine and contract references,
+* `docs/` owns the package handbooks and contract references,
 * `makes/` owns the thin wrapper surface over governed commands.
 
 The goal is not “everything is public API.”
@@ -329,8 +329,8 @@ If a surface is planned, internal, or future-facing, it should be described as s
 Published crates, GitHub releases, docs deployment, and `v*` git tags define the public release line.
 Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
 
-Release expectations live in [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md).
-Compatibility and operational promises live under [`docs/08-contracts/index.md`](docs/08-contracts/index.md).
+Release expectations live in [`docs/bijux-atlas-dev/delivery/release-and-versioning.md`](docs/bijux-atlas-dev/delivery/release-and-versioning.md).
+Compatibility and operational promises live under [`docs/bijux-atlas/contracts/index.md`](docs/bijux-atlas/contracts/index.md).
 
 ---
 
@@ -347,15 +347,11 @@ Those items are roadmap commitments, not current release claims.
 
 ## Docs & Resources
 
-Start with the numbered docs spine:
+Start with the package handbooks:
 
-* overview: [`docs/01-introduction/index.md`](docs/01-introduction/index.md)
-* getting started: [`docs/02-getting-started/index.md`](docs/02-getting-started/index.md)
-* operations: [`docs/04-operations/index.md`](docs/04-operations/index.md)
-* architecture: [`docs/05-architecture/index.md`](docs/05-architecture/index.md)
-* development: [`docs/06-development/index.md`](docs/06-development/index.md)
-* reference: [`docs/07-reference/index.md`](docs/07-reference/index.md)
-* contracts: [`docs/08-contracts/index.md`](docs/08-contracts/index.md)
+* product runtime: [`docs/bijux-atlas/index.md`](docs/bijux-atlas/index.md)
+* operations: [`docs/bijux-atlas-ops/index.md`](docs/bijux-atlas-ops/index.md)
+* maintainer control plane: [`docs/bijux-atlas-dev/index.md`](docs/bijux-atlas-dev/index.md)
 
 Root policies:
 
@@ -374,4 +370,4 @@ Use small, coherent Conventional Commit / Commitizen-style commits such as `fix(
 
 ## License
 
-Apache-2.0. See [`LICENSE`](LICENSE).
+Apache-2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
