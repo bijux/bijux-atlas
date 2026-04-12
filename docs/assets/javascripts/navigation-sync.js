@@ -144,90 +144,6 @@ function bijuxSyncDetailStripActiveState() {
   }
 }
 
-function bijuxActiveDetailPath() {
-  const activeStrip = document.querySelector("[data-bijux-detail-strip]:not([hidden])");
-  const authoredActiveLink = activeStrip?.querySelector(
-    "[data-bijux-detail-path][aria-current='page'], .bijux-tabs__item--active [data-bijux-detail-path]"
-  );
-
-  if (!activeStrip) {
-    return null;
-  }
-
-  const activeLink = bijuxBestMatchingLink(
-    activeStrip.querySelectorAll("[data-bijux-detail-path]"),
-    "data-bijux-detail-path"
-  );
-  if (activeLink) {
-    return activeLink.path;
-  }
-  if (authoredActiveLink) {
-    return bijuxNormalizePath(
-      authoredActiveLink.getAttribute("data-bijux-detail-path") || "/"
-    );
-  }
-  return null;
-}
-
-function bijuxSyncCourseStripVisibility() {
-  const activeDetailPath = bijuxActiveDetailPath();
-  const strips = document.querySelectorAll("[data-bijux-course-strip]");
-
-  for (const strip of strips) {
-    const rootPath = bijuxNormalizePath(
-      strip.getAttribute("data-bijux-course-root-path") || "/"
-    );
-    const activeCourseLink = bijuxBestMatchingLink(
-      strip.querySelectorAll("[data-bijux-course-path]"),
-      "data-bijux-course-path"
-    );
-    strip.hidden = rootPath !== activeDetailPath && !activeCourseLink;
-  }
-}
-
-function bijuxSyncCourseStripActiveState() {
-  const activeStrip = document.querySelector("[data-bijux-course-strip]:not([hidden])");
-  const authoredActiveLink = activeStrip?.querySelector(
-    "[data-bijux-course-path][aria-current='page'], .bijux-tabs__item--active [data-bijux-course-path]"
-  );
-
-  for (const item of document.querySelectorAll(
-    "[data-bijux-course-strip] .bijux-tabs__item"
-  )) {
-    item.classList.remove("bijux-tabs__item--active");
-  }
-  for (const link of document.querySelectorAll(
-    "[data-bijux-course-strip] [data-bijux-course-path]"
-  )) {
-    link.removeAttribute("aria-current");
-  }
-
-  if (!activeStrip) {
-    return;
-  }
-
-  let activeLink = bijuxBestMatchingLink(
-    activeStrip.querySelectorAll("[data-bijux-course-path]"),
-    "data-bijux-course-path"
-  );
-
-  if (!activeLink && authoredActiveLink) {
-    activeLink = {
-      path: bijuxNormalizePath(
-        authoredActiveLink.getAttribute("data-bijux-course-path") || "/"
-      ),
-      node: authoredActiveLink,
-    };
-  }
-
-  if (activeLink) {
-    activeLink.node.closest(".bijux-tabs__item")?.classList.add(
-      "bijux-tabs__item--active"
-    );
-    activeLink.node.setAttribute("aria-current", "page");
-  }
-}
-
 function bijuxRevealActiveNavigationTarget() {
   const activeHubLink = document.querySelector(
     ".bijux-hub-strip .bijux-tabs__item--active a"
@@ -237,9 +153,6 @@ function bijuxRevealActiveNavigationTarget() {
   );
   const activeDetailLink = document.querySelector(
     "[data-bijux-detail-strip]:not([hidden]) .bijux-tabs__item--active a"
-  );
-  const activeCourseLink = document.querySelector(
-    "[data-bijux-course-strip] .bijux-tabs__item--active a"
   );
   const activeSidebarLink = document.querySelector(
     ".md-sidebar--primary .md-nav__link--active"
@@ -254,10 +167,6 @@ function bijuxRevealActiveNavigationTarget() {
     inline: "center",
   });
   activeDetailLink?.scrollIntoView({
-    block: "nearest",
-    inline: "center",
-  });
-  activeCourseLink?.scrollIntoView({
     block: "nearest",
     inline: "center",
   });
@@ -306,8 +215,6 @@ function bijuxBindMobileDrawerReveal() {
 document$.subscribe(() => {
   bijuxSyncDetailStripVisibility();
   bijuxSyncDetailStripActiveState();
-  bijuxSyncCourseStripVisibility();
-  bijuxSyncCourseStripActiveState();
   bijuxRevealActiveNavigationTarget();
   bijuxBindMobileDrawerReveal();
 });
