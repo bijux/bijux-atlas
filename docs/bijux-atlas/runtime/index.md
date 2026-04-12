@@ -4,12 +4,31 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Runtime
 
 `bijux-atlas/runtime` is the section home for this handbook slice.
+
+```mermaid
+flowchart TD
+    Runtime[Runtime section] --> Composition[Composition]
+    Runtime --> Requests[Request lifecycle]
+    Runtime --> Ingest[Ingest and artifact flow]
+    Runtime --> Storage[Storage and serving store]
+    Runtime --> Process[Runtime process behavior]
+    Composition --> Model[Running system model]
+    Requests --> Model
+    Ingest --> Model
+    Storage --> Model
+    Process --> Model
+```
+
+Runtime pages explain how Atlas works as a running system once the reader
+already understands the product model and the exposed interfaces. This section
+should feel architectural rather than operational: it explains why the system
+behaves the way it does and where that behavior is assembled in the repo.
 
 Use this section when a product question turns into an internal design or
 lifecycle question.
@@ -20,6 +39,16 @@ lifecycle question.
 - where request handling, query resolution, storage, and runtime composition live
 - how the source tree maps onto architectural boundaries
 - which runtime explanations are descriptive architecture versus compatibility contracts
+
+## What Runtime Means In This Repository
+
+In this repo, runtime means the composition of domain logic, adapters, config,
+storage assumptions, request handling, and process startup across:
+
+- `crates/bijux-atlas/src/runtime/`
+- `crates/bijux-atlas/src/app/`
+- `crates/bijux-atlas/src/domain/`
+- `crates/bijux-atlas/src/adapters/`
 
 ## Suggested Reading Order
 
