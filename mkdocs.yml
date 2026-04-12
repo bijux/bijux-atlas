@@ -194,3 +194,58 @@ nav:
           - Failure Injection Load: operations/bijux-atlas-ops/load/failure-injection-load.md
   - Maintainer:
       - Maintainer Home: maintainer/index.md
+      - Workspace:
+          - Workspace and Tooling: maintainer/bijux-atlas-dev/workspace/workspace-and-tooling.md
+          - Local Development: maintainer/bijux-atlas-dev/workspace/local-development.md
+          - Contributor Workflow: maintainer/bijux-atlas-dev/workspace/contributor-workflow.md
+          - Decision Records and Ownership: maintainer/bijux-atlas-dev/workspace/decision-records-and-ownership.md
+          - Package Surface: maintainer/bijux-atlas-dev/workspace/package-surface.md
+          - Maintainer Entrypoints: maintainer/bijux-atlas-dev/workspace/maintainer-entrypoints.md
+          - Repository Laws: maintainer/bijux-atlas-dev/workspace/repository-laws.md
+          - Artifact Roots: maintainer/bijux-atlas-dev/workspace/artifact-roots.md
+          - Generated Files: maintainer/bijux-atlas-dev/workspace/generated-files.md
+          - Inventory Registry: maintainer/bijux-atlas-dev/workspace/inventory-registry.md
+      - Automation:
+          - Automation Control Plane: maintainer/bijux-atlas-dev/automation/automation-control-plane.md
+          - Adding CLI Surface: maintainer/bijux-atlas-dev/automation/adding-cli-surface.md
+          - Adding HTTP Surface: maintainer/bijux-atlas-dev/automation/adding-http-surface.md
+          - Adding Contracts: maintainer/bijux-atlas-dev/automation/adding-contracts.md
+          - Automation Command Surface: maintainer/bijux-atlas-dev/automation/automation-command-surface.md
+          - Automation Reports Reference: maintainer/bijux-atlas-dev/automation/automation-reports-reference.md
+          - Command Routing: maintainer/bijux-atlas-dev/automation/command-routing.md
+          - Subprocess Allowance: maintainer/bijux-atlas-dev/automation/subprocess-allowance.md
+          - Generated Reference Workflows: maintainer/bijux-atlas-dev/automation/generated-reference-workflows.md
+          - Tutorial Runs: maintainer/bijux-atlas-dev/automation/tutorial-runs.md
+      - Governance:
+          - Documentation Standards: maintainer/bijux-atlas-dev/governance/documentation-standards.md
+          - Change and Compatibility: maintainer/bijux-atlas-dev/governance/change-and-compatibility.md
+          - Testing and Evidence: maintainer/bijux-atlas-dev/governance/testing-and-evidence.md
+          - Automation Architecture: maintainer/bijux-atlas-dev/governance/automation-architecture.md
+          - Automation Contracts: maintainer/bijux-atlas-dev/governance/automation-contracts.md
+          - Docs Spine Governance: maintainer/bijux-atlas-dev/governance/docs-spine-governance.md
+          - Redirects and Navigation: maintainer/bijux-atlas-dev/governance/redirects-and-navigation.md
+          - Policy Loading: maintainer/bijux-atlas-dev/governance/policy-loading.md
+          - Rule Enforcement: maintainer/bijux-atlas-dev/governance/rule-enforcement.md
+          - Evidence Contracts: maintainer/bijux-atlas-dev/governance/evidence-contracts.md
+      - Delivery:
+          - Release and Versioning: maintainer/bijux-atlas-dev/delivery/release-and-versioning.md
+          - CI Lanes and Status Checks: maintainer/bijux-atlas-dev/delivery/ci-lanes-and-status-checks.md
+          - GitHub Release Workflows: maintainer/bijux-atlas-dev/delivery/github-release-workflows.md
+          - Docker and Crate Publish: maintainer/bijux-atlas-dev/delivery/docker-and-crate-publish.md
+          - Compatibility Matrix: maintainer/bijux-atlas-dev/delivery/compatibility-matrix.md
+          - Security Validation Lanes: maintainer/bijux-atlas-dev/delivery/security-validation-lanes.md
+          - Docs Deploy Pipeline: maintainer/bijux-atlas-dev/delivery/docs-deploy-pipeline.md
+          - Load and Benchmark Workflows: maintainer/bijux-atlas-dev/delivery/load-and-benchmark-workflows.md
+          - Final Readiness: maintainer/bijux-atlas-dev/delivery/final-readiness.md
+          - Dependency Updates: maintainer/bijux-atlas-dev/delivery/dependency-updates.md
+      - Workflow Ownership:
+          - Pull Request Templates: maintainer/bijux-atlas-dev/workflow-ownership/pull-request-templates.md
+          - Issue Templates: maintainer/bijux-atlas-dev/workflow-ownership/issue-templates.md
+          - Codeowners and Review: maintainer/bijux-atlas-dev/workflow-ownership/codeowners-and-review.md
+          - Required Status Checks: maintainer/bijux-atlas-dev/workflow-ownership/required-status-checks.md
+          - Workflow Entrypoints: maintainer/bijux-atlas-dev/workflow-ownership/workflow-entrypoints.md
+          - Docs Governance Workflow: maintainer/bijux-atlas-dev/workflow-ownership/docs-governance-workflow.md
+          - Ops Validation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/ops-validation-workflow.md
+          - Release Candidate Workflow: maintainer/bijux-atlas-dev/workflow-ownership/release-candidate-workflow.md
+          - System Simulation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/system-simulation-workflow.md
+          - Sustainability Validation Workflow: maintainer/bijux-atlas-dev/workflow-ownership/sustainability-validation-workflow.md

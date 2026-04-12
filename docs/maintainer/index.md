@@ -35,3 +35,27 @@ runtime.
 The maintainer handbook is being rebuilt around `maintainer/bijux-atlas-dev/`
 with five durable subdirectories so maintainer-only depth has a clear home and
 stops competing with product and operations material.
+
+## Current Paths
+
+The active maintainer slices are:
+
+- `maintainer/bijux-atlas-dev/workspace/`
+- `maintainer/bijux-atlas-dev/automation/`
+- `maintainer/bijux-atlas-dev/governance/`
+- `maintainer/bijux-atlas-dev/delivery/`
+- `maintainer/bijux-atlas-dev/workflow-ownership/`
+*** Add File: /Users/bijan/bijux/bijux-atlas/docs/maintainer/bijux-atlas-dev/workspace/package-surface.md
+---
+title: Package Surface
+audience: maintainers
+type: concept
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-04-12
+---
+
+# Package Surface
+
+`bijux-dev-atlas` is the Rust control-plane package that owns repository
+automation, docs governance, reports, and enforcement.
