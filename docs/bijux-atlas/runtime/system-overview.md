@@ -4,7 +4,7 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # System Overview
@@ -102,3 +102,20 @@ most. For crate layout and deeper runtime structure, keep reading:
 
 - [Source Layout and Ownership](source-layout-and-ownership.md)
 - [Runtime Composition](runtime-composition.md)
+
+## Where This Picture Lives In The Repo
+
+- ingest and build concerns: `crates/bijux-atlas/src/domain/ingest/`
+- dataset and query semantics: `crates/bijux-atlas/src/domain/dataset/` and
+  `crates/bijux-atlas/src/domain/query/`
+- runtime assembly: `crates/bijux-atlas/src/runtime/` and `src/app/`
+- interfaces: `crates/bijux-atlas/src/adapters/inbound/`
+- contract and generated reference surfaces:
+  `crates/bijux-atlas/src/contracts/` and `configs/generated/`
+
+## Main Takeaway
+
+Atlas is easiest to understand when the end-to-end picture is read as one
+explicit path: inputs become artifacts, artifacts become published store state,
+published state becomes runtime-serving truth, and user-facing interfaces sit on
+top of that serving truth rather than bypassing it.
