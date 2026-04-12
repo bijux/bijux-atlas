@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Incident Response
@@ -72,6 +72,31 @@ During incidents, do not confuse:
 ## Purpose
 
 This page explains the Atlas material for incident response and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/observe/alert-catalog.json`
+- `ops/observe/dashboard-registry.json`
+- `ops/observe/drills/result.schema.json`
+- `ops/observe/generated/telemetry-index.json`
+- `ops/observe/readiness.json`
+
+## Minimum Incident Artifact Set
+
+Every significant observability-backed incident should leave behind:
+
+- the alert or symptom that opened the investigation
+- the dashboard or signal views used during diagnosis
+- the readiness or health evidence that shows service state
+- log, metric, and trace references or snapshots
+- any drill-style or debug-bundle evidence captured during mitigation
+
+## Asset-Grounded Response Flow
+
+Use the alert catalog to classify urgency, use the dashboard registry to open
+canonical views, and use the telemetry index to confirm the required signal pack
+is still present. If a signal is missing, record that as part of the incident,
+not just as investigative friction.
 
 ## Stability
 
