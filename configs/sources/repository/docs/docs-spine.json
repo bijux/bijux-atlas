@@ -2,6 +2,7 @@
   "schema_version": 1,
   "pages": [
     "docs/index.md",
+    "docs/badges.md",
     "docs/bijux-atlas/index.md",
     "docs/bijux-atlas-ops/index.md",
     "docs/bijux-atlas-dev/index.md"
