@@ -4,12 +4,30 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Backup and Recovery
 
 Atlas recovery planning should focus on the durable serving store and the ability to reconstruct runtime state safely.
+
+```mermaid
+flowchart TD
+    Loss[Failure or loss event] --> Durable[Identify durable assets]
+    Durable --> Store[Serving store and datasets]
+    Durable --> Release[Release metadata and provenance]
+    Durable --> Evidence[Evidence and manifests]
+    Store --> Restore[Restore or reconstruct]
+    Release --> Restore
+    Evidence --> Restore
+    Restore --> Verify[Verify correctness and readiness]
+    Verify --> Resume[Resume service safely]
+```
+
+This page is about recoverability as an operational claim, not a comforting
+idea. Atlas is only recoverable when operators can restore the durable serving
+surface, prove the restored release identity, and show the service is ready to
+serve the right data again.
 
 ## Recovery Priority
 
@@ -63,6 +81,41 @@ Recovery is not “copy whatever is in the cache and hope for the best.” Cache
 ## Purpose
 
 This page explains the Atlas material for backup and recovery and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/release/evidence/manifest.json`
+- `ops/release/packet/packet.json`
+- `ops/release/provenance.json`
+- `ops/datasets/rollback-policy.json`
+
+## What Must Be Restorable
+
+To claim Atlas is recoverable, operators must be able to restore or reconstruct:
+
+- the serving dataset and manifest surface
+- the release metadata that proves what version is being restored
+- the evidence and provenance that let another operator trust the restored state
+- the runtime configuration needed to make the service discoverable and ready
+
+## Durable Versus Reconstructable
+
+- durable and worth backing up directly: dataset manifests, release manifests,
+  evidence identity, provenance, and package references
+- reconstructable but still review-relevant: generated summaries, dashboard
+  snapshots, and some validation outputs if the source evidence survives
+- disposable: caches and other acceleration surfaces that do not define durable
+  serving truth
+
+## Recovery Drill Success Criteria
+
+A recovery drill is successful only when it proves:
+
+- the restored service exposes the expected release identity
+- the dataset surface is discoverable and governed by the expected rollback
+  policy
+- readiness and key query paths pass after restore
+- the recovered state can be explained from release evidence, not guesswork
 
 ## Stability
 
