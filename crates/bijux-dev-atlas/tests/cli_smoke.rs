@@ -17,7 +17,7 @@ fn repo_root() -> PathBuf {
 fn slow_doctor_smoke() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["check", "doctor", "--format", "json"])
+        .args(["docs", "doctor", "--format", "json"])
         .output()
         .expect("doctor");
     let bytes = if output.stdout.is_empty() {
@@ -30,12 +30,11 @@ fn slow_doctor_smoke() {
         payload.get("schema_version").and_then(|v| v.as_u64()),
         Some(1)
     );
-    let check_report = payload.get("check_report").expect("check_report");
-    assert!(check_report
-        .get("results")
+    assert!(payload
+        .get("rows")
         .and_then(|v| v.as_array())
         .is_some());
-    assert!(check_report.get("counts").is_some());
+    assert!(payload.get("counts").is_some());
 }
 
 #[test]

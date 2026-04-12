@@ -2253,9 +2253,11 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     };
                 let samples = [
                     "index.html",
-                    "07-reference/index.html",
-                    "03-user-guide/server-workflows/index.html",
-                    "08-contracts/index.html",
+                    "repository/index.html",
+                    "runtime/index.html",
+                    "runtime/packages/bijux-atlas/index.html",
+                    "maintainer/index.html",
+                    "maintainer/packages/bijux-dev-atlas/index.html",
                 ];
                 let mut rows = Vec::new();
                 let mut failures = Vec::new();
@@ -2269,7 +2271,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "exists": false,
                             "has_top_nav": false,
                             "has_side_nav": false,
-                            "has_breadcrumb": false
+                            "has_breadcrumb": false,
+                            "has_shared_chrome": false,
+                            "has_fourth_row": false,
+                            "has_package_tabs": false
                         }));
                         continue;
                     }
@@ -2278,6 +2283,13 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         || text.contains("md-tabs")
                         || text.contains("md-tabs__item");
                     let has_side_nav = text.contains("md-nav") || text.contains("md-sidebar");
+                    let has_shared_chrome = text.contains("bijux-hub-strip")
+                        && text.contains("bijux-site-tabs")
+                        && text.contains("data-bijux-detail-strip");
+                    let has_fourth_row = text.contains("data-bijux-course-strip");
+                    let has_package_tabs = text.contains("/repository/packages/")
+                        || text.contains("/runtime/packages/bijux-atlas/")
+                        || text.contains("/maintainer/packages/bijux-dev-atlas/");
                     let expected_doc_path = if sample == "index.html" {
                         "docs/index.md".to_string()
                     } else {
@@ -2294,6 +2306,15 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     if !has_side_nav {
                         failures.push(format!("sample `{sample}` missing side navigation markers"));
                     }
+                    if !has_shared_chrome {
+                        failures.push(format!("sample `{sample}` missing shared Bijux chrome markers"));
+                    }
+                    if !has_fourth_row {
+                        failures.push(format!("sample `{sample}` missing fourth-row section navigation markers"));
+                    }
+                    if !has_package_tabs {
+                        failures.push(format!("sample `{sample}` missing package navigation markers"));
+                    }
                     if !has_breadcrumb {
                         warnings.push(format!("sample `{sample}` missing breadcrumb path markers"));
                     }
@@ -2302,7 +2323,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "exists": true,
                         "has_top_nav": has_top_nav,
                         "has_side_nav": has_side_nav,
-                        "has_breadcrumb": has_breadcrumb
+                        "has_breadcrumb": has_breadcrumb,
+                        "has_shared_chrome": has_shared_chrome,
+                        "has_fourth_row": has_fourth_row,
+                        "has_package_tabs": has_package_tabs
                     }));
                 }
                 let payload = serde_json::json!({

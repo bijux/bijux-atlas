@@ -26,7 +26,7 @@ Start from the repository root and verify the control-plane surfaces before maki
 
 ```bash
 cargo fetch
-cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- docs doctor --format json
 cargo run -q -p bijux-dev-atlas -- governance validate --format json
 make help
 ```
@@ -72,7 +72,7 @@ These commands are a good first pass from a fresh checkout:
 cargo fetch
 cargo test -p bijux-dev-atlas --no-run
 cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- docs doctor --format json
 make help
 ```
 

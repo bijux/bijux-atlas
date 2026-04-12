@@ -249,7 +249,7 @@ Use `make` only through the curated wrappers exposed from [`makes/root.mk`](make
 Helpful maintainer entrypoints:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- docs doctor --format json
 cargo run -q -p bijux-dev-atlas -- governance validate --format json
 cargo run -q -p bijux-dev-atlas -- release validate --format json
 make ci-fast

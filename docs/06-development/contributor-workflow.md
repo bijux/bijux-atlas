@@ -33,7 +33,7 @@ Treat the workspace root as the only supported starting point.
 cargo fetch
 cargo test -p bijux-dev-atlas --no-run
 cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo run -q -p bijux-dev-atlas -- check doctor --format json
+cargo run -q -p bijux-dev-atlas -- docs doctor --format json
 ```
 
 If those commands fail, fix the environment first instead of trying to work around the failure in later steps.

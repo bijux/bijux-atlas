@@ -89,6 +89,9 @@ pub(crate) fn docs_validate_payload(
         "06-development".to_string(),
         "07-reference".to_string(),
         "08-contracts".to_string(),
+        "repository".to_string(),
+        "runtime".to_string(),
+        "maintainer".to_string(),
         "assets".to_string(),
         "hooks".to_string(),
         "index.md".to_string(),
@@ -123,7 +126,7 @@ pub(crate) fn docs_validate_payload(
             }
         }
     }
-    let max_top_level_categories = 13usize;
+    let max_top_level_categories = 16usize;
     if top_level_dirs.len() > max_top_level_categories {
         issues.warnings.push(format!(
             "DOCS_BUDGET_WARN: docs top-level category count {} exceeds budget {}",
