@@ -74,6 +74,7 @@ nav:
   - Repository Handbook:
       - Home:
           - Overview: repository/index.md
+      - Packages: repository/packages/index.md
   - Runtime Handbook:
       - Home:
           - Overview: runtime/index.md
