@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Runtime Configuration
@@ -90,6 +90,59 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- \
 ## Purpose
 
 This page explains the Atlas material for runtime configuration and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/k8s/charts/bijux-atlas/values.yaml`
+- `ops/k8s/charts/bijux-atlas/values.schema.json`
+- `ops/k8s/values/profiles.json`
+- `ops/k8s/values/documentation-map.json`
+- `ops/k8s/tests/manifest.json`
+
+## Runtime Concern Map
+
+| Runtime concern | Owning values area | Main validation path |
+| --- | --- | --- |
+| cache location and warmup behavior | `cache`, `catalog`, `datasetWarmupJob` | values schema, profile toggles, dataset and readiness checks |
+| readiness and probe behavior | `probes`, `server`, `rollout` | render output, readiness tests, rollout review |
+| concurrency, limits, and scaling | `resources`, `hpa`, `sequenceRateLimits` | schema validation, autoscaling checks, load evidence |
+| metrics and telemetry exposure | `metrics`, `serviceMonitor`, `alertRules` | render output, observability object tests, dashboard and alert review |
+| network and identity assumptions | `networkPolicy`, `serviceAccount`, `rbac` | schema validation, security review, conformance tests |
+
+## Invalid Change Patterns
+
+Examples of changes that should be rejected or escalated:
+
+- enabling `image.tag` based promotion in profiles that expect digest-based
+  identity
+- changing `cache` behavior to cached-only without also satisfying the related
+  readiness and warmup expectations
+- widening `networkPolicy` or `rbac` in a runtime-focused change that claims to
+  be unrelated to security
+- changing `probes` or `rollout` behavior without corresponding readiness and
+  rollout evidence
+
+## Environment Override Rules
+
+- keep shared defaults in `values.yaml`
+- put supported environment intent in the profile values files under
+  `ops/k8s/values/`
+- avoid silent host- or cluster-specific drift outside those governed values
+  files
+- treat `ci`, `kind`, `offline`, `perf`, and `prod` as different runtime
+  contracts, not cosmetic overlays
+
+## Configuration Drift Validation
+
+Use this path whenever runtime behavior changes or starts to look suspicious:
+
+1. compare the selected profile file to `values.yaml`
+2. validate the merged values against `values.schema.json`
+3. render and validate the manifests through the Kubernetes control-plane
+   targets
+4. confirm the relevant runtime tests in `ops/k8s/tests/manifest.json` still
+   cover the changed keys
+5. use observability and load evidence when the change affects serving behavior
 
 ## Stability
 
