@@ -16,20 +16,20 @@ navigate.
 Use the top navigation like the other Bijux repositories:
 
 <div class="bijux-quicklinks">
-<a class="md-button md-button--primary" href="bijux-atlas/">Open bijux-atlas</a>
-<a class="md-button" href="bijux-atlas-ops/">Open bijux-atlas-ops</a>
-<a class="md-button" href="bijux-atlas-dev/">Open bijux-atlas-dev</a>
+<a class="md-button md-button--primary" href="bijux-atlas/">Open Repository</a>
+<a class="md-button" href="bijux-atlas-ops/">Open Operations</a>
+<a class="md-button" href="bijux-atlas-dev/">Open Maintainer</a>
 </div>
 
 ## Navigation
 
 - `Home` is orientation only.
-- `bijux-atlas` covers product behavior, workflows, interfaces, runtime, and contracts.
-- `bijux-atlas-ops` covers stack topology, Kubernetes, release, observability, and load.
-- `bijux-atlas-dev` covers workspace ownership, automation, governance, delivery, and workflow ownership.
+- `Repository` covers the `bijux-atlas` runtime, workflows, interfaces, architecture, and contracts.
+- `Operations` covers the `bijux-atlas-ops` operating surface for stack, Kubernetes, release, observability, and load.
+- `Maintainer` covers the `bijux-atlas-dev` control plane for workspace ownership, automation, governance, delivery, and workflow ownership.
 
 ## Package Handbooks
 
-- [bijux-atlas](bijux-atlas/index.md)
-- [bijux-atlas-ops](bijux-atlas-ops/index.md)
-- [bijux-atlas-dev](bijux-atlas-dev/index.md)
+- [Repository](bijux-atlas/index.md)
+- [Operations](bijux-atlas-ops/index.md)
+- [Maintainer](bijux-atlas-dev/index.md)

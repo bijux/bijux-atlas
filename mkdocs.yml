@@ -152,7 +152,7 @@ extra:
 
 nav:
   - Home: index.md
-  - bijux-atlas:
+  - Repository:
       - Home:
           - Overview: bijux-atlas/index.md
           - Foundations:
@@ -215,7 +215,7 @@ nav:
               - Ownership and Versioning: bijux-atlas/contracts/ownership-and-versioning.md
               - Contract Reading Guide: bijux-atlas/contracts/contract-reading-guide.md
               - Compatibility Review Checklist: bijux-atlas/contracts/compatibility-review-checklist.md
-  - bijux-atlas-ops:
+  - Operations:
       - Home:
           - Overview: bijux-atlas-ops/index.md
           - Stack:
@@ -278,7 +278,7 @@ nav:
               - Benchmark CI: bijux-atlas-ops/load/benchmark-ci.md
               - Baseline Management: bijux-atlas-ops/load/baseline-management.md
               - Failure Injection Load: bijux-atlas-ops/load/failure-injection-load.md
-  - bijux-atlas-dev:
+  - Maintainer:
       - Home:
           - Overview: bijux-atlas-dev/index.md
           - Workspace:
