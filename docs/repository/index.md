@@ -43,8 +43,12 @@ The repository handbook is being rebuilt around `repository/bijux-atlas/`
 with five durable subdirectories so the Atlas product surface can carry more
 depth without mixing in maintainer-only or operations-only material.
 
-## Current Path
+## Current Paths
 
 The first active repository slice is `repository/bijux-atlas/foundations/`.
 It establishes the conceptual model for the runtime package before the
 workflow, interface, runtime, and contract slices are migrated.
+
+The next active slice is `repository/bijux-atlas/workflows/`, which carries
+the user-facing Atlas product flows for install, ingest, dataset preparation,
+server startup, and first queries.

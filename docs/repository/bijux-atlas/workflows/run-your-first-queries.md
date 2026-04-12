@@ -100,9 +100,9 @@ responses, but to learn which part of the system each response exercises.
 
 ## What to Do Next
 
-- read [Configuration and Output](../03-user-guide/configuration-and-output.md)
-- read [Query Workflows](../03-user-guide/query-workflows.md)
-- read [Request Lifecycle](../05-architecture/request-lifecycle.md)
+- read [Query Workflows](query-workflows.md)
+- read [Runtime Surfaces](../foundations/runtime-surfaces.md)
+- read [Documentation Map](../foundations/documentation-map.md)
 
 ## Common First-Query Mistakes
 

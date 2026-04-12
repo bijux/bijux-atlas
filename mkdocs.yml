@@ -91,6 +91,17 @@ nav:
           - Query Model: repository/bijux-atlas/foundations/query-model.md
           - Runtime Surfaces: repository/bijux-atlas/foundations/runtime-surfaces.md
           - Documentation Map: repository/bijux-atlas/foundations/documentation-map.md
+      - Workflows:
+          - Install and Verify: repository/bijux-atlas/workflows/install-and-verify.md
+          - Run Atlas Locally: repository/bijux-atlas/workflows/run-atlas-locally.md
+          - Load a Sample Dataset: repository/bijux-atlas/workflows/load-a-sample-dataset.md
+          - Start the Server: repository/bijux-atlas/workflows/start-the-server.md
+          - Run Your First Queries: repository/bijux-atlas/workflows/run-your-first-queries.md
+          - Troubleshoot Early Problems: repository/bijux-atlas/workflows/troubleshoot-early-problems.md
+          - Catalog Workflows: repository/bijux-atlas/workflows/catalog-workflows.md
+          - Dataset Workflows: repository/bijux-atlas/workflows/dataset-workflows.md
+          - Ingest Workflows: repository/bijux-atlas/workflows/ingest-workflows.md
+          - Query Workflows: repository/bijux-atlas/workflows/query-workflows.md
   - Operations:
       - Operations Home: operations/index.md
   - Maintainer:
