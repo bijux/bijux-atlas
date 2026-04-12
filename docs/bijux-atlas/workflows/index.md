@@ -4,12 +4,31 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Workflows
 
 `bijux-atlas/workflows` is the section home for this handbook slice.
+
+```mermaid
+flowchart TD
+    Workflows[Workflows section] --> Install[Install and verify]
+    Workflows --> Build[Build or load dataset state]
+    Workflows --> Serve[Start the server]
+    Workflows --> Query[Run queries]
+    Workflows --> Troubleshoot[Troubleshoot early problems]
+    Install --> Path[Practical task path]
+    Build --> Path
+    Serve --> Path
+    Query --> Path
+    Troubleshoot --> Path
+```
+
+Workflows are where the repository handbook becomes directly usable. These
+pages should teach the right order of actions, the checkpoints that prove a
+step worked, and the boundaries that keep users from mixing build state,
+serving state, and runtime state by accident.
 
 Use this section when you need to do product work with Atlas rather than study
 its architecture.
@@ -30,6 +49,14 @@ runtime path. They do not replace:
 
 - `bijux-atlas-ops` for deployment, rollout, observability, and load guidance
 - `bijux-atlas-dev` for repository validation, release automation, and maintainer-only checks
+
+## What This Section Is For
+
+Use workflows when you need the product task path in order: install, verify,
+load data, start the server, run queries, and debug early mistakes. When the
+question becomes “what exact flag is this?” or “where does this logic live in
+code?”, move to interfaces or runtime instead of forcing workflow pages to do
+everything.
 
 ## Lifecycle View
 
