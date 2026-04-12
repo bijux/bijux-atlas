@@ -65,8 +65,8 @@ These details may change without becoming compatibility commitments:
 
 ## Related Pages
 
-- [Automation Command Surface](../07-reference/automation-command-surface.md)
-- [Automation Reports Reference](../07-reference/automation-reports-reference.md)
+- [Automation Command Surface](../automation/automation-command-surface.md)
+- [Automation Reports Reference](../automation/automation-reports-reference.md)
 - [Ownership and Versioning](ownership-and-versioning.md)
 
 ## Purpose

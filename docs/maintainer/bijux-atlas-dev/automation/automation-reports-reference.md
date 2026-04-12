@@ -71,7 +71,7 @@ Treat those paths as report storage locations, not as new sources of truth. The 
 ## Related Pages
 
 - [Automation Command Surface](automation-command-surface.md)
-- [Automation Contracts](../08-contracts/automation-contracts.md)
+- [Automation Contracts](../governance/automation-contracts.md)
 
 ## Purpose
 

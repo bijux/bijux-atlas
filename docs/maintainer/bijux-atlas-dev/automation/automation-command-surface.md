@@ -90,8 +90,8 @@ The current top-level `reports` catalog includes report families such as `closur
 ## Related Pages
 
 - [Automation Reports Reference](automation-reports-reference.md)
-- [Automation Control Plane](../06-development/automation-control-plane.md)
-- [Automation Contracts](../08-contracts/automation-contracts.md)
+- [Automation Control Plane](automation-control-plane.md)
+- [Automation Contracts](../governance/automation-contracts.md)
 
 ## Purpose
 

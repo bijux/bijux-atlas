@@ -84,7 +84,7 @@ usually points to the right zone immediately.
 
 - [System Overview](system-overview.md)
 - [Contracts and Boundaries](contracts-and-boundaries.md)
-- [Automation Control Plane](../06-development/automation-control-plane.md)
+- [Automation Control Plane](../automation/automation-control-plane.md)
 
 ## Purpose
 

@@ -119,7 +119,7 @@ cargo run -q -p bijux-dev-atlas -- reports index --format json
 
 - [Contributor Workflow](contributor-workflow.md)
 - [Testing and Evidence](testing-and-evidence.md)
-- [Command Surface](../07-reference/command-surface.md)
+- [Automation Command Surface](automation-command-surface.md)
 
 ## Purpose
 
