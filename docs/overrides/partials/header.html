@@ -11,11 +11,7 @@
 {% set current_page = page if page is defined else none %}
 {% import "partials/bijux-nav.html" as bijux_nav with context %}
 {% macro site_label(title) -%}
-  {% if title == "Repository Handbook" -%}
-    Repository
-  {%- elif title == "Maintainer Handbook" or title == "Maintenance Handbook" -%}
-    Maintainer
-  {%- elif active_repository and title.startswith(active_repository ~ "-") -%}
+  {% if active_repository and title.startswith(active_repository ~ "-") -%}
     {{ title | replace(active_repository ~ "-", "") | replace("-", " ") | title }}
   {%- elif title.startswith("bijux-") -%}
     {{ title | replace("bijux-", "") | replace("-", " ") | title }}

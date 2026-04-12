@@ -9,49 +9,58 @@ last_reviewed: 2026-04-12
 
 # Bijux Atlas
 
-`bijux-atlas` is a deliberately split Rust workspace for genomics dataset
-delivery and repository governance. The product runtime and the maintainer
-control plane are documented separately so readers can find the owning package
-without reverse-engineering the tree.
+`bijux-atlas` is documented as a single, section-first guide with one home page
+and eight canonical content sections.
 
-Use this page to choose the right handbook branch first, then the right package
-surface second.
+Use the top navigation to move directly into the section you need.
 
-<div class="bijux-callout"><strong>Start with ownership, not just section names.</strong>
-Repository docs route cross-package questions. Runtime docs own ingest,
-datasets, APIs, and runtime operations. Maintainer docs own repository
-automation, docs tooling, policy, and evidence surfaces.</div>
+<div class="bijux-callout"><strong>Home is orientation only.</strong>
+Section pages provide the full left-side navigation for smooth movement across
+all pages in that section.</div>
 
 <div class="bijux-panel-grid">
-  <div class="bijux-panel"><h3>Repository</h3><p>Use the repository handbook when a question crosses package boundaries or needs a workspace-level ownership decision.</p></div>
-  <div class="bijux-panel"><h3>Runtime</h3><p>Use the runtime handbook for the product surface: ingest, dataset and catalog workflows, APIs, runtime operations, and stable runtime contracts.</p></div>
-  <div class="bijux-panel"><h3>Maintainer</h3><p>Use the maintainer handbook for repository governance, docs validation, policy-backed checks, generated references, and report workflows.</p></div>
+  <div class="bijux-panel"><h3>Introduction</h3><p>Start with Atlas purpose, concepts, boundaries, and stability guarantees.</p></div>
+  <div class="bijux-panel"><h3>Getting Started</h3><p>Install, run Atlas locally, load sample data, and verify first queries.</p></div>
+  <div class="bijux-panel"><h3>User Guide</h3><p>Go deep on configuration, workflows, server usage, policy, and troubleshooting.</p></div>
+  <div class="bijux-panel"><h3>Operations</h3><p>Run Atlas in production with clear guidance on reliability, security, and incidents.</p></div>
+  <div class="bijux-panel"><h3>Architecture</h3><p>Understand code structure, lifecycle flows, and system boundaries.</p></div>
+  <div class="bijux-panel"><h3>Development</h3><p>Change Atlas safely with workflow, testing, compatibility, and release discipline.</p></div>
+  <div class="bijux-panel"><h3>Reference</h3><p>Find commands, API endpoints, environment variables, and exact lookup material.</p></div>
+  <div class="bijux-panel"><h3>Contracts</h3><p>Review stable promises and compatibility surfaces that Atlas intentionally publishes.</p></div>
 </div>
 
 <div class="bijux-quicklinks">
-<a class="md-button md-button--primary" href="repository/">Open the repository handbook</a>
-<a class="md-button" href="runtime/">Open the runtime handbook</a>
-<a class="md-button" href="maintainer/">Open the maintainer handbook</a>
+<a class="md-button md-button--primary" href="01-introduction/">Open introduction</a>
+<a class="md-button" href="02-getting-started/">Open getting started</a>
+<a class="md-button" href="03-user-guide/">Open user guide</a>
+<a class="md-button" href="04-operations/">Open operations</a>
 </div>
 
 ```mermaid
 flowchart TB
-    workspace["bijux-atlas workspace"]
-    workspace --> repo["Repository handbook"]
-    workspace --> runtime["Runtime handbook"]
-    workspace --> maintainer["Maintainer handbook"]
-    runtime --> runtime_pkg["bijux-atlas"]
-    maintainer --> maintainer_pkg["bijux-dev-atlas"]
+    home["Home"]
+    home --> intro["01 Introduction"]
+    home --> start["02 Getting Started"]
+    home --> guide["03 User Guide"]
+    home --> ops["04 Operations"]
+    home --> architecture["05 Architecture"]
+    home --> dev["06 Development"]
+    home --> reference["07 Reference"]
+    home --> contracts["08 Contracts"]
 ```
 
-## Choose a Path
+## Sections
 
-- evaluating package ownership or cross-cutting change impact: start with [Repository Handbook](repository/index.md)
-- trying or operating the product runtime: move to [Runtime Handbook](runtime/index.md)
-- changing docs, checks, reports, or governance workflows: move to [Maintainer Handbook](maintainer/index.md)
+- [Introduction](01-introduction/index.md)
+- [Getting Started](02-getting-started/index.md)
+- [User Guide](03-user-guide/index.md)
+- [Operations](04-operations/index.md)
+- [Architecture](05-architecture/index.md)
+- [Development](06-development/index.md)
+- [Reference](07-reference/index.md)
+- [Contracts](08-contracts/index.md)
 
-## Start Here
+## Reading Rule
 
-- [Repository Handbook](repository/index.md)
-- [Runtime Handbook](runtime/index.md)
-- [Maintainer Handbook](maintainer/index.md)
+Start from the section that matches your question. Use Home for orientation
+only, then move into a section to use the left-side page navigation.

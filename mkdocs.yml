@@ -31,6 +31,12 @@ plugins:
       redirect_maps:
         contracts/compatibility.md: 08-contracts/ownership-and-versioning.md
         root/compatibility-policy.md: 08-contracts/ownership-and-versioning.md
+        repository/index.md: 05-architecture/source-layout-and-ownership.md
+        repository/packages/index.md: 05-architecture/source-layout-and-ownership.md
+        runtime/index.md: 01-introduction/index.md
+        runtime/packages/bijux-atlas/index.md: 05-architecture/source-layout-and-ownership.md
+        maintainer/index.md: 06-development/index.md
+        maintainer/packages/bijux-dev-atlas/index.md: 06-development/automation-control-plane.md
       # end generated redirect_maps
 
 not_in_nav: |
@@ -72,99 +78,87 @@ extra:
 
 nav:
   - Home: index.md
-  - Repository Handbook:
-      - Overview: repository/index.md
-      - Packages: repository/packages/index.md
-  - Runtime Handbook:
-      - Overview: runtime/index.md
-      - Introduction:
-          - Overview: 01-introduction/index.md
-          - What Atlas Is: 01-introduction/what-atlas-is.md
-          - Core Concepts: 01-introduction/core-concepts.md
-          - Boundaries and Non-Goals: 01-introduction/boundaries-and-non-goals.md
-          - Guarantees and Stability: 01-introduction/guarantees-and-stability.md
-      - Getting Started:
-          - Overview: 02-getting-started/index.md
-          - Install and Verify: 02-getting-started/install-and-verify.md
-          - Run Atlas Locally: 02-getting-started/run-atlas-locally.md
-          - Load a Sample Dataset: 02-getting-started/load-a-sample-dataset.md
-          - Start the Server: 02-getting-started/start-the-server.md
-          - Run Your First Queries: 02-getting-started/run-your-first-queries.md
-          - Troubleshoot Early Problems: 02-getting-started/troubleshoot-early-problems.md
-      - User Guide:
-          - Overview: 03-user-guide/index.md
-          - Configuration and Output: 03-user-guide/configuration-and-output.md
-          - Catalog Workflows: 03-user-guide/catalog-workflows.md
-          - Dataset Workflows: 03-user-guide/dataset-workflows.md
-          - Ingest Workflows: 03-user-guide/ingest-workflows.md
-          - Query Workflows: 03-user-guide/query-workflows.md
-          - Server Workflows: 03-user-guide/server-workflows.md
-          - OpenAPI and API Usage: 03-user-guide/openapi-and-api-usage.md
-          - Policy Workflows: 03-user-guide/policy-workflows.md
-          - Troubleshooting: 03-user-guide/troubleshooting.md
-      - Operations:
-          - Overview: 04-operations/index.md
-          - Deployment Models: 04-operations/deployment-models.md
-          - Runtime Configuration: 04-operations/runtime-configuration.md
-          - Health, Readiness, and Drain: 04-operations/health-readiness-and-drain.md
-          - Logging, Metrics, and Tracing: 04-operations/logging-metrics-and-tracing.md
-          - Cache and Store Operations: 04-operations/cache-and-store-operations.md
-          - Backup and Recovery: 04-operations/backup-and-recovery.md
-          - Upgrades and Rollback: 04-operations/upgrades-and-rollback.md
-          - Performance and Load: 04-operations/performance-and-load.md
-          - Security Operations: 04-operations/security-operations.md
-          - Incident Response: 04-operations/incident-response.md
-      - Architecture:
-          - Overview: 05-architecture/index.md
-          - System Overview: 05-architecture/system-overview.md
-          - Source Layout and Ownership: 05-architecture/source-layout-and-ownership.md
-          - Request Lifecycle: 05-architecture/request-lifecycle.md
-          - Ingest Architecture: 05-architecture/ingest-architecture.md
-          - Query Architecture: 05-architecture/query-architecture.md
-          - Storage Architecture: 05-architecture/storage-architecture.md
-          - Runtime Composition: 05-architecture/runtime-composition.md
-          - Contracts and Boundaries: 05-architecture/contracts-and-boundaries.md
-      - Reference:
-          - Overview: 07-reference/index.md
-          - Command Surface: 07-reference/command-surface.md
-          - Environment Variables: 07-reference/environment-variables.md
-          - Runtime Config Reference: 07-reference/runtime-config-reference.md
-          - API Endpoint Index: 07-reference/api-endpoint-index.md
-          - Error Codes and Exit Codes: 07-reference/error-codes-and-exit-codes.md
-          - Feature Flags: 07-reference/feature-flags.md
-          - Artifact Layout: 07-reference/artifact-layout.md
-          - Glossary: 07-reference/glossary.md
-      - Contracts:
-          - Overview: 08-contracts/index.md
-          - API Compatibility: 08-contracts/api-compatibility.md
-          - Structured Output Contracts: 08-contracts/structured-output-contracts.md
-          - Runtime Config Contracts: 08-contracts/runtime-config-contracts.md
-          - Plugin Contracts: 08-contracts/plugin-contracts.md
-          - Artifact and Store Contracts: 08-contracts/artifact-and-store-contracts.md
-          - Operational Contracts: 08-contracts/operational-contracts.md
-          - Ownership and Versioning: 08-contracts/ownership-and-versioning.md
-      - bijux-atlas: runtime/packages/bijux-atlas/index.md
-  - Maintainer Handbook:
-      - Overview: maintainer/index.md
-      - Development:
-          - Overview: 06-development/index.md
-          - Workspace and Tooling: 06-development/workspace-and-tooling.md
-          - Local Development: 06-development/local-development.md
-          - Contributor Workflow: 06-development/contributor-workflow.md
-          - Automation Control Plane: 06-development/automation-control-plane.md
-          - Decision Records and Ownership: 06-development/decision-records-and-ownership.md
-          - Testing and Evidence: 06-development/testing-and-evidence.md
-          - Adding CLI Surface: 06-development/adding-cli-surface.md
-          - Adding HTTP Surface: 06-development/adding-http-surface.md
-          - Adding Contracts: 06-development/adding-contracts.md
-          - Change and Compatibility: 06-development/change-and-compatibility.md
-          - Release and Versioning: 06-development/release-and-versioning.md
-          - Documentation Standards: 06-development/documentation-standards.md
-      - Automation Architecture:
-          - Automation Architecture: 05-architecture/automation-architecture.md
-      - Automation Reference:
-          - Automation Command Surface: 07-reference/automation-command-surface.md
-          - Automation Reports Reference: 07-reference/automation-reports-reference.md
-      - Automation Contracts:
-          - Automation Contracts: 08-contracts/automation-contracts.md
-      - bijux-dev-atlas: maintainer/packages/bijux-dev-atlas/index.md
+  - Introduction:
+      - Overview: 01-introduction/index.md
+      - What Atlas Is: 01-introduction/what-atlas-is.md
+      - Core Concepts: 01-introduction/core-concepts.md
+      - Boundaries and Non-Goals: 01-introduction/boundaries-and-non-goals.md
+      - Guarantees and Stability: 01-introduction/guarantees-and-stability.md
+  - Getting Started:
+      - Overview: 02-getting-started/index.md
+      - Install and Verify: 02-getting-started/install-and-verify.md
+      - Run Atlas Locally: 02-getting-started/run-atlas-locally.md
+      - Load a Sample Dataset: 02-getting-started/load-a-sample-dataset.md
+      - Start the Server: 02-getting-started/start-the-server.md
+      - Run Your First Queries: 02-getting-started/run-your-first-queries.md
+      - Troubleshoot Early Problems: 02-getting-started/troubleshoot-early-problems.md
+  - User Guide:
+      - Overview: 03-user-guide/index.md
+      - Configuration and Output: 03-user-guide/configuration-and-output.md
+      - Catalog Workflows: 03-user-guide/catalog-workflows.md
+      - Dataset Workflows: 03-user-guide/dataset-workflows.md
+      - Ingest Workflows: 03-user-guide/ingest-workflows.md
+      - Query Workflows: 03-user-guide/query-workflows.md
+      - Server Workflows: 03-user-guide/server-workflows.md
+      - OpenAPI and API Usage: 03-user-guide/openapi-and-api-usage.md
+      - Policy Workflows: 03-user-guide/policy-workflows.md
+      - Troubleshooting: 03-user-guide/troubleshooting.md
+  - Operations:
+      - Overview: 04-operations/index.md
+      - Deployment Models: 04-operations/deployment-models.md
+      - Runtime Configuration: 04-operations/runtime-configuration.md
+      - Health, Readiness, and Drain: 04-operations/health-readiness-and-drain.md
+      - Logging, Metrics, and Tracing: 04-operations/logging-metrics-and-tracing.md
+      - Cache and Store Operations: 04-operations/cache-and-store-operations.md
+      - Backup and Recovery: 04-operations/backup-and-recovery.md
+      - Upgrades and Rollback: 04-operations/upgrades-and-rollback.md
+      - Performance and Load: 04-operations/performance-and-load.md
+      - Security Operations: 04-operations/security-operations.md
+      - Incident Response: 04-operations/incident-response.md
+  - Architecture:
+      - Overview: 05-architecture/index.md
+      - System Overview: 05-architecture/system-overview.md
+      - Source Layout and Ownership: 05-architecture/source-layout-and-ownership.md
+      - Request Lifecycle: 05-architecture/request-lifecycle.md
+      - Ingest Architecture: 05-architecture/ingest-architecture.md
+      - Query Architecture: 05-architecture/query-architecture.md
+      - Storage Architecture: 05-architecture/storage-architecture.md
+      - Runtime Composition: 05-architecture/runtime-composition.md
+      - Contracts and Boundaries: 05-architecture/contracts-and-boundaries.md
+      - Automation Architecture: 05-architecture/automation-architecture.md
+  - Development:
+      - Overview: 06-development/index.md
+      - Workspace and Tooling: 06-development/workspace-and-tooling.md
+      - Local Development: 06-development/local-development.md
+      - Contributor Workflow: 06-development/contributor-workflow.md
+      - Automation Control Plane: 06-development/automation-control-plane.md
+      - Decision Records and Ownership: 06-development/decision-records-and-ownership.md
+      - Testing and Evidence: 06-development/testing-and-evidence.md
+      - Adding CLI Surface: 06-development/adding-cli-surface.md
+      - Adding HTTP Surface: 06-development/adding-http-surface.md
+      - Adding Contracts: 06-development/adding-contracts.md
+      - Change and Compatibility: 06-development/change-and-compatibility.md
+      - Release and Versioning: 06-development/release-and-versioning.md
+      - Documentation Standards: 06-development/documentation-standards.md
+  - Reference:
+      - Overview: 07-reference/index.md
+      - Command Surface: 07-reference/command-surface.md
+      - Automation Command Surface: 07-reference/automation-command-surface.md
+      - Automation Reports Reference: 07-reference/automation-reports-reference.md
+      - Environment Variables: 07-reference/environment-variables.md
+      - Runtime Config Reference: 07-reference/runtime-config-reference.md
+      - API Endpoint Index: 07-reference/api-endpoint-index.md
+      - Error Codes and Exit Codes: 07-reference/error-codes-and-exit-codes.md
+      - Feature Flags: 07-reference/feature-flags.md
+      - Artifact Layout: 07-reference/artifact-layout.md
+      - Glossary: 07-reference/glossary.md
+  - Contracts:
+      - Overview: 08-contracts/index.md
+      - API Compatibility: 08-contracts/api-compatibility.md
+      - Automation Contracts: 08-contracts/automation-contracts.md
+      - Structured Output Contracts: 08-contracts/structured-output-contracts.md
+      - Runtime Config Contracts: 08-contracts/runtime-config-contracts.md
+      - Plugin Contracts: 08-contracts/plugin-contracts.md
+      - Artifact and Store Contracts: 08-contracts/artifact-and-store-contracts.md
+      - Operational Contracts: 08-contracts/operational-contracts.md
+      - Ownership and Versioning: 08-contracts/ownership-and-versioning.md
