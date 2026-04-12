@@ -87,7 +87,9 @@ production-ready.
 
 ## Operational Boundary
 
-This page explains normal usage of the runtime surface. For deployment, rollback, resource tuning, and incident handling, move to [Operations](../04-operations/index.md).
+This page explains normal usage of the runtime surface. For deployment,
+rollback, resource tuning, and incident handling, move to
+[Operations](../../../operations/index.md).
 
 ## Purpose
 

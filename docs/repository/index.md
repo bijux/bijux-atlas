@@ -52,3 +52,6 @@ workflow, interface, runtime, and contract slices are migrated.
 The next active slice is `repository/bijux-atlas/workflows/`, which carries
 the user-facing Atlas product flows for install, ingest, dataset preparation,
 server startup, and first queries.
+
+The `repository/bijux-atlas/interfaces/` slice carries the exact runtime
+surface for commands, API shape, config, flags, and machine-facing reference.

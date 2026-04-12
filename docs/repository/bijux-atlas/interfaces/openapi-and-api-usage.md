@@ -81,7 +81,7 @@ If the two disagree, treat that as a real problem. Either the environment is not
 
 ## Where to Read More
 
-- [API Endpoint Index](../07-reference/api-endpoint-index.md)
+- [API Endpoint Index](api-endpoint-index.md)
 - [API Compatibility](../08-contracts/api-compatibility.md)
 
 ## Purpose

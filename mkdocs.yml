@@ -102,6 +102,17 @@ nav:
           - Dataset Workflows: repository/bijux-atlas/workflows/dataset-workflows.md
           - Ingest Workflows: repository/bijux-atlas/workflows/ingest-workflows.md
           - Query Workflows: repository/bijux-atlas/workflows/query-workflows.md
+      - Interfaces:
+          - Configuration and Output: repository/bijux-atlas/interfaces/configuration-and-output.md
+          - Server Workflows: repository/bijux-atlas/interfaces/server-workflows.md
+          - OpenAPI and API Usage: repository/bijux-atlas/interfaces/openapi-and-api-usage.md
+          - Policy Workflows: repository/bijux-atlas/interfaces/policy-workflows.md
+          - Command Surface: repository/bijux-atlas/interfaces/command-surface.md
+          - Environment Variables: repository/bijux-atlas/interfaces/environment-variables.md
+          - Runtime Config Reference: repository/bijux-atlas/interfaces/runtime-config-reference.md
+          - API Endpoint Index: repository/bijux-atlas/interfaces/api-endpoint-index.md
+          - Error Codes and Exit Codes: repository/bijux-atlas/interfaces/error-codes-and-exit-codes.md
+          - Feature Flags: repository/bijux-atlas/interfaces/feature-flags.md
   - Operations:
       - Operations Home: operations/index.md
   - Maintainer:
