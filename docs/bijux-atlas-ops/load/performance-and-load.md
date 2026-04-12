@@ -4,7 +4,7 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Performance and Load
@@ -66,6 +66,34 @@ actually expect to send?”
 ## Purpose
 
 This page explains the Atlas material for performance and load and points readers to the canonical checked-in workflow or boundary for this topic.
+
+## Source of Truth
+
+- `ops/load/suites/suites.json`
+- `ops/load/scenario-registry.json`
+- `ops/load/queries/pinned-v1.json`
+- `ops/load/contracts/k6-thresholds.v1.json`
+- `ops/load/contracts/performance-regression-ci-contract.json`
+- `ops/load/contracts/performance-regression-thresholds.json`
+- `ops/load/baselines/`
+
+## How to Run a Meaningful Performance Review
+
+1. choose the scenario family that matches the real workload under review
+2. use the pinned query pack in `ops/load/queries/pinned-v1.json` unless the
+   review explicitly requires another dataset or query shape
+3. confirm the suite thresholds and baseline before running the workload
+4. compare the candidate result against the approved baseline rather than
+   relying on one standalone run
+5. review observability and rollout evidence when the performance result will
+   influence promotion
+
+## Cross-Linked Control Surfaces
+
+- thresholds and budgets decide whether the candidate behavior is acceptable
+- baselines decide what “better,” “worse,” or “unchanged” means for a review
+- the scenario registry keeps workload identity stable
+- the regression contracts decide when CI should fail
 
 ## Stability
 
