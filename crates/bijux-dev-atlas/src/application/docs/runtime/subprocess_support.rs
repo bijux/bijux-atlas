@@ -55,6 +55,15 @@ fn docs_build_or_serve_subprocess(
     }
     let mut cmd = ProcessCommand::new("mkdocs");
     cmd.args(&effective_args).current_dir(&ctx.repo_root);
+    if label == "docs serve" {
+        if let Some(dev_addr) = effective_args
+            .windows(2)
+            .find(|window| window[0] == "--dev-addr")
+            .map(|window| window[1].clone())
+        {
+            cmd.env("SITE_URL", format!("http://{dev_addr}/"));
+        }
+    }
     let (stdout, stderr, code) = if label == "docs serve" {
         let status = cmd
             .stdout(std::process::Stdio::inherit())
