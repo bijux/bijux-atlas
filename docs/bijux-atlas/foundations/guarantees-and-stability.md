@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-04-13
 ---
 
 # Guarantees and Stability
@@ -33,6 +33,15 @@ Atlas aims to make stability understandable by layer:
 - public commands and options are more stable than internal helper code
 - API schemas and structured output are more stable than ad hoc debug payloads
 - runtime config contracts are more stable than undocumented environment-dependent behavior
+
+## Guarantee Table
+
+| Claimed guarantee | Main enforcement point | Evidence source |
+| --- | --- | --- |
+| deterministic structured output where documented | response and output contracts in code and generated references | generated OpenAPI and runtime reference artifacts |
+| stable contract-owned APIs | HTTP router, response contracts, and contract docs | generated OpenAPI plus compatibility review |
+| explicit runtime validation | runtime config parsing and contract schemas | generated runtime config docs and validation behavior |
+| immutable artifact-oriented workflows | dataset, ingest, and store boundaries | workflow docs and artifact/state references |
 
 ## What We Can Honestly Claim
 
@@ -129,3 +138,10 @@ If you are a maintainer:
 - [Runtime Surfaces](runtime-surfaces.md)
 - [Release Model](release-model.md)
 - [Documentation Map](documentation-map.md)
+
+## Main Takeaway
+
+Atlas should only sound stable where it can show its work. A guarantee becomes
+real when a reader can point to the owning contract or code path, the test or
+validation layer behind it, and the artifact that proves the promise still
+holds today.
