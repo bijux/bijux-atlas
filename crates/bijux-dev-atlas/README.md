@@ -125,14 +125,14 @@ Governance and contracts:
 
 - automation contracts: [../../docs/08-contracts/automation-contracts.md](../../docs/08-contracts/automation-contracts.md)
 - report reference: [../../docs/07-reference/automation-reports-reference.md](../../docs/07-reference/automation-reports-reference.md)
-- decision records and ownership: [../../docs/06-development/decision-records-and-ownership.md](../../docs/06-development/decision-records-and-ownership.md)
+- decision records and ownership: [../../docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md](../../docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md)
 - errors and exit codes: [../../docs/07-reference/error-codes-and-exit-codes.md](../../docs/07-reference/error-codes-and-exit-codes.md)
 
 Contributor references:
 
 - architecture: [../../docs/05-architecture/automation-architecture.md](../../docs/05-architecture/automation-architecture.md)
 - testing and evidence: [../../docs/06-development/testing-and-evidence.md](../../docs/06-development/testing-and-evidence.md)
-- contributor workflow: [../../docs/06-development/contributor-workflow.md](../../docs/06-development/contributor-workflow.md)
+- contributor workflow: [../../docs/bijux-atlas-dev/workspace/contributor-workflow.md](../../docs/bijux-atlas-dev/workspace/contributor-workflow.md)
 
 ## Working on This Crate
 

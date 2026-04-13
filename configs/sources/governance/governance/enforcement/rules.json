@@ -123,8 +123,8 @@
       "severity": "high",
       "rule_type": "required_files_exist",
       "paths": [
-        "docs/06-development/contributor-workflow.md",
-        "docs/06-development/decision-records-and-ownership.md"
+        "docs/bijux-atlas-dev/workspace/contributor-workflow.md",
+        "docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md"
       ],
       "classification": "documentation"
     }

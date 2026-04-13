@@ -3,8 +3,8 @@
   "artifact_id": "governance-evidence-artifact",
   "generated_at": "2026-03-05T00:00:00Z",
   "sources": [
-    "docs/06-development/contributor-workflow.md",
-    "docs/06-development/decision-records-and-ownership.md",
+    "docs/bijux-atlas-dev/workspace/contributor-workflow.md",
+    "docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md",
     "configs/sources/governance/governance/enforcement/rules.json",
     "artifacts/governance/governance-health-report.json"
   ],
