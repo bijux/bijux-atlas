@@ -22,11 +22,9 @@ Use the top navigation like the other Bijux repositories:
 [![Docs](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml)
 [![Release Candidate](https://github.com/bijux/bijux-atlas/actions/workflows/release-candidate.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-candidate.yml)
 [![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
-[![Published crates](https://img.shields.io/badge/published%20crates-2-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
-[![Runtime image](https://img.shields.io/badge/runtime%20image-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas-runtime)
+[![Published crate](https://img.shields.io/badge/published%20crate-1-2563EB)](https://crates.io/crates/bijux-atlas)
 
 [![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas)
-[![bijux-dev-atlas](https://img.shields.io/crates/v/bijux-dev-atlas?label=bijux--dev--atlas&logo=rust)](https://crates.io/crates/bijux-dev-atlas)
 
 [![Repository docs](https://img.shields.io/badge/docs-repository-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 [![Operations docs](https://img.shields.io/badge/docs-operations-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-ops/)
