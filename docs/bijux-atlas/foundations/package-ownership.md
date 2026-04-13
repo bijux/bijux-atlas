@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-04-13
 ---
 
 # Package Ownership
@@ -16,6 +16,22 @@ runtime configuration, and user-facing contracts. `bijux-dev-atlas` owns the
 repository control plane and maintainer automation. `bijux-atlas-ops` names the
 operational surface shaped by `ops/`, `ops/k8s/`, `ops/stack/`, `ops/load/`,
 and related evidence.
+
+## Ownership Model
+
+```mermaid
+flowchart TD
+    Repo[Atlas repository] --> Product[`bijux-atlas`]
+    Repo --> ControlPlane[`bijux-dev-atlas`]
+    Repo --> Ops[`bijux-atlas-ops`]
+
+    Product --> Runtime[Product runtime and interfaces]
+    ControlPlane --> Governance[Maintainer automation and governance]
+    Ops --> Operations[Deployment and operational evidence]
+```
+
+This diagram keeps the three handbook trees legible. They are related, but they
+do not serve the same reader and they should not make the same kind of promise.
 
 ## Ownership Rule
 
@@ -30,7 +46,20 @@ workflows, and governance material that serves a different audience.
 
 ## Code Anchors
 
-- `crates/bijux-atlas/`
-- `crates/bijux-dev-atlas/`
-- `ops/`
-- `makes/`
+- [`crates/bijux-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas)
+- [`crates/bijux-dev-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas)
+- [`ops/`](/Users/bijan/bijux/bijux-atlas/ops)
+- [`makes/`](/Users/bijan/bijux/bijux-atlas/makes)
+
+## Placement Guide
+
+- product runtime, dataset behavior, query semantics, and user-facing interfaces belong under `crates/bijux-atlas/`
+- repository governance, maintainer automation, and release-control work belong under `crates/bijux-dev-atlas/`
+- cluster, deployment, observability, and operational evidence belong under `ops/`
+- `makes/` may provide convenience entrypoints, but it should not silently redefine product or maintainer truth
+
+## Main Takeaway
+
+Package ownership is what keeps Atlas readable as a repository. The product
+crate, the maintainer control plane, and the operational surface are related,
+but they should stay distinct in both code placement and documentation voice.
