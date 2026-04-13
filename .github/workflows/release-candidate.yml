@@ -165,7 +165,7 @@ jobs:
           sha256sum "${report_root}/docs-completeness.json" > "${report_root}/docs-completeness.sha256"
           sha256sum "${report_root}/release-check.json" > "${report_root}/release-check.sha256"
           sha256sum "${report_root}/ops-readiness.json" > "${report_root}/ops-readiness.sha256"
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: release-candidate-${{ env.RUN_ID }}

@@ -33,7 +33,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-dev-atlas -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-dev-atlas -- audit readiness validate --output-format json > artifacts/audit/readiness.json
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: final-readiness-${{ github.run_id }}-${{ github.run_attempt }}
