@@ -22,27 +22,51 @@
     {% endif %}
   {% endfor %}
   {% if matched_section.item %}
+    {% set matched_has_nested = namespace(value=false) %}
     {% for child in matched_section.item.children %}
-      {% if not child.children %}
-        {% set _ = scoped.items.append(child) %}
+      {% if child.children %}
+        {% set matched_has_nested.value = true %}
       {% endif %}
     {% endfor %}
+    {% if not matched_has_nested.value %}
+      {% for child in matched_section.item.children %}
+        {% if not child.children and not child.is_index and child.title not in ["Home", "Overview", matched_section.item.title] %}
+          {% set _ = scoped.items.append(child) %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
     {% set scoped.title = matched_section.item.title %}
   {% else %}
+    {% set parent_has_nested = namespace(value=false) %}
     {% for child in current_page.parent.children %}
-      {% if not child.children %}
-        {% set _ = scoped.items.append(child) %}
+      {% if child.children %}
+        {% set parent_has_nested.value = true %}
       {% endif %}
     {% endfor %}
+    {% if not parent_has_nested.value %}
+      {% for child in current_page.parent.children %}
+        {% if not child.children and not child.is_index and child.title not in ["Home", "Overview", current_page.parent.title] %}
+          {% set _ = scoped.items.append(child) %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
     {% set scoped.title = current_page.parent.title %}
   {% endif %}
   {% set scoped.visible = scoped.items | length > 0 %}
 {% elif active_root.item and active_root.item.children %}
+  {% set root_has_nested = namespace(value=false) %}
   {% for child in active_root.item.children %}
-    {% if not child.children %}
-      {% set _ = scoped.items.append(child) %}
+    {% if child.children %}
+      {% set root_has_nested.value = true %}
     {% endif %}
   {% endfor %}
+  {% if not root_has_nested.value %}
+    {% for child in active_root.item.children %}
+      {% if not child.children and not child.is_index and child.title not in ["Home", "Overview", active_root.item.title] %}
+        {% set _ = scoped.items.append(child) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
   {% set scoped.title = active_root.item.title %}
   {% set scoped.visible = scoped.items | length > 0 %}
 {% endif %}
