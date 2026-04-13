@@ -85,6 +85,13 @@ This section explains how the runtime works internally. It does not replace:
 ## Source Anchors
 
 - `crates/bijux-atlas/src/domain/`
-- `crates/bijux-atlas/src/application/`
+- `crates/bijux-atlas/src/app/`
 - `crates/bijux-atlas/src/adapters/`
 - `crates/bijux-atlas/src/runtime/`
+
+## Main Takeaway
+
+The runtime section is where Atlas stops being a list of commands or contracts
+and becomes a running system in the reader's head. It should help people trace
+from published artifact state to request handling, composition, storage, and
+process behavior without drifting into operations or maintainer governance.
