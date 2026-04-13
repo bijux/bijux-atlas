@@ -26,6 +26,8 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        with:
+          toolchain: 1.86.0
       - name: Restore cargo registry cache
         id: cache-registry
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306

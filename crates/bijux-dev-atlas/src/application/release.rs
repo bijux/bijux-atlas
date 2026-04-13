@@ -3335,10 +3335,13 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
         .and_then(toml::Value::as_str)
         .unwrap_or_default()
         .to_string();
-    let msrv_doc = fs::read_to_string(root.join("docs/bijux-atlas-dev/workspace/workspace-and-tooling.md"))
-        .map_err(|err| {
-            format!("failed to read docs/bijux-atlas-dev/workspace/workspace-and-tooling.md: {err}")
-        })?;
+    let msrv_doc =
+        fs::read_to_string(root.join("docs/bijux-atlas-dev/workspace/workspace-and-tooling.md"))
+            .map_err(|err| {
+                format!(
+                    "failed to read docs/bijux-atlas-dev/workspace/workspace-and-tooling.md: {err}"
+                )
+            })?;
     let mut errors = Vec::<String>::new();
     if workspace_msrv != toolchain_channel {
         errors.push(format!(
@@ -3684,7 +3687,9 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         read_json(&root.join("configs/sources/release/missing-docs-policy.json"))?;
     let dependency_policy = dependency_policy(&root)?;
     let feature_doc = fs::read_to_string(root.join("docs/bijux-atlas/interfaces/feature-flags.md"))
-        .map_err(|err| format!("failed to read docs/bijux-atlas/interfaces/feature-flags.md: {err}"))?;
+        .map_err(|err| {
+            format!("failed to read docs/bijux-atlas/interfaces/feature-flags.md: {err}")
+        })?;
     let workspace_manifest: toml::Value = toml::from_str(
         &fs::read_to_string(root.join("Cargo.toml"))
             .map_err(|err| format!("failed to read root Cargo.toml: {err}"))?,
