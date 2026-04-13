@@ -272,16 +272,14 @@ fn readiness_validate(
         errors.push("compliance coverage must be ok".to_string());
     }
     for path in [
-        "docs/operations/audit-procedure.md",
-        "docs/operations/institutional-support-policy.md",
-        "docs/operations/long-term-support-policy.md",
-        "docs/operations/backward-compatibility-guarantee.md",
-        "docs/operations/deprecation-lifecycle-policy.md",
-        "docs/operations/security-disclosure-policy.md",
-        "docs/operations/upgrade-compatibility-guide.md",
-        "docs/operations/release-support-window-policy.md",
-        "docs/operations/maintenance-policy.md",
-        "docs/operations/final-readiness-checklist.md",
+        "docs/bijux-atlas-dev/delivery/final-readiness.md",
+        "docs/bijux-atlas-dev/delivery/release-and-versioning.md",
+        "docs/bijux-atlas-dev/delivery/compatibility-matrix.md",
+        "docs/bijux-atlas-dev/delivery/security-validation-lanes.md",
+        "docs/bijux-atlas-dev/governance/change-and-compatibility.md",
+        "docs/bijux-atlas-ops/release/upgrades-and-rollback.md",
+        "docs/bijux-atlas/contracts/api-compatibility.md",
+        "docs/bijux-atlas/contracts/compatibility-review-checklist.md",
     ] {
         if !root.join(path).exists() {
             errors.push(format!("missing required readiness document `{path}`"));

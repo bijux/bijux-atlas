@@ -677,7 +677,7 @@ fn docs_generate_health_dashboard(
     repo_root: &std::path::Path,
 ) -> Result<serde_json::Value, String> {
     let docs_root = repo_root.join("docs");
-    let output_path = repo_root.join("artifacts/docs/generated/docs-health-dashboard.md");
+    let output_path = repo_root.join("artifacts/docs/generated/docs-health.md");
     let allowlist_path =
         repo_root.join("configs/sources/repository/docs/external-link-allowlist.json");
     let allowlist: serde_json::Value = serde_json::from_str(
@@ -803,7 +803,7 @@ fn docs_generate_health_dashboard(
         .count();
 
     let mut lines = vec![
-        "# Docs Health Dashboard".to_string(),
+        "# Docs Health Report".to_string(),
         String::new(),
         "- Owner: `docs`".to_string(),
         "- Review cadence: `quarterly`".to_string(),
@@ -902,7 +902,7 @@ fn docs_generate_health_dashboard(
     Ok(serde_json::json!({
         "schema_version": 1,
         "status": "ok",
-        "text": "docs health dashboard generated",
+        "text": "docs health report generated",
         "output": output_path.display().to_string(),
         "external_links": external_urls.len(),
         "orphan_pages": orphan_pages.len(),

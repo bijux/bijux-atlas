@@ -4,9 +4,11 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "crates/bijux-dev-atlas/src/commands/audit.rs"
+      - "crates/bijux-dev-atlas/src/application/audit.rs"
+      - "crates/bijux-dev-atlas/src/application/docs/**"
       - "configs/sources/governance/audit/**"
-      - "docs/04-operations/**"
+      - "docs/bijux-atlas-dev/delivery/**"
+      - "docs/bijux-atlas-ops/**"
       - ".github/workflows/final-readiness.yml"
 
 permissions:
@@ -27,6 +29,7 @@ jobs:
           set -euo pipefail
           mkdir -p artifacts/system/simulation artifacts/audit
           cargo run --locked -q -p bijux-dev-atlas -- system simulate suite --output-format json > artifacts/system/simulation/run.json
+          cargo run --locked -q -p bijux-dev-atlas -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
           cargo run --locked -q -p bijux-dev-atlas -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-dev-atlas -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-dev-atlas -- audit readiness validate --output-format json > artifacts/audit/readiness.json
