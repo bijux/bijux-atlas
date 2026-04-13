@@ -81,18 +81,11 @@ pub(crate) fn docs_validate_payload(
         }
     }
     let allowed_docs_roots = BTreeSet::from([
-        "01-introduction".to_string(),
-        "02-getting-started".to_string(),
-        "03-user-guide".to_string(),
-        "04-operations".to_string(),
-        "05-architecture".to_string(),
-        "06-development".to_string(),
-        "07-reference".to_string(),
-        "08-contracts".to_string(),
-        "repository".to_string(),
-        "runtime".to_string(),
-        "maintainer".to_string(),
         "assets".to_string(),
+        "badges.md".to_string(),
+        "bijux-atlas".to_string(),
+        "bijux-atlas-dev".to_string(),
+        "bijux-atlas-ops".to_string(),
         "hooks".to_string(),
         "index.md".to_string(),
         "overrides".to_string(),
@@ -223,7 +216,14 @@ pub(crate) fn docs_validate_payload(
                 ));
             }
         }
-        if !rel.starts_with("07-reference/") {
+        if !rel.starts_with("bijux-atlas/interfaces/")
+            && !rel.starts_with("bijux-atlas/contracts/")
+            && !rel.starts_with("bijux-atlas-dev/automation/")
+            && !rel.starts_with("bijux-atlas-dev/delivery/")
+            && !rel.starts_with("bijux-atlas-dev/workflow-ownership/")
+            && !rel.starts_with("bijux-atlas-dev/workspace/")
+            && !rel.starts_with("bijux-atlas-ops/")
+        {
             let stem = std::path::Path::new(&rel)
                 .file_stem()
                 .and_then(|v| v.to_str())
@@ -235,7 +235,7 @@ pub(crate) fn docs_validate_payload(
                     .is_some_and(|value| value.eq_ignore_ascii_case("reference"))
             {
                 issues.warnings.push(format!(
-                    "DOCS_REFERENCE_LOCATION_ERROR: reference-like page `{rel}` must live under docs/07-reference/"
+                    "DOCS_REFERENCE_LOCATION_ERROR: reference-like page `{rel}` must live under the relevant product, developer, or operations reference area"
                 ));
             }
         }

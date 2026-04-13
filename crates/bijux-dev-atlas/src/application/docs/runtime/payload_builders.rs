@@ -75,14 +75,9 @@ fn docs_verify_contracts_payload(
     let review_window_stable_days = 365i64;
     let review_window_experimental_days = 180i64;
     let canonical_index_links = [
-        "01-introduction/index.md",
-        "02-getting-started/index.md",
-        "03-user-guide/index.md",
-        "04-operations/index.md",
-        "05-architecture/index.md",
-        "06-development/index.md",
-        "07-reference/index.md",
-        "08-contracts/index.md",
+        "bijux-atlas/index.md",
+        "bijux-atlas-dev/index.md",
+        "bijux-atlas-ops/index.md",
     ];
 
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
@@ -126,13 +121,9 @@ fn docs_verify_contracts_payload(
             .trim();
 
         let enforce_contract_surface = rel == "docs/index.md"
-            || rel == "docs/01-introduction/index.md"
-            || rel == "docs/02-getting-started/index.md"
-            || rel == "docs/03-user-guide/index.md"
-            || rel == "docs/04-operations/index.md"
-            || rel == "docs/05-architecture/index.md"
-            || rel == "docs/06-development/index.md"
-            || rel == "docs/07-reference/index.md";
+            || rel == "docs/bijux-atlas/index.md"
+            || rel == "docs/bijux-atlas-dev/index.md"
+            || rel == "docs/bijux-atlas-ops/index.md";
 
         if enforce_contract_surface && owner.is_empty() {
             errors.push(format!(

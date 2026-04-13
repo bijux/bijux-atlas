@@ -25,8 +25,8 @@ impl Domain for GovernanceDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/06-development/contributor-workflow.md",
-            "docs/08-contracts/ownership-and-versioning.md",
+            "docs/bijux-atlas-dev/workspace/contributor-workflow.md",
+            "docs/bijux-atlas/contracts/ownership-and-versioning.md",
         ]
     }
 

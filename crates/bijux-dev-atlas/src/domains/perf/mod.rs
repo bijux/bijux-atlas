@@ -24,7 +24,7 @@ impl Domain for PerfDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/06-development/automation-control-plane.md"]
+        &["docs/bijux-atlas-dev/automation/automation-control-plane.md"]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

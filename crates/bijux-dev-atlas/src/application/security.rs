@@ -3219,7 +3219,7 @@ methods: [api-key, token, oidc, mtls]
 runtime_auth_mode_env: ATLAS_AUTH_MODE
 docs:
   model: docs/architecture/security/authentication-strategy.md
-  runbook: docs/04-operations/security-operations.md
+  runbook: docs/bijux-atlas-ops/kubernetes/security-operations.md
 "#,
         )
         .expect("write auth-model.yaml");

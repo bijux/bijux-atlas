@@ -3,7 +3,7 @@
 
 help: ## Show curated makes targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) makes surface --format $(FORMAT)
-	@printf '%s\n' "guide: docs/06-development/automation-control-plane.md" "reference: docs/07-reference/automation-command-surface.md" "makes: makes/README.md"
+	@printf '%s\n' "guide: docs/bijux-atlas-dev/automation/automation-control-plane.md" "reference: docs/bijux-atlas-dev/automation/automation-command-surface.md" "makes: makes/README.md"
 
 _internal-list: ## Print curated makes target names
 	@$(DEV_ATLAS) makes list --format $(FORMAT)
@@ -14,7 +14,7 @@ _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 
 _internal-surface: ## Print the makes surface and docs pointers for Rust control plane
 	@$(MAKE) -s help
-	@printf '%s\n' "Docs: docs/06-development/automation-control-plane.md docs/07-reference/automation-command-surface.md makes/README.md"
+	@printf '%s\n' "Docs: docs/bijux-atlas-dev/automation/automation-control-plane.md docs/bijux-atlas-dev/automation/automation-command-surface.md makes/README.md"
 
 makes-target-list: ## Regenerate the makes public target list artifact
 	@$(DEV_ATLAS) makes target-list --allow-write --format $(FORMAT) >/dev/null

@@ -2252,12 +2252,12 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         std::collections::BTreeSet::new()
                     };
                 let samples = [
-                    "index.html",
-                    "repository/index.html",
-                    "runtime/index.html",
-                    "runtime/packages/bijux-atlas/index.html",
-                    "maintainer/index.html",
-                    "maintainer/packages/bijux-dev-atlas/index.html",
+                    "bijux-atlas/index.html",
+                    "bijux-atlas/foundations/index.html",
+                    "bijux-atlas-dev/index.html",
+                    "bijux-atlas-dev/automation/index.html",
+                    "bijux-atlas-ops/index.html",
+                    "bijux-atlas-ops/kubernetes/index.html",
                 ];
                 let mut rows = Vec::new();
                 let mut failures = Vec::new();
@@ -2289,9 +2289,14 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let has_detail_strip = text.contains("data-bijux-detail-strip");
                     let has_package_tabs = text.contains("/repository/packages/")
                         || text.contains("/runtime/packages/bijux-atlas/")
-                        || text.contains("/maintainer/packages/bijux-dev-atlas/");
+                        || text.contains("/maintainer/packages/bijux-dev-atlas/")
+                        || text.contains("/bijux-atlas/")
+                        || text.contains("/bijux-atlas-dev/")
+                        || text.contains("/bijux-atlas-ops/");
                     let expected_doc_path = if sample == "index.html" {
                         "docs/index.md".to_string()
+                    } else if sample.ends_with("/index.html") {
+                        "docs/".to_string() + sample.trim_end_matches("index.html") + "index.md"
                     } else {
                         "docs/".to_string()
                             + sample.trim_end_matches("index.html").trim_end_matches('/')

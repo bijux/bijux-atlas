@@ -25,8 +25,8 @@ impl Domain for DocsDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/08-contracts/automation-contracts.md",
-            "docs/07-reference/automation-reports-reference.md",
+            "docs/bijux-atlas-dev/governance/automation-contracts.md",
+            "docs/bijux-atlas-dev/automation/automation-reports-reference.md",
         ]
     }
 

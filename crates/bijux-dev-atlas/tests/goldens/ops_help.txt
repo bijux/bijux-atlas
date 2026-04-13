@@ -63,13 +63,13 @@ Options:
   -h, --help                           Print help
 
 Ops Pillars And Docs Entrypoints:
-  inventory -> docs/07-reference/command-surface.md
-  schema -> docs/07-reference/index.md
-  datasets -> docs/04-operations/index.md
-  e2e -> docs/04-operations/performance-and-load.md
-  env -> docs/04-operations/runtime-configuration.md
-  stack -> docs/04-operations/deployment-models.md
-  k8s -> docs/04-operations/deployment-models.md
-  load -> docs/04-operations/performance-and-load.md
-  observe -> docs/04-operations/logging-metrics-and-tracing.md
-  report -> docs/07-reference/automation-reports-reference.md
+  inventory -> docs/bijux-atlas/interfaces/command-surface.md
+  schema -> docs/bijux-atlas/interfaces/index.md
+  datasets -> docs/bijux-atlas-ops/index.md
+  e2e -> docs/bijux-atlas-ops/load/performance-and-load.md
+  env -> docs/bijux-atlas-ops/kubernetes/runtime-configuration.md
+  stack -> docs/bijux-atlas-ops/stack/deployment-models.md
+  k8s -> docs/bijux-atlas-ops/stack/deployment-models.md
+  load -> docs/bijux-atlas-ops/load/performance-and-load.md
+  observe -> docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md
+  report -> docs/bijux-atlas-dev/automation/automation-reports-reference.md

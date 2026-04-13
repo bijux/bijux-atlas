@@ -24,8 +24,8 @@ impl Domain for ConfigsDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/07-reference/runtime-config-reference.md",
-            "docs/06-development/workspace-and-tooling.md",
+            "docs/bijux-atlas/interfaces/runtime-config-reference.md",
+            "docs/bijux-atlas-dev/workspace/workspace-and-tooling.md",
         ]
     }
 

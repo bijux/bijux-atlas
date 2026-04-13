@@ -145,22 +145,22 @@ pub fn closure_index_report() -> serde_json::Value {
             {
                 "check_id": "REPO-003",
                 "title": "Helm env subset",
-                "docs_path": "docs/04-operations/deployment-models.md"
+                "docs_path": "docs/bijux-atlas-ops/stack/deployment-models.md"
             },
             {
                 "check_id": "REPO-004",
                 "title": "Ops profile matrix",
-                "docs_path": "docs/04-operations/deployment-models.md"
+                "docs_path": "docs/bijux-atlas-ops/stack/deployment-models.md"
             },
             {
                 "check_id": "REPO-005",
                 "title": "Docs site output",
-                "docs_path": "docs/06-development/documentation-standards.md"
+                "docs_path": "docs/bijux-atlas-dev/governance/documentation-standards.md"
             },
             {
                 "check_id": "runtime-env-allowlist",
                 "title": "Runtime env allowlist enforcement",
-                "docs_path": "docs/07-reference/runtime-config-reference.md"
+                "docs_path": "docs/bijux-atlas/interfaces/runtime-config-reference.md"
             }
         ]
     })

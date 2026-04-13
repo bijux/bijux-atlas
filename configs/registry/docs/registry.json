@@ -3,52 +3,22 @@
   "registry_id": "docs-sections",
   "sections": [
     {
-      "id": "introduction",
-      "path": "docs/01-introduction",
+      "id": "atlas",
+      "path": "docs/bijux-atlas",
       "owner": "atlas-docs",
-      "entrypoint": "docs/01-introduction/index.md"
+      "entrypoint": "docs/bijux-atlas/index.md"
     },
     {
-      "id": "getting-started",
-      "path": "docs/02-getting-started",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/02-getting-started/index.md"
+      "id": "atlas-dev",
+      "path": "docs/bijux-atlas-dev",
+      "owner": "atlas-dev-docs",
+      "entrypoint": "docs/bijux-atlas-dev/index.md"
     },
     {
-      "id": "user-guide",
-      "path": "docs/03-user-guide",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/03-user-guide/index.md"
-    },
-    {
-      "id": "operations",
-      "path": "docs/04-operations",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/04-operations/index.md"
-    },
-    {
-      "id": "architecture",
-      "path": "docs/05-architecture",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/05-architecture/index.md"
-    },
-    {
-      "id": "development",
-      "path": "docs/06-development",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/06-development/index.md"
-    },
-    {
-      "id": "reference",
-      "path": "docs/07-reference",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/07-reference/index.md"
-    },
-    {
-      "id": "contracts",
-      "path": "docs/08-contracts",
-      "owner": "atlas-docs",
-      "entrypoint": "docs/08-contracts/index.md"
+      "id": "atlas-ops",
+      "path": "docs/bijux-atlas-ops",
+      "owner": "atlas-ops-docs",
+      "entrypoint": "docs/bijux-atlas-ops/index.md"
     }
   ]
 }

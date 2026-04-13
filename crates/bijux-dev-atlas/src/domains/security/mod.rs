@@ -24,7 +24,7 @@ impl Domain for SecurityDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/04-operations/security-operations.md"]
+        &["docs/bijux-atlas-ops/kubernetes/security-operations.md"]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

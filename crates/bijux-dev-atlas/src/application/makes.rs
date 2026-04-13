@@ -102,8 +102,8 @@ fn run_explain(args: MakesExplainArgs, started: Instant) -> Result<(String, i32)
             "what_it_runs": recipe_lines,
             "artifacts": artifact_paths,
             "where_to_read": [
-                "docs/06-development/automation-control-plane.md",
-                "docs/07-reference/automation-command-surface.md",
+                "docs/bijux-atlas-dev/automation/automation-control-plane.md",
+                "docs/bijux-atlas-dev/automation/automation-command-surface.md",
                 "makes/README.md",
             ],
             "defined_in": metadata.get("defined_in").cloned().unwrap_or_default(),
@@ -120,8 +120,8 @@ fn run_explain(args: MakesExplainArgs, started: Instant) -> Result<(String, i32)
             "text": format!("{target} is not part of the curated makes surface"),
             "hint": "Use `bijux dev atlas makes list` to inspect supported targets.",
             "where_to_read": [
-                "docs/06-development/automation-control-plane.md",
-                "docs/07-reference/automation-command-surface.md",
+                "docs/bijux-atlas-dev/automation/automation-control-plane.md",
+                "docs/bijux-atlas-dev/automation/automation-command-surface.md",
                 "makes/README.md",
             ],
             "source": "makes/root.mk:CURATED_TARGETS",

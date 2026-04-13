@@ -1,5 +1,5 @@
 id: MIT-EXAMPLE-CONTROL
 title: Example mitigation control
 control_check_id: SEC-EXAMPLE-001
-docs_page: docs/04-operations/security-operations.md
-runbook_page: docs/04-operations/security-operations.md
+docs_page: docs/bijux-atlas-ops/kubernetes/security-operations.md
+runbook_page: docs/bijux-atlas-ops/kubernetes/security-operations.md

@@ -159,23 +159,27 @@ fn infer_domain(group: &str, check_id: &str) -> &'static str {
 fn default_doc_ref(domain: &'static str) -> DocRef {
     match domain {
         "configs" => DocRef::new(
-            "docs/07-reference/runtime-config-reference.md",
+            "docs/bijux-atlas/interfaces/runtime-config-reference.md",
             None,
             "Runtime Config Reference",
         ),
         "docs" => DocRef::new(
-            "docs/06-development/documentation-standards.md",
+            "docs/bijux-atlas-dev/governance/documentation-standards.md",
             None,
             "Documentation Standards",
         ),
-        "docker" => DocRef::new("docs/08-contracts/index.md", None, "Contracts Overview"),
+        "docker" => DocRef::new(
+            "docs/bijux-atlas/contracts/index.md",
+            None,
+            "Contracts Overview",
+        ),
         "ops" => DocRef::new(
-            "docs/07-reference/automation-command-surface.md",
+            "docs/bijux-atlas-dev/automation/automation-command-surface.md",
             None,
             "Automation Command Surface",
         ),
         _ => DocRef::new(
-            "docs/08-contracts/ownership-and-versioning.md",
+            "docs/bijux-atlas/contracts/ownership-and-versioning.md",
             None,
             "Ownership And Versioning",
         ),

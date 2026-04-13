@@ -2695,10 +2695,10 @@ fn governance_adr_index_payload(root: &Path) -> Result<serde_json::Value, String
 
 fn required_governance_docs() -> &'static [&'static str] {
     &[
-        "docs/05-architecture/source-layout-and-ownership.md",
-        "docs/06-development/decision-records-and-ownership.md",
-        "docs/06-development/automation-control-plane.md",
-        "docs/06-development/contributor-workflow.md",
+        "docs/bijux-atlas/runtime/source-layout-and-ownership.md",
+        "docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md",
+        "docs/bijux-atlas-dev/automation/automation-control-plane.md",
+        "docs/bijux-atlas-dev/workspace/contributor-workflow.md",
     ]
 }
 
@@ -2714,7 +2714,7 @@ fn governance_docs_validation_errors(root: &Path) -> Vec<String> {
 
 fn contributor_guideline_validation_errors(root: &Path) -> Vec<String> {
     let mut errors = Vec::new();
-    let onboarding_path = root.join("docs/06-development/contributor-workflow.md");
+    let onboarding_path = root.join("docs/bijux-atlas-dev/workspace/contributor-workflow.md");
     let text = match fs::read_to_string(&onboarding_path) {
         Ok(value) => value,
         Err(_) => {

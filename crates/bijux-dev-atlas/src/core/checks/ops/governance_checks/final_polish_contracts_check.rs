@@ -94,7 +94,7 @@ pub(super) fn checks_ops_final_polish_contracts(
             ],
         ),
         (
-            "docs/04-operations/incident-response.md",
+            "docs/bijux-atlas-ops/observability/incident-response.md",
             vec![
                 "- Owner:",
                 "- Purpose:",
@@ -105,7 +105,7 @@ pub(super) fn checks_ops_final_polish_contracts(
             ],
         ),
         (
-            "docs/06-development/release-and-versioning.md",
+            "docs/bijux-atlas-dev/delivery/release-and-versioning.md",
             vec![
                 "- Owner:",
                 "- Purpose:",

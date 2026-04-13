@@ -24,7 +24,7 @@ impl Domain for ReleaseDomain {
     }
 
     fn docs_links(&self) -> &'static [&'static str] {
-        &["docs/06-development/release-and-versioning.md"]
+        &["docs/bijux-atlas-dev/delivery/release-and-versioning.md"]
     }
 
     fn required_tools(&self) -> &'static [&'static str] {

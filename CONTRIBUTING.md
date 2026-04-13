@@ -42,7 +42,7 @@ make docs-validate
 Start here before opening a broad change:
 
 - contributor workflow: [`docs/06-development/contributor-workflow.md`](docs/06-development/contributor-workflow.md)
-- automation model: [`docs/06-development/automation-control-plane.md`](docs/06-development/automation-control-plane.md)
+- automation model: [`docs/bijux-atlas-dev/automation/automation-control-plane.md`](docs/bijux-atlas-dev/automation/automation-control-plane.md)
 - local workflow: [`docs/06-development/local-development.md`](docs/06-development/local-development.md)
 - testing expectations: [`docs/06-development/testing-and-evidence.md`](docs/06-development/testing-and-evidence.md)
 - change and compatibility model: [`docs/06-development/change-and-compatibility.md`](docs/06-development/change-and-compatibility.md)

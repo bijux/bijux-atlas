@@ -11,7 +11,7 @@
       "status": "planned",
       "authoritative_implementation": "bijux-dev-atlas ci lane ci-pr-fast",
       "replacement_plan": "Move the mixed lint, diff, governance, and summary logic behind an atlas ci lane command.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-ci-pr-run-pr-lane",
@@ -23,7 +23,7 @@
       "status": "planned",
       "authoritative_implementation": "bijux-dev-atlas ci lane ci-pr-full",
       "replacement_plan": "Continue splitting workflow-local jq, python, grep, and count gates into atlas ci verify and ci lane commands.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-ci-pr-run-audit-lane",
@@ -35,7 +35,7 @@
       "status": "planned",
       "authoritative_implementation": "bijux-dev-atlas ci lane ci-supply-chain",
       "replacement_plan": "Wrap the remaining supply-chain shell lane in a single atlas command surface.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-ci-pr-workflow-policy",
@@ -48,7 +48,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify workflow-policy --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify workflow-policy",
       "replacement_plan": "Use the atlas workflow-policy verifier as the single authoritative implementation.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-dependency-review-action",
@@ -60,7 +60,7 @@
       "status": "planned",
       "authoritative_implementation": "bijux-dev-atlas ci lane dependency-review",
       "replacement_plan": "Mirror dependency review policy in atlas before retiring the workflow-local third-party enforcement step.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-dependency-lock-verify-changed-paths",
@@ -73,7 +73,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify dependency-lock --allow-git --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify dependency-lock",
       "replacement_plan": "Use the atlas dependency-lock verifier as the single changed-path gate.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-audit-docs-lint",
@@ -86,7 +86,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json",
       "authoritative_implementation": "bijux-dev-atlas docs lint",
       "replacement_plan": "Keep docs linting in the atlas docs command surface.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-audit-docs-build",
@@ -99,7 +99,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify docs-preview",
       "replacement_plan": "Use atlas docs-preview verification to build the site and validate canonical site output invariants.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-only-docs-lint",
@@ -112,7 +112,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json",
       "authoritative_implementation": "bijux-dev-atlas docs lint",
       "replacement_plan": "Keep docs linting in the atlas docs command surface.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-only-docs-build",
@@ -125,7 +125,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify docs-preview",
       "replacement_plan": "Use atlas docs-preview verification to build the site and validate canonical site output invariants.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-only-diff-summary",
@@ -138,7 +138,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-diff --allow-git --allow-write --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify docs-diff",
       "replacement_plan": "Use atlas docs-diff verification to generate the docs diff summary artifact.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-docs-only-quality-summary",
@@ -151,7 +151,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-quality --allow-write --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify docs-quality",
       "replacement_plan": "Use atlas docs-quality verification to publish the committed docs coverage artifact into the run reports.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     },
     {
       "policy_id": "ci-policy-release-candidate-release-guard",
@@ -164,7 +164,7 @@
       "control_plane_command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify release-candidate --allow-git --format json",
       "authoritative_implementation": "bijux-dev-atlas ci verify release-candidate",
       "replacement_plan": "Use atlas release-candidate verification for clean-tree, lockfile, and tag/version alignment gates.",
-      "docs": "docs/06-development/automation-control-plane.md"
+      "docs": "docs/bijux-atlas-dev/automation/automation-control-plane.md"
     }
   ]
 }

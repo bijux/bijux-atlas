@@ -307,9 +307,9 @@ fn render_docs_reference_repo_map(_repo_root: &std::path::Path) -> Result<String
 This page is the stable reader entrypoint for repository layout. Use the curated layout guide and section entrypoints to\n\
 understand ownership, boundaries, and where material lives.\n\n\
 ## Canonical Inputs\n\n\
-- `docs/05-architecture/source-layout-and-ownership.md`\n\
+- `docs/bijux-atlas/runtime/source-layout-and-ownership.md`\n\
 - `docs/index.md`\n\
-- `docs/07-reference/index.md`\n\n\
+- `docs/bijux-atlas/interfaces/index.md`\n\n\
 ## Reader Guidance\n\n\
 Start with the curated layout guide when you need to understand ownership or subsystem boundaries. Follow the nearest\n\
 checked-in index page in the area you are working in rather than relying on generated inventory artifacts.\n\n\

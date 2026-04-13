@@ -251,7 +251,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "warmup-pod-restart" => vec![
             (
                 "warmup lock doc",
-                repo_root.join("docs/04-operations/runtime-configuration.md"),
+                repo_root.join("docs/bijux-atlas-ops/kubernetes/runtime-configuration.md"),
             ),
             (
                 "warmup lock metric contract",
@@ -265,7 +265,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "redis-outage" => vec![
             (
                 "network policy guide",
-                repo_root.join("docs/04-operations/security-operations.md"),
+                repo_root.join("docs/bijux-atlas-ops/kubernetes/security-operations.md"),
             ),
             (
                 "error registry",
@@ -273,7 +273,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "drills guide",
-                repo_root.join("docs/04-operations/incident-response.md"),
+                repo_root.join("docs/bijux-atlas-ops/observability/incident-response.md"),
             ),
         ],
         "offline-network-deny" | "offline-prewarm-serve" => vec![
@@ -281,7 +281,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ("network policy examples", repo_root.join("ops/k8s/values/networkpolicy-examples.yaml")),
             (
                 "health endpoints contract",
-                repo_root.join("docs/08-contracts/operational-contracts.md"),
+                repo_root.join("docs/bijux-atlas/contracts/operational-contracts.md"),
             ),
         ],
         "catalog-unreachable" => vec![
@@ -291,7 +291,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "health endpoints contract",
-                repo_root.join("docs/08-contracts/operational-contracts.md"),
+                repo_root.join("docs/bijux-atlas/contracts/operational-contracts.md"),
             ),
             (
                 "error registry",
@@ -305,7 +305,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "release evidence guide",
-                repo_root.join("docs/08-contracts/operational-contracts.md"),
+                repo_root.join("docs/bijux-atlas/contracts/operational-contracts.md"),
             ),
             (
                 "error registry",
@@ -315,7 +315,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
         "rollout-failure-recovery" => vec![
             (
                 "upgrade guide",
-                repo_root.join("docs/04-operations/upgrades-and-rollback.md"),
+                repo_root.join("docs/bijux-atlas-ops/release/upgrades-and-rollback.md"),
             ),
             (
                 "rollback schema",
@@ -323,7 +323,7 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
             (
                 "lifecycle contract",
-                repo_root.join("docs/08-contracts/operational-contracts.md"),
+                repo_root.join("docs/bijux-atlas/contracts/operational-contracts.md"),
             ),
         ],
         "invalid-config-rejected" => vec![

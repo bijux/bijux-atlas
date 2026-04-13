@@ -26,8 +26,8 @@ impl Domain for OpsDomain {
 
     fn docs_links(&self) -> &'static [&'static str] {
         &[
-            "docs/07-reference/automation-command-surface.md",
-            "docs/08-contracts/operational-contracts.md",
+            "docs/bijux-atlas-dev/automation/automation-command-surface.md",
+            "docs/bijux-atlas/contracts/operational-contracts.md",
         ]
     }
 

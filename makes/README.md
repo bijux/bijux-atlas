@@ -22,7 +22,7 @@ recipes.
 - Public target list: `makes/root.mk`
 - Public target artifact: `makes/target-list.json`
 - Target ownership and workflow mapping: `configs/sources/operations/ops/makes-targets.json`
-- Repository automation guide: `docs/06-development/automation-control-plane.md`
+- Repository automation guide: `docs/bijux-atlas-dev/automation/automation-control-plane.md`
 - Command reference: `docs/07-reference/automation-command-surface.md`
 
 ## Update Rules

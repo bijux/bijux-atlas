@@ -111,9 +111,9 @@
       "severity": "high",
       "rule_type": "required_files_exist",
       "paths": [
-        "docs/05-architecture/source-layout-and-ownership.md",
-        "docs/06-development/decision-records-and-ownership.md",
-        "docs/06-development/automation-control-plane.md"
+        "docs/bijux-atlas/runtime/source-layout-and-ownership.md",
+        "docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md",
+        "docs/bijux-atlas-dev/automation/automation-control-plane.md"
       ],
       "classification": "documentation"
     },

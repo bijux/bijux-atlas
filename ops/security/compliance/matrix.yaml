@@ -2,37 +2,37 @@ schema_version: 1
 mappings:
   - control_id: CTRL-AUTH-001
     evidence:
-      - docs/04-operations/security-operations.md
-      - docs/04-operations/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
       - configs/sources/security/auth-model.yaml
       - configs/sources/security/policy.yaml
   - control_id: CTRL-AUDIT-001
     evidence:
-      - docs/04-operations/security-operations.md
-      - docs/04-operations/security-operations.md
-      - docs/04-operations/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
       - configs/sources/operations/observability/schemas/audit-log.schema.json
       - configs/sources/operations/observability/retention.yaml
       - artifacts/security/audit-verify.json
   - control_id: CTRL-PRIV-001
     evidence:
-      - docs/04-operations/security-operations.md
-      - docs/04-operations/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
       - configs/sources/security/data-classification.yaml
       - configs/sources/security/redaction.json
   - control_id: CTRL-LOG-001
     evidence:
       - configs/schemas/contracts/observability/log.schema.json
-      - docs/08-contracts/operational-contracts.md
+      - docs/bijux-atlas/contracts/operational-contracts.md
   - control_id: CTRL-EVID-001
     evidence:
       - ops/release/evidence/manifest.json
-      - docs/08-contracts/operational-contracts.md
+      - docs/bijux-atlas/contracts/operational-contracts.md
   - control_id: CTRL-NP-001
     evidence:
-      - docs/04-operations/security-operations.md
+      - docs/bijux-atlas-ops/kubernetes/security-operations.md
       - ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml
   - control_id: CTRL-OBS-001
     evidence:
       - ops/schema/k8s/obs-verify.schema.json
-      - docs/08-contracts/operational-contracts.md
+      - docs/bijux-atlas/contracts/operational-contracts.md

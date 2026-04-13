@@ -39,7 +39,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
         Path::new("ops/CONTRACT.md"),
         Path::new("ops/INDEX.md"),
         Path::new("ops/README.md"),
-        Path::new("docs/04-operations/index.md"),
+        Path::new("docs/bijux-atlas-ops/index.md"),
     ];
     for rel in canonical_docs {
         let path = ctx.repo_root.join(rel);
@@ -225,4 +225,3 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
     }
     Ok(violations)
 }
-

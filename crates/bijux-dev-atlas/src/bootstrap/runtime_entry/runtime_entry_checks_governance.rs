@@ -569,7 +569,7 @@ pub(crate) fn run_check_root_surface_explain(
     let manifest_rel = Path::new("ops/inventory/root-surface.json");
     let allowlist_rel =
         Path::new("configs/sources/repository/repo-surface/root-file-allowlist.json");
-    let rationale_rel = Path::new("docs/05-architecture/source-layout-and-ownership.md");
+    let rationale_rel = Path::new("docs/bijux-atlas/runtime/source-layout-and-ownership.md");
 
     let manifest: serde_json::Value = serde_json::from_str(
         &fs::read_to_string(root.join(manifest_rel))

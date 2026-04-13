@@ -119,7 +119,7 @@ Repository docs in this worktree:
 
 - docs index: [../../docs/index.md](../../docs/index.md)
 - command surface: [../../docs/07-reference/automation-command-surface.md](../../docs/07-reference/automation-command-surface.md)
-- commands and usage: [../../docs/06-development/automation-control-plane.md](../../docs/06-development/automation-control-plane.md)
+- commands and usage: [../../docs/bijux-atlas-dev/automation/automation-control-plane.md](../../docs/bijux-atlas-dev/automation/automation-control-plane.md)
 
 Governance and contracts:
 

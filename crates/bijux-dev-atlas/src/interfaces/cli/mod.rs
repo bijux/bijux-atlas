@@ -85,7 +85,7 @@ pub enum Command {
         out: Option<PathBuf>,
     },
     #[command(
-        after_help = "Ops Pillars And Docs Entrypoints:\n  inventory -> docs/07-reference/command-surface.md\n  schema -> docs/07-reference/index.md\n  datasets -> docs/04-operations/index.md\n  e2e -> docs/04-operations/performance-and-load.md\n  env -> docs/04-operations/runtime-configuration.md\n  stack -> docs/04-operations/deployment-models.md\n  k8s -> docs/04-operations/deployment-models.md\n  load -> docs/04-operations/performance-and-load.md\n  observe -> docs/04-operations/logging-metrics-and-tracing.md\n  report -> docs/07-reference/automation-reports-reference.md"
+        after_help = "Ops Pillars And Docs Entrypoints:\n  inventory -> docs/bijux-atlas/interfaces/command-surface.md\n  schema -> docs/bijux-atlas/interfaces/index.md\n  datasets -> docs/bijux-atlas-ops/index.md\n  e2e -> docs/bijux-atlas-ops/load/performance-and-load.md\n  env -> docs/bijux-atlas-ops/kubernetes/runtime-configuration.md\n  stack -> docs/bijux-atlas-ops/stack/deployment-models.md\n  k8s -> docs/bijux-atlas-ops/stack/deployment-models.md\n  load -> docs/bijux-atlas-ops/load/performance-and-load.md\n  observe -> docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md\n  report -> docs/bijux-atlas-dev/automation/automation-reports-reference.md"
     )]
     Ops {
         #[command(subcommand)]

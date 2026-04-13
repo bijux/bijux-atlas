@@ -2,14 +2,9 @@
   "schema_version": 1,
   "owner": "bijux-atlas-platform",
   "areas": {
-    "docs/01-introduction": "bijux-atlas-docs",
-    "docs/02-getting-started": "bijux-atlas-docs",
-    "docs/03-user-guide": "bijux-atlas-docs",
-    "docs/04-operations": "bijux-atlas-operations",
-    "docs/05-architecture": "bijux-atlas-platform",
-    "docs/06-development": "bijux-atlas-platform",
-    "docs/07-reference": "bijux-atlas-docs",
-    "docs/08-contracts": "bijux-atlas-platform",
+    "docs/bijux-atlas": "bijux-atlas-docs",
+    "docs/bijux-atlas-dev": "bijux-atlas-platform",
+    "docs/bijux-atlas-ops": "bijux-atlas-operations",
     "docs/assets": "bijux-atlas-docs"
   }
 }
