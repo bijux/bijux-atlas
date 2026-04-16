@@ -2283,10 +2283,13 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         || text.contains("md-tabs")
                         || text.contains("md-tabs__item");
                     let has_side_nav = text.contains("md-nav") || text.contains("md-sidebar");
+                    // Accept both legacy detail-strip marker and current course-strip
+                    // marker while repositories finish converging on shared shell naming.
+                    let has_detail_strip = text.contains("data-bijux-detail-strip")
+                        || text.contains("data-bijux-course-strip");
                     let has_shared_chrome = text.contains("bijux-hub-strip")
                         && text.contains("bijux-site-tabs")
-                        && text.contains("data-bijux-detail-strip");
-                    let has_detail_strip = text.contains("data-bijux-detail-strip");
+                        && has_detail_strip;
                     let has_package_tabs = text.contains("/repository/packages/")
                         || text.contains("/runtime/packages/bijux-atlas/")
                         || text.contains("/maintainer/packages/bijux-dev-atlas/")
