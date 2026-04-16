@@ -20,6 +20,7 @@ include makes/contracts.mk
 include makes/dev.mk
 include makes/docker.mk
 include makes/docs.mk
+include makes/bijux-docs.mk
 include makes/entrypoints.mk
 include makes/gh.mk
 include makes/k8s.mk

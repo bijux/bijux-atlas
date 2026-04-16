@@ -14,6 +14,7 @@ docs-doctor: ## Run docs doctor checks
 
 docs-check: ## Validate, build, and smoke-test the docs surface through dev-atlas
 	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
+	@$(MAKE) -s bijux-docs-check FORMAT=$(FORMAT)
 	@$(MAKE) -s docs-validate FORMAT=$(FORMAT)
 	@$(MAKE) -s docs-build FORMAT=$(FORMAT)
 	@$(MAKE) -s docs-ux-smoke FORMAT=$(FORMAT)
@@ -28,6 +29,7 @@ docs-external-links: ## Run docs external link checks
 
 docs-build: ## Build docs into artifacts
 	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
+	@$(MAKE) -s bijux-docs-sync FORMAT=$(FORMAT)
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format $(FORMAT)
 
 docs-ux-smoke: ## Verify rendered docs chrome and navigation markers
@@ -36,6 +38,7 @@ docs-ux-smoke: ## Verify rendered docs chrome and navigation markers
 
 docs-serve: ## Serve docs locally
 	@mkdir -p "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
+	@$(MAKE) -s bijux-docs-sync FORMAT=$(FORMAT)
 	@$(DEV_ATLAS) docs serve --allow-subprocess --allow-network --format $(FORMAT)
 
 docs-clean: ## Clean docs generated outputs
