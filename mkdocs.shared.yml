@@ -34,18 +34,26 @@ theme:
     - content.action.edit
     - content.action.view
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme)"
       primary: teal
       accent: cyan
       toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - scheme: slate
-      primary: teal
-      accent: cyan
-      toggle:
-        icon: material/weather-sunny
+        icon: material/theme-light-dark
         name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/moon-waning-crescent
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to system mode
 
 plugins:
   - search
@@ -85,6 +93,8 @@ extra:
   homepage: https://bijux.io/
   bijux:
     repository: bijux-atlas
+    nav_mode: default
+    theme_key: bijux:theme
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/bijux
