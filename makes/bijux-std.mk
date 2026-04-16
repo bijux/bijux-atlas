@@ -11,7 +11,9 @@ BIJUX_STD_TAG_PATTERN ?= v*
 .PHONY: bijux-std-checks bijux-std-update bijux-std
 
 bijux-std-checks: ## Verify shared directories match bijux-std (set BIJUX_STD_REF for pinning)
-	@BIJUX_STD_REF="$(BIJUX_STD_REF)" BIJUX_STD_REMOTE="$(BIJUX_STD_REMOTE)" bash "$(BIJUX_STD_CHECK_SCRIPT)"
+	@tmpdir="$${TMPDIR:-$(CURDIR)/artifacts/isolates/bijux-std-checks/tmp}"; \
+	mkdir -p "$$tmpdir"; \
+	TMPDIR="$$tmpdir" BIJUX_STD_REF="$(BIJUX_STD_REF)" BIJUX_STD_REMOTE="$(BIJUX_STD_REMOTE)" bash "$(BIJUX_STD_CHECK_SCRIPT)"
 
 bijux-std-update: ## Update shared directories from bijux-std (set BIJUX_STD_UPDATE_CHANNEL=branch|tag)
 	@BIJUX_STD_REF="$(BIJUX_STD_REF)" BIJUX_STD_GIT_URL="$(BIJUX_STD_GIT_URL)" BIJUX_STD_UPDATE_CHANNEL="$(BIJUX_STD_UPDATE_CHANNEL)" BIJUX_STD_TAG_PATTERN="$(BIJUX_STD_TAG_PATTERN)" bash "$(BIJUX_STD_UPDATE_SCRIPT)"
