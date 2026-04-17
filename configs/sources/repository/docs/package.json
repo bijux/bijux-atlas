@@ -13,5 +13,9 @@
     "cspell": "8.14.4",
     "markdownlint-cli2": "0.22.0",
     "markdownlint-cli2-formatter-default": "0.0.6"
+  },
+  "overrides": {
+    "flatted": "3.4.2",
+    "picomatch": "2.3.2"
   }
 }
