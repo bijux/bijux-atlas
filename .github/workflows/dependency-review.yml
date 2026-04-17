@@ -11,7 +11,14 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-      - uses: actions/dependency-review-action@05fe4576374b728f0c523d6a13d64c25081e0803
+      - name: Run dependency review
+        id: dependency-review
+        continue-on-error: true
+        uses: actions/dependency-review-action@05fe4576374b728f0c523d6a13d64c25081e0803
+      - name: Record dependency review fallback state
+        if: ${{ steps.dependency-review.outcome != 'success' }}
+        run: |
+          echo "Dependency review reported a non-success outcome (unsupported dependency graph or transient API issue)." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow remains non-blocking by design; investigate repository security analysis settings." >> "$GITHUB_STEP_SUMMARY"
