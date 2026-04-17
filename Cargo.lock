@@ -288,9 +288,9 @@ dependencies = [
 
 [[package]]
 name = "bijux-cli"
-version = "0.3.2"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e70904dfd0e271892124391c54a7d6f8af94cdf83996e249e425c002f16a9ae"
+checksum = "3b11e0ea22b3783ba5c5b5f5ef0e3600306ffa668701517d365daee868653410"
 dependencies = [
  "anyhow",
  "clap",
