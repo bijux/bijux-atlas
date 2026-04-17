@@ -122,11 +122,19 @@
   </nav>
   {% for nav_item in nav %}
     {% if nav_item.children %}
+      {% set promoted_home_wrapper = not allow_flattened_detail_rows and nav_item.children | length == 1 and nav_item.children[0].title == "Home" and nav_item.children[0].children %}
+      {% set detail_source = nav_item.children[0].children if promoted_home_wrapper else nav_item.children %}
+      {% set detail_root_path = bijux_nav.first_page_path(nav_item.children[0]) | trim if promoted_home_wrapper else bijux_nav.first_page_path(nav_item) | trim %}
       {% set detail_items = namespace(list=[]) %}
-      {% for child in nav_item.children %}
+      {% for child in detail_source %}
         {% set child_src_uri = child.file.src_uri if child.file else "" %}
         {% set child_is_index = child.is_index or child_src_uri.endswith('/index.md') or child_src_uri == 'index.md' %}
-        {% if allow_flattened_detail_rows or child.children or child_is_index %}
+        {% set child_path = bijux_nav.first_page_path(child) | trim %}
+        {% if allow_flattened_detail_rows %}
+          {% if child.children or child_is_index %}
+            {% set _ = detail_items.list.append(child) %}
+          {% endif %}
+        {% elif child.children or (child_is_index and child_path != detail_root_path) %}
           {% set _ = detail_items.list.append(child) %}
         {% endif %}
       {% endfor %}
@@ -168,14 +176,22 @@
   {% endfor %}
   {% for nav_item in nav %}
     {% if nav_item.children %}
+      {% set promoted_home_wrapper = not allow_flattened_detail_rows and nav_item.children | length == 1 and nav_item.children[0].title == "Home" and nav_item.children[0].children %}
+      {% set detail_source = nav_item.children[0].children if promoted_home_wrapper else nav_item.children %}
       {% set program_index = loop.index %}
-      {% for course_item in nav_item.children %}
+      {% for course_item in detail_source %}
         {% if course_item.children %}
+          {% set course_root_path = bijux_nav.first_page_path(course_item) | trim %}
           {% set course_detail_items = namespace(list=[]) %}
           {% for child in course_item.children %}
             {% set child_src_uri = child.file.src_uri if child.file else "" %}
             {% set child_is_index = child.is_index or child_src_uri.endswith('/index.md') or child_src_uri == 'index.md' %}
-            {% if allow_flattened_detail_rows or child.children or child_is_index %}
+            {% set child_path = bijux_nav.first_page_path(child) | trim %}
+            {% if allow_flattened_detail_rows %}
+              {% if child.children or child_is_index %}
+                {% set _ = course_detail_items.list.append(child) %}
+              {% endif %}
+            {% elif child.children or (child_is_index and child_path != course_root_path) %}
               {% set _ = course_detail_items.list.append(child) %}
             {% endif %}
           {% endfor %}
