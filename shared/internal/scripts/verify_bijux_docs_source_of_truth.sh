@@ -123,9 +123,20 @@ if [[ ! -f "${local_manifest}" ]]; then
   exit 1
 fi
 
-verify_shared_manifest_entry "${local_manifest}" "shared/bijux-docs" "local repository"
-verify_shared_manifest_entry "${local_manifest}" "shared/bijux-makes-py" "local repository"
-verify_shared_manifest_entry "${local_manifest}" "shared/bijux-checks" "local repository"
+local_dirs=(
+  "shared/bijux-docs"
+  "shared/bijux-makes-py"
+  "shared/bijux-checks"
+  "shared/internal"
+)
+
+if [[ -d "${repo_root}/shared/bijux-gh-py" ]]; then
+  local_dirs+=("shared/bijux-gh-py")
+fi
+
+for dir_rel in "${local_dirs[@]}"; do
+  verify_shared_manifest_entry "${local_manifest}" "${dir_rel}" "local repository"
+done
 
 workspace_root="$(cd "${repo_root}/.." && pwd)"
 std_root="${BIJUX_STD_ROOT:-${workspace_root}/bijux-std}"
@@ -139,7 +150,7 @@ if [[ -f "${std_manifest}" ]]; then
     exit 1
   fi
 
-  for dir_rel in shared/bijux-docs shared/bijux-makes-py shared/bijux-checks; do
+  for dir_rel in "${local_dirs[@]}"; do
     local_sha="$(directory_tree_sha256 "${repo_root}/${dir_rel}")"
     std_sha="$(directory_tree_sha256 "${std_root}/${dir_rel}")"
     if [[ "${local_sha}" != "${std_sha}" ]]; then
