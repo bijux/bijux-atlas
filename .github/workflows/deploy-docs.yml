@@ -100,6 +100,7 @@ jobs:
           path: artifacts/docs/site
 
   deploy:
+    name: Deploy docs site
     needs: build
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
