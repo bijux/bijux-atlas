@@ -1,35 +1,33 @@
 name: CI
-
-on:
+true:
   push:
-    branches: [main]
-    tags: ["v*"]
-  pull_request:
-
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request: null
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   run:
     uses: ./.github/workflows/reusable-ci-rust-stack.yml
     with:
-      rust_toolchain_version: "1.86.0"
+      rust_toolchain_version: 1.86.0
       enable_python_toolchain: false
-      test_python_versions: '["3.11"]'
+      test_python_versions: "[\"3.11\"]"
       use_isolated_temp_roots: true
-      security_cargo_target_dir: ${{ github.workspace }}/.cache/cargo/target/security
-      security_cargo_home: ${{ github.workspace }}/.cache/cargo/home/security
+      security_cargo_target_dir: "${{ github.workspace }}/.cache/cargo/target/security"
+      security_cargo_home: "${{ github.workspace }}/.cache/cargo/home/security"
       security_tmp_relative: artifacts/isolates/security/tmp
-      test_cargo_target_dir: ${{ github.workspace }}/.cache/cargo/target/test
-      test_cargo_home: ${{ github.workspace }}/.cache/cargo/home/test
+      test_cargo_target_dir: "${{ github.workspace }}/.cache/cargo/target/test"
+      test_cargo_home: "${{ github.workspace }}/.cache/cargo/home/test"
       test_tmp_relative: artifacts/isolates/test/tmp
-      install_test_tools_command: make gh-test-install-rust-tools
+      install_test_tools_command: "make gh-test-install-rust-tools"
       expose_cargo_bin_path: true
-      fmt_command: make gh-fmt
-      lint_command: make gh-lint
-      security_command: make gh-security
-      test_command: make gh-test
+      fmt_command: "make gh-fmt"
+      lint_command: "make gh-lint"
+      security_command: "make gh-security"
+      test_command: "make gh-test"
