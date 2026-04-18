@@ -12,9 +12,15 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Refreshed dependency lockfiles to incorporate the current patched Rust and docs-tooling package versions tracked by security advisories.
 - Added explicit docs-tooling transitive dependency overrides to keep patched `flatted` and `picomatch` versions stable across installs.
+- Shared docs shell and standards synchronization continued from `bijux-std`,
+  including shared checks/tooling directory updates and digest refreshes.
+- Governance policy for main-branch protection and dependency automation was
+  codified in repository-managed ruleset and policy records.
 
 ### Fixed
 - Resolved all open Atlas Dependabot alerts and cleared superseded dependency-update pull requests.
+- Hardened docs and standards checks to stay in sync with shared source-of-truth
+  mirrors and current validation contracts.
 
 ## v0.2.0
 
