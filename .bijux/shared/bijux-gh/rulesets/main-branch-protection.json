@@ -42,5 +42,11 @@
       }
     }
   ],
-  "bypass_actors": []
+  "bypass_actors": [
+    {
+      "actor_id": 222414480,
+      "actor_type": "User",
+      "bypass_mode": "always"
+    }
+  ]
 }

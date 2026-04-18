@@ -5,19 +5,11 @@
 
 Required branch-protection checks for `main`:
 
-- `ci-pr / minimal-root-policies`
-- `ci-pr / validate-pr`
-- `ci-pr / supply-chain`
-- `ci-pr / workflow-policy`
-- `docs-only / docs`
-- `ops-validate / validate`
+- `checks (standard)` (from workflow `bijux-std`)
+- `checks (report)` (from workflow `bijux-std`)
 
-Optional PR checks:
+Notes:
 
-- `ops-integration-kind / kind-integration` (manual dispatch or nightly)
-
-Nightly health checks:
-
-- `ci-nightly / nightly-validation`
-
-If a workflow name or job name changes, update this file in the same change that renamed it.
+- Keep required checks limited to jobs that run on every pull request to avoid merge deadlocks from path-filtered workflows.
+- If workflow or job names change, update this file and `.github/rulesets/main-branch-protection.json` in the same change.
+- Branch bypass is restricted to `bijux` (GitHub user id `222414480`) only.

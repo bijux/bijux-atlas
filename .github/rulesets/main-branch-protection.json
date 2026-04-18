@@ -33,26 +33,20 @@
         "strict_required_status_checks_policy": true,
         "required_status_checks": [
           {
-            "context": "ci-pr / minimal-root-policies"
+            "context": "checks (standard)"
           },
           {
-            "context": "ci-pr / validate-pr"
-          },
-          {
-            "context": "ci-pr / supply-chain"
-          },
-          {
-            "context": "ci-pr / workflow-policy"
-          },
-          {
-            "context": "docs-only / docs"
-          },
-          {
-            "context": "ops-validate / validate"
+            "context": "checks (report)"
           }
         ]
       }
     }
   ],
-  "bypass_actors": []
+  "bypass_actors": [
+    {
+      "actor_id": 222414480,
+      "actor_type": "User",
+      "bypass_mode": "always"
+    }
+  ]
 }

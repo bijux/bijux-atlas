@@ -12,3 +12,4 @@ Notes:
 
 - Keep required checks limited to jobs that run on every pull request to avoid merge deadlocks from path-filtered workflows.
 - If workflow or job names change, update this file and `.github/rulesets/main-branch-protection.json` in the same change.
+- Branch bypass is restricted to `bijux` (GitHub user id `222414480`) only.
