@@ -21,32 +21,46 @@ DEFAULT_REPOS = [
     "bijux.github.io",
 ]
 
-SHARED_FILES = [
-    ".github/ISSUE_TEMPLATE/bug-report.yml",
-    ".github/ISSUE_TEMPLATE/config.yml",
-    ".github/ISSUE_TEMPLATE/feature-request.yml",
-    ".github/PULL_REQUEST_TEMPLATE/default.md",
-    ".github/PULL_REQUEST_TEMPLATE/release-change.md",
-    ".github/automation-identity.md",
-    ".github/required-status-checks.md",
-    ".github/rulesets/main-branch-protection.json",
-    ".github/scripts/build_repo_manifest.py",
-    ".github/scripts/check_pinned_actions.py",
-    ".github/scripts/check_protected_github_changes.py",
-    ".github/scripts/render_repo_configs.py",
-    ".github/scripts/sync_github_standards.py",
-    ".github/scripts/wait_for_ci.py",
-    ".github/standards/repo-config.manifest.json",
-    ".github/workflows/bijux-std.yml",
-    ".github/workflows/build-release-artifacts.yml",
-    ".github/workflows/deploy-docs.yml",
-    ".github/workflows/release-artifacts.yml",
-    ".github/workflows/release-github.yml",
-    ".github/workflows/reusable-ci-python-packages.yml",
-    ".github/workflows/reusable-verify-python-packages.yml",
-    ".github/workflows/reusable-ci-rust-stack.yml",
-    ".github/workflows/github-policy.yml",
-    ".github/bijux-std-shared.sha256",
+SHARED_FILE_MAPPINGS: list[tuple[str, str]] = [
+    (".github/ISSUE_TEMPLATE/bug-report.yml", ".github/ISSUE_TEMPLATE/bug-report.yml"),
+    (".github/ISSUE_TEMPLATE/config.yml", ".github/ISSUE_TEMPLATE/config.yml"),
+    (".github/ISSUE_TEMPLATE/feature-request.yml", ".github/ISSUE_TEMPLATE/feature-request.yml"),
+    (".github/PULL_REQUEST_TEMPLATE/default.md", ".github/PULL_REQUEST_TEMPLATE/default.md"),
+    (".github/PULL_REQUEST_TEMPLATE/release-change.md", ".github/PULL_REQUEST_TEMPLATE/release-change.md"),
+    (".github/automation-identity.md", ".github/automation-identity.md"),
+    (".github/required-status-checks.md", ".github/required-status-checks.md"),
+    (".github/rulesets/main-branch-protection.json", ".github/rulesets/main-branch-protection.json"),
+    (".github/scripts/build_repo_manifest.py", ".github/scripts/build_repo_manifest.py"),
+    (".github/scripts/check_pinned_actions.py", ".github/scripts/check_pinned_actions.py"),
+    (".github/scripts/check_protected_github_changes.py", ".github/scripts/check_protected_github_changes.py"),
+    (".github/scripts/render_repo_configs.py", ".github/scripts/render_repo_configs.py"),
+    (".github/scripts/sync_github_standards.py", ".github/scripts/sync_github_standards.py"),
+    (".github/scripts/wait_for_ci.py", ".github/scripts/wait_for_ci.py"),
+    (".github/standards/repo-config.manifest.json", ".github/standards/repo-config.manifest.json"),
+    (".github/workflows/bijux-std.yml", ".github/workflows/bijux-std.yml"),
+    ("shared/bijux-gh/workflows/build-release-artifacts.yml", "shared/bijux-gh/workflows/build-release-artifacts.yml"),
+    ("shared/bijux-gh/workflows/deploy-docs.yml", "shared/bijux-gh/workflows/deploy-docs.yml"),
+    ("shared/bijux-gh/workflows/release-artifacts.yml", "shared/bijux-gh/workflows/release-artifacts.yml"),
+    ("shared/bijux-gh/workflows/release-crates.yml", "shared/bijux-gh/workflows/release-crates.yml"),
+    ("shared/bijux-gh/workflows/release-ghcr.yml", "shared/bijux-gh/workflows/release-ghcr.yml"),
+    ("shared/bijux-gh/workflows/release-github.yml", "shared/bijux-gh/workflows/release-github.yml"),
+    ("shared/bijux-gh/workflows/release-pypi.yml", "shared/bijux-gh/workflows/release-pypi.yml"),
+    ("shared/bijux-gh/workflows/reusable-ci-python-packages.yml", "shared/bijux-gh/workflows/reusable-ci-python-packages.yml"),
+    ("shared/bijux-gh/workflows/reusable-verify-python-packages.yml", "shared/bijux-gh/workflows/reusable-verify-python-packages.yml"),
+    ("shared/bijux-gh/workflows/reusable-ci-rust-stack.yml", "shared/bijux-gh/workflows/reusable-ci-rust-stack.yml"),
+    ("shared/bijux-gh/workflows/github-policy.yml", "shared/bijux-gh/workflows/github-policy.yml"),
+    ("shared/bijux-gh/workflows/build-release-artifacts.yml", ".github/workflows/build-release-artifacts.yml"),
+    ("shared/bijux-gh/workflows/deploy-docs.yml", ".github/workflows/deploy-docs.yml"),
+    ("shared/bijux-gh/workflows/release-artifacts.yml", ".github/workflows/release-artifacts.yml"),
+    ("shared/bijux-gh/workflows/release-crates.yml", ".github/workflows/release-crates.yml"),
+    ("shared/bijux-gh/workflows/release-ghcr.yml", ".github/workflows/release-ghcr.yml"),
+    ("shared/bijux-gh/workflows/release-github.yml", ".github/workflows/release-github.yml"),
+    ("shared/bijux-gh/workflows/release-pypi.yml", ".github/workflows/release-pypi.yml"),
+    ("shared/bijux-gh/workflows/reusable-ci-python-packages.yml", ".github/workflows/reusable-ci-python-packages.yml"),
+    ("shared/bijux-gh/workflows/reusable-verify-python-packages.yml", ".github/workflows/reusable-verify-python-packages.yml"),
+    ("shared/bijux-gh/workflows/reusable-ci-rust-stack.yml", ".github/workflows/reusable-ci-rust-stack.yml"),
+    ("shared/bijux-gh/workflows/github-policy.yml", ".github/workflows/github-policy.yml"),
+    (".github/bijux-std-shared.sha256", ".github/bijux-std-shared.sha256"),
 ]
 
 
@@ -56,9 +70,9 @@ def run(cmd: list[str], cwd: Path | None = None) -> str:
 
 
 def copy_shared_files(target_repo: str) -> None:
-    for relative in SHARED_FILES:
-        source = STD_REPO / relative
-        destination = ROOT / target_repo / relative
+    for source_relative, destination_relative in SHARED_FILE_MAPPINGS:
+        source = STD_REPO / source_relative
+        destination = ROOT / target_repo / destination_relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(source.read_bytes())
 
