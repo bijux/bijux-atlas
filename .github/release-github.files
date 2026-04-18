@@ -1,0 +1,5 @@
+artifacts/dist/release/*.tar.gz
+artifacts/github-release/sha256sums.txt
+artifacts/github-release/crates-release.toml
+artifacts/github-release/images-release.toml
+artifacts/github-release/ops-release.toml
