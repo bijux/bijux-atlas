@@ -1,9 +1,9 @@
 # Shared Bijux docs shell synchronization and contract enforcement.
 
 PYTHON_BIN ?= $(shell command -v python3 2>/dev/null)
-BIJUX_DOCS_SYNC_SCRIPT ?= internal/scripts/sync_bijux_docs.sh
-BIJUX_DOCS_SOT_GUARD ?= internal/scripts/verify_bijux_docs_source_of_truth.sh
-BIJUX_DOCS_CONTRACT_GUARD ?= internal/quality/validate_bijux_docs_contract.py
+BIJUX_DOCS_SYNC_SCRIPT ?= .bijux/shared/bijux-docs/tooling/scripts/sync_bijux_docs.sh
+BIJUX_DOCS_SOT_GUARD ?= .bijux/shared/bijux-docs/tooling/scripts/verify_bijux_docs_source_of_truth.sh
+BIJUX_DOCS_CONTRACT_GUARD ?= .bijux/shared/bijux-docs/tooling/quality/validate_bijux_docs_contract.py
 BIJUX_DOCS_ARTIFACTS_DIR ?= artifacts/bijux-docs
 BIJUX_DOCS_LOG_DIR ?= $(BIJUX_DOCS_ARTIFACTS_DIR)/logs
 BIJUX_DOCS_PYCACHE_DIR ?= $(BIJUX_DOCS_ARTIFACTS_DIR)/pycache
