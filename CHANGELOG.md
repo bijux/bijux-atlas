@@ -7,6 +7,15 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
+## Unreleased
+
+### Changed
+- Refreshed dependency lockfiles to incorporate the current patched Rust and docs-tooling package versions tracked by security advisories.
+- Added explicit docs-tooling transitive dependency overrides to keep patched `flatted` and `picomatch` versions stable across installs.
+
+### Fixed
+- Resolved all open Atlas Dependabot alerts and cleared superseded dependency-update pull requests.
+
 ## v0.2.0
 
 ### Added
