@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
   including shared checks/tooling directory updates and digest refreshes.
 - Governance policy for main-branch protection and dependency automation was
   codified in repository-managed ruleset and policy records.
+- Repository bookkeeping now treats the shared standards baseline as
+  `bijux-std v0.1.0` after tag reset.
 
 ### Fixed
 - Resolved all open Atlas Dependabot alerts and cleared superseded dependency-update pull requests.
