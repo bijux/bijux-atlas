@@ -12,9 +12,8 @@ use hmac::{Hmac, Mac};
 use serde_json::Value;
 use sha2::Sha256;
 use tempfile::tempdir;
-mod api_contracts_support;
 
-use api_contracts_support::{
+use super::api_contracts_support::{
     fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw, send_raw_with_method,
 };
 
