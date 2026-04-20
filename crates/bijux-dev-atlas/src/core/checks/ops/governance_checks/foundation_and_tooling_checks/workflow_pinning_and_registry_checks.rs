@@ -55,6 +55,9 @@ pub(super) fn checks_ops_workflows_github_actions_pinned(
             if spec.starts_with("docker://") {
                 continue;
             }
+            if spec.starts_with("./") {
+                continue;
+            }
             let Some((action_path, sha)) = spec.rsplit_once('@') else {
                 violations.push(violation(
                     "WORKFLOW_ACTION_PIN_MISSING",
