@@ -2,6 +2,7 @@
 # Public targets: help and curated wrappers from child modules
 
 help: ## Show curated makes targets owned by Rust control-plane wrappers
+	@mkdir -p "$(ISO_ROOT)" "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) makes surface --format $(FORMAT)
 	@printf '%s\n' "guide: docs/bijux-atlas-dev/automation/automation-control-plane.md" "reference: docs/bijux-atlas-dev/automation/automation-command-surface.md" "makes: makes/README.md"
 
