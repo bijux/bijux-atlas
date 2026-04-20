@@ -2286,6 +2286,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             if spec.starts_with("docker://") {
                 continue;
             }
+            if spec.starts_with("./") {
+                continue;
+            }
             let Some((action_name, reference)) = spec.rsplit_once('@') else {
                 workflow_action_rows.push(serde_json::json!({
                     "workflow_path": rel.clone(),
