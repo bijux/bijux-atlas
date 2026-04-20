@@ -1,6 +1,9 @@
 name: release-github
 
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       release_tag:
