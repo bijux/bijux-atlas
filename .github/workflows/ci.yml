@@ -3,7 +3,7 @@
 # Do not edit this generated copy directly.
 
 name: CI
-true:
+on:
   push:
     branches:
       - main

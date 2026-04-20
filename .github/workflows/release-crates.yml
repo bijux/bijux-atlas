@@ -1,9 +1,9 @@
+# SSOT NOTICE: Synced consumer copies are generated from bijux-std/shared/bijux-gh/workflows/release-crates.yml.
+# Do not edit consumer workflow copies directly; update bijux-std and run standards sync refresh.
+
 name: release-crates
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
     inputs:
       release_tag:
@@ -50,6 +50,11 @@ jobs:
       fallback_packages: ${{ steps.config.outputs.fallback_packages }}
       allowed_packages: ${{ steps.config.outputs.allowed_packages }}
     steps:
+      - name: Checkout release configuration
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 1
+
       - name: Resolve release-crates configuration
         id: config
         shell: bash
@@ -106,14 +111,21 @@ jobs:
             default_tag=""
           fi
 
+          input_enabled=""
+          if [[ "${GITHUB_EVENT_NAME:-}" == "workflow_dispatch" ]]; then
+            input_enabled="${{ github.event.inputs.enabled || '' }}"
+          elif [[ "${GITHUB_EVENT_NAME:-}" == "workflow_call" ]]; then
+            input_enabled="${{ inputs.enabled && 'true' || 'false' }}"
+          fi
+
           release_tag="$(from_values "${{ inputs.release_tag || github.event.inputs.release_tag || '' }}" "${BIJUX_CRATES_RELEASE_TAG:-}" "${{ vars.BIJUX_CRATES_RELEASE_TAG || '' }}" "$default_tag")"
-          enabled="$(bool_from_values "${{ inputs.enabled }}" "${BIJUX_CRATES_RELEASE_ENABLED:-}" "${{ vars.BIJUX_CRATES_RELEASE_ENABLED || '' }}" "false")"
+          enabled="$(bool_from_values "${input_enabled}" "${BIJUX_CRATES_RELEASE_ENABLED:-}" "${{ vars.BIJUX_CRATES_RELEASE_ENABLED || '' }}" "false")"
           wait_for_ci_command="$(from_values "" "${BIJUX_CRATES_RELEASE_WAIT_FOR_CI_COMMAND:-}" "${{ vars.BIJUX_CRATES_RELEASE_WAIT_FOR_CI_COMMAND || '' }}" "")"
           plan_command="$(from_values "" "${BIJUX_CRATES_RELEASE_PLAN_COMMAND:-}" "${{ vars.BIJUX_CRATES_RELEASE_PLAN_COMMAND || '' }}" "")"
           setup_rust="$(bool_from_values "" "${BIJUX_CRATES_RELEASE_SETUP_RUST:-}" "${{ vars.BIJUX_CRATES_RELEASE_SETUP_RUST || '' }}" "true")"
           rust_toolchain="$(from_values "" "${BIJUX_CRATES_RELEASE_RUST_TOOLCHAIN:-}" "${{ vars.BIJUX_CRATES_RELEASE_RUST_TOOLCHAIN || '' }}" "stable")"
           verify_token_command="$(from_values "" "${BIJUX_CRATES_RELEASE_VERIFY_TOKEN_COMMAND:-}" "${{ vars.BIJUX_CRATES_RELEASE_VERIFY_TOKEN_COMMAND || '' }}" "make gh-release-require-cargo-token")"
-          publish_command="$(from_values "" "${BIJUX_CRATES_RELEASE_PUBLISH_COMMAND:-}" "${{ vars.BIJUX_CRATES_RELEASE_PUBLISH_COMMAND || '' }}" "make publish-rs RUST_PUBLISH_DRY_RUN=0 RUST_PUBLISH_SKIP_EXISTING=\"${PUBLISH_SKIP_EXISTING}\" RUST_PUBLISH_PACKAGES=\"${PACKAGES}\"")"
+          publish_command="$(from_values "" "${BIJUX_CRATES_RELEASE_PUBLISH_COMMAND:-}" "${{ vars.BIJUX_CRATES_RELEASE_PUBLISH_COMMAND || '' }}" "make publish-rs RUST_PUBLISH_DRY_RUN=0 RUST_PUBLISH_SKIP_EXISTING=\"\${PUBLISH_SKIP_EXISTING}\" RUST_PUBLISH_PACKAGES=\"\${PACKAGES}\"")"
           publish_skip_existing="$(bool_from_values "" "${BIJUX_CRATES_RELEASE_PUBLISH_SKIP_EXISTING:-}" "${{ vars.BIJUX_CRATES_RELEASE_PUBLISH_SKIP_EXISTING || '' }}" "true")"
           fallback_packages="$(from_values "" "${BIJUX_CRATES_RELEASE_PACKAGES:-}" "${{ vars.BIJUX_CRATES_RELEASE_PACKAGES || '' }}" "")"
           allowed_packages="$(from_values "" "${BIJUX_CRATES_RELEASE_ALLOWED_PACKAGES:-}" "${{ vars.BIJUX_CRATES_RELEASE_ALLOWED_PACKAGES || '' }}" "")"
@@ -141,7 +153,7 @@ jobs:
 
     steps:
       - name: Checkout release commit
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
