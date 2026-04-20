@@ -2,15 +2,15 @@
   "github_actions": {
     "actions/cache/restore": {
       "ref": "v4",
-      "sha": "cdf6c1fa76f9f475f3d7449005a359c84ca0f306"
+      "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae"
     },
     "actions/cache/save": {
       "ref": "v4",
-      "sha": "cdf6c1fa76f9f475f3d7449005a359c84ca0f306"
+      "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae"
     },
     "actions/checkout": {
-      "ref": "v5.0.0",
-      "sha": "08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+      "ref": "v6.0.2",
+      "sha": "de0fac2e4500dabe0009e67214ff5f5447ce83dd"
     },
     "actions/configure-pages": {
       "ref": "v5",
@@ -18,27 +18,31 @@
     },
     "actions/dependency-review-action": {
       "ref": "v4.8.3",
-      "sha": "05fe4576374b728f0c523d6a13d64c25081e0803"
+      "sha": "2031cfc080254a8a887f58cffee85186f0e49e48"
     },
     "actions/deploy-pages": {
       "ref": "v4",
       "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"
     },
     "actions/setup-python": {
-      "ref": "v6.1.0",
-      "sha": "83679a892e2d95755f2dac6acb0bfd1e9ac5d548"
+      "ref": "v6.2.0",
+      "sha": "a309ff8b426b58ec0e2a45f0f869d46889d02405"
     },
     "actions/setup-node": {
-      "ref": "v6.1.0",
-      "sha": "395ad3262231945c25e8478fd5baf05154b1d79f"
+      "ref": "v6.4.0",
+      "sha": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e"
+    },
+    "actions/setup-java": {
+      "ref": "v5",
+      "sha": "be666c2fcd27ec809703dec50e508c2fdc7f6654"
     },
     "Swatinem/rust-cache": {
       "ref": "v2.9.1",
       "sha": "c19371144df3bb44fab255c43d04cbc2ab54d1c4"
     },
     "actions/upload-artifact": {
-      "ref": "v4",
-      "sha": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f"
+      "ref": "v7.0.1",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
     },
     "actions/upload-pages-artifact": {
       "ref": "v3",
@@ -50,7 +54,7 @@
     },
     "dorny/paths-filter": {
       "ref": "v3",
-      "sha": "de90cc6fb38fc0963ad72b210f1f284cd68cea36"
+      "sha": "fbd0ab8f3e69293af611ebaee6363fc25e6d187d"
     },
     "dtolnay/rust-toolchain": {
       "ref": "v1",
@@ -62,7 +66,15 @@
     },
     "peter-evans/create-pull-request": {
       "ref": "v6",
-      "sha": "c0f553fe549906ede9cf27b5156039d195d2ece0"
+      "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
+    },
+    "actions/github-script": {
+      "ref": "v9.0.0",
+      "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
+    },
+    "astral-sh/setup-uv": {
+      "ref": "v8.1.0",
+      "sha": "08807647e7069bb48b6ef5acd8ec9567f424441b"
     },
     "softprops/action-gh-release": {
       "ref": "v2.3.3",
