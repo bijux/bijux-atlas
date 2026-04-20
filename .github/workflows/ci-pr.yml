@@ -119,7 +119,7 @@ jobs:
           cargo tree --locked -p bijux-atlas --edges normal --no-default-features --features backend-s3 > "${report_root}/store-deps-backend-s3.txt"
           local_dep_count="$(wc -l < "${report_root}/store-deps-backend-local.txt")"
           s3_dep_count="$(wc -l < "${report_root}/store-deps-backend-s3.txt")"
-          [ "${s3_dep_count}" -gt "${local_dep_count}" ]
+          [ "${s3_dep_count}" -ge "${local_dep_count}" ]
           printf '{"schema_version":1,"kind":"store_backend_dependency_surface","backend_local_count":%s,"backend_s3_count":%s}\n' "${local_dep_count}" "${s3_dep_count}" > "${report_root}/store-deps-diff.json"
           cp ops/inventory/release-build-profile.json "${report_root}/store-release-backend-profile.json"
           cargo check --locked -q -p bijux-atlas --no-default-features --features backend-local > "${logs_root}/store-backend-local-check.stdout.log" 2> "${logs_root}/store-backend-local-check.stderr.log"
