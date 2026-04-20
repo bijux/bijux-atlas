@@ -295,6 +295,7 @@ dependencies = [
  "bijux-cli",
  "clap",
  "criterion",
+ "hex",
  "regex",
  "reqwest",
  "semver",
