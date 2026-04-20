@@ -19,10 +19,10 @@ serde.workspace = true
 serde_json.workspace = true
 serde_yaml = "0.9"
 semver.workspace = true
-sha2 = "0.10"
+sha2 = "0.11"
 tar = "0.4"
 regex = "1"
-toml = "0.8"
+toml = "1.1"
 base64 = "0.22"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 bijux-atlas = { workspace = true }
@@ -34,7 +34,7 @@ semver.workspace = true
 assert_cmd = "2"
 bijux-cli = { workspace = true }
 tempfile = "=3.13.0"
-criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
 
 [lib]
 path = "src/lib.rs"
