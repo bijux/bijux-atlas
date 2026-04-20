@@ -2286,6 +2286,16 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             if spec.starts_with("docker://") {
                 continue;
             }
+            if spec.starts_with("./") {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": spec,
+                    "reference": serde_json::Value::Null,
+                    "status": "local-reference"
+                }));
+                continue;
+            }
             let Some((action_name, reference)) = spec.rsplit_once('@') else {
                 workflow_action_rows.push(serde_json::json!({
                     "workflow_path": rel.clone(),
