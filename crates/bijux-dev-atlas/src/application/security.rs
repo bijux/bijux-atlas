@@ -2286,6 +2286,16 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
             if spec.starts_with("docker://") {
                 continue;
             }
+            if spec.starts_with("./") {
+                workflow_action_rows.push(serde_json::json!({
+                    "workflow_path": rel.clone(),
+                    "line": line_idx + 1,
+                    "action": spec,
+                    "reference": serde_json::Value::Null,
+                    "status": "local"
+                }));
+                continue;
+            }
             let Some((action_name, reference)) = spec.rsplit_once('@') else {
                 workflow_action_rows.push(serde_json::json!({
                     "workflow_path": rel.clone(),
@@ -3497,6 +3507,14 @@ threat_ids: []
                 "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0"
             ),
             "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        );
+    }
+
+    #[test]
+    fn workflow_action_specs_keep_local_reusable_workflow_paths() {
+        assert_eq!(
+            normalize_workflow_action_spec("./.github/workflows/reusable-ci-rust-stack.yml"),
+            "./.github/workflows/reusable-ci-rust-stack.yml"
         );
     }
 
