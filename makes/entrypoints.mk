@@ -46,9 +46,9 @@ _internal-make-drift-report: ## Generate makes drift report artifact from makes-
 	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
 k8s-render: ## Render Kubernetes manifests through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format $(FORMAT)"
+	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)"
 	@mkdir -p $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)
-	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format $(FORMAT) --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT) --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
 
 k8s-validate: ## Validate Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --allow-subprocess --format $(FORMAT)"
