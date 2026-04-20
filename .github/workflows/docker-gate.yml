@@ -30,7 +30,7 @@ jobs:
           toolchain: 1.86.0
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/docker-gate/registry
@@ -38,7 +38,7 @@ jobs:
           key: cargo-registry-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/docker-gate
           key: cargo-target-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -53,7 +53,7 @@ jobs:
           make docker > "artifacts/${RUN_ID}/docker.stdout.log" 2> "artifacts/${RUN_ID}/docker.stderr.log"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/docker-gate/registry
@@ -61,7 +61,7 @@ jobs:
           key: cargo-registry-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/docker-gate
           key: cargo-target-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}

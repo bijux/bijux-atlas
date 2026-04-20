@@ -56,7 +56,7 @@ jobs:
           mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: artifacts/isolates/ops-validate/cargo-target
           key: cargo-target-pr-ops-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -121,7 +121,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- ops inventory validate --format json > "${report_root}/ops-inventory-validate.json" 2> "${logs_root}/ops-inventory-validate.stderr.log"
       - name: Save cargo cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: artifacts/isolates/ops-validate/cargo-target
           key: cargo-target-pr-ops-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
