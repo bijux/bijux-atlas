@@ -4,7 +4,7 @@ fn sha256_hex(path: &Path) -> Result<String, CheckError> {
     let mut hasher = Sha256::new();
     hasher.update(bytes);
     let digest = hasher.finalize();
-    Ok(format!("{digest:x}"))
+    Ok(hex::encode(digest))
 }
 
 fn is_binary_like_file(path: &Path) -> Result<bool, CheckError> {

@@ -80,7 +80,7 @@ fn read_json_file<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T, String
 fn stable_sha256(value: &serde_json::Value) -> Result<String, String> {
     let bytes =
         serde_json::to_vec(value).map_err(|err| format!("encode hash payload failed: {err}"))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {

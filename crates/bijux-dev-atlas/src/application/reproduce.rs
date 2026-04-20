@@ -19,7 +19,7 @@ fn read_json(path: &Path) -> Result<serde_json::Value, String> {
 fn file_sha(path: &Path) -> Result<String, String> {
     let bytes =
         fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 fn walk_files(root: &Path) -> Result<Vec<PathBuf>, String> {
@@ -97,7 +97,7 @@ fn collect_source_snapshot_hash(root: &Path) -> Result<String, String> {
         let digest = file_sha(&abs)?;
         hasher.update(digest.as_bytes());
     }
-    Ok(format!("{:x}", hasher.finalize()))
+    Ok(hex::encode(hasher.finalize()))
 }
 
 fn core_artifact_hashes(root: &Path) -> BTreeMap<String, String> {

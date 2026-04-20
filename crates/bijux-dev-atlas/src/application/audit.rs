@@ -70,13 +70,13 @@ fn write_json(path: &Path, value: &serde_json::Value) -> Result<(), String> {
 
 fn sha256_file(path: &Path) -> Result<String, String> {
     let data = fs::read(path).map_err(|err| format!("read {} failed: {err}", path.display()))?;
-    Ok(format!("{:x}", Sha256::digest(data)))
+    Ok(hex::encode(Sha256::digest(data)))
 }
 
 fn sha256_json(value: &serde_json::Value) -> Result<String, String> {
     let bytes = serde_json::to_vec(value)
         .map_err(|err| format!("encode audit bundle hash failed: {err}"))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 fn bundle_generate(

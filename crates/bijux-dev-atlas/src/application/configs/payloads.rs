@@ -643,7 +643,7 @@ pub(crate) fn configs_compile_payload(
         let bytes = fs::read(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
         let mut hasher = Sha256::new();
         hasher.update(&bytes);
-        files.push(serde_json::json!({"path": rel.clone(), "sha256": format!("{:x}", hasher.finalize()), "bytes": bytes.len()}));
+        files.push(serde_json::json!({"path": rel.clone(), "sha256": hex::encode(hasher.finalize()), "bytes": bytes.len()}));
         merged.insert(rel, serde_json::json!({"bytes": bytes.len()}));
     }
     files.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
@@ -697,7 +697,7 @@ pub(crate) fn configs_diff_payload(
         baseline_hasher.update(rel.as_bytes());
         baseline_hasher.update(fs::read(&file).unwrap_or_default());
     }
-    let digest_one = format!("{:x}", baseline_hasher.finalize());
+    let digest_one = hex::encode(baseline_hasher.finalize());
     let mut baseline_hasher_two = Sha256::new();
     for file in configs_files(ctx) {
         let rel = file
@@ -708,7 +708,7 @@ pub(crate) fn configs_diff_payload(
         baseline_hasher_two.update(rel.as_bytes());
         baseline_hasher_two.update(fs::read(&file).unwrap_or_default());
     }
-    let digest_two = format!("{:x}", baseline_hasher_two.finalize());
+    let digest_two = hex::encode(baseline_hasher_two.finalize());
     let deterministic = digest_one == digest_two;
     Ok(serde_json::json!({
         "schema_version":1,

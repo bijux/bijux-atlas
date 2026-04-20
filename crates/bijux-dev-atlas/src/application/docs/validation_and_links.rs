@@ -319,7 +319,7 @@ pub(crate) fn docs_validate_payload(
         if normalized.len() > 200 {
             let mut hasher = Sha256::new();
             hasher.update(normalized.as_bytes());
-            let hash = format!("{:x}", hasher.finalize());
+            let hash = hex::encode(hasher.finalize());
             body_hashes.entry(hash).or_default().push(rel);
         }
     }

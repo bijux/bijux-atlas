@@ -595,7 +595,7 @@ fn deterministic_run_id(
     hasher.update(git_sha(root).as_bytes());
     hasher.update(suite_text.as_bytes());
     hasher.update(registry_text.as_bytes());
-    let digest = format!("{:x}", hasher.finalize());
+    let digest = hex::encode(hasher.finalize());
     Ok(format!("{suite_id}-{}", &digest[..12]))
 }
 

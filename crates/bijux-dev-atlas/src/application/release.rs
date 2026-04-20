@@ -26,7 +26,7 @@ fn sha256_file(path: &Path) -> Result<String, String> {
     let bytes =
         fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let digest = Sha256::digest(bytes);
-    Ok(format!("{digest:x}"))
+    Ok(hex::encode(digest))
 }
 
 fn read_json(path: &Path) -> Result<serde_json::Value, String> {
@@ -4876,7 +4876,7 @@ fn release_bundle_hash(members: &[serde_json::Value]) -> String {
         hasher.update(size.to_string().as_bytes());
         hasher.update(b"\n");
     }
-    format!("{:x}", hasher.finalize())
+    hex::encode(hasher.finalize())
 }
 
 fn collect_manifest_source(root: &Path) -> Result<serde_json::Value, String> {

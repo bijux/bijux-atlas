@@ -25,7 +25,7 @@ fn read_runtime_config_schema(root: &std::path::Path) -> Result<Value, String> {
 fn stable_schema_sha256(schema: &Value) -> Result<String, String> {
     let bytes =
         serde_json::to_vec(schema).map_err(|e| format!("encode schema bytes failed: {e}"))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 fn run_runtime_self_check(args: RuntimeCommandArgs) -> Result<(String, i32), String> {
