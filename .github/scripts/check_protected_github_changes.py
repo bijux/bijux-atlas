@@ -2,9 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
-PROTECTED_PATHS = {
+ROOT = Path.cwd()
+MANIFEST_PATH = ROOT / ".github/standards/repo-config.manifest.json"
+
+BASE_PROTECTED_PATHS = {
+    ".github/CODEOWNERS",
     ".github/ISSUE_TEMPLATE/bug-report.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
     ".github/ISSUE_TEMPLATE/feature-request.yml",
@@ -17,14 +22,7 @@ PROTECTED_PATHS = {
     ".github/scripts/check_protected_github_changes.py",
     ".github/scripts/wait_for_ci.py",
     ".github/workflows/bijux-std.yml",
-    ".github/workflows/build-release-artifacts.yml",
-    ".github/workflows/deploy-docs.yml",
-    ".github/workflows/release-artifacts.yml",
-    ".github/workflows/release-github.yml",
-    ".github/workflows/reusable-ci-python-packages.yml",
-    ".github/workflows/reusable-verify-python-packages.yml",
-    ".github/workflows/reusable-ci-rust-stack.yml",
-    ".github/workflows/github-policy.yml",
+    ".github/workflows/automerge-pr.yml",
     ".github/bijux-std-shared.sha256",
     ".github/release.env",
     ".github/dependabot.yml",
@@ -35,11 +33,39 @@ PROTECTED_PATHS = {
 
 ALLOWED_CONTROL_PATHS = {
     ".github/standards/repo-config.manifest.json",
+    ".github/standards/workflow-inventory.json",
     ".github/scripts/build_repo_manifest.py",
     ".github/scripts/render_repo_configs.py",
     ".github/scripts/sync_github_standards.py",
     ".github/bijux-std-shared.sha256",
+    ".bijux/shared/shared-dir-sha256.txt",
 }
+
+
+def load_manifest() -> dict:
+    if not MANIFEST_PATH.exists():
+        return {}
+    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+def workflow_paths_from_manifest() -> set[str]:
+    manifest = load_manifest()
+    entries = manifest.get("workflow_inventory", {}).get("managed_workflows", [])
+    paths: set[str] = set()
+    for entry in entries:
+        source = entry.get("source")
+        runtime = entry.get("consumer_runtime")
+        if isinstance(source, str) and source:
+            paths.add(source)
+            if source.startswith("shared/"):
+                paths.add(f".bijux/{source}")
+        if isinstance(runtime, str) and runtime:
+            paths.add(runtime)
+    return paths
+
+
+def protected_paths() -> set[str]:
+    return BASE_PROTECTED_PATHS.union(workflow_paths_from_manifest())
 
 
 def main() -> int:
@@ -56,7 +82,7 @@ def main() -> int:
             if line.strip()
         )
 
-    protected_changed = sorted(path for path in changed if path in PROTECTED_PATHS)
+    protected_changed = sorted(path for path in changed if path in protected_paths())
     if not protected_changed:
         return 0
 

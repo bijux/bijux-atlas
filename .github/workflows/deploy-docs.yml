@@ -1,3 +1,6 @@
+# SSOT NOTICE: Synced consumer copies are generated from bijux-std/shared/bijux-gh/workflows/deploy-docs.yml.
+# Do not edit consumer workflow copies directly; update bijux-std and run standards sync refresh.
+
 name: deploy-docs
 
 on:
@@ -5,6 +8,8 @@ on:
     branches:
       - main
       - master
+    tags:
+      - "v*"
     paths:
       - ".github/workflows/deploy-docs.yml"
       - ".github/docs-deploy.env"
@@ -21,6 +26,7 @@ on:
       - ".bijux/shared/bijux-docs/**"
       - ".bijux/shared/bijux-makes-py/**"
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -39,6 +45,8 @@ jobs:
     name: Build docs site
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      site_available: ${{ steps.artifact.outputs.site_available }}
 
     steps:
       - name: Checkout repository
@@ -167,6 +175,14 @@ jobs:
             exit 1
           fi
 
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            if [[ "${GITHUB_REF}" != "refs/heads/main" && "${GITHUB_REF}" != "refs/heads/master" && "${GITHUB_REF}" != refs/tags/v* ]]; then
+              echo "Manual dispatch would only build docs but skip deploy from ${GITHUB_REF}." >&2
+              echo "Dispatch deploy-docs from main/master or a v* tag when deployment is required." >&2
+              exit 1
+            fi
+          fi
+
           {
             echo "site_url=${site_url}"
             echo "site_dir=${site_dir}"
@@ -190,7 +206,7 @@ jobs:
 
       - name: Setup uv
         if: ${{ steps.config.outputs.setup_uv == 'true' }}
-        uses: astral-sh/setup-uv@0b4c9ed22b5428f7fb49f42d17dd88461773f854 # v8.1.0
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -223,6 +239,39 @@ jobs:
           SITE_URL: ${{ steps.config.outputs.site_url }}
         run: ${{ steps.config.outputs.build_command }}
 
+      - name: Build docs site fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          candidates=(
+            "${{ steps.config.outputs.site_dir }}"
+            "artifacts/tmp-site"
+            "artifacts/root/docs/build-site"
+            "artifacts/site/bijux-masterclass"
+            "artifacts/docs/site"
+            "artifacts/root/docs/site"
+          )
+
+          for dir in "${candidates[@]}"; do
+            if [[ -n "$dir" && -f "$dir/index.html" ]]; then
+              exit 0
+            fi
+          done
+
+          if [[ ! -f "mkdocs.yml" ]]; then
+            exit 0
+          fi
+
+          if make -prRn 2>/dev/null | awk -F':' '$1 == "docs" { found=1 } END { exit(found ? 0 : 1) }'; then
+            echo "No publishable docs artifact detected; running fallback make docs."
+            make docs
+            exit 0
+          fi
+
+          echo "Unable to build fallback docs site: 'docs' make target is unavailable." >&2
+          exit 1
+
       - name: Resolve docs artifact directory
         id: artifact
         shell: bash
@@ -232,6 +281,7 @@ jobs:
           explicit="${{ steps.config.outputs.site_dir }}"
           candidates=(
             "$explicit"
+            "artifacts/tmp-site"
             "artifacts/root/docs/build-site"
             "artifacts/site/bijux-masterclass"
             "artifacts/docs/site"
@@ -255,16 +305,18 @@ jobs:
             exit 1
           fi
 
+          echo "site_available=true" >> "$GITHUB_OUTPUT"
           echo "site_dir=$selected" >> "$GITHUB_OUTPUT"
 
       - name: Verify docs site
-        if: ${{ steps.config.outputs.verify_command != '' }}
+        if: ${{ steps.artifact.outputs.site_available == 'true' && steps.config.outputs.verify_command != '' }}
         env:
           DOCS_BUILD_SITE_URL: ${{ steps.config.outputs.site_url }}
           DOCS_SITE_DIR: ${{ steps.artifact.outputs.site_dir }}
         run: ${{ steps.config.outputs.verify_command }}
 
       - name: Validate Pages bundle
+        if: ${{ steps.artifact.outputs.site_available == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -273,9 +325,11 @@ jobs:
           test -f "${site_dir}/index.html"
 
       - name: Configure Pages
+        if: ${{ steps.artifact.outputs.site_available == 'true' }}
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Upload Pages artifact
+        if: ${{ steps.artifact.outputs.site_available == 'true' }}
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v3.0.1
         with:
           path: ${{ steps.artifact.outputs.site_dir }}
@@ -283,7 +337,7 @@ jobs:
   deploy:
     name: Deploy docs site
     needs: build
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+    if: ${{ needs.build.outputs.site_available == 'true' && (github.event_name == 'workflow_call' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')) }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -5,7 +5,7 @@ This checklist maps each repository to the minimum configuration needed to adopt
 ## Common rollout steps
 
 1. Run `make bijux-standard-sync` in the consumer repository.
-2. If defaults are insufficient, add `.github/docs-deploy.env` from `workflows/docs-deploy.env.example`.
+2. If defaults are insufficient, add `.github/docs-deploy.env` from `workflows/deploy-docs.env.example`.
 3. Run `make bijux-standard-check`.
 4. Open one pull request per repository and validate `deploy-docs` on `workflow_dispatch` before merging.
 

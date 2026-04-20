@@ -6,6 +6,10 @@ consumer_path="${BIJUX_CHECKS_CONSUMER:-${repo_root}/.bijux/checks.consumer.json
 registry_dir="${BIJUX_CHECKS_REGISTRY_DIR:-${repo_root}/shared/bijux-checks/registry}"
 artifacts_dir="${BIJUX_CHECKS_ARTIFACTS_DIR:-${repo_root}/artifacts/bijux-checks}"
 
+if [[ ! -d "${registry_dir}" && -d "${repo_root}/.bijux/shared/bijux-checks/registry" ]]; then
+  registry_dir="${repo_root}/.bijux/shared/bijux-checks/registry"
+fi
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --consumer)

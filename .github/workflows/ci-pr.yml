@@ -23,9 +23,9 @@ jobs:
     outputs:
       docs_only: ${{ steps.filter.outputs.docs_only }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - id: filter
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d
         with:
           filters: |
             docs_only:
@@ -50,7 +50,7 @@ jobs:
       TMP: artifacts/isolates/ci-pr-minimal/tmp
       TEMP: artifacts/isolates/ci-pr-minimal/tmp
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
@@ -74,7 +74,7 @@ jobs:
           mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -82,7 +82,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1016,7 +1016,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -1024,11 +1024,11 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: ci-pr-minimal-${{ env.RUN_ID }}
@@ -1050,13 +1050,13 @@ jobs:
       TMP: artifacts/isolates/ci-pr/tmp
       TEMP: artifacts/isolates/ci-pr/tmp
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -1064,7 +1064,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1124,7 +1124,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -1132,11 +1132,11 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: ci-pr-${{ env.RUN_ID }}
@@ -1156,7 +1156,7 @@ jobs:
       TMP: artifacts/isolates/ci-supply-chain/tmp
       TEMP: artifacts/isolates/ci-supply-chain/tmp
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
@@ -1174,7 +1174,7 @@ jobs:
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -1182,7 +1182,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
@@ -1222,7 +1222,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -1230,11 +1230,11 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: ci-supply-chain-${{ env.RUN_ID }}
@@ -1245,7 +1245,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Run workflow policy verifier
         shell: bash
         run: |
@@ -1263,7 +1263,7 @@ jobs:
       TMP: artifacts/isolates/ci-pr-ops/docker/tmp
       TEMP: artifacts/isolates/ci-pr-ops/docker/tmp
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
@@ -1273,7 +1273,7 @@ jobs:
           set -euo pipefail
           mkdir -p "artifacts/${RUN_ID}"
           make docker > "artifacts/${RUN_ID}/docker.stdout.log" 2> "artifacts/${RUN_ID}/docker.stderr.log"
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: docker-runtime-${{ env.RUN_ID }}

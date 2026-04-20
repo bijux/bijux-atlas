@@ -2,10 +2,35 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
+SCRIPT_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def resolve_std_repo() -> Path:
+    env_path = os.environ.get("BIJUX_STD_REPO")
+    if env_path:
+        candidate = Path(env_path).resolve()
+        if (candidate / ".github/standards/workflow-inventory.json").exists():
+            return candidate
+        raise FileNotFoundError(f"BIJUX_STD_REPO does not contain workflow inventory: {candidate}")
+
+    if (SCRIPT_REPO_ROOT / ".github/standards/workflow-inventory.json").exists():
+        return SCRIPT_REPO_ROOT
+
+    sibling = ROOT / "bijux-std"
+    if (sibling / ".github/standards/workflow-inventory.json").exists():
+        return sibling
+
+    raise FileNotFoundError("Unable to resolve bijux-std repository root")
+
+
+STD_REPO = resolve_std_repo()
+WORKFLOW_INVENTORY_PATH = STD_REPO / ".github/standards/workflow-inventory.json"
 REPOS = [
     "bijux-atlas",
     "bijux-canon",
@@ -16,6 +41,77 @@ REPOS = [
     "bijux-std",
     "bijux.github.io",
 ]
+
+
+def load_workflow_inventory() -> dict[str, Any]:
+    inventory = json.loads(WORKFLOW_INVENTORY_PATH.read_text(encoding="utf-8"))
+    if inventory.get("version") != 1:
+        raise ValueError("Unsupported workflow inventory version")
+    return inventory
+
+
+def workflow_ids(inventory: dict[str, Any]) -> set[str]:
+    return {entry["id"] for entry in inventory["managed_workflows"]}
+
+
+def release_env_value(entries: list[dict], key: str, default: bool = False) -> bool:
+    for entry in entries:
+        if entry.get("key") == key:
+            if entry.get("type") == "bool":
+                return bool(entry.get("value"))
+            break
+    return default
+
+
+def derive_workflow_allowlist(repo_name: str, release_env: list[dict], wrappers: dict, inventory: dict[str, Any]) -> list[str]:
+    known = workflow_ids(inventory)
+    allow: set[str] = {"github-policy"}
+
+    if repo_name != "bijux-std":
+        allow.add("deploy-docs")
+
+    if release_env_value(release_env, "BIJUX_RELEASE_ENABLED"):
+        allow.add("release-github")
+
+    if release_env_value(release_env, "BIJUX_CRATES_RELEASE_ENABLED"):
+        allow.add("release-crates")
+    if release_env_value(release_env, "BIJUX_GHCR_RELEASE_ENABLED"):
+        allow.add("release-ghcr")
+    if release_env_value(release_env, "BIJUX_PYPI_ENABLED"):
+        allow.add("release-pypi")
+    if any(
+        release_env_value(release_env, key)
+        for key in (
+            "BIJUX_RELEASE_ENABLED",
+            "BIJUX_GHCR_RELEASE_ENABLED",
+            "BIJUX_PYPI_ENABLED",
+        )
+    ):
+        allow.add("release-artifacts")
+
+    wrapper_uses_to_workflow_id = {
+        "./.github/workflows/ci-package.yml": "ci-package",
+        "./.github/workflows/reusable-ci-python-packages.yml": "reusable-ci-python-packages",
+        "./.github/workflows/reusable-verify-python-packages.yml": "reusable-verify-python-packages",
+        "./.github/workflows/reusable-ci-rust-stack.yml": "reusable-ci-rust-stack",
+    }
+    workflow_dependencies = {
+        "ci-package": {"reusable-ci-python-packages"},
+    }
+    for wrapper in wrappers.values():
+        jobs = wrapper.get("jobs", {}) if isinstance(wrapper, dict) else {}
+        for job in jobs.values():
+            if not isinstance(job, dict):
+                continue
+            uses = job.get("uses")
+            if not isinstance(uses, str):
+                continue
+            workflow_id = wrapper_uses_to_workflow_id.get(uses)
+            if workflow_id:
+                allow.add(workflow_id)
+                allow.update(workflow_dependencies.get(workflow_id, set()))
+
+    return sorted(workflow_id for workflow_id in allow if workflow_id in known)
 
 
 def parse_release_env(path: Path) -> list[dict]:
@@ -55,20 +151,43 @@ def parse_yaml(path: Path) -> dict | None:
     if not path.exists():
         return None
 
-    result = subprocess.run(
-        [
-            "ruby",
-            "-ryaml",
-            "-rjson",
-            "-e",
-            "puts JSON.generate(YAML.safe_load(File.read(ARGV[0]), aliases: false))",
-            str(path),
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    return json.loads(result.stdout)
+    try:
+        result = subprocess.run(
+            [
+                "ruby",
+                "-ryaml",
+                "-rjson",
+                "-e",
+                "puts JSON.generate(YAML.safe_load(File.read(ARGV[0]), aliases: false))",
+                str(path),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("ruby is required to parse YAML for manifest generation") from exc
+    except subprocess.CalledProcessError as exc:
+        stderr = exc.stderr.strip() if exc.stderr else "unknown parse error"
+        raise RuntimeError(f"failed to parse YAML file {path}: {stderr}") from exc
+    parsed = json.loads(result.stdout)
+    return normalize_yaml_keys(parsed)
+
+
+def normalize_yaml_keys(value: Any) -> Any:
+    if isinstance(value, dict):
+        normalized: dict[Any, Any] = {}
+        for key, item in value.items():
+            normalized_key = key
+            if key == "true":
+                normalized_key = "on"
+            elif key == "false":
+                normalized_key = "off"
+            normalized[normalized_key] = normalize_yaml_keys(item)
+        return normalized
+    if isinstance(value, list):
+        return [normalize_yaml_keys(item) for item in value]
+    return value
 
 
 def parse_text(path: Path) -> str | None:
@@ -78,12 +197,14 @@ def parse_text(path: Path) -> str | None:
 
 
 def main() -> None:
-    manifest: dict = {"version": 2, "repositories": []}
+    inventory = load_workflow_inventory()
+    manifest: dict = {"version": 2, "workflow_inventory": inventory, "repositories": []}
 
     for repo_name in REPOS:
         repo_path = ROOT / repo_name
         repo_entry: dict = {"name": repo_name}
-        repo_entry["release_env"] = parse_release_env(repo_path / ".github/release.env")
+        release_env = parse_release_env(repo_path / ".github/release.env")
+        repo_entry["release_env"] = release_env
 
         dependabot = parse_yaml(repo_path / ".github/dependabot.yml")
         if dependabot is not None:
@@ -100,6 +221,7 @@ def main() -> None:
 
         if wrappers:
             repo_entry["workflow_wrappers"] = wrappers
+        repo_entry["workflow_allowlist"] = derive_workflow_allowlist(repo_name, release_env, wrappers, inventory)
 
         pinned_sha = parse_text(repo_path / ".github/standards/bijux-std.sha")
         if pinned_sha:
