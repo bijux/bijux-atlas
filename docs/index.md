@@ -9,16 +9,69 @@ last_reviewed: 2026-04-21
 
 # Bijux Atlas
 
-`bijux-atlas` turns validated source inputs into immutable release artifacts and
-serves them through stable query surfaces. It is built for teams that need
-traceable data workflows, predictable runtime behavior, and operations that can
-be audited and repeated.
+`bijux-atlas` is a data-serving system that turns validated source inputs into
+immutable release artifacts and serves those artifacts through stable query
+surfaces.
 
-Atlas is one product with three connected surfaces:
+## What Bijux Atlas Is
 
-- **Repository**: runtime architecture, interfaces, workflows, and contracts
-- **Operations**: stack, Kubernetes, observability, load, rollout, and recovery
-- **Maintainer**: governance, policy controls, and repository health gates
+Atlas is not only a server and not only a build tool. It is one product that
+covers:
+
+- input validation and normalization
+- deterministic artifact building
+- catalog and store publication
+- runtime query and operational serving
+
+## Why Bijux Atlas Exists
+
+Atlas exists to solve a common reliability problem: teams often mix source
+inputs, intermediate files, and live runtime state into one mutable workflow.
+That makes results hard to trust, hard to reproduce, and hard to operate.
+
+Atlas keeps those boundaries explicit so you can answer practical questions
+quickly:
+
+- what exactly was built
+- what exactly was published
+- what exactly is being served
+- what evidence supports promotion or rollback decisions
+
+## What Bijux Atlas Does
+
+```mermaid
+flowchart LR
+    source[Source Inputs] --> validate[Validation]
+    validate --> build[Artifact Build]
+    build --> publish[Catalog and Store Publish]
+    publish --> serve[Runtime Serving]
+```
+
+This flow is the core of atlas behavior. The artifact and publication boundary
+is deliberate: successful local processing alone is not treated as serving
+truth until publication is complete.
+
+## How Operations Fits In
+
+Operations is a core part of atlas, not a side appendix. The operations surface
+covers stack topology, Kubernetes rollout safety, observability, load budgets,
+and release evidence.
+
+When you run atlas in real environments, operations answers whether a change is
+safe to install, promote, or roll back.
+
+## Release Confidence Signals
+
+Primary confidence and publication lanes:
+
+- `repo/ci`
+- `deploy-docs`
+- `release-crates`
+- `release-ghcr`
+- `release-github`
+
+These lanes are shown in the badges and are the main release health indicators
+for atlas.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -40,74 +93,13 @@ Atlas is one product with three connected surfaces:
 [![Maintainer docs](https://img.shields.io/badge/docs-maintainer-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-dev/)
 <!-- bijux-atlas-badges:generated:end -->
 
-<div class="bijux-panel-grid">
-  <div class="bijux-panel"><h3>What Atlas Gives You</h3><p>Deterministic ingest, immutable artifacts, explicit catalog state, and stable query behavior.</p></div>
-  <div class="bijux-panel"><h3>What Operations Gives You</h3><p>Clear rollout controls, incident response paths, observability contracts, and load budgets.</p></div>
-  <div class="bijux-panel"><h3>What Maintainer Controls Give You</h3><p>Repeatable release gates, governance checks, and evidence-backed publication decisions.</p></div>
-</div>
+## Start Here
 
-<div class="bijux-quicklinks">
-<a class="md-button md-button--primary" href="bijux-atlas/">Open Repository Handbook</a>
-<a class="md-button" href="bijux-atlas-ops/">Open Operations Handbook</a>
-<a class="md-button" href="bijux-atlas-dev/">Open Maintainer Handbook</a>
-</div>
-
-## Atlas Flow
-
-```mermaid
-flowchart LR
-    source[Source Inputs] --> validate[Validation]
-    validate --> build[Artifact Build]
-    build --> publish[Catalog and Store Publish]
-    publish --> serve[Runtime Serving]
-    serve --> observe[Observability and Load Signals]
-    observe --> release[Release Promotion]
-```
-
-## Choose Your Path
-
-| If you need to... | Start here |
-| --- | --- |
-| understand runtime behavior, architecture, or API and CLI contracts | [Repository](bijux-atlas/index.md) |
-| deploy, operate, debug, or recover atlas in real environments | [Operations](bijux-atlas-ops/index.md) |
-| verify policy, governance, or release readiness | [Maintainer](bijux-atlas-dev/index.md) |
-
-## Operations Pages Worth Opening First
-
-| Operational question | Page |
-| --- | --- |
-| How is the system wired? | [Stack Service Topology](bijux-atlas-ops/stack/service-topology.md) |
-| What protects rollout safety? | [Kubernetes Rollout Safety](bijux-atlas-ops/kubernetes/rollout-safety.md) |
-| How do we run incident response? | [Observability Incident Response](bijux-atlas-ops/observability/incident-response.md) |
-| What are the load pass/fail thresholds? | [Load Thresholds and Budgets](bijux-atlas-ops/load/thresholds-and-budgets.md) |
-| What proves release trust? | [Release Signing and Provenance](bijux-atlas-ops/release/signing-and-provenance.md) |
-| What goes into release approval evidence? | [Release Evidence](bijux-atlas-ops/release/release-evidence.md) |
-
-## Current Release Health Signals
-
-The main publication and confidence lanes are:
-
-- `repo/ci`
-- `deploy-docs`
-- `release-crates`
-- `release-ghcr`
-- `release-github`
-
-These are the signals shown in the badges above and the primary indicators of
-release readiness for atlas.
-
-## Handbook Map
-
-- [Repository](bijux-atlas/index.md)
-- [Operations](bijux-atlas-ops/index.md)
-- [Maintainer](bijux-atlas-dev/index.md)
-
-## Purpose
-
-Use this page to quickly understand what atlas does, where operations depth
-lives, and where to continue based on your current goal.
+- product runtime and contracts: [Repository](bijux-atlas/index.md)
+- deployment, observability, load, and release operations: [Operations](bijux-atlas-ops/index.md)
+- governance and control-plane maintenance: [Maintainer](bijux-atlas-dev/index.md)
 
 ## Stability
 
 This page is part of the canonical docs spine. Keep it aligned with active
-runtime surfaces, operational workflows, and release lanes.
+runtime behavior, operations workflows, and release lanes.
