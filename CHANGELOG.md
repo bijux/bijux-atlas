@@ -7,22 +7,27 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
-## Unreleased
+## v0.2.1 – Unreleased
 
 ### Changed
-- Refreshed dependency lockfiles to incorporate the current patched Rust and docs-tooling package versions tracked by security advisories.
-- Added explicit docs-tooling transitive dependency overrides to keep patched `flatted` and `picomatch` versions stable across installs.
-- Shared docs shell and standards synchronization continued from `bijux-std`,
-  including shared checks/tooling directory updates and digest refreshes.
-- Governance policy for main-branch protection and dependency automation was
-  codified in repository-managed ruleset and policy records.
-- Repository bookkeeping now treats the shared standards baseline as
-  `bijux-std v0.1.0` after tag reset.
+- Expanded shared governance adoption from `bijux-std`, including reusable CI wrappers,
+  release workflow contracts, standards checks, and protected-change policy enforcement.
+- Migrated repository tooling consumption to `.bijux/shared` with checksum-backed sync
+  contracts, so standards and docs tooling stay aligned with upstream refreshes.
+- Normalized docs surfaces and generated badge contracts across repository and package
+  pages, including release-channel badge rows and package rust-docs badges.
+- Refined maintainers and repository handbook structure around explicit workflow ownership,
+  release evidence paths, and decision authority boundaries.
 
 ### Fixed
-- Resolved all open Atlas Dependabot alerts and cleared superseded dependency-update pull requests.
-- Hardened docs and standards checks to stay in sync with shared source-of-truth
-  mirrors and current validation contracts.
+- Resolved CI policy drift in minimal and docs-focused lanes (cache/temp roots, jq/awk
+  checks, action pin alignment, domain-driven suite coverage, and timeout stability).
+- Corrected docs validation and navigation checks to match the Atlas taxonomy and current
+  docs shell inheritance model.
+- Repaired release and governance verification flows to match active artifacts, workflow
+  inventories, and control-plane report contracts.
+- Cleared dependency and docs-tooling advisory paths with patched lockfile and transitive
+  dependency updates.
 
 ## v0.2.0
 
