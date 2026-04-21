@@ -24,6 +24,7 @@ Atlas is Rust-first, so the catalog focuses on:
 
 - repository workflow badges
 - crates.io and docs.rs badges for the public runtime crate
+- GHCR package publication badges for released runtime surfaces
 - documentation badges for the canonical `bijux-atlas*` handbooks
 - maintainer summary badges for repository governance and docs delivery
 
@@ -33,11 +34,13 @@ Atlas is Rust-first, so the catalog focuses on:
 [![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![CI](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml)
-[![CI PR](https://github.com/bijux/bijux-atlas/actions/workflows/ci-pr.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci-pr.yml)
 [![Docs](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml)
-[![Release](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
-[![docs.rs](https://img.shields.io/docsrs/bijux-atlas?logo=rust)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
-[![Documentation](https://img.shields.io/badge/docs-bijux.io-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/)
+[![Crates Publish](https://github.com/bijux/bijux-atlas/actions/workflows/release-crates.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-crates.yml)
+[![GHCR Publish](https://github.com/bijux/bijux-atlas/actions/workflows/release-ghcr.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-ghcr.yml)
+[![GitHub Release](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
+[![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
+[![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
+[![Published packages](https://img.shields.io/badge/published%20packages-1-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 <!-- bijux-atlas-badges:repository-summary:end -->
 
 ## Runtime Package Summary
