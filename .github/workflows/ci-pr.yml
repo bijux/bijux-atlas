@@ -208,7 +208,7 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json > "${report_root}/governance-validate.json" 2> "${logs_root}/governance-validate.stderr.log"
           coverage_current="$(jq -r '.coverage_percent' artifacts/governance/governance-coverage.json)"
           coverage_baseline="$(jq -r '.coverage_percent_min' ops/governance/repository/coverage-baseline.json)"
-          delta="$(awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { printf \"%.2f\", c-b }')"
+          delta="$(awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { printf "%.2f", c-b }')"
           status="ok"
           if awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { exit !(c < b) }'; then
             status="failed"
