@@ -2,7 +2,7 @@
   "schema_version": 1,
   "entries": [
     {
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "minimal-root-policies",
       "step": "Run minimal lane",
       "owner": "bijux-atlas-governance",
@@ -11,7 +11,7 @@
       "renewal_reference": "configs/sources/repository/ci/policy-outside-control-plane.json"
     },
     {
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "validate-pr",
       "step": "Run PR lane",
       "owner": "bijux-atlas-governance",
@@ -20,7 +20,7 @@
       "renewal_reference": "configs/sources/repository/ci/policy-outside-control-plane.json"
     },
     {
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "supply-chain",
       "step": "Run audit lane",
       "owner": "bijux-atlas-governance",

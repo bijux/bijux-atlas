@@ -168,7 +168,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {
@@ -186,7 +186,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {
@@ -324,7 +324,7 @@
       ],
       "visibility": "internal",
       "used_in": [
-        ".github/workflows/ci-pr.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {
@@ -334,7 +334,7 @@
       ],
       "visibility": "internal",
       "used_in": [
-        ".github/workflows/ci-pr.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {
@@ -410,7 +410,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci.yml",
         ".github/workflows/docker-gate.yml"
       ]
     },
@@ -493,7 +493,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci.yml",
         ".github/workflows/ops-validate.yml"
       ]
     },
@@ -512,7 +512,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci.yml",
         ".github/workflows/ops-validate.yml"
       ]
     },
@@ -631,7 +631,7 @@
       ],
       "visibility": "internal",
       "used_in": [
-        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci.yml",
         ".github/workflows/ops-validate.yml"
       ]
     },
@@ -674,7 +674,7 @@
       ],
       "visibility": "public",
       "used_in": [
-        ".github/workflows/ci-pr.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {

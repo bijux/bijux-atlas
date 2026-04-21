@@ -26,14 +26,12 @@
     {
       "id": "ci-pr-fast",
       "description": "Fast pull request validation",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "mode": "verify",
       "aliases": [
         "ci-fast"
       ],
-      "required_env": [
-        "CARGO_TERM_COLOR"
-      ],
+      "required_env": [],
       "artifacts_expected": [
         "reports/governance-validate.json",
         "reports/governance-coverage-diff.json"
@@ -46,15 +44,13 @@
     {
       "id": "ci-pr-full",
       "description": "Full pull request policy and workflow checks",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "mode": "verify",
       "aliases": [
         "ci-pr",
         "supply-chain"
       ],
-      "required_env": [
-        "CARGO_TERM_COLOR"
-      ],
+      "required_env": [],
       "artifacts_expected": [
         "reports/ci-pr.json",
         "reports/docs-ssot-reference-drift.json",

@@ -30,6 +30,7 @@ jobs:
           mkdir -p artifacts/system/simulation artifacts/audit
           cargo run --locked -q -p bijux-dev-atlas -- system simulate suite --output-format json > artifacts/system/simulation/run.json
           cargo run --locked -q -p bijux-dev-atlas -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
+          cargo run --locked -q -p bijux-dev-atlas -- governance validate --output-format json > artifacts/audit/governance-validate.json || true
           cargo run --locked -q -p bijux-dev-atlas -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-dev-atlas -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-dev-atlas -- audit readiness validate --output-format json > artifacts/audit/readiness.json

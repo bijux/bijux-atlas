@@ -2646,7 +2646,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let mut unsafe_download_hits = Vec::new();
     for rel in [
         "Makefile",
-        ".github/workflows/ci-pr.yml",
+        ".github/workflows/ci.yml",
         ".github/workflows/release-candidate.yml",
         ".github/workflows/ops-validate.yml",
         ".github/workflows/dependency-lock.yml",

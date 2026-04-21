@@ -659,7 +659,7 @@ fn run_ci_verify_gate(
     } = options;
     let payload = match gate {
         "workflow-policy" => {
-            let workflow = repo_root.join(".github/workflows/ci-pr.yml");
+            let workflow = repo_root.join(".github/workflows/ci.yml");
             let text = fs::read_to_string(&workflow)
                 .map_err(|err| format!("read {} failed: {err}", workflow.display()))?;
             let mut errors = Vec::<String>::new();
@@ -677,7 +677,9 @@ fn run_ci_verify_gate(
                     ));
                 }
             }
-            if !text.contains("actions/checkout@") {
+            let uses_reusable_ci_stack =
+                text.contains("uses: ./.github/workflows/reusable-ci-rust-stack.yml");
+            if !uses_reusable_ci_stack && !text.contains("actions/checkout@") {
                 errors.push("workflow-policy job must keep checkout".to_string());
             }
             let mut workflow_to_lanes =
@@ -1026,6 +1028,7 @@ fn run_ci_verify_gate(
             serde_json::json!({
                 "schema_version": 1,
                 "kind": "docs_diff_summary_v1",
+                "status": "ok",
                 "changed_count": changed.len(),
                 "changed_paths": changed
             })

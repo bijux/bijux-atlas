@@ -2,7 +2,7 @@
   "channel": "1.85.0",
   "consumers": [
     ".github/workflows/ci.yml",
-    ".github/workflows/ci-pr.yml",
+    ".github/workflows/ci.yml",
     ".github/workflows/deploy-docs.yml",
     ".github/workflows/docs-only.yml",
     ".github/workflows/docs-audit.yml",

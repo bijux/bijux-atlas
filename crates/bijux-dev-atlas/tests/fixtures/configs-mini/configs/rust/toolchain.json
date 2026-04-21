@@ -3,7 +3,7 @@
   "rust_toolchain_toml": "rust-toolchain.toml",
   "channel": "1.85.0",
   "consumers": [
-    ".github/workflows/ci-pr.yml",
+    ".github/workflows/ci.yml",
     ".github/workflows/docs-only.yml",
     ".github/workflows/docs-audit.yml",
     ".github/workflows/ops-validate.yml",

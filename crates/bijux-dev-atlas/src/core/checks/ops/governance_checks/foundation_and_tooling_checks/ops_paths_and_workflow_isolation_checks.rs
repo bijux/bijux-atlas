@@ -4,7 +4,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
         Path::new("makes/ops.mk"),
-        Path::new(".github/workflows/ci-pr.yml"),
+        Path::new(".github/workflows/ci.yml"),
         Path::new("ops/README.md"),
         Path::new("ops/INDEX.md"),
     ];

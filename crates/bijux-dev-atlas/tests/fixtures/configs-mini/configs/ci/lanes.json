@@ -3,12 +3,12 @@
   "lanes": [
     {
       "id": "ci-pr-fast",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "summary_hint": "ci-fast"
     },
     {
       "id": "ci-pr-full",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "summary_hint": "ci-pr"
     },
     {

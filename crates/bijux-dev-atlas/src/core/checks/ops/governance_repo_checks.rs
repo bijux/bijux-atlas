@@ -265,7 +265,7 @@ pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let toolchain_rel = Path::new("rust-toolchain.toml");
-    let workflow_rel = Path::new(".github/workflows/ci-pr.yml");
+    let workflow_rel = Path::new(".github/workflows/ci.yml");
     let toolchain_text = fs::read_to_string(ctx.repo_root.join(toolchain_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let workflow_text = fs::read_to_string(ctx.repo_root.join(workflow_rel))
@@ -281,16 +281,17 @@ pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
             }
         })
         .ok_or_else(|| CheckError::Failed("rust-toolchain.toml channel missing".to_string()))?;
-    let expected = format!("toolchain: {pinned}");
-    if workflow_text.contains(&expected) {
+    let expected_legacy = format!("toolchain: {pinned}");
+    let expected_reusable = format!("rust_toolchain_version: {pinned}");
+    if workflow_text.contains(&expected_legacy) || workflow_text.contains(&expected_reusable) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "WORKFLOWS_RUST_TOOLCHAIN_PIN_MISMATCH",
             format!(
-                "ci-pr workflow must pin the same Rust toolchain as rust-toolchain.toml (`{pinned}`)"
+                "CI workflow must pin the same Rust toolchain as rust-toolchain.toml (`{pinned}`)"
             ),
-            "update .github/workflows/ci-pr.yml dtolnay/rust-toolchain step `with.toolchain` to match rust-toolchain.toml",
+            "update .github/workflows/ci.yml Rust toolchain pin to match rust-toolchain.toml",
             Some(workflow_rel),
         )])
     }
