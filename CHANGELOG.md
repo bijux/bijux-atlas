@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
-## v0.2.1 – 2026-04-21
+## v0.2.1 – 2026-04-22
 
 ### Changed
 - Expanded shared governance adoption from `bijux-std`, including reusable CI wrappers,
