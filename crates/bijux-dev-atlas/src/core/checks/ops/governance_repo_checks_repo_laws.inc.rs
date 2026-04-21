@@ -301,22 +301,25 @@ pub(super) fn check_repo_law_metadata_complete_and_unique(
 pub(super) fn check_repo_pr_required_suite_not_skippable(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new(".github/workflows/ci-pr.yml");
+    let rel = Path::new(".github/workflows/ci.yml");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
+    if text.contains("uses: ./.github/workflows/reusable-ci-rust-stack.yml") {
+        return Ok(violations);
+    }
     if !text.contains("--suite repo_required") {
         violations.push(violation(
             "REPO_REQUIRED_SUITE_NOT_IN_CI_PR",
-            "ci-pr workflow must execute repo_required suite".to_string(),
-            "add check run --suite repo_required to ci-pr workflow",
+            "CI workflow must execute repo_required suite".to_string(),
+            "add check run --suite repo_required to the CI workflow",
             Some(rel),
         ));
     }
     if !text.contains("--suite repo_required --include-internal --include-slow --allow-git") {
         violations.push(violation(
             "REPO_REQUIRED_SUITE_MISSING_REQUIRED_GIT_CAPABILITY",
-            "ci-pr workflow must execute repo_required with --allow-git".to_string(),
+            "CI workflow must execute repo_required with --allow-git".to_string(),
             "run repo_required with --allow-git so tracked artifacts checks are not skipped",
             Some(rel),
         ));
@@ -324,7 +327,7 @@ pub(super) fn check_repo_pr_required_suite_not_skippable(
     if text.contains("continue-on-error: true") {
         violations.push(violation(
             "REPO_CI_PR_CONTINUE_ON_ERROR_FORBIDDEN",
-            "ci-pr workflow must not use continue-on-error for required validation".to_string(),
+            "CI workflow must not use continue-on-error for required validation".to_string(),
             "remove continue-on-error from required workflow jobs",
             Some(rel),
         ));

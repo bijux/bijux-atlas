@@ -26,7 +26,7 @@
     {
       "id": "ci-pr-fast",
       "description": "Fast pull request validation",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "mode": "verify",
       "aliases": [
         "ci-fast"
@@ -46,7 +46,7 @@
     {
       "id": "ci-pr-full",
       "description": "Full pull request policy and workflow checks",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "mode": "verify",
       "aliases": [
         "ci-pr",

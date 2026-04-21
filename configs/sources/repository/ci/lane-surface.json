@@ -3,7 +3,7 @@
   "lanes": [
     {
       "lane": "ci-pr-fast",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "commands": [
         {
           "id": "contracts-pr",
@@ -26,7 +26,7 @@
     },
     {
       "lane": "ci-pr-full",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "commands": [
         {
           "id": "ci-pr",

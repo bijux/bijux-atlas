@@ -3,7 +3,7 @@
   "entries": [
     {
       "policy_id": "ci-policy-ci-pr-run-minimal-lane",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "minimal-root-policies",
       "step": "Run minimal lane",
       "classification": "policy",
@@ -15,7 +15,7 @@
     },
     {
       "policy_id": "ci-policy-ci-pr-run-pr-lane",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "validate-pr",
       "step": "Run PR lane",
       "classification": "policy",
@@ -27,7 +27,7 @@
     },
     {
       "policy_id": "ci-policy-ci-pr-run-audit-lane",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "supply-chain",
       "step": "Run audit lane",
       "classification": "policy",
@@ -39,7 +39,7 @@
     },
     {
       "policy_id": "ci-policy-ci-pr-workflow-policy",
-      "workflow": ".github/workflows/ci-pr.yml",
+      "workflow": ".github/workflows/ci.yml",
       "job": "workflow-policy",
       "step": "Workflow policy gate",
       "classification": "policy",

@@ -34,7 +34,7 @@ named lanes with different jobs, not as one undifferentiated wall of checks.
 
 ## Source Anchors
 
-- [`.github/workflows/ci-pr.yml`](/Users/bijan/bijux/bijux-atlas/.github/workflows/ci-pr.yml:1)
+- [`.github/workflows/ci.yml`](/Users/bijan/bijux/bijux-atlas/.github/workflows/ci.yml:1)
 - [`.github/workflows/docs-only.yml`](/Users/bijan/bijux/bijux-atlas/.github/workflows/docs-only.yml:1)
 - [`.github/workflows/ops-validate.yml`](/Users/bijan/bijux/bijux-atlas/.github/workflows/ops-validate.yml:1)
 - [`.github/required-status-checks.md`](/Users/bijan/bijux/bijux-atlas/.github/required-status-checks.md:1)
