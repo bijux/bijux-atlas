@@ -38,6 +38,10 @@ def yaml_scalar(value: Any) -> str:
         return "null"
 
     text = str(value)
+    # Keep HH:MM values quoted so Dependabot schedule.time is always a string.
+    if re.fullmatch(r"\d{2}:\d{2}", text):
+        escaped = text.replace('\\', '\\\\').replace('"', '\\"')
+        return f'"{escaped}"'
     if re.fullmatch(r"[A-Za-z0-9_./:@-]+", text):
         return text
     escaped = text.replace('\\', '\\\\').replace('"', '\\"')
