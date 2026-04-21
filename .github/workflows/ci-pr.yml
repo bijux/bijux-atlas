@@ -145,9 +145,20 @@ jobs:
             '{schema_version:1,kind:"repo_integrity_summary",run_id:$run_id,laws_source:$source,required_suite:$suite,checks_total:($suite_members[0].checks|length),counts:$run_report[0].counts,p0_checks:$suite_members[0].checks|map(.id)}' \
             > "${report_root}/repo-integrity-summary.json"
           base_ref="${GITHUB_BASE_REF:-main}"
-          base_sha="$(git merge-base HEAD "origin/${base_ref}" || true)"
+          base_remote_ref="origin/${base_ref}"
+          if ! git rev-parse --verify --quiet "${base_remote_ref}" >/dev/null; then
+            git fetch --no-tags --prune --depth=64 origin "+refs/heads/${base_ref}:refs/remotes/origin/${base_ref}" >/dev/null 2>&1 || true
+          fi
+          base_sha=""
+          if git rev-parse --verify --quiet "${base_remote_ref}" >/dev/null; then
+            base_sha="$(git merge-base HEAD "${base_remote_ref}" || true)"
+          fi
           if [ -z "${base_sha}" ]; then
-            base_sha="$(git rev-parse HEAD~1)"
+            if git rev-parse --verify --quiet HEAD^ >/dev/null; then
+              base_sha="$(git rev-parse HEAD^)"
+            else
+              base_sha="$(git rev-parse HEAD)"
+            fi
           fi
           git diff --name-status "${base_sha}...HEAD" > "${report_root}/repo-surface-diff.txt"
           export REPORT_ROOT="${report_root}"
