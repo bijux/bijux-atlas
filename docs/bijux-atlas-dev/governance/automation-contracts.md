@@ -32,6 +32,14 @@ to document for maintainers and automation consumers.
 - suite and check execution expose explicit selection inputs instead of hidden lane behavior
 - structured consumers can rely on documented report fields more than terminal formatting
 
+## Naming Contract
+
+Runtime product CLI namespace: `bijux atlas <args>`
+
+Installed umbrella dispatch: `bijux dev atlas <args>`
+
+Naming contract is frozen
+
 ## Report Schema Promise
 
 For governed report families, the shared report contract includes:
