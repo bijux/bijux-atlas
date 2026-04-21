@@ -7,6 +7,8 @@
     "SECURITY.md"
   ],
   "allowed_root_directories": [
+    ".bijux",
+    ".cache",
     ".cargo",
     ".github",
     "artifacts",

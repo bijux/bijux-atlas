@@ -87,9 +87,9 @@ fn openapi_path_params_match_path_templates() {
             .expect("read openapi"),
     )
     .expect("parse openapi");
+    let path_param_re = regex::Regex::new(r"\{([^}]+)\}").expect("path param regex");
     for (path, methods) in openapi["paths"].as_object().expect("paths object") {
-        let expected = regex::Regex::new(r"\{([^}]+)\}")
-            .expect("path param regex")
+        let expected = path_param_re
             .captures_iter(path)
             .filter_map(|capture| {
                 capture

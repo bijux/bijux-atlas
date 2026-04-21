@@ -179,14 +179,30 @@ jobs:
         if: ${{ !inputs.use_isolated_temp_roots }}
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
-      - name: Normalize temp roots to absolute workspace paths
+      - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
         shell: bash
         run: |
           set -euo pipefail
-          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
-          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
-          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
+          normalize_path() {
+            local value="$1"
+            if [[ -z "${value}" ]]; then
+              printf '%s' "${value}"
+            elif [[ "${value}" == "${GITHUB_WORKSPACE}/"* ]]; then
+              printf '%s' "${value}"
+            elif [[ "${value}" == "/.cache/"* ]]; then
+              printf '%s' "${GITHUB_WORKSPACE}${value}"
+            elif [[ "${value}" == /* ]]; then
+              printf '%s' "${value}"
+            else
+              printf '%s/%s' "${GITHUB_WORKSPACE}" "${value}"
+            fi
+          }
+          echo "CARGO_TARGET_DIR=$(normalize_path "${CARGO_TARGET_DIR}")" >> "${GITHUB_ENV}"
+          echo "CARGO_HOME=$(normalize_path "${CARGO_HOME}")" >> "${GITHUB_ENV}"
+          echo "TMPDIR=$(normalize_path "${TMPDIR}")" >> "${GITHUB_ENV}"
+          echo "TMP=$(normalize_path "${TMP}")" >> "${GITHUB_ENV}"
+          echo "TEMP=$(normalize_path "${TEMP}")" >> "${GITHUB_ENV}"
 
       - name: Prepare cache and temp roots
         if: ${{ inputs.use_isolated_temp_roots }}
@@ -237,14 +253,30 @@ jobs:
         if: ${{ !inputs.use_isolated_temp_roots }}
         uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
 
-      - name: Normalize temp roots to absolute workspace paths
+      - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
         shell: bash
         run: |
           set -euo pipefail
-          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
-          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
-          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
+          normalize_path() {
+            local value="$1"
+            if [[ -z "${value}" ]]; then
+              printf '%s' "${value}"
+            elif [[ "${value}" == "${GITHUB_WORKSPACE}/"* ]]; then
+              printf '%s' "${value}"
+            elif [[ "${value}" == "/.cache/"* ]]; then
+              printf '%s' "${GITHUB_WORKSPACE}${value}"
+            elif [[ "${value}" == /* ]]; then
+              printf '%s' "${value}"
+            else
+              printf '%s/%s' "${GITHUB_WORKSPACE}" "${value}"
+            fi
+          }
+          echo "CARGO_TARGET_DIR=$(normalize_path "${CARGO_TARGET_DIR}")" >> "${GITHUB_ENV}"
+          echo "CARGO_HOME=$(normalize_path "${CARGO_HOME}")" >> "${GITHUB_ENV}"
+          echo "TMPDIR=$(normalize_path "${TMPDIR}")" >> "${GITHUB_ENV}"
+          echo "TMP=$(normalize_path "${TMP}")" >> "${GITHUB_ENV}"
+          echo "TEMP=$(normalize_path "${TEMP}")" >> "${GITHUB_ENV}"
 
       - name: Prepare cache and temp roots
         if: ${{ inputs.use_isolated_temp_roots }}

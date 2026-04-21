@@ -10,9 +10,7 @@ use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use tempfile::tempdir;
 
-mod api_contracts_support;
-
-use api_contracts_support::{mk_dataset, send_raw, send_raw_with_method};
+use super::api_contracts_support::{mk_dataset, send_raw, send_raw_with_method};
 
 fn sign_hmac(secret: &str, method: &str, uri: &str, ts: &str) -> String {
     let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes()).expect("hmac key");

@@ -1,7 +1,7 @@
 # SSOT NOTICE: Synced consumer copies are generated from bijux-std/shared/bijux-gh/workflows/github-policy.yml.
 # Do not edit consumer workflow copies directly; update bijux-std and run standards sync refresh.
 
-name: github-policy
+name: policy / github
 
 on:
   push:
@@ -10,16 +10,19 @@ on:
       - "v*"
   pull_request:
     branches: [main]
+  merge_group:
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   policy:
+    name: policy / github
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5.0.0
         with:
           fetch-depth: 0
 
@@ -31,6 +34,14 @@ jobs:
             base_ref="${{ github.base_ref }}"
             git fetch --no-tags --prune --depth=1 origin "${base_ref}"
             git diff --name-only "origin/${base_ref}...HEAD" > /tmp/changed-files.txt
+          elif [[ "${{ github.event_name }}" == "merge_group" ]]; then
+            base_sha="${{ github.event.merge_group.base_sha }}"
+            head_sha="${{ github.event.merge_group.head_sha }}"
+            if [[ -n "${base_sha}" && "${base_sha}" != "null" && -n "${head_sha}" && "${head_sha}" != "null" ]]; then
+              git diff --name-only "${base_sha}...${head_sha}" > /tmp/changed-files.txt
+            else
+              git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" > /tmp/changed-files.txt
+            fi
           else
             before_sha="${{ github.event.before }}"
             if [[ -n "${before_sha}" && "${before_sha}" != "0000000000000000000000000000000000000000" ]]; then

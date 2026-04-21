@@ -2,6 +2,8 @@
 
 #[path = "server/api-contracts.rs"]
 mod api_contracts;
+#[path = "server/api_contracts_support/mod.rs"]
+mod api_contracts_support;
 #[path = "server/api_surface_snapshots.rs"]
 mod api_surface_snapshots;
 #[path = "server/async_runtime_contract.rs"]

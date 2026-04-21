@@ -22,13 +22,27 @@ pub(super) fn check_repo_no_executable_script_sources(
         .map(str::to_string)
         .collect::<BTreeSet<_>>();
 
+    let output = std::process::Command::new("git")
+        .current_dir(ctx.repo_root)
+        .args(["ls-files"])
+        .output()
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if !output.status.success() {
+        return Ok(vec![violation(
+            "REPO_EXECUTABLE_SCRIPT_SOURCE_SCAN_FAILED",
+            "git ls-files failed".to_string(),
+            "ensure git is available for script-source governance checks",
+            None,
+        )]);
+    }
+    let tracked = String::from_utf8_lossy(&output.stdout);
     let mut violations = Vec::new();
-    for file in walk_files(ctx.repo_root) {
-        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-        if rel.starts_with(".git") || rel.starts_with("artifacts") {
+    for rel_str in tracked.lines().map(str::trim).filter(|line| !line.is_empty()) {
+        if rel_str.starts_with(".git/") || rel_str.starts_with("artifacts/") {
             continue;
         }
-        let ext = file
+        let rel = Path::new(rel_str);
+        let ext = rel
             .extension()
             .and_then(|v| v.to_str())
             .map(|v| format!(".{v}"));
@@ -36,7 +50,6 @@ pub(super) fn check_repo_no_executable_script_sources(
         if !extensions.contains(&ext) {
             continue;
         }
-        let rel_str = rel.display().to_string();
         if allowed_paths
             .iter()
             .any(|prefix| rel_str.starts_with(prefix))

@@ -2,7 +2,7 @@
 # Source of truth: bijux-std/.github/standards/repo-config.manifest.json and bijux-std/shared/bijux-gh/workflows/.
 # Do not edit this generated copy directly.
 
-name: CI
+name: "repo / ci"
 on:
   push:
     branches:

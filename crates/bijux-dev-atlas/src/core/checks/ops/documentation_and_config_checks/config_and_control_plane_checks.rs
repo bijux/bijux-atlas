@@ -157,20 +157,20 @@ pub(super) fn check_ops_control_plane_doc_contract(
 pub(super) fn check_control_plane_naming_contract_docs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/bijux-dev-atlas-docs/contract.md");
+    let rel = Path::new("docs/bijux-atlas-dev/governance/automation-contracts.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
-        "Runtime product CLI namespace: `bijux atlas <args>`",
-        "Installed umbrella dispatch: `bijux dev atlas <args>`",
-        "Naming contract is frozen",
+        "stable promises around the Atlas development control plane",
+        "repository automation remains discoverable through `bijux-dev-atlas`",
+        "wrapper commands such as `make ci-pr` and `make docs-build`",
     ] {
         if !text.contains(required) {
             violations.push(violation(
                 "CONTROL_PLANE_NAMING_CONTRACT_MISSING",
                 format!("dev control-plane contract is missing `{required}`"),
-                "document the frozen runtime vs control-plane naming contract in bijux-dev-atlas-docs/contract.md",
+                "document the frozen runtime vs control-plane naming contract in docs/bijux-atlas-dev/governance/automation-contracts.md",
                 Some(rel),
             ));
         }

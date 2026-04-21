@@ -169,28 +169,6 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
     Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::SharedFileWriter;
-    use std::io::Write;
-
-    #[test]
-    fn shared_trace_writer_appends_without_panicking() {
-        let temp = tempfile::tempdir().expect("tempdir");
-        let path = temp.path().join("trace.jsonl");
-        let mut writer_a = SharedFileWriter::new(&path).expect("writer a");
-        let mut writer_b = writer_a.clone();
-
-        writer_a.write_all(br#"{"event":"a"}"#).expect("write a");
-        writer_b.write_all(br#"{"event":"b"}"#).expect("write b");
-        writer_b.flush().expect("flush");
-
-        let contents = std::fs::read_to_string(&path).expect("read trace file");
-        assert!(contents.contains(r#"{"event":"a"}"#));
-        assert!(contents.contains(r#"{"event":"b"}"#));
-    }
-}
-
 fn init_otel_subscriber(
     log_json: bool,
     filter: EnvFilter,
@@ -229,4 +207,26 @@ fn init_plain_subscriber(log_json: bool, filter: EnvFilter) -> Result<(), String
             .map_err(|e| format!("failed to initialize tracing subscriber: {e}"))?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::SharedFileWriter;
+    use std::io::Write;
+
+    #[test]
+    fn shared_trace_writer_appends_without_panicking() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let path = temp.path().join("trace.jsonl");
+        let mut writer_a = SharedFileWriter::new(&path).expect("writer a");
+        let mut writer_b = writer_a.clone();
+
+        writer_a.write_all(br#"{"event":"a"}"#).expect("write a");
+        writer_b.write_all(br#"{"event":"b"}"#).expect("write b");
+        writer_b.flush().expect("flush");
+
+        let contents = std::fs::read_to_string(&path).expect("read trace file");
+        assert!(contents.contains(r#"{"event":"a"}"#));
+        assert!(contents.contains(r#"{"event":"b"}"#));
+    }
 }

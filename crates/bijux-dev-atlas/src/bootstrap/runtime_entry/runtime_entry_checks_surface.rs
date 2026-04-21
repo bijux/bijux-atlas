@@ -101,8 +101,12 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
                     })
                 })
                 .collect();
-            serde_json::to_string_pretty(&serde_json::json!({"checks": rows}))
-                .map_err(|err| err.to_string())
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "kind": "check_list",
+                "checks": rows
+            }))
+            .map_err(|err| err.to_string())
         }
         FormatArg::Jsonl => Err("jsonl output is not supported for list".to_string()),
     }

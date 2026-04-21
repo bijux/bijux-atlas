@@ -118,7 +118,7 @@ jobs:
           make FORMAT=json k8s-render > "${logs_root}/ops-k8s-render.stdout.log" 2> "${logs_root}/ops-k8s-render.stderr.log"
           capture_report "artifacts/k8s-render/${RUN_ID}/report.json" "${report_root}/ops-k8s-render.json"
           cargo run --locked -q -p bijux-dev-atlas -- ops schema validate --format json > "${report_root}/ops-schema-validate.json" 2> "${logs_root}/ops-schema-validate.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- ops inventory validate --format json > "${report_root}/ops-inventory-validate.json" 2> "${logs_root}/ops-inventory-validate.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- ops inventory --format json > "${report_root}/ops-inventory-validate.json" 2> "${logs_root}/ops-inventory-validate.stderr.log"
       - name: Save cargo cache
         if: success()
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae

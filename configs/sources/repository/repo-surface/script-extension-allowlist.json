@@ -1,8 +1,13 @@
 {
   "schema_version": 1,
   "allowed_paths": [
+    ".bijux/shared",
+    ".github/scripts",
+    "configs/sources/repository/docs/node_modules",
     "crates/bijux-dev-atlas/tests/fixtures",
+    "docs/assets/javascripts",
     "docs/assets/javascripts/mermaid-init.js",
+    "docs/hooks",
     "ops/e2e/fixtures",
     "ops/load/k6",
     "ops/load/k6/suites"

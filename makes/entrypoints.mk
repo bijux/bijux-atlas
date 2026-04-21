@@ -2,6 +2,7 @@
 # Public targets: help and curated wrappers from child modules
 
 help: ## Show curated makes targets owned by Rust control-plane wrappers
+	@mkdir -p "$(ISO_ROOT)" "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@$(DEV_ATLAS) makes surface --format $(FORMAT)
 	@printf '%s\n' "guide: docs/bijux-atlas-dev/automation/automation-control-plane.md" "reference: docs/bijux-atlas-dev/automation/automation-command-surface.md" "makes: makes/README.md"
 
@@ -45,9 +46,9 @@ _internal-make-drift-report: ## Generate makes drift report artifact from makes-
 	@$(DEV_ATLAS) check run --suite make_required --include-internal --include-slow --format $(FORMAT) --out $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
 k8s-render: ## Render Kubernetes manifests through dev-atlas
-	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format $(FORMAT)"
+	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT)"
 	@mkdir -p $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)
-	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format $(FORMAT) --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) ops k8s render --profile $(PROFILE) --allow-subprocess --allow-write --format $(FORMAT) --out $(ARTIFACT_ROOT)/k8s-render/$(RUN_ID)/report.json >/dev/null
 
 k8s-validate: ## Validate Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s validate --profile $(PROFILE) --allow-subprocess --format $(FORMAT)"

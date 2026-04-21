@@ -1376,6 +1376,40 @@ pub(crate) async fn security_middleware(
     resp
 }
 
+fn classify_client_type(user_agent: Option<&str>) -> &'static str {
+    let Some(ua) = user_agent else {
+        return "unknown";
+    };
+    let normalized = ua.to_ascii_lowercase();
+    if normalized.contains("mozilla/")
+        || normalized.contains("chrome/")
+        || normalized.contains("safari/")
+        || normalized.contains("firefox/")
+    {
+        "human"
+    } else {
+        "machine"
+    }
+}
+
+fn classify_user_agent_family(user_agent: Option<&str>) -> &'static str {
+    let Some(ua) = user_agent else {
+        return "unknown";
+    };
+    let normalized = ua.to_ascii_lowercase();
+    if normalized.contains("curl/") {
+        "curl"
+    } else if normalized.contains("k6/") {
+        "k6"
+    } else if normalized.contains("mozilla/") {
+        "browser"
+    } else if normalized.contains("python-requests") {
+        "python-requests"
+    } else {
+        "other"
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1720,39 +1754,5 @@ mod tests {
         // Debug/profile variance and shared CI runners can exceed 100ms without
         // indicating a meaningful algorithmic regression.
         assert!(start.elapsed() < Duration::from_millis(500));
-    }
-}
-
-fn classify_client_type(user_agent: Option<&str>) -> &'static str {
-    let Some(ua) = user_agent else {
-        return "unknown";
-    };
-    let normalized = ua.to_ascii_lowercase();
-    if normalized.contains("mozilla/")
-        || normalized.contains("chrome/")
-        || normalized.contains("safari/")
-        || normalized.contains("firefox/")
-    {
-        "human"
-    } else {
-        "machine"
-    }
-}
-
-fn classify_user_agent_family(user_agent: Option<&str>) -> &'static str {
-    let Some(ua) = user_agent else {
-        return "unknown";
-    };
-    let normalized = ua.to_ascii_lowercase();
-    if normalized.contains("curl/") {
-        "curl"
-    } else if normalized.contains("k6/") {
-        "k6"
-    } else if normalized.contains("mozilla/") {
-        "browser"
-    } else if normalized.contains("python-requests") {
-        "python-requests"
-    } else {
-        "other"
     }
 }

@@ -40,11 +40,16 @@ pub(super) fn check_docs_no_duplicate_nav_titles(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut counts = std::collections::BTreeMap::<String, usize>::new();
+    let allow_duplicated_titles =
+        std::collections::BTreeSet::from([String::from("Overview"), String::from("Home")]);
     for (title, _) in mkdocs_nav_refs(ctx)? {
         *counts.entry(title).or_default() += 1;
     }
     let mut violations = Vec::new();
     for (title, count) in counts {
+        if allow_duplicated_titles.contains(&title) {
+            continue;
+        }
         if count > 1 {
             violations.push(violation(
                 "DOCS_DUPLICATE_NAV_TITLE",
