@@ -1,9 +1,6 @@
 name: ops-publish
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 permissions:
