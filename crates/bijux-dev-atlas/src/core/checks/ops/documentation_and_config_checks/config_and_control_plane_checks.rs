@@ -162,9 +162,9 @@ pub(super) fn check_control_plane_naming_contract_docs(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
-        "Runtime product CLI namespace: `bijux atlas <args>`",
-        "Installed umbrella dispatch: `bijux dev atlas <args>`",
-        "Naming contract is frozen",
+        "stable promises around the Atlas development control plane",
+        "repository automation remains discoverable through `bijux-dev-atlas`",
+        "wrapper commands such as `make ci-pr` and `make docs-build`",
     ] {
         if !text.contains(required) {
             violations.push(violation(

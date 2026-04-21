@@ -163,7 +163,7 @@ nav:
   - Home: index.md
   - Repository:
       - Home:
-          - Repository Overview: bijux-atlas/index.md
+          - Overview: bijux-atlas/index.md
           - Foundations:
               - Foundations: bijux-atlas/foundations/index.md
               - What Atlas Is: bijux-atlas/foundations/what-atlas-is.md
@@ -226,7 +226,7 @@ nav:
               - Compatibility Review Checklist: bijux-atlas/contracts/compatibility-review-checklist.md
   - Operations:
       - Home:
-          - Operations Overview: bijux-atlas-ops/index.md
+          - Overview: bijux-atlas-ops/index.md
           - Stack:
               - Stack: bijux-atlas-ops/stack/index.md
               - Deployment Models: bijux-atlas-ops/stack/deployment-models.md
@@ -289,7 +289,7 @@ nav:
               - Failure Injection Load: bijux-atlas-ops/load/failure-injection-load.md
   - Maintainer:
       - Home:
-          - Maintainer Overview: bijux-atlas-dev/index.md
+          - Overview: bijux-atlas-dev/index.md
           - Workspace:
               - Workspace: bijux-atlas-dev/workspace/index.md
               - Workspace and Tooling: bijux-atlas-dev/workspace/workspace-and-tooling.md
