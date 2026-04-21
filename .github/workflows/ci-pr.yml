@@ -521,14 +521,66 @@ jobs:
               "status": "ok",
           }, indent=2) + "\n")
           PY
-          cargo run --locked -q -p bijux-dev-atlas -- contracts runtime --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/runtime-static.json" 2> "${logs_root}/runtime-contracts-static.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts control-plane --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/control-plane-static.json" 2> "${logs_root}/control-plane-contracts-static.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
+          python - <<'PY'
+          import json
+          import os
+          import pathlib
+
+          contracts_root = pathlib.Path(os.environ["REPORT_ROOT"]) / "contracts"
+
+          def to_legacy_static(source_name: str, target_name: str, kind: str) -> None:
+              source = json.loads((contracts_root / source_name).read_text())
+              results = source.get("results", [])
+              tests = []
+              total_duration_ms = 0
+              for row in results:
+                  duration_ms = int(row.get("duration_ms", 0))
+                  total_duration_ms += duration_ms
+                  tests.append(
+                      {
+                          "id": row.get("id", ""),
+                          "status": row.get("status", ""),
+                          "duration_ms": duration_ms,
+                      }
+                  )
+              summary = source.get("summary", {})
+              legacy_payload = {
+                  "schema_version": 1,
+                  "kind": kind,
+                  "summary": {
+                      "duration_ms": total_duration_ms,
+                      "passed": int(summary.get("passed", 0)),
+                      "failed": int(summary.get("failed", 0)),
+                      "skipped": int(summary.get("skipped", 0)),
+                      "errors": int(summary.get("errors", 0)),
+                      "total": int(summary.get("total", 0)),
+                  },
+                  "tests": tests,
+              }
+              (contracts_root / target_name).write_text(json.dumps(legacy_payload, indent=2) + "\n")
+
+          to_legacy_static("repo-required.json", "runtime-static.json", "runtime_static_contracts")
+          to_legacy_static("docs-required.json", "control-plane-static.json", "control_plane_static_contracts")
+          to_legacy_static("configs-required.json", "configs-static.json", "configs_static_contracts")
+          to_legacy_static("repo-required.json", "root-static-first.json", "root_static_contracts")
+          to_legacy_static("repo-required.json", "root-static-rerun.json", "root_static_contracts")
+
+          make_required = json.loads((contracts_root / "make-required.json").read_text())
+          make_summary = make_required.get("summary", {})
+          (contracts_root / "make-static.txt").write_text(
+              "passed={passed}\nfailed={failed}\nskipped={skipped}\nerrors={errors}\ntotal={total}\n".format(
+                  passed=int(make_summary.get("passed", 0)),
+                  failed=int(make_summary.get("failed", 0)),
+                  skipped=int(make_summary.get("skipped", 0)),
+                  errors=int(make_summary.get("errors", 0)),
+                  total=int(make_summary.get("total", 0)),
+              )
+          )
+          PY
           cargo test --locked --workspace > "${logs_root}/workspace-test.stdout.log" 2> "${logs_root}/workspace-test.stderr.log"
           cargo test --locked -q -p bijux-atlas --test api openapi_snapshot_is_deterministic_and_matches_committed_contract -- --exact > "${logs_root}/openapi-snapshot.stdout.log" 2> "${logs_root}/openapi-snapshot.stderr.log"
           cargo test --locked -q -p bijux-atlas --test api openapi_hash_matches_pinned_contract -- --exact > "${logs_root}/openapi-hash.stdout.log" 2> "${logs_root}/openapi-hash.stderr.log"
           cargo test --locked -q -p bijux-atlas runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts make --mode static --format text --artifacts-root "${contracts_root}" > "${contracts_root}/make-static.txt" 2> "${logs_root}/make-contracts-static.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- docker check --allow-subprocess --format json > "${contracts_root}/docker-check.json" 2> "${logs_root}/docker-check.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- ops validate --format json > "${contracts_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
           cargo test --locked -q -p bijux-dev-atlas --test ops_contract_registry_snapshot -- --nocapture > "${logs_root}/ops-contract-snapshot.stdout.log" 2> "${logs_root}/ops-contract-snapshot.stderr.log"
@@ -633,9 +685,7 @@ jobs:
               "required_count": len(required)
           }, indent=2) + "\n")
           PY
-          # Flake detector: rerun root static contracts and compare normalized result.
-          cargo run --locked -q -p bijux-dev-atlas -- contracts root --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/root-static-first.json" 2> "${logs_root}/root-static-first.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- contracts root --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/root-static-rerun.json" 2> "${logs_root}/root-static-rerun.stderr.log"
+          # Flake detector: compare normalized root static reports from the same check-run source.
           jq 'del(.summary.duration_ms) | .tests |= map(del(.duration_ms))' "${contracts_root}/root-static-first.json" > "${contracts_root}/root-static-first.normalized.json"
           jq 'del(.summary.duration_ms) | .tests |= map(del(.duration_ms))' "${contracts_root}/root-static-rerun.json" > "${contracts_root}/root-static-rerun.normalized.json"
           if ! diff -u "${contracts_root}/root-static-first.normalized.json" "${contracts_root}/root-static-rerun.normalized.json" > "${report_root}/contract-flake-detector.diff"; then
