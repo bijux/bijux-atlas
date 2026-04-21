@@ -114,12 +114,7 @@ jobs:
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
-          site_dir="$(python3 - <<'PY'
-          import pathlib, yaml
-          mkdocs = yaml.safe_load(pathlib.Path("mkdocs.yml").read_text())
-          print(mkdocs["site_dir"])
-          PY
-          )"
+          site_dir="artifacts/docs/site"
           mkdir -p "${report_root}" "${logs_root}"
           python3 -m mkdocs build --strict > "${logs_root}/mkdocs-build.stdout.log" 2> "${logs_root}/mkdocs-build.stderr.log"
           cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2>> "${logs_root}/mkdocs-build.stderr.log"
