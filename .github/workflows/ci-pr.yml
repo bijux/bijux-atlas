@@ -299,10 +299,10 @@ jobs:
             jq -n '{schema_version:1,kind:"docs_ssot_reference_drift_gate",status:"not_applicable"}' > "${report_root}/docs-ssot-reference-drift.json"
           fi
           # Golden workflow docs must include executable commands and outcome guidance.
-          grep -nE "^cargo run -p bijux-atlas --bin bijux-atlas -- --help$" docs/02-getting-started/run-atlas-locally.md > /dev/null
-          grep -nE "^make ci-fast$" docs/06-development/automation-control-plane.md > /dev/null
-          grep -nE "^## Local Success Criteria$" docs/02-getting-started/run-atlas-locally.md > /dev/null
-          grep -nE "^## Triage Workflow$" docs/06-development/automation-control-plane.md > /dev/null
+          grep -nE "^cargo run -p bijux-atlas --bin bijux-atlas -- --help$" docs/bijux-atlas/workflows/run-atlas-locally.md > /dev/null
+          grep -nE "make ci-fast" docs/bijux-atlas-dev/automation/automation-control-plane.md > /dev/null
+          grep -nE "^## Local Success Criteria$" docs/bijux-atlas/workflows/run-atlas-locally.md > /dev/null
+          grep -nE "^## Triage Workflow$" docs/bijux-atlas-dev/automation/automation-control-plane.md > /dev/null
           jq -n '{schema_version:1,kind:"docs_golden_workflow_verification",status:"ok"}' > "${report_root}/docs-golden-workflow-verification.json"
           # Docs external link allowlist requires expiry and owner for each entry.
           python - <<'PY'
@@ -335,11 +335,12 @@ jobs:
           alert_catalog = {r["id"] for r in json.loads((root / "ops/observe/alert-catalog.json").read_text())["alerts"]}
           missing_alerts = sorted([k for k in alerts.keys() if k not in alert_catalog])
           missing_runbook_ids = sorted([k for k, v in alerts.items() if not str(v.get("runbook_id", "")).strip()])
-          incident_doc = root / "docs/04-operations/incident-response.md"
+          incident_doc = root / "docs/bijux-atlas-ops/observability/incident-response.md"
           if not incident_doc.exists():
-              raise SystemExit("alerts/runbooks mapping failed: docs/04-operations/incident-response.md missing")
+              raise SystemExit("alerts/runbooks mapping failed: docs/bijux-atlas-ops/observability/incident-response.md missing")
           if missing_alerts or missing_runbook_ids:
               raise SystemExit(f"alerts/runbooks mapping failed missing_alerts={missing_alerts} missing_runbook_ids={missing_runbook_ids}")
+          runbook_ids = sorted({str(v.get("runbook_id", "")).strip() for v in alerts.values() if str(v.get("runbook_id", "")).strip()})
           slo = json.loads((root / "configs/sources/operations/slo/slo.json").read_text())
           slis = {r["id"] for r in slo["slis"]}
           slos = slo["slos"]
@@ -350,16 +351,16 @@ jobs:
           if not dashboards:
               raise SystemExit("slo mapping failed: no dashboards found under ops/observe/dashboards")
           load_suites = json.loads((root / "ops/load/generated/suites.manifest.json").read_text())["suites"]
-          capacity_doc = root / "docs/04-operations/performance-and-load.md"
+          capacity_doc = root / "docs/bijux-atlas-ops/load/performance-and-load.md"
           if not capacity_doc.exists():
-              raise SystemExit("load suite mapping failed: docs/04-operations/performance-and-load.md missing")
+              raise SystemExit("load suite mapping failed: docs/bijux-atlas-ops/load/performance-and-load.md missing")
           no_purpose = [row["name"] for row in load_suites if not row.get("purpose")]
           if no_purpose:
               raise SystemExit("load suites missing purpose: " + ", ".join(sorted(no_purpose)))
           e2e_scenarios = json.loads((root / "ops/e2e/scenarios/scenarios.json").read_text())["scenarios"]
-          triage_doc = root / "docs/04-operations/incident-response.md"
+          triage_doc = root / "docs/bijux-atlas-ops/observability/incident-response.md"
           if not triage_doc.exists():
-              raise SystemExit("e2e mapping failed: docs/04-operations/incident-response.md missing")
+              raise SystemExit("e2e mapping failed: docs/bijux-atlas-ops/observability/incident-response.md missing")
           bad_e2e = [row["id"] for row in e2e_scenarios if not row.get("entrypoint")]
           if bad_e2e:
               raise SystemExit("e2e scenarios missing entrypoint: " + ", ".join(sorted(bad_e2e)))
