@@ -20,6 +20,8 @@ Use the top navigation like the other Bijux repositories:
 [![CI](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml)
 [![Docs](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml)
 [![Crates Publish](https://github.com/bijux/bijux-atlas/actions/workflows/release-crates.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-crates.yml)
+[![GHCR Publish](https://github.com/bijux/bijux-atlas/actions/workflows/release-ghcr.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-ghcr.yml)
+[![GitHub Release](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
 [![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
 [![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
 [![Published packages](https://img.shields.io/badge/published%20packages-1-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
@@ -43,7 +45,6 @@ Use the top navigation like the other Bijux repositories:
 - `Repository` covers the `bijux-atlas` runtime, workflows, interfaces, architecture, and contracts.
 - `Operations` covers the `bijux-atlas-ops` operating surface for stack, Kubernetes, release, observability, and load.
 - `Maintainer` covers the `bijux-atlas-dev` control plane for workspace ownership, automation, governance, delivery, and workflow ownership.
-- `CI PR` badge tracks the pull-request validation workflow that must pass before merging to `main`.
 
 ## Package Handbooks
 
