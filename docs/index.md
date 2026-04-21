@@ -43,6 +43,7 @@ Use the top navigation like the other Bijux repositories:
 - `Repository` covers the `bijux-atlas` runtime, workflows, interfaces, architecture, and contracts.
 - `Operations` covers the `bijux-atlas-ops` operating surface for stack, Kubernetes, release, observability, and load.
 - `Maintainer` covers the `bijux-atlas-dev` control plane for workspace ownership, automation, governance, delivery, and workflow ownership.
+- `CI PR` badge tracks the pull-request validation workflow that must pass before merging to `main`.
 
 ## Package Handbooks
 
