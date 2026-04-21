@@ -62,8 +62,6 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Renamed `ops/release/crates-v0.1.toml`, `ops/release/images-v0.1.toml`, and `ops/release/ops-v0.1.toml` to `crates-release.toml`, `images-release.toml`, and `ops-release.toml`.
 - Renamed the public runtime binaries to the `bijux-atlas*` family and moved the stable umbrella namespaces to `bijux atlas ...` and `bijux dev atlas ...`.
 
-[Back to top](#top)
-
 ## v0.1.1
 
 ### Added
@@ -93,3 +91,5 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Added GitHub Actions lanes for release candidate, docs deploy, ops validate/publish, and crates publish.
 - Added container, helm, and ops packaging workflows aligned with deterministic artifact generation.
 - Set Apache-2.0 licensing and release metadata baseline for `v0.1.0`.
+
+[Back to top](#top)
