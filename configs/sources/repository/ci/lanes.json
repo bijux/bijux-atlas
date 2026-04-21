@@ -31,9 +31,7 @@
       "aliases": [
         "ci-fast"
       ],
-      "required_env": [
-        "CARGO_TERM_COLOR"
-      ],
+      "required_env": [],
       "artifacts_expected": [
         "reports/governance-validate.json",
         "reports/governance-coverage-diff.json"
@@ -52,9 +50,7 @@
         "ci-pr",
         "supply-chain"
       ],
-      "required_env": [
-        "CARGO_TERM_COLOR"
-      ],
+      "required_env": [],
       "artifacts_expected": [
         "reports/ci-pr.json",
         "reports/docs-ssot-reference-drift.json",
