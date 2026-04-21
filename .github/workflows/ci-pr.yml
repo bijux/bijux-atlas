@@ -399,7 +399,14 @@ jobs:
               d = row.get("domain","").strip()
               domain_counts[d] = domain_counts.get(d,0)+1
           empty_domains = sorted([d for d,c in domain_counts.items() if d and c == 0])
-          empty_suite_refs = sorted([s.get("id","") for s in suites if not s.get("checks")])
+          empty_suite_refs = sorted([
+              s.get("id", "")
+              for s in suites
+              if not s.get("checks")
+              and not s.get("domains")
+              and not s.get("tags_any")
+              and not s.get("tags_all")
+          ])
           if empty_domains or empty_suite_refs:
               raise SystemExit(f"registry empty groups found domains={empty_domains} suites={empty_suite_refs}")
           (report_root / "registry-group-coverage.json").write_text(json.dumps({
