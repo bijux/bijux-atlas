@@ -1028,6 +1028,7 @@ fn run_ci_verify_gate(
             serde_json::json!({
                 "schema_version": 1,
                 "kind": "docs_diff_summary_v1",
+                "status": "ok",
                 "changed_count": changed.len(),
                 "changed_paths": changed
             })

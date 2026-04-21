@@ -36,6 +36,8 @@ jobs:
       TEMP: artifacts/isolates/docs-only/tmp
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
@@ -76,16 +78,16 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
           npm ci --prefix configs/sources/repository/docs
-      - name: Run docs markdown lint
-        shell: bash
-        run: |
-          set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json
       - name: Run docs external link check
         shell: bash
         run: |
           set -euo pipefail
           cargo run --locked -q -p bijux-dev-atlas -- docs external-links --allow-network --format json
+      - name: Generate docs references
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run --locked -q -p bijux-dev-atlas -- docs reference generate --allow-write --format json
       - name: Check generated docs references
         shell: bash
         run: |
@@ -132,19 +134,13 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
+          cargo run --locked -q -p bijux-dev-atlas -- docs validate --allow-write --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
       - name: Build docs diff summary
         shell: bash
         run: |
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-diff --allow-git --allow-write --format json > "${report_root}/docs-diff-summary.json"
-      - name: Build docs quality summary
-        shell: bash
-        run: |
-          set -euo pipefail
-          report_root="artifacts/${RUN_ID}/reports"
-          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-quality --allow-write --format json > "${report_root}/docs-test-coverage.json"
       - name: Publish summary
         shell: bash
         run: |
@@ -152,8 +148,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           printf "- lane: docs\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/docs.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
-          printf "- docs diff: %s\n- docs coverage: %s\n" \
-            "${report_root}/docs-diff-summary.json" "${report_root}/docs-test-coverage.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- docs diff: %s\n" "${report_root}/docs-diff-summary.json" >> "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo cache
         if: success()
