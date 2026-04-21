@@ -19,7 +19,11 @@ def resolve_std_repo() -> Path:
             return candidate
         raise FileNotFoundError(f"BIJUX_STD_REPO does not contain workflow inventory: {candidate}")
 
-    if (SCRIPT_REPO_ROOT / ".github/standards/workflow-inventory.json").exists():
+    # Only self-resolve when the script is executed from the canonical bijux-std repo.
+    if (
+        SCRIPT_REPO_ROOT.name == "bijux-std"
+        and (SCRIPT_REPO_ROOT / ".github/standards/workflow-inventory.json").exists()
+    ):
         return SCRIPT_REPO_ROOT
 
     sibling = ROOT / "bijux-std"

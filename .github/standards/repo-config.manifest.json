@@ -266,7 +266,7 @@
       },
       "workflow_wrappers": {
         "ci": {
-          "name": "CI",
+          "name": "repo / ci",
           "on": {
             "push": {
               "branches": [
@@ -686,7 +686,7 @@
       },
       "workflow_wrappers": {
         "ci": {
-          "name": "ci",
+          "name": "repo / ci",
           "on": {
             "workflow_call": {
               "inputs": {
@@ -748,7 +748,7 @@
           }
         },
         "verify": {
-          "name": "verify",
+          "name": "repo / verify",
           "on": {
             "push": {
               "branches": [
@@ -788,7 +788,12 @@
                 "uv.lock"
               ]
             },
-            "workflow_dispatch": null
+            "workflow_dispatch": null,
+            "merge_group": {
+              "branches": [
+                "main"
+              ]
+            }
           },
           "permissions": {
             "contents": "read"
@@ -953,7 +958,7 @@
       },
       "workflow_wrappers": {
         "ci": {
-          "name": "CI",
+          "name": "repo / ci",
           "on": {
             "push": {
               "branches": [
@@ -1386,7 +1391,7 @@
       },
       "workflow_wrappers": {
         "ci": {
-          "name": "ci",
+          "name": "repo / ci",
           "on": {
             "workflow_call": {
               "inputs": {
@@ -1598,7 +1603,7 @@
           }
         },
         "verify": {
-          "name": "verify",
+          "name": "repo / verify",
           "on": {
             "push": {
               "branches": [
@@ -1638,7 +1643,12 @@
                 "uv.lock"
               ]
             },
-            "workflow_dispatch": null
+            "workflow_dispatch": null,
+            "merge_group": {
+              "branches": [
+                "main"
+              ]
+            }
           },
           "permissions": {
             "contents": "read"
@@ -1974,7 +1984,7 @@
       },
       "workflow_wrappers": {
         "ci": {
-          "name": "ci",
+          "name": "repo / ci",
           "on": {
             "workflow_call": {
               "inputs": {
@@ -2186,7 +2196,7 @@
           }
         },
         "verify": {
-          "name": "verify",
+          "name": "repo / verify",
           "on": {
             "push": {
               "branches": [
@@ -2226,7 +2236,12 @@
                 "uv.lock"
               ]
             },
-            "workflow_dispatch": null
+            "workflow_dispatch": null,
+            "merge_group": {
+              "branches": [
+                "main"
+              ]
+            }
           },
           "permissions": {
             "contents": "read"
@@ -2366,7 +2381,24 @@
       "workflow_allowlist": [
         "github-policy"
       ],
-      "pinned_std_sha": "5da4225aedcfc2af92bb431875243fa2db2b0ce9"
+      "pinned_std_sha": "5da4225aedcfc2af92bb431875243fa2db2b0ce9",
+      "dependabot": {
+        "version": 2,
+        "updates": [
+          {
+            "package-ecosystem": "github-actions",
+            "directory": "/",
+            "schedule": {
+              "interval": "weekly"
+            },
+            "open-pull-requests-limit": 10,
+            "labels": [
+              "dependencies",
+              "github_actions"
+            ]
+          }
+        ]
+      }
     },
     {
       "name": "bijux.github.io",

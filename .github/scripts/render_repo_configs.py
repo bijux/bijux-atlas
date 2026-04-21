@@ -38,7 +38,7 @@ def yaml_scalar(value: Any) -> str:
         return "null"
 
     text = str(value)
-    if re.fullmatch(r"[A-Za-z0-9_./@-]+", text):
+    if re.fullmatch(r"[A-Za-z0-9_./:@-]+", text):
         return text
     escaped = text.replace('\\', '\\\\').replace('"', '\\"')
     return f'"{escaped}"'
@@ -106,25 +106,6 @@ def render_yaml_document(data: Any) -> str:
     return PROVENANCE_HEADER + "\n".join(dump_yaml(data)) + "\n"
 
 
-def normalize_dependabot(data: dict[str, Any]) -> dict[str, Any]:
-    updates = data.get("updates")
-    if not isinstance(updates, list):
-        return data
-
-    for update in updates:
-        if not isinstance(update, dict):
-            continue
-        schedule = update.get("schedule")
-        if not isinstance(schedule, dict):
-            continue
-        time_value = schedule.get("time")
-        if isinstance(time_value, int) and 0 <= time_value < 86400:
-            hours = time_value // 3600
-            minutes = (time_value % 3600) // 60
-            schedule["time"] = f"{hours:02d}:{minutes:02d}"
-    return data
-
-
 def find_repo_config(manifest: dict, repo_name: str) -> dict:
     for repo in manifest["repositories"]:
         if repo["name"] == repo_name:
@@ -150,7 +131,7 @@ def render_repo(repo_name: str, manifest: dict) -> None:
     dependabot_data = repo.get("dependabot")
     if dependabot_data is not None:
         dependabot_path = repo_root / ".github/dependabot.yml"
-        dependabot_content = render_yaml_document(normalize_dependabot(dependabot_data))
+        dependabot_content = render_yaml_document(dependabot_data)
         write_if_needed(dependabot_path, dependabot_content)
 
     wrappers = repo.get("workflow_wrappers", {})
