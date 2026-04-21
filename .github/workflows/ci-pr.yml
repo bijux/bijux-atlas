@@ -196,12 +196,12 @@ jobs:
           if [ "${root_changed_count}" -gt 0 ]; then
             cargo run --locked -q -p bijux-dev-atlas -- contracts root --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/root-strict.json" 2> "${logs_root}/root-strict.stderr.log"
           fi
-          semantic_target_count="$(jq -r '[.root_changes[] | select(.path == \"README.md\" or .path == \"CONTRACT.md\")] | length' "${report_root}/root-change-report.json")"
+          semantic_target_count="$(jq -r '[.root_changes[] | select(.path == "README.md" or .path == "CONTRACT.md")] | length' "${report_root}/root-change-report.json")"
           if [ "${semantic_target_count}" -gt 0 ] && [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            pr_body="$(jq -r '.pull_request.body // \"\"' \"${GITHUB_EVENT_PATH}\")"
-            has_label="$(jq -r '[.pull_request.labels[]?.name | select(. == \"root-semantic-diff-approved\")] | length' \"${GITHUB_EVENT_PATH}\")"
+            pr_body="$(jq -r '.pull_request.body // ""' "${GITHUB_EVENT_PATH}")"
+            has_label="$(jq -r '[.pull_request.labels[]?.name | select(. == "root-semantic-diff-approved")] | length' "${GITHUB_EVENT_PATH}")"
             if ! printf '%s' "${pr_body}" | grep -q '\\[root-semantic-diff\\]' && [ "${has_label}" -eq 0 ]; then
-              echo \"missing required root semantic diff marker: add [root-semantic-diff] to PR description or label root-semantic-diff-approved\" >&2
+              echo "missing required root semantic diff marker: add [root-semantic-diff] to PR description or label root-semantic-diff-approved" >&2
               exit 1
             fi
           fi
@@ -269,7 +269,7 @@ jobs:
               }, indent=2) + "\n")
           (report_root / "semantic-drift-summary.json").write_text(json.dumps(reports, indent=2) + "\n")
           PY
-          pr_body="$(jq -r '.pull_request.body // \"\"' "${GITHUB_EVENT_PATH}")"
+          pr_body="$(jq -r '.pull_request.body // ""' "${GITHUB_EVENT_PATH}")"
           if changed_file "configs/generated/openapi/v1/openapi.snapshot.json"; then
             if ! printf '%s' "${pr_body}" | grep -Eq '\[api-compat:(non-breaking|breaking)\]'; then
               echo "OpenAPI snapshot changed but compatibility marker is missing; add [api-compat:non-breaking] or [api-compat:breaking] in PR body" >&2
