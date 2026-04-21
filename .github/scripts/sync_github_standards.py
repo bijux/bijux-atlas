@@ -23,11 +23,7 @@ def resolve_std_repo() -> Path:
             return candidate
         raise FileNotFoundError(f"BIJUX_STD_REPO does not contain standards manifest: {candidate}")
 
-    # Only self-resolve when the script is executed from the canonical bijux-std repo.
-    if (
-        SCRIPT_REPO_ROOT.name == "bijux-std"
-        and (SCRIPT_REPO_ROOT / ".github/standards/repo-config.manifest.json").exists()
-    ):
+    if (SCRIPT_REPO_ROOT / ".github/standards/repo-config.manifest.json").exists():
         return SCRIPT_REPO_ROOT
 
     sibling = ROOT / "bijux-std"
@@ -45,11 +41,9 @@ DEFAULT_REPOS = [
     "bijux-atlas",
     "bijux-canon",
     "bijux-core",
-    "bijux-genomics",
     "bijux-masterclass",
     "bijux-pollenomics",
     "bijux-proteomics",
-    "bijux-telecom",
     "bijux.github.io",
 ]
 

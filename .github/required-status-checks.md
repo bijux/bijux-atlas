@@ -5,8 +5,8 @@
 
 Required branch-protection checks for `main`:
 
-- `std / standard` (from workflow `bijux-std`)
-- `std / report` (from workflow `bijux-std`)
+- `checks (standard)` (from workflow `bijux-std`)
+- `checks (report)` (from workflow `bijux-std`)
 
 Notes:
 
