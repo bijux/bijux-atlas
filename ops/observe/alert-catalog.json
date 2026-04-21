@@ -15,6 +15,13 @@
     {"id": "BijuxAtlasStandardSloBurnSlow", "severity": "warning"},
     {"id": "BijuxAtlasOverloadSurvivalViolated", "severity": "critical"},
     {"id": "BijuxAtlasStoreBackendErrorSpike", "severity": "critical"},
-    {"id": "BijuxAtlasCacheThrash", "severity": "warning"}
+    {"id": "BijuxAtlasCacheThrash", "severity": "warning"},
+    {"id": "AtlasOverloadSustained", "severity": "warning"},
+    {"id": "BijuxAtlasDiskSpaceLow", "severity": "warning"},
+    {"id": "BijuxAtlasIngestFailures", "severity": "critical"},
+    {"id": "BijuxAtlasNoDatasetsLoaded", "severity": "warning"},
+    {"id": "BijuxAtlasQueryErrorSpike", "severity": "critical"},
+    {"id": "BijuxAtlasRestartLoop", "severity": "critical"},
+    {"id": "BijuxAtlasShardIntegrityViolation", "severity": "critical"}
   ]
 }
