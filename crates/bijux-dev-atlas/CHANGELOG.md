@@ -4,7 +4,7 @@ All notable changes to **bijux-dev-atlas** are documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org) and the
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
-## v0.2.1 – Unreleased
+## v0.2.1 – 2026-04-21
 
 ### Changed
 - Extended control-plane check outputs with schema-envelope metadata for
