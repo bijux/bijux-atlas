@@ -48,7 +48,7 @@ Atlas is Rust-first, so the catalog focuses on:
 <!-- bijux-atlas-badges:runtime-package-summary:start -->
 [![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)]({{ crate_registry_url }})
 [![crates.io](https://img.shields.io/crates/v/{{ crate_name }}?logo=rust)]({{ crate_registry_url }})
-[![docs.rs](https://img.shields.io/docsrs/{{ crate_name }}?logo=rust)]({{ crate_docs_url }})
+[![rust-docs](https://img.shields.io/badge/rust--docs-{{ crate_badge_label }}-DEA584?logo=rust&logoColor=white)]({{ crate_docs_url }})
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
 <!-- bijux-atlas-badges:runtime-package-summary:end -->
@@ -72,7 +72,7 @@ Atlas is Rust-first, so the catalog focuses on:
 ## Runtime Docs Badge
 
 <!-- bijux-atlas-badges:family-rust-docs-badge:start -->
-[![{{ crate_name }} docs](https://img.shields.io/badge/docs.rs-{{ crate_badge_label }}-DEA584?logo=rust)]({{ crate_docs_url }})
+[![{{ crate_name }} rust-docs](https://img.shields.io/badge/rust--docs-{{ crate_badge_label }}-DEA584?logo=rust&logoColor=white)]({{ crate_docs_url }})
 <!-- bijux-atlas-badges:family-rust-docs-badge:end -->
 
 ## Handbook Docs Badge
