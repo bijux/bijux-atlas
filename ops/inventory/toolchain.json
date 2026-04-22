@@ -32,6 +32,10 @@
       "ref": "v9.0.0",
       "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
     },
+    "actions/labeler": {
+      "ref": "v5",
+      "sha": "8558fd74291d67161a8a78ce36a881fa63b766a9"
+    },
     "actions/setup-java": {
       "ref": "v5",
       "sha": "be666c2fcd27ec809703dec50e508c2fdc7f6654"
@@ -59,6 +63,10 @@
     "azure/setup-helm": {
       "sha": "1a275c3b69536ee54be43f2070a358922e12c8d4",
       "version": "v4"
+    },
+    "codecov/codecov-action": {
+      "ref": "v5",
+      "sha": "75cd11691c0faa626561e295848008c8a7dddffe"
     },
     "dorny/paths-filter": {
       "ref": "v3",
