@@ -14,7 +14,7 @@ status-level = "slow"
 slow-timeout = { period = "10s", terminate-after = 60 }
 
 [store]
-dir = "artifacts/isolates/test/nextest-store"
+dir = "artifacts/rust/test/nextest-store"
 
 [profile.ci]
 retries = { count = 0, backoff = "fixed", delay = "1s" }
