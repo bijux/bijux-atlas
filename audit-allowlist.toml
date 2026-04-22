@@ -1,0 +1,5 @@
+# Baseline allowlist for explicitly reviewed exceptions.
+# Keep empty by default.
+
+[advisories]
+ignore = []
