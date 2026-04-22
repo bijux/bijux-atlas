@@ -128,8 +128,8 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
         for (idx, line) in text.lines().enumerate() {
             if forbidden_root_refs.iter().any(|pat| line.contains(pat))
                 && !(line.contains("configs/sources/repository/rust-tooling/rustfmt.toml")
-                    || line.contains("configs/sources/repository/rust-tooling/clippy.toml")
-                    || line.contains("configs/sources/security/deny.toml"))
+                    || line.contains("configs/rust/clippy.toml")
+                    || line.contains("configs/rust/deny.toml"))
             {
                 errors.push(format!(
                     "CONFIGS_DRIFT_ERROR: {rel}:{} config reference must be under configs/**",

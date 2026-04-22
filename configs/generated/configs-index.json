@@ -522,7 +522,7 @@
         "schemas": 0
       },
       "files": [
-        "configs/sources/repository/nextest/nextest.toml"
+        "configs/rust/nextest.toml"
       ],
       "name": "nextest",
       "owner": "platform",
@@ -777,7 +777,7 @@
         "schemas": 1
       },
       "files": [
-        "configs/sources/repository/rust-tooling/clippy.toml",
+        "configs/rust/clippy.toml",
         "configs/sources/repository/rust-tooling/rustfmt.toml",
         "configs/sources/repository/rust-tooling/toolchain.json"
       ],
@@ -979,7 +979,7 @@
         "configs/sources/security/auth-model.yaml",
         "configs/sources/security/data-classification.yaml",
         "configs/sources/security/data-protection.yaml",
-        "configs/sources/security/deny.toml",
+        "configs/rust/deny.toml",
         "configs/sources/security/dependency-source-policy.json",
         "configs/sources/security/event-monitoring-hooks.yaml",
         "configs/sources/security/forbidden-patterns.json",

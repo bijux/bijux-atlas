@@ -299,11 +299,11 @@ pub(crate) fn configs_validate_payload(
                 ));
             }
             if line.contains("cargo clippy")
-                && !line.contains("CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling")
+                && !line.contains("CLIPPY_CONF_DIR=configs/rust")
                 && !line.contains("cargo run -q -p bijux-dev-atlas")
             {
                 errors.push(format!(
-                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo clippy must set CLIPPY_CONF_DIR=configs/sources/repository/rust-tooling",
+                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo clippy must set CLIPPY_CONF_DIR=configs/rust",
                     line_idx + 1
                 ));
             }
