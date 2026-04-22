@@ -3096,8 +3096,12 @@ assignments:
         .expect("write role-assignments.yaml");
         fs::write(root.join("audit-allowlist.toml"), "advisory = []\n")
             .expect("write audit-allowlist.toml");
-        fs::write(root.join("configs/rust/deny.deviations.toml"), "deviation = []\n")
-            .expect("write deny.deviations.toml");
+        fs::create_dir_all(root.join("configs/rust")).expect("create rust config dir");
+        fs::write(
+            root.join("configs/rust/deny.deviations.toml"),
+            "deviation = []\n",
+        )
+        .expect("write deny.deviations.toml");
     }
 
     fn write_minimal_threat_model_files(root: &std::path::Path) {
