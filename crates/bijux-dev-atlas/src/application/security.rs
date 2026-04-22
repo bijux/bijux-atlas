@@ -283,6 +283,54 @@ fn run_audit_allowlist_quality_gate(root: &Path) -> Result<(), String> {
     Err(format!("audit allowlist quality gate failed:\n{}", errors.join("\n")))
 }
 
+fn run_deny_policy_deviations_gate(root: &Path) -> Result<(), String> {
+    let path = root.join("configs/rust/deny.deviations.toml");
+    if !path.is_file() {
+        return Err(format!("missing {}", path.display()));
+    }
+    let payload = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let value: toml::Value = toml::from_str(&payload)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let rows = value.get("deviation").and_then(toml::Value::as_array).cloned().unwrap_or_default();
+    if rows.is_empty() {
+        return Ok(());
+    }
+    let today = current_iso_day()?;
+    let mut errors = Vec::new();
+    for (index, row) in rows.iter().enumerate() {
+        let label = format!("deviation[{index}]");
+        let id = row.get("id").and_then(toml::Value::as_str).unwrap_or("").trim();
+        let owner = row.get("owner").and_then(toml::Value::as_str).unwrap_or("").trim();
+        let reason = row.get("reason").and_then(toml::Value::as_str).unwrap_or("").trim();
+        let expiry = row.get("expiry").and_then(toml::Value::as_str).unwrap_or("").trim();
+        let review = row.get("review").and_then(toml::Value::as_str).unwrap_or("").trim();
+        if id.is_empty() {
+            errors.push(format!("{label}: missing id"));
+        }
+        if owner.is_empty() {
+            errors.push(format!("{label}: missing owner"));
+        }
+        if reason.is_empty() {
+            errors.push(format!("{label}: missing reason"));
+        }
+        if !is_iso_date(expiry) {
+            errors.push(format!("{label}: expiry must be YYYY-MM-DD"));
+        } else if expiry < today.as_str() {
+            errors.push(format!("{label}: expiry has passed ({expiry})"));
+        }
+        if !(review.starts_with("http://") || review.starts_with("https://")) {
+            errors.push(format!("{label}: review must be an http(s) link"));
+        } else if !review.contains("bijux-std") {
+            errors.push(format!("{label}: review must reference bijux-std"));
+        }
+    }
+    if errors.is_empty() {
+        return Ok(());
+    }
+    Err(format!("deny policy deviations governance gate failed:\n{}", errors.join("\n")))
+}
+
 fn parse_scan_summary(value: &serde_json::Value) -> Option<(i64, i64, i64, i64)> {
     let summary = value.get("summary")?;
     Some((
@@ -794,6 +842,7 @@ fn run_security_policy_inspect(args: SecurityPolicyInspectArgs) -> Result<(Strin
 fn run_security_audit(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root)?;
     run_audit_allowlist_quality_gate(&root)?;
+    run_deny_policy_deviations_gate(&root)?;
     let report_file = root.join("artifacts/security/security-threat-model.json");
     let report = if report_file.exists() {
         read_json(&report_file)?
@@ -838,6 +887,7 @@ fn run_security_vulnerability_report(args: SecurityValidateArgs) -> Result<(Stri
 fn run_security_dependency_audit(args: SecurityValidateArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     run_audit_allowlist_quality_gate(&root)?;
+    run_deny_policy_deviations_gate(&root)?;
     let (validate_rendered, validate_code) = run_security_validate(SecurityValidateArgs {
         repo_root: Some(root.clone()),
         format: FormatArg::Json,
@@ -3046,6 +3096,8 @@ assignments:
         .expect("write role-assignments.yaml");
         fs::write(root.join("audit-allowlist.toml"), "advisory = []\n")
             .expect("write audit-allowlist.toml");
+        fs::write(root.join("configs/rust/deny.deviations.toml"), "deviation = []\n")
+            .expect("write deny.deviations.toml");
     }
 
     fn write_minimal_threat_model_files(root: &std::path::Path) {
