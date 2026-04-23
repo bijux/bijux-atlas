@@ -179,11 +179,8 @@ fn run_lint_policy_report(
     }
     let cargo_toml = fs::read_to_string(repo_root.join("Cargo.toml"))
         .map_err(|err| format!("read Cargo.toml failed: {err}"))?;
-    let clippy_toml =
-        fs::read_to_string(repo_root.join("configs/rust/clippy.toml"))
-            .map_err(|err| {
-            format!("read configs/rust/clippy.toml failed: {err}")
-        })?;
+    let clippy_toml = fs::read_to_string(repo_root.join("configs/rust/clippy.toml"))
+        .map_err(|err| format!("read configs/rust/clippy.toml failed: {err}"))?;
     let workspace_lints = extract_workspace_lints(&cargo_toml);
     let cargo_clippy_version = ProcessCommand::new("cargo")
         .current_dir(&repo_root)
