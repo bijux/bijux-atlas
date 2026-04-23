@@ -25,6 +25,8 @@ fn assert_success_or_environment_skip(output: &std::process::Output, test_name: 
         "no kind cluster",
         "namespaces \"bijux-atlas\" not found",
         "connection to the server",
+        "couldn't get current server API group list",
+        "connect: connection refused",
         "was refused - did you specify the right host or port?",
     ];
     if skip_markers.iter().any(|marker| stderr.contains(marker)) {
