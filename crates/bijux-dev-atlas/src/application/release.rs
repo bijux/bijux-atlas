@@ -4032,7 +4032,7 @@ fn run_release_validate(args: ReleaseValidateArgs) -> Result<(String, i32), Stri
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     if cargo_deny_enabled {
-        let cargo_deny_config = root.join("configs/sources/security/deny.toml");
+        let cargo_deny_config = root.join("configs/rust/deny.toml");
         match ProcessCommand::new("cargo")
             .args([
                 "deny",

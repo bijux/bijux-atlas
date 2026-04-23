@@ -53,7 +53,7 @@
       "mode": "effect",
       "inputs": [
         "workspace crates",
-        "configs/sources/repository/rust-tooling/clippy.toml"
+        "configs/rust/clippy.toml"
       ],
       "outputs": [
         "clippy diagnostics",
@@ -274,7 +274,7 @@
       "mode": "effect",
       "inputs": [
         "Cargo.lock",
-        "configs/sources/security/deny.toml"
+        "configs/rust/deny.toml"
       ],
       "outputs": [
         "cargo deny output",

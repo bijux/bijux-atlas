@@ -179,11 +179,8 @@ fn run_lint_policy_report(
     }
     let cargo_toml = fs::read_to_string(repo_root.join("Cargo.toml"))
         .map_err(|err| format!("read Cargo.toml failed: {err}"))?;
-    let clippy_toml =
-        fs::read_to_string(repo_root.join("configs/sources/repository/rust-tooling/clippy.toml"))
-            .map_err(|err| {
-            format!("read configs/sources/repository/rust-tooling/clippy.toml failed: {err}")
-        })?;
+    let clippy_toml = fs::read_to_string(repo_root.join("configs/rust/clippy.toml"))
+        .map_err(|err| format!("read configs/rust/clippy.toml failed: {err}"))?;
     let workspace_lints = extract_workspace_lints(&cargo_toml);
     let cargo_clippy_version = ProcessCommand::new("cargo")
         .current_dir(&repo_root)
@@ -201,7 +198,7 @@ fn run_lint_policy_report(
         .trim()
         .to_string();
     let rendered_report = format!(
-        "schema_version=1\nworkspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/sources/repository/rust-tooling\nclippy_conf_file=configs/sources/repository/rust-tooling/clippy.toml\ncargo_clippy_version={cargo_clippy_version}\nworkspace_lints:\n{workspace_lints}\nclippy_toml:\n{clippy_toml}"
+        "schema_version=1\nworkspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/rust\nclippy_conf_file=configs/rust/clippy.toml\ncargo_clippy_version={cargo_clippy_version}\nworkspace_lints:\n{workspace_lints}\nclippy_toml:\n{clippy_toml}"
     );
     fs::write(&output_path, rendered_report)
         .map_err(|err| format!("write {} failed: {err}", output_path.display()))?;
