@@ -8,12 +8,19 @@ yanked = "deny"
 allow = [
   "Apache-2.0",
   "Apache-2.0 WITH LLVM-exception",
+<<<<<<<< HEAD:configs/rust/deny.baseline.toml
   "MIT",
+========
+  "BSD-3-Clause",
+>>>>>>>> origin/main:configs/sources/security/deny.toml
   "BSD-2-Clause",
   "BSD-3-Clause",
   "ISC",
   "Unicode-3.0",
+<<<<<<<< HEAD:configs/rust/deny.baseline.toml
   "CDLA-Permissive-2.0",
+========
+>>>>>>>> origin/main:configs/sources/security/deny.toml
   "Zlib",
 ]
 
