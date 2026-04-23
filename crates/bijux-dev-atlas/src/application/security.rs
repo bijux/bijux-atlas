@@ -234,7 +234,7 @@ fn current_iso_day() -> Result<String, String> {
 }
 
 fn run_audit_allowlist_quality_gate(root: &Path) -> Result<(), String> {
-    let path = root.join("audit-allowlist.toml");
+    let path = root.join("configs/sources/security/audit-allowlist.toml");
     if !path.is_file() {
         return Err(format!("missing {}", path.display()));
     }
@@ -3094,7 +3094,9 @@ assignments:
 "#,
         )
         .expect("write role-assignments.yaml");
-        fs::write(root.join("audit-allowlist.toml"), "advisory = []\n")
+        let security_dir = root.join("configs/sources/security");
+        fs::create_dir_all(&security_dir).expect("create security config dir");
+        fs::write(security_dir.join("audit-allowlist.toml"), "advisory = []\n")
             .expect("write audit-allowlist.toml");
         fs::create_dir_all(root.join("configs/rust")).expect("create rust config dir");
         fs::write(
