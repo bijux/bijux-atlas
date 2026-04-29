@@ -83,7 +83,7 @@ pub(super) fn sha256_file(path: &std::path::Path) -> Result<String, String> {
     let bytes = std::fs::read(path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     use sha2::{Digest, Sha256};
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 pub(super) fn package_chart_for_evidence(

@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Storage Architecture
 
-Storage architecture in Atlas separates build output, serving store state, and transient runtime cache behavior.
+Storage architecture in Atlas separates three things on purpose: build output,
+serving-store state, and transient runtime cache behavior.
 
 ## Storage Layers
 
@@ -21,9 +22,9 @@ flowchart TD
     Runtime --> Cache[Transient cache]
 ```
 
-This storage-layer diagram shows the order Atlas expects operators and maintainers to preserve. The
-runtime reads published store state, and the cache sits downstream as acceleration rather than as a
-second source of truth.
+This storage-layer diagram shows the order Atlas expects readers to preserve.
+The runtime reads published store state, and the cache sits downstream as
+acceleration rather than as a second source of truth.
 
 ## Durable vs Transient
 
@@ -33,8 +34,9 @@ flowchart LR
     Transient[Transient state] --> Cache[Cache and in-memory acceleration]
 ```
 
-This durable-versus-transient split is worth making explicit because storage bugs become much easier
-to classify when everyone uses the same boundary language.
+This durable-versus-transient split is worth making explicit because storage
+bugs become much easier to classify when everyone uses the same boundary
+language.
 
 ## Architectural Rules
 
@@ -55,10 +57,8 @@ Without these storage boundaries, it becomes too easy to:
 When a storage-related issue appears, ask first whether the problem is in build output, serving
 store state, catalog discoverability, or cache behavior. Those are different failure classes.
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for storage architecture and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas has the right files somewhere on disk but it is still
+unclear whether the problem belongs to build output, the serving store, or
+cache behavior.

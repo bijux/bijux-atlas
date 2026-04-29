@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Foundations
 
-`bijux-atlas/foundations` is the section home for this handbook slice.
+`bijux-atlas/foundations` explains the product model that the rest of Atlas
+builds on.
 
 ```mermaid
 flowchart TD
@@ -23,10 +24,9 @@ flowchart TD
     Stability --> Shared
 ```
 
-Foundations is where the repository vocabulary becomes stable enough for the
-rest of the handbook to reuse without re-explaining itself. These pages should
-define terms and boundaries once, then hand readers off to runtime, contracts,
-interfaces, or workflows when the question becomes more concrete.
+Foundations is where Atlas stops being a list of files and starts becoming a
+coherent product model. These pages define the terms and boundaries the rest of
+Atlas relies on.
 
 Use this section when you are trying to answer:
 
@@ -35,7 +35,7 @@ Use this section when you are trying to answer:
 - which concepts and terms matter before you read exact interfaces
 - how datasets, queries, releases, and stability fit together
 
-## Recommended Order
+## Recommended Reading Order
 
 Read these pages in this order when you are new to Atlas:
 
@@ -44,7 +44,7 @@ Read these pages in this order when you are new to Atlas:
 3. [Boundaries and Non-Goals](boundaries-and-non-goals.md)
 4. [Guarantees and Stability](guarantees-and-stability.md)
 
-After that, use the remaining pages as targeted lookup material for specific
+After that, use the remaining pages as targeted follow-ups for specific
 product-model questions.
 
 ## What This Section Covers
@@ -54,12 +54,12 @@ product-model questions.
 - the difference between documented promises and current implementation detail
 - the handoff from product foundations into workflows, interfaces, runtime, and contracts
 
-## What This Section Is Allowed To Do
+## Boundary For This Section
 
 This section may define terms, architectural boundaries, and stability posture.
 It should not become a duplicate command reference, an API index, or an ops
-runbook. When a concept turns into exact runtime behavior or exact user-facing
-surface, the reader should move to the matching section instead of staying here.
+runbook. Once the question turns into exact runtime behavior or an exact
+user-facing surface, move on.
 
 ## Pages
 
@@ -74,10 +74,10 @@ surface, the reader should move to the matching section instead of staying here.
 - [Runtime Surfaces](runtime-surfaces.md)
 - [What Atlas Is](what-atlas-is.md)
 
-## Exit Criteria
+## What You Should Know Before Leaving
 
 Leave this section once you can answer three questions clearly:
 
-- what counts as Atlas product behavior versus operations or maintainer behavior
+- what counts as Atlas product behavior versus operations or repository-governance behavior
 - what the runtime is serving and why artifacts matter
 - which surfaces are strong compatibility promises and which are only explanatory

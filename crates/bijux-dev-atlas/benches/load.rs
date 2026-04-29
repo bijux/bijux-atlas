@@ -3,7 +3,8 @@
 use bijux_dev_atlas::core::load_harness::{
     concurrency_stress_scenarios, mixed_workload_generator, query_load_generator,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn load_harness_benchmarks(c: &mut Criterion) {
     c.bench_function("load_query_generator", |b| {

@@ -51,7 +51,7 @@ fn sha256_file(path: &Path) -> Result<String, String> {
     let bytes =
         fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let digest = Sha256::digest(bytes);
-    Ok(format!("{digest:x}"))
+    Ok(hex::encode(digest))
 }
 
 fn load_dataset_ids(manifest: &serde_yaml::Value) -> BTreeSet<String> {

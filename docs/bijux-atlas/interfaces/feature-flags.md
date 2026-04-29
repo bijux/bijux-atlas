@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Feature Flags
 
-This page summarizes the notable Cargo feature flags in the current `bijux-atlas` crate.
+This page summarizes the notable Cargo feature flags in the current
+`bijux-atlas` crate.
 
 ## Feature Flag Groups
 
@@ -20,8 +21,9 @@ flowchart LR
     Features --> Allocator[Allocator choice]
 ```
 
-This feature-group diagram shows why Cargo features belong in reference rather than runtime
-configuration docs. They are build-time capability switches, not live server knobs.
+This feature-group diagram shows why Cargo features belong in reference rather
+than runtime configuration docs. They are build-time capability switches, not
+live server knobs.
 
 ## Current Features
 
@@ -34,7 +36,8 @@ flowchart TD
     FeatureSet --> Jemalloc[jemalloc]
 ```
 
-This current-feature map gives a fast inventory of the notable compile-time switches in the crate.
+This current-feature map gives a fast inventory of the notable compile-time
+switches in the crate.
 
 ## Feature Summary
 
@@ -49,10 +52,7 @@ This current-feature map gives a fast inventory of the notable compile-time swit
 
 Treat feature flags as build-time capability switches. Do not confuse them with runtime configuration flags.
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for feature flags. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Use this page when a behavior difference might come from how Atlas was built
+rather than how the running server was configured.

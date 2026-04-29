@@ -9,9 +9,12 @@ last_reviewed: 2026-03-15
 
 # Load a Sample Dataset
 
-This guide builds a small local dataset from the committed `tiny` fixtures so you have real Atlas artifacts to validate and serve.
+This guide builds a small local dataset from the committed `tiny` fixtures so
+you have real Atlas artifacts to validate and serve.
 
-The point of this guide is not just to make files appear on disk. The point is to walk through the intended data path: ingest, validate, verify, publish, and promote.
+The point is not just to make files appear on disk. The point is to walk
+through the intended data path: ingest, validate, verify, publish, and
+promote.
 
 ## Sample Input Set
 
@@ -23,9 +26,9 @@ flowchart LR
     Ingest --> Output[artifacts/getting-started/tiny-build]
 ```
 
-This input diagram makes the required dataset ingredients explicit. The tutorial uses the committed
-`tiny` fixture so readers can reproduce the flow exactly instead of adapting undocumented local
-inputs on the first attempt.
+This input diagram makes the required dataset ingredients explicit. The guide
+uses the committed `tiny` fixture so the flow can be reproduced exactly instead
+of adapting undocumented local inputs on the first attempt.
 
 ## Build the Tiny Sample
 
@@ -45,7 +48,8 @@ cargo run -p bijux-atlas --bin bijux-atlas -- ingest \
   --assembly GRCh38
 ```
 
-Those identity flags matter. If you change them, later validation, publication, and query steps must use the same values.
+Those identity flags matter. If you change them, later validation, publication,
+and query steps must use the same values.
 
 ## Why This Input Set
 
@@ -56,7 +60,9 @@ The `tiny` fixture is small enough for a fast first run but still exercises the 
 - FAI index input
 - release, species, and assembly identity
 
-This fixture is intentionally tiny. It is useful for learning the workflow shape, not for proving realistic throughput, storage pressure, or operational behavior.
+This fixture is intentionally tiny. It is useful for learning the workflow
+shape, not for proving realistic throughput, storage pressure, or operational
+behavior.
 
 ## Validate the Built Dataset Root
 
@@ -89,8 +95,9 @@ flowchart TD
     Publish --> Serve[Ready for local server startup]
 ```
 
-This sequence matters because it turns a raw ingest run into a checked dataset root before the
-runtime ever sees it. Atlas is intentionally conservative at that boundary.
+This sequence matters because it turns a raw ingest run into a checked dataset
+root before the runtime ever sees it. Atlas is intentionally conservative at
+that boundary.
 
 ## Publish into a Serving Store
 
@@ -136,9 +143,9 @@ flowchart LR
     Derived --> Publish
 ```
 
-This expected-output diagram helps readers confirm the result shape, not only the command exit
-status. A successful first run should leave both a validated build root and a serving store ready
-for runtime startup.
+This expected-output diagram helps confirm the result shape, not only the
+command exit status. A successful first run should leave both a validated
+build root and a serving store ready for runtime startup.
 
 ## If This Step Fails
 
@@ -154,10 +161,7 @@ for runtime startup.
 - Atlas can build and verify a sample dataset root locally
 - publication and catalog promotion create discoverable serving state
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for load a sample dataset and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the local Atlas toolchain works already and the next
+question is how to turn committed fixtures into serving-ready dataset state.

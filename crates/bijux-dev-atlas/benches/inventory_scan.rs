@@ -2,7 +2,8 @@
 
 #![allow(missing_docs)]
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn bench_inventory_scan(c: &mut Criterion) {
     c.bench_function("inventory_scan_walk", |b| {

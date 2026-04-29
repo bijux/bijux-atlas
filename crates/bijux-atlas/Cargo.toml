@@ -23,30 +23,30 @@ jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
 async-trait = "0.1"
-axum = "0.7"
+axum = "0.8"
 base64 = "0.22"
-brotli = "6"
+brotli = "8"
 hex = "0.4"
-hmac = "0.12"
-opentelemetry = "0.27"
-opentelemetry-otlp = { version = "0.27", features = ["http-proto", "reqwest-client"] }
-opentelemetry_sdk = { version = "0.27", features = ["rt-tokio"] }
-redis = { version = "0.27", features = ["tokio-comp"] }
+hmac = "0.13"
+opentelemetry = "0.31"
+opentelemetry-otlp = { version = "0.31", features = ["http-proto", "reqwest-client"] }
+opentelemetry_sdk = { version = "0.31", features = ["rt-tokio"] }
+redis = { version = "1.2", features = ["tokio-comp"] }
 serde.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
-rusqlite = { version = "0.31", features = ["bundled", "vtab", "hooks"] }
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
 serde_json.workspace = true
 serde_yaml = "0.9"
 semver.workspace = true
-sha2 = "0.10"
+sha2 = "0.11"
 tar = "0.4"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
-toml = "0.8"
+toml = "1.1"
 tracing = "0.1"
-tracing-opentelemetry = "0.28"
+tracing-opentelemetry = "0.32"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
 unicode-normalization = "0.1"
 zstd = "0.13"
@@ -61,7 +61,7 @@ optional = true
 [dev-dependencies]
 assert_cmd = "2"
 bijux-cli = { workspace = true }
-criterion = "0.5"
+criterion = "0.8"
 predicates = "3"
 proptest = "1"
 regex = "1.11"

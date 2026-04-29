@@ -435,7 +435,8 @@ pub(crate) async fn genes_handler(
             .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
             .await;
         let deadline = Instant::now() + state.api.sql_timeout;
-        c.conn
+        let _ = c
+            .conn
             .progress_handler(1_000, Some(move || Instant::now() > deadline));
         let query_plan_started = Instant::now();
         let shard_candidates = info_span!(
@@ -604,7 +605,7 @@ pub(crate) async fn genes_handler(
                 "slow query detected"
             );
         }
-        c.conn.progress_handler(1_000, None::<fn() -> bool>);
+        let _ = c.conn.progress_handler(1_000, None::<fn() -> bool>);
         Ok::<_, CacheError>((result, query_elapsed))
     };
     let result = timeout(state.api.request_timeout, work).await;

@@ -93,7 +93,7 @@ fn docs_build_or_serve_subprocess(
             hasher.update(&bytes);
             files.push(serde_json::json!({
                 "path": rel,
-                "sha256": format!("{:x}", hasher.finalize()),
+                "sha256": hex::encode(hasher.finalize()),
                 "bytes": bytes.len()
             }));
         }

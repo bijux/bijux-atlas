@@ -102,7 +102,7 @@ pub(super) fn governance_version(
     let encoded = serde_json::to_vec(&payload).unwrap_or_default();
     let mut hasher = Sha256::new();
     hasher.update(encoded);
-    format!("{:x}", hasher.finalize())
+    hex::encode(hasher.finalize())
 }
 
 pub(super) fn governance_index_payload(

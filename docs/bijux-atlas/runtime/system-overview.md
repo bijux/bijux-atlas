@@ -1,6 +1,6 @@
 ---
 title: System Overview
-audience: maintainer
+audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # System Overview
 
-Atlas is a system for turning explicit source inputs into immutable release artifacts and serving those artifacts through stable runtime surfaces.
+Atlas is a system for turning explicit source inputs into immutable release
+artifacts and then serving those artifacts through stable runtime surfaces.
 
 ## End-to-End System View
 
@@ -23,7 +24,8 @@ flowchart LR
     Runtime --> Clients[Users and integrations]
 ```
 
-This is the product path. It explains how data becomes serveable. It does not mean Atlas is only a server.
+This is the product path. It explains how data becomes serveable without
+reducing Atlas to "just the server."
 
 ## The Two Systems Atlas Actually Has
 
@@ -37,14 +39,14 @@ flowchart LR
     Evidence --> Release[Release or remediation decisions]
 ```
 
-This second system view matters because Atlas has both a product runtime and a maintainer control
-plane. The architecture works best when those systems meet through artifacts, contracts, and
-evidence instead of through hidden cross-dependencies.
+Atlas has both a product runtime and a repository control plane. The
+architecture works best when those systems meet through artifacts, contracts,
+and evidence instead of hidden cross-dependencies.
 
 Atlas is really two related systems:
 
 - the product system that validates, publishes, and serves dataset state
-- the maintainer control plane that validates repository rules, docs, contracts, and release evidence
+- the repository control plane that validates repository rules, docs, contracts, and release evidence
 
 Those systems should meet at contracts and artifacts, not leak into each other as hidden shared behavior.
 
@@ -59,8 +61,9 @@ flowchart TD
     Runtime --> App
 ```
 
-This zone diagram gives maintainers the mental map for the main source roots. It is intentionally
-simple because the deeper pages in this section explain each zone in more detail.
+This zone diagram gives the mental map for the main source roots. It is
+intentionally simple because the deeper pages in this section explain each zone
+in more detail.
 
 ## Design Intent
 
@@ -72,13 +75,13 @@ The architecture tries to keep these responsibilities separate:
 - runtime composes the real process
 - contracts define the stable external shapes
 
-The repository also keeps a separate maintainer path:
+The repository also keeps a separate governance path:
 
 - `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface
-- `bijux-dev-atlas` is the maintainer-facing control plane
-- the maintainer control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior
+- `bijux-dev-atlas` is the repository-facing control plane
+- the repository control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior
 
-## Why This Matters
+## Why This Separation Matters
 
 Atlas becomes hard to maintain when:
 
@@ -92,7 +95,7 @@ The architecture is designed to make those mistakes more visible and less normal
 ## What This Overview Should Leave You With
 
 - Atlas turns source inputs into published serving state through explicit boundaries.
-- The runtime surface and the maintainer control plane are related but intentionally different.
+- The runtime surface and the repository control plane are related but intentionally different.
 - Domain, app, adapters, runtime, and contracts each have a distinct reason to exist.
 
 ## Honest Simplification

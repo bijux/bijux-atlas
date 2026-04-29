@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Troubleshoot Early Problems
 
-Most first-run Atlas failures fall into a small number of categories. This page is meant to shorten the time between “something failed” and “I know which layer is wrong.”
+Most first-run Atlas failures fall into a small number of categories. This
+page is meant to shorten the time between “something failed” and “I know which
+layer is wrong.”
 
 ## Early Failure Map
 
@@ -22,9 +24,9 @@ flowchart TD
     A --> F[Query problem]
 ```
 
-This failure map is here to shorten diagnosis time. Atlas first-run issues usually belong to one
-layer at a time, and readers get unstuck faster when they identify the layer before changing
-multiple things.
+This failure map shortens diagnosis time. Atlas first-run issues usually belong
+to one layer at a time, and diagnosis moves faster when that layer is
+identified before changing multiple things.
 
 ## If `cargo run` Fails Before the Command Starts
 
@@ -58,8 +60,9 @@ flowchart LR
     Flags --> Logs[Re-run with --trace]
 ```
 
-This ingest triage order keeps the likely causes practical and local. Most early ingest failures are
-input, path, or identity mismatches rather than deep product defects.
+This ingest triage order keeps the likely causes practical and local. Most
+early ingest failures are input, path, or identity mismatches rather than deep
+product defects.
 
 Common causes:
 
@@ -114,8 +117,9 @@ flowchart TD
     Config --> Retry[Retry startup]
 ```
 
-This startup decision tree exists because server failures often get overcomplicated. Atlas startup
-problems are usually explained by serving-store shape, cache-root setup, or resolved runtime config.
+This startup decision tree exists because server failures often get
+overcomplicated. Atlas startup problems are usually explained by serving-store
+shape, cache-root setup, or resolved runtime config.
 
 Use:
 
@@ -155,10 +159,7 @@ you narrow the failure boundary instead of pushing uncertainty forward through t
 
 If you answer those in order, you usually isolate the failing layer quickly.
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for troubleshoot early problems and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas is failing early and the most important step is to
+isolate the failing layer before changing anything else.

@@ -6,7 +6,7 @@ use bijux_atlas::adapters::inbound::http::router::build_router;
 use bijux_atlas::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::runtime::config::ApiConfig;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use tempfile::tempdir;
 

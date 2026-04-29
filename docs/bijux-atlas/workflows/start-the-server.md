@@ -9,13 +9,13 @@ last_reviewed: 2026-03-15
 
 # Start the Server
 
-Once you have published and promoted a sample dataset into a serving store, starting the local
-server is straightforward: point the runtime at that store root and keep the cache root under
-`artifacts/`.
+Once you have published and promoted a sample dataset into a serving store,
+starting the local server is straightforward: point the runtime at that store
+root and keep the cache root under `artifacts/`.
 
-The important precondition is real: the sample dataset must already be published and
-catalog-promoted. Starting the server against a build root is a workflow mistake, not a supported
-shortcut.
+The important precondition is real: the sample dataset must already be
+published and catalog-promoted. Starting the server against a build root is a
+workflow mistake, not a supported shortcut.
 
 ## Runtime Inputs
 
@@ -28,8 +28,9 @@ flowchart LR
     Config[flags or config file] --> Server
 ```
 
-This runtime-input diagram shows why the server startup page comes after publication. Atlas expects
-the runtime to start from serving store state, plus explicit cache and configuration inputs.
+This runtime-input diagram shows why the server startup page comes after
+publication. Atlas expects the runtime to start from serving store state, plus
+explicit cache and configuration inputs.
 
 ## Validate the Runtime Shape First
 
@@ -42,7 +43,8 @@ cargo run -p bijux-atlas --bin bijux-atlas-server -- \
   --validate-config
 ```
 
-This is a low-risk first step because it validates runtime inputs without committing to a long-running process.
+This is a low-risk first step because it validates runtime inputs without
+committing to a long-running process.
 
 If `--validate-config` fails, fix that before trying to bind the server. A broken validation step usually means startup would fail or produce misleading partial behavior anyway.
 
@@ -71,8 +73,9 @@ sequenceDiagram
     Server-->>User: bind and accept requests
 ```
 
-This startup sequence keeps the server’s dependencies visible. If startup fails, the first place to
-look is the store root, cache root, or resolved configuration, not the query layer.
+This startup sequence keeps the server’s dependencies visible. If startup
+fails, the first place to look is the store root, cache root, or resolved
+configuration, not the query layer.
 
 ## First Health Checks
 
@@ -99,8 +102,8 @@ flowchart TD
     Health --> Query[Serve query endpoints]
 ```
 
-This model shows the order Atlas is trying to enforce. Readiness should come after configuration and
-artifact resolution, not before.
+This model shows the order Atlas is trying to enforce. Readiness should come
+after configuration and artifact resolution, not before.
 
 Atlas tries to make startup failure explicit rather than turning configuration drift into partial runtime behavior.
 
@@ -118,10 +121,7 @@ Atlas tries to make startup failure explicit rather than turning configuration d
 - the runtime can bind and expose health endpoints
 - you are ready to move from startup checks to real query checks
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for start the server and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the serving store is ready and the remaining question is how
+to start the runtime without blurring build state and serving state.

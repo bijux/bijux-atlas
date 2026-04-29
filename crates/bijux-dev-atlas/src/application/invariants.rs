@@ -32,7 +32,7 @@ fn read_yaml(path: &Path) -> Result<serde_yaml::Value, String> {
 fn sha256_file(path: &Path) -> Result<String, String> {
     let bytes =
         fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 #[derive(Debug, Clone, serde::Serialize)]

@@ -10,7 +10,7 @@ last_reviewed: 2026-04-13
 # Command Surface
 
 This page summarizes the user-facing Atlas command families. It does not
-document the maintainer control plane; that lives in [Automation Command
+document the repository control plane; that lives in [Automation Command
 Surface](../../bijux-atlas-dev/automation/automation-command-surface.md).
 
 The installed runtime namespace is `bijux atlas ...`.
@@ -32,8 +32,8 @@ flowchart TD
     CLI --> OpenAPI[openapi]
 ```
 
-This command map is the quickest way to orient yourself in the runtime CLI. It groups the public
-families readers are expected to discover from the product-facing command surface.
+This command map is the quickest way to orient yourself in the runtime CLI. It
+groups the public families exposed by the product surface.
 
 ## Runtime Companions
 
@@ -44,12 +44,13 @@ flowchart LR
     OpenAPICLI[bijux-atlas-openapi or openapi generate] --> Contracts[OpenAPI generation]
 ```
 
-This companion view matters because Atlas exposes more than one runtime binary. It keeps users from
-treating server startup, CLI workflows, and OpenAPI generation as one indistinct surface.
+Atlas exposes more than one runtime binary. This view keeps server startup, CLI
+workflows, and OpenAPI generation from collapsing into one indistinct surface.
 
-Use this page when you are asking, "Which runtime-facing binary or subcommand family should I use?"
+Use this page when you are asking, "Which runtime-facing binary or subcommand
+family should I use?"
 
-Use the automation reference when you are asking, "Which maintainer command checks the repository, docs, or release state?"
+Use the automation reference when you are asking, "Which repository command checks docs, release state, or governance rules?"
 
 ## Top-Level Families
 
@@ -81,17 +82,11 @@ This page should be read as the public command map for the product runtime.
 When the command tree changes, this page, the Clap structures, and the generated
 command references should all continue to agree.
 
-## Stability Reading
+## Stability Rule
 
 - `bijux atlas ...`, `bijux-atlas`, `bijux-atlas-server`, and documented command families are user-facing surfaces
 - structured output, error behavior, and OpenAPI are only as stable as the documented contracts behind them
-- debug-only or maintainer-only commands should not be inferred from this page
-
-## Stability
-
-This page documents the checked-in runtime-facing command namespace. Update it
-when the public CLI surface changes, and keep maintainer-only automation out of
-scope.
+- debug-only or repository-only commands should not be inferred from this page
 
 ## Related Binaries
 
@@ -99,6 +94,7 @@ scope.
 - `bijux-atlas-server`
 - `bijux-atlas-openapi`
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for command surface. Use it when you need the current checked-in surface quickly and without extra narrative.
+Use this page when the hard part is not the exact flag or argument, but which
+runtime binary or command family owns the task.

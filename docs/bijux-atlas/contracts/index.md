@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Contracts
 
-`bijux-atlas/contracts` is the section home for this handbook slice.
+`bijux-atlas/contracts` is where Atlas turns documented intent into a
+checkable public promise.
 
 ```mermaid
 flowchart TD
@@ -24,9 +25,8 @@ flowchart TD
 ```
 
 This section explains where Atlas turns “we intend this to stay stable” into a
-checkable repository promise. The key idea is that narrative docs, schemas,
-snapshots, and review rules all matter, but they do different jobs and should
-not be confused with each other.
+checkable promise. Narrative docs, schemas, snapshots, and review rules all
+matter, but they do different jobs.
 
 Use this section when the question is about what Atlas is intentionally trying
 to keep stable for downstream users, operators, or automation consumers.
@@ -36,7 +36,7 @@ to keep stable for downstream users, operators, or automation consumers.
 - API compatibility promises
 - runtime configuration and structured-output commitments
 - plugin, artifact, and ownership boundaries
-- the review rules maintainers should use before changing a documented surface
+- the review rules used before changing a documented surface
 
 ## Human Docs Versus Machine Contracts
 
@@ -56,12 +56,16 @@ Contract pages are strongest when they sit on top of a clear mental model:
 - start in [Interfaces](../interfaces/index.md) if you first need to see the exact CLI, API, or config surface
 - stay here when you need to decide whether a change is compatible, additive, or breaking
 
+If the question is only “what command or endpoint does this?”, contracts are
+too early. Come here once the question becomes “what are we promising to keep
+stable?”
+
 ## Suggested Entry Points
 
 - overall boundary and reading posture: [Contracts and Boundaries](contracts-and-boundaries.md)
 - versioning and ownership expectations: [Ownership and Versioning](ownership-and-versioning.md)
 - API-facing compatibility: [API Compatibility](api-compatibility.md)
-- maintainer review discipline: [Compatibility Review Checklist](compatibility-review-checklist.md)
+- compatibility review discipline: [Compatibility Review Checklist](compatibility-review-checklist.md)
 
 ## Pages
 
@@ -76,9 +80,9 @@ Contract pages are strongest when they sit on top of a clear mental model:
 - [Runtime Config Contracts](runtime-config-contracts.md)
 - [Structured Output Contracts](structured-output-contracts.md)
 
-## Exit Criteria
+## What You Should Know Before Leaving
 
-After using this section, a maintainer should be able to say:
+After using this section, you should be able to say:
 
 - whether the surface is covered by a documented contract
 - what kind of compatibility expectation applies

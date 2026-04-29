@@ -23,8 +23,8 @@ flowchart TD
     Runtime --> Output[Structured output]
 ```
 
-This page groups these surfaces together because users rarely touch only one of
-them. A local dataset or query workflow often crosses CLI, config, server, and
+These surfaces belong together because users rarely touch only one of them. A
+local dataset or query workflow often crosses CLI, config, server, and
 structured output boundaries in one session.
 
 ## Main Surfaces
@@ -54,4 +54,4 @@ product system instead of scattered isolated pages.
 Runtime surfaces are the user-visible edges of Atlas: command invocation,
 server behavior, public API description, config intake, and machine-readable
 responses. The repo spreads them across different roots, but the product only
-feels coherent when readers can see them as one connected surface family.
+feels coherent when they are seen as one connected surface family.

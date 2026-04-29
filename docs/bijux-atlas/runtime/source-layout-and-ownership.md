@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Source Layout and Ownership
 
-Atlas source layout is meant to teach the architecture without requiring tribal knowledge.
+Atlas source layout is meant to teach the architecture directly from the tree,
+without relying on tribal knowledge.
 
 ## Canonical Ownership Model
 
@@ -23,8 +24,9 @@ flowchart LR
     Runtime[src/runtime] --> Wiring[Runtime config and composition]
 ```
 
-This ownership map gives contributors a direct translation from architectural idea to source-tree
-location. It exists so new code placement does not depend on local folklore or past directory names.
+This ownership map gives contributors a direct translation from architectural
+idea to source-tree location. New code placement should not depend on old
+directory names or local folklore.
 
 ## Why These Roots Exist
 
@@ -38,8 +40,9 @@ flowchart TD
     Runtime --> Adapters
 ```
 
-This diagram explains the dependency intent behind the root layout. The point is not just tidy
-directories; it is making responsibility and change impact easier to reason about.
+This diagram explains the dependency intent behind the root layout. The point is
+not just tidy directories; it is making responsibility and change impact easier
+to reason about.
 
 The canonical roots are:
 
@@ -71,10 +74,7 @@ This layout makes it harder to hide source of truth behind historical barrels or
 - if you are defining rules that should not depend on transport, start in `domain`
 - if you are wiring concrete runtime behavior, start in `runtime`
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for source layout and ownership and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when a change feels reasonable in concept but you still cannot
+tell which root should own it.

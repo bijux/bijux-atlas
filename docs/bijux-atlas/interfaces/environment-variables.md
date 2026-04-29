@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Environment Variables
 
-Atlas supports a mix of stable public environment variables and lower-level runtime variables used by server configuration.
+Atlas supports a mix of stable public environment variables and lower-level
+runtime variables used by server configuration.
 
 ## Environment Variable Layers
 
@@ -19,8 +20,9 @@ flowchart LR
     RuntimeSpecific[Runtime-specific env vars] --> Runtime
 ```
 
-This environment-variable split is important because not every variable carries the same compatibility
-weight. Some are stable public knobs, while others are closer to runtime-specific deployment inputs.
+This environment-variable split matters because not every variable carries the
+same compatibility weight. Some are stable public knobs, while others are
+closer to runtime-specific deployment inputs.
 
 ## Main Stable Variables
 
@@ -30,8 +32,9 @@ flowchart TD
     Env --> Cache[BIJUX_CACHE_DIR]
 ```
 
-This small stable-variable map highlights the public environment knobs readers can depend on most
-confidently without searching through implementation details.
+This small stable-variable map highlights the public environment knobs that can
+be depended on most confidently without searching through implementation
+details.
 
 ## Public Variables
 
@@ -61,10 +64,7 @@ Prefer explicit documented configuration when:
 - the value is operationally important
 - you need repeatable reviewable deployment behavior
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for environment variables. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Use this page when you need to know whether an environment variable is a stable
+public knob or just a runtime-oriented deployment input.

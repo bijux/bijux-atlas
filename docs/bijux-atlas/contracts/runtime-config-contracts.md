@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Runtime Config Contracts
 
-Runtime config contracts define the stable expectations around server configuration inputs and validation behavior.
+Runtime config contracts define the stable expectations around server
+configuration inputs and validation behavior.
 
 ## Runtime Config Contract Scope
 
@@ -20,8 +21,9 @@ flowchart LR
     RuntimeConfig --> Schema[Config schema]
 ```
 
-This scope diagram shows the parts of runtime configuration Atlas treats as contract-sensitive:
-documented flags, supported environment variables, and configuration-schema behavior.
+This scope diagram shows the parts of runtime configuration Atlas treats as
+contract-sensitive: documented flags, supported environment variables, and
+configuration-schema behavior.
 
 ## Contract Logic
 
@@ -31,17 +33,15 @@ flowchart TD
     Valid[Valid config] --> Start[Runtime may start]
 ```
 
-This contract logic emphasizes fail-closed validation. Atlas should reject malformed or contradictory
-runtime input rather than silently inventing a meaning for it.
+This contract logic emphasizes fail-closed validation. Atlas should reject
+malformed or contradictory runtime input rather than silently inventing a
+meaning for it.
 
 ## Main Promise
 
 Atlas should validate explicit runtime configuration rather than silently accepting malformed or contradictory input.
 
-## Purpose
+## Reading Rule
 
-This page defines the Atlas contract expectations for runtime config contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
-
-## Stability
-
-This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
+Use this page when runtime startup accepts or rejects configuration in a way
+that might affect what operators can rely on across releases.

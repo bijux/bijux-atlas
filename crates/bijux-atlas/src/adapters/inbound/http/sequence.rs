@@ -672,8 +672,10 @@ pub(crate) async fn gene_sequence_handler(
         };
         match stmt.query_row([gene_id.as_str()], |r| {
             let seqid: String = r.get(0)?;
-            let start: u64 = r.get(1)?;
-            let end: u64 = r.get(2)?;
+            let start_i64: i64 = r.get(1)?;
+            let end_i64: i64 = r.get(2)?;
+            let start = u64::try_from(start_i64).map_err(|_| rusqlite::Error::InvalidQuery)?;
+            let end = u64::try_from(end_i64).map_err(|_| rusqlite::Error::InvalidQuery)?;
             Ok((seqid, start, end))
         }) {
             Ok(v) => v,
@@ -705,7 +707,7 @@ pub(crate) async fn gene_sequence_handler(
         state,
         headers,
         params,
-        "/v1/genes/:gene_id/sequence",
+        "/v1/genes/{gene_id}/sequence",
         region,
     )
     .await

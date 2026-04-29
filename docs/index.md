@@ -18,6 +18,10 @@ surfaces.
 Atlas exists to convert raw domain inputs into governed, release-backed,
 trustworthy serving state.
 
+The shortest useful way to read Atlas is this: validate inputs, build
+artifacts, publish serving state, and expose that state through commands,
+HTTP, and release evidence.
+
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![CI](https://github.com/bijux/bijux-atlas/workflows/repo%20/%20ci/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml?query=branch%3Amain)
@@ -50,7 +54,6 @@ why Atlas keeps ingest, build, publication, serving, and operational evidence
 as explicit surfaces instead of letting them blur together.
 
 Atlas combines four product responsibilities in one coherent path:
-
 - validate and normalize source inputs
 - build deterministic and immutable dataset artifacts
 - publish release-backed state to a serving store and catalog
@@ -66,10 +69,10 @@ flowchart LR
     serve --> observe[Observability and release evidence]
 ```
 
-## Why It Exists
+## Why That Split Matters
 
 Atlas exists to avoid a common failure mode in data systems: mixing raw inputs,
-intermediate files, and mutable runtime state into one opaque process.
+intermediate files, and mutable serving state into one opaque process.
 
 Atlas keeps those boundaries explicit so teams can answer high-stakes questions
 without guessing:
@@ -113,7 +116,7 @@ flowchart LR
 - explicit runtime, API, and configuration contracts
 - release and operations evidence that can be reviewed and repeated
 
-## What It Is Not
+## What Atlas Does Not Pretend To Be
 
 Atlas is not a generic mutable runtime that rewrites release truth in place.
 It is not a replacement for source governance, and it is not a shortcut around
@@ -175,8 +178,8 @@ can actually be believed.
 
 ## Operations and Trust Are Part of the Product
 
-`bijux-atlas-ops` is not secondary documentation. It is where deployment,
-rollout safety, observability, load budgets, and release trust are defined.
+`bijux-atlas-ops` is where deployment, rollout safety, observability, load
+budgets, and release trust are explained.
 
 If your question is about running Atlas safely in real environments, operations
 is the primary handbook.

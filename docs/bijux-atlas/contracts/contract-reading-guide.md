@@ -26,9 +26,9 @@ flowchart TD
     Handbook --> Context[Use explanatory and task guidance pages]
 ```
 
-This page exists to stop readers from overreading every page as an equal
-contract. Atlas uses different documentation slices for different strengths of
-promise, and the contract slice is where stability claims become explicit.
+This page keeps the promise hierarchy clear. Atlas uses different
+documentation slices for different strengths of promise, and the contract
+slice is where stability claims become explicit.
 
 ## Contract Authority Map
 
@@ -45,6 +45,6 @@ promise, and the contract slice is where stability claims become explicit.
 
 ## Main Takeaway
 
-The contract slice is Atlas's intentional promise surface. Read it when the
+The contract slice is Atlas's explicit promise surface. Read it when the
 question is compatibility, versioning, or relied-on shape; read the other docs
 slices when the question is understanding, using, or navigating the product.

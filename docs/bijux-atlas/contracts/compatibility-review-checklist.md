@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # Compatibility Review Checklist
 
-Use this checklist when a change might alter a repository-owned Atlas promise.
+Use this checklist when a change might alter a documented Atlas promise.
 
 ## Review Flow
 
@@ -22,8 +22,8 @@ flowchart TD
     Docs --> Release[Decide release and compatibility treatment]
 ```
 
-This page exists so compatibility review stays anchored to real artifacts
-instead of memory or instinct.
+This checklist keeps compatibility review anchored to real artifacts instead of
+memory or instinct.
 
 ## Review Questions
 
@@ -47,6 +47,5 @@ before they escape as accidental drift.
 
 ## Main Takeaway
 
-Compatibility review is only strong when a maintainer can point to the changed
-surface, the artifact that proves it, and the release consequence that follows
-from it.
+Compatibility review is only strong when you can point to the changed surface,
+the artifact that proves it, and the release consequence that follows from it.

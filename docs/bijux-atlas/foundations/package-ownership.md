@@ -30,14 +30,15 @@ flowchart TD
     Ops --> Operations[Deployment and operational evidence]
 ```
 
-This diagram keeps the three handbook trees legible. They are related, but they
-do not serve the same reader and they should not make the same kind of promise.
+This diagram keeps the three documentation trees legible. They are related, but
+they do not serve the same audience and they should not make the same kind of
+promise.
 
 ## Ownership Rule
 
 - repository questions belong here when they explain the product package
-- maintainer questions move to the maintainer handbook
-- operations questions move to the operations handbook
+- repository-governance questions move to the maintainer docs
+- operations questions move to the operations docs
 
 ## Why This Split Matters
 
@@ -61,5 +62,5 @@ workflows, and governance material that serves a different audience.
 ## Main Takeaway
 
 Package ownership is what keeps Atlas readable as a repository. The product
-crate, the maintainer control plane, and the operational surface are related,
+crate, the repository control plane, and the operational surface are related,
 but they should stay distinct in both code placement and documentation voice.

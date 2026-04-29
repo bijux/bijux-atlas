@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # bijux-atlas
 
-`bijux-atlas` is the product runtime handbook.
+`bijux-atlas` is the product documentation for Atlas itself.
 
 ```mermaid
 flowchart TD
@@ -25,15 +25,12 @@ flowchart TD
     Contracts --> Truth
 ```
 
-This handbook should teach readers how to understand the repository, not just
-how to browse the docs tree. Each section answers a different class of
-questions, and the value of the handbook is that it points from narrative pages
-to the code, configs, generated artifacts, and workflows that actually define
-truth in the repo.
+These docs move from the product model to the exact workflow, interface,
+runtime, or contract a question needs next.
 
-## Scope
+## What This Documentation Covers
 
-Use this handbook for product behavior, data workflows, runtime interfaces,
+Use these pages for product behavior, data workflows, runtime interfaces,
 architecture, and compatibility contracts.
 
 Atlas is the repository-owned product surface for:
@@ -43,12 +40,12 @@ Atlas is the repository-owned product surface for:
 - serving dataset identity, gene, transcript, sequence, and diff workflows
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
 
-This handbook is intentionally separate from:
+These docs are intentionally separate from:
 
 - `bijux-atlas-ops`, which explains how Atlas is deployed and operated
 - `bijux-atlas-dev`, which explains the repository control plane and maintainer automation
 
-## Repository Authority Map
+## Where Product Truth Lives
 
 - product and domain meaning live primarily under `crates/bijux-atlas/src/domain/`
 - runtime assembly lives under `crates/bijux-atlas/src/runtime/` and
@@ -64,7 +61,7 @@ This handbook is intentionally separate from:
 
 ## Reading Paths
 
-Choose a path based on the question you are trying to answer:
+Choose a path based on the question in front of you:
 
 - start in [Foundations](foundations/index.md) when you need the product model, terminology, or repository scope
 - move to [Workflows](workflows/index.md) when you need to install Atlas, build data, start a server, or run queries
@@ -82,14 +79,14 @@ built local state directly from ad hoc ingest output. The normal path is:
 3. resolve catalog state from that store
 4. expose queries and metadata through the CLI and HTTP surfaces
 
-That boundary is why repository docs, operations docs, and maintainer docs must
-stay distinct. Product readers need to understand the runtime promise without
-being forced through Helm, CI, or repository-governance material first.
+That boundary is why product, operations, and maintainer docs stay distinct.
+The runtime promise should be understandable without walking through Helm, CI,
+or repository-governance material first.
 
-## Docs Versus Repo Data
+## Docs Versus Repository Data
 
 These pages explain meaning, boundaries, and usage. They do not replace the
-repo-owned authorities that actually enforce shape or behavior. When a page
+repository-owned authorities that enforce shape or behavior. When a page
 describes a stable surface, readers should be able to confirm that claim in one
 of four places:
 

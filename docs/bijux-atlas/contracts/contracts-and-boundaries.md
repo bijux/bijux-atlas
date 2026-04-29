@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Contracts and Boundaries
 
-Atlas relies on boundaries to keep the codebase teachable and contracts to keep stable promises explicit.
+Atlas relies on boundaries to keep the codebase teachable and on contracts to
+keep stable promises explicit.
 
 ## Boundary Model
 
@@ -24,9 +25,9 @@ flowchart LR
     Runtime --> Adapters
 ```
 
-This boundary model shows the relationship between code placement and stable promises. Contracts
-define what outside consumers can rely on, while the architectural layers decide where behavior
-should live internally.
+This boundary model shows the relationship between code placement and stable
+promises. Contracts define what outside consumers can rely on, while the
+architectural layers decide where behavior should live internally.
 
 ## Contract Purpose
 
@@ -38,8 +39,9 @@ flowchart TD
     Promise --> Release[Release confidence]
 ```
 
-This contract-purpose diagram exists so maintainers remember that a contract is more than a page in
-the docs. It should connect documentation, enforcement, and release confidence.
+This contract-purpose diagram matters because a contract is more than a page in
+the docs. It should connect documentation, enforcement, and release
+confidence.
 
 ## The Main Architectural Idea
 
@@ -70,9 +72,7 @@ Those are related, but they are not the same thing.
 
 Those questions sound similar, but Atlas treats them differently on purpose.
 
-## Purpose
-
-This page explains the Atlas material for contracts and boundaries and points readers to the canonical checked-in workflow or boundary for this topic.
+## Reading Rule
 
 ## Repository-Specific Boundary Failures
 
@@ -96,6 +96,5 @@ Atlas stays teachable when boundary rules answer “where should this live?” a
 contracts answer “what may an outside consumer rely on?”. Mixing those two
 questions is one of the fastest ways to create accidental public surfaces.
 
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when a change is plausible in code but you still need to decide
+whether it changes placement, public promises, or both.

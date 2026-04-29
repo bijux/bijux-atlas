@@ -947,7 +947,7 @@ fn render_exceptions_table(rows: &[serde_json::Value]) -> String {
 fn stable_exception_digest(value: &serde_json::Value) -> Result<String, String> {
     let bytes = serde_json::to_vec(value)
         .map_err(|err| format!("encode exception digest failed: {err}"))?;
-    Ok(format!("{:x}", Sha256::digest(bytes)))
+    Ok(hex::encode(Sha256::digest(bytes)))
 }
 
 fn read_json_value(path: &Path) -> Result<serde_json::Value, String> {

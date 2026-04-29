@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Runtime Config Reference
 
-This page summarizes the most visible runtime configuration entrypoints for the server binary.
+This reference summarizes the most visible runtime configuration entrypoints
+for the server binary.
 
 ## Runtime Config Inputs
 
@@ -20,8 +21,8 @@ flowchart LR
     Env[Environment variables] --> Runtime
 ```
 
-This input diagram shows the three main ways runtime configuration reaches the server. It is meant
-to support fast lookup, not to replace the deeper operational guidance in the operations section.
+This input diagram shows the main ways runtime configuration reaches the server.
+It supports fast lookup, not deeper operational guidance.
 
 ## Visible Server Flags
 
@@ -35,8 +36,8 @@ flowchart TD
     Server --> Validate[--validate-config]
 ```
 
-This flag map calls out the highest-signal server startup options so readers can identify the exact
-entrypoint they need without reading full help output first.
+This flag map calls out the highest-signal server startup options so the exact
+entrypoint is clear without reading full help output first.
 
 ## Key Flags
 
@@ -100,10 +101,7 @@ When startup behaves differently than expected:
 - [Server Workflows](server-workflows.md)
 - [Runtime Config Contracts](../contracts/runtime-config-contracts.md)
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for runtime config reference. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Use this page when startup behavior is the focus and you need the exact runtime
+entrypoints, precedence, and first checks in one place.

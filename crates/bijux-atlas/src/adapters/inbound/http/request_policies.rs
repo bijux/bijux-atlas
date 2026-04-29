@@ -17,7 +17,7 @@ use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 use base64::Engine as _;
-use hmac::{Hmac, Mac};
+use hmac::{digest::KeyInit, Hmac, Mac};
 use sha2::Sha256;
 use std::sync::atomic::Ordering;
 use std::time::Instant;

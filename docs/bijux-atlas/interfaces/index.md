@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # Interfaces
 
-`bijux-atlas/interfaces` is the section home for this handbook slice.
+`bijux-atlas/interfaces` is where Atlas becomes a visible product surface.
 
 ```mermaid
 flowchart TD
@@ -23,10 +23,9 @@ flowchart TD
     Output --> Surface
 ```
 
-This section is where readers meet Atlas as a usable system rather than an
-architecture. The goal is to show the exact surfaces users, operators, and
-automation consumers touch, and to map those surfaces back to the code and
-generated references that keep them honest.
+This section shows the exact surfaces users, operators, and automation
+consumers touch, and it points back to the code and generated references that
+define them.
 
 Use this section when the question is exact rather than conceptual.
 
@@ -56,6 +55,9 @@ Use this section when the question is exact rather than conceptual.
 - runtime configuration inputs: [Configuration and Output](configuration-and-output.md) and [Runtime Config Reference](runtime-config-reference.md)
 - compatibility-sensitive runtime switches: [Feature Flags](feature-flags.md) and [Environment Variables](environment-variables.md)
 - machine-facing descriptions: [OpenAPI and API Usage](openapi-and-api-usage.md)
+
+If you already know the interface family, use that page directly. This section
+mainly helps decide which surface owns the question in front of you.
 
 ## Reading Rule
 

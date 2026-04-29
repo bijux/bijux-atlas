@@ -12,13 +12,15 @@ last_reviewed: 2026-03-15
 Atlas has two stable command identities:
 
 - runtime commands through `bijux atlas ...` or the direct `bijux-atlas` binary
-- maintainer commands through `bijux dev atlas ...` or the direct `bijux-dev-atlas` binary
+- repository-governance commands through `bijux dev atlas ...` or the direct `bijux-dev-atlas` binary
 
-The fastest reliable way to start with Atlas is still to run it from the workspace with Cargo. That avoids installation drift while you are learning the system.
+The fastest reliable way to start with Atlas is still to run it from the
+workspace with Cargo. That avoids installation drift while you are learning the
+system.
 
-This page verifies that the binaries, fixture paths, and local artifact roots are usable. It does
-not verify that ingest, publication, or runtime serving are already correct. Those come in later
-steps.
+This page verifies that the binaries, fixture paths, and local artifact roots
+are usable. It does not verify that ingest, publication, or runtime serving are
+already correct. Those come in later steps.
 
 ## Verification Flow
 
@@ -30,8 +32,9 @@ flowchart TD
     D --> E[Confirm fixtures and artifacts root]
 ```
 
-This verification flow is intentionally shallow but strict. It proves that the binaries, fixture
-paths, and local output roots are usable before you spend time debugging later workflow steps.
+This verification flow is intentionally shallow but strict. It proves that the
+binaries, fixture paths, and local output roots are usable before you spend
+time debugging later workflow steps.
 
 ## Prerequisites
 
@@ -55,8 +58,9 @@ bijux install bijux-dev-atlas
 
 If you are working from a repository checkout, you can skip installation entirely and use `cargo run`.
 
-For a first pass from source, prefer `cargo run`. It removes uncertainty about whether the installed
-binary and the checked-out repository are on the same version.
+For a first pass from source, prefer `cargo run`. It removes uncertainty about
+whether the installed binary and the checked-out repository are on the same
+version.
 
 ## Step 1: Verify the Runtime CLI Entrypoint
 
@@ -68,7 +72,9 @@ bijux atlas --help
 
 You should see the top-level families such as `config`, `catalog`, `dataset`, `ingest`, `diff`, `gc`, `policy`, and `openapi`.
 
-If `--help` does not work, stop here. A failing help surface usually means the workspace or binary wiring is not healthy enough for the rest of the getting-started flow.
+If `--help` does not work, stop here. A failing help surface usually means the
+workspace or binary wiring is not healthy enough for the rest of the
+getting-started flow.
 
 ## Step 2: Verify Runtime, Server, and Maintainer Surfaces
 
@@ -79,7 +85,8 @@ cargo run -p bijux-dev-atlas -- --help
 bijux dev atlas --help
 ```
 
-These commands tell you whether the product CLI, runtime server binary, and maintainer control plane are wired correctly in your environment.
+These commands tell you whether the product CLI, runtime server binary, and
+repository control plane are wired correctly in your environment.
 
 They do not prove that your local store, dataset, or runtime configuration is valid yet. They only prove that the entrypoints are present and invokable.
 
@@ -112,7 +119,8 @@ cargo run -p bijux-atlas --bin bijux-atlas -- config --canonical --json
 cargo run -p bijux-dev-atlas -- list --format json
 ```
 
-These are good first checks because they exercise structured-output paths without requiring a built dataset or running server.
+These are good first checks because they exercise structured-output paths
+without requiring a built dataset or running server.
 
 It is also the first place to notice whether your shell setup, JSON mode, and top-level config surface agree with each other.
 
@@ -139,7 +147,7 @@ At this point you should be able to:
 
 - run CLI help successfully
 - run server help successfully
-- run maintainer control-plane help successfully
+- run repository control-plane help successfully
 - see committed fixtures under `crates/bijux-atlas/tests/fixtures`
 - create an `artifacts/getting-started` directory for local outputs
 
@@ -151,10 +159,7 @@ If all of that works, you have a usable starting environment. You do not yet hav
 - that the serving store is shaped correctly
 - that the HTTP runtime can boot and answer queries
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for install and verify and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the question is whether the local Atlas entrypoints are
+usable at all before you spend time debugging ingest, publication, or serving.

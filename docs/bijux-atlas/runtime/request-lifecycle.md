@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Request Lifecycle
 
-The request lifecycle explains what happens between an incoming HTTP request and a structured Atlas response.
+The request lifecycle explains how Atlas turns an incoming HTTP request into a
+validated, executed, and structured response.
 
 ## Lifecycle Overview
 
@@ -28,8 +29,9 @@ sequenceDiagram
     App-->>Client: structured response
 ```
 
-This lifecycle sequence keeps the request path concrete. It shows that policy, normalization,
-dataset resolution, execution, and presentation are distinct stages rather than one opaque handler.
+This lifecycle sequence keeps the request path concrete. Policy, normalization,
+dataset resolution, execution, and presentation are separate stages, not one
+opaque handler.
 
 ## Main Request Stages
 
@@ -43,8 +45,9 @@ flowchart TD
     F --> G[Metrics and trace emission]
 ```
 
-This stage map is useful when debugging or refactoring. If you know which stage is wrong, you can
-usually find the owning code and the right test surface much faster.
+This stage map is useful because most request failures belong to one stage. If
+you can name the stage, you can usually find the owning code and test surface
+much faster.
 
 ## Key Architectural Point
 
@@ -63,10 +66,7 @@ The router should remain declarative. Request shaping, policy enforcement, execu
 - policy explains many rejections before execution begins
 - presentation shapes the response without redefining domain meaning
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for request lifecycle and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when a request reaches the server but the real question is where
+it was rejected, normalized, resolved, or reshaped.

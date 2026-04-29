@@ -21,8 +21,9 @@ flowchart LR
     API --> Versioning[Versioned surface]
 ```
 
-This compatibility-scope diagram names the parts of the HTTP surface Atlas expects clients to rely
-on intentionally. It is the contract boundary for API evolution decisions.
+This compatibility-scope diagram names the parts of the HTTP surface Atlas
+expects clients to rely on intentionally. It is the contract boundary for API
+evolution decisions.
 
 ## Compatibility Model
 
@@ -64,13 +65,10 @@ OpenAPI still matches the promised public surface.
 - incidental implementation details behind handlers
 - internal runtime composition details that do not alter the public HTTP contract
 
-## Purpose
+## Reading Rule
 
-This page defines the Atlas contract expectations for api compatibility. Use it when you need the explicit compatibility promise rather than a workflow narrative.
-
-## Stability
-
-This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
+Use this page when an HTTP change is technically possible but you need to judge
+whether it is additive, disruptive, or fully breaking for clients.
 
 ## Main Takeaway
 

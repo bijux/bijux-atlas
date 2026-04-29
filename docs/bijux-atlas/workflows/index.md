@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Workflows
 
-`bijux-atlas/workflows` is the section home for this handbook slice.
+`bijux-atlas/workflows` is where Atlas becomes a sequence of concrete product
+tasks.
 
 ```mermaid
 flowchart TD
@@ -25,10 +26,10 @@ flowchart TD
     Troubleshoot --> Path
 ```
 
-Workflows are where the repository handbook becomes directly usable. These
-pages should teach the right order of actions, the checkpoints that prove a
-step worked, and the boundaries that keep users from mixing build state,
-serving state, and runtime state by accident.
+Workflows are where the product path becomes directly usable. These pages show
+the right order of actions, the checkpoints that prove a step worked, and the
+boundaries that keep build state, serving state, and runtime state from being
+mixed by accident.
 
 Use this section when you need to do product work with Atlas rather than study
 its architecture.
@@ -42,13 +43,16 @@ Choose the path that matches your goal:
 - ingest and catalog work: [Ingest Workflows](ingest-workflows.md) -> [Dataset Workflows](dataset-workflows.md) -> [Catalog Workflows](catalog-workflows.md)
 - debugging early failures: [Troubleshoot Early Problems](troubleshoot-early-problems.md)
 
+If you already know the task, go straight to that workflow page. This section
+mainly keeps the first Atlas steps in the right order.
+
 ## Workflow Boundary
 
 These pages describe how users and integrators move through the product-facing
 runtime path. They do not replace:
 
 - `bijux-atlas-ops` for deployment, rollout, observability, and load guidance
-- `bijux-atlas-dev` for repository validation, release automation, and maintainer-only checks
+- `bijux-atlas-dev` for repository validation, release automation, and repository-only checks
 
 ## What This Section Is For
 

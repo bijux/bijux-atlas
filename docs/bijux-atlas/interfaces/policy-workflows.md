@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Policy Workflows
 
-Policy workflows explain how Atlas exposes and enforces runtime or query-related rules.
+Policy workflows explain how Atlas exposes and enforces runtime- and
+query-related rules.
 
 ## Policy Surface
 
@@ -21,9 +22,9 @@ flowchart LR
     Runtime --> Validate[policy validate]
 ```
 
-This policy surface map shows how Atlas turns policy from a hidden runtime influence into something
-you can inspect and explain. That is important when clients need to understand why a request was
-accepted or rejected.
+This policy surface map shows how Atlas turns policy from a hidden runtime
+influence into something you can inspect and explain. That matters when clients
+need to understand why a request was accepted or rejected.
 
 ## Main Policy Commands
 
@@ -39,8 +40,9 @@ flowchart TD
     Policy --> Predictability[Predictable runtime behavior]
 ```
 
-This user-facing view explains why policy belongs in the user guide at all. It is not just an
-operator or maintainer concern when policy changes the requests users can make successfully.
+This user-facing view explains why policy belongs in the user guide at all. It
+is not just an operator or maintainer concern when policy changes the requests
+users can make successfully.
 
 Policy is what turns “the server happened to reject my request” into “the server enforced a known rule for a known reason.”
 
@@ -81,10 +83,7 @@ Common policy-sensitive areas:
 - you are comparing expected versus active runtime policy behavior
 - you need to explain enforcement behavior to another team or client
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for policy workflows and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when a request is rejected for a reason that feels intentional
+and you need Atlas to explain the rule rather than just repeat the failure.

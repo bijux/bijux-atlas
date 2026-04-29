@@ -25,9 +25,9 @@ flowchart TD
 ```
 
 The dataset is the unit that ties together ingest, publication, catalog
-visibility, query routing, and rollback reasoning. This page matters because if
-the dataset boundary is fuzzy, readers start confusing source input, build
-output, published release state, and runtime-serving state.
+visibility, query routing, and rollback reasoning. If the dataset boundary is
+fuzzy, readers start confusing source input, build output, published release
+state, and runtime-serving state.
 
 The stable identity usually combines release, species, and assembly. That
 identity is the anchor for ingest, publication, catalog lookup, query routing,
@@ -60,3 +60,8 @@ A dataset is not just “some data Atlas can read.” It is the release-shaped u
 Atlas knows how to validate, publish, catalog, and serve. Treating it that way
 keeps the product model coherent across workflows, runtime behavior, and
 contracts.
+
+## Reading Rule
+
+Use this page when Atlas steps still make sense individually but the thing
+being built, published, and served does not yet feel like one clear unit.
