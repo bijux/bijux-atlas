@@ -2,8 +2,8 @@
 
 use bijux_atlas::domain::security::runtime::load_security_config_from_path;
 use criterion::{criterion_group, criterion_main, Criterion};
-use std::hint::black_box;
 use std::fs;
+use std::hint::black_box;
 use std::path::PathBuf;
 
 fn workspace_root() -> PathBuf {
