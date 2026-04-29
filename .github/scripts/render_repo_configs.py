@@ -119,6 +119,9 @@ def render_dependabot_document(data: Any) -> str:
         if line.startswith("    directory: /"):
             _, value = line.split(": ", maxsplit=1)
             line = f'    directory: "{value}"'
+        if line.startswith("      time: "):
+            _, value = line.split(": ", maxsplit=1)
+            line = f'      time: "{value}"'
         rendered.append(line)
 
     return PROVENANCE_HEADER + "\n".join(rendered) + "\n"
