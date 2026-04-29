@@ -5,11 +5,11 @@
 version: 2
 updates:
   - package-ecosystem: cargo
-    directory: /
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
-      time: 05:00
+      time: "05:00"
     open-pull-requests-limit: 3
     commit-message:
       prefix: "chore(deps)"
@@ -21,12 +21,13 @@ updates:
       rust-major:
         update-types:
           - major
+
   - package-ecosystem: github-actions
-    directory: /
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
-      time: 05:30
+      time: "05:30"
     open-pull-requests-limit: 3
     commit-message:
       prefix: "chore(actions)"
@@ -38,12 +39,13 @@ updates:
       github-actions-major:
         update-types:
           - major
+
   - package-ecosystem: npm
-    directory: /configs/sources/repository/docs
+    directory: "/configs/sources/repository/docs"
     schedule:
       interval: weekly
       day: monday
-      time: 06:00
+      time: "06:00"
     open-pull-requests-limit: 3
     commit-message:
       prefix: "chore(docs-deps)"
@@ -55,12 +57,13 @@ updates:
       docs-tooling-major:
         update-types:
           - major
+
   - package-ecosystem: pip
-    directory: /configs/sources/repository/docs
+    directory: "/configs/sources/repository/docs"
     schedule:
       interval: weekly
       day: monday
-      time: 06:15
+      time: "06:15"
     open-pull-requests-limit: 3
     commit-message:
       prefix: "chore(docs-python)"
