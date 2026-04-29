@@ -4,7 +4,8 @@ use bijux_atlas::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
     PermissionEvaluator, RoleCatalog, RoleRegistry,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use std::fs;
 use std::path::PathBuf;
 
