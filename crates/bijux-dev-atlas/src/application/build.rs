@@ -256,7 +256,7 @@ fn run_build_dist(
         .map_err(|e| format!("cannot read {}: {e}", archive_path.display()))?;
     let mut hasher = Sha256::new();
     hasher.update(&bytes);
-    let checksum = format!("{:x}", hasher.finalize());
+    let checksum = hex::encode(hasher.finalize());
     let checksum_path = dist_dir.join("sha256sum.txt");
     let archive_file_name = archive_path
         .file_name()

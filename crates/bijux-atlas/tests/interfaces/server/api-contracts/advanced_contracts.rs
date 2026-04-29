@@ -2,6 +2,7 @@
 
 use super::*;
 use bijux_atlas::domain::dataset::{Catalog, CatalogEntry};
+use hmac::KeyInit;
 
 #[tokio::test]
 async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {
@@ -696,7 +697,7 @@ async fn sqlite_progress_handler_timeout_aborts_query() {
         .open_dataset_connection(&ds)
         .await
         .expect("open dataset connection");
-    conn.conn.progress_handler(1, Some(|| true));
+    let _ = conn.conn.progress_handler(1, Some(|| true));
     let err = conn
         .conn
         .query_row(
@@ -709,5 +710,5 @@ async fn sqlite_progress_handler_timeout_aborts_query() {
         err.to_string().to_lowercase().contains("interrupt"),
         "unexpected sqlite error: {err}"
     );
-    conn.conn.progress_handler(1, None::<fn() -> bool>);
+    let _ = conn.conn.progress_handler(1, None::<fn() -> bool>);
 }

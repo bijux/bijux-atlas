@@ -1,9 +1,5 @@
 {
   "github_actions": {
-    "Swatinem/rust-cache": {
-      "ref": "v2.9.1",
-      "sha": "c19371144df3bb44fab255c43d04cbc2ab54d1c4"
-    },
     "actions/cache/restore": {
       "ref": "v4",
       "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae"
@@ -13,7 +9,7 @@
       "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae"
     },
     "actions/checkout": {
-      "ref": "v6.0.0",
+      "ref": "v6.0.2",
       "sha": "de0fac2e4500dabe0009e67214ff5f5447ce83dd"
     },
     "actions/configure-pages": {
@@ -21,55 +17,39 @@
       "sha": "983d7736d9b0ae728b81ab479565c72886d7745b"
     },
     "actions/dependency-review-action": {
-      "ref": "v4.8.7",
+      "ref": "v5.0.0",
       "sha": "2031cfc080254a8a887f58cffee85186f0e49e48"
     },
     "actions/deploy-pages": {
       "ref": "v4",
       "sha": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"
     },
-    "actions/github-script": {
-      "ref": "v9.0.0",
-      "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
-    },
-    "actions/labeler": {
-      "ref": "v5",
-      "sha": "8558fd74291d67161a8a78ce36a881fa63b766a9"
-    },
-    "actions/setup-java": {
-      "ref": "v5",
-      "sha": "be666c2fcd27ec809703dec50e508c2fdc7f6654"
-    },
-    "actions/setup-node": {
-      "ref": "v4.4.0",
-      "sha": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e"
-    },
     "actions/setup-python": {
-      "ref": "v6.0.0",
+      "ref": "v6.2.0",
       "sha": "a309ff8b426b58ec0e2a45f0f869d46889d02405"
     },
+    "actions/setup-node": {
+      "ref": "v6.4.0",
+      "sha": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e"
+    },
+    "Swatinem/rust-cache": {
+      "ref": "v2.9.1",
+      "sha": "c19371144df3bb44fab255c43d04cbc2ab54d1c4"
+    },
     "actions/upload-artifact": {
-      "ref": "v4",
+      "ref": "v7.0.1",
       "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
     },
     "actions/upload-pages-artifact": {
       "ref": "v3",
       "sha": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b"
     },
-    "astral-sh/setup-uv": {
-      "ref": "v8.1.0",
-      "sha": "08807647e7069bb48b6ef5acd8ec9567f424441b"
-    },
     "azure/setup-helm": {
       "sha": "1a275c3b69536ee54be43f2070a358922e12c8d4",
       "version": "v4"
     },
-    "codecov/codecov-action": {
-      "ref": "v5",
-      "sha": "75cd11691c0faa626561e295848008c8a7dddffe"
-    },
     "dorny/paths-filter": {
-      "ref": "v3",
+      "ref": "v3.0.2",
       "sha": "fbd0ab8f3e69293af611ebaee6363fc25e6d187d"
     },
     "dtolnay/rust-toolchain": {
@@ -81,24 +61,24 @@
       "sha": "ef37e7f390d99f746eb8b610417061a60e82a6cc"
     },
     "peter-evans/create-pull-request": {
-      "ref": "v7.0.8",
+      "ref": "v7",
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
       "ref": "v2.3.3",
       "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
     },
-    "actions/download-artifact": {
-      "ref": "v8.0.1",
-      "sha": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
+    "actions/github-script": {
+      "ref": "v8.0.0",
+      "sha": "ed597411d8f924073f98dfc5c65a23a2325f34cd"
     },
-    "actions/labeler": {
-      "ref": "v5",
-      "sha": "8558fd74291d67161a8a78ce36a881fa63b766a9"
+    "astral-sh/setup-uv": {
+      "ref": "v8.1.0",
+      "sha": "08807647e7069bb48b6ef5acd8ec9567f424441b"
     },
-    "codecov/codecov-action": {
+    "actions/setup-java": {
       "ref": "v5",
-      "sha": "75cd11691c0faa626561e295848008c8a7dddffe"
+      "sha": "be666c2fcd27ec809703dec50e508c2fdc7f6654"
     }
   },
   "images": {

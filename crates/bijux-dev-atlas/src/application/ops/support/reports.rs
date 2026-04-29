@@ -131,7 +131,7 @@ pub(crate) fn render_ops_human(report: &OpsRunReport) -> String {
 pub(crate) fn sha256_hex(content: &str) -> String {
     let mut hasher = Sha256::new();
     hasher.update(content.as_bytes());
-    format!("{:x}", hasher.finalize())
+    hex::encode(hasher.finalize())
 }
 
 pub(crate) fn run_ops_checks(

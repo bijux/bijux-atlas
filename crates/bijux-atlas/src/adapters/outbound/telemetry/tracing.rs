@@ -90,15 +90,16 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 let sampler = opentelemetry_sdk::trace::Sampler::TraceIdRatioBased(
                     config.sampling_ratio.clamp(0.0, 1.0),
                 );
-                let resource =
-                    opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
+                let resource = opentelemetry_sdk::Resource::builder_empty()
+                    .with_attributes([opentelemetry::KeyValue::new(
                         "service.name",
                         config.service_name.clone(),
-                    )]);
-                let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
+                    )])
+                    .build();
+                let tracer = opentelemetry_sdk::trace::SdkTracerProvider::builder()
                     .with_sampler(sampler)
                     .with_resource(resource)
-                    .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
+                    .with_batch_exporter(exporter)
                     .build()
                     .tracer("bijux-atlas-server");
                 init_otel_subscriber(config.logging.log_json, filter, tracer)?;
@@ -125,15 +126,16 @@ pub fn init_tracing(config: &TraceConfig) -> Result<(), String> {
                 let sampler = opentelemetry_sdk::trace::Sampler::TraceIdRatioBased(
                     config.sampling_ratio.clamp(0.0, 1.0),
                 );
-                let resource =
-                    opentelemetry_sdk::Resource::new(vec![opentelemetry::KeyValue::new(
+                let resource = opentelemetry_sdk::Resource::builder_empty()
+                    .with_attributes([opentelemetry::KeyValue::new(
                         "service.name",
                         config.service_name.clone(),
-                    )]);
-                let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
+                    )])
+                    .build();
+                let tracer = opentelemetry_sdk::trace::SdkTracerProvider::builder()
                     .with_sampler(sampler)
                     .with_resource(resource)
-                    .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
+                    .with_batch_exporter(exporter)
                     .build()
                     .tracer("bijux-atlas-server");
                 init_otel_subscriber(config.logging.log_json, filter, tracer)?;

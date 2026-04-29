@@ -61,7 +61,7 @@ fn encryption_integrity_and_tamper_contract() {
         let mut hasher = sha2::Sha256::new();
         use sha2::Digest;
         hasher.update(payload);
-        format!("{:x}", hasher.finalize())
+        hex::encode(hasher.finalize())
     };
 
     assert!(verify_artifact_checksum(payload, &checksum));
@@ -72,7 +72,7 @@ fn encryption_integrity_and_tamper_contract() {
         let mut hasher = sha2::Sha256::new();
         use sha2::Digest;
         hasher.update(signature_input.as_bytes());
-        format!("{:x}", hasher.finalize())
+        hex::encode(hasher.finalize())
     };
     assert!(verify_artifact_signature(
         &checksum,
