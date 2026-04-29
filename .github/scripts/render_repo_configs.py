@@ -121,7 +121,7 @@ def render_dependabot_document(data: Any) -> str:
             line = f'    directory: "{value}"'
         rendered.append(line)
 
-    return "\n".join(rendered) + "\n"
+    return PROVENANCE_HEADER + "\n".join(rendered) + "\n"
 
 
 def normalize_labeler_rules(data: Any) -> Any:

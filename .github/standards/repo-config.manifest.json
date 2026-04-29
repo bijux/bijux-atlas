@@ -197,7 +197,7 @@
             "schedule": {
               "interval": "weekly",
               "day": "monday",
-              "time": 18000
+              "time": "05:00"
             },
             "open-pull-requests-limit": 3,
             "commit-message": {
@@ -223,7 +223,7 @@
             "schedule": {
               "interval": "weekly",
               "day": "monday",
-              "time": 19800
+              "time": "05:30"
             },
             "open-pull-requests-limit": 3,
             "commit-message": {
@@ -249,7 +249,7 @@
             "schedule": {
               "interval": "weekly",
               "day": "monday",
-              "time": 21600
+              "time": "06:00"
             },
             "open-pull-requests-limit": 3,
             "commit-message": {
@@ -275,7 +275,7 @@
             "schedule": {
               "interval": "weekly",
               "day": "monday",
-              "time": 22500
+              "time": "06:15"
             },
             "open-pull-requests-limit": 3,
             "commit-message": {
