@@ -209,11 +209,11 @@ pub fn build_router(state: AppState) -> Router {
         .route("/v1/version", get(http::handlers::version_handler))
         .route("/v1/datasets", get(http::handlers::datasets_handler))
         .route(
-            "/v1/datasets/:release/:species/:assembly",
+            "/v1/datasets/{release}/{species}/{assembly}",
             get(http::handlers::dataset_identity_handler),
         )
         .route(
-            "/v1/releases/:release/species/:species/assemblies/:assembly",
+            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             get(http::handlers::release_dataset_handler),
         )
         .route("/v1/genes", get(http::handlers::genes_handler))
@@ -229,15 +229,15 @@ pub fn build_router(state: AppState) -> Router {
             get(http::sequence::sequence_region_handler),
         )
         .route(
-            "/v1/genes/:gene_id/sequence",
+            "/v1/genes/{gene_id}/sequence",
             get(http::sequence::gene_sequence_handler),
         )
         .route(
-            "/v1/genes/:gene_id/transcripts",
+            "/v1/genes/{gene_id}/transcripts",
             get(http::handlers::gene_transcripts_handler),
         )
         .route(
-            "/v1/transcripts/:tx_id",
+            "/v1/transcripts/{tx_id}",
             get(http::handlers::transcript_summary_handler),
         );
     if state.api.enable_admin_endpoints {

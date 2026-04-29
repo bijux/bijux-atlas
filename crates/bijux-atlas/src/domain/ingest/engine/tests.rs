@@ -416,10 +416,12 @@ fn explain_plan_snapshots_cover_core_query_shapes() {
     );
     assert!(
         gene_txt.contains("idx_gene_summary_gene_id")
+            || gene_txt.contains("idx_gene_summary_cover_lookup")
             || gene_txt.contains("idx_gene_summary_cover_region")
     );
     assert!(
         name_txt.contains("idx_gene_summary_name")
+            || name_txt.contains("idx_gene_summary_cover_lookup")
             || name_txt.contains("idx_gene_summary_cover_region")
     );
 }

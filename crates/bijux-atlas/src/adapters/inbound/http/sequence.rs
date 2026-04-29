@@ -707,7 +707,7 @@ pub(crate) async fn gene_sequence_handler(
         state,
         headers,
         params,
-        "/v1/genes/:gene_id/sequence",
+        "/v1/genes/{gene_id}/sequence",
         region,
     )
     .await
