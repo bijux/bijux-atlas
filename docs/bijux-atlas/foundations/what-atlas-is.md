@@ -9,13 +9,13 @@ last_reviewed: 2026-04-13
 
 # What Atlas Is
 
-Atlas is a data-serving system built around a simple discipline: validate inputs explicitly, build
-immutable release artifacts deterministically, and expose those artifacts through well-defined query
-and operational surfaces.
+Atlas is a dataset delivery system built around a simple discipline: validate
+inputs explicitly, build immutable release artifacts deterministically, and
+expose those artifacts through well-defined query and operational surfaces.
 
-Atlas is not just a server and not just a CLI. It is a full workflow that begins with source inputs,
-passes through validation and artifact construction, and ends with stable ways to inspect or serve
-the resulting release data.
+Atlas is not just a server and not just a CLI. It is one full path that begins
+with source inputs, passes through validation and artifact construction, and
+ends with stable ways to inspect or serve release data.
 
 ## The Product in One Picture
 
@@ -29,9 +29,8 @@ flowchart LR
     C --> L[CLI workflows]
 ```
 
-This diagram is the shortest honest description of the product. Atlas is not only a runtime and not
-only a build tool. It is a governed path from inputs to immutable artifacts and then to serving
-surfaces.
+This diagram is the shortest useful description of the product. Atlas is a
+governed path from inputs to immutable artifacts and then to serving surfaces.
 
 Atlas treats the artifact boundary as the center of gravity. That means:
 
@@ -51,9 +50,9 @@ flowchart TD
     Contracts --> Stability[Stable outputs and schemas]
 ```
 
-This view matters because many readers arrive through only one face of Atlas. The product is easier
-to understand when you see how data workflows, runtime behavior, and contracts reinforce each other
-instead of competing for ownership.
+Many people arrive through only one face of Atlas. The product is easier to
+understand when data workflows, runtime behavior, and contracts reinforce each
+other instead of competing for ownership.
 
 1. Data workflow system
    Atlas validates source inputs, creates artifacts, and tracks releases.
@@ -64,9 +63,9 @@ instead of competing for ownership.
 3. Contract system
    Atlas publishes stability expectations through config, API, error, and output contracts.
 
-## Who Atlas Is For
+## Who Atlas Serves
 
-Atlas serves three kinds of readers and users:
+Atlas serves three main groups:
 
 ```mermaid
 flowchart LR
@@ -75,8 +74,7 @@ flowchart LR
     M[Maintainer] --> D[Change code and contracts safely]
 ```
 
-This audience diagram sets expectations for the rest of the docs. Different readers need different
-entry points, but they are still reading one coherent product surface.
+Different entry points still lead into one coherent product surface.
 
 - users who need deterministic dataset and catalog workflows
 - operators who need a predictable runtime and clear observability
@@ -116,19 +114,19 @@ Atlas is opinionated in ways that matter operationally:
 - it keeps artifact ownership separate from server request handling
 - it tries to make compatibility visible rather than accidental
 
-## What a Reader Should Take Away
+## What To Take Away
 
 - Atlas separates source inputs, artifact production, and runtime serving on purpose.
 - Atlas treats contracts as part of the product, not as documentation garnish.
 - Atlas is strongest when you want deterministic release-shaped data workflows.
 
-## Common Misreadings to Avoid
+## Misreadings To Avoid
 
 - Atlas is not a claim that every local shortcut is a supported production workflow.
 - Atlas is not a promise that every internal repository detail is stable.
 - Atlas is not a generic mutable database that rewrites release content at runtime.
 
-## Current Limits to Keep in Mind
+## Current Limits
 
 - Atlas does not claim ownership of upstream data correctness; it validates what crosses supported input boundaries.
 - Atlas does not treat ingest build output as the serving contract. Publication into a serving store is a separate step on purpose.
@@ -139,10 +137,6 @@ Atlas is opinionated in ways that matter operationally:
 - [Core Concepts](core-concepts.md)
 - [Boundaries and Non-Goals](boundaries-and-non-goals.md)
 - [Dataset Model](dataset-model.md)
-
-## Purpose
-
-This page explains the Atlas material for what atlas is and points readers to the canonical checked-in workflow or boundary for this topic.
 
 ## How The Repo Reflects This Product Shape
 
@@ -162,7 +156,3 @@ building governed dataset artifacts, publishing release-backed serving state,
 and exposing stable runtime surfaces over that published state. The repository
 is structured to make those faces visible rather than hiding them behind one
 binary or one command path.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.

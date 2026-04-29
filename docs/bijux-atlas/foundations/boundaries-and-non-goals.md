@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Boundaries and Non-Goals
 
-Atlas becomes easier to trust when its boundaries are explicit. This page explains what Atlas owns, what it depends on, and what it intentionally does not try to be.
+Atlas becomes easier to trust when its boundaries are explicit. This page
+explains what Atlas owns, what it depends on, and what it intentionally does
+not try to be.
 
 ## Atlas System Boundary
 
@@ -21,9 +23,9 @@ flowchart LR
     Ops[External deployment and infrastructure] --> Atlas
 ```
 
-This system-boundary view makes the ownership model visible. Atlas owns how supported inputs become
-artifacts and how those artifacts are served, but it does not pretend to own every upstream or
-infrastructure concern around them.
+This system-boundary view makes the ownership model visible. Atlas owns how
+supported inputs become artifacts and how those artifacts are served, but it
+does not pretend to own every upstream or infrastructure concern around them.
 
 Atlas owns:
 
@@ -41,7 +43,7 @@ Atlas does not own:
 - undocumented helper behavior as a public promise
 - repository-maintenance automation as part of the end-user runtime surface
 
-## Reader-Facing Boundary Model
+## Public Boundary Model
 
 ```mermaid
 flowchart TD
@@ -54,9 +56,9 @@ flowchart TD
     Internal --> Tests[Test support code]
 ```
 
-This reader-facing boundary model exists so documentation promises stay honest. It distinguishes the
-surfaces a reader may reasonably rely on from internal code that can change during normal
-maintenance.
+This boundary model keeps documentation promises honest. It distinguishes the
+surfaces someone may reasonably rely on from internal code that can change
+during normal maintenance.
 
 The key distinction is between supported surfaces and implementation detail. Atlas tries to keep that distinction boring:
 
@@ -85,8 +87,9 @@ flowchart LR
     LessDrift --> BetterChanges[Cleaner code review]
 ```
 
-This is why non-goals deserve a dedicated page. A system becomes easier to change when maintainers
-keep saying no to scope that would blur ownership, runtime behavior, and compatibility promises.
+This is why non-goals deserve a dedicated page. A system becomes easier to
+change when teams keep saying no to scope that would blur ownership, runtime
+behavior, and compatibility promises.
 
 When a system tries to be everything, documentation, code ownership, and contracts all blur together. Atlas does better when it stays narrow:
 
@@ -109,10 +112,7 @@ If the answer to the last question is yes, the change probably belongs in a cont
 - ask whether the change belongs to artifacts, runtime behavior, or repository automation
 - ask whether a future release would need to preserve the behavior intentionally
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for boundaries and non-goals and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when a proposed feature, workflow, or compatibility claim feels
+plausible but you need to decide whether it actually belongs inside Atlas.

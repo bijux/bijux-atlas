@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Error Codes and Exit Codes
 
-Atlas uses structured error reporting to keep failures classifiable and automatable.
+Atlas uses structured error reporting to keep failures classifiable and
+automatable.
 
 ## Error Reporting Model
 
@@ -21,8 +22,9 @@ flowchart LR
     ExitCode --> Automation[Automation handling]
 ```
 
-This error-reporting model separates two important consumers: HTTP clients and CLI automation. Both
-need structured signals, but they consume them through different surfaces.
+This error-reporting model separates two important consumers: HTTP clients and
+CLI automation. Both need structured signals, but they consume them through
+different surfaces.
 
 ## Main API Error Categories
 
@@ -34,8 +36,8 @@ flowchart TD
     Errors --> Runtime[Runtime and readiness]
 ```
 
-This category map helps readers interpret error codes by failure area instead of memorizing each one
-in isolation.
+This category map helps interpret error codes by failure area instead of
+memorizing each one in isolation.
 
 ## Common API Error Classes
 
@@ -50,10 +52,7 @@ in isolation.
 
 Use the structured error code, not only the human message text, when building client or automation behavior.
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for error codes and exit codes. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Use this page when Atlas failed clearly enough to produce an error surface and
+the next step is to classify the failure correctly.

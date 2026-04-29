@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # Documentation Map
 
-The Atlas repository handbook is organized around five durable slices:
+Atlas documentation is organized around five durable slices:
 
 - `foundations` for product identity and core concepts
 - `workflows` for ingest, dataset, and query usage
@@ -17,15 +17,15 @@ The Atlas repository handbook is organized around five durable slices:
 - `runtime` for architecture and serving behavior
 - `contracts` for published promises and compatibility rules
 
-## Handbook Map
+## Documentation Map
 
 ```mermaid
 flowchart TD
-    Handbook[Repository handbook] --> Foundations[Foundations]
-    Handbook --> Workflows[Workflows]
-    Handbook --> Interfaces[Interfaces]
-    Handbook --> Runtime[Runtime]
-    Handbook --> Contracts[Contracts]
+    Docs[Product docs] --> Foundations[Foundations]
+    Docs --> Workflows[Workflows]
+    Docs --> Interfaces[Interfaces]
+    Docs --> Runtime[Runtime]
+    Docs --> Contracts[Contracts]
 
     Foundations --> Domain[Domain vocabulary]
     Workflows --> Tasks[Task guidance]
@@ -34,8 +34,8 @@ flowchart TD
     Contracts --> Promise[Compatibility and promise strength]
 ```
 
-This diagram is here to make the docs tree feel intentional rather than
-incidental. Each slice is supposed to answer a different class of question.
+This diagram shows how the product docs are divided. Each slice answers a
+different class of question.
 
 ## How To Use It
 
@@ -71,14 +71,14 @@ truth in the repo:
 
 ## Ownership Boundary
 
-This repository handbook is only one of the Atlas documentation domains:
+This repository docs set is only one of the Atlas documentation domains:
 
-- `bijux-atlas` is the product runtime handbook
-- `bijux-atlas-ops` is the operational handbook
-- `bijux-atlas-dev` is the maintainer control-plane handbook
+- `bijux-atlas` is the product runtime documentation
+- `bijux-atlas-ops` is the operations documentation
+- `bijux-atlas-dev` is the repository-governance documentation
 
 If a page starts drifting into Helm values, incident response, CI lanes, or
-GitHub workflow ownership, it probably belongs outside the repository handbook.
+GitHub workflow ownership, it probably belongs outside these product docs.
 
 ## Navigation Rule
 
@@ -91,6 +91,6 @@ The cleanest reading pattern is:
 ## Main Takeaway
 
 The documentation map should help readers move from idea to code without losing
-their footing. The handbook slices are durable because they separate mental
-model, task flow, exact surface lookup, runtime architecture, and explicit
-promise strength instead of blending them together.
+their footing. The slices stay useful because they separate mental model, task
+flow, exact surface lookup, runtime architecture, and explicit promise
+strength instead of blending them together.

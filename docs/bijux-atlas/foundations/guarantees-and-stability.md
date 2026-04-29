@@ -9,11 +9,12 @@ last_reviewed: 2026-04-13
 
 # Guarantees and Stability
 
-Atlas is opinionated about stability: it does not promise everything, but what it does promise should be explicit, test-backed, and documented.
+Atlas is opinionated about stability: it does not promise everything, but what
+it does promise should be explicit, test-backed, and documented.
 
-The practical reading rule is simple: if a behavior is not documented as a contract-owned surface,
-treat it as current behavior only and confirm it before you build automation or operational process
-around it.
+The practical rule is simple: if a behavior is not documented as a
+contract-owned surface, treat it as current behavior only and confirm it before
+you build automation or operational process around it.
 
 ## The Stability Stack
 
@@ -25,8 +26,9 @@ flowchart TD
     Releases --> Users[User and operator trust]
 ```
 
-This stack shows the intended direction of proof. Atlas wants trust to come from documented
-surfaces, enforced tests, and checked release evidence instead of from repository folklore.
+This stack shows the intended direction of proof. Atlas wants trust to come
+from documented surfaces, enforced tests, and checked release evidence instead
+of repository folklore.
 
 Atlas aims to make stability understandable by layer:
 
@@ -63,8 +65,8 @@ flowchart LR
     G --> C4[Immutable artifact-oriented workflows]
 ```
 
-This list of guarantees is deliberately narrow. Atlas is trying to make a few promises clearly and
-credibly rather than implying stability everywhere.
+This list of guarantees is deliberately narrow. Atlas is trying to make a few
+promises clearly and credibly rather than implying stability everywhere.
 
 Atlas tries to provide:
 
@@ -96,8 +98,9 @@ flowchart LR
     Evidence --> Trust[Operational trust]
 ```
 
-This evidence chain explains how readers should evaluate stability claims. A statement becomes
-stronger when it is documented, enforced, and visible in release or validation output.
+This evidence chain explains how to evaluate stability claims. A
+statement becomes stronger when it is documented, enforced, and visible in
+release or validation output.
 
 Atlas does not treat “we intended this to be stable” as enough. Stability is meaningful only when:
 
@@ -123,7 +126,7 @@ If you are an operator:
 
 - trust documented runtime and operational contracts, not incidental local behavior
 
-If you are a maintainer:
+If you are changing Atlas:
 
 - do not turn undocumented implementation details into accidental promises
 
@@ -142,6 +145,12 @@ If you are a maintainer:
 ## Main Takeaway
 
 Atlas should only sound stable where it can show its work. A guarantee becomes
-real when a reader can point to the owning contract or code path, the test or
+real when someone can point to the owning contract or code path, the test or
 validation layer behind it, and the artifact that proves the promise still
 holds today.
+
+## Reading Rule
+
+Use this page when the question is not whether Atlas works today, but whether a
+surface is strong enough to build automation, process, or release reasoning
+around it.

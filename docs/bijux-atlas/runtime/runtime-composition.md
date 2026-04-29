@@ -9,7 +9,9 @@ last_reviewed: 2026-03-15
 
 # Runtime Composition
 
-Runtime composition is the process of turning Atlas modules into a running server process with concrete configuration, limits, backends, and middleware.
+Runtime composition is the step where Atlas becomes a real running process:
+configuration is resolved, concrete backends are selected, and the HTTP server
+is assembled.
 
 ## Composition Model
 
@@ -21,8 +23,8 @@ flowchart LR
     Runtime --> Server[Running server]
 ```
 
-This composition model explains what runtime owns: taking abstract services, concrete adapters, and
-configuration and turning them into one running process.
+This composition model shows what runtime actually owns: turning application
+services, concrete adapters, and configuration into one executable server.
 
 ## Runtime Responsibilities
 
@@ -34,8 +36,9 @@ flowchart TD
     Runtime --> Backends[Choose concrete backends]
 ```
 
-This responsibility map is useful because runtime composition often grows opportunistically over
-time. The diagram keeps the intended boundary visible for future changes.
+This responsibility map matters because runtime wiring tends to accumulate
+incidental choices over time. Keeping the boundary visible makes those choices
+easier to review.
 
 ## Architectural Boundary
 
@@ -54,10 +57,7 @@ Those choices should not leak backward and become domain rules.
 - are you selecting a backend or sneaking infrastructure detail into a contract?
 - are you composing limits and middleware where operators expect them to live?
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for runtime composition and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the question is not what Atlas does, but how the running
+process is assembled from configuration, services, and backends.

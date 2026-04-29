@@ -25,7 +25,7 @@ flowchart TD
     Resolve --> Cache[Transient caches accelerate reads]
 ```
 
-This diagram is here because the store model is easy to blur with build output
+This diagram matters because the store model is easy to blur with build output
 or caching. The serving store is the durable published layer; caches are only a
 runtime convenience around it.
 

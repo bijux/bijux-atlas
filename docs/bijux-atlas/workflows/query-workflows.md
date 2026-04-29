@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Query Workflows
 
-Atlas query workflows are designed around explicit dataset identity and explicit selectors. The query layer prefers clarity over permissive ambiguity.
+Atlas query workflows are designed around explicit dataset identity and
+explicit selectors. The query layer prefers clarity over permissive ambiguity.
 
 ## Query Shape
 
@@ -21,8 +22,9 @@ flowchart LR
     Policy --> Response[structured response]
 ```
 
-This query shape makes the request contract explicit. Atlas wants dataset identity, selectors, and
-policy checks to be visible rather than hidden inside vague endpoint behavior.
+This query shape makes the request contract explicit. Atlas wants dataset
+identity, selectors, and policy checks to be visible rather than hidden inside
+vague endpoint behavior.
 
 ## Most Useful Query Endpoints
 
@@ -42,8 +44,9 @@ flowchart TD
     Explicit[Explicit selector such as gene_id or region] --> Execute[query executes]
 ```
 
-This selector diagram is here to set expectations early. Atlas is designed to reject some expensive
-or ambiguous scans instead of silently turning them into unsafe runtime work.
+This selector diagram sets expectations early. Atlas is designed to reject some
+expensive or ambiguous scans instead of silently turning them into unsafe
+runtime work.
 
 The server will reject some broad scans unless they are explicitly allowed. For a reliable first query, prefer selectors such as:
 
@@ -82,10 +85,7 @@ curl -s \
 - the selector is narrow enough to satisfy policy
 - the client can explain whether a failure is validation, policy, or missing data
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for query workflows and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the server is already running and the question is how to ask
+for data in a way Atlas will classify, validate, and execute cleanly.

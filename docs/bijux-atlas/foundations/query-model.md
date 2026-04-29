@@ -26,9 +26,9 @@ flowchart TD
     Shape --> Return[Return contract-backed output]
 ```
 
-This diagram is the core reading frame for the page. Atlas query behavior starts
-with dataset identity, passes through validation and policy, and only then turns
-into the response shape a client sees.
+This diagram is the core frame for the page. Atlas query behavior
+starts with dataset identity, passes through validation and policy, and only
+then turns into the response shape a client sees.
 
 ## Query Boundary
 
@@ -65,11 +65,14 @@ on request meaning rather than swallowing every adjacent runtime concern.
 ## Reading Rule
 
 If a question is about request semantics, response shape, or API expectations,
-it belongs to the repository handbook rather than the operations handbook.
+it belongs here rather than in the operations docs.
+
+Use this page when an endpoint is already known but the real question is what a
+query means before transport details get involved.
 
 ## Main Takeaway
 
 The query model is the contract-shaped path from explicit dataset identity to a
 validated, policy-checked, structured answer. The repo expresses that path
 across domain query code, HTTP adapters, and generated API artifacts, and this
-page should help readers see those pieces as one coherent surface.
+page should help those pieces read as one coherent surface.

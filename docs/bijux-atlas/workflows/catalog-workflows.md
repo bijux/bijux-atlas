@@ -9,9 +9,11 @@ last_reviewed: 2026-03-15
 
 # Catalog Workflows
 
-Catalog workflows govern which published datasets the serving layer can discover.
+Catalog workflows decide which published datasets the serving layer can
+discover.
 
-The catalog is the discoverable registry of published datasets. A serving store without a valid catalog is not a complete serving surface.
+The catalog is the discoverable registry of published datasets. A serving store
+without a valid catalog is not a complete serving surface.
 
 ## Catalog Lifecycle
 
@@ -23,9 +25,9 @@ flowchart LR
     Promote --> Alias[latest alias update if policy allows]
 ```
 
-This lifecycle diagram shows the catalog’s real job: making published dataset state discoverable to
-the serving layer. Publication alone is not enough if the catalog never points the runtime at the
-dataset.
+This lifecycle diagram shows the catalog’s real job: making published dataset
+state discoverable to the serving layer. Publication alone is not enough if the
+catalog never points the runtime at the dataset.
 
 ## Main Catalog Operations
 
@@ -44,8 +46,9 @@ flowchart TD
     Promote --> Serve[Serving store is ready]
 ```
 
-This normal flow matters because it separates dataset publication from dataset discovery. Many user
-issues that look like runtime bugs are really catalog-state omissions.
+This normal flow matters because it separates dataset publication from dataset
+discovery. Many issues that look like runtime bugs are really catalog-state
+omissions.
 
 For most users, `catalog promote` is the important day-to-day action after a dataset is successfully published.
 
@@ -88,10 +91,7 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog rollback \
 
 If the question is “can the server discover this dataset,” the answer usually lives in the catalog state, not only in the existence of artifact files.
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for catalog workflows and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the dataset exists in the store but the real question is
+whether the server can discover it.

@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Runtime
 
-`bijux-atlas/runtime` is the section home for this handbook slice.
+`bijux-atlas/runtime` explains how Atlas works once artifacts and requests are
+moving through the system.
 
 ```mermaid
 flowchart TD
@@ -25,10 +26,10 @@ flowchart TD
     Process --> Model
 ```
 
-Runtime pages explain how Atlas works as a running system once the reader
-already understands the product model and the exposed interfaces. This section
-should feel architectural rather than operational: it explains why the system
-behaves the way it does and where that behavior is assembled in the repo.
+Runtime pages explain how Atlas behaves as a running system once the product
+model and exposed interfaces are already clear. This section is architectural
+rather than operational: it explains why the system behaves the way it does
+and where that behavior is assembled in the repo.
 
 Use this section when a product question turns into an internal design or
 lifecycle question.
@@ -69,6 +70,9 @@ This section explains how the runtime works internally. It does not replace:
 - [Contracts](../contracts/index.md) for formal compatibility promises
 - `bijux-atlas-ops` for deployment and operating guidance
 
+When the question becomes "what does the user see?" or "what do we promise to
+keep stable?", move to the section that owns that answer.
+
 ## Pages
 
 - [Artifact Lifecycle](artifact-lifecycle.md)
@@ -92,6 +96,6 @@ This section explains how the runtime works internally. It does not replace:
 ## Main Takeaway
 
 The runtime section is where Atlas stops being a list of commands or contracts
-and becomes a running system in the reader's head. It should help people trace
-from published artifact state to request handling, composition, storage, and
-process behavior without drifting into operations or maintainer governance.
+and becomes a running system. It should help trace from published artifact
+state to request handling, composition, storage, and process behavior without
+drifting into operations or repository governance.

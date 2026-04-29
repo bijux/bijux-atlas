@@ -9,9 +9,11 @@ last_reviewed: 2026-03-15
 
 # Server Workflows
 
-Server workflows cover the product-facing runtime surface: starting the server, checking health, and using the main HTTP routes as intended.
+Server workflows cover the product-facing runtime surface: starting the
+server, checking health, and using the main HTTP routes as intended.
 
-This page is about normal runtime usage after a valid serving store exists. It is not the operator runbook for deployment, scaling, or incident response.
+This guide is about normal runtime usage after a valid serving store exists. It
+is not the operator runbook for deployment, scaling, or incident response.
 
 ## Server Workflow Model
 
@@ -23,9 +25,9 @@ flowchart TD
     Query --> Observe[Metrics and diagnostics]
 ```
 
-This server workflow model keeps the runtime path simple: start from a serving store, establish
-health, serve traffic, and then observe the process. It is meant to stop readers from treating
-startup and successful traffic as the same proof.
+This server workflow model keeps the runtime path simple: start from a serving
+store, establish health, serve traffic, and then observe the process. Startup
+and successful traffic are not the same proof.
 
 ## Main Server Surfaces
 
@@ -38,9 +40,9 @@ flowchart LR
     Runtime --> OpenAPI[OpenAPI route]
 ```
 
-This surface map clarifies that the running server exposes more than one kind of endpoint. Readers
-should not expect health, metrics, product queries, and contract endpoints to answer the same
-question.
+This surface map clarifies that the running server exposes more than one kind
+of endpoint. Health, metrics, product queries, and contract endpoints do not
+answer the same question.
 
 Not every surface has the same audience:
 
@@ -87,14 +89,11 @@ production-ready.
 
 ## Operational Boundary
 
-This page explains normal usage of the runtime surface. For deployment,
+This guide explains normal usage of the runtime surface. For deployment,
 rollback, resource tuning, and incident handling, move to
 [bijux-atlas-ops](../../bijux-atlas-ops/index.md).
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for server workflows and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the serving store already exists and the question is how to
+use the running server surface in the intended order.

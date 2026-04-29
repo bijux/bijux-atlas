@@ -9,7 +9,7 @@ last_reviewed: 2026-03-15
 
 # API Endpoint Index
 
-This page lists the main public HTTP routes exposed by the current router.
+This page lists the main public HTTP routes exposed by the Atlas server.
 
 ## Endpoint Families
 
@@ -22,8 +22,9 @@ flowchart TD
     Router --> Meta[OpenAPI and query validate]
 ```
 
-This endpoint-family map gives the fastest overview of the public HTTP surface. It helps readers
-separate health, identity, query, diff, and metadata routes before drilling into individual paths.
+This endpoint-family map gives the fastest overview of the public HTTP surface.
+It helps separate health, identity, query, diff, and metadata routes before
+drilling into individual paths.
 
 ## Public Runtime and Health Routes
 
@@ -60,17 +61,15 @@ flowchart LR
     Queries --> Meta[Validation and OpenAPI]
 ```
 
-This relationship view shows how the route families build on dataset identity. Most useful Atlas
-query work starts by naming the dataset explicitly and then choosing the query or diff path.
+This relationship view shows how the route families build on dataset identity.
+Most useful Atlas query work starts by naming the dataset explicitly and then
+choosing the query or diff path.
 
 ## Debug Routes
 
 Additional `/debug/...` routes may be enabled depending on runtime settings. Treat them as operationally sensitive and configuration-dependent rather than universal public surface.
 
-## Purpose
+## Reading Rule
 
-This page is the lookup reference for api endpoint index. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+Use this page when you already know you need the HTTP surface and want the
+shortest route to the right family of endpoints.

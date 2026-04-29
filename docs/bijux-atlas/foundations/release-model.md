@@ -61,3 +61,8 @@ The release model turns Atlas from a collection of local builds into a system of
 named, validated, and comparable states. The repository expresses that through
 release policy files, schemas, generated runtime artifacts, and the binaries
 that expose released behavior to users.
+
+## Reading Rule
+
+Use this page when Atlas already looks correct locally but the harder question
+is what counts as a durable released state that another system can rely on.

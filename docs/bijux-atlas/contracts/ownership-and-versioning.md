@@ -20,8 +20,9 @@ flowchart LR
     Owners --> Docs[Docs]
 ```
 
-This ownership model shows the minimum stable shape Atlas wants for a real contract: one owner path,
-plus tests and docs that reinforce the same boundary.
+This ownership model shows the minimum stable shape Atlas wants for a real
+contract: one owner path, plus tests and docs that reinforce the same
+boundary.
 
 A stable surface should have one obvious owner in practice, not just in theory. In this repository that usually means some combination of:
 
@@ -40,8 +41,8 @@ flowchart TD
     Breaking --> Versioning
 ```
 
-This versioning logic keeps compatibility classification visible. The purpose is to make evolution
-intentional rather than retroactively explained.
+This versioning logic keeps compatibility classification visible. The purpose
+is to make evolution intentional rather than retroactively explained.
 
 ## Change Classes
 
@@ -74,10 +75,7 @@ If you cannot answer all three questions clearly, the surface is not ready to be
 2. Where is it documented?
 3. What is the versioning or deprecation path if it changes?
 
-## Purpose
+## Reading Rule
 
-This page defines the Atlas contract expectations for ownership and versioning. Use it when you need the explicit compatibility promise rather than a workflow narrative.
-
-## Stability
-
-This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
+Use this page when a surface looks important enough to stabilize and you need
+to decide who owns it and how it can change over time.

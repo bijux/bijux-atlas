@@ -28,9 +28,9 @@ flowchart TD
     Files[Config files] --> Runtime
 ```
 
-This configuration model shows the supported inputs that shape runtime behavior. It also signals an
-important honesty rule: readers should prefer documented flags, files, and environment variables
-over accidental local defaults.
+This configuration model shows the supported inputs that shape runtime
+behavior. It also signals an important honesty rule: prefer documented flags,
+files, and environment variables over accidental local defaults.
 
 In practice:
 
@@ -48,8 +48,9 @@ flowchart LR
     Human --> Reader[Interactive use]
 ```
 
-This output split is one of the most important practical boundaries in Atlas. Human-readable output
-helps people inspect behavior, while structured output is what automation should depend on.
+This output split is one of the most important practical boundaries in Atlas.
+Human-readable output helps people inspect behavior, while structured output is
+what automation should depend on.
 
 Atlas output is designed around two modes:
 
@@ -90,8 +91,9 @@ flowchart TD
     Review --> Confidence[Confidence in automation]
 ```
 
-This determinism diagram is here to explain why Atlas spends effort on structured output contracts.
-Automation becomes safer when the same inputs lead to the same output class and field shape.
+This determinism diagram explains why Atlas spends effort on structured output
+contracts. Automation becomes safer when the same inputs lead to the same
+output class and field shape.
 
 ## Practical Commands
 
@@ -124,10 +126,7 @@ If you are depending on a field or response shape in automation, verify that it 
 - switch to `--json` before you automate the workflow
 - confirm the exact field contract in reference or contract pages
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for configuration and output and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas behavior is visible but it is still unclear which
+parts come from configuration and which parts are safe to depend on in output.

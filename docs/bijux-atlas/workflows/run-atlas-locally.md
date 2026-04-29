@@ -15,9 +15,9 @@ Running Atlas locally is easiest when you separate the workflow into three areas
 - built artifacts
 - runtime processes
 
-A good local run proves that your inputs, artifacts, store, and server wiring agree with each other.
-It does not prove that production infrastructure, scaling, or operational policy are already
-correct.
+A good local run proves that your inputs, artifacts, store, and server wiring
+agree with each other. It does not prove that production infrastructure,
+scaling, or operational policy are already correct.
 
 ## Local Layout
 
@@ -31,9 +31,9 @@ flowchart LR
     Server --> Client[curl or browser]
 ```
 
-This layout separates the main local concerns clearly: committed fixtures, a disposable build root,
-the serving store, and the running server. Keeping those paths distinct prevents a lot of avoidable
-local confusion.
+This layout separates the main local concerns clearly: committed fixtures, a
+disposable build root, the serving store, and the running server. Keeping those
+paths distinct prevents a lot of avoidable local confusion.
 
 ## Prepare a Local Workspace
 
@@ -64,8 +64,9 @@ flowchart TD
     F --> G[Inspect logs and metrics]
 ```
 
-This local loop is the intended product path, even for development. It is meant to keep readers from
-treating an ingest output directory as if it were already ready-made serving state.
+This local loop is the intended product path, even for development. It is meant
+to keep readers from treating an ingest output directory as if it were already
+ready-made serving state.
 
 The local development loop is not “start the server and hope.” It is:
 
@@ -85,9 +86,9 @@ flowchart LR
     Good[Build root published into serving store] --> Confidence[Deterministic local behavior]
 ```
 
-This comparison diagram explains why Atlas prefers the longer-looking loop. The extra publication
-step is not ceremony for its own sake; it is the boundary that makes local runtime behavior match
-the serving model.
+This comparison diagram explains why Atlas prefers the longer-looking loop. The
+extra publication step is not ceremony for its own sake; it is the boundary
+that makes local runtime behavior match the serving model.
 
 ## What This Local Loop Proves
 
@@ -126,10 +127,7 @@ If any of those conditions are false, you may still have a working demo, but you
 - can you explain which step produced each of those paths?
 - can you restart the loop without manual cleanup outside `artifacts/`?
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for run atlas locally and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas commands work individually but you still need one
+clear local loop that turns fixtures into a running, queryable system.

@@ -31,7 +31,7 @@ the same concern and should not collapse into one vague notion of "the server."
 - accept validated runtime configuration
 - initialize store and cache dependencies
 - expose health, readiness, metrics, and product endpoints
-- keep request execution separate from build and maintainer control-plane work
+- keep request execution separate from build and repository control-plane work
 
 ## Repository Authority Map
 
@@ -50,11 +50,11 @@ the same concern and should not collapse into one vague notion of "the server."
 ## Reading Rule
 
 When the question is about startup wiring or live process behavior, stay in the
-runtime slice rather than the maintainer or operations handbooks.
+runtime slice rather than the maintainer or operations docs.
 
 ## Main Takeaway
 
 The runtime process model explains how Atlas becomes a live server instead of a
 set of source files. It starts from validated config, composes the runtime from
 app and adapter layers, serves stable interfaces, and stays separate from build
-or maintainer-only paths.
+or repository-only paths.

@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Dataset Workflows
 
-Dataset workflows are the bridge between built artifact state and store-backed serving state.
+Dataset workflows are the bridge between built artifact state and store-backed
+serving state.
 
 ## Dataset Workflow Map
 
@@ -22,8 +23,9 @@ flowchart TD
     Pack --> VerifyPack[dataset verify-pack]
 ```
 
-This workflow map shows the main dataset lifecycle after ingest. Atlas keeps validation, publication,
-and packaging as explicit steps so readers can see which boundary they are crossing.
+This workflow map shows the main dataset lifecycle after ingest. Atlas keeps
+validation, publication, and packaging as explicit steps so it stays clear
+which boundary is being crossed.
 
 ## The Important Distinction
 
@@ -34,8 +36,9 @@ flowchart LR
     Store[Serving store] --> CatalogOps[catalog workflows]
 ```
 
-This distinction diagram exists because “dataset state” can mean more than one thing in casual
-conversation. The build root and the serving store are related, but they are not interchangeable.
+This distinction diagram exists because “dataset state” can mean more than one
+thing in casual conversation. The build root and the serving store are related,
+but they are not interchangeable.
 
 Atlas uses dataset commands both before and after publication:
 
@@ -96,10 +99,8 @@ Use `dataset pack` and `dataset verify-pack` when you need a portable dataset bu
 - you are packaging a dataset bundle for transport or review
 - you need the dataset lifecycle without the deeper contract details
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for dataset workflows and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the ingest step is already done and the question is how a
+dataset moves through validation, publication, packaging, and serving-state
+handling.

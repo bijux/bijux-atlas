@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Query Architecture
 
-Atlas query architecture is shaped around explicit dataset identity, request classification, policy checks, and store-backed execution.
+Atlas query architecture is built around explicit dataset identity, request
+classification, policy checks, and store-backed execution.
 
 ## Query Path
 
@@ -21,9 +22,9 @@ flowchart LR
     Execute --> Present[Present response]
 ```
 
-This query path highlights the stages Atlas wants to keep visible: request classification, dataset
-resolution, execution, and presentation. That visibility is what makes rejection reasons and result
-shape easier to explain.
+This query path highlights the stages Atlas wants to keep visible: request
+classification, dataset resolution, execution, and presentation. That
+visibility is what makes rejection reasons and result shape easier to explain.
 
 ## Query Concerns
 
@@ -37,8 +38,9 @@ mindmap
     Result presentation
 ```
 
-This concern map shows the five themes that shape most query changes. It helps maintainers avoid
-mixing request transport, cost policy, and result presentation into one indistinct layer.
+This concern map shows the themes that shape most query changes. It helps keep
+request transport, cost policy, and result presentation from collapsing into
+one indistinct layer.
 
 ## Architectural Priorities
 
@@ -59,10 +61,7 @@ execution only.
 - policy rejection is explainable before expensive execution starts
 - presentation does not smuggle transport concerns into core query rules
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for query architecture and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when the question is not how to call a query endpoint, but how
+Atlas keeps query identity, policy, execution, and response shaping separate.

@@ -9,7 +9,8 @@ last_reviewed: 2026-04-13
 
 # Core Concepts
 
-The rest of the Atlas documentation assumes a small vocabulary. If these concepts are clear, most commands, APIs, and architecture pages become much easier to read.
+The rest of the Atlas docs assume a small vocabulary. If these concepts
+are clear, most commands, APIs, and runtime pages become much easier to read.
 
 ## The Concept Map
 
@@ -24,11 +25,11 @@ flowchart TD
     Store --> Query[Query surface]
 ```
 
-This concept map shows the vocabulary Atlas keeps separate. If these terms blur together, readers
-often misread later workflow pages and assume a successful local build is already the final serving
-state.
+This concept map shows the vocabulary Atlas keeps separate. If these terms blur
+together, later workflow pages become much harder to read correctly.
 
-The most common mistake is to collapse these boundaries into one idea. Atlas works better when you keep them distinct:
+The most common mistake is to collapse these boundaries into one idea. Atlas
+works better when you keep them distinct:
 
 - source inputs are not yet release state
 - a build root is validated output, but not yet the serving store
@@ -159,10 +160,7 @@ words. If a change cannot say whether it touches source input, build root,
 artifact, catalog, store, query, or runtime behavior, it is usually not yet
 described clearly enough.
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for core concepts and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas terms start to blur together and the real problem is
+not one command or endpoint, but the product model underneath them.

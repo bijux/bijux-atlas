@@ -32,7 +32,7 @@ Atlas artifact handling is easiest to reason about as five named states:
 4. `published`: the artifact set exists in the serving store and catalog path
 5. `servable`: runtime lookup can resolve the published dataset identity
 
-Readers should treat `build-complete` and `servable` as different milestones.
+Treat `build-complete` and `servable` as different milestones.
 An artifact can exist locally without being part of the serving truth yet.
 
 ## Promotion Rule
@@ -62,7 +62,7 @@ Each lifecycle step should preserve enough identity to answer:
 - whether the runtime should consider it publishable or already published
 
 If that identity is missing, Atlas loses most of the value of immutable
-artifact handling because operators and maintainers can no longer distinguish
+artifact handling because operators and engineers can no longer distinguish
 candidate output from serving truth.
 
 ## Failure Patterns

@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Structured Output Contracts
 
-Structured output contracts define which machine-readable outputs are meant to be stable enough for automation.
+Structured output contracts define which machine-readable outputs are meant to
+be stable enough for automation.
 
 ## Output Contract Model
 
@@ -19,8 +20,9 @@ flowchart LR
     Json --> Automation[Automation and CI]
 ```
 
-This output-contract diagram shows why structured output deserves its own contract page. It is the
-surface automation should parse when Atlas explicitly documents it as stable.
+This output-contract diagram shows why structured output deserves its own
+contract page. It is the surface automation should parse when Atlas explicitly
+documents it as stable.
 
 ## Stability Logic
 
@@ -43,6 +45,7 @@ Only structured outputs that Atlas documents as contracts should be treated as
 stable automation inputs. Human-readable text remains descriptive and may
 change without compatibility guarantees.
 
-## Purpose
+## Reading Rule
 
-This page defines the Atlas contract expectations for structured output contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+Use this page when Atlas exposes both human-readable text and structured data
+and the real question is which one automation may safely parse.

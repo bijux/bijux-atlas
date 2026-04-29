@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Ingest Architecture
 
-Ingest is the architectural boundary between raw source inputs and validated Atlas build state.
+Ingest is the architectural boundary between raw source inputs and validated
+Atlas build state.
 
 ## Ingest Pipeline
 
@@ -21,9 +22,10 @@ flowchart LR
     Derive --> BuildRoot[Build root]
 ```
 
-This ingest pipeline shows why Atlas treats ingest as an architectural boundary. The layer receives
-raw supported inputs and emits validated build state plus derived artifacts that later workflows can
-trust more than the original files.
+This ingest pipeline shows why Atlas treats ingest as an architectural
+boundary. The layer receives raw supported inputs and emits validated build
+state plus derived artifacts that later workflows can trust more than the
+original files.
 
 ## Architectural Outcome
 
@@ -34,8 +36,9 @@ flowchart TD
     Publish --> Serve[Serve through runtime]
 ```
 
-This outcome diagram makes the stop point explicit. Ingest ends at the build root so validation,
-publication, and runtime serving stay separate and reviewable.
+This outcome diagram makes the stop point explicit. Ingest ends at the build
+root so validation, publication, and runtime serving stay separate and
+reviewable.
 
 ## Why Ingest Stops at a Build Root
 
@@ -63,10 +66,7 @@ It does not own:
 - publication remains an explicit gate instead of an implicit side effect
 - runtime behavior does not have to compensate for half-defined ingest output
 
-## Purpose
+## Reading Rule
 
-This page explains the Atlas material for ingest architecture and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use this page when Atlas ingest appears to work, but the harder question is
+what ingest actually owns and where serving behavior begins.

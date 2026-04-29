@@ -9,7 +9,8 @@ last_reviewed: 2026-03-15
 
 # Operational Contracts
 
-Operational contracts define the stable expectations operators can rely on around health, readiness, observability, and runtime behavior.
+Operational contracts define the stable expectations operators can rely on
+around health, readiness, observability, and runtime behavior.
 
 ## Operational Contract Scope
 
@@ -20,8 +21,8 @@ flowchart LR
     Ops --> Runtime[Runtime validation]
 ```
 
-This operational-scope diagram shows the stable operator-facing surfaces Atlas expects deployments to
-rely on intentionally.
+This operational-scope diagram shows the stable operator-facing surfaces Atlas
+expects deployments to rely on intentionally.
 
 ## Operator Promise Model
 
@@ -31,8 +32,9 @@ flowchart TD
     Checks --> Deploy[Safe deployment use]
 ```
 
-This promise model explains how operational contracts should stay credible: they must connect to
-checks and evidence that operators can actually use during deployment and recovery.
+This promise model explains how operational contracts stay credible: they must
+connect to checks and evidence that operators can actually use during
+deployment and recovery.
 
 ## Main Promise Areas
 
@@ -41,10 +43,7 @@ checks and evidence that operators can actually use during deployment and recove
 - runtime validation behavior
 - explicit operator-visible error conditions
 
-## Purpose
+## Reading Rule
 
-This page defines the Atlas contract expectations for operational contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
-
-## Stability
-
-This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
+Use this page when a deployment surface looks stable in practice and you need
+to confirm whether Atlas treats it as an operator-facing promise.
