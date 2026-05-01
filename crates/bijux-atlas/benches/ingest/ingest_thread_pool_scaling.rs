@@ -3,7 +3,8 @@
 use bijux_atlas::domain::dataset::DatasetId;
 use bijux_atlas::domain::ingest::{ingest_dataset_with_events, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use tempfile::tempdir;
 
 fn fixture(path: &str) -> std::path::PathBuf {

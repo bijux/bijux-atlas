@@ -5,8 +5,9 @@ use bijux_atlas::domain::query::{
     explain_query_plan, query_gene_id_name_json_minimal_fast, query_genes, query_genes_fanout,
     select_shards_for_request, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::{Connection, OpenFlags};
+use std::hint::black_box;
 use std::sync::Arc;
 use std::thread;
 

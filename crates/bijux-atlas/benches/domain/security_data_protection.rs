@@ -4,7 +4,8 @@ use bijux_atlas::domain::security::data_protection::{
     detect_tampering, verify_artifact_checksum, verify_artifact_signature, EncryptionAtRest,
     XorEncryption,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn security_data_protection_benchmarks(c: &mut Criterion) {
     let payload = vec![42_u8; 64 * 1024];

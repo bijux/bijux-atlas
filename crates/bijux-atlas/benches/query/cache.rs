@@ -3,10 +3,11 @@
 use bijux_atlas::domain::query::{
     normalized_query_hash_ssot, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
 use std::cell::Cell;
 use std::collections::{HashMap, VecDeque};
+use std::hint::black_box;
 
 fn setup_db() -> Connection {
     let conn = Connection::open_in_memory().expect("open memory db");

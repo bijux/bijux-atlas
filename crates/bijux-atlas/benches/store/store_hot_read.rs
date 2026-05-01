@@ -5,7 +5,8 @@ use bijux_atlas::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use bijux_atlas::domain::sha256_hex;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use tempfile::tempdir;
 
 fn dataset() -> DatasetId {
