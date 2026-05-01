@@ -2,7 +2,8 @@
 
 use bijux_atlas::adapters::outbound::store::{verify_expected_sha256, ManifestLock};
 use bijux_atlas::domain::sha256_hex;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn bench_checksum_pipeline(c: &mut Criterion) {
     let manifest_bytes = b"{\"manifest_version\":\"1\"}".to_vec();

@@ -4,7 +4,8 @@ use bijux_atlas::domain::policy::{
     evaluate_policy_set, evaluate_repository_metrics, load_policy_set_from_workspace,
     RepositoryMetrics,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use std::path::PathBuf;
 
 fn workspace_root() -> PathBuf {

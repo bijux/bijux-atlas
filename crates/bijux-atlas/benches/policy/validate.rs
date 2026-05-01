@@ -6,7 +6,8 @@ use bijux_atlas::domain::policy::{
     PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
     StoreResiliencePolicy, TelemetryPolicy,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn bench_policy_validate(c: &mut Criterion) {
     let cfg = PolicyConfig {

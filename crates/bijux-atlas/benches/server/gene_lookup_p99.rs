@@ -8,8 +8,9 @@ use bijux_atlas::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use bijux_atlas::domain::sha256_hex;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
+use std::hint::black_box;
 use tempfile::tempdir;
 
 fn fixture_sqlite() -> Vec<u8> {

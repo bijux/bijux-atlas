@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::domain::query::{GeneId, Region, TranscriptId};
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn bench_gene_id_parse(c: &mut Criterion) {
     c.bench_function("gene_id_parse", |b| {

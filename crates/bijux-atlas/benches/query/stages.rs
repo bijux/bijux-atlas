@@ -4,8 +4,9 @@ use bijux_atlas::domain::query::{
     parse_gene_query_request, plan_gene_query, query_genes, GeneFields, GeneFilter,
     GeneQueryRequest, QueryLimits, RegionFilter,
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
+use std::hint::black_box;
 
 fn sample_request() -> GeneQueryRequest {
     GeneQueryRequest {

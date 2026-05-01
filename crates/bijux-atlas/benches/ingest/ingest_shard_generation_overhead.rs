@@ -3,7 +3,8 @@
 use bijux_atlas::domain::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
 use bijux_atlas::domain::policy::StrictnessMode;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 use std::time::Instant;
 use tempfile::tempdir;
 

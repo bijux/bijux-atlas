@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::domain::canonical;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
 
 fn bench_stable_sort_by_key(c: &mut Criterion) {
     let data: Vec<(u32, &'static str)> = vec![
