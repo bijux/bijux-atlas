@@ -421,7 +421,7 @@ fn missing_fai_fails_by_default_but_can_autogenerate_in_dev_mode() {
     let mut o = opts(root.path(), StrictnessMode::Strict);
     o.fai_path = root.path().join("autogen.fai");
     let err = ingest_dataset(&o).expect_err("missing fai must fail by default");
-    assert!(err.to_string().contains("FAI index is required"));
+    assert!(err.to_string().contains("FAI_REQUIRED_FOR_INGEST"));
 
     let mut dev = opts(root.path(), StrictnessMode::Strict);
     dev.fai_path = root.path().join("autogen-dev.fai");
@@ -562,7 +562,8 @@ fn fixture_matrix_edgecases_runs_leniently() {
                 assert!(
                     msg.contains("gene_count must be > 0")
                         || msg.contains("contig")
-                        || msg.contains("invalid"),
+                        || msg.contains("invalid")
+                        || msg.contains("GFF3_REFERENCE_NOT_IN_FASTA_FAI"),
                     "unexpected edgecase failure: {msg}"
                 );
             }
@@ -925,5 +926,113 @@ fn manifest_stores_contig_normalization_aliases() {
             .get("1")
             .map(String::as_str),
         Some("chr1")
+    );
+}
+
+#[test]
+fn scientific_fixture_emits_contig_classes_and_reference_build_identity() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("annotations.gff3");
+    o.fasta_path = fixtures.join("genome.fa");
+    o.fai_path = fixtures.join("genome.fa.fai");
+    let run = ingest_dataset(&o).expect("scientific ingest");
+
+    assert!(!run.manifest.reference_build_identity_sha256.is_empty());
+    assert_eq!(run.manifest.coordinate_system, "1-based-closed");
+    assert_eq!(run.manifest.scientific_prerequisites_status, "complete");
+    assert_eq!(
+        run.manifest.scientific_profile_path,
+        "derived/scientific_profile.json".to_string()
+    );
+
+    let scientific_profile_path = run
+        .manifest_path
+        .parent()
+        .expect("manifest dir")
+        .join("scientific_profile.json");
+    let profile: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(scientific_profile_path).expect("read scientific profile"),
+    )
+    .expect("parse scientific profile");
+    assert_eq!(profile["coordinate_system"].as_str(), Some("1-based-closed"));
+    assert!(
+        profile["contig_class_distribution"]["mitochondrial"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["plasmid"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["scaffold"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["alternate"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+}
+
+#[test]
+fn scientific_incoherent_contig_naming_is_rejected_without_alias() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("incoherent_mixed_core_names.gff3");
+    o.fasta_path = fixtures.join("incoherent_genome.fa");
+    o.fai_path = fixtures.join("incoherent_genome.fa.fai");
+    let err = ingest_dataset(&o).expect_err("incoherent naming should fail");
+    assert!(err.to_string().contains("SCIENTIFIC_INCOHERENT_SOURCE_COMBINATION"));
+}
+
+#[test]
+fn scientific_incoherent_contig_naming_can_be_resolved_by_alias_policy() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("incoherent_mixed_core_names.gff3");
+    o.fasta_path = fixtures.join("incoherent_genome.fa");
+    o.fai_path = fixtures.join("incoherent_genome.fa.fai");
+    o.seqid_policy = SeqidNormalizationPolicy::from_aliases(std::collections::BTreeMap::from([(
+        "1".to_string(),
+        "chr1".to_string(),
+    )]));
+    o.reject_normalized_seqid_collisions = false;
+    let run = ingest_dataset(&o).expect("alias mapping should restore coherence");
+    assert_eq!(run.manifest.scientific_prerequisites_status, "insufficient");
+    assert!(
+        run.anomaly_report
+            .scientific_ambiguities
+            .iter()
+            .any(|entry| entry.contains("multiple_source_seqids_for_normalized:chr1")),
+        "normalized seqid collision should be preserved as scientific evidence"
+    );
+}
+
+#[test]
+fn unknown_biotype_is_recorded_as_scientific_ambiguity() {
+    let root = tempdir().expect("tempdir");
+    let gff = root.path().join("unknown-biotype.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\tmRNA\t1\t20\t.\t+\t.\tID=tx1;Parent=g1\n",
+    )
+    .expect("write gff");
+    let mut o = opts(root.path(), StrictnessMode::Lenient);
+    o.gff3_path = gff;
+    let run = ingest_dataset(&o).expect("ingest");
+    assert!(
+        !run.anomaly_report.scientific_ambiguities.is_empty(),
+        "scientific ambiguity evidence should be emitted"
     );
 }

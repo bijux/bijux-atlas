@@ -1,0 +1,7 @@
+##gff-version 3
+##sequence-region chr1 1 40
+##sequence-region 1 1 40
+chr1	src	gene	1	10	.	+	.	ID=g_chr;Name=GCHR;gene_biotype=protein_coding
+chr1	src	mRNA	1	10	.	+	.	ID=tx_chr;Parent=g_chr;transcript_biotype=protein_coding
+1	src	gene	20	30	.	+	.	ID=g_plain;Name=GPLAIN;gene_biotype=protein_coding
+1	src	mRNA	20	30	.	+	.	ID=tx_plain;Parent=g_plain;transcript_biotype=protein_coding
