@@ -8,22 +8,25 @@ mod ingest_inputs;
 mod operations;
 pub(crate) mod output;
 
-use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
-use crate::domain::canonical;
-use crate::domain::dataset::{DatasetId, ShardingPlan};
 use crate::app::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
-use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::app::query::{
     classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
     GeneFilter, GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter,
     SeqidNormalizationPolicy, TranscriptTypePolicy,
 };
+use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
+use crate::domain::canonical;
+use crate::domain::dataset::{DatasetId, ShardingPlan};
+use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 use clap::{error::ErrorKind, CommandFactory, Parser};
 use clap_complete::{generate, Generator};
-use commands::{CatalogCommand, DatasetCommand, DiffCommand, GcCommand};
+use commands::{
+    CatalogCommand, DatasetCommand, DiffCommand, ExportCommand, GcCommand, InspectCommand,
+    QueryCommand,
+};
 use rusqlite::Connection;
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -79,6 +82,8 @@ struct IngestCliArgs {
     emit_normalized_debug: bool,
     normalized_replay: bool,
     prod_mode: bool,
+    dry_run: bool,
+    explain: bool,
 }
 
 #[derive(Debug)]
@@ -93,6 +98,37 @@ impl CliError {
             exit_code: ExitCode::Internal,
             machine: MachineError::new("internal_error", &message),
         }
+    }
+
+    fn from_action_error(message: String) -> Self {
+        let normalized = message.to_ascii_lowercase();
+        let (exit_code, code) = if normalized.contains("usage")
+            || normalized.contains("unknown argument")
+            || normalized.contains("missing command")
+        {
+            (ExitCode::Usage, "usage_error")
+        } else if normalized.starts_with("validation:")
+            || normalized.starts_with("policy:")
+            || normalized.starts_with("cursor:")
+            || normalized.contains("publish gate failed")
+            || normalized.contains("immutability gate")
+            || normalized.contains("invalid")
+            || normalized.contains("must be")
+        {
+            (ExitCode::Validation, "validation_error")
+        } else if normalized.contains("no such file or directory")
+            || normalized.contains("not found")
+            || normalized.contains("unable to open database file")
+            || normalized.contains("os error 2")
+            || normalized.contains("network")
+            || normalized.contains("connection refused")
+            || normalized.contains("timed out")
+        {
+            (ExitCode::DependencyFailure, "dependency_failure")
+        } else {
+            (ExitCode::Internal, "internal_error")
+        };
+        Self { exit_code, machine: MachineError::new(code, &message) }
     }
 }
 
@@ -176,11 +212,7 @@ fn run() -> Result<(), CliError> {
         exit_code: ExitCode::Usage,
         machine: MachineError::new("usage_error", "missing command; see --help"),
     })?;
-    let log_flags = LogFlags {
-        quiet: cli.quiet,
-        verbose: cli.verbose,
-        trace: cli.trace,
-    };
+    let log_flags = LogFlags { quiet: cli.quiet, verbose: cli.verbose, trace: cli.trace };
 
     dispatch::run_atlas_command(command, log_flags, output_mode)
 }
@@ -263,11 +295,7 @@ fn normalize_legacy_namespace(args: &[String]) -> (Vec<String>, bool) {
 }
 
 fn normalize_legacy_command_aliases(args: &mut [String]) {
-    if let Some(first_positional) = args
-        .iter_mut()
-        .skip(1)
-        .find(|token| !token.starts_with('-'))
-    {
+    if let Some(first_positional) = args.iter_mut().skip(1).find(|token| !token.starts_with('-')) {
         if first_positional == "print-config" {
             *first_positional = "config".to_string();
         }
@@ -282,6 +310,9 @@ Commands:
   serve
   catalog
   dataset
+  query
+  inspect
+  export
   openapi
   completion
   version
