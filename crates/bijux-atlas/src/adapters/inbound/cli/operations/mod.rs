@@ -224,15 +224,26 @@ pub(crate) fn update_latest_alias(
         );
     }
     fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
+    let canonical_catalog = canonical_catalog_json(&catalog)?;
+    let alias_record = crate::domain::dataset::LatestAliasRecord::new(
+        dataset,
+        "promotion-gated".to_string(),
+        format!(
+            "{}",
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_err(|e| e.to_string())?
+                .as_secs()
+        ),
+        "atlas-cli".to_string(),
+        sha256_hex(canonical_catalog.as_bytes()),
+    );
+    alias_record.validate().map_err(|e| e.to_string())?;
     let alias_path = store_root.join("latest.alias.json");
     let tmp = store_root.join("latest.alias.json.tmp");
     fs::write(
         &tmp,
-        canonical::stable_json_bytes(&json!({
-            "dataset": dataset,
-            "policy": "promotion-gated"
-        }))
-        .map_err(|e| e.to_string())?,
+        canonical::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
     fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;

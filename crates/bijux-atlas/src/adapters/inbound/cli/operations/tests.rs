@@ -452,3 +452,45 @@ fn promote_failure_does_not_mutate_existing_catalog_and_latest_alias_is_promotio
     .expect_err("latest alias update must be promotion-gated");
     assert!(alias_err.contains("gated by promotion"));
 }
+
+#[test]
+fn latest_alias_update_writes_traceable_record_after_promotion() {
+    let tmp = tempdir().expect("tmp");
+    let root = tmp.path().join("store");
+    fs::create_dir_all(&root).expect("mkdir");
+
+    let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let paths = artifact_paths(&root, &dataset);
+    fs::create_dir_all(paths.derived_dir.clone()).expect("mkdir derived");
+    fs::write(&paths.manifest, br#"{"manifest":"ok"}"#).expect("manifest");
+    fs::write(&paths.sqlite, b"sqlite").expect("sqlite");
+
+    promote_catalog(
+        root.clone(),
+        dataset.release.as_str(),
+        dataset.species.as_str(),
+        dataset.assembly.as_str(),
+        OutputMode { json: true },
+    )
+    .expect("promote");
+    update_latest_alias(
+        root.clone(),
+        dataset.release.as_str(),
+        dataset.species.as_str(),
+        dataset.assembly.as_str(),
+        OutputMode { json: true },
+    )
+    .expect("latest alias update");
+
+    let alias_raw = fs::read_to_string(root.join("latest.alias.json")).expect("alias file");
+    let alias: crate::domain::dataset::LatestAliasRecord =
+        serde_json::from_str(&alias_raw).expect("alias json");
+    alias.validate().expect("alias validate");
+    assert_eq!(alias.dataset, dataset);
+    assert_eq!(alias.alias, "latest");
+    assert_eq!(alias.policy, "promotion-gated");
+    assert_eq!(alias.updated_by, "atlas-cli");
+
+    let catalog_bytes = fs::read(root.join("catalog.json")).expect("catalog bytes");
+    assert_eq!(alias.catalog_sha256, sha256_hex(&catalog_bytes));
+}
