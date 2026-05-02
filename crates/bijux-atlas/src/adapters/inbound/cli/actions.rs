@@ -3,7 +3,9 @@
 use super::ingest_inputs::resolve_verify_and_lock_inputs;
 use super::operations;
 use super::*;
-use crate::domain::query::{IntervalSemantics, QuerySort, StrandMode};
+use crate::adapters::inbound::cli::commands::ExportFormat;
+use crate::app::query::{IntervalSemantics, QuerySort, StrandMode};
+use crate::domain::dataset::ArtifactManifest;
 
 use std::path::PathBuf;
 
@@ -60,10 +62,7 @@ pub(super) fn emit_config_paths(machine_json: bool) -> Result<(), String> {
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
-        );
+        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
     }
     Ok(())
 }
@@ -76,10 +75,7 @@ pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
-        );
+        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
     }
     Ok(())
 }
@@ -229,7 +225,7 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         ShardingPlanCli::Contig => ShardingPlan::Contig,
         ShardingPlanCli::RegionGrid => ShardingPlan::RegionGrid,
     };
-    let result = ingest_dataset(&IngestOptions {
+    let ingest_options = IngestOptions {
         gff3_path: verified_inputs.gff3_path,
         fasta_path: verified_inputs.fasta_path,
         fai_path: verified_inputs.fai_path,
@@ -270,8 +266,32 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         feature_id_uniqueness_policy: crate::app::query::FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
         timestamp_policy: TimestampPolicy::DeterministicZero,
-    })
-    .map_err(|e| e.to_string())?;
+    };
+
+    if args.dry_run || args.explain {
+        output::emit_ok(
+            output_mode,
+            json!({
+                "command":"atlas ingest",
+                "mode": if args.explain { "explain" } else { "dry-run" },
+                "status":"ok",
+                "dataset": ingest_options.dataset.canonical_string(),
+                "report_only": ingest_options.report_only,
+                "strictness": format!("{:?}", ingest_options.strictness),
+                "sharding_plan": format!("{:?}", ingest_options.sharding_plan),
+                "inputs": {
+                    "gff3": ingest_options.gff3_path,
+                    "fasta": ingest_options.fasta_path,
+                    "fai": ingest_options.fai_path
+                },
+                "output_root": ingest_options.output_root,
+                "writes_artifacts": false
+            }),
+        )?;
+        return Ok(());
+    }
+
+    let result = ingest_dataset(&ingest_options).map_err(|e| e.to_string())?;
 
     output::emit_ok(
         output_mode,
@@ -301,20 +321,13 @@ fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {
         Ok(v) => v,
         Err(_) => return (ShardingPlanCli::None, 512),
     };
-    let plan = match v
-        .get("default_plan")
-        .and_then(serde_json::Value::as_str)
-        .unwrap_or("none")
-    {
+    let plan = match v.get("default_plan").and_then(serde_json::Value::as_str).unwrap_or("none") {
         "contig" => ShardingPlanCli::Contig,
         "region_grid" => ShardingPlanCli::RegionGrid,
         _ => ShardingPlanCli::None,
     };
-    let max_shards = v
-        .get("max_shards")
-        .and_then(serde_json::Value::as_u64)
-        .map(|x| x as usize)
-        .unwrap_or(512);
+    let max_shards =
+        v.get("max_shards").and_then(serde_json::Value::as_u64).map(|x| x as usize).unwrap_or(512);
     (plan, max_shards)
 }
 
@@ -324,9 +337,8 @@ pub(super) fn inspect_db(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let conn = Connection::open(db).map_err(|e| e.to_string())?;
-    let schema_version: i64 = conn
-        .query_row("PRAGMA user_version", [], |row| row.get(0))
-        .map_err(|e| e.to_string())?;
+    let schema_version: i64 =
+        conn.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(|e| e.to_string())?;
 
     let mut idx_stmt = conn
         .prepare("SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' ORDER BY name")
@@ -362,7 +374,7 @@ pub(super) fn inspect_db(
     output::emit_ok(
         output_mode,
         json!({
-            "command":"atlas inspect-db",
+            "command":"atlas inspect db",
             "schema_version": schema_version,
             "indexes": indexes,
             "gene_count": count,
@@ -383,15 +395,155 @@ pub(super) struct ExplainQueryArgs {
     pub(super) allow_full_scan: bool,
 }
 
+pub(super) fn run_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), String> {
+    let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
+    let req = build_query_request(args)?;
+    let query_class = classify_query(&req);
+    let cost_units = crate::app::query::estimate_work_units(&req);
+    let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
+        .map_err(|e| e.to_string())?;
+    output::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas query run",
+            "query_class": format!("{query_class:?}"),
+            "estimated_cost_units": cost_units,
+            "rows": resp.rows,
+            "next_cursor": resp.next_cursor,
+        }),
+    )?;
+    Ok(())
+}
+
 pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Result<(), String> {
-    let conn = Connection::open(args.db).map_err(|e| e.to_string())?;
+    let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
+    let req = build_query_request(args)?;
+    let query_class = classify_query(&req);
+    let cost_units = crate::app::query::estimate_work_units(&req);
+    let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
+        .map_err(|e| e.to_string())?;
+    output::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas query explain",
+            "query_class": format!("{query_class:?}"),
+            "estimated_cost_units": cost_units,
+            "plan": lines
+        }),
+    )?;
+    Ok(())
+}
+
+pub(super) fn inspect_dataset(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    output::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas inspect dataset",
+            "dataset": dataset.canonical_string(),
+            "paths": {
+                "manifest": paths.manifest,
+                "sqlite": paths.sqlite,
+                "derived_dir": paths.derived_dir,
+            },
+            "stats": manifest.stats,
+            "identity": manifest.identity,
+            "canonical_feature_counts": manifest.canonical_feature_counts,
+        }),
+    )?;
+    Ok(())
+}
+
+pub(super) fn export_query_rows(
+    args: ExplainQueryArgs,
+    out: PathBuf,
+    format: ExportFormat,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
+    let req = build_query_request(args)?;
+    let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
+        .map_err(|e| e.to_string())?;
+    if let Some(parent) = out.parent() {
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+    match format {
+        ExportFormat::Json => {
+            fs::write(&out, serde_json::to_vec_pretty(&resp.rows).map_err(|e| e.to_string())?)
+                .map_err(|e| e.to_string())?;
+        }
+        ExportFormat::Jsonl => {
+            let mut buf = String::new();
+            for row in &resp.rows {
+                buf.push_str(&serde_json::to_string(row).map_err(|e| e.to_string())?);
+                buf.push('\n');
+            }
+            fs::write(&out, buf).map_err(|e| e.to_string())?;
+        }
+        ExportFormat::Csv => {
+            let mut writer = csv::Writer::from_path(&out).map_err(|e| e.to_string())?;
+            writer
+                .write_record([
+                    "gene_id",
+                    "name",
+                    "seqid",
+                    "start",
+                    "end",
+                    "biotype",
+                    "transcript_count",
+                    "sequence_length",
+                ])
+                .map_err(|e| e.to_string())?;
+            for row in &resp.rows {
+                writer
+                    .write_record([
+                        row.gene_id.to_string(),
+                        row.name.clone().unwrap_or_default(),
+                        row.seqid.clone().unwrap_or_default(),
+                        row.start.map(|x| x.to_string()).unwrap_or_default(),
+                        row.end.map(|x| x.to_string()).unwrap_or_default(),
+                        row.biotype.clone().unwrap_or_default(),
+                        row.transcript_count.map(|x| x.to_string()).unwrap_or_default(),
+                        row.sequence_length.map(|x| x.to_string()).unwrap_or_default(),
+                    ])
+                    .map_err(|e| e.to_string())?;
+            }
+            writer.flush().map_err(|e| e.to_string())?;
+        }
+    }
+    output::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas export query",
+            "status":"ok",
+            "out": out,
+            "format": match format {
+                ExportFormat::Json => "json",
+                ExportFormat::Jsonl => "jsonl",
+                ExportFormat::Csv => "csv",
+            },
+            "rows": resp.rows.len()
+        }),
+    )?;
+    Ok(())
+}
+
+fn build_query_request(args: ExplainQueryArgs) -> Result<GeneQueryRequest, String> {
     let region_filter = if let Some(raw) = args.region {
-        let (seqid, span) = raw
-            .split_once(':')
-            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
-        let (start, end) = span
-            .split_once('-')
-            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
+        let (seqid, span) =
+            raw.split_once(':').ok_or_else(|| "region must be seqid:start-end".to_string())?;
+        let (start, end) =
+            span.split_once('-').ok_or_else(|| "region must be seqid:start-end".to_string())?;
         Some(RegionFilter {
             seqid: seqid.to_string(),
             start: start.parse::<u64>().map_err(|e| e.to_string())?,
@@ -400,8 +552,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
     } else {
         None
     };
-
-    let req = GeneQueryRequest {
+    Ok(GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
             gene_id: args.gene_id,
@@ -417,21 +568,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
         cursor: None,
         dataset_key: None,
         allow_full_scan: args.allow_full_scan,
-    };
-    let query_class = classify_query(&req);
-    let cost_units = crate::app::query::estimate_work_units(&req);
-    let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
-        .map_err(|e| e.to_string())?;
-    output::emit_ok(
-        output_mode,
-        json!({
-            "command":"atlas explain",
-            "query_class": format!("{query_class:?}"),
-            "estimated_cost_units": cost_units,
-            "plan": lines
-        }),
-    )?;
-    Ok(())
+    })
 }
 
 pub(super) fn smoke_dataset(
@@ -463,9 +600,7 @@ pub(super) fn smoke_dataset(
             .get("name")
             .and_then(Value::as_str)
             .ok_or_else(|| "golden query missing name".to_string())?;
-        let body = q
-            .get("query")
-            .ok_or_else(|| "golden query missing query object".to_string())?;
+        let body = q.get("query").ok_or_else(|| "golden query missing query object".to_string())?;
         let req = output::query_request_from_json(body)?;
         let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
@@ -481,11 +616,8 @@ pub(super) fn smoke_dataset(
 
     if write_snapshot {
         let payload = serde_json::json!({ "dataset": dataset, "queries": out });
-        fs::write(
-            snapshot_out,
-            serde_json::to_vec_pretty(&payload).map_err(|e| e.to_string())?,
-        )
-        .map_err(|e| e.to_string())?;
+        fs::write(snapshot_out, serde_json::to_vec_pretty(&payload).map_err(|e| e.to_string())?)
+            .map_err(|e| e.to_string())?;
     }
 
     output::emit_ok(
