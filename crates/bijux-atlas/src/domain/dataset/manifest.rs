@@ -124,6 +124,8 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub qc_report_path: String,
     #[serde(default)]
+    pub canonical_feature_summary_path: String,
+    #[serde(default)]
     pub source_gff3_filename: String,
     #[serde(default)]
     pub source_fasta_filename: String,
@@ -131,6 +133,14 @@ pub struct ArtifactManifest {
     pub source_fai_filename: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
+    #[serde(default)]
+    pub canonical_model_schema_version: u64,
+    #[serde(default)]
+    pub canonical_query_semantic_sha256: String,
+    #[serde(default)]
+    pub canonical_lineage_sha256: String,
+    #[serde(default, skip_serializing_if = "dataset_serde::map_is_empty")]
+    pub canonical_feature_counts: BTreeMap<String, u64>,
     #[serde(default, skip_serializing_if = "dataset_serde::map_is_empty")]
     pub contig_normalization_aliases: BTreeMap<String, String>,
     #[serde(
@@ -176,10 +186,15 @@ impl ArtifactManifest {
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
             qc_report_path: String::new(),
+            canonical_feature_summary_path: String::new(),
             source_gff3_filename: String::new(),
             source_fasta_filename: String::new(),
             source_fai_filename: String::new(),
             sharding_plan: ShardingPlan::None,
+            canonical_model_schema_version: 0,
+            canonical_query_semantic_sha256: String::new(),
+            canonical_lineage_sha256: String::new(),
+            canonical_feature_counts: BTreeMap::new(),
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
         };
@@ -251,6 +266,16 @@ impl ArtifactManifest {
             return Err(ValidationError(
                 "manifest artifact_hash must not be empty".to_string(),
             ));
+        }
+        if self.canonical_model_schema_version > 0 {
+            if self.canonical_query_semantic_sha256.trim().is_empty()
+                || self.canonical_lineage_sha256.trim().is_empty()
+            {
+                return Err(ValidationError(
+                    "canonical hashes are required when canonical_model_schema_version is set"
+                        .to_string(),
+                ));
+            }
         }
         if self.db_hash != self.checksums.sqlite_sha256 {
             return Err(ValidationError(
