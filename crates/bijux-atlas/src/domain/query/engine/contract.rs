@@ -85,5 +85,6 @@ fn predicate_label(predicate: &Predicate) -> &'static str {
         Predicate::NamePrefix(_) => "name_prefix",
         Predicate::Biotype(_) => "biotype",
         Predicate::Region { .. } => "region",
+        Predicate::Strand(_) => "strand",
     }
 }

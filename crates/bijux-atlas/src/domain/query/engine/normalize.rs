@@ -44,5 +44,6 @@ fn predicate_sort_key(predicate: &Predicate) -> String {
             end,
             semantics,
         } => format!("4:{seqid}:{start}:{end}:{semantics:?}"),
+        Predicate::Strand(v) => format!("5:{v:?}"),
     }
 }

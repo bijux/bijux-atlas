@@ -186,6 +186,18 @@ pub(super) fn build_dataset_query(
             json!({}),
         ));
     }
+    if matches!(
+        parsed.strand,
+        Some(crate::contracts::api::params::StrandMode::Plus)
+            | Some(crate::contracts::api::params::StrandMode::Minus)
+            | Some(crate::contracts::api::params::StrandMode::Unknown)
+    ) {
+        return Err(super::handlers::error_json(
+            ApiErrorCode::InvalidQueryParameter,
+            "strand filter is explicit but unsupported for current dataset schema",
+            json!({"allowed": "omit strand or use strand=any"}),
+        ));
+    }
     if let Some(sort) = parsed.sort {
         match sort {
             SortKey::GeneIdAsc => {}
@@ -223,6 +235,20 @@ pub(super) fn build_dataset_query(
                     IntervalSemantics::BoundaryTouch
                 }
                 _ => IntervalSemantics::Overlap,
+            },
+            strand: match parsed.strand {
+                Some(crate::contracts::api::params::StrandMode::Any) | None => {
+                    crate::domain::query::StrandMode::Any
+                }
+                Some(crate::contracts::api::params::StrandMode::Plus) => {
+                    crate::domain::query::StrandMode::Plus
+                }
+                Some(crate::contracts::api::params::StrandMode::Minus) => {
+                    crate::domain::query::StrandMode::Minus
+                }
+                Some(crate::contracts::api::params::StrandMode::Unknown) => {
+                    crate::domain::query::StrandMode::Unknown
+                }
             },
         },
         limit: parsed.limit,

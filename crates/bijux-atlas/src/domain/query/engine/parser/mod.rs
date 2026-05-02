@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::filters::{GeneQueryRequest, IntervalSemantics, QuerySort};
+use super::filters::{GeneQueryRequest, IntervalSemantics, QuerySort, StrandMode};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -15,6 +15,7 @@ pub enum Predicate {
         end: u64,
         semantics: IntervalSemantics,
     },
+    Strand(StrandMode),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -81,6 +82,9 @@ pub fn parse_gene_query(req: &GeneQueryRequest) -> Result<GeneQueryAst, ParseErr
             end: v.end,
             semantics: req.filter.interval,
         });
+    }
+    if req.filter.strand != StrandMode::Any {
+        predicates.push(Predicate::Strand(req.filter.strand));
     }
 
     let sort_key = match req.filter.sort {

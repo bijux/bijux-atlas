@@ -42,6 +42,26 @@ pub enum IntervalMode {
     BoundaryTouch,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StrandMode {
+    Any,
+    Plus,
+    Minus,
+    Unknown,
+}
+
+impl StrandMode {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "any" => Some(Self::Any),
+            "plus" => Some(Self::Plus),
+            "minus" => Some(Self::Minus),
+            "unknown" => Some(Self::Unknown),
+            _ => None,
+        }
+    }
+}
+
 impl IntervalMode {
     fn parse(raw: &str) -> Option<Self> {
         match raw {
@@ -81,6 +101,7 @@ pub struct ListGenesParams {
     pub sort: Option<SortKey>,
     pub include: Option<Vec<IncludeField>>,
     pub interval_mode: Option<IntervalMode>,
+    pub strand: Option<StrandMode>,
     pub pretty: bool,
 }
 
@@ -150,6 +171,14 @@ pub fn parse_list_genes_params_with_limit(
         Some(IntervalMode::parse(raw_interval_mode).ok_or_else(|| {
             ApiError::invalid_param("interval_mode", "allowed: overlap,containment,boundary_touch")
         })?)
+    } else {
+        None
+    };
+    let strand = if let Some(raw_strand) = query.get("strand") {
+        Some(
+            StrandMode::parse(raw_strand)
+                .ok_or_else(|| ApiError::invalid_param("strand", "allowed: any,plus,minus,unknown"))?,
+        )
     } else {
         None
     };
@@ -232,6 +261,7 @@ pub fn parse_list_genes_params_with_limit(
         max_transcripts,
         sort,
         interval_mode,
+        strand,
         include,
         pretty: query
             .get("pretty")
@@ -335,7 +365,7 @@ fn parse_u64_opt(
 }
 
 fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiError> {
-    const ALLOWED_PARAMS: [&str; 20] = [
+    const ALLOWED_PARAMS: [&str; 21] = [
         "release",
         "species",
         "assembly",
@@ -353,6 +383,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
         "include",
         "sort",
         "interval_mode",
+        "strand",
         "pretty",
         "explain",
         "fields",
@@ -369,7 +400,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
     Err(ApiError::invalid_param(
         "filter",
         &format!(
-            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort",
+            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort,interval_mode,strand",
             unknown.join(",")
         ),
     ))

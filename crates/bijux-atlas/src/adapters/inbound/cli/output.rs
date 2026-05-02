@@ -4,6 +4,7 @@ use super::OutputMode;
 use crate::domain::canonical;
 use crate::domain::query::{
     GeneFields, GeneFilter, GeneQueryRequest, IntervalSemantics, QuerySort, RegionFilter,
+    StrandMode,
 };
 use serde_json::{json, Value};
 use std::path::PathBuf;
@@ -109,6 +110,7 @@ pub(crate) fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, Str
             region,
             sort: QuerySort::Auto,
             interval: IntervalSemantics::Overlap,
+            strand: StrandMode::Any,
         },
         limit,
         cursor: None,

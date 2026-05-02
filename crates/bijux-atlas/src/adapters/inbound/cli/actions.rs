@@ -3,7 +3,7 @@
 use super::ingest_inputs::resolve_verify_and_lock_inputs;
 use super::operations;
 use super::*;
-use crate::domain::query::{IntervalSemantics, QuerySort};
+use crate::domain::query::{IntervalSemantics, QuerySort, StrandMode};
 
 use std::path::PathBuf;
 
@@ -411,6 +411,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
             region: region_filter,
             sort: QuerySort::Auto,
             interval: IntervalSemantics::Overlap,
+            strand: StrandMode::Any,
         },
         limit: args.limit,
         cursor: None,

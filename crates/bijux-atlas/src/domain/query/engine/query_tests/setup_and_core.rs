@@ -597,3 +597,22 @@ fn region_estimated_rows_budget_rejects_large_scans() {
     assert_eq!(err.code, QueryErrorCode::Validation);
     assert!(err.message.contains("estimated region rows"));
 }
+
+#[test]
+fn strand_filter_is_explicitly_rejected_until_schema_support_exists() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            strand: StrandMode::Plus,
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    let err = query_genes(&conn, &req, &limits(), b"s").expect_err("strand rejected");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("strand-aware filtering"));
+}

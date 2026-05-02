@@ -138,6 +138,20 @@ fn request_validation_sort_contract_is_strict() {
 }
 
 #[test]
+fn request_validation_strand_contract_is_strict() {
+    let mut q = base_query();
+    q.insert("strand".to_string(), "any".to_string());
+    parse_list_genes_params(&q).expect("strand any parsed");
+
+    q.insert("strand".to_string(), "plus".to_string());
+    parse_list_genes_params(&q).expect("strand plus parsed");
+
+    q.insert("strand".to_string(), "invalid".to_string());
+    let err = parse_list_genes_params(&q).expect_err("invalid strand");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
 fn request_validation_filter_parsing_is_order_independent() {
     let mut q1 = base_query();
     q1.insert("gene_id".to_string(), "ENSG1".to_string());
