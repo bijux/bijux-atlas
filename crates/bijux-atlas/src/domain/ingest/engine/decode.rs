@@ -11,6 +11,7 @@ use super::gff3::{
 };
 use super::job::IngestJob;
 use super::{IngestError, IngestOptions};
+use crate::domain::query::canonical_contig_label;
 
 pub struct DecodedIngest {
     pub contig_stats: BTreeMap<String, ContigStats>,
@@ -63,6 +64,7 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
     validate_sequence_region_conflicts(&sequence_regions)?;
     validate_sequence_regions_against_fai(&sequence_regions, &contig_lengths)?;
     let records = parse_gff3_records(&job.inputs.gff3_path)?;
+    validate_scientific_reference_coherence(&records, opts)?;
     validate_gff3_reference_names(&records, &contig_lengths)?;
     let mut extract = extract_gene_rows(records.clone(), &contig_lengths, opts)?;
     apply_deterministic_ordering(&mut extract);
@@ -74,6 +76,49 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
         canonical_model: canonical.model,
         canonical_query_semantic_payload: canonical.query_semantic_payload,
     })
+}
+
+fn validate_scientific_reference_coherence(
+    records: &[super::gff3::Gff3Record],
+    opts: &IngestOptions,
+) -> Result<(), IngestError> {
+    let mut core_sources: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    let mut core_normalized: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    for rec in records {
+        let label = canonical_contig_label(&rec.seqid);
+        let is_core = label.parse::<u64>().is_ok() || matches!(label.as_str(), "x" | "y" | "mitochondrial");
+        if !is_core {
+            continue;
+        }
+        core_sources
+            .entry(label.clone())
+            .or_default()
+            .insert(rec.seqid.clone());
+        core_normalized
+            .entry(label)
+            .or_default()
+            .insert(opts.seqid_policy.normalize(&rec.seqid));
+    }
+    let mut incoherent = Vec::new();
+    for (label, raw_set) in core_sources {
+        if raw_set.len() <= 1 {
+            continue;
+        }
+        let normalized_set = core_normalized.get(&label).cloned().unwrap_or_default();
+        if normalized_set.len() > 1 {
+            incoherent.push(format!(
+                "{}=>raw={:?}, normalized={:?}",
+                label, raw_set, normalized_set
+            ));
+        }
+    }
+    if !incoherent.is_empty() {
+        return Err(IngestError(format!(
+            "SCIENTIFIC_INCOHERENT_SOURCE_COMBINATION: inconsistent contig naming families detected. Resolve with explicit seqid aliases or corrected sources. details={:?}",
+            incoherent
+        )));
+    }
+    Ok(())
 }
 
 fn validate_sequence_regions_against_fai(
