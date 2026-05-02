@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::domain::dataset::ShardCatalog;
 pub use crate::domain::query::{
     classify_query, explain_query_plan, query_genes, BiotypePolicy, DuplicateGeneIdPolicy,
-    DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, GeneFields, GeneFilter,
-    GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter, SeqidNormalizationPolicy,
-    TranscriptIdPolicy, TranscriptTypePolicy, UnknownFeaturePolicy,
+    DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, GeneFields, GeneFilter, GeneNamePolicy,
+    GeneQueryRequest, IntervalSemantics, QueryLimits, QuerySort, RegionFilter,
+    SeqidNormalizationPolicy, StrandMode, TranscriptIdPolicy, TranscriptTypePolicy,
+    UnknownFeaturePolicy,
 };
-use crate::domain::dataset::ShardCatalog;
 use rusqlite::Connection;
 
 #[must_use]
@@ -44,9 +45,6 @@ pub fn query_genes_fanout_execute(
         .map_err(|e| e.to_string())
 }
 
-pub fn select_shards(
-    req: &GeneQueryRequest,
-    catalog: &ShardCatalog,
-) -> Vec<String> {
+pub fn select_shards(req: &GeneQueryRequest, catalog: &ShardCatalog) -> Vec<String> {
     crate::domain::query::select_shards_for_request(req, catalog)
 }
