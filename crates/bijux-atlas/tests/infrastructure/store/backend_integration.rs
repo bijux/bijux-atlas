@@ -3,7 +3,9 @@
 #[cfg(feature = "backend-s3")]
 use bijux_atlas::adapters::outbound::store::HttpReadonlyStore;
 use bijux_atlas::adapters::outbound::store::{ArtifactStore, LocalFsStore};
-use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas::domain::dataset::{
+    ArtifactChecksums, ArtifactManifest, DatasetId, DatasetLifecycleTransition, ManifestStats,
+};
 use bijux_atlas::domain::sha256_hex;
 use tempfile::tempdir;
 
@@ -61,6 +63,20 @@ fn local_backend_roundtrip_is_hermetic() {
         ds.release, ds.species, ds.assembly
     ));
     assert!(marker.exists(), "immutability marker missing");
+    let lifecycle_state = root.path().join(format!(
+        "release={}/species={}/assembly={}/derived/lifecycle.state.json",
+        ds.release, ds.species, ds.assembly
+    ));
+    assert!(lifecycle_state.exists(), "lifecycle state file missing");
+    let transitions = root.path().join(format!(
+        "release={}/species={}/assembly={}/derived/lifecycle.transitions.json",
+        ds.release, ds.species, ds.assembly
+    ));
+    let transitions_raw = std::fs::read(&transitions).expect("lifecycle transitions");
+    let entries: Vec<DatasetLifecycleTransition> =
+        serde_json::from_slice(&transitions_raw).expect("decode lifecycle transitions");
+    assert_eq!(entries.len(), 1, "one publish transition expected");
+    entries[0].validate().expect("transition validate");
 }
 
 #[test]
