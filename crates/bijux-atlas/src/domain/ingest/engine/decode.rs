@@ -3,6 +3,7 @@
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
+use super::canonical_model::{build_canonical_model, CanonicalModel};
 use super::extract::{extract_gene_rows, ExtractResult};
 use super::fai::{self, ContigStats};
 use super::gff3::{
@@ -14,6 +15,8 @@ use super::{IngestError, IngestOptions};
 pub struct DecodedIngest {
     pub contig_stats: BTreeMap<String, ContigStats>,
     pub extract: ExtractResult,
+    pub canonical_model: CanonicalModel,
+    pub canonical_query_semantic_payload: serde_json::Value,
 }
 
 pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestError> {
@@ -61,12 +64,15 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
     validate_sequence_regions_against_fai(&sequence_regions, &contig_lengths)?;
     let records = parse_gff3_records(&job.inputs.gff3_path)?;
     validate_gff3_reference_names(&records, &contig_lengths)?;
-    let mut extract = extract_gene_rows(records, &contig_lengths, opts)?;
+    let mut extract = extract_gene_rows(records.clone(), &contig_lengths, opts)?;
     apply_deterministic_ordering(&mut extract);
+    let canonical = build_canonical_model(&records, &extract)?;
 
     Ok(DecodedIngest {
         contig_stats,
         extract,
+        canonical_model: canonical.model,
+        canonical_query_semantic_payload: canonical.query_semantic_payload,
     })
 }
 
