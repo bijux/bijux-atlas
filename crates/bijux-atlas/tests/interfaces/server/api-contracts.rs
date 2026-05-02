@@ -198,6 +198,13 @@ async fn error_contract_and_etag_behaviors() {
     )
     .await;
     assert_eq!(status, 200);
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/genes?dataset=110/homo_sapiens/GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
     let (status, headers, _) = send_raw(
         addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",

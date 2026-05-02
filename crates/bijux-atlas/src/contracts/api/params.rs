@@ -85,6 +85,7 @@ impl SortKey {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListGenesParams {
+    pub dataset: Option<String>,
     pub release: String,
     pub species: String,
     pub assembly: String,
@@ -123,18 +124,45 @@ pub fn parse_list_genes_params_with_limit(
             "unsupported; use include=coords,biotype,counts,length",
         ));
     }
-    let release = query
-        .get("release")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
-    let species = query
-        .get("species")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
-    let assembly = query
-        .get("assembly")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+    let dataset_selector = query.get("dataset").cloned();
+    let selector_dims = parse_dataset_selector(dataset_selector.as_deref())?;
+    let (release, species, assembly) = if let Some((sel_release, sel_species, sel_assembly)) =
+        selector_dims
+    {
+        let release = query
+            .get("release")
+            .cloned()
+            .unwrap_or_else(|| sel_release.clone());
+        let species = query
+            .get("species")
+            .cloned()
+            .unwrap_or_else(|| sel_species.clone());
+        let assembly = query
+            .get("assembly")
+            .cloned()
+            .unwrap_or_else(|| sel_assembly.clone());
+        if release != sel_release || species != sel_species || assembly != sel_assembly {
+            return Err(ApiError::invalid_param(
+                "dataset",
+                "dataset selector conflicts with release/species/assembly",
+            ));
+        }
+        (release, species, assembly)
+    } else {
+        let release = query
+            .get("release")
+            .cloned()
+            .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
+        let species = query
+            .get("species")
+            .cloned()
+            .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
+        let assembly = query
+            .get("assembly")
+            .cloned()
+            .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+        (release, species, assembly)
+    };
 
     let limit = if let Some(raw) = query.get("limit") {
         let value = raw
@@ -255,6 +283,7 @@ pub fn parse_list_genes_params_with_limit(
     }
 
     Ok(ListGenesParams {
+        dataset: dataset_selector,
         release,
         species,
         assembly,
@@ -374,7 +403,8 @@ fn parse_u64_opt(
 }
 
 fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiError> {
-    const ALLOWED_PARAMS: [&str; 21] = [
+    const ALLOWED_PARAMS: [&str; 22] = [
+        "dataset",
         "release",
         "species",
         "assembly",
@@ -409,7 +439,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
     Err(ApiError::invalid_param(
         "filter",
         &format!(
-            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort,interval_mode,strand",
+            "unknown filter(s): {}; allowed: dataset,gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort,interval_mode,strand",
             unknown.join(",")
         ),
     ))
@@ -469,4 +499,27 @@ fn validate_filter_combinations(
         }
     }
     Ok(())
+}
+
+fn parse_dataset_selector(
+    raw: Option<&str>,
+) -> Result<Option<(String, String, String)>, ApiError> {
+    let Some(raw) = raw else {
+        return Ok(None);
+    };
+    let mut parts = raw.split('/');
+    let release = parts.next().unwrap_or_default();
+    let species = parts.next().unwrap_or_default();
+    let assembly = parts.next().unwrap_or_default();
+    if parts.next().is_some() || release.is_empty() || species.is_empty() || assembly.is_empty() {
+        return Err(ApiError::invalid_param(
+            "dataset",
+            "dataset must be release/species/assembly",
+        ));
+    }
+    Ok(Some((
+        release.to_string(),
+        species.to_string(),
+        assembly.to_string(),
+    )))
 }

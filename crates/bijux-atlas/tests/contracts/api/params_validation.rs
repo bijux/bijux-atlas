@@ -211,6 +211,24 @@ fn request_validation_requires_explicit_dataset_dimensions() {
 }
 
 #[test]
+fn request_validation_accepts_canonical_dataset_selector() {
+    let mut q = BTreeMap::new();
+    q.insert("dataset".to_string(), "110/homo_sapiens/GRCh38".to_string());
+    let parsed = parse_list_genes_params(&q).expect("dataset selector parse");
+    assert_eq!(parsed.release, "110");
+    assert_eq!(parsed.species, "homo_sapiens");
+    assert_eq!(parsed.assembly, "GRCh38");
+}
+
+#[test]
+fn request_validation_rejects_conflicting_dataset_selector() {
+    let mut q = base_query();
+    q.insert("dataset".to_string(), "111/homo_sapiens/GRCh38".to_string());
+    let err = parse_list_genes_params(&q).expect_err("dataset conflict");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
 fn request_validation_pretty_flag_contract() {
     let mut q = base_query();
     q.insert("pretty".to_string(), "true".to_string());
