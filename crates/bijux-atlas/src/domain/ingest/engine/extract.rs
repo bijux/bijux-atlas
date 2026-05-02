@@ -97,6 +97,16 @@ pub fn extract_gene_rows(
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
     let mut child_parent_refs: Vec<String> = Vec::new();
     let mut normalized_seqid_sources: HashMap<String, HashSet<String>> = HashMap::new();
+    let gene_feature_ids: HashSet<String> = records
+        .iter()
+        .filter(|rec| rec.feature_type == "gene")
+        .filter_map(|rec| rec.attrs.get("ID").cloned())
+        .collect();
+    let transcript_feature_ids: HashSet<String> = records
+        .iter()
+        .filter(|rec| opts.transcript_type_policy.accepts(&rec.feature_type))
+        .filter_map(|rec| opts.transcript_id_policy.resolve(&rec.attrs))
+        .collect();
     let parent_cycles = detect_parent_cycles(&records);
     if !parent_cycles.is_empty() {
         anomaly.parent_cycles = parent_cycles;
@@ -293,6 +303,21 @@ pub fn extract_gene_rows(
                     transcript_parents.push((p, ParentErrorClass::MultipleParents));
                 }
             } else if let Some(p) = parents.into_iter().next() {
+                if !gene_feature_ids.contains(&p) {
+                    anomaly.missing_parents.push(format!("{tx_id}:{p}"));
+                    anomaly.rejections.push(IngestRejection::new(
+                        rec.line,
+                        "GFF3_PARENT_NOT_GENE".to_string(),
+                        rec.raw_line.clone(),
+                    ));
+                    if matches!(opts.strictness, StrictnessMode::Strict) {
+                        return Err(IngestError(format!(
+                            "GFF3_PARENT_NOT_GENE line={} transcript={} parent={} expected_gene_id=true",
+                            rec.line, tx_id, p
+                        )));
+                    }
+                    continue;
+                }
                 transcript_parents.push((p.clone(), ParentErrorClass::MissingReferencedParent));
                 transcript_rows_pending.push(TranscriptRecord {
                     transcript_id: tx_id,
@@ -354,6 +379,21 @@ pub fn extract_gene_rows(
                 ));
             }
             for tx_id in parents {
+                if !transcript_feature_ids.contains(&tx_id) {
+                    anomaly.missing_transcript_parents.push(tx_id.clone());
+                    anomaly.rejections.push(IngestRejection::new(
+                        rec.line,
+                        "GFF3_PARENT_NOT_TRANSCRIPT".to_string(),
+                        rec.raw_line.clone(),
+                    ));
+                    if matches!(opts.strictness, StrictnessMode::Strict) {
+                        return Err(IngestError(format!(
+                            "GFF3_PARENT_NOT_TRANSCRIPT line={} feature_type={} parent={} expected_transcript_id=true",
+                            rec.line, rec.feature_type, tx_id
+                        )));
+                    }
+                    continue;
+                }
                 child_parent_refs.push(tx_id.clone());
                 if rec.feature_type == "exon" {
                     let exon_id = rec

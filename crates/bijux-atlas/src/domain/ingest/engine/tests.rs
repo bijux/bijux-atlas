@@ -198,6 +198,44 @@ fn strict_mode_rejects_missing_parent() {
 }
 
 #[test]
+fn strict_mode_rejects_transcript_parent_that_is_not_gene() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    let gff = root.path().join("bad-parent.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=gene1\nchr1\tsrc\tmRNA\t1\t20\t.\t+\t.\tID=tx1;Parent=not_a_gene\n",
+    )
+    .expect("write gff");
+    o.gff3_path = gff;
+    let err = ingest_dataset(&o).expect_err("bad transcript parent must fail");
+    assert!(
+        err.to_string().contains("GFF3_PARENT_NOT_GENE"),
+        "unexpected error: {}",
+        err
+    );
+}
+
+#[test]
+fn strict_mode_rejects_exon_parent_that_is_not_transcript() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    let gff = root.path().join("bad-child-parent.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=gene1\nchr1\tsrc\texon\t1\t20\t.\t+\t.\tID=ex1;Parent=missing_tx\n",
+    )
+    .expect("write gff");
+    o.gff3_path = gff;
+    let err = ingest_dataset(&o).expect_err("bad child parent must fail");
+    assert!(
+        err.to_string().contains("GFF3_PARENT_NOT_TRANSCRIPT"),
+        "unexpected error: {}",
+        err
+    );
+}
+
+#[test]
 fn report_only_collects_anomalies() {
     let root = tempdir().expect("tempdir");
     let mut o = opts(root.path(), StrictnessMode::ReportOnly);
