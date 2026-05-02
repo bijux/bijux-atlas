@@ -153,6 +153,12 @@ pub fn build_and_write_manifest_and_reports(
         extract,
         total_transcripts,
         Some(manifest.dataset_signature_sha256.clone()),
+        Some(&json!({
+            "schema_version": canonical_model_schema_version,
+            "query_semantic_sha256": canonical_query_semantic_sha256,
+            "lineage_sensitive_sha256": canonical_lineage_sha256,
+            "feature_counts": canonical_feature_counts
+        })),
         false,
     )?;
     let qc_bytes =
@@ -244,6 +250,7 @@ pub fn write_qc_and_anomaly_reports_only(
         extract,
         total_transcripts,
         Some(dataset_signature_merkle(extract)?),
+        None,
         true,
     )?;
     let qc_bytes =
@@ -264,6 +271,7 @@ fn build_qc_report_json(
     extract: &ExtractResult,
     total_transcripts: u64,
     manifest_signature: Option<String>,
+    canonical_summary: Option<&serde_json::Value>,
     report_only: bool,
 ) -> Result<serde_json::Value, IngestError> {
     let class_counts = extract.anomaly.anomaly_class_counts();
@@ -350,6 +358,7 @@ fn build_qc_report_json(
         },
         "severity_items": class_items,
         "anomaly_classes": class_counts,
+        "canonical": canonical_summary.cloned().unwrap_or_else(|| json!({})),
     }))
 }
 
