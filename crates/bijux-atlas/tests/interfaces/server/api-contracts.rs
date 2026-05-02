@@ -501,6 +501,52 @@ async fn overload_health_endpoint_reports_state() {
     assert!(status == 200 || status == 503);
     let json: serde_json::Value = serde_json::from_str(&body).expect("json");
     assert!(json.get("overloaded").is_some());
+    assert!(json.get("ready").is_some());
+    assert!(json.get("live").is_some());
+    assert!(json.get("draining").is_some());
+}
+
+#[tokio::test]
+async fn health_readiness_liveness_contract_is_explicit_and_consistent() {
+    let tmp = tempfile::tempdir().expect("tmp");
+    let store = Arc::new(FakeStore::default());
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        readiness_requires_catalog: true,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(
+        cache,
+        api,
+        bijux_atlas::domain::query::QueryLimits::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/healthz", &[]).await;
+    assert_eq!(status, 200);
+    assert_eq!(body, "ok");
+
+    let (status, _, body) = send_raw(addr, "/readyz", &[]).await;
+    assert_eq!(status, 503);
+    assert_eq!(body, "not-ready");
+
+    let (status, _, body) = send_raw(addr, "/healthz/overload", &[]).await;
+    assert!(status == 200 || status == 503);
+    let overload: Value = serde_json::from_str(&body).expect("overload json");
+    assert_eq!(overload["live"], true);
+    assert_eq!(overload["ready"], false);
+    assert_eq!(overload["draining"], false);
 }
 
 #[tokio::test]

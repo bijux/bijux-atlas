@@ -104,6 +104,14 @@ pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> im
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    let live = state.accepting_requests.load(Ordering::Relaxed);
+    let catalog_present = state.cache.current_catalog().await.is_some();
+    let ready = state.ready.load(Ordering::Relaxed)
+        && readyz_catalog_ready(
+            state.api.readiness_requires_catalog,
+            state.cache.cached_only_mode(),
+            catalog_present,
+        );
     let status = if overloaded {
         StatusCode::SERVICE_UNAVAILABLE
     } else {
@@ -113,7 +121,9 @@ pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> im
         status,
         Json(json!({
             "overloaded": overloaded,
-            "draining": !state.accepting_requests.load(Ordering::Relaxed),
+            "ready": ready,
+            "live": live,
+            "draining": !live,
             "cached_only_mode": state.cache.cached_only_mode(),
             "emergency_breaker": state.api.emergency_global_breaker
         })),
