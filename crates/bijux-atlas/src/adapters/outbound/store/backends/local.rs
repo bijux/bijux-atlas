@@ -3,7 +3,8 @@
 use super::super::catalog::validate_catalog_strict;
 use super::super::manifest::ManifestLock;
 use super::super::paths::{
-    dataset_artifact_paths, manifest_lock_path, publish_lock_path, CATALOG_FILE,
+    dataset_artifact_paths, immutability_marker_path, manifest_lock_path, publish_lock_path,
+    CATALOG_FILE,
 };
 use crate::app::ports::store::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
@@ -125,6 +126,20 @@ impl ArtifactStore for LocalFsStore {
             manifest_lock_path(Path::new(&self.root), dataset),
         )
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+        let marker_path = immutability_marker_path(Path::new(&self.root), dataset);
+        let marker_tmp = paths.derived_dir.join("immutable.release.json.tmp");
+        let marker = serde_json::json!({
+            "schema_version": 1,
+            "immutability": "published",
+            "dataset": dataset,
+            "manifest_sha256": expected_manifest_sha256,
+            "sqlite_sha256": expected_sqlite_sha256
+        });
+        let marker_bytes = crate::domain::canonical::stable_json_bytes(&marker)
+            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        write_and_sync(&marker_tmp, &marker_bytes)?;
+        fs::rename(&marker_tmp, marker_path)
+            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
 
         sync_dir(&paths.derived_dir)?;
 
@@ -162,7 +177,8 @@ impl ArtifactStore for LocalFsStore {
 
 fn enforce_dataset_immutability(root: &Path, dataset: &DatasetId) -> Result<(), StoreError> {
     let paths = dataset_artifact_paths(root, dataset);
-    if paths.manifest.exists() || paths.sqlite.exists() {
+    let marker = immutability_marker_path(root, dataset);
+    if marker.exists() || paths.manifest.exists() || paths.sqlite.exists() {
         return Err(StoreError::new(
             StoreErrorCode::Conflict,
             "dataset already published and immutable; existing artifacts must not be overwritten",

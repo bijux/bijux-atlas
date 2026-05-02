@@ -56,6 +56,11 @@ fn local_backend_roundtrip_is_hermetic() {
 
     let loaded = store.get_manifest(&ds).expect("manifest");
     assert_eq!(loaded.dataset, ds);
+    let marker = root.path().join(format!(
+        "release={}/species={}/assembly={}/derived/immutable.release.json",
+        ds.release, ds.species, ds.assembly
+    ));
+    assert!(marker.exists(), "immutability marker missing");
 }
 
 #[test]
