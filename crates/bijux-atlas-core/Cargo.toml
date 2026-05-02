@@ -1,0 +1,13 @@
+[package]
+name = "bijux-atlas-core"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Runtime-independent Atlas core primitives and invariants"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["bioinformatics", "genomics", "core", "invariants", "hash"]
+
+[dependencies]
+sha2 = "0.11"
