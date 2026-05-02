@@ -12,6 +12,8 @@ mod async_runtime_contract;
 mod download_then_serve;
 #[path = "server/endpoints_contract.rs"]
 mod endpoints_contract;
+#[path = "server/core_route_contracts.rs"]
+mod core_route_contracts;
 #[path = "server/import_boundary_guardrails.rs"]
 mod import_boundary_guardrails;
 #[path = "server/key_endpoints_golden.rs"]
