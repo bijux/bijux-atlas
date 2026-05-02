@@ -180,6 +180,9 @@ pub fn write_ingest_outputs(
         &decoded.extract.anomaly,
         &decoded.extract.contig_distribution,
         &decoded.extract.biotype_distribution,
+        &decoded.extract.contig_class_distribution,
+        &decoded.extract.seqid_normalization_traces,
+        &decoded.extract.biotype_source_counts,
     )?;
     manifest.evidence_bundle_sha256 = evidence_bundle_sha256;
     let manifest_bytes =
@@ -240,18 +243,22 @@ fn write_source_facts(
         },
         "normalization": {
             "seqid_aliases": job.options.seqid_policy.aliases,
-            "reject_normalized_seqid_collisions": job.options.reject_normalized_seqid_collisions
+            "reject_normalized_seqid_collisions": job.options.reject_normalized_seqid_collisions,
+            "seqid_traces": decoded.extract.seqid_normalization_traces
         },
         "contigs": decoded.contig_stats,
         "feature_distribution": {
             "contigs": decoded.extract.contig_distribution,
-            "biotypes": decoded.extract.biotype_distribution
+            "contig_classes": decoded.extract.contig_class_distribution,
+            "biotypes": decoded.extract.biotype_distribution,
+            "biotype_source_keys": decoded.extract.biotype_source_counts
         },
         "canonical_model": {
             "schema_version": decoded.canonical_model.schema_version,
             "hashes": decoded.canonical_model.hashes,
             "summary": decoded.canonical_model.summary,
-        }
+        },
+        "scientific_ambiguities": decoded.extract.anomaly.scientific_ambiguities,
     });
     let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
     fs::write(path, bytes).map_err(|e| IngestError(e.to_string()))
@@ -264,6 +271,12 @@ fn write_evidence_sidecars(
     anomaly: &IngestAnomalyReport,
     contig_distribution: &std::collections::BTreeMap<String, u64>,
     biotype_distribution: &std::collections::BTreeMap<String, u64>,
+    contig_class_distribution: &std::collections::BTreeMap<String, u64>,
+    seqid_normalization_traces: &std::collections::BTreeMap<
+        String,
+        crate::domain::query::SeqidNormalizationTrace,
+    >,
+    biotype_source_counts: &std::collections::BTreeMap<String, u64>,
 ) -> Result<String, IngestError> {
     let anomaly_counts = anomaly.anomaly_class_counts();
     let mut severity_summary = std::collections::BTreeMap::from([
@@ -320,12 +333,31 @@ fn write_evidence_sidecars(
         "stats": manifest.stats,
         "canonical_feature_counts": manifest.canonical_feature_counts,
         "contig_distribution": contig_distribution,
+        "contig_class_distribution": contig_class_distribution,
         "biotype_distribution": biotype_distribution,
+        "biotype_source_counts": biotype_source_counts,
         "rejected_record_count": anomaly.rejections.len(),
     });
     let dataset_stats_bytes =
         canonical::stable_json_bytes(&dataset_stats).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.dataset_stats, dataset_stats_bytes).map_err(|e| IngestError(e.to_string()))?;
+
+    let scientific_profile = json!({
+        "schema_version": 1,
+        "dataset": dataset,
+        "release_id": manifest.identity.release_id,
+        "coordinate_system": manifest.coordinate_system,
+        "reference_build_identity_sha256": manifest.reference_build_identity_sha256,
+        "contig_naming_style": manifest.contig_naming_style,
+        "scientific_prerequisites_status": manifest.scientific_prerequisites_status,
+        "contig_class_distribution": contig_class_distribution,
+        "seqid_normalization_traces": seqid_normalization_traces,
+        "scientific_ambiguities": anomaly.scientific_ambiguities,
+    });
+    let scientific_profile_bytes = canonical::stable_json_bytes(&scientific_profile)
+        .map_err(|e| IngestError(e.to_string()))?;
+    fs::write(&paths.scientific_profile, scientific_profile_bytes)
+        .map_err(|e| IngestError(e.to_string()))?;
 
     let mut inventory_items = Vec::new();
     for (role, path) in [
@@ -336,6 +368,7 @@ fn write_evidence_sidecars(
         ("source_facts", &paths.source_facts),
         ("build_metadata", &paths.build_metadata),
         ("dataset_stats", &paths.dataset_stats),
+        ("scientific_profile", &paths.scientific_profile),
         ("canonical_features", &paths.derived_dir.join("canonical_features.json")),
         ("canonical_summary", &paths.derived_dir.join("canonical_summary.json")),
         ("release_gene_index", &paths.release_gene_index),
@@ -388,6 +421,7 @@ fn write_evidence_sidecars(
         &paths.source_facts,
         &paths.build_metadata,
         &paths.dataset_stats,
+        &paths.scientific_profile,
         &paths.artifact_inventory,
     ] {
         if !path.exists() {
