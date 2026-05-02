@@ -30,7 +30,9 @@ mod dataset;
 
 #[cfg(test)]
 use dataset::validate_qc_thresholds;
-pub(crate) use dataset::{publish_dataset, validate_dataset, validate_ingest_qc};
+pub(crate) use dataset::{
+    publish_dataset, validate_dataset, validate_dataset_evidence, validate_ingest_qc,
+};
 #[cfg(test)]
 use gc::compute_gc_plan;
 

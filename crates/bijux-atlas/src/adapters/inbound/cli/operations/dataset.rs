@@ -82,6 +82,108 @@ pub(crate) fn validate_dataset(
     Ok(())
 }
 
+pub(crate) fn validate_dataset_evidence(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    manifest.validate_strict().map_err(|e| e.to_string())?;
+
+    for path in [
+        &paths.anomaly_report,
+        &paths.anomaly_summary,
+        &paths.qc_report,
+        &paths.source_facts,
+        &paths.build_metadata,
+        &paths.dataset_stats,
+        &paths.artifact_inventory,
+        &paths.evidence_bundle,
+    ] {
+        if !path.exists() {
+            return Err(format!("evidence artifact missing: {}", path.display()));
+        }
+    }
+
+    let bundle_raw = fs::read_to_string(&paths.evidence_bundle).map_err(|e| e.to_string())?;
+    let bundle_json: serde_json::Value =
+        serde_json::from_str(&bundle_raw).map_err(|e| e.to_string())?;
+    let files = bundle_json
+        .get("files")
+        .and_then(serde_json::Value::as_object)
+        .ok_or_else(|| "evidence bundle is missing files map".to_string())?;
+
+    let mut verified = std::collections::BTreeMap::<String, String>::new();
+    for rel in files.keys() {
+        let absolute = paths.dataset_root.join(rel);
+        let raw = fs::read(&absolute).map_err(|e| {
+            format!(
+                "evidence bundle references missing artifact {}: {e}",
+                absolute.display()
+            )
+        })?;
+        verified.insert(rel.to_string(), sha256_hex(&raw));
+    }
+    let payload = json!({
+        "schema_version": 1,
+        "dataset": dataset,
+        "release_id": manifest.identity.release_id,
+        "files": verified
+    });
+    let payload_bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+    let computed_bundle_sha256 = sha256_hex(&payload_bytes);
+    let declared_bundle_sha256 = bundle_json
+        .get("bundle_sha256")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "evidence bundle is missing bundle_sha256".to_string())?;
+    if manifest.evidence_bundle_sha256.trim().is_empty() {
+        return Err("manifest evidence_bundle_sha256 is empty".to_string());
+    }
+    if manifest.evidence_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "manifest evidence bundle hash mismatch: manifest={} bundle={}",
+            manifest.evidence_bundle_sha256, declared_bundle_sha256
+        ));
+    }
+    for (rel, declared_hash) in files {
+        let declared = declared_hash
+            .as_str()
+            .ok_or_else(|| format!("invalid declared hash for bundle artifact {rel}"))?;
+        let computed = verified
+            .get(rel)
+            .ok_or_else(|| format!("bundle artifact missing from verification map: {rel}"))?;
+        if declared != computed {
+            return Err(format!(
+                "artifact hash mismatch for {rel}: declared={} computed={}",
+                declared, computed
+            ));
+        }
+    }
+    if computed_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "evidence bundle hash mismatch: declared={} computed={}",
+            declared_bundle_sha256, computed_bundle_sha256
+        ));
+    }
+
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas dataset evidence-verify",
+            "status":"ok",
+            "dataset": dataset.canonical_string(),
+            "files_verified": verified.len(),
+            "bundle_sha256": computed_bundle_sha256
+        }),
+    )
+}
+
 fn validate_canonical_evidence(
     derived_dir: &Path,
     manifest: &ArtifactManifest,
