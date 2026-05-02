@@ -489,6 +489,50 @@ async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
 }
 
 #[tokio::test]
+async fn debug_routes_are_explicitly_no_store_and_noindex() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store.clone());
+
+    let app = build_router(AppState::new(mgr.clone()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, headers, _) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 404);
+    assert!(headers.contains("cache-control: no-store"));
+    assert!(headers.contains("pragma: no-cache"));
+    assert!(headers.contains("x-robots-tag: noindex, nofollow"));
+
+    let state = AppState::with_config(
+        mgr,
+        ApiConfig {
+            enable_admin_endpoints: true,
+            enable_debug_datasets: true,
+            ..ApiConfig::default()
+        },
+        Default::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, headers, _) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 200);
+    assert!(headers.contains("cache-control: no-store"));
+    assert!(headers.contains("pragma: no-cache"));
+    assert!(headers.contains("x-robots-tag: noindex, nofollow"));
+}
+
+#[tokio::test]
 async fn readiness_metrics_and_debug_gate() {
     let store = Arc::new(FakeStore::default());
     let tmp = tempdir().expect("tempdir");

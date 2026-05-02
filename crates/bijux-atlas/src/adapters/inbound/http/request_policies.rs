@@ -798,6 +798,24 @@ pub(crate) async fn provenance_headers_middleware(
     resp
 }
 
+pub(crate) async fn debug_route_hardening_middleware(
+    State(_state): State<AppState>,
+    req: Request<Body>,
+    next: Next,
+) -> Response {
+    let path = req.uri().path().to_string();
+    let mut resp = next.run(req).await;
+    if path.starts_with("/debug/") || path.starts_with("/v1/_debug/") {
+        resp.headers_mut()
+            .insert("cache-control", HeaderValue::from_static("no-store, max-age=0"));
+        resp.headers_mut()
+            .insert("pragma", HeaderValue::from_static("no-cache"));
+        resp.headers_mut()
+            .insert("x-robots-tag", HeaderValue::from_static("noindex, nofollow"));
+    }
+    resp
+}
+
 pub(crate) async fn resilience_middleware(
     State(state): State<AppState>,
     req: Request<Body>,
