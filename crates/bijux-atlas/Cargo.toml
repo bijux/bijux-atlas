@@ -36,6 +36,7 @@ serde.workspace = true
 bijux-atlas-core = { workspace = true }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
+csv = "1.4"
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
 rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
