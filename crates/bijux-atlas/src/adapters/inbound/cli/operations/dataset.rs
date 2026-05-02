@@ -103,6 +103,7 @@ pub(crate) fn validate_dataset_evidence(
         &paths.source_facts,
         &paths.build_metadata,
         &paths.dataset_stats,
+        &paths.scientific_profile,
         &paths.artifact_inventory,
         &paths.evidence_bundle,
     ] {
@@ -464,6 +465,23 @@ fn enforce_publish_gates(
             anomaly.missing_parents.len(),
             policy.publish_gates.max_missing_parents
         ));
+    }
+    if !anomaly.scientific_ambiguities.is_empty() {
+        return Err(format!(
+            "publish gate failed: scientific ambiguities present ({})",
+            anomaly.scientific_ambiguities.len()
+        ));
+    }
+    if manifest.scientific_prerequisites_status != "complete" {
+        return Err(format!(
+            "publish gate failed: scientific prerequisites under-specified ({})",
+            manifest.scientific_prerequisites_status
+        ));
+    }
+    if manifest.contig_naming_style == "mixed_chr_and_plain" {
+        return Err(
+            "publish gate failed: mixed chr-prefixed and plain core contig naming".to_string(),
+        );
     }
     let conn = rusqlite::Connection::open(paths.sqlite).map_err(|e| e.to_string())?;
     for idx in &policy.publish_gates.required_indexes {
