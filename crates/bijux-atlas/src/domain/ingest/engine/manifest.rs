@@ -249,56 +249,27 @@ fn build_qc_report_json(
     manifest_signature: Option<String>,
     report_only: bool,
 ) -> Result<serde_json::Value, IngestError> {
-    let warn_items = vec![
-        ("missing_parents", extract.anomaly.missing_parents.len()),
-        (
-            "missing_transcript_parents",
-            extract.anomaly.missing_transcript_parents.len(),
-        ),
-        (
-            "multiple_parent_transcripts",
-            extract.anomaly.multiple_parent_transcripts.len(),
-        ),
-        ("unknown_contigs", extract.anomaly.unknown_contigs.len()),
-        ("overlapping_ids", extract.anomaly.overlapping_ids.len()),
-        (
-            "duplicate_gene_ids",
-            extract.anomaly.duplicate_gene_ids.len(),
-        ),
-        (
-            "overlapping_gene_ids_across_contigs",
-            extract.anomaly.overlapping_gene_ids_across_contigs.len(),
-        ),
-        (
-            "orphan_transcripts",
-            extract.anomaly.orphan_transcripts.len(),
-        ),
-        ("parent_cycles", extract.anomaly.parent_cycles.len()),
-        (
-            "attribute_fallbacks",
-            extract.anomaly.attribute_fallbacks.len(),
-        ),
-        (
-            "unknown_feature_types",
-            extract.anomaly.unknown_feature_types.len(),
-        ),
-        (
-            "missing_required_fields",
-            extract.anomaly.missing_required_fields.len(),
-        ),
-        ("rejections", extract.anomaly.rejections.len()),
-    ];
-    let warn_codes: Vec<serde_json::Value> = warn_items
-        .into_iter()
-        .filter(|(_, count)| *count > 0)
-        .map(|(code, count)| {
+    let class_counts = extract.anomaly.anomaly_class_counts();
+    let class_items: Vec<serde_json::Value> = class_counts
+        .iter()
+        .filter(|(_, count)| **count > 0)
+        .map(|(class, count)| {
+            let severity = crate::domain::dataset::IngestAnomalyReport::severity_for_class(*class);
             json!({
-                "severity": QcSeverity::Warn,
-                "code": code,
+                "severity": severity,
+                "class": class,
                 "count": count,
             })
         })
         .collect();
+    let warn_count: usize = class_items
+        .iter()
+        .filter(|v| v.get("severity") == Some(&json!(QcSeverity::Warn)))
+        .count();
+    let error_count: usize = class_items
+        .iter()
+        .filter(|v| v.get("severity") == Some(&json!(QcSeverity::Error)))
+        .count();
     let mut rejections_by_reason = BTreeMap::<String, u64>::new();
     for rejection in &extract.anomaly.rejections {
         *rejections_by_reason
@@ -357,10 +328,11 @@ fn build_qc_report_json(
         },
         "severity_summary": {
             "INFO": 0,
-            "WARN": warn_codes.len(),
-            "ERROR": 0
+            "WARN": warn_count,
+            "ERROR": error_count
         },
-        "severity_items": warn_codes,
+        "severity_items": class_items,
+        "anomaly_classes": class_counts,
     }))
 }
 

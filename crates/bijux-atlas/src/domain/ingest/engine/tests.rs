@@ -810,6 +810,21 @@ fn report_contains_structured_rejections() {
         run.anomaly_report.rejections[0].code,
         "GFF3_UNKNOWN_FEATURE"
     );
+    let qc: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(&run.qc_report_path).expect("read qc report"),
+    )
+    .expect("parse qc report");
+    assert!(
+        qc.pointer("/anomaly_classes/rejections")
+            .and_then(serde_json::Value::as_u64)
+            .unwrap_or(0)
+            > 0
+    );
+    assert_eq!(
+        qc.pointer("/anomaly_classes/unknown_feature_types")
+            .and_then(serde_json::Value::as_u64),
+        Some(1)
+    );
 }
 
 #[test]

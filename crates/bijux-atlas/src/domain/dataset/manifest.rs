@@ -602,6 +602,25 @@ pub struct IngestRejection {
     pub sample: String,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[serde(rename_all = "snake_case")]
+#[non_exhaustive]
+pub enum IngestAnomalyClass {
+    MissingParents,
+    MissingTranscriptParents,
+    MultipleParentTranscripts,
+    UnknownContigs,
+    OverlappingIds,
+    DuplicateGeneIds,
+    OverlappingGeneIdsAcrossContigs,
+    OrphanTranscripts,
+    ParentCycles,
+    AttributeFallbacks,
+    UnknownFeatureTypes,
+    MissingRequiredFields,
+    Rejections,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, Hash)]
 #[serde(transparent)]
 #[non_exhaustive]
@@ -657,6 +676,61 @@ impl IngestAnomalyReport {
             }
         }
         Ok(())
+    }
+
+    #[must_use]
+    pub fn anomaly_class_counts(&self) -> BTreeMap<IngestAnomalyClass, u64> {
+        let mut counts = BTreeMap::new();
+        counts.insert(IngestAnomalyClass::MissingParents, self.missing_parents.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::MissingTranscriptParents,
+            self.missing_transcript_parents.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::MultipleParentTranscripts,
+            self.multiple_parent_transcripts.len() as u64,
+        );
+        counts.insert(IngestAnomalyClass::UnknownContigs, self.unknown_contigs.len() as u64);
+        counts.insert(IngestAnomalyClass::OverlappingIds, self.overlapping_ids.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::DuplicateGeneIds,
+            self.duplicate_gene_ids.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OverlappingGeneIdsAcrossContigs,
+            self.overlapping_gene_ids_across_contigs.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OrphanTranscripts,
+            self.orphan_transcripts.len() as u64,
+        );
+        counts.insert(IngestAnomalyClass::ParentCycles, self.parent_cycles.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::AttributeFallbacks,
+            self.attribute_fallbacks.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::UnknownFeatureTypes,
+            self.unknown_feature_types.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::MissingRequiredFields,
+            self.missing_required_fields.len() as u64,
+        );
+        counts.insert(IngestAnomalyClass::Rejections, self.rejections.len() as u64);
+        counts
+    }
+
+    #[must_use]
+    pub fn severity_for_class(class: IngestAnomalyClass) -> QcSeverity {
+        match class {
+            IngestAnomalyClass::UnknownFeatureTypes
+            | IngestAnomalyClass::MissingRequiredFields
+            | IngestAnomalyClass::Rejections
+            | IngestAnomalyClass::ParentCycles
+            | IngestAnomalyClass::UnknownContigs => QcSeverity::Error,
+            _ => QcSeverity::Warn,
+        }
     }
 }
 

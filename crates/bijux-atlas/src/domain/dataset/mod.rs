@@ -18,7 +18,7 @@ pub use identity::{canonical_identity_hash, DatasetIdentity};
 pub use lifecycle::{DatasetLifecycleState, DatasetLifecycleTransition};
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
-    IngestAnomalyReport, IngestRejection, ManifestInputHashes, ManifestStats, OptionalFieldPolicy,
-    QcSeverity, ShardCatalog, ShardEntry, ShardId, ShardingPlan,
+    IngestAnomalyClass, IngestAnomalyReport, IngestRejection, ManifestInputHashes, ManifestStats,
+    OptionalFieldPolicy, QcSeverity, ShardCatalog, ShardEntry, ShardId, ShardingPlan,
 };
 pub use version::ModelVersion;
