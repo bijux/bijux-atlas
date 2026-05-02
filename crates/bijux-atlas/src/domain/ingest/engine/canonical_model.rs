@@ -595,3 +595,83 @@ fn semantic_payload(genes: &[CanonicalGene], summary: &CanonicalSummary) -> serd
         "genes": gene_items
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::dataset::IngestAnomalyReport;
+
+    #[test]
+    fn contig_order_rank_is_stable_for_numeric_and_special_contigs() {
+        let mut contigs = vec![
+            "chrX".to_string(),
+            "chr2".to_string(),
+            "chr10".to_string(),
+            "chrM".to_string(),
+            "chr1".to_string(),
+            "scaffold_42".to_string(),
+        ];
+        contigs.sort_by_key(|c| contig_order_rank(c));
+        assert_eq!(
+            contigs,
+            vec![
+                "chr1".to_string(),
+                "chr2".to_string(),
+                "chr10".to_string(),
+                "chrX".to_string(),
+                "chrM".to_string(),
+                "scaffold_42".to_string()
+            ]
+        );
+    }
+
+    #[test]
+    fn canonical_model_marks_pseudogene_and_missing_transcripts() {
+        let extract = ExtractResult {
+            gene_rows: vec![GeneRecord {
+                gene_id: "g1".to_string(),
+                gene_name: "G1".to_string(),
+                biotype: "pseudogene".to_string(),
+                seqid: "chr1".to_string(),
+                start: 10,
+                end: 20,
+                transcript_count: 0,
+                exon_count: 0,
+                total_exon_span: 0,
+                cds_present: false,
+                sequence_length: 11,
+            }],
+            transcript_rows: vec![],
+            exon_rows: vec![],
+            anomaly: IngestAnomalyReport::default(),
+            biotype_distribution: BTreeMap::new(),
+            contig_distribution: BTreeMap::new(),
+            total_features: 1,
+            unknown_contig_features: 0,
+            max_contig_name_length: 4,
+            cds_feature_count: 0,
+        };
+        let records = vec![Gff3Record {
+            line: 1,
+            seqid: "chr1".to_string(),
+            feature_type: "gene".to_string(),
+            strand: "+".to_string(),
+            phase: ".".to_string(),
+            start: 10,
+            end: 20,
+            attrs: BTreeMap::from([
+                ("ID".to_string(), "g1".to_string()),
+                ("Name".to_string(), "G1".to_string()),
+            ]),
+            duplicate_attr_keys: Default::default(),
+            raw_line: "chr1\tsrc\tgene\t10\t20\t.\t+\t.\tID=g1;Name=G1".to_string(),
+        }];
+        let model = build_canonical_model(&records, &extract)
+            .expect("build canonical model")
+            .model;
+        assert_eq!(model.summary.pseudogenes, 1);
+        assert_eq!(model.summary.partial_genes, 1);
+        assert_eq!(model.genes[0].annotation_class, GeneAnnotationClass::Pseudogene);
+        assert_eq!(model.genes[0].completeness, AnnotationCompleteness::Missing);
+    }
+}
