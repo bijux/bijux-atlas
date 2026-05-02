@@ -130,6 +130,7 @@ fn request_validation_sort_contract_is_strict() {
     parse_list_genes_params(&q).expect("default sort accepted");
 
     q.insert("sort".to_string(), "region:asc".to_string());
+    q.insert("range".to_string(), "chr1:1-10".to_string());
     parse_list_genes_params(&q).expect("region sort parsed");
 
     q.insert("sort".to_string(), "gene_id:desc".to_string());
