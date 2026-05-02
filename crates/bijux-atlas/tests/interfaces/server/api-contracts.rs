@@ -619,6 +619,45 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
 }
 
 #[tokio::test]
+async fn catalog_endpoints_apply_response_size_guard_predictably() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let api = ApiConfig {
+        response_max_bytes: 64,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(mgr, api, Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/v1/datasets?limit=1", &[]).await;
+    assert_eq!(status, 413);
+    let json: Value = serde_json::from_str(&body).expect("json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("ResponseTooLarge")
+    );
+
+    let (status, _, body) = send_raw(addr, "/healthz", &[]).await;
+    assert_eq!(status, 200);
+    assert_eq!(body, "ok");
+}
+
+#[tokio::test]
 async fn genes_count_applies_filters_consistently() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());

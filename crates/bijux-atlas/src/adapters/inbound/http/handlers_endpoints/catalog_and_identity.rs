@@ -126,9 +126,44 @@ pub(crate) async fn datasets_handler(
         next_cursor.map(|cursor| json!({"next_cursor": cursor})),
         None,
     );
+    let encoded = match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64)
+    {
+        Ok(bytes) => bytes,
+        Err(err) => {
+            let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+            state
+                .metrics
+                .observe_request(
+                    "/v1/datasets",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::ResponseTooLarge,
+                "response exceeds configured size guard",
+                json!({"bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets",
+                StatusCode::PAYLOAD_TOO_LARGE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     let etag = format!(
         "\"{}\"",
-        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
+        sha256_hex(&encoded)
     );
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
@@ -144,7 +179,13 @@ pub(crate) async fn datasets_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let mut response = Json(payload).into_response();
+    let mut response = Response::builder()
+        .status(StatusCode::OK)
+        .body(Body::from(encoded))
+        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+    response
+        .headers_mut()
+        .insert("content-type", HeaderValue::from_static("application/json"));
     put_cache_headers(
         response.headers_mut(),
         state.api.discovery_ttl,
@@ -314,9 +355,44 @@ pub(crate) async fn dataset_identity_handler(
         });
     }
     let payload = json_envelope(Some(json!(dataset)), None, data, None, None);
+    let encoded = match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64)
+    {
+        Ok(bytes) => bytes,
+        Err(err) => {
+            let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+            state
+                .metrics
+                .observe_request(
+                    "/v1/datasets/{release}/{species}/{assembly}",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    started.elapsed(),
+                )
+                .await;
+            return with_request_id(resp, &request_id);
+        }
+    };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::ResponseTooLarge,
+                "response exceeds configured size guard",
+                json!({"bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets/{release}/{species}/{assembly}",
+                StatusCode::PAYLOAD_TOO_LARGE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
     let etag = format!(
         "\"{}\"",
-        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
+        sha256_hex(&encoded)
     );
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
@@ -336,7 +412,12 @@ pub(crate) async fn dataset_identity_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let mut resp = Json(payload).into_response();
+    let mut resp = Response::builder()
+        .status(StatusCode::OK)
+        .body(Body::from(encoded))
+        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+    resp.headers_mut()
+        .insert("content-type", HeaderValue::from_static("application/json"));
     if let Some(v) = dataset_identity_header_value(&manifest) {
         resp.headers_mut().insert("x-dataset-identity-sha256", v);
     }
