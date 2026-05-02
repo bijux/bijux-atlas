@@ -282,6 +282,8 @@ pub(crate) async fn dataset_identity_handler(
             "manifest_summary": {
                 "manifest_version": manifest.manifest_version,
                 "db_schema_version": manifest.db_schema_version,
+                "identity_release_id": manifest.identity.release_id,
+                "identity_sha256": manifest.identity.canonical_metadata_sha256,
                 "stats": manifest.stats
             },
             "qc_summary": {
@@ -329,6 +331,9 @@ pub(crate) async fn dataset_identity_handler(
         return with_request_id(resp, &request_id);
     }
     let mut resp = Json(payload).into_response();
+    if let Some(v) = dataset_identity_header_value(&manifest) {
+        resp.headers_mut().insert("x-dataset-identity-sha256", v);
+    }
     put_cache_headers(
         resp.headers_mut(),
         state.api.immutable_gene_ttl,
@@ -344,4 +349,35 @@ pub(crate) async fn dataset_identity_handler(
         )
         .await;
     with_request_id(resp, &request_id)
+}
+
+fn dataset_identity_header_value(manifest: &crate::domain::dataset::ArtifactManifest) -> Option<HeaderValue> {
+    HeaderValue::from_str(&manifest.identity.canonical_metadata_sha256).ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::dataset_identity_header_value;
+    use crate::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+
+    #[test]
+    fn dataset_identity_header_value_is_derived_from_manifest_identity() {
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        let header = dataset_identity_header_value(&manifest).expect("header");
+        assert_eq!(
+            header.to_str().expect("header str"),
+            manifest.identity.canonical_metadata_sha256
+        );
+    }
 }

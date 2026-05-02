@@ -66,7 +66,15 @@ pub(crate) fn validate_dataset(
     } else {
         "atlas dataset validate"
     };
-    let payload = json!({"command":command_name,"status":"ok","deep":deep});
+    let payload = json!({
+        "command": command_name,
+        "status": "ok",
+        "deep": deep,
+        "identity": {
+            "release_id": manifest.identity.release_id,
+            "canonical_metadata_sha256": manifest.identity.canonical_metadata_sha256
+        }
+    });
     if output_mode.json {
         println!(
             "{}",
@@ -79,6 +87,34 @@ pub(crate) fn validate_dataset(
         );
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
+
+    #[test]
+    fn validate_payload_exposes_manifest_identity_hash() {
+        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            dataset,
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        assert_eq!(
+            manifest.identity.release_id,
+            "110/homo_sapiens/GRCh38"
+        );
+        assert_eq!(manifest.identity.canonical_metadata_sha256.len(), 64);
+    }
 }
 
 fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
