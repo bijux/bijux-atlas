@@ -120,6 +120,12 @@ pub fn build_and_write_manifest_and_reports(
     manifest.artifact_inventory_path = "derived/artifact_inventory.json".to_string();
     manifest.evidence_bundle_path = "derived/evidence_bundle.lock.json".to_string();
     manifest.evidence_bundle_sha256 = "pending".to_string();
+    manifest.reference_build_identity_sha256 =
+        compute_reference_build_identity_sha256(dataset, extract)?;
+    manifest.contig_naming_style = detect_contig_naming_style(extract);
+    manifest.coordinate_system = "1-based-closed".to_string();
+    manifest.scientific_prerequisites_status = scientific_prerequisites_status(extract);
+    manifest.scientific_profile_path = "derived/scientific_profile.json".to_string();
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
@@ -269,12 +275,62 @@ fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String,
         "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
         "canonical_lineage_sha256": manifest.canonical_lineage_sha256,
         "canonical_feature_counts": manifest.canonical_feature_counts,
+        "reference_build_identity_sha256": manifest.reference_build_identity_sha256,
+        "contig_naming_style": manifest.contig_naming_style,
+        "coordinate_system": manifest.coordinate_system,
+        "scientific_prerequisites_status": manifest.scientific_prerequisites_status,
         "toolchain_hash": manifest.toolchain_hash,
         "db_hash": manifest.db_hash
     });
     let bytes =
         canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
+}
+
+fn compute_reference_build_identity_sha256(
+    dataset: &DatasetId,
+    extract: &ExtractResult,
+) -> Result<String, IngestError> {
+    let payload = json!({
+        "assembly": dataset.assembly,
+        "species": dataset.species,
+        "contig_distribution": extract.contig_distribution,
+        "contig_class_distribution": extract.contig_class_distribution,
+    });
+    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn detect_contig_naming_style(extract: &ExtractResult) -> String {
+    let mut has_chr_prefix = false;
+    let mut has_plain_numeric = false;
+    for contig in extract.contig_distribution.keys() {
+        let lowered = contig.to_ascii_lowercase();
+        if lowered.starts_with("chr") {
+            has_chr_prefix = true;
+        }
+        let core = lowered.strip_prefix("chr").unwrap_or(lowered.as_str());
+        if core.parse::<u64>().is_ok() {
+            has_plain_numeric |= !lowered.starts_with("chr");
+        }
+    }
+    match (has_chr_prefix, has_plain_numeric) {
+        (true, true) => "mixed_chr_and_plain".to_string(),
+        (true, false) => "chr_prefixed".to_string(),
+        (false, true) => "plain_numeric".to_string(),
+        _ => "noncanonical".to_string(),
+    }
+}
+
+fn scientific_prerequisites_status(extract: &ExtractResult) -> String {
+    if !extract.anomaly.scientific_ambiguities.is_empty()
+        || !extract.anomaly.unknown_contigs.is_empty()
+        || !extract.anomaly.missing_required_fields.is_empty()
+    {
+        "insufficient".to_string()
+    } else {
+        "complete".to_string()
+    }
 }
 
 pub fn write_qc_and_anomaly_reports_only(
