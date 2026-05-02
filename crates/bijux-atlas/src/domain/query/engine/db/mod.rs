@@ -154,10 +154,16 @@ pub fn explain_query_plan(
 
 #[must_use]
 pub fn order_mode_for(req: &GeneQueryRequest) -> OrderMode {
-    if req.filter.region.is_some() {
-        OrderMode::Region
-    } else {
-        OrderMode::GeneId
+    match req.filter.sort {
+        super::filters::QuerySort::GeneIdAsc => OrderMode::GeneId,
+        super::filters::QuerySort::RegionAsc => OrderMode::Region,
+        super::filters::QuerySort::Auto => {
+            if req.filter.region.is_some() {
+                OrderMode::Region
+            } else {
+                OrderMode::GeneId
+            }
+        }
     }
 }
 

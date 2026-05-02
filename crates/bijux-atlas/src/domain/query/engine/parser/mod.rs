@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::filters::GeneQueryRequest;
+use super::filters::{GeneQueryRequest, QuerySort};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -77,10 +77,16 @@ pub fn parse_gene_query(req: &GeneQueryRequest) -> Result<GeneQueryAst, ParseErr
         });
     }
 
-    let sort_key = if req.filter.region.is_some() {
-        SortKey::Region
-    } else {
-        SortKey::GeneId
+    let sort_key = match req.filter.sort {
+        QuerySort::GeneIdAsc => SortKey::GeneId,
+        QuerySort::RegionAsc => SortKey::Region,
+        QuerySort::Auto => {
+            if req.filter.region.is_some() {
+                SortKey::Region
+            } else {
+                SortKey::GeneId
+            }
+        }
     };
 
     Ok(GeneQueryAst {

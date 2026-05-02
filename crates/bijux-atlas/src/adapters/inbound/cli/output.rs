@@ -2,7 +2,7 @@
 
 use super::OutputMode;
 use crate::domain::canonical;
-use crate::domain::query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
+use crate::domain::query::{GeneFields, GeneFilter, GeneQueryRequest, QuerySort, RegionFilter};
 use serde_json::{json, Value};
 use std::path::PathBuf;
 
@@ -105,6 +105,7 @@ pub(crate) fn query_request_from_json(v: &Value) -> Result<GeneQueryRequest, Str
             name_prefix,
             biotype,
             region,
+            sort: QuerySort::Auto,
         },
         limit,
         cursor: None,

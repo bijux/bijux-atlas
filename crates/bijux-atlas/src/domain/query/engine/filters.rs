@@ -40,6 +40,17 @@ pub struct GeneFilter {
     pub name_prefix: Option<String>,
     pub biotype: Option<String>,
     pub region: Option<RegionFilter>,
+    #[serde(default)]
+    pub sort: QuerySort,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum QuerySort {
+    #[default]
+    Auto,
+    GeneIdAsc,
+    RegionAsc,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

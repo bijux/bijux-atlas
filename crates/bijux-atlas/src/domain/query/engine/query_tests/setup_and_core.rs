@@ -341,6 +341,29 @@ fn frozen_query_model_is_deterministic_and_intent_explicit() {
 }
 
 #[test]
+fn explicit_sort_mode_drives_order_mode_deterministically() {
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 100,
+            }),
+            sort: QuerySort::GeneIdAsc,
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: Some("110/homo_sapiens/GRCh38".to_string()),
+        allow_full_scan: false,
+    };
+    let ast = parse_gene_query_request(&req).expect("parse");
+    assert_eq!(format!("{:?}", ast.sort_key), "GeneId");
+    assert_eq!(super::super::db::order_mode_for(&req), OrderMode::GeneId);
+}
+
+#[test]
 fn legacy_v2_schema_remains_queryable() {
     let conn = setup_legacy_v2_db();
     let req = GeneQueryRequest {

@@ -5,7 +5,7 @@ use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::canonical::sha256_hex;
 use crate::domain::dataset::DatasetId;
 use crate::domain::query::{
-    GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, RegionFilter,
+    GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, QuerySort, RegionFilter,
 };
 use crate::AppState;
 use serde_json::json;
@@ -209,6 +209,11 @@ pub(super) fn build_dataset_query(
             name_prefix: name_prefix.map(ToString::to_string),
             biotype: parsed.biotype,
             region,
+            sort: match parsed.sort {
+                Some(SortKey::GeneIdAsc) => QuerySort::GeneIdAsc,
+                Some(SortKey::RegionAsc) => QuerySort::RegionAsc,
+                None => QuerySort::Auto,
+            },
         },
         limit: parsed.limit,
         cursor: parsed.cursor,
