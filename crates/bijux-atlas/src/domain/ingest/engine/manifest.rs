@@ -4,8 +4,8 @@ use super::extract::ExtractResult;
 use super::IngestError;
 use crate::domain::canonical;
 use crate::domain::dataset::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats,
-    QcSeverity, ShardingPlan, ValidationError,
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
+    ShardingPlan, ValidationError,
 };
 use crate::domain::sha256_hex;
 use serde_json::json;

@@ -47,7 +47,7 @@ pub(crate) fn validate_dataset(
         let actual_signature = compute_dataset_signature_from_sqlite(&paths.sqlite)?;
         if manifest.dataset_signature_sha256.is_empty() {
             return Err(
-                "manifest dataset_signature_sha256 is empty; cannot deep-verify".to_string()
+                "manifest dataset_signature_sha256 is empty; cannot deep-verify".to_string(),
             );
         }
         if actual_signature != manifest.dataset_signature_sha256 {
@@ -62,7 +62,11 @@ pub(crate) fn validate_dataset(
         enforce_publish_gates(&root, &dataset, &manifest)?;
     }
 
-    let command_name = if deep { "atlas dataset verify" } else { "atlas dataset validate" };
+    let command_name = if deep {
+        "atlas dataset verify"
+    } else {
+        "atlas dataset validate"
+    };
     let payload = json!({
         "command": command_name,
         "status": "ok",
@@ -75,9 +79,15 @@ pub(crate) fn validate_dataset(
         }
     });
     if output_mode.json {
-        println!("{}", serde_json::to_string(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
     } else {
-        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
@@ -219,7 +229,10 @@ fn validate_canonical_evidence(
         ));
     }
     if !features_path.exists() {
-        return Err(format!("missing canonical features artifact: {}", features_path.display()));
+        return Err(format!(
+            "missing canonical features artifact: {}",
+            features_path.display()
+        ));
     }
     Ok(())
 }
@@ -236,7 +249,12 @@ mod tests {
             "1".to_string(),
             "1".to_string(),
             dataset,
-            ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
             ManifestStats::new(1, 1, 1),
         );
         assert_eq!(manifest.identity.release_id, "110/homo_sapiens/GRCh38");
@@ -252,8 +270,12 @@ fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<()
     let qc_report = paths.derived_dir.join("qc.json");
     let qc_raw = fs::read_to_string(&qc_report)
         .map_err(|e| format!("dataset validate failed: {}: {e}", qc_report.display()))?;
-    let thresholds_raw = fs::read_to_string(&thresholds_path)
-        .map_err(|e| format!("dataset validate failed: {}: {e}", thresholds_path.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds_path).map_err(|e| {
+        format!(
+            "dataset validate failed: {}: {e}",
+            thresholds_path.display()
+        )
+    })?;
     let qc: serde_json::Value = serde_json::from_str(&qc_raw)
         .map_err(|e| format!("dataset validate failed: invalid qc json: {e}"))?;
     let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw)
@@ -370,7 +392,11 @@ fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
         let mut i = 0usize;
         while i < level.len() {
             let left = &level[i];
-            let right = if i + 1 < level.len() { &level[i + 1] } else { left };
+            let right = if i + 1 < level.len() {
+                &level[i + 1]
+            } else {
+                left
+            };
             let mut joined = String::with_capacity(left.len() + right.len());
             joined.push_str(left);
             joined.push_str(right);
@@ -431,10 +457,17 @@ pub(crate) fn publish_dataset(
     }
 
     let store = LocalFsStore::new(store_root);
-    match store.put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, &manifest_sha, &sqlite_sha) {
-        Ok(()) => {
-            emit_ok_payload(output_mode, json!({"command":"atlas dataset publish","status":"ok"}))
-        }
+    match store.put_dataset(
+        &dataset,
+        &manifest_bytes,
+        &sqlite_bytes,
+        &manifest_sha,
+        &sqlite_sha,
+    ) {
+        Ok(()) => emit_ok_payload(
+            output_mode,
+            json!({"command":"atlas dataset publish","status":"ok"}),
+        ),
         Err(e) if e.code == StoreErrorCode::Conflict => {
             Err(format!("immutability gate rejected publish: {}", e.message))
         }
@@ -493,7 +526,9 @@ fn enforce_publish_gates(
             )
             .map_err(|e| e.to_string())?;
         if exists == 0 {
-            return Err(format!("publish gate failed: required index missing: {idx}"));
+            return Err(format!(
+                "publish gate failed: required index missing: {idx}"
+            ));
         }
     }
     let qc_report = paths.derived_dir.join("qc.json");
@@ -504,10 +539,16 @@ fn enforce_publish_gates(
     let thresholds_raw = fs::read_to_string(&thresholds_path)
         .map_err(|e| format!("publish gate failed: {}: {e}", thresholds_path.display()))?;
     let qc: serde_json::Value = serde_json::from_str(&qc_raw).map_err(|e| {
-        format!("publish gate failed: invalid qc json {}: {e}", qc_report.display())
+        format!(
+            "publish gate failed: invalid qc json {}: {e}",
+            qc_report.display()
+        )
     })?;
     let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw).map_err(|e| {
-        format!("publish gate failed: invalid thresholds json {}: {e}", thresholds_path.display())
+        format!(
+            "publish gate failed: invalid thresholds json {}: {e}",
+            thresholds_path.display()
+        )
     })?;
     validate_qc_thresholds(&qc, &thresholds).map_err(|e| format!("publish gate failed: {e}"))?;
     Ok(())
@@ -565,7 +606,10 @@ pub(super) fn validate_qc_thresholds(
         .map(|v| v.as_u64().unwrap_or(0))
         .sum();
     if genes < min_gene_count {
-        return Err(format!("gene_count {} < min_gene_count {}", genes, min_gene_count));
+        return Err(format!(
+            "gene_count {} < min_gene_count {}",
+            genes, min_gene_count
+        ));
     }
     let orphan_pct = if transcripts == 0 {
         0.0
@@ -582,8 +626,11 @@ pub(super) fn validate_qc_thresholds(
         .pointer("/contig_stats/total_features")
         .and_then(serde_json::Value::as_u64)
         .ok_or_else(|| "qc missing contig_stats.total_features".to_string())?;
-    let rejected_pct =
-        if total_features == 0 { 0.0 } else { (rejected as f64) * 100.0 / (total_features as f64) };
+    let rejected_pct = if total_features == 0 {
+        0.0
+    } else {
+        (rejected as f64) * 100.0 / (total_features as f64)
+    };
     if rejected_pct > max_rejected_pct {
         return Err(format!(
             "rejected_percent {:.4} > max_rejected_percent {}",

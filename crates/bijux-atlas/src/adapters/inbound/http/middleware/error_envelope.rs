@@ -50,7 +50,10 @@ async fn normalize_error_response(
         return normalize_json_error_envelope(response, max_response_bytes).await;
     }
 
-    if !matches!(status, StatusCode::NOT_FOUND | StatusCode::METHOD_NOT_ALLOWED) {
+    if !matches!(
+        status,
+        StatusCode::NOT_FOUND | StatusCode::METHOD_NOT_ALLOWED
+    ) {
         return response;
     }
 
@@ -121,8 +124,8 @@ mod tests {
             "{\"error\":{}}",
         )
             .into_response();
-        let normalized = normalize_error_response(response, "req-1", "GET", "/missing/resource", 1024)
-            .await;
+        let normalized =
+            normalize_error_response(response, "req-1", "GET", "/missing/resource", 1024).await;
         assert_eq!(normalized.status(), StatusCode::NOT_FOUND);
         assert_eq!(
             normalized
@@ -137,8 +140,8 @@ mod tests {
     #[tokio::test]
     async fn wraps_plain_transport_not_found_as_error_envelope() {
         let response = (StatusCode::NOT_FOUND, "not found").into_response();
-        let normalized = normalize_error_response(response, "req-1", "GET", "/missing/resource", 1024)
-            .await;
+        let normalized =
+            normalize_error_response(response, "req-1", "GET", "/missing/resource", 1024).await;
         assert_eq!(normalized.status(), StatusCode::NOT_FOUND);
         assert_eq!(
             normalized
@@ -164,13 +167,8 @@ mod tests {
             .into_response();
         let normalized = normalize_json_error_envelope(response, 2048).await;
         assert_eq!(normalized.status(), StatusCode::FORBIDDEN);
-        let bytes = to_bytes(normalized.into_body(), 2048)
-            .await
-            .expect("body");
+        let bytes = to_bytes(normalized.into_body(), 2048).await.expect("body");
         let parsed: serde_json::Value = serde_json::from_slice(&bytes).expect("json");
-        assert_eq!(
-            parsed["error"]["code"].as_str(),
-            Some("AccessForbidden")
-        );
+        assert_eq!(parsed["error"]["code"].as_str(), Some("AccessForbidden"));
     }
 }

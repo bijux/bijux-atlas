@@ -392,7 +392,10 @@ fn interval_semantics_overlap_containment_and_boundary_touch_are_distinct() {
     let mut contained_req = base.clone();
     contained_req.filter.interval = IntervalSemantics::Containment;
     let contained = query_genes(&conn, &contained_req, &limits(), b"s").expect("containment");
-    assert!(contained.rows.is_empty(), "no chr1 gene fully inside 40..50");
+    assert!(
+        contained.rows.is_empty(),
+        "no chr1 gene fully inside 40..50"
+    );
 
     let mut touch_req = base;
     touch_req.filter.interval = IntervalSemantics::BoundaryTouch;

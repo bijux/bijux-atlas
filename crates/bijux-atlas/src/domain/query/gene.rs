@@ -569,9 +569,7 @@ impl Default for DuplicateTranscriptIdPolicy {
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        canonical_contig_label, classify_contig, ContigClass, SeqidNormalizationPolicy,
-    };
+    use super::{canonical_contig_label, classify_contig, ContigClass, SeqidNormalizationPolicy};
     use std::collections::BTreeMap;
 
     #[test]
@@ -595,7 +593,10 @@ mod tests {
         assert_eq!(classify_contig("chrM"), ContigClass::Mitochondrial);
         assert_eq!(classify_contig("plasmidA"), ContigClass::Plasmid);
         assert_eq!(classify_contig("scaffold_42"), ContigClass::Scaffold);
-        assert_eq!(classify_contig("chr1_GL383518v1_alt"), ContigClass::Alternate);
+        assert_eq!(
+            classify_contig("chr1_GL383518v1_alt"),
+            ContigClass::Alternate
+        );
         assert_eq!(canonical_contig_label("chrMT"), "mitochondrial".to_string());
     }
 }

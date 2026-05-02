@@ -109,7 +109,10 @@ mod tests {
     #[test]
     fn invalid_or_oversized_trace_headers_are_dropped() {
         let mut headers = HeaderMap::new();
-        headers.insert("x-request-id", HeaderValue::from_static("bad id with spaces"));
+        headers.insert(
+            "x-request-id",
+            HeaderValue::from_static("bad id with spaces"),
+        );
         headers.insert(
             "x-correlation-id",
             HeaderValue::from_str(&"x".repeat(129)).expect("header value"),
@@ -133,9 +136,7 @@ mod tests {
         let mut headers = HeaderMap::new();
         headers.insert(
             "traceparent",
-            HeaderValue::from_static(
-                "00-4BF92F3577B34DA6A3CE929D0E0E4736-00F067AA0BA902B7-01",
-            ),
+            HeaderValue::from_static("00-4BF92F3577B34DA6A3CE929D0E0E4736-00F067AA0BA902B7-01"),
         );
 
         let state = crate::AppState::new(crate::DatasetCacheManager::new(

@@ -126,43 +126,42 @@ pub fn parse_list_genes_params_with_limit(
     }
     let dataset_selector = query.get("dataset").cloned();
     let selector_dims = parse_dataset_selector(dataset_selector.as_deref())?;
-    let (release, species, assembly) = if let Some((sel_release, sel_species, sel_assembly)) =
-        selector_dims
-    {
-        let release = query
-            .get("release")
-            .cloned()
-            .unwrap_or_else(|| sel_release.clone());
-        let species = query
-            .get("species")
-            .cloned()
-            .unwrap_or_else(|| sel_species.clone());
-        let assembly = query
-            .get("assembly")
-            .cloned()
-            .unwrap_or_else(|| sel_assembly.clone());
-        if release != sel_release || species != sel_species || assembly != sel_assembly {
-            return Err(ApiError::invalid_param(
-                "dataset",
-                "dataset selector conflicts with release/species/assembly",
-            ));
-        }
-        (release, species, assembly)
-    } else {
-        let release = query
-            .get("release")
-            .cloned()
-            .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
-        let species = query
-            .get("species")
-            .cloned()
-            .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
-        let assembly = query
-            .get("assembly")
-            .cloned()
-            .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
-        (release, species, assembly)
-    };
+    let (release, species, assembly) =
+        if let Some((sel_release, sel_species, sel_assembly)) = selector_dims {
+            let release = query
+                .get("release")
+                .cloned()
+                .unwrap_or_else(|| sel_release.clone());
+            let species = query
+                .get("species")
+                .cloned()
+                .unwrap_or_else(|| sel_species.clone());
+            let assembly = query
+                .get("assembly")
+                .cloned()
+                .unwrap_or_else(|| sel_assembly.clone());
+            if release != sel_release || species != sel_species || assembly != sel_assembly {
+                return Err(ApiError::invalid_param(
+                    "dataset",
+                    "dataset selector conflicts with release/species/assembly",
+                ));
+            }
+            (release, species, assembly)
+        } else {
+            let release = query
+                .get("release")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
+            let species = query
+                .get("species")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
+            let assembly = query
+                .get("assembly")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+            (release, species, assembly)
+        };
 
     let limit = if let Some(raw) = query.get("limit") {
         let value = raw
@@ -197,19 +196,22 @@ pub fn parse_list_genes_params_with_limit(
     };
     let interval_mode = if let Some(raw_interval_mode) = query.get("interval_mode") {
         Some(IntervalMode::parse(raw_interval_mode).ok_or_else(|| {
-            ApiError::invalid_param("interval_mode", "allowed: overlap,containment,boundary_touch")
+            ApiError::invalid_param(
+                "interval_mode",
+                "allowed: overlap,containment,boundary_touch",
+            )
         })?)
     } else {
         None
     };
-    let strand = if let Some(raw_strand) = query.get("strand") {
-        Some(
-            StrandMode::parse(raw_strand)
-                .ok_or_else(|| ApiError::invalid_param("strand", "allowed: any,plus,minus,unknown"))?,
-        )
-    } else {
-        None
-    };
+    let strand =
+        if let Some(raw_strand) = query.get("strand") {
+            Some(StrandMode::parse(raw_strand).ok_or_else(|| {
+                ApiError::invalid_param("strand", "allowed: any,plus,minus,unknown")
+            })?)
+        } else {
+            None
+        };
     let name_like = query.get("name_like").cloned();
     if let Some(pattern) = &name_like {
         if pattern.starts_with('*')
@@ -519,9 +521,7 @@ fn validate_filter_combinations(
     Ok(())
 }
 
-fn parse_dataset_selector(
-    raw: Option<&str>,
-) -> Result<Option<(String, String, String)>, ApiError> {
+fn parse_dataset_selector(raw: Option<&str>) -> Result<Option<(String, String, String)>, ApiError> {
     let Some(raw) = raw else {
         return Ok(None);
     };

@@ -155,8 +155,9 @@ impl ArtifactStore for LocalFsStore {
         let transitions_path = lifecycle_transitions_path(Path::new(&self.root), dataset);
         let transitions_tmp = paths.derived_dir.join("lifecycle.transitions.json.tmp");
         let transitions_payload = vec![transition.clone()];
-        let transitions_bytes = crate::domain::canonical::stable_json_bytes(&transitions_payload)
-            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        let transitions_bytes =
+            crate::domain::canonical::stable_json_bytes(&transitions_payload)
+                .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
         write_and_sync(&transitions_tmp, &transitions_bytes)?;
         fs::rename(&transitions_tmp, transitions_path)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;

@@ -207,7 +207,9 @@ pub fn build_canonical_model(
 
     let mut genes: Vec<CanonicalGene> = Vec::new();
     for gene in &extract.gene_rows {
-        let mut transcripts = transcripts_by_gene.remove(&gene.gene_id).unwrap_or_default();
+        let mut transcripts = transcripts_by_gene
+            .remove(&gene.gene_id)
+            .unwrap_or_default();
         transcripts.sort_by(compare_transcript);
         let gene_lineage = lineage_for_gene(&lineage, gene);
         genes.push(canonical_gene(gene, transcripts, gene_lineage));
@@ -416,7 +418,12 @@ fn build_lineage_index(
 ) -> Result<BTreeMap<(String, String, u64, u64), Vec<LineageRecord>>, IngestError> {
     let mut out: BTreeMap<(String, String, u64, u64), Vec<LineageRecord>> = BTreeMap::new();
     for rec in records {
-        let key = (rec.feature_type.clone(), rec.seqid.clone(), rec.start, rec.end);
+        let key = (
+            rec.feature_type.clone(),
+            rec.seqid.clone(),
+            rec.start,
+            rec.end,
+        );
         out.entry(key).or_default().push(lineage_from_record(rec));
     }
     for entries in out.values_mut() {
@@ -674,7 +681,10 @@ mod tests {
             .model;
         assert_eq!(model.summary.pseudogenes, 1);
         assert_eq!(model.summary.partial_genes, 1);
-        assert_eq!(model.genes[0].annotation_class, GeneAnnotationClass::Pseudogene);
+        assert_eq!(
+            model.genes[0].annotation_class,
+            GeneAnnotationClass::Pseudogene
+        );
         assert_eq!(model.genes[0].completeness, AnnotationCompleteness::Missing);
     }
 }

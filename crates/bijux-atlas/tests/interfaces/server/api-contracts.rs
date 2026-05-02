@@ -821,10 +821,7 @@ async fn transport_not_found_and_method_not_allowed_use_error_envelope() {
     let (status, _, body) = send_raw(addr, "/debug/datasets", &[]).await;
     assert_eq!(status, 404);
     let not_found: Value = serde_json::from_str(&body).expect("json envelope");
-    assert_eq!(
-        not_found["error"]["code"].as_str(),
-        Some("DatasetNotFound")
-    );
+    assert_eq!(not_found["error"]["code"].as_str(), Some("DatasetNotFound"));
     assert_eq!(
         not_found["error"]["message"].as_str(),
         Some("admin endpoints are disabled")

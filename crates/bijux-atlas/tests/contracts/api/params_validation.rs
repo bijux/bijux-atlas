@@ -67,18 +67,14 @@ fn request_validation_region_parser_is_strict() {
     }
     let zero_based = parse_region_filter(Some("chr1:0-10".to_string())).expect_err("start=0");
     assert_eq!(zero_based.code, ApiErrorCode::InvalidQueryParameter);
-    assert!(
-        zero_based.details["field_errors"][0]["value"]
-            .as_str()
-            .is_some_and(|value| value.contains("1-based closed coordinates"))
-    );
+    assert!(zero_based.details["field_errors"][0]["value"]
+        .as_str()
+        .is_some_and(|value| value.contains("1-based closed coordinates")));
     let reversed = parse_region_filter(Some("chr1:20-10".to_string())).expect_err("end<start");
     assert_eq!(reversed.code, ApiErrorCode::InvalidQueryParameter);
-    assert!(
-        reversed.details["field_errors"][0]["value"]
-            .as_str()
-            .is_some_and(|value| value.contains("1-based closed coordinates"))
-    );
+    assert!(reversed.details["field_errors"][0]["value"]
+        .as_str()
+        .is_some_and(|value| value.contains("1-based closed coordinates")));
 }
 
 #[test]
@@ -181,13 +177,15 @@ fn request_validation_rejects_ambiguous_and_invalid_filter_combos() {
 
     let mut region_sort_without_range = base_query();
     region_sort_without_range.insert("sort".to_string(), "region:asc".to_string());
-    let err = parse_list_genes_params(&region_sort_without_range).expect_err("region sort without range");
+    let err =
+        parse_list_genes_params(&region_sort_without_range).expect_err("region sort without range");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
 
     let mut conflicting_range_and_region = base_query();
     conflicting_range_and_region.insert("range".to_string(), "chr1:1-10".to_string());
     conflicting_range_and_region.insert("region".to_string(), "chr2:1-10".to_string());
-    let err = parse_list_genes_params(&conflicting_range_and_region).expect_err("conflicting range/region");
+    let err = parse_list_genes_params(&conflicting_range_and_region)
+        .expect_err("conflicting range/region");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
 
     let mut exact_with_extra = base_query();

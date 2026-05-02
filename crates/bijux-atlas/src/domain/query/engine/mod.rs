@@ -27,8 +27,8 @@ use rusqlite::{params_from_iter, types::Value, Connection};
 
 pub const CRATE_NAME: &str = "bijux-atlas-query";
 
-pub use cost::estimate_prefix_match_cost;
 pub use contract::{freeze_query_model, FrozenQueryModel, QueryIntent};
+pub use cost::estimate_prefix_match_cost;
 pub use cursor::{
     decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorLastSeen, CursorPayload,
     OrderMode,
@@ -40,8 +40,7 @@ pub use executor::execute_gene_query;
 pub use filters::{
     compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields, GeneFilter,
     GeneRow, IntervalSemantics, QuerySort, RegionFilter, StrandMode, TranscriptFilter,
-    TranscriptQueryRequest, TranscriptQueryResponse,
-    TranscriptRow,
+    TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use normalize::normalized_query_hash as normalized_query_hash_ssot;
@@ -122,10 +121,7 @@ pub fn query_gene_id_name_json_minimal_fast(
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 
-pub fn query_gene_count(
-    conn: &Connection,
-    req: &GeneQueryRequest,
-) -> Result<i64, QueryError> {
+pub fn query_gene_count(conn: &Connection, req: &GeneQueryRequest) -> Result<i64, QueryError> {
     db::query_gene_count(conn, req).map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 

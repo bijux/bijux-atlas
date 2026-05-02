@@ -248,7 +248,9 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
     }
 
     if req.filter.strand != StrandMode::Any {
-        return Err("strand-aware filtering is not available for current dataset schema".to_string());
+        return Err(
+            "strand-aware filtering is not available for current dataset schema".to_string(),
+        );
     }
 
     let has_any_filter = req.filter.gene_id.is_some()

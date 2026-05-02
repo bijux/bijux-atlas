@@ -70,12 +70,17 @@ impl DatasetIdentity {
 
     pub fn validate(&self) -> Result<(), ValidationError> {
         if self.release_id.trim().is_empty() {
-            return Err(ValidationError("identity release_id must not be empty".to_string()));
+            return Err(ValidationError(
+                "identity release_id must not be empty".to_string(),
+            ));
         }
         for (name, value) in [
             ("source_fingerprint_sha256", &self.source_fingerprint_sha256),
             ("build_fingerprint_sha256", &self.build_fingerprint_sha256),
-            ("artifact_fingerprint_sha256", &self.artifact_fingerprint_sha256),
+            (
+                "artifact_fingerprint_sha256",
+                &self.artifact_fingerprint_sha256,
+            ),
             ("canonical_metadata_sha256", &self.canonical_metadata_sha256),
         ] {
             if !is_sha256_hex(value) {
@@ -113,7 +118,8 @@ pub fn canonical_identity_hash(
         "build_fingerprint_sha256": build_fingerprint_sha256,
         "artifact_fingerprint_sha256": artifact_fingerprint_sha256
     });
-    let bytes = canonical::stable_json_bytes(&payload).map_err(|err| ValidationError(err.to_string()))?;
+    let bytes =
+        canonical::stable_json_bytes(&payload).map_err(|err| ValidationError(err.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 

@@ -261,7 +261,9 @@ fn evaluate_anomaly_thresholds(
     let mut error_total = 0_u64;
     for (class, count) in class_counts {
         match IngestAnomalyReport::severity_for_class(class) {
-            crate::domain::dataset::QcSeverity::Warn => warn_total = warn_total.saturating_add(count),
+            crate::domain::dataset::QcSeverity::Warn => {
+                warn_total = warn_total.saturating_add(count)
+            }
             crate::domain::dataset::QcSeverity::Error => {
                 error_total = error_total.saturating_add(count)
             }

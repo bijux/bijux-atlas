@@ -56,9 +56,15 @@ pub(crate) fn validate_catalog(path: PathBuf, output_mode: OutputMode) -> Result
     catalog.validate_sorted().map_err(|e| e.to_string())?;
     let payload = json!({"command":"atlas catalog validate","status":"ok"});
     if output_mode.json {
-        println!("{}", serde_json::to_string(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
     } else {
-        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
@@ -157,7 +163,10 @@ pub(crate) fn publish_catalog(
     fs::write(&tmp, canonical.as_bytes()).map_err(|e| e.to_string())?;
     fs::rename(&tmp, store_root.join("catalog.json")).map_err(|e| e.to_string())?;
 
-    emit_ok_payload(output_mode, json!({"command":"atlas catalog publish","status":"ok"}))
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas catalog publish","status":"ok"}),
+    )
 }
 
 pub(crate) fn rollback_catalog(
@@ -178,7 +187,10 @@ pub(crate) fn rollback_catalog(
     let tmp = store_root.join("catalog.json.tmp");
     fs::write(&tmp, canonical.as_bytes()).map_err(|e| e.to_string())?;
     fs::rename(&tmp, &path).map_err(|e| e.to_string())?;
-    emit_ok_payload(output_mode, json!({"command":"atlas catalog rollback","status":"ok"}))
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas catalog rollback","status":"ok"}),
+    )
 }
 
 pub(crate) fn promote_catalog(
@@ -226,7 +238,7 @@ pub(crate) fn update_latest_alias(
     let catalog = read_catalog_or_empty(&store_root)?;
     if !catalog.datasets.iter().any(|x| x.dataset == dataset) {
         return Err(
-            "latest alias update is gated by promotion: dataset not present in catalog".to_string()
+            "latest alias update is gated by promotion: dataset not present in catalog".to_string(),
         );
     }
     fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
@@ -247,8 +259,11 @@ pub(crate) fn update_latest_alias(
     alias_record.validate().map_err(|e| e.to_string())?;
     let alias_path = store_root.join("latest.alias.json");
     let tmp = store_root.join("latest.alias.json.tmp");
-    fs::write(&tmp, canonical::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?)
-        .map_err(|e| e.to_string())?;
+    fs::write(
+        &tmp,
+        canonical::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
     fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;
     emit_ok_payload(
         output_mode,
@@ -302,7 +317,10 @@ pub(crate) fn pack_dataset(
     append_tar_file(&mut builder, "gene_summary.sqlite", &sqlite)?;
     append_tar_file(&mut builder, "manifest.lock", &lock_bytes)?;
     builder.finish().map_err(|e| e.to_string())?;
-    emit_ok_payload(output_mode, json!({"command":"atlas dataset pack","status":"ok","out":out}))
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset pack","status":"ok","out":out}),
+    )
 }
 
 pub(crate) fn verify_pack(pack: PathBuf, output_mode: OutputMode) -> Result<(), String> {
@@ -313,7 +331,11 @@ pub(crate) fn verify_pack(pack: PathBuf, output_mode: OutputMode) -> Result<(), 
     let mut lock_raw: Option<Vec<u8>> = None;
     for entry in archive.entries().map_err(|e| e.to_string())? {
         let mut e = entry.map_err(|e| e.to_string())?;
-        let path = e.path().map_err(|e| e.to_string())?.to_string_lossy().to_string();
+        let path = e
+            .path()
+            .map_err(|e| e.to_string())?
+            .to_string_lossy()
+            .to_string();
         let mut bytes = Vec::new();
         std::io::Read::read_to_end(&mut e, &mut bytes).map_err(|e| e.to_string())?;
         match path.as_str() {
@@ -328,7 +350,10 @@ pub(crate) fn verify_pack(pack: PathBuf, output_mode: OutputMode) -> Result<(), 
     let lock_raw = lock_raw.ok_or_else(|| "manifest.lock missing in pack".to_string())?;
     let lock: ManifestLock = serde_json::from_slice(&lock_raw).map_err(|e| e.to_string())?;
     lock.validate(&manifest, &sqlite)?;
-    emit_ok_payload(output_mode, json!({"command":"atlas dataset verify-pack","status":"ok"}))
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset verify-pack","status":"ok"}),
+    )
 }
 
 fn append_tar_file(
@@ -341,14 +366,22 @@ fn append_tar_file(
     header.set_mode(0o644);
     header.set_mtime(0);
     header.set_cksum();
-    builder.append_data(&mut header, name, bytes).map_err(|e| e.to_string())
+    builder
+        .append_data(&mut header, name, bytes)
+        .map_err(|e| e.to_string())
 }
 
 fn emit_ok_payload(output_mode: OutputMode, payload: serde_json::Value) -> Result<(), String> {
     if output_mode.json {
-        println!("{}", serde_json::to_string(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
     } else {
-        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
@@ -406,7 +439,11 @@ fn validate_sqlite_contract(sqlite_path: &PathBuf) -> Result<(), String> {
         return Err("schema_version must be positive".to_string());
     }
     let analyzed: String = conn
-        .query_row("SELECT v FROM atlas_meta WHERE k='analyze_completed'", [], |r| r.get(0))
+        .query_row(
+            "SELECT v FROM atlas_meta WHERE k='analyze_completed'",
+            [],
+            |r| r.get(0),
+        )
         .map_err(|_| "atlas_meta.analyze_completed missing".to_string())?;
     if analyzed != "true" {
         return Err("ANALYZE required gate failed: analyze_completed != true".to_string());
@@ -432,7 +469,11 @@ fn read_schema_version(conn: &rusqlite::Connection) -> Result<i64, String> {
             .map_err(|e| e.to_string());
     }
     let legacy_schema_version: String = conn
-        .query_row("SELECT v FROM atlas_meta WHERE k='schema_version'", [], |r| r.get(0))
+        .query_row(
+            "SELECT v FROM atlas_meta WHERE k='schema_version'",
+            [],
+            |r| r.get(0),
+        )
         .map_err(|_| "atlas_meta.schema_version missing".to_string())?;
     legacy_schema_version
         .parse::<i64>()
@@ -453,7 +494,10 @@ fn validate_shard_catalog_and_indexes(derived_dir: &std::path::Path) -> Result<(
         let bytes = fs::read(&shard_path).map_err(|e| e.to_string())?;
         let actual = sha256_hex(&bytes);
         if actual != shard.sqlite_sha256 {
-            return Err(format!("shard checksum mismatch for {}", shard_path.display()));
+            return Err(format!(
+                "shard checksum mismatch for {}",
+                shard_path.display()
+            ));
         }
     }
     Ok(())

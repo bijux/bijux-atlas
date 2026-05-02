@@ -204,11 +204,14 @@ pub fn write_ingest_outputs(
     })
 }
 
-fn write_canonical_evidence(decoded: &DecodedIngest, derived_dir: &std::path::Path) -> Result<(), IngestError> {
+fn write_canonical_evidence(
+    decoded: &DecodedIngest,
+    derived_dir: &std::path::Path,
+) -> Result<(), IngestError> {
     let canonical_path = derived_dir.join("canonical_features.json");
     let summary_path = derived_dir.join("canonical_summary.json");
-    let model_bytes =
-        canonical::stable_json_bytes(&decoded.canonical_model).map_err(|e| IngestError(e.to_string()))?;
+    let model_bytes = canonical::stable_json_bytes(&decoded.canonical_model)
+        .map_err(|e| IngestError(e.to_string()))?;
     std::fs::write(canonical_path, model_bytes).map_err(|e| IngestError(e.to_string()))?;
     let summary_payload = serde_json::json!({
         "schema_version": decoded.canonical_model.schema_version,
@@ -309,7 +312,8 @@ fn write_evidence_sidecars(
     });
     let anomaly_summary_bytes =
         canonical::stable_json_bytes(&anomaly_summary).map_err(|e| IngestError(e.to_string()))?;
-    fs::write(&paths.anomaly_summary, anomaly_summary_bytes).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(&paths.anomaly_summary, anomaly_summary_bytes)
+        .map_err(|e| IngestError(e.to_string()))?;
 
     let build_metadata = json!({
         "schema_version": 1,
@@ -324,7 +328,8 @@ fn write_evidence_sidecars(
     });
     let build_metadata_bytes =
         canonical::stable_json_bytes(&build_metadata).map_err(|e| IngestError(e.to_string()))?;
-    fs::write(&paths.build_metadata, build_metadata_bytes).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(&paths.build_metadata, build_metadata_bytes)
+        .map_err(|e| IngestError(e.to_string()))?;
 
     let dataset_stats = json!({
         "schema_version": 1,
@@ -369,8 +374,14 @@ fn write_evidence_sidecars(
         ("build_metadata", &paths.build_metadata),
         ("dataset_stats", &paths.dataset_stats),
         ("scientific_profile", &paths.scientific_profile),
-        ("canonical_features", &paths.derived_dir.join("canonical_features.json")),
-        ("canonical_summary", &paths.derived_dir.join("canonical_summary.json")),
+        (
+            "canonical_features",
+            &paths.derived_dir.join("canonical_features.json"),
+        ),
+        (
+            "canonical_summary",
+            &paths.derived_dir.join("canonical_summary.json"),
+        ),
         ("release_gene_index", &paths.release_gene_index),
         ("gff3", &paths.gff3),
         ("fasta", &paths.fasta),
@@ -411,7 +422,8 @@ fn write_evidence_sidecars(
     });
     let inventory_bytes =
         canonical::stable_json_bytes(&inventory).map_err(|e| IngestError(e.to_string()))?;
-    fs::write(&paths.artifact_inventory, inventory_bytes).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(&paths.artifact_inventory, inventory_bytes)
+        .map_err(|e| IngestError(e.to_string()))?;
 
     let mut bundle_files = std::collections::BTreeMap::new();
     for path in [

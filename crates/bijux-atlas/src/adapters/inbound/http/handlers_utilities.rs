@@ -785,7 +785,8 @@ pub(crate) async fn failure_injection_handler(
         FailureInjectionCategory::ShardCorruption => FailureCategory::ShardCorruption,
         FailureInjectionCategory::NetworkPartition => FailureCategory::NetworkPartition,
     };
-    let event_id = resilience.record_failure(category, plan.target_id.clone(), now_unix_ms, plan.detail);
+    let event_id =
+        resilience.record_failure(category, plan.target_id.clone(), now_unix_ms, plan.detail);
     tracing::warn!(
         event_id = "failure_injection",
         route = "/debug/failure-injection",

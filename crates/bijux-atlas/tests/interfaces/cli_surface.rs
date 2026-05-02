@@ -29,8 +29,10 @@ fn parse_commands_from_help(text: &str) -> Vec<String> {
 
 #[test]
 fn help_command_surface_is_stable() {
-    let output =
-        Command::new(env!("CARGO_BIN_EXE_bijux-atlas")).arg("--help").output().expect("run help");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .arg("--help")
+        .output()
+        .expect("run help");
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8 help");
     let observed = parse_commands_from_help(&text);

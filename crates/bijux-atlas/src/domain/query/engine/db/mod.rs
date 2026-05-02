@@ -78,8 +78,10 @@ pub fn build_count_sql(req: &GeneQueryRequest) -> (String, Vec<Value>) {
 
 pub fn query_gene_count(conn: &Connection, req: &GeneQueryRequest) -> Result<i64, String> {
     let (sql, params) = build_count_sql(req);
-    conn.query_row(&sql, params_from_iter(params.iter()), |row| row.get::<_, i64>(0))
-        .map_err(|e| e.to_string())
+    conn.query_row(&sql, params_from_iter(params.iter()), |row| {
+        row.get::<_, i64>(0)
+    })
+    .map_err(|e| e.to_string())
 }
 
 pub fn assert_index_usage(

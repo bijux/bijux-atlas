@@ -130,7 +130,10 @@ impl CliError {
         } else {
             (ExitCode::Internal, "internal_error")
         };
-        Self { exit_code, machine: MachineError::new(code, &message) }
+        Self {
+            exit_code,
+            machine: MachineError::new(code, &message),
+        }
     }
 }
 
@@ -214,7 +217,11 @@ fn run() -> Result<(), CliError> {
         exit_code: ExitCode::Usage,
         machine: MachineError::new("usage_error", "missing command; see --help"),
     })?;
-    let log_flags = LogFlags { quiet: cli.quiet, verbose: cli.verbose, trace: cli.trace };
+    let log_flags = LogFlags {
+        quiet: cli.quiet,
+        verbose: cli.verbose,
+        trace: cli.trace,
+    };
 
     dispatch::run_atlas_command(command, log_flags, output_mode)
 }
@@ -297,7 +304,11 @@ fn normalize_legacy_namespace(args: &[String]) -> (Vec<String>, bool) {
 }
 
 fn normalize_legacy_command_aliases(args: &mut [String]) {
-    if let Some(first_positional) = args.iter_mut().skip(1).find(|token| !token.starts_with('-')) {
+    if let Some(first_positional) = args
+        .iter_mut()
+        .skip(1)
+        .find(|token| !token.starts_with('-'))
+    {
         if first_positional == "print-config" {
             *first_positional = "config".to_string();
         }

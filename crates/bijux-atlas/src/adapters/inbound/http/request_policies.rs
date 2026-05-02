@@ -806,12 +806,16 @@ pub(crate) async fn debug_route_hardening_middleware(
     let path = req.uri().path().to_string();
     let mut resp = next.run(req).await;
     if path.starts_with("/debug/") || path.starts_with("/v1/_debug/") {
-        resp.headers_mut()
-            .insert("cache-control", HeaderValue::from_static("no-store, max-age=0"));
+        resp.headers_mut().insert(
+            "cache-control",
+            HeaderValue::from_static("no-store, max-age=0"),
+        );
         resp.headers_mut()
             .insert("pragma", HeaderValue::from_static("no-cache"));
-        resp.headers_mut()
-            .insert("x-robots-tag", HeaderValue::from_static("noindex, nofollow"));
+        resp.headers_mut().insert(
+            "x-robots-tag",
+            HeaderValue::from_static("noindex, nofollow"),
+        );
     }
     resp
 }
@@ -1054,10 +1058,7 @@ pub(crate) async fn security_middleware(
         );
     }
     if let Some(raw_query) = req.uri().query() {
-        let query_params = raw_query
-            .split('&')
-            .filter(|pair| !pair.is_empty())
-            .count();
+        let query_params = raw_query.split('&').filter(|pair| !pair.is_empty()).count();
         if query_params > state.api.max_query_params {
             record_policy_violation(&state, "query_params").await;
             let err = Json(ApiError::new(

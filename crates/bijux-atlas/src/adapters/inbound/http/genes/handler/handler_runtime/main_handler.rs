@@ -426,7 +426,9 @@ pub(crate) async fn genes_handler(
     let work = async {
         info!(request_id = %request_id, dataset = ?dataset, "dataset resolve");
         let c = state.cache.open_dataset_connection(&dataset).await?;
-        let _ = c.conn.prepare_cached(app_query::prepared_sql_for_class(class));
+        let _ = c
+            .conn
+            .prepare_cached(app_query::prepared_sql_for_class(class));
         state
             .metrics
             .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
@@ -481,8 +483,9 @@ pub(crate) async fn genes_handler(
                     && !req.fields.transcript_count
                     && !req.fields.sequence_length
                 {
-                    if let Some(bytes) = app_query::query_gene_id_name_json_minimal(&c.conn, gene_id)
-                        .map_err(CacheError)?
+                    if let Some(bytes) =
+                        app_query::query_gene_id_name_json_minimal(&c.conn, gene_id)
+                            .map_err(CacheError)?
                     {
                         let value: serde_json::Value = serde_json::from_slice(&bytes)
                             .map_err(|e| CacheError(e.to_string()))?;
@@ -508,8 +511,8 @@ pub(crate) async fn genes_handler(
                         });
                     }
                 }
-                let row =
-                    app_query::query_gene_by_id(&c.conn, gene_id, &req.fields).map_err(CacheError)?;
+                let row = app_query::query_gene_by_id(&c.conn, gene_id, &req.fields)
+                    .map_err(CacheError)?;
                 return Ok(crate::domain::query::GeneQueryResponse {
                     rows: row.into_iter().collect(),
                     next_cursor: None,

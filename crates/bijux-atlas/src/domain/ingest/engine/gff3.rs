@@ -190,7 +190,10 @@ pub fn validate_sequence_region_conflicts(regions: &[SequenceRegion]) -> Result<
                 )));
             }
         } else {
-            seen.insert(region.seqid.clone(), (region.start, region.end, region.line));
+            seen.insert(
+                region.seqid.clone(),
+                (region.start, region.end, region.line),
+            );
         }
     }
     Ok(())
@@ -392,8 +395,7 @@ mod tests {
         )
         .expect("write");
         let regions = parse_sequence_regions(&gff).expect("regions");
-        let err =
-            validate_sequence_region_conflicts(&regions).expect_err("conflicting seq-region");
+        let err = validate_sequence_region_conflicts(&regions).expect_err("conflicting seq-region");
         assert!(err.0.contains("GFF3_CONFLICTING_SEQUENCE_REGION"));
     }
 

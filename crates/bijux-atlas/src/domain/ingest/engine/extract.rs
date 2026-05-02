@@ -6,8 +6,8 @@ use crate::domain::canonical;
 use crate::domain::dataset::{IngestAnomalyReport, IngestRejection};
 use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::domain::query::{
-    classify_contig, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
-    FeatureIdUniquenessPolicy, SeqidNormalizationTrace, UnknownFeaturePolicy,
+    classify_contig, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    SeqidNormalizationTrace, UnknownFeaturePolicy,
 };
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -675,7 +675,10 @@ pub fn extract_gene_rows(
     for (normalized, sources) in &normalized_seqid_sources {
         let mut source_list: Vec<String> = sources.iter().cloned().collect();
         source_list.sort();
-        let source = source_list.first().cloned().unwrap_or_else(|| normalized.clone());
+        let source = source_list
+            .first()
+            .cloned()
+            .unwrap_or_else(|| normalized.clone());
         let trace = opts.seqid_policy.normalize_with_trace(&source);
         seqid_normalization_traces.insert(normalized.clone(), trace);
         if source_list.len() > 1 {

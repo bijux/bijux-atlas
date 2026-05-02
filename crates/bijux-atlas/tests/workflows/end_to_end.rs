@@ -5,7 +5,9 @@ use serde_json::Value;
 use std::path::PathBuf;
 
 fn fixture_tiny_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny").join(name)
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/tiny")
+        .join(name)
 }
 
 fn repo_root() -> PathBuf {
@@ -77,7 +79,9 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
             "--fasta",
             fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
             "--fai",
-            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            fixture_tiny_path("genome.fa.fai")
+                .to_str()
+                .expect("fai path"),
             "--output-root",
             source_root.to_str().expect("source_root"),
             "--release",
@@ -89,7 +93,11 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         ])
         .output()
         .expect("run ingest");
-    assert!(ingest.status.success(), "ingest failed: {}", String::from_utf8_lossy(&ingest.stderr));
+    assert!(
+        ingest.status.success(),
+        "ingest failed: {}",
+        String::from_utf8_lossy(&ingest.stderr)
+    );
 
     let verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)
@@ -127,12 +135,18 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert!(query_success.status.success());
     let query_success_payload: Value =
         serde_json::from_slice(&query_success.stdout).expect("query success payload");
-    assert_eq!(query_success_payload["command"].as_str(), Some("atlas query run"));
+    assert_eq!(
+        query_success_payload["command"].as_str(),
+        Some("atlas query run")
+    );
     assert_eq!(
         query_success_payload["runtime_query_evidence"]["engine"].as_str(),
         Some("sqlite")
     );
-    assert!(query_success_payload["rows"].as_array().map(|rows| !rows.is_empty()).unwrap_or(false));
+    assert!(query_success_payload["rows"]
+        .as_array()
+        .map(|rows| !rows.is_empty())
+        .unwrap_or(false));
 
     let inspect_dataset = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)
@@ -154,7 +168,10 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert!(inspect_dataset.status.success());
     let inspect_dataset_payload: Value =
         serde_json::from_slice(&inspect_dataset.stdout).expect("inspect dataset payload");
-    assert_eq!(inspect_dataset_payload["command"].as_str(), Some("atlas inspect dataset"));
+    assert_eq!(
+        inspect_dataset_payload["command"].as_str(),
+        Some("atlas inspect dataset")
+    );
 
     let inspect_db = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)
@@ -165,7 +182,10 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert!(inspect_db.status.success());
     let inspect_db_payload: Value =
         serde_json::from_slice(&inspect_db.stdout).expect("inspect db payload");
-    assert_eq!(inspect_db_payload["command"].as_str(), Some("atlas inspect db"));
+    assert_eq!(
+        inspect_db_payload["command"].as_str(),
+        Some("atlas inspect db")
+    );
 
     let inspect_provenance = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)
@@ -223,13 +243,23 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert_eq!(evidence_verify_payload["status"].as_str(), Some("ok"));
 
     let evidence_files = [
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/source_facts.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/build_metadata.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/anomaly_summary.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/dataset_stats.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/artifact_inventory.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/scientific_profile.json"),
-        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/evidence_bundle.lock.json"),
+        source_root
+            .join("release=110/species=homo_sapiens/assembly=GRCh38/derived/source_facts.json"),
+        source_root
+            .join("release=110/species=homo_sapiens/assembly=GRCh38/derived/build_metadata.json"),
+        source_root
+            .join("release=110/species=homo_sapiens/assembly=GRCh38/derived/anomaly_summary.json"),
+        source_root
+            .join("release=110/species=homo_sapiens/assembly=GRCh38/derived/dataset_stats.json"),
+        source_root.join(
+            "release=110/species=homo_sapiens/assembly=GRCh38/derived/artifact_inventory.json",
+        ),
+        source_root.join(
+            "release=110/species=homo_sapiens/assembly=GRCh38/derived/scientific_profile.json",
+        ),
+        source_root.join(
+            "release=110/species=homo_sapiens/assembly=GRCh38/derived/evidence_bundle.lock.json",
+        ),
     ];
     for path in evidence_files {
         assert!(path.exists(), "expected evidence file {}", path.display());
@@ -307,7 +337,10 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let publish_explain_payload: Value =
         serde_json::from_slice(&publish_explain.stdout).expect("publish explain payload");
     assert_eq!(publish_explain_payload["mode"].as_str(), Some("explain"));
-    assert_eq!(publish_explain_payload["writes_artifacts"].as_bool(), Some(false));
+    assert_eq!(
+        publish_explain_payload["writes_artifacts"].as_bool(),
+        Some(false)
+    );
 }
 
 #[test]
@@ -327,7 +360,9 @@ fn ingest_dry_run_and_explain_do_not_materialize_artifacts() {
             "--fasta",
             fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
             "--fai",
-            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            fixture_tiny_path("genome.fa.fai")
+                .to_str()
+                .expect("fai path"),
             "--output-root",
             source_root.to_str().expect("source_root"),
             "--release",
@@ -356,7 +391,9 @@ fn ingest_dry_run_and_explain_do_not_materialize_artifacts() {
             "--fasta",
             fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
             "--fai",
-            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            fixture_tiny_path("genome.fa.fai")
+                .to_str()
+                .expect("fai path"),
             "--output-root",
             source_root.to_str().expect("source_root"),
             "--release",
@@ -397,7 +434,9 @@ fn dataset_evidence_verify_refuses_tampered_artifacts() {
             "--fasta",
             fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
             "--fai",
-            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            fixture_tiny_path("genome.fa.fai")
+                .to_str()
+                .expect("fai path"),
             "--output-root",
             source_root.to_str().expect("source_root"),
             "--release",
@@ -409,7 +448,11 @@ fn dataset_evidence_verify_refuses_tampered_artifacts() {
         ])
         .output()
         .expect("run ingest");
-    assert!(ingest.status.success(), "ingest failed: {}", String::from_utf8_lossy(&ingest.stderr));
+    assert!(
+        ingest.status.success(),
+        "ingest failed: {}",
+        String::from_utf8_lossy(&ingest.stderr)
+    );
 
     let source_facts = derived_root.join("source_facts.json");
     let mut source_facts_payload: Value =
@@ -468,7 +511,9 @@ fn publish_refuses_scientifically_underspecified_dataset() {
             "--fasta",
             fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
             "--fai",
-            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            fixture_tiny_path("genome.fa.fai")
+                .to_str()
+                .expect("fai path"),
             "--output-root",
             source_root.to_str().expect("source_root"),
             "--release",
@@ -480,7 +525,11 @@ fn publish_refuses_scientifically_underspecified_dataset() {
         ])
         .output()
         .expect("run ingest");
-    assert!(ingest.status.success(), "ingest failed: {}", String::from_utf8_lossy(&ingest.stderr));
+    assert!(
+        ingest.status.success(),
+        "ingest failed: {}",
+        String::from_utf8_lossy(&ingest.stderr)
+    );
 
     let publish = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)

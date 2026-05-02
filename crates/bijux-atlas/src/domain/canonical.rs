@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use base64::Engine;
 #[cfg(feature = "serde")]
 use crate::contracts::errors::Error;
 use crate::contracts::errors::Result;
+use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+use base64::Engine;
 
 #[cfg(feature = "serde")]
 use serde::Serialize;
 #[cfg(feature = "serde")]
 use serde_json::{Map, Value};
 
-pub use bijux_atlas_core::canonical::{sha256, sha256_hex, stable_hash_bytes, stable_hash_hex, stable_sort_by_key, Hash256};
+pub use bijux_atlas_core::canonical::{
+    sha256, sha256_hex, stable_hash_bytes, stable_hash_hex, stable_sort_by_key, Hash256,
+};
 
 #[cfg(feature = "serde")]
 #[derive(Debug, Clone)]
@@ -34,7 +36,6 @@ impl CanonicalJson {
         Ok(stable_hash_bytes(&bytes))
     }
 }
-
 
 #[cfg(feature = "serde")]
 pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>> {

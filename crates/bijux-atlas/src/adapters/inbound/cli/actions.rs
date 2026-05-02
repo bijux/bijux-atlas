@@ -62,7 +62,10 @@ pub(super) fn emit_config_paths(machine_json: bool) -> Result<(), String> {
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
-        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
@@ -75,7 +78,10 @@ pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
-        println!("{}", serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?);
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
     }
     Ok(())
 }
@@ -321,13 +327,20 @@ fn read_sharding_policy_defaults() -> (ShardingPlanCli, usize) {
         Ok(v) => v,
         Err(_) => return (ShardingPlanCli::None, 512),
     };
-    let plan = match v.get("default_plan").and_then(serde_json::Value::as_str).unwrap_or("none") {
+    let plan = match v
+        .get("default_plan")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("none")
+    {
         "contig" => ShardingPlanCli::Contig,
         "region_grid" => ShardingPlanCli::RegionGrid,
         _ => ShardingPlanCli::None,
     };
-    let max_shards =
-        v.get("max_shards").and_then(serde_json::Value::as_u64).map(|x| x as usize).unwrap_or(512);
+    let max_shards = v
+        .get("max_shards")
+        .and_then(serde_json::Value::as_u64)
+        .map(|x| x as usize)
+        .unwrap_or(512);
     (plan, max_shards)
 }
 
@@ -337,8 +350,9 @@ pub(super) fn inspect_db(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let conn = Connection::open(db).map_err(|e| e.to_string())?;
-    let schema_version: i64 =
-        conn.query_row("PRAGMA user_version", [], |row| row.get(0)).map_err(|e| e.to_string())?;
+    let schema_version: i64 = conn
+        .query_row("PRAGMA user_version", [], |row| row.get(0))
+        .map_err(|e| e.to_string())?;
 
     let mut idx_stmt = conn
         .prepare("SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' ORDER BY name")
@@ -490,10 +504,9 @@ pub(super) fn inspect_provenance(
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
         serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
-    let source_facts: Value = serde_json::from_str(
-        &fs::read_to_string(&paths.source_facts).map_err(|e| e.to_string())?,
-    )
-    .map_err(|e| e.to_string())?;
+    let source_facts: Value =
+        serde_json::from_str(&fs::read_to_string(&paths.source_facts).map_err(|e| e.to_string())?)
+            .map_err(|e| e.to_string())?;
     let build_metadata: Value = serde_json::from_str(
         &fs::read_to_string(&paths.build_metadata).map_err(|e| e.to_string())?,
     )
@@ -548,8 +561,11 @@ pub(super) fn export_query_rows(
     }
     match format {
         ExportFormat::Json => {
-            fs::write(&out, serde_json::to_vec_pretty(&resp.rows).map_err(|e| e.to_string())?)
-                .map_err(|e| e.to_string())?;
+            fs::write(
+                &out,
+                serde_json::to_vec_pretty(&resp.rows).map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?;
         }
         ExportFormat::Jsonl => {
             let mut buf = String::new();
@@ -582,8 +598,12 @@ pub(super) fn export_query_rows(
                         row.start.map(|x| x.to_string()).unwrap_or_default(),
                         row.end.map(|x| x.to_string()).unwrap_or_default(),
                         row.biotype.clone().unwrap_or_default(),
-                        row.transcript_count.map(|x| x.to_string()).unwrap_or_default(),
-                        row.sequence_length.map(|x| x.to_string()).unwrap_or_default(),
+                        row.transcript_count
+                            .map(|x| x.to_string())
+                            .unwrap_or_default(),
+                        row.sequence_length
+                            .map(|x| x.to_string())
+                            .unwrap_or_default(),
                     ])
                     .map_err(|e| e.to_string())?;
             }
@@ -609,10 +629,12 @@ pub(super) fn export_query_rows(
 
 fn build_query_request(args: ExplainQueryArgs) -> Result<GeneQueryRequest, String> {
     let region_filter = if let Some(raw) = args.region {
-        let (seqid, span) =
-            raw.split_once(':').ok_or_else(|| "region must be seqid:start-end".to_string())?;
-        let (start, end) =
-            span.split_once('-').ok_or_else(|| "region must be seqid:start-end".to_string())?;
+        let (seqid, span) = raw
+            .split_once(':')
+            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
+        let (start, end) = span
+            .split_once('-')
+            .ok_or_else(|| "region must be seqid:start-end".to_string())?;
         Some(RegionFilter {
             seqid: seqid.to_string(),
             start: start.parse::<u64>().map_err(|e| e.to_string())?,
@@ -669,7 +691,9 @@ pub(super) fn smoke_dataset(
             .get("name")
             .and_then(Value::as_str)
             .ok_or_else(|| "golden query missing name".to_string())?;
-        let body = q.get("query").ok_or_else(|| "golden query missing query object".to_string())?;
+        let body = q
+            .get("query")
+            .ok_or_else(|| "golden query missing query object".to_string())?;
         let req = output::query_request_from_json(body)?;
         let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
@@ -685,8 +709,11 @@ pub(super) fn smoke_dataset(
 
     if write_snapshot {
         let payload = serde_json::json!({ "dataset": dataset, "queries": out });
-        fs::write(snapshot_out, serde_json::to_vec_pretty(&payload).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?;
+        fs::write(
+            snapshot_out,
+            serde_json::to_vec_pretty(&payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| e.to_string())?;
     }
 
     output::emit_ok(

@@ -8,7 +8,9 @@ pub fn ingest_dataset(options: &IngestOptions) -> Result<IngestResult, IngestErr
     crate::domain::ingest::ingest_dataset(options)
 }
 
-pub fn replay_normalized_counts(path: &Path) -> Result<crate::domain::ingest::ReplayCounts, IngestError> {
+pub fn replay_normalized_counts(
+    path: &Path,
+) -> Result<crate::domain::ingest::ReplayCounts, IngestError> {
     crate::domain::ingest::replay_normalized_counts(path)
 }
 

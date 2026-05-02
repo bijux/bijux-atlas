@@ -798,7 +798,10 @@ impl IngestAnomalyReport {
     #[must_use]
     pub fn anomaly_class_counts(&self) -> BTreeMap<IngestAnomalyClass, u64> {
         let mut counts = BTreeMap::new();
-        counts.insert(IngestAnomalyClass::MissingParents, self.missing_parents.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::MissingParents,
+            self.missing_parents.len() as u64,
+        );
         counts.insert(
             IngestAnomalyClass::MissingTranscriptParents,
             self.missing_transcript_parents.len() as u64,
@@ -807,8 +810,14 @@ impl IngestAnomalyReport {
             IngestAnomalyClass::MultipleParentTranscripts,
             self.multiple_parent_transcripts.len() as u64,
         );
-        counts.insert(IngestAnomalyClass::UnknownContigs, self.unknown_contigs.len() as u64);
-        counts.insert(IngestAnomalyClass::OverlappingIds, self.overlapping_ids.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::UnknownContigs,
+            self.unknown_contigs.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OverlappingIds,
+            self.overlapping_ids.len() as u64,
+        );
         counts.insert(
             IngestAnomalyClass::DuplicateGeneIds,
             self.duplicate_gene_ids.len() as u64,
@@ -821,7 +830,10 @@ impl IngestAnomalyReport {
             IngestAnomalyClass::OrphanTranscripts,
             self.orphan_transcripts.len() as u64,
         );
-        counts.insert(IngestAnomalyClass::ParentCycles, self.parent_cycles.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::ParentCycles,
+            self.parent_cycles.len() as u64,
+        );
         counts.insert(
             IngestAnomalyClass::AttributeFallbacks,
             self.attribute_fallbacks.len() as u64,

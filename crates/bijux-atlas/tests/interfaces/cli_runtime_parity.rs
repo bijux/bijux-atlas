@@ -76,7 +76,10 @@ fn copy_executable(source: &Path, destination: &Path) {
 
 fn runtime_bin_dir() -> TempDir {
     let temp = TempDir::new().expect("tempdir");
-    copy_executable(Path::new(env!("CARGO_BIN_EXE_bijux-atlas")), &temp.path().join("bijux-atlas"));
+    copy_executable(
+        Path::new(env!("CARGO_BIN_EXE_bijux-atlas")),
+        &temp.path().join("bijux-atlas"),
+    );
     temp
 }
 
@@ -98,7 +101,11 @@ fn run_output(program: &Path, args: &[&str], runtime_bin_dir: &Path) -> Output {
 }
 
 fn assert_same_output(left: &Output, right: &Output) {
-    assert_eq!(left.status.code(), right.status.code(), "exit status mismatch");
+    assert_eq!(
+        left.status.code(),
+        right.status.code(),
+        "exit status mismatch"
+    );
     assert_eq!(left.stdout, right.stdout, "stdout mismatch");
     assert_eq!(left.stderr, right.stderr, "stderr mismatch");
 }

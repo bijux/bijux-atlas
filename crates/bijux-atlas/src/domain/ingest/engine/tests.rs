@@ -846,13 +846,17 @@ fn canonical_summary_and_manifest_hashes_are_emitted() {
     assert_eq!(gene_count, run.manifest.stats.gene_count);
     assert_eq!(
         summary.pointer("/hashes/query_semantic_sha256"),
-        Some(&serde_json::json!(
-            run.manifest.canonical_query_semantic_sha256.clone()
-        ))
+        Some(&serde_json::json!(run
+            .manifest
+            .canonical_query_semantic_sha256
+            .clone()))
     );
     assert_eq!(
         summary.pointer("/hashes/lineage_sensitive_sha256"),
-        Some(&serde_json::json!(run.manifest.canonical_lineage_sha256.clone()))
+        Some(&serde_json::json!(run
+            .manifest
+            .canonical_lineage_sha256
+            .clone()))
     );
     assert_eq!(run.manifest.canonical_model_schema_version, 1);
     assert_eq!(
@@ -894,10 +898,9 @@ fn report_contains_structured_rejections() {
         run.anomaly_report.rejections[0].code,
         "GFF3_UNKNOWN_FEATURE"
     );
-    let qc: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(&run.qc_report_path).expect("read qc report"),
-    )
-    .expect("parse qc report");
+    let qc: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&run.qc_report_path).expect("read qc report"))
+            .expect("parse qc report");
     assert!(
         qc.pointer("/anomaly_classes/rejections")
             .and_then(serde_json::Value::as_u64)
@@ -956,7 +959,10 @@ fn scientific_fixture_emits_contig_classes_and_reference_build_identity() {
         &std::fs::read(scientific_profile_path).expect("read scientific profile"),
     )
     .expect("parse scientific profile");
-    assert_eq!(profile["coordinate_system"].as_str(), Some("1-based-closed"));
+    assert_eq!(
+        profile["coordinate_system"].as_str(),
+        Some("1-based-closed")
+    );
     assert!(
         profile["contig_class_distribution"]["mitochondrial"]
             .as_u64()
@@ -992,7 +998,9 @@ fn scientific_incoherent_contig_naming_is_rejected_without_alias() {
     o.fasta_path = fixtures.join("incoherent_genome.fa");
     o.fai_path = fixtures.join("incoherent_genome.fa.fai");
     let err = ingest_dataset(&o).expect_err("incoherent naming should fail");
-    assert!(err.to_string().contains("SCIENTIFIC_INCOHERENT_SOURCE_COMBINATION"));
+    assert!(err
+        .to_string()
+        .contains("SCIENTIFIC_INCOHERENT_SOURCE_COMBINATION"));
 }
 
 #[test]

@@ -6,9 +6,7 @@ use std::collections::BTreeSet;
 use super::canonical_model::{build_canonical_model, CanonicalModel};
 use super::extract::{extract_gene_rows, ExtractResult};
 use super::fai::{self, ContigStats};
-use super::gff3::{
-    parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts,
-};
+use super::gff3::{parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts};
 use super::job::IngestJob;
 use super::{IngestError, IngestOptions};
 use crate::domain::query::canonical_contig_label;
@@ -86,7 +84,8 @@ fn validate_scientific_reference_coherence(
     let mut core_normalized: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
     for rec in records {
         let label = canonical_contig_label(&rec.seqid);
-        let is_core = label.parse::<u64>().is_ok() || matches!(label.as_str(), "x" | "y" | "mitochondrial");
+        let is_core =
+            label.parse::<u64>().is_ok() || matches!(label.as_str(), "x" | "y" | "mitochondrial");
         if !is_core {
             continue;
         }
