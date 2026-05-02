@@ -412,7 +412,8 @@ pub(super) fn run_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Resu
                 "query_class": format!("{query_class:?}"),
                 "estimated_cost_units": cost_units,
                 "cursor_secret_owner": "atlas-cli",
-                "engine": "sqlite"
+                "engine": "sqlite",
+                "coordinate_system": "1-based-closed"
             },
             "rows": resp.rows,
             "next_cursor": resp.next_cursor,
@@ -438,7 +439,8 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
                 "query_class": format!("{query_class:?}"),
                 "estimated_cost_units": cost_units,
                 "cursor_secret_owner": "atlas-cli",
-                "engine": "sqlite"
+                "engine": "sqlite",
+                "coordinate_system": "1-based-closed"
             },
             "plan": lines
         }),
@@ -500,6 +502,10 @@ pub(super) fn inspect_provenance(
         &fs::read_to_string(&paths.artifact_inventory).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
+    let scientific_profile: Value = serde_json::from_str(
+        &fs::read_to_string(&paths.scientific_profile).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
     output::emit_ok(
         output_mode,
         json!({
@@ -509,7 +515,10 @@ pub(super) fn inspect_provenance(
                 "manifest_identity": manifest.identity,
                 "input_hashes": manifest.input_hashes,
                 "normalized_input_identity_sha256": manifest.normalized_input_identity_sha256,
-                "build_policy_version": manifest.build_policy_version
+                "build_policy_version": manifest.build_policy_version,
+                "reference_build_identity_sha256": manifest.reference_build_identity_sha256,
+                "contig_naming_style": manifest.contig_naming_style,
+                "scientific_prerequisites_status": manifest.scientific_prerequisites_status
             },
             "runtime_api_evidence": {
                 "carrier": "http provenance envelope",
@@ -518,6 +527,7 @@ pub(super) fn inspect_provenance(
             "source_facts": source_facts,
             "build_metadata": build_metadata,
             "artifact_inventory": artifact_inventory,
+            "scientific_profile": scientific_profile,
         }),
     )?;
     Ok(())
