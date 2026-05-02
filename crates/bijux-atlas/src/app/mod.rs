@@ -3,4 +3,5 @@
 pub mod cache;
 pub mod ingest;
 pub mod ports;
+pub mod query;
 pub mod server;

@@ -15,7 +15,7 @@ use crate::app::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
 use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
-use crate::domain::query::{
+use crate::app::query::{
     classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
     GeneFilter, GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter,
     SeqidNormalizationPolicy, TranscriptTypePolicy,
