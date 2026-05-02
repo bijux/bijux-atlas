@@ -408,6 +408,12 @@ pub(super) fn run_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Resu
             "command":"atlas query run",
             "query_class": format!("{query_class:?}"),
             "estimated_cost_units": cost_units,
+            "runtime_query_evidence": {
+                "query_class": format!("{query_class:?}"),
+                "estimated_cost_units": cost_units,
+                "cursor_secret_owner": "atlas-cli",
+                "engine": "sqlite"
+            },
             "rows": resp.rows,
             "next_cursor": resp.next_cursor,
         }),
@@ -428,6 +434,12 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
             "command":"atlas query explain",
             "query_class": format!("{query_class:?}"),
             "estimated_cost_units": cost_units,
+            "runtime_query_evidence": {
+                "query_class": format!("{query_class:?}"),
+                "estimated_cost_units": cost_units,
+                "cursor_secret_owner": "atlas-cli",
+                "engine": "sqlite"
+            },
             "plan": lines
         }),
     )?;
@@ -459,6 +471,53 @@ pub(super) fn inspect_dataset(
             "stats": manifest.stats,
             "identity": manifest.identity,
             "canonical_feature_counts": manifest.canonical_feature_counts,
+        }),
+    )?;
+    Ok(())
+}
+
+pub(super) fn inspect_provenance(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    let source_facts: Value = serde_json::from_str(
+        &fs::read_to_string(&paths.source_facts).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    let build_metadata: Value = serde_json::from_str(
+        &fs::read_to_string(&paths.build_metadata).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    let artifact_inventory: Value = serde_json::from_str(
+        &fs::read_to_string(&paths.artifact_inventory).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    output::emit_ok(
+        output_mode,
+        json!({
+            "command":"atlas inspect provenance",
+            "dataset": dataset.canonical_string(),
+            "build_evidence": {
+                "manifest_identity": manifest.identity,
+                "input_hashes": manifest.input_hashes,
+                "normalized_input_identity_sha256": manifest.normalized_input_identity_sha256,
+                "build_policy_version": manifest.build_policy_version
+            },
+            "runtime_api_evidence": {
+                "carrier": "http provenance envelope",
+                "fields": ["dataset_hash", "release", "species", "assembly", "manifest_version", "db_schema_version", "dataset_signature_sha256"]
+            },
+            "source_facts": source_facts,
+            "build_metadata": build_metadata,
+            "artifact_inventory": artifact_inventory,
         }),
     )?;
     Ok(())
