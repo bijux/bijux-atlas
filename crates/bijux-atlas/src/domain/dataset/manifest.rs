@@ -153,6 +153,16 @@ pub struct ArtifactManifest {
     pub evidence_bundle_path: String,
     #[serde(default)]
     pub evidence_bundle_sha256: String,
+    #[serde(default)]
+    pub reference_build_identity_sha256: String,
+    #[serde(default)]
+    pub contig_naming_style: String,
+    #[serde(default)]
+    pub coordinate_system: String,
+    #[serde(default)]
+    pub scientific_prerequisites_status: String,
+    #[serde(default)]
+    pub scientific_profile_path: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
     #[serde(default)]
@@ -223,6 +233,11 @@ impl ArtifactManifest {
             artifact_inventory_path: String::new(),
             evidence_bundle_path: String::new(),
             evidence_bundle_sha256: String::new(),
+            reference_build_identity_sha256: String::new(),
+            contig_naming_style: String::new(),
+            coordinate_system: String::new(),
+            scientific_prerequisites_status: String::new(),
+            scientific_profile_path: String::new(),
             sharding_plan: ShardingPlan::None,
             canonical_model_schema_version: 0,
             canonical_query_semantic_sha256: String::new(),
@@ -476,6 +491,7 @@ pub struct ArtifactPaths {
     pub dataset_stats: PathBuf,
     pub artifact_inventory: PathBuf,
     pub evidence_bundle: PathBuf,
+    pub scientific_profile: PathBuf,
     pub release_gene_index: PathBuf,
 }
 
@@ -504,6 +520,7 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
         dataset_stats: derived.join("dataset_stats.json"),
         artifact_inventory: derived.join("artifact_inventory.json"),
         evidence_bundle: derived.join("evidence_bundle.lock.json"),
+        scientific_profile: derived.join("scientific_profile.json"),
         release_gene_index: derived.join("release_gene_index.json"),
     }
 }
@@ -688,6 +705,8 @@ pub struct IngestAnomalyReport {
     pub missing_required_fields: Vec<String>,
     #[serde(default)]
     pub rejections: Vec<IngestRejection>,
+    #[serde(default)]
+    pub scientific_ambiguities: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -716,6 +735,7 @@ pub enum IngestAnomalyClass {
     UnknownFeatureTypes,
     MissingRequiredFields,
     Rejections,
+    ScientificAmbiguities,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, Hash)]
@@ -815,6 +835,10 @@ impl IngestAnomalyReport {
             self.missing_required_fields.len() as u64,
         );
         counts.insert(IngestAnomalyClass::Rejections, self.rejections.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::ScientificAmbiguities,
+            self.scientific_ambiguities.len() as u64,
+        );
         counts
     }
 
@@ -826,6 +850,7 @@ impl IngestAnomalyReport {
             | IngestAnomalyClass::Rejections
             | IngestAnomalyClass::ParentCycles
             | IngestAnomalyClass::UnknownContigs => QcSeverity::Error,
+            IngestAnomalyClass::ScientificAmbiguities => QcSeverity::Warn,
             _ => QcSeverity::Warn,
         }
     }
