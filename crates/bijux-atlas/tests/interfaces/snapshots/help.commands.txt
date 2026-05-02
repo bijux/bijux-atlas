@@ -3,8 +3,10 @@ completion
 config
 dataset
 diff
+export
 gc
 ingest
-openapi
+inspect
 policy
+query
 version
