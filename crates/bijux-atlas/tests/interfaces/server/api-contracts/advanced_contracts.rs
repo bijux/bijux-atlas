@@ -550,7 +550,28 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
     .await;
     assert_eq!(status, 200);
     let json: Value = serde_json::from_str(&body).expect("genes explain json");
-    assert!(json.get("data").and_then(|d| d.get("explain")).is_some());
+    let explain = json.get("data").and_then(|d| d.get("explain"));
+    assert!(explain.is_some());
+    assert_eq!(
+        explain
+            .and_then(|e| e.get("dataset_target"))
+            .and_then(Value::as_str),
+        Some("110/homo_sapiens/GRCh38")
+    );
+    assert_eq!(
+        explain
+            .and_then(|e| e.get("effective_filters"))
+            .and_then(|f| f.get("gene_id"))
+            .and_then(Value::as_str),
+        Some("g1")
+    );
+    assert_eq!(
+        explain
+            .and_then(|e| e.get("result_bounds"))
+            .and_then(|b| b.get("returned_rows"))
+            .and_then(Value::as_u64),
+        Some(1)
+    );
 
     let (status, _, body) = send_raw(
         addr,
