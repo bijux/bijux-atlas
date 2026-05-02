@@ -253,7 +253,7 @@ fn strict_warn_mode_fails_on_qc_warn() {
     o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
     o.fail_on_warn = true;
     let err = ingest_dataset(&o).expect_err("strict warn must fail");
-    assert!(err.to_string().contains("QC WARN"));
+    assert!(err.to_string().contains("INGEST_WARN_POLICY_REJECTED"));
 }
 
 #[test]

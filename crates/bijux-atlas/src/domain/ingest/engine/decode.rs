@@ -24,8 +24,11 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
             fai::write_fai_from_fasta(&job.inputs.fasta_path, &job.inputs.fai_path)?;
         } else {
             return Err(IngestError(
-                "FAI index is required for ingest (enable dev auto-generate explicitly)"
-                    .to_string(),
+                format!(
+                    "FAI_REQUIRED_FOR_INGEST: missing {}. Generate with `samtools faidx {}` or enable --dev-auto-generate-fai for controlled development runs.",
+                    job.inputs.fai_path.display(),
+                    job.inputs.fasta_path.display()
+                ),
             ));
         }
     }

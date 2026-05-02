@@ -201,8 +201,24 @@ pub fn ingest_dataset_with_events(
         return Err(err);
     }
     if opts.fail_on_warn && has_qc_warn(&decoded.extract.anomaly) {
+        let warn_count = decoded
+            .extract
+            .anomaly
+            .anomaly_class_counts()
+            .into_iter()
+            .filter(|(class, _)| {
+                matches!(
+                    IngestAnomalyReport::severity_for_class(*class),
+                    crate::domain::dataset::QcSeverity::Warn
+                )
+            })
+            .map(|(_, count)| count)
+            .sum::<u64>();
         return Err(IngestError(
-            "strict warning policy rejected ingest: QC WARN present".to_string(),
+            format!(
+                "INGEST_WARN_POLICY_REJECTED: {} warning anomalies present. Resolve source warnings or run without --strict when policy allows.",
+                warn_count
+            ),
         ));
     }
     log.emit(
@@ -254,7 +270,7 @@ fn evaluate_anomaly_thresholds(
     if let Some(max_warn) = opts.max_warn_anomalies {
         if warn_total > max_warn {
             return Err(IngestError(format!(
-                "ingest anomaly threshold exceeded: WARN {} > max_warn_anomalies {}",
+                "ingest anomaly threshold exceeded: WARN {} > max_warn_anomalies {}. Reduce WARN-class anomalies in sources or raise max_warn_anomalies deliberately.",
                 warn_total, max_warn
             )));
         }
@@ -262,7 +278,7 @@ fn evaluate_anomaly_thresholds(
     if let Some(max_error) = opts.max_error_anomalies {
         if error_total > max_error {
             return Err(IngestError(format!(
-                "ingest anomaly threshold exceeded: ERROR {} > max_error_anomalies {}",
+                "ingest anomaly threshold exceeded: ERROR {} > max_error_anomalies {}. Fix source errors before publication; threshold increases should be exceptional.",
                 error_total, max_error
             )));
         }

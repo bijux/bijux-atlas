@@ -51,7 +51,7 @@ fn missing_fai_without_opt_in_auto_generation_fails() {
 
     let err = ingest_dataset(&opts).expect_err("missing fai must fail");
     assert!(
-        err.0.contains("FAI index is required"),
+        err.0.contains("FAI_REQUIRED_FOR_INGEST"),
         "unexpected error: {}",
         err.0
     );
