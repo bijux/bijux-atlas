@@ -24,10 +24,25 @@ pub fn build_sql(
         sql.push_str(" JOIN gene_summary_rtree r ON r.gene_rowid = g.id");
         where_parts.push("g.seqid = ?".to_string());
         params.push(Value::Text(region.seqid.clone()));
-        where_parts.push("r.start <= ?".to_string());
-        params.push(Value::Real(region.end as f64));
-        where_parts.push("r.end >= ?".to_string());
-        params.push(Value::Real(region.start as f64));
+        match req.filter.interval {
+            super::filters::IntervalSemantics::Overlap => {
+                where_parts.push("r.start <= ?".to_string());
+                params.push(Value::Real(region.end as f64));
+                where_parts.push("r.end >= ?".to_string());
+                params.push(Value::Real(region.start as f64));
+            }
+            super::filters::IntervalSemantics::Containment => {
+                where_parts.push("r.start >= ?".to_string());
+                params.push(Value::Real(region.start as f64));
+                where_parts.push("r.end <= ?".to_string());
+                params.push(Value::Real(region.end as f64));
+            }
+            super::filters::IntervalSemantics::BoundaryTouch => {
+                where_parts.push("(r.end = ? OR r.start = ?)".to_string());
+                params.push(Value::Real(region.start as f64));
+                params.push(Value::Real(region.end as f64));
+            }
+        }
     }
     if let Some(gene_id) = &req.filter.gene_id {
         where_parts.push("g.gene_id = ?".to_string());

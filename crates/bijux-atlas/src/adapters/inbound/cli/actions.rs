@@ -3,7 +3,7 @@
 use super::ingest_inputs::resolve_verify_and_lock_inputs;
 use super::operations;
 use super::*;
-use crate::domain::query::QuerySort;
+use crate::domain::query::{IntervalSemantics, QuerySort};
 
 use std::path::PathBuf;
 
@@ -410,6 +410,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
             biotype: args.biotype,
             region: region_filter,
             sort: QuerySort::Auto,
+            interval: IntervalSemantics::Overlap,
         },
         limit: args.limit,
         cursor: None,

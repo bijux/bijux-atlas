@@ -35,6 +35,24 @@ pub enum SortKey {
     RegionAsc,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum IntervalMode {
+    Overlap,
+    Containment,
+    BoundaryTouch,
+}
+
+impl IntervalMode {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "overlap" => Some(Self::Overlap),
+            "containment" => Some(Self::Containment),
+            "boundary_touch" => Some(Self::BoundaryTouch),
+            _ => None,
+        }
+    }
+}
+
 impl SortKey {
     fn parse(raw: &str) -> Option<Self> {
         match raw {
@@ -62,6 +80,7 @@ pub struct ListGenesParams {
     pub max_transcripts: Option<u64>,
     pub sort: Option<SortKey>,
     pub include: Option<Vec<IncludeField>>,
+    pub interval_mode: Option<IntervalMode>,
     pub pretty: bool,
 }
 
@@ -124,6 +143,13 @@ pub fn parse_list_genes_params_with_limit(
         let parsed = SortKey::parse(raw_sort)
             .ok_or_else(|| ApiError::invalid_param("sort", "allowed: gene_id:asc,region:asc"))?;
         Some(parsed)
+    } else {
+        None
+    };
+    let interval_mode = if let Some(raw_interval_mode) = query.get("interval_mode") {
+        Some(IntervalMode::parse(raw_interval_mode).ok_or_else(|| {
+            ApiError::invalid_param("interval_mode", "allowed: overlap,containment,boundary_touch")
+        })?)
     } else {
         None
     };
@@ -205,6 +231,7 @@ pub fn parse_list_genes_params_with_limit(
         min_transcripts,
         max_transcripts,
         sort,
+        interval_mode,
         include,
         pretty: query
             .get("pretty")
@@ -308,7 +335,7 @@ fn parse_u64_opt(
 }
 
 fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiError> {
-    const ALLOWED_PARAMS: [&str; 19] = [
+    const ALLOWED_PARAMS: [&str; 20] = [
         "release",
         "species",
         "assembly",
@@ -325,6 +352,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
         "max_transcripts",
         "include",
         "sort",
+        "interval_mode",
         "pretty",
         "explain",
         "fields",

@@ -360,6 +360,52 @@ fn region_ordering_is_stable() {
 }
 
 #[test]
+fn interval_semantics_overlap_containment_and_boundary_touch_are_distinct() {
+    let conn = setup_db();
+    let base = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 40,
+                end: 50,
+            }),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+
+    let mut overlap_req = base.clone();
+    overlap_req.filter.interval = IntervalSemantics::Overlap;
+    let overlap = query_genes(&conn, &overlap_req, &limits(), b"s").expect("overlap");
+    let overlap_ids = overlap
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
+    assert!(overlap_ids.contains(&"gene1"));
+    assert!(overlap_ids.contains(&"gene2"));
+
+    let mut contained_req = base.clone();
+    contained_req.filter.interval = IntervalSemantics::Containment;
+    let contained = query_genes(&conn, &contained_req, &limits(), b"s").expect("containment");
+    assert!(contained.rows.is_empty(), "no chr1 gene fully inside 40..50");
+
+    let mut touch_req = base;
+    touch_req.filter.interval = IntervalSemantics::BoundaryTouch;
+    let touch = query_genes(&conn, &touch_req, &limits(), b"s").expect("touch");
+    let touch_ids = touch
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
+    assert_eq!(touch_ids, vec!["gene1", "gene2"]);
+}
+
+#[test]
 fn cursor_error_maps_to_stable_code() {
     let conn = setup_db();
     let req = GeneQueryRequest {

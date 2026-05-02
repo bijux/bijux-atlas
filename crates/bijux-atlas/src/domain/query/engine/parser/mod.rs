@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::filters::{GeneQueryRequest, QuerySort};
+use super::filters::{GeneQueryRequest, IntervalSemantics, QuerySort};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -9,7 +9,12 @@ pub enum Predicate {
     NameEquals(String),
     NamePrefix(String),
     Biotype(String),
-    Region { seqid: String, start: u64, end: u64 },
+    Region {
+        seqid: String,
+        start: u64,
+        end: u64,
+        semantics: IntervalSemantics,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -74,6 +79,7 @@ pub fn parse_gene_query(req: &GeneQueryRequest) -> Result<GeneQueryAst, ParseErr
             seqid: v.seqid.clone(),
             start: v.start,
             end: v.end,
+            semantics: req.filter.interval,
         });
     }
 

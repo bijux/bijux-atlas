@@ -38,6 +38,11 @@ fn predicate_sort_key(predicate: &Predicate) -> String {
         Predicate::NameEquals(v) => format!("1:{v}"),
         Predicate::NamePrefix(v) => format!("2:{v}"),
         Predicate::Biotype(v) => format!("3:{v}"),
-        Predicate::Region { seqid, start, end } => format!("4:{seqid}:{start}:{end}"),
+        Predicate::Region {
+            seqid,
+            start,
+            end,
+            semantics,
+        } => format!("4:{seqid}:{start}:{end}:{semantics:?}"),
     }
 }

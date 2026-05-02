@@ -37,6 +37,7 @@ fn base_params() -> ListGenesParams {
         min_transcripts: None,
         max_transcripts: None,
         sort: None,
+        interval_mode: None,
         include: None,
         pretty: false,
     }

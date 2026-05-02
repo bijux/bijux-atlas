@@ -39,7 +39,7 @@ pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
 pub use executor::execute_gene_query;
 pub use filters::{
     compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields, GeneFilter,
-    GeneRow, QuerySort, RegionFilter, TranscriptFilter, TranscriptQueryRequest,
+    GeneRow, IntervalSemantics, QuerySort, RegionFilter, TranscriptFilter, TranscriptQueryRequest,
     TranscriptQueryResponse,
     TranscriptRow,
 };

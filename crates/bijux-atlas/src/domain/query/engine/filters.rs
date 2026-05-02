@@ -42,6 +42,8 @@ pub struct GeneFilter {
     pub region: Option<RegionFilter>,
     #[serde(default)]
     pub sort: QuerySort,
+    #[serde(default)]
+    pub interval: IntervalSemantics,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
@@ -51,6 +53,15 @@ pub enum QuerySort {
     Auto,
     GeneIdAsc,
     RegionAsc,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum IntervalSemantics {
+    #[default]
+    Overlap,
+    Containment,
+    BoundaryTouch,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
