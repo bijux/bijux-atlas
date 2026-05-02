@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::commands::{CatalogCommand, DatasetCommand, DiffCommand, GcCommand};
+use super::commands::{
+    CatalogCommand, DatasetCommand, DiffCommand, ExportCommand, GcCommand, InspectCommand,
+    QueryCommand,
+};
 use clap::{ArgAction, Parser, Subcommand, ValueEnum};
 use clap_complete::Shell;
 use std::path::PathBuf as CliPathBuf;
@@ -10,7 +13,7 @@ use std::path::PathBuf as CliPathBuf;
 #[command(about = "Bijux Atlas operations CLI")]
 #[command(help_template = super::BIJUX_HELP_TEMPLATE)]
 #[command(
-    after_help = "Environment:\n  BIJUX_LOG_LEVEL   Log verbosity override\n  BIJUX_CACHE_DIR   Shared cache directory"
+    after_help = "Workflows:\n  build dataset: ingest [--dry-run|--explain] -> dataset verify -> dataset publish [--dry-run|--explain] -> catalog promote\n  inspect/query: inspect dataset|db and query run|explain\n  export: export openapi or export query rows\n\nEnvironment:\n  BIJUX_LOG_LEVEL   Log verbosity override\n  BIJUX_CACHE_DIR   Shared cache directory"
 )]
 pub(crate) struct Cli {
     #[arg(long, global = true, default_value_t = false)]
@@ -133,6 +136,10 @@ pub(crate) enum AtlasCommand {
         normalized_replay: bool,
         #[arg(long, default_value_t = false)]
         prod_mode: bool,
+        #[arg(long, default_value_t = false)]
+        dry_run: bool,
+        #[arg(long, default_value_t = false)]
+        explain: bool,
     },
     #[command(hide = true)]
     IngestVerifyInputs {
@@ -214,22 +221,29 @@ pub(crate) enum AtlasCommand {
         root: CliPathBuf,
         #[arg(long)]
         dataset: String,
-        #[arg(
-            long,
-            default_value = "ops/datasets/fixtures/medium/api-list-queries.v1.json"
-        )]
+        #[arg(long, default_value = "ops/datasets/fixtures/medium/api-list-queries.v1.json")]
         golden_queries: CliPathBuf,
         #[arg(long, default_value_t = false)]
         write_snapshot: bool,
-        #[arg(
-            long,
-            default_value = "ops/datasets/fixtures/medium/api-list-responses.v1.json"
-        )]
+        #[arg(long, default_value = "ops/datasets/fixtures/medium/api-list-responses.v1.json")]
         snapshot_out: CliPathBuf,
     },
+    #[command(hide = true)]
     Openapi {
         #[command(subcommand)]
         command: OpenapiCommand,
+    },
+    Query {
+        #[command(subcommand)]
+        command: QueryCommand,
+    },
+    Inspect {
+        #[command(subcommand)]
+        command: InspectCommand,
+    },
+    Export {
+        #[command(subcommand)]
+        command: ExportCommand,
     },
 }
 
