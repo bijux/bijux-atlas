@@ -61,10 +61,24 @@ fn request_validation_region_parser_is_strict() {
     let valid = parse_region_filter(Some("chr1:10-20".to_string())).expect("valid region");
     assert_eq!(valid.expect("region").start, 10);
 
-    for raw in ["chr1", "chr1:10", "chr1:0-10", "chr1:20-10", "chr1:x-10"] {
+    for raw in ["chr1", "chr1:10", "chr1:x-10"] {
         let err = parse_region_filter(Some(raw.to_string())).expect_err("invalid region");
         assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
     }
+    let zero_based = parse_region_filter(Some("chr1:0-10".to_string())).expect_err("start=0");
+    assert_eq!(zero_based.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(
+        zero_based.details["field_errors"][0]["value"]
+            .as_str()
+            .is_some_and(|value| value.contains("1-based closed coordinates"))
+    );
+    let reversed = parse_region_filter(Some("chr1:20-10".to_string())).expect_err("end<start");
+    assert_eq!(reversed.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(
+        reversed.details["field_errors"][0]["value"]
+            .as_str()
+            .is_some_and(|value| value.contains("1-based closed coordinates"))
+    );
 }
 
 #[test]

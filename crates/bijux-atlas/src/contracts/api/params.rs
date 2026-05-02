@@ -323,8 +323,20 @@ pub fn parse_region_filter(raw: Option<String>) -> Result<Option<RegionFilter>, 
     let end = end
         .parse::<u64>()
         .map_err(|_| ApiError::invalid_param("region", &value))?;
-    if seqid.is_empty() || start == 0 || end < start {
-        return Err(ApiError::invalid_param("region", &value));
+    if seqid.is_empty() {
+        return Err(ApiError::invalid_param("region", "contig is required"));
+    }
+    if start == 0 {
+        return Err(ApiError::invalid_param(
+            "region",
+            "start must be >= 1 (1-based closed coordinates)",
+        ));
+    }
+    if end < start {
+        return Err(ApiError::invalid_param(
+            "region",
+            "end must be >= start (1-based closed coordinates)",
+        ));
     }
     Ok(Some(RegionFilter {
         seqid: seqid.to_string(),
@@ -353,10 +365,16 @@ pub fn parse_range_filter(raw: Option<String>) -> Result<Option<RegionFilter>, A
         return Err(ApiError::invalid_param("range", "contig is required"));
     }
     if start == 0 {
-        return Err(ApiError::invalid_param("range", "start must be >= 1"));
+        return Err(ApiError::invalid_param(
+            "range",
+            "start must be >= 1 (1-based closed coordinates)",
+        ));
     }
     if end < start {
-        return Err(ApiError::invalid_param("range", "end must be >= start"));
+        return Err(ApiError::invalid_param(
+            "range",
+            "end must be >= start (1-based closed coordinates)",
+        ));
     }
     let span = end - start + 1;
     if span > MAX_RANGE_SPAN {
