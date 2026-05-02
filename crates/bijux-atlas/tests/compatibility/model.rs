@@ -8,6 +8,8 @@ mod dataset_identity_contract;
 mod dataset_alias_contract;
 #[path = "model/dependency_guardrails.rs"]
 mod dependency_guardrails;
+#[path = "model/dataset_lifecycle_contract.rs"]
+mod dataset_lifecycle_contract;
 #[path = "model/model_invariants.rs"]
 mod model_invariants;
 #[path = "model/model_validation.rs"]

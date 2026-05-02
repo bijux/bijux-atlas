@@ -3,6 +3,7 @@
 pub mod alias;
 pub mod identity;
 pub mod keys;
+pub mod lifecycle;
 pub mod manifest;
 pub mod serde_helpers;
 pub mod version;
@@ -14,6 +15,7 @@ pub use keys::{
 };
 pub use alias::LatestAliasRecord;
 pub use identity::{canonical_identity_hash, DatasetIdentity};
+pub use lifecycle::{DatasetLifecycleState, DatasetLifecycleTransition};
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
     IngestAnomalyReport, IngestRejection, ManifestInputHashes, ManifestStats, OptionalFieldPolicy,
