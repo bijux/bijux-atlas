@@ -55,3 +55,20 @@ fn missing_fai_without_opt_in_auto_generation_fails() {
         err.0
     );
 }
+
+#[test]
+fn gff3_reference_names_must_exist_in_fasta_fai() {
+    let out = tempdir().expect("tmp");
+    let dataset = DatasetId::new("113", "homo_sapiens", "GRCh38").expect("dataset");
+    let opts = IngestOptions {
+        gff3_path: fixture("tests/fixtures/edgecases/case_9_unknown_contig.gff3"),
+        fasta_path: fixture("tests/fixtures/tiny/genome.fa"),
+        fai_path: fixture("tests/fixtures/tiny/genome.fa.fai"),
+        output_root: out.path().to_path_buf(),
+        strictness: StrictnessMode::Strict,
+        ..IngestOptions::for_dataset(dataset)
+    };
+
+    let err = ingest_dataset(&opts).expect_err("unknown seqid must fail");
+    assert!(err.0.contains("GFF3_REFERENCE_NOT_IN_FASTA_FAI"));
+}

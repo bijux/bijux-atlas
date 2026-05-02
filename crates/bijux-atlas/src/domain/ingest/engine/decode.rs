@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 
 use super::extract::{extract_gene_rows, ExtractResult};
 use super::fai::{self, ContigStats};
@@ -54,7 +55,9 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
 
     let sequence_regions = parse_sequence_regions(&job.inputs.gff3_path)?;
     validate_sequence_region_conflicts(&sequence_regions)?;
+    validate_sequence_regions_against_fai(&sequence_regions, &contig_lengths)?;
     let records = parse_gff3_records(&job.inputs.gff3_path)?;
+    validate_gff3_reference_names(&records, &contig_lengths)?;
     let mut extract = extract_gene_rows(records, &contig_lengths, opts)?;
     apply_deterministic_ordering(&mut extract);
 
@@ -62,6 +65,46 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
         contig_stats,
         extract,
     })
+}
+
+fn validate_sequence_regions_against_fai(
+    regions: &[super::gff3::SequenceRegion],
+    contig_lengths: &BTreeMap<String, u64>,
+) -> Result<(), IngestError> {
+    let mut missing = BTreeSet::new();
+    for region in regions {
+        if !contig_lengths.contains_key(&region.seqid) {
+            missing.insert(region.seqid.clone());
+        }
+    }
+    if !missing.is_empty() {
+        let refs = missing.into_iter().collect::<Vec<_>>().join(", ");
+        return Err(IngestError(format!(
+            "GFF3_SEQUENCE_REGION_NOT_IN_FASTA_FAI: [{}]. Fix by aligning sequence-region declarations with FASTA/FAI contig IDs.",
+            refs
+        )));
+    }
+    Ok(())
+}
+
+fn validate_gff3_reference_names(
+    records: &[super::gff3::Gff3Record],
+    contig_lengths: &BTreeMap<String, u64>,
+) -> Result<(), IngestError> {
+    let mut missing = BTreeSet::new();
+    for rec in records {
+        if !contig_lengths.contains_key(&rec.seqid) {
+            missing.insert(rec.seqid.clone());
+        }
+    }
+    if !missing.is_empty() {
+        let refs = missing.into_iter().collect::<Vec<_>>().join(", ");
+        return Err(IngestError(format!(
+            "GFF3_REFERENCE_NOT_IN_FASTA_FAI: [{}]. Fix source inputs so every GFF3 seqid exists in FASTA/FAI with matching naming.",
+            refs
+        )));
+    }
+    Ok(())
 }
 
 fn apply_deterministic_ordering(extract: &mut ExtractResult) {
