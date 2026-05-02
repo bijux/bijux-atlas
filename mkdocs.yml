@@ -169,6 +169,7 @@ nav:
               - What Atlas Is: bijux-atlas/foundations/what-atlas-is.md
               - Core Concepts: bijux-atlas/foundations/core-concepts.md
               - Boundaries and Non-Goals: bijux-atlas/foundations/boundaries-and-non-goals.md
+              - Crate Boundary Contract: bijux-atlas/foundations/crate-boundary-contract.md
               - Guarantees and Stability: bijux-atlas/foundations/guarantees-and-stability.md
               - Package Ownership: bijux-atlas/foundations/package-ownership.md
               - Dataset Model: bijux-atlas/foundations/dataset-model.md
