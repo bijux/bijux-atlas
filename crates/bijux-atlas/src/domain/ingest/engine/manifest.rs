@@ -91,7 +91,7 @@ pub fn build_and_write_manifest_and_reports(
         manifest.checksums.gff3_sha256.clone(),
         manifest.checksums.fasta_sha256.clone(),
         manifest.checksums.fai_sha256.clone(),
-        policy_hash,
+        policy_hash.clone(),
     );
     manifest.source_gff3_filename = gff3_path
         .file_name()
@@ -108,6 +108,18 @@ pub fn build_and_write_manifest_and_reports(
         .and_then(|s| s.to_str())
         .unwrap_or_default()
         .to_string();
+    manifest.source_facts_path = "derived/source_facts.json".to_string();
+    manifest.normalized_input_identity_sha256 =
+        compute_normalized_input_identity_sha256(&manifest, contig_aliases)?;
+    manifest.software_version = crate::version::runtime_version().to_string();
+    manifest.config_version = compute_config_version();
+    manifest.build_policy_version = format!("sha256:{policy_hash}");
+    manifest.build_metadata_path = "derived/build_metadata.json".to_string();
+    manifest.anomaly_summary_path = "derived/anomaly_summary.json".to_string();
+    manifest.dataset_stats_path = "derived/dataset_stats.json".to_string();
+    manifest.artifact_inventory_path = "derived/artifact_inventory.json".to_string();
+    manifest.evidence_bundle_path = "derived/evidence_bundle.lock.json".to_string();
+    manifest.evidence_bundle_sha256 = "pending".to_string();
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
@@ -204,6 +216,43 @@ fn compute_toolchain_hash() -> String {
     } else {
         sha256_hex(&bytes)
     }
+}
+
+fn compute_config_version() -> String {
+    let mut bytes = Vec::new();
+    for rel in [
+        "configs/sources/operations/ops/dataset-qc-thresholds.v1.json",
+        "configs/sources/governance/policy/policy.json",
+    ] {
+        let p = workspace_file(rel);
+        if let Ok(b) = fs::read(p) {
+            bytes.extend_from_slice(&b);
+        }
+    }
+    if bytes.is_empty() {
+        "unknown".to_string()
+    } else {
+        sha256_hex(&bytes)
+    }
+}
+
+fn compute_normalized_input_identity_sha256(
+    manifest: &ArtifactManifest,
+    contig_aliases: &BTreeMap<String, String>,
+) -> Result<String, IngestError> {
+    let payload = json!({
+        "gff3_sha256": manifest.checksums.gff3_sha256.clone(),
+        "fasta_sha256": manifest.checksums.fasta_sha256.clone(),
+        "fai_sha256": manifest.checksums.fai_sha256.clone(),
+        "source_filenames": {
+            "gff3": manifest.source_gff3_filename.clone(),
+            "fasta": manifest.source_fasta_filename.clone(),
+            "fai": manifest.source_fai_filename.clone()
+        },
+        "contig_normalization_aliases": contig_aliases
+    });
+    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
 }
 
 fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String, IngestError> {
