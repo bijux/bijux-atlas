@@ -2,6 +2,7 @@
 
 use std::fs;
 
+use crate::domain::canonical;
 use crate::domain::dataset::{
     ArtifactChecksums, ArtifactManifest, ManifestStats, ShardCatalog, ShardingPlan,
 };
@@ -70,6 +71,7 @@ pub fn write_ingest_outputs(
     fs::copy(&job.inputs.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
     let hashes = compute_input_hashes(&paths.gff3, &paths.fasta, &paths.fai)?;
+    write_source_facts(job, &decoded, &hashes)?;
 
     write_sqlite(WriteSqliteInput {
         path: &paths.sqlite,
@@ -174,4 +176,37 @@ pub fn write_ingest_outputs(
         anomaly_report: decoded.extract.anomaly,
         events: Vec::new(),
     })
+}
+
+fn write_source_facts(
+    job: &IngestJob,
+    decoded: &DecodedIngest,
+    hashes: &super::hashing::InputHashes,
+) -> Result<(), IngestError> {
+    let path = job.output_layout.derived_dir.join("source_facts.json");
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "dataset": job.options.dataset,
+        "inputs": {
+            "gff3_path": job.inputs.gff3_path,
+            "fasta_path": job.inputs.fasta_path,
+            "fai_path": job.inputs.fai_path,
+            "hashes": {
+                "gff3_sha256": hashes.gff3_sha256,
+                "fasta_sha256": hashes.fasta_sha256,
+                "fai_sha256": hashes.fai_sha256
+            }
+        },
+        "normalization": {
+            "seqid_aliases": job.options.seqid_policy.aliases,
+            "reject_normalized_seqid_collisions": job.options.reject_normalized_seqid_collisions
+        },
+        "contigs": decoded.contig_stats,
+        "feature_distribution": {
+            "contigs": decoded.extract.contig_distribution,
+            "biotypes": decoded.extract.biotype_distribution
+        }
+    });
+    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    fs::write(path, bytes).map_err(|e| IngestError(e.to_string()))
 }

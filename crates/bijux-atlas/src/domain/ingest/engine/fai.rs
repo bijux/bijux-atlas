@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::IngestError;
+use serde::Serialize;
 use std::collections::BTreeMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
@@ -87,7 +88,7 @@ pub fn read_fasta_contig_lengths(path: &Path) -> Result<BTreeMap<String, u64>, I
     Ok(out)
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct ContigStats {
     pub length: u64,
     pub gc_fraction: Option<f64>,
