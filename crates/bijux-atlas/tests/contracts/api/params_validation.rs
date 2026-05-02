@@ -61,10 +61,20 @@ fn request_validation_region_parser_is_strict() {
     let valid = parse_region_filter(Some("chr1:10-20".to_string())).expect("valid region");
     assert_eq!(valid.expect("region").start, 10);
 
-    for raw in ["chr1", "chr1:10", "chr1:0-10", "chr1:20-10", "chr1:x-10"] {
+    for raw in ["chr1", "chr1:10", "chr1:x-10"] {
         let err = parse_region_filter(Some(raw.to_string())).expect_err("invalid region");
         assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
     }
+    let zero_based = parse_region_filter(Some("chr1:0-10".to_string())).expect_err("start=0");
+    assert_eq!(zero_based.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(zero_based.details["field_errors"][0]["value"]
+        .as_str()
+        .is_some_and(|value| value.contains("1-based closed coordinates")));
+    let reversed = parse_region_filter(Some("chr1:20-10".to_string())).expect_err("end<start");
+    assert_eq!(reversed.code, ApiErrorCode::InvalidQueryParameter);
+    assert!(reversed.details["field_errors"][0]["value"]
+        .as_str()
+        .is_some_and(|value| value.contains("1-based closed coordinates")));
 }
 
 #[test]
@@ -130,10 +140,58 @@ fn request_validation_sort_contract_is_strict() {
     parse_list_genes_params(&q).expect("default sort accepted");
 
     q.insert("sort".to_string(), "region:asc".to_string());
+    q.insert("range".to_string(), "chr1:1-10".to_string());
     parse_list_genes_params(&q).expect("region sort parsed");
 
     q.insert("sort".to_string(), "gene_id:desc".to_string());
     let err = parse_list_genes_params(&q).expect_err("unsupported direction");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_strand_contract_is_strict() {
+    let mut q = base_query();
+    q.insert("strand".to_string(), "any".to_string());
+    parse_list_genes_params(&q).expect("strand any parsed");
+
+    q.insert("strand".to_string(), "plus".to_string());
+    parse_list_genes_params(&q).expect("strand plus parsed");
+
+    q.insert("strand".to_string(), "invalid".to_string());
+    let err = parse_list_genes_params(&q).expect_err("invalid strand");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
+fn request_validation_rejects_ambiguous_and_invalid_filter_combos() {
+    let mut name_and_like = base_query();
+    name_and_like.insert("name".to_string(), "BRCA1".to_string());
+    name_and_like.insert("name_like".to_string(), "BR*".to_string());
+    let err = parse_list_genes_params(&name_and_like).expect_err("name + name_like");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut interval_without_range = base_query();
+    interval_without_range.insert("interval_mode".to_string(), "containment".to_string());
+    let err = parse_list_genes_params(&interval_without_range).expect_err("interval without range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut region_sort_without_range = base_query();
+    region_sort_without_range.insert("sort".to_string(), "region:asc".to_string());
+    let err =
+        parse_list_genes_params(&region_sort_without_range).expect_err("region sort without range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut conflicting_range_and_region = base_query();
+    conflicting_range_and_region.insert("range".to_string(), "chr1:1-10".to_string());
+    conflicting_range_and_region.insert("region".to_string(), "chr2:1-10".to_string());
+    let err = parse_list_genes_params(&conflicting_range_and_region)
+        .expect_err("conflicting range/region");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut exact_with_extra = base_query();
+    exact_with_extra.insert("gene_id".to_string(), "ENSG1".to_string());
+    exact_with_extra.insert("biotype".to_string(), "protein_coding".to_string());
+    let err = parse_list_genes_params(&exact_with_extra).expect_err("exact + extra");
     assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
 }
 
@@ -163,6 +221,24 @@ fn request_validation_requires_explicit_dataset_dimensions() {
         let err = parse_list_genes_params(&q).expect_err("missing dimension");
         assert_eq!(err.code, ApiErrorCode::MissingDatasetDimension);
     }
+}
+
+#[test]
+fn request_validation_accepts_canonical_dataset_selector() {
+    let mut q = BTreeMap::new();
+    q.insert("dataset".to_string(), "110/homo_sapiens/GRCh38".to_string());
+    let parsed = parse_list_genes_params(&q).expect("dataset selector parse");
+    assert_eq!(parsed.release, "110");
+    assert_eq!(parsed.species, "homo_sapiens");
+    assert_eq!(parsed.assembly, "GRCh38");
+}
+
+#[test]
+fn request_validation_rejects_conflicting_dataset_selector() {
+    let mut q = base_query();
+    q.insert("dataset".to_string(), "111/homo_sapiens/GRCh38".to_string());
+    let err = parse_list_genes_params(&q).expect_err("dataset conflict");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
 }
 
 #[test]

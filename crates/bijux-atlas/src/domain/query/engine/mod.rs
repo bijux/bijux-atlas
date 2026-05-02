@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod contract;
 mod cost;
 mod cursor;
 mod db;
@@ -26,6 +27,7 @@ use rusqlite::{params_from_iter, types::Value, Connection};
 
 pub const CRATE_NAME: &str = "bijux-atlas-query";
 
+pub use contract::{freeze_query_model, FrozenQueryModel, QueryIntent};
 pub use cost::estimate_prefix_match_cost;
 pub use cursor::{
     decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorLastSeen, CursorPayload,
@@ -37,8 +39,8 @@ pub use db::prepared_sql_for_class as prepared_sql_for_class_export;
 pub use executor::execute_gene_query;
 pub use filters::{
     compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields, GeneFilter,
-    GeneRow, RegionFilter, TranscriptFilter, TranscriptQueryRequest, TranscriptQueryResponse,
-    TranscriptRow,
+    GeneRow, IntervalSemantics, QuerySort, RegionFilter, StrandMode, TranscriptFilter,
+    TranscriptQueryRequest, TranscriptQueryResponse, TranscriptRow,
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use normalize::normalized_query_hash as normalized_query_hash_ssot;
@@ -117,6 +119,10 @@ pub fn query_gene_id_name_json_minimal_fast(
 ) -> Result<Option<Vec<u8>>, QueryError> {
     query_gene_id_name_json_minimal(conn, gene_id)
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
+}
+
+pub fn query_gene_count(conn: &Connection, req: &GeneQueryRequest) -> Result<i64, QueryError> {
+    db::query_gene_count(conn, req).map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 
 fn reject_impossible_filter_fast(

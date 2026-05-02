@@ -53,6 +53,8 @@ fn bench_ingest_throughput(c: &mut Criterion) {
                 emit_normalized_debug: false,
                 normalized_replay_mode: false,
                 prod_mode: false,
+                max_warn_anomalies: None,
+                max_error_anomalies: None,
                 timestamp_policy: bijux_atlas::domain::ingest::TimestampPolicy::DeterministicZero,
             };
             ingest_dataset(&opts).expect("ingest benchmark");

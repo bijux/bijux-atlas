@@ -10,8 +10,9 @@ pub use diff::{
 };
 pub use engine::*;
 pub use gene::{
-    BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
-    GeneId, GeneNamePolicy, GeneOrderKey, GeneSummary, ParseError, Region, SeqId,
-    SeqidNormalizationPolicy, Strand, TranscriptId, TranscriptIdPolicy, TranscriptOrderKey,
-    TranscriptTypePolicy, UnknownFeaturePolicy, ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
+    canonical_contig_label, classify_contig, BiotypePolicy, ContigClass, DuplicateGeneIdPolicy,
+    DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, GeneId, GeneNamePolicy, GeneOrderKey,
+    GeneSummary, ParseError, Region, SeqId, SeqidNormalizationPolicy, SeqidNormalizationTrace,
+    Strand, TranscriptId, TranscriptIdPolicy, TranscriptOrderKey, TranscriptTypePolicy,
+    UnknownFeaturePolicy, ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
 };

@@ -35,6 +35,44 @@ pub enum SortKey {
     RegionAsc,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum IntervalMode {
+    Overlap,
+    Containment,
+    BoundaryTouch,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StrandMode {
+    Any,
+    Plus,
+    Minus,
+    Unknown,
+}
+
+impl StrandMode {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "any" => Some(Self::Any),
+            "plus" => Some(Self::Plus),
+            "minus" => Some(Self::Minus),
+            "unknown" => Some(Self::Unknown),
+            _ => None,
+        }
+    }
+}
+
+impl IntervalMode {
+    fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "overlap" => Some(Self::Overlap),
+            "containment" => Some(Self::Containment),
+            "boundary_touch" => Some(Self::BoundaryTouch),
+            _ => None,
+        }
+    }
+}
+
 impl SortKey {
     fn parse(raw: &str) -> Option<Self> {
         match raw {
@@ -47,6 +85,7 @@ impl SortKey {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListGenesParams {
+    pub dataset: Option<String>,
     pub release: String,
     pub species: String,
     pub assembly: String,
@@ -62,6 +101,8 @@ pub struct ListGenesParams {
     pub max_transcripts: Option<u64>,
     pub sort: Option<SortKey>,
     pub include: Option<Vec<IncludeField>>,
+    pub interval_mode: Option<IntervalMode>,
+    pub strand: Option<StrandMode>,
     pub pretty: bool,
 }
 
@@ -83,18 +124,44 @@ pub fn parse_list_genes_params_with_limit(
             "unsupported; use include=coords,biotype,counts,length",
         ));
     }
-    let release = query
-        .get("release")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
-    let species = query
-        .get("species")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
-    let assembly = query
-        .get("assembly")
-        .cloned()
-        .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+    let dataset_selector = query.get("dataset").cloned();
+    let selector_dims = parse_dataset_selector(dataset_selector.as_deref())?;
+    let (release, species, assembly) =
+        if let Some((sel_release, sel_species, sel_assembly)) = selector_dims {
+            let release = query
+                .get("release")
+                .cloned()
+                .unwrap_or_else(|| sel_release.clone());
+            let species = query
+                .get("species")
+                .cloned()
+                .unwrap_or_else(|| sel_species.clone());
+            let assembly = query
+                .get("assembly")
+                .cloned()
+                .unwrap_or_else(|| sel_assembly.clone());
+            if release != sel_release || species != sel_species || assembly != sel_assembly {
+                return Err(ApiError::invalid_param(
+                    "dataset",
+                    "dataset selector conflicts with release/species/assembly",
+                ));
+            }
+            (release, species, assembly)
+        } else {
+            let release = query
+                .get("release")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
+            let species = query
+                .get("species")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
+            let assembly = query
+                .get("assembly")
+                .cloned()
+                .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+            (release, species, assembly)
+        };
 
     let limit = if let Some(raw) = query.get("limit") {
         let value = raw
@@ -127,6 +194,24 @@ pub fn parse_list_genes_params_with_limit(
     } else {
         None
     };
+    let interval_mode = if let Some(raw_interval_mode) = query.get("interval_mode") {
+        Some(IntervalMode::parse(raw_interval_mode).ok_or_else(|| {
+            ApiError::invalid_param(
+                "interval_mode",
+                "allowed: overlap,containment,boundary_touch",
+            )
+        })?)
+    } else {
+        None
+    };
+    let strand =
+        if let Some(raw_strand) = query.get("strand") {
+            Some(StrandMode::parse(raw_strand).ok_or_else(|| {
+                ApiError::invalid_param("strand", "allowed: any,plus,minus,unknown")
+            })?)
+        } else {
+            None
+        };
     let name_like = query.get("name_like").cloned();
     if let Some(pattern) = &name_like {
         if pattern.starts_with('*')
@@ -175,6 +260,15 @@ pub fn parse_list_genes_params_with_limit(
         .cloned()
         .or_else(|| query.get("region").cloned());
     let parsed_range = parse_range_filter(range.clone())?;
+    validate_filter_combinations(
+        query,
+        name_like.as_deref(),
+        parsed_range.as_ref(),
+        sort,
+        interval_mode,
+        min_transcripts,
+        max_transcripts,
+    )?;
     if let Some(contig) = query.get("contig") {
         let Some(region) = parsed_range.as_ref() else {
             return Err(ApiError::invalid_param(
@@ -191,6 +285,7 @@ pub fn parse_list_genes_params_with_limit(
     }
 
     Ok(ListGenesParams {
+        dataset: dataset_selector,
         release,
         species,
         assembly,
@@ -205,6 +300,8 @@ pub fn parse_list_genes_params_with_limit(
         min_transcripts,
         max_transcripts,
         sort,
+        interval_mode,
+        strand,
         include,
         pretty: query
             .get("pretty")
@@ -228,8 +325,20 @@ pub fn parse_region_filter(raw: Option<String>) -> Result<Option<RegionFilter>, 
     let end = end
         .parse::<u64>()
         .map_err(|_| ApiError::invalid_param("region", &value))?;
-    if seqid.is_empty() || start == 0 || end < start {
-        return Err(ApiError::invalid_param("region", &value));
+    if seqid.is_empty() {
+        return Err(ApiError::invalid_param("region", "contig is required"));
+    }
+    if start == 0 {
+        return Err(ApiError::invalid_param(
+            "region",
+            "start must be >= 1 (1-based closed coordinates)",
+        ));
+    }
+    if end < start {
+        return Err(ApiError::invalid_param(
+            "region",
+            "end must be >= start (1-based closed coordinates)",
+        ));
     }
     Ok(Some(RegionFilter {
         seqid: seqid.to_string(),
@@ -258,10 +367,16 @@ pub fn parse_range_filter(raw: Option<String>) -> Result<Option<RegionFilter>, A
         return Err(ApiError::invalid_param("range", "contig is required"));
     }
     if start == 0 {
-        return Err(ApiError::invalid_param("range", "start must be >= 1"));
+        return Err(ApiError::invalid_param(
+            "range",
+            "start must be >= 1 (1-based closed coordinates)",
+        ));
     }
     if end < start {
-        return Err(ApiError::invalid_param("range", "end must be >= start"));
+        return Err(ApiError::invalid_param(
+            "range",
+            "end must be >= start (1-based closed coordinates)",
+        ));
     }
     let span = end - start + 1;
     if span > MAX_RANGE_SPAN {
@@ -308,7 +423,8 @@ fn parse_u64_opt(
 }
 
 fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiError> {
-    const ALLOWED_PARAMS: [&str; 19] = [
+    const ALLOWED_PARAMS: [&str; 22] = [
+        "dataset",
         "release",
         "species",
         "assembly",
@@ -325,6 +441,8 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
         "max_transcripts",
         "include",
         "sort",
+        "interval_mode",
+        "strand",
         "pretty",
         "explain",
         "fields",
@@ -341,8 +459,85 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
     Err(ApiError::invalid_param(
         "filter",
         &format!(
-            "unknown filter(s): {}; allowed: gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort",
+            "unknown filter(s): {}; allowed: dataset,gene_id,name,name_like,biotype,contig,range,min_transcripts,max_transcripts,sort,interval_mode,strand",
             unknown.join(",")
         ),
     ))
+}
+
+fn validate_filter_combinations(
+    query: &BTreeMap<String, String>,
+    name_like: Option<&str>,
+    parsed_range: Option<&RegionFilter>,
+    sort: Option<SortKey>,
+    interval_mode: Option<IntervalMode>,
+    min_transcripts: Option<u64>,
+    max_transcripts: Option<u64>,
+) -> Result<(), ApiError> {
+    if query.get("name").is_some() && name_like.is_some() {
+        return Err(ApiError::invalid_param(
+            "name",
+            "name cannot be combined with name_like",
+        ));
+    }
+    if interval_mode.is_some() && parsed_range.is_none() {
+        return Err(ApiError::invalid_param(
+            "interval_mode",
+            "interval_mode requires range=contig:start-end",
+        ));
+    }
+    if matches!(sort, Some(SortKey::RegionAsc)) && parsed_range.is_none() {
+        return Err(ApiError::invalid_param(
+            "sort",
+            "sort=region:asc requires range filter",
+        ));
+    }
+    if let Some(range) = query.get("range") {
+        if let Some(region) = query.get("region") {
+            if range != region {
+                return Err(ApiError::invalid_param(
+                    "range",
+                    "range and region must match when both are provided",
+                ));
+            }
+        }
+    }
+
+    if query.get("gene_id").is_some() {
+        let has_extra = query.get("name").is_some()
+            || name_like.is_some()
+            || query.get("biotype").is_some()
+            || parsed_range.is_some()
+            || query.get("contig").is_some()
+            || min_transcripts.is_some()
+            || max_transcripts.is_some();
+        if has_extra {
+            return Err(ApiError::invalid_param(
+                "gene_id",
+                "gene_id exact lookup cannot be combined with additional filters",
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn parse_dataset_selector(raw: Option<&str>) -> Result<Option<(String, String, String)>, ApiError> {
+    let Some(raw) = raw else {
+        return Ok(None);
+    };
+    let mut parts = raw.split('/');
+    let release = parts.next().unwrap_or_default();
+    let species = parts.next().unwrap_or_default();
+    let assembly = parts.next().unwrap_or_default();
+    if parts.next().is_some() || release.is_empty() || species.is_empty() || assembly.is_empty() {
+        return Err(ApiError::invalid_param(
+            "dataset",
+            "dataset must be release/species/assembly",
+        ));
+    }
+    Ok(Some((
+        release.to_string(),
+        species.to_string(),
+        assembly.to_string(),
+    )))
 }

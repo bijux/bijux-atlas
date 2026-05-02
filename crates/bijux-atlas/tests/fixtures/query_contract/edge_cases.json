@@ -1,0 +1,60 @@
+{
+  "cases": [
+    {
+      "id": "chr1_overlap_point",
+      "description": "point overlap on chr1 returns first gene",
+      "region": "chr1:10-10",
+      "interval_mode": "overlap",
+      "limit": 50,
+      "expected_gene_ids": ["gene1"]
+    },
+    {
+      "id": "chr1_boundary_touch",
+      "description": "boundary-touch semantics include genes touching query endpoints",
+      "region": "chr1:40-50",
+      "interval_mode": "boundary_touch",
+      "limit": 50,
+      "expected_gene_ids": ["gene1", "gene2"]
+    },
+    {
+      "id": "chr1_containment_empty",
+      "description": "containment rejects genes extending outside query bounds",
+      "region": "chr1:41-49",
+      "interval_mode": "containment",
+      "limit": 50,
+      "expected_gene_ids": []
+    },
+    {
+      "id": "chr_missing_empty",
+      "description": "unknown chromosome is rejected with a stable validation message",
+      "region": "chrX:1-100",
+      "interval_mode": "overlap",
+      "limit": 50,
+      "expected_error_contains": "seqid does not exist in dataset"
+    },
+    {
+      "id": "chr2_far_empty",
+      "description": "known chromosome with far-away coordinates yields empty rows",
+      "region": "chr2:1000-1100",
+      "interval_mode": "overlap",
+      "limit": 50,
+      "expected_gene_ids": []
+    },
+    {
+      "id": "chr1_containment_exact_match",
+      "description": "containment includes a gene only when boundaries match exactly",
+      "region": "chr1:10-40",
+      "interval_mode": "containment",
+      "limit": 50,
+      "expected_gene_ids": ["gene1"]
+    },
+    {
+      "id": "chr1_overlap_after_boundary_is_empty",
+      "description": "overlap does not leak one base beyond gene boundary",
+      "region": "chr1:41-49",
+      "interval_mode": "overlap",
+      "limit": 50,
+      "expected_gene_ids": []
+    }
+  ]
+}

@@ -121,6 +121,17 @@ This release-surface diagram is important because Atlas ships more than one bina
 one kind of repository contract. Readers should be able to see immediately which surfaces are for
 runtime use and which are for repository maintenance.
 
+## Crate Boundary Map
+
+Atlas currently enforces a three-crate architecture boundary:
+
+* `crates/bijux-atlas-core/`: runtime-independent core primitives and invariants
+* `crates/bijux-atlas/`: runtime product crate with domain, contracts, app orchestration, and adapters
+* `crates/bijux-dev-atlas/`: maintainer-only control plane for governance and repository operations
+
+The boundary contract for this map lives at
+[`docs/bijux-atlas/foundations/crate-boundary-contract.md`](docs/bijux-atlas/foundations/crate-boundary-contract.md).
+
 ---
 
 ## How Atlas Fits With Bijux CLI

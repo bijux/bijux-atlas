@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use assert_cmd::Command;
+use tempfile::tempdir;
 
 fn parse_commands_from_help(text: &str) -> Vec<String> {
     let mut commands = Vec::new();
@@ -62,4 +63,35 @@ fn unknown_flag_returns_usage_exit_code_with_machine_error() {
     assert_eq!(output.status.code(), Some(2));
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("usage_error"));
+}
+
+#[test]
+fn missing_query_database_returns_dependency_failure_exit_code() {
+    let tmp = tempdir().expect("tempdir");
+    let missing_db = tmp.path().join("missing-dir").join("db.sqlite");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["--json", "query", "run", "--db"])
+        .arg(&missing_db)
+        .args(["--gene-id", "gene1"])
+        .output()
+        .expect("run query with missing db");
+    assert_eq!(output.status.code(), Some(4));
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("dependency_failure"));
+}
+
+#[test]
+fn query_refusal_returns_validation_exit_code() {
+    let tmp = tempdir().expect("tempdir");
+    let db_path = tmp.path().join("empty.sqlite");
+    rusqlite::Connection::open(&db_path).expect("create sqlite file");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["--json", "query", "run", "--db"])
+        .arg(&db_path)
+        .output()
+        .expect("run query refusal case");
+    assert_eq!(output.status.code(), Some(3));
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("validation_error"));
 }

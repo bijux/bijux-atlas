@@ -114,11 +114,21 @@ The following are not stable API promises:
 - convenience imports outside the canonical module owners
 - benchmark-only or internal testing helpers
 
+## Scientific Annotation Handling
+
+- Atlas uses 1-based closed genomic coordinates across ingest, query, and export contracts.
+- Partial or missing annotation structures are retained and classified explicitly in canonical
+  completeness fields instead of being silently normalized away.
+- Biotype derivation records attribute-key provenance in ingest evidence so downstream users can
+  distinguish source-provided annotations from fallback-derived values.
+- Ambiguous scientific signals such as unresolved biotypes or conflicting normalized contig sources
+  are emitted as first-class evidence and block publication under strict publish gates.
+
 ## Source Layout
 
 - `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis,
   telemetry, and filesystem code
-- `src/app`: use-case orchestration, ports, cache services, and server application state
+- `src/app`: use-case orchestration, ingest/query boundary facades, ports, cache services, and server application state
 - `src/contracts`: external schemas, runtime config contracts, and stable error definitions
 - `src/domain`: business rules for dataset, query, ingest, policy, cluster, and security behavior
 - `src/runtime`: runtime configuration and process-level setup

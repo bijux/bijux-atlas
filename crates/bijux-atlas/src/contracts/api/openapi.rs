@@ -3,7 +3,7 @@
 use serde_json::{json, Map, Value};
 
 pub const OPENAPI_V1_PINNED_SHA256: &str =
-    "ecc30d96768389daf282360c83abed0a59e1537907f52832811ffefc0544142c";
+    "20bccf9b12503924f3f88c5bd8eca391386fc330be106efbd54fd41d4af9afff";
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
@@ -130,6 +130,7 @@ pub fn openapi_v1_spec() -> Value {
         "/v1/genes": {
           "get": {
             "parameters": [
+              {"name": "dataset", "in": "query", "schema": {"type": "string", "description": "canonical dataset selector release/species/assembly"}},
               {"name": "release", "in": "query", "required": true, "schema": {"type": "string"}},
               {"name": "species", "in": "query", "required": true, "schema": {"type": "string"}},
               {"name": "assembly", "in": "query", "required": true, "schema": {"type": "string"}},
@@ -190,6 +191,7 @@ pub fn openapi_v1_spec() -> Value {
           "get": {
             "deprecated": true,
             "parameters": [
+              {"name": "dataset", "in": "query", "schema": {"type": "string", "description": "canonical dataset selector release/species/assembly"}},
               {"name": "release", "in": "query", "required": true, "schema": {"type": "string"}},
               {"name": "species", "in": "query", "required": true, "schema": {"type": "string"}},
               {"name": "assembly", "in": "query", "required": true, "schema": {"type": "string"}},

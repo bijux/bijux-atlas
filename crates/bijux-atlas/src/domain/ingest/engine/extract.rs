@@ -6,8 +6,8 @@ use crate::domain::canonical;
 use crate::domain::dataset::{IngestAnomalyReport, IngestRejection};
 use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::domain::query::{
-    DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
-    UnknownFeaturePolicy,
+    classify_contig, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    SeqidNormalizationTrace, UnknownFeaturePolicy,
 };
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -73,6 +73,9 @@ pub struct ExtractResult {
     pub unknown_contig_features: u64,
     pub max_contig_name_length: usize,
     pub cds_feature_count: u64,
+    pub contig_class_distribution: BTreeMap<String, u64>,
+    pub seqid_normalization_traces: BTreeMap<String, SeqidNormalizationTrace>,
+    pub biotype_source_counts: BTreeMap<String, u64>,
 }
 
 pub fn extract_gene_rows(
@@ -93,10 +96,21 @@ pub fn extract_gene_rows(
     let mut unknown_contig_features = 0_u64;
     let mut max_contig_name_length = 0_usize;
     let mut cds_feature_count = 0_u64;
+    let mut biotype_source_counts: BTreeMap<String, u64> = BTreeMap::new();
 
     let mut seen_feature_ids: HashMap<String, String> = HashMap::new();
     let mut child_parent_refs: Vec<String> = Vec::new();
     let mut normalized_seqid_sources: HashMap<String, HashSet<String>> = HashMap::new();
+    let gene_feature_ids: HashSet<String> = records
+        .iter()
+        .filter(|rec| rec.feature_type == "gene")
+        .filter_map(|rec| rec.attrs.get("ID").cloned())
+        .collect();
+    let transcript_feature_ids: HashSet<String> = records
+        .iter()
+        .filter(|rec| opts.transcript_type_policy.accepts(&rec.feature_type))
+        .filter_map(|rec| opts.transcript_id_policy.resolve(&rec.attrs))
+        .collect();
     let parent_cycles = detect_parent_cycles(&records);
     if !parent_cycles.is_empty() {
         anomaly.parent_cycles = parent_cycles;
@@ -112,7 +126,8 @@ pub fn extract_gene_rows(
         if rec.feature_type == "CDS" {
             cds_feature_count += 1;
         }
-        let seqid = opts.seqid_policy.normalize(&rec.seqid);
+        let seqid_trace = opts.seqid_policy.normalize_with_trace(&rec.seqid);
+        let seqid = seqid_trace.normalized_seqid.clone();
         max_contig_name_length = max_contig_name_length.max(seqid.len());
         normalized_seqid_sources
             .entry(seqid.clone())
@@ -226,6 +241,9 @@ pub fn extract_gene_rows(
                 cds_present: false,
                 sequence_length: rec.end - rec.start + 1,
             };
+            *biotype_source_counts
+                .entry(resolve_biotype_source_key(&rec.attrs, opts))
+                .or_insert(0) += 1;
             if record.gene_name == gene_id {
                 anomaly
                     .attribute_fallbacks
@@ -235,6 +253,9 @@ pub fn extract_gene_rows(
                 anomaly
                     .attribute_fallbacks
                     .push(format!("biotype_fallback:{gene_id}"));
+                anomaly
+                    .scientific_ambiguities
+                    .push(format!("unknown_biotype:{gene_id}"));
             }
             genes.entry(gene_id).or_default().push(record);
         } else if opts.transcript_type_policy.accepts(&rec.feature_type) {
@@ -293,17 +314,33 @@ pub fn extract_gene_rows(
                     transcript_parents.push((p, ParentErrorClass::MultipleParents));
                 }
             } else if let Some(p) = parents.into_iter().next() {
+                if !gene_feature_ids.contains(&p) {
+                    anomaly.missing_parents.push(format!("{tx_id}:{p}"));
+                    anomaly.rejections.push(IngestRejection::new(
+                        rec.line,
+                        "GFF3_PARENT_NOT_GENE".to_string(),
+                        rec.raw_line.clone(),
+                    ));
+                    if matches!(opts.strictness, StrictnessMode::Strict) {
+                        return Err(IngestError(format!(
+                            "GFF3_PARENT_NOT_GENE line={} transcript={} parent={} expected_gene_id=true",
+                            rec.line, tx_id, p
+                        )));
+                    }
+                    continue;
+                }
                 transcript_parents.push((p.clone(), ParentErrorClass::MissingReferencedParent));
+                let transcript_biotype = rec
+                    .attrs
+                    .get("transcript_biotype")
+                    .or_else(|| rec.attrs.get("biotype"))
+                    .or_else(|| rec.attrs.get("gene_biotype"))
+                    .cloned();
                 transcript_rows_pending.push(TranscriptRecord {
                     transcript_id: tx_id,
                     parent_gene_id: p,
                     transcript_type: rec.feature_type.clone(),
-                    biotype: rec
-                        .attrs
-                        .get("transcript_biotype")
-                        .or_else(|| rec.attrs.get("biotype"))
-                        .or_else(|| rec.attrs.get("gene_biotype"))
-                        .cloned(),
+                    biotype: transcript_biotype,
                     seqid,
                     start: rec.start,
                     end: rec.end,
@@ -354,6 +391,21 @@ pub fn extract_gene_rows(
                 ));
             }
             for tx_id in parents {
+                if !transcript_feature_ids.contains(&tx_id) {
+                    anomaly.missing_transcript_parents.push(tx_id.clone());
+                    anomaly.rejections.push(IngestRejection::new(
+                        rec.line,
+                        "GFF3_PARENT_NOT_TRANSCRIPT".to_string(),
+                        rec.raw_line.clone(),
+                    ));
+                    if matches!(opts.strictness, StrictnessMode::Strict) {
+                        return Err(IngestError(format!(
+                            "GFF3_PARENT_NOT_TRANSCRIPT line={} feature_type={} parent={} expected_transcript_id=true",
+                            rec.line, rec.feature_type, tx_id
+                        )));
+                    }
+                    continue;
+                }
                 child_parent_refs.push(tx_id.clone());
                 if rec.feature_type == "exon" {
                     let exon_id = rec
@@ -578,6 +630,8 @@ pub fn extract_gene_rows(
         canonical::stable_sort_by_key(anomaly.unknown_feature_types, |x| x.clone());
     anomaly.missing_required_fields =
         canonical::stable_sort_by_key(anomaly.missing_required_fields, |x| x.clone());
+    anomaly.scientific_ambiguities =
+        canonical::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
     anomaly.rejections = canonical::stable_sort_by_key(anomaly.rejections, |x| {
         (x.line, x.code.clone(), x.sample.clone())
     });
@@ -593,6 +647,7 @@ pub fn extract_gene_rows(
     anomaly.attribute_fallbacks.dedup();
     anomaly.unknown_feature_types.dedup();
     anomaly.missing_required_fields.dedup();
+    anomaly.scientific_ambiguities.dedup();
     anomaly
         .rejections
         .dedup_by(|a, b| a.line == b.line && a.code == b.code && a.sample == b.sample);
@@ -608,10 +663,34 @@ pub fn extract_gene_rows(
 
     let mut biotype_distribution: BTreeMap<String, u64> = BTreeMap::new();
     let mut contig_distribution: BTreeMap<String, u64> = BTreeMap::new();
+    let mut contig_class_distribution: BTreeMap<String, u64> = BTreeMap::new();
     for g in &gene_rows {
         *biotype_distribution.entry(g.biotype.clone()).or_insert(0) += 1;
         *contig_distribution.entry(g.seqid.clone()).or_insert(0) += 1;
+        *contig_class_distribution
+            .entry(format!("{:?}", classify_contig(&g.seqid)).to_ascii_lowercase())
+            .or_insert(0) += 1;
     }
+    let mut seqid_normalization_traces = BTreeMap::new();
+    for (normalized, sources) in &normalized_seqid_sources {
+        let mut source_list: Vec<String> = sources.iter().cloned().collect();
+        source_list.sort();
+        let source = source_list
+            .first()
+            .cloned()
+            .unwrap_or_else(|| normalized.clone());
+        let trace = opts.seqid_policy.normalize_with_trace(&source);
+        seqid_normalization_traces.insert(normalized.clone(), trace);
+        if source_list.len() > 1 {
+            anomaly.scientific_ambiguities.push(format!(
+                "multiple_source_seqids_for_normalized:{}:{:?}",
+                normalized, source_list
+            ));
+        }
+    }
+    anomaly.scientific_ambiguities =
+        canonical::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
+    anomaly.scientific_ambiguities.dedup();
 
     Ok(ExtractResult {
         gene_rows,
@@ -624,7 +703,23 @@ pub fn extract_gene_rows(
         unknown_contig_features,
         max_contig_name_length,
         cds_feature_count,
+        contig_class_distribution,
+        seqid_normalization_traces,
+        biotype_source_counts,
     })
+}
+
+fn resolve_biotype_source_key(attrs: &BTreeMap<String, String>, opts: &IngestOptions) -> String {
+    for key in &opts.biotype_policy.attribute_keys {
+        if attrs
+            .get(key)
+            .map(|v| !v.trim().is_empty())
+            .unwrap_or(false)
+        {
+            return format!("attribute:{key}");
+        }
+    }
+    "fallback:unknown".to_string()
 }
 
 fn used_gene_id_fallback(

@@ -146,6 +146,24 @@ async fn error_contract_and_etag_behaviors() {
 
     let (status, _, body) = send_raw(
         addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&strand=plus",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("strand filter is explicit but unsupported"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&interval_mode=containment",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("interval_mode requires range"));
+
+    let (status, _, body) = send_raw(
+        addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&cursor=bad.cursor",
         &[],
     )
@@ -176,6 +194,13 @@ async fn error_contract_and_etag_behaviors() {
     let (status, _, _) = send_raw(
         addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, _, _) = send_raw(
+        addr,
+        "/v1/genes?dataset=110/homo_sapiens/GRCh38&gene_id=g1&limit=1",
         &[],
     )
     .await;
@@ -334,6 +359,66 @@ async fn etag_changes_when_filters_change() {
 }
 
 #[tokio::test]
+async fn etag_is_deterministic_for_identical_query_parameter_sets() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, headers_a, _) = send_raw(
+        addr,
+        "/v1/genes?assembly=GRCh38&release=110&species=homo_sapiens&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, headers_b, _) = send_raw(
+        addr,
+        "/v1/genes?limit=1&species=homo_sapiens&gene_id=g1&release=110&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let etag_genes_a = header_value(&headers_a, "etag").expect("genes etag a");
+    let etag_genes_b = header_value(&headers_b, "etag").expect("genes etag b");
+    assert_eq!(etag_genes_a, etag_genes_b);
+
+    let (status, headers_a, _) = send_raw(
+        addr,
+        "/v1/datasets?release=110&assembly=GRCh38&species=homo_sapiens&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, headers_b, _) = send_raw(
+        addr,
+        "/v1/datasets?species=homo_sapiens&limit=1&release=110&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let etag_dataset_a = header_value(&headers_a, "etag").expect("datasets etag a");
+    let etag_dataset_b = header_value(&headers_b, "etag").expect("datasets etag b");
+    assert_eq!(etag_dataset_a, etag_dataset_b);
+}
+
+#[tokio::test]
 async fn query_validate_endpoint_returns_classification() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
@@ -401,6 +486,50 @@ async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
     let json: Value = serde_json::from_str(&body).expect("echo json");
     assert_eq!(json["data"]["query"]["x"], "1");
     assert_eq!(json["data"]["query"]["y"], "2");
+}
+
+#[tokio::test]
+async fn debug_routes_are_explicitly_no_store_and_noindex() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store.clone());
+
+    let app = build_router(AppState::new(mgr.clone()));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, headers, _) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 404);
+    assert!(headers.contains("cache-control: no-store"));
+    assert!(headers.contains("pragma: no-cache"));
+    assert!(headers.contains("x-robots-tag: noindex, nofollow"));
+
+    let state = AppState::with_config(
+        mgr,
+        ApiConfig {
+            enable_admin_endpoints: true,
+            enable_debug_datasets: true,
+            ..ApiConfig::default()
+        },
+        Default::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+    let (status, headers, _) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 200);
+    assert!(headers.contains("cache-control: no-store"));
+    assert!(headers.contains("pragma: no-cache"));
+    assert!(headers.contains("x-robots-tag: noindex, nofollow"));
 }
 
 #[tokio::test]
@@ -476,6 +605,52 @@ async fn overload_health_endpoint_reports_state() {
     assert!(status == 200 || status == 503);
     let json: serde_json::Value = serde_json::from_str(&body).expect("json");
     assert!(json.get("overloaded").is_some());
+    assert!(json.get("ready").is_some());
+    assert!(json.get("live").is_some());
+    assert!(json.get("draining").is_some());
+}
+
+#[tokio::test]
+async fn health_readiness_liveness_contract_is_explicit_and_consistent() {
+    let tmp = tempfile::tempdir().expect("tmp");
+    let store = Arc::new(FakeStore::default());
+    let cache = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..DatasetCacheConfig::default()
+        },
+        store,
+    );
+    let api = ApiConfig {
+        readiness_requires_catalog: true,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(
+        cache,
+        api,
+        bijux_atlas::domain::query::QueryLimits::default(),
+    );
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/healthz", &[]).await;
+    assert_eq!(status, 200);
+    assert_eq!(body, "ok");
+
+    let (status, _, body) = send_raw(addr, "/readyz", &[]).await;
+    assert_eq!(status, 503);
+    assert_eq!(body, "not-ready");
+
+    let (status, _, body) = send_raw(addr, "/healthz/overload", &[]).await;
+    assert!(status == 200 || status == 503);
+    let overload: Value = serde_json::from_str(&body).expect("overload json");
+    assert_eq!(overload["live"], true);
+    assert_eq!(overload["ready"], false);
+    assert_eq!(overload["draining"], false);
 }
 
 #[tokio::test]
@@ -548,6 +723,45 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
 }
 
 #[tokio::test]
+async fn catalog_endpoints_apply_response_size_guard_predictably() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds.clone(), sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let api = ApiConfig {
+        response_max_bytes: 64,
+        ..ApiConfig::default()
+    };
+    let state = AppState::with_config(mgr, api, Default::default());
+    let app = build_router(state);
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/v1/datasets?limit=1", &[]).await;
+    assert_eq!(status, 413);
+    let json: Value = serde_json::from_str(&body).expect("json");
+    assert_eq!(
+        json.get("error")
+            .and_then(|e| e.get("code"))
+            .and_then(Value::as_str),
+        Some("ResponseTooLarge")
+    );
+
+    let (status, _, body) = send_raw(addr, "/healthz", &[]).await;
+    assert_eq!(status, 200);
+    assert_eq!(body, "ok");
+}
+
+#[tokio::test]
 async fn genes_count_applies_filters_consistently() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
@@ -586,6 +800,52 @@ async fn genes_count_applies_filters_consistently() {
     assert_eq!(status, 200);
     let payload: Value = serde_json::from_str(&body).expect("count json");
     assert_eq!(payload.get("gene_count").and_then(Value::as_i64), Some(0));
+}
+
+#[tokio::test]
+async fn transport_not_found_and_method_not_allowed_use_error_envelope() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 404);
+    let not_found: Value = serde_json::from_str(&body).expect("json envelope");
+    assert_eq!(not_found["error"]["code"].as_str(), Some("DatasetNotFound"));
+    assert_eq!(
+        not_found["error"]["message"].as_str(),
+        Some("admin endpoints are disabled")
+    );
+
+    let (status, _, body) = send_raw_with_method(addr, "POST", "/healthz", &[], None).await;
+    assert_eq!(status, 405);
+    let method_not_allowed: Value = serde_json::from_str(&body).expect("json envelope");
+    assert_eq!(
+        method_not_allowed["error"]["code"].as_str(),
+        Some("InvalidQueryParameter")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["message"].as_str(),
+        Some("method not allowed for route")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["details"]["path"].as_str(),
+        Some("/healthz")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["details"]["method"].as_str(),
+        Some("POST")
+    );
 }
 
 #[tokio::test]

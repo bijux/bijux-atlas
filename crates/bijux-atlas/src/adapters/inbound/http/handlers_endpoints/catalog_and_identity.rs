@@ -126,10 +126,42 @@ pub(crate) async fn datasets_handler(
         next_cursor.map(|cursor| json!({"next_cursor": cursor})),
         None,
     );
-    let etag = format!(
-        "\"{}\"",
-        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
-    );
+    let encoded =
+        match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
+            Ok(bytes) => bytes,
+            Err(err) => {
+                let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+                state
+                    .metrics
+                    .observe_request(
+                        "/v1/datasets",
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        started.elapsed(),
+                    )
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::ResponseTooLarge,
+                "response exceeds configured size guard",
+                json!({"bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets",
+                StatusCode::PAYLOAD_TOO_LARGE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let etag = format!("\"{}\"", sha256_hex(&encoded));
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
         put_cache_headers(
@@ -144,7 +176,13 @@ pub(crate) async fn datasets_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let mut response = Json(payload).into_response();
+    let mut response = Response::builder()
+        .status(StatusCode::OK)
+        .body(Body::from(encoded))
+        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+    response
+        .headers_mut()
+        .insert("content-type", HeaderValue::from_static("application/json"));
     put_cache_headers(
         response.headers_mut(),
         state.api.discovery_ttl,
@@ -282,7 +320,15 @@ pub(crate) async fn dataset_identity_handler(
             "manifest_summary": {
                 "manifest_version": manifest.manifest_version,
                 "db_schema_version": manifest.db_schema_version,
-                "stats": manifest.stats
+                "identity_release_id": manifest.identity.release_id,
+                "identity_sha256": manifest.identity.canonical_metadata_sha256,
+                "stats": manifest.stats,
+                "canonical": {
+                    "schema_version": manifest.canonical_model_schema_version,
+                    "query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+                    "lineage_sha256": manifest.canonical_lineage_sha256,
+                    "feature_counts": manifest.canonical_feature_counts
+                }
             },
             "qc_summary": {
                 "gene_count": manifest.stats.gene_count,
@@ -306,10 +352,42 @@ pub(crate) async fn dataset_identity_handler(
         });
     }
     let payload = json_envelope(Some(json!(dataset)), None, data, None, None);
-    let etag = format!(
-        "\"{}\"",
-        sha256_hex(&serde_json::to_vec(&payload).unwrap_or_default())
-    );
+    let encoded =
+        match serialize_payload_with_capacity(&payload, false, payload.to_string().len() + 64) {
+            Ok(bytes) => bytes,
+            Err(err) => {
+                let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
+                state
+                    .metrics
+                    .observe_request(
+                        "/v1/datasets/{release}/{species}/{assembly}",
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        started.elapsed(),
+                    )
+                    .await;
+                return with_request_id(resp, &request_id);
+            }
+        };
+    if encoded.len() > state.api.response_max_bytes {
+        let resp = api_error_response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            error_json(
+                ApiErrorCode::ResponseTooLarge,
+                "response exceeds configured size guard",
+                json!({"bytes": encoded.len(), "max": state.api.response_max_bytes}),
+            ),
+        );
+        state
+            .metrics
+            .observe_request(
+                "/v1/datasets/{release}/{species}/{assembly}",
+                StatusCode::PAYLOAD_TOO_LARGE,
+                started.elapsed(),
+            )
+            .await;
+        return with_request_id(resp, &request_id);
+    }
+    let etag = format!("\"{}\"", sha256_hex(&encoded));
     if if_none_match(&headers).as_deref() == Some(etag.as_str()) {
         let mut resp = StatusCode::NOT_MODIFIED.into_response();
         put_cache_headers(
@@ -328,7 +406,15 @@ pub(crate) async fn dataset_identity_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let mut resp = Json(payload).into_response();
+    let mut resp = Response::builder()
+        .status(StatusCode::OK)
+        .body(Body::from(encoded))
+        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+    resp.headers_mut()
+        .insert("content-type", HeaderValue::from_static("application/json"));
+    if let Some(v) = dataset_identity_header_value(&manifest) {
+        resp.headers_mut().insert("x-dataset-identity-sha256", v);
+    }
     put_cache_headers(
         resp.headers_mut(),
         state.api.immutable_gene_ttl,
@@ -344,4 +430,37 @@ pub(crate) async fn dataset_identity_handler(
         )
         .await;
     with_request_id(resp, &request_id)
+}
+
+fn dataset_identity_header_value(
+    manifest: &crate::domain::dataset::ArtifactManifest,
+) -> Option<HeaderValue> {
+    HeaderValue::from_str(&manifest.identity.canonical_metadata_sha256).ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::dataset_identity_header_value;
+    use crate::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+
+    #[test]
+    fn dataset_identity_header_value_is_derived_from_manifest_identity() {
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        let header = dataset_identity_header_value(&manifest).expect("header");
+        assert_eq!(
+            header.to_str().expect("header str"),
+            manifest.identity.canonical_metadata_sha256
+        );
+    }
 }

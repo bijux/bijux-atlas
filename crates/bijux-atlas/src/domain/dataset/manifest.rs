@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::identity::DatasetIdentity;
 use super::keys::{DatasetId, ValidationError};
 use super::serde_helpers as dataset_serde;
 use super::version::ModelVersion;
@@ -92,6 +93,8 @@ pub struct ArtifactManifest {
     pub artifact_version: String,
     #[serde(default)]
     pub schema_version: String,
+    #[serde(default = "default_identity_schema_version")]
+    pub identity_schema_version: String,
     pub manifest_version: String,
     pub db_schema_version: String,
     pub dataset: DatasetId,
@@ -99,6 +102,8 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub input_hashes: ManifestInputHashes,
     pub stats: ManifestStats,
+    #[serde(default)]
+    pub identity: DatasetIdentity,
     #[serde(default)]
     pub dataset_signature_sha256: String,
     #[serde(default)]
@@ -119,13 +124,55 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub qc_report_path: String,
     #[serde(default)]
+    pub canonical_feature_summary_path: String,
+    #[serde(default)]
     pub source_gff3_filename: String,
     #[serde(default)]
     pub source_fasta_filename: String,
     #[serde(default)]
     pub source_fai_filename: String,
+    #[serde(default)]
+    pub source_facts_path: String,
+    #[serde(default)]
+    pub normalized_input_identity_sha256: String,
+    #[serde(default)]
+    pub software_version: String,
+    #[serde(default)]
+    pub config_version: String,
+    #[serde(default)]
+    pub build_policy_version: String,
+    #[serde(default)]
+    pub build_metadata_path: String,
+    #[serde(default)]
+    pub anomaly_summary_path: String,
+    #[serde(default)]
+    pub dataset_stats_path: String,
+    #[serde(default)]
+    pub artifact_inventory_path: String,
+    #[serde(default)]
+    pub evidence_bundle_path: String,
+    #[serde(default)]
+    pub evidence_bundle_sha256: String,
+    #[serde(default)]
+    pub reference_build_identity_sha256: String,
+    #[serde(default)]
+    pub contig_naming_style: String,
+    #[serde(default)]
+    pub coordinate_system: String,
+    #[serde(default)]
+    pub scientific_prerequisites_status: String,
+    #[serde(default)]
+    pub scientific_profile_path: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
+    #[serde(default)]
+    pub canonical_model_schema_version: u64,
+    #[serde(default)]
+    pub canonical_query_semantic_sha256: String,
+    #[serde(default)]
+    pub canonical_lineage_sha256: String,
+    #[serde(default, skip_serializing_if = "dataset_serde::map_is_empty")]
+    pub canonical_feature_counts: BTreeMap<String, u64>,
     #[serde(default, skip_serializing_if = "dataset_serde::map_is_empty")]
     pub contig_normalization_aliases: BTreeMap<String, String>,
     #[serde(
@@ -144,7 +191,7 @@ impl ArtifactManifest {
         checksums: ArtifactChecksums,
         stats: ManifestStats,
     ) -> Self {
-        Self {
+        let mut manifest = Self {
             model_version: ModelVersion::V1,
             manifest_version,
             db_schema_version,
@@ -152,6 +199,7 @@ impl ArtifactManifest {
             checksums,
             artifact_version: "v1".to_string(),
             schema_version: "1".to_string(),
+            identity_schema_version: default_identity_schema_version(),
             input_hashes: ManifestInputHashes {
                 gff3_sha256: "unknown".to_string(),
                 fasta_sha256: "unknown".to_string(),
@@ -159,6 +207,7 @@ impl ArtifactManifest {
                 policy_sha256: "unknown".to_string(),
             },
             stats,
+            identity: DatasetIdentity::default(),
             dataset_signature_sha256: String::new(),
             db_hash: String::new(),
             artifact_hash: String::new(),
@@ -169,13 +218,36 @@ impl ArtifactManifest {
             toolchain_hash: "unknown".to_string(),
             created_at: String::new(),
             qc_report_path: String::new(),
+            canonical_feature_summary_path: String::new(),
             source_gff3_filename: String::new(),
             source_fasta_filename: String::new(),
             source_fai_filename: String::new(),
+            source_facts_path: String::new(),
+            normalized_input_identity_sha256: String::new(),
+            software_version: String::new(),
+            config_version: String::new(),
+            build_policy_version: String::new(),
+            build_metadata_path: String::new(),
+            anomaly_summary_path: String::new(),
+            dataset_stats_path: String::new(),
+            artifact_inventory_path: String::new(),
+            evidence_bundle_path: String::new(),
+            evidence_bundle_sha256: String::new(),
+            reference_build_identity_sha256: String::new(),
+            contig_naming_style: String::new(),
+            coordinate_system: String::new(),
+            scientific_prerequisites_status: String::new(),
+            scientific_profile_path: String::new(),
             sharding_plan: ShardingPlan::None,
+            canonical_model_schema_version: 0,
+            canonical_query_semantic_sha256: String::new(),
+            canonical_lineage_sha256: String::new(),
+            canonical_feature_counts: BTreeMap::new(),
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
-        }
+        };
+        manifest.identity = manifest.expected_identity().unwrap_or_default();
+        manifest
     }
 
     pub fn validate_strict(&self) -> Result<(), ValidationError> {
@@ -187,6 +259,11 @@ impl ArtifactManifest {
         if self.schema_version.trim().is_empty() {
             return Err(ValidationError(
                 "schema_version must not be empty".to_string(),
+            ));
+        }
+        if self.identity_schema_version.trim().is_empty() {
+            return Err(ValidationError(
+                "identity_schema_version must not be empty".to_string(),
             ));
         }
         if self.manifest_version.trim().is_empty() {
@@ -209,6 +286,11 @@ impl ArtifactManifest {
                 "schema_version and db_schema_version must match".to_string(),
             ));
         }
+        if self.identity_schema_version != "1" {
+            return Err(ValidationError(
+                "identity_schema_version must currently be 1".to_string(),
+            ));
+        }
         if self.input_hashes.gff3_sha256.trim().is_empty()
             || self.input_hashes.fasta_sha256.trim().is_empty()
             || self.input_hashes.fai_sha256.trim().is_empty()
@@ -223,6 +305,33 @@ impl ArtifactManifest {
                 "manifest toolchain_hash must not be empty".to_string(),
             ));
         }
+        if self.source_facts_path.trim().is_empty()
+            || self.normalized_input_identity_sha256.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest source_facts_path and normalized_input_identity_sha256 are required"
+                    .to_string(),
+            ));
+        }
+        if self.software_version.trim().is_empty()
+            || self.config_version.trim().is_empty()
+            || self.build_policy_version.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest software/config/build policy versions must not be empty".to_string(),
+            ));
+        }
+        if self.build_metadata_path.trim().is_empty()
+            || self.anomaly_summary_path.trim().is_empty()
+            || self.dataset_stats_path.trim().is_empty()
+            || self.artifact_inventory_path.trim().is_empty()
+            || self.evidence_bundle_path.trim().is_empty()
+            || self.evidence_bundle_sha256.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest evidence artifact paths and bundle hash must be populated".to_string(),
+            ));
+        }
         if self.db_hash.trim().is_empty() {
             return Err(ValidationError(
                 "manifest db_hash must not be empty".to_string(),
@@ -232,6 +341,16 @@ impl ArtifactManifest {
             return Err(ValidationError(
                 "manifest artifact_hash must not be empty".to_string(),
             ));
+        }
+        if self.canonical_model_schema_version > 0 {
+            if self.canonical_query_semantic_sha256.trim().is_empty()
+                || self.canonical_lineage_sha256.trim().is_empty()
+            {
+                return Err(ValidationError(
+                    "canonical hashes are required when canonical_model_schema_version is set"
+                        .to_string(),
+                ));
+            }
         }
         if self.db_hash != self.checksums.sqlite_sha256 {
             return Err(ValidationError(
@@ -246,11 +365,55 @@ impl ArtifactManifest {
                 "derived_column_origins must not be empty".to_string(),
             ));
         }
+        self.identity.validate()?;
+        if self.identity.release_id != self.dataset.canonical_string() {
+            return Err(ValidationError(
+                "identity release_id must match dataset canonical string".to_string(),
+            ));
+        }
+        let expected_identity = self.expected_identity()?;
+        if self.identity != expected_identity {
+            return Err(ValidationError(
+                "identity fields are contradictory to manifest source/build/artifact components"
+                    .to_string(),
+            ));
+        }
         Ok(())
     }
 
     pub fn validate(&self) -> Result<(), ValidationError> {
         self.validate_strict()
+    }
+
+    fn source_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "gff3_sha256": self.checksums.gff3_sha256.clone(),
+            "fasta_sha256": self.checksums.fasta_sha256.clone(),
+            "fai_sha256": self.checksums.fai_sha256.clone()
+        })
+    }
+
+    fn build_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "manifest_version": self.manifest_version.clone(),
+            "schema_version": self.schema_version.clone(),
+            "db_schema_version": self.db_schema_version.clone()
+        })
+    }
+
+    fn artifact_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "sqlite_sha256": self.checksums.sqlite_sha256.clone()
+        })
+    }
+
+    fn expected_identity(&self) -> Result<DatasetIdentity, ValidationError> {
+        DatasetIdentity::from_components(
+            &self.dataset,
+            &self.source_identity_component(),
+            &self.build_identity_component(),
+            &self.artifact_identity_component(),
+        )
     }
 }
 
@@ -292,6 +455,10 @@ fn default_derived_column_origins() -> BTreeMap<String, String> {
     out
 }
 
+fn default_identity_schema_version() -> String {
+    "1".to_string()
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
@@ -317,7 +484,14 @@ pub struct ArtifactPaths {
     pub sqlite: PathBuf,
     pub manifest: PathBuf,
     pub anomaly_report: PathBuf,
+    pub anomaly_summary: PathBuf,
     pub qc_report: PathBuf,
+    pub source_facts: PathBuf,
+    pub build_metadata: PathBuf,
+    pub dataset_stats: PathBuf,
+    pub artifact_inventory: PathBuf,
+    pub evidence_bundle: PathBuf,
+    pub scientific_profile: PathBuf,
     pub release_gene_index: PathBuf,
 }
 
@@ -339,7 +513,14 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
         sqlite: derived.join("gene_summary.sqlite"),
         manifest: derived.join("manifest.json"),
         anomaly_report: derived.join("anomaly_report.json"),
+        anomaly_summary: derived.join("anomaly_summary.json"),
         qc_report: derived.join("qc_report.json"),
+        source_facts: derived.join("source_facts.json"),
+        build_metadata: derived.join("build_metadata.json"),
+        dataset_stats: derived.join("dataset_stats.json"),
+        artifact_inventory: derived.join("artifact_inventory.json"),
+        evidence_bundle: derived.join("evidence_bundle.lock.json"),
+        scientific_profile: derived.join("scientific_profile.json"),
         release_gene_index: derived.join("release_gene_index.json"),
     }
 }
@@ -524,6 +705,8 @@ pub struct IngestAnomalyReport {
     pub missing_required_fields: Vec<String>,
     #[serde(default)]
     pub rejections: Vec<IngestRejection>,
+    #[serde(default)]
+    pub scientific_ambiguities: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -533,6 +716,26 @@ pub struct IngestRejection {
     pub line: usize,
     pub code: String,
     pub sample: String,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[serde(rename_all = "snake_case")]
+#[non_exhaustive]
+pub enum IngestAnomalyClass {
+    MissingParents,
+    MissingTranscriptParents,
+    MultipleParentTranscripts,
+    UnknownContigs,
+    OverlappingIds,
+    DuplicateGeneIds,
+    OverlappingGeneIdsAcrossContigs,
+    OrphanTranscripts,
+    ParentCycles,
+    AttributeFallbacks,
+    UnknownFeatureTypes,
+    MissingRequiredFields,
+    Rejections,
+    ScientificAmbiguities,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, Hash)]
@@ -590,6 +793,78 @@ impl IngestAnomalyReport {
             }
         }
         Ok(())
+    }
+
+    #[must_use]
+    pub fn anomaly_class_counts(&self) -> BTreeMap<IngestAnomalyClass, u64> {
+        let mut counts = BTreeMap::new();
+        counts.insert(
+            IngestAnomalyClass::MissingParents,
+            self.missing_parents.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::MissingTranscriptParents,
+            self.missing_transcript_parents.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::MultipleParentTranscripts,
+            self.multiple_parent_transcripts.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::UnknownContigs,
+            self.unknown_contigs.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OverlappingIds,
+            self.overlapping_ids.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::DuplicateGeneIds,
+            self.duplicate_gene_ids.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OverlappingGeneIdsAcrossContigs,
+            self.overlapping_gene_ids_across_contigs.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::OrphanTranscripts,
+            self.orphan_transcripts.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::ParentCycles,
+            self.parent_cycles.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::AttributeFallbacks,
+            self.attribute_fallbacks.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::UnknownFeatureTypes,
+            self.unknown_feature_types.len() as u64,
+        );
+        counts.insert(
+            IngestAnomalyClass::MissingRequiredFields,
+            self.missing_required_fields.len() as u64,
+        );
+        counts.insert(IngestAnomalyClass::Rejections, self.rejections.len() as u64);
+        counts.insert(
+            IngestAnomalyClass::ScientificAmbiguities,
+            self.scientific_ambiguities.len() as u64,
+        );
+        counts
+    }
+
+    #[must_use]
+    pub fn severity_for_class(class: IngestAnomalyClass) -> QcSeverity {
+        match class {
+            IngestAnomalyClass::UnknownFeatureTypes
+            | IngestAnomalyClass::MissingRequiredFields
+            | IngestAnomalyClass::Rejections
+            | IngestAnomalyClass::ParentCycles
+            | IngestAnomalyClass::UnknownContigs => QcSeverity::Error,
+            IngestAnomalyClass::ScientificAmbiguities => QcSeverity::Warn,
+            _ => QcSeverity::Warn,
+        }
     }
 }
 

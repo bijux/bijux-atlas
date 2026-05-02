@@ -20,34 +20,7 @@ pub fn build_sql(
     let mut where_parts: Vec<String> = Vec::new();
     let mut params: Vec<Value> = Vec::new();
 
-    if let Some(region) = &req.filter.region {
-        sql.push_str(" JOIN gene_summary_rtree r ON r.gene_rowid = g.id");
-        where_parts.push("g.seqid = ?".to_string());
-        params.push(Value::Text(region.seqid.clone()));
-        where_parts.push("r.start <= ?".to_string());
-        params.push(Value::Real(region.end as f64));
-        where_parts.push("r.end >= ?".to_string());
-        params.push(Value::Real(region.start as f64));
-    }
-    if let Some(gene_id) = &req.filter.gene_id {
-        where_parts.push("g.gene_id = ?".to_string());
-        params.push(Value::Text(gene_id.clone()));
-    }
-    if let Some(name) = &req.filter.name {
-        where_parts.push("g.name_normalized = ?".to_string());
-        params.push(Value::Text(normalize_name_lookup(name)));
-    }
-    if let Some(prefix) = &req.filter.name_prefix {
-        where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
-        params.push(Value::Text(format!(
-            "{}%",
-            escape_like_prefix(&normalize_name_lookup(prefix))
-        )));
-    }
-    if let Some(biotype) = &req.filter.biotype {
-        where_parts.push("g.biotype = ?".to_string());
-        params.push(Value::Text(biotype.clone()));
-    }
+    append_base_filters(req, &mut sql, &mut where_parts, &mut params);
 
     if let Some(c) = cursor {
         match order_mode {
@@ -89,6 +62,26 @@ pub fn build_sql(
     sql.push_str(" LIMIT ?");
 
     Ok((sql, params))
+}
+
+pub fn build_count_sql(req: &GeneQueryRequest) -> (String, Vec<Value>) {
+    let mut sql = String::from("SELECT COUNT(*) FROM gene_summary g");
+    let mut where_parts: Vec<String> = Vec::new();
+    let mut params: Vec<Value> = Vec::new();
+    append_base_filters(req, &mut sql, &mut where_parts, &mut params);
+    if !where_parts.is_empty() {
+        sql.push_str(" WHERE ");
+        sql.push_str(&where_parts.join(" AND "));
+    }
+    (sql, params)
+}
+
+pub fn query_gene_count(conn: &Connection, req: &GeneQueryRequest) -> Result<i64, String> {
+    let (sql, params) = build_count_sql(req);
+    conn.query_row(&sql, params_from_iter(params.iter()), |row| {
+        row.get::<_, i64>(0)
+    })
+    .map_err(|e| e.to_string())
 }
 
 pub fn assert_index_usage(
@@ -154,10 +147,16 @@ pub fn explain_query_plan(
 
 #[must_use]
 pub fn order_mode_for(req: &GeneQueryRequest) -> OrderMode {
-    if req.filter.region.is_some() {
-        OrderMode::Region
-    } else {
-        OrderMode::GeneId
+    match req.filter.sort {
+        super::filters::QuerySort::GeneIdAsc => OrderMode::GeneId,
+        super::filters::QuerySort::RegionAsc => OrderMode::Region,
+        super::filters::QuerySort::Auto => {
+            if req.filter.region.is_some() {
+                OrderMode::Region
+            } else {
+                OrderMode::GeneId
+            }
+        }
     }
 }
 
@@ -196,6 +195,57 @@ pub fn query_gene_id_name_json_minimal(
     let name_json = serde_json::to_string(&name).map_err(|e| e.to_string())?;
     let body = format!("{{\"gene_id\":{gid_json},\"name\":{name_json}}}");
     Ok(Some(body.into_bytes()))
+}
+
+fn append_base_filters(
+    req: &GeneQueryRequest,
+    sql: &mut String,
+    where_parts: &mut Vec<String>,
+    params: &mut Vec<Value>,
+) {
+    if let Some(region) = &req.filter.region {
+        sql.push_str(" JOIN gene_summary_rtree r ON r.gene_rowid = g.id");
+        where_parts.push("g.seqid = ?".to_string());
+        params.push(Value::Text(region.seqid.clone()));
+        match req.filter.interval {
+            super::filters::IntervalSemantics::Overlap => {
+                where_parts.push("r.start <= ?".to_string());
+                params.push(Value::Real(region.end as f64));
+                where_parts.push("r.end >= ?".to_string());
+                params.push(Value::Real(region.start as f64));
+            }
+            super::filters::IntervalSemantics::Containment => {
+                where_parts.push("r.start >= ?".to_string());
+                params.push(Value::Real(region.start as f64));
+                where_parts.push("r.end <= ?".to_string());
+                params.push(Value::Real(region.end as f64));
+            }
+            super::filters::IntervalSemantics::BoundaryTouch => {
+                where_parts.push("(r.end = ? OR r.start = ?)".to_string());
+                params.push(Value::Real(region.start as f64));
+                params.push(Value::Real(region.end as f64));
+            }
+        }
+    }
+    if let Some(gene_id) = &req.filter.gene_id {
+        where_parts.push("g.gene_id = ?".to_string());
+        params.push(Value::Text(gene_id.clone()));
+    }
+    if let Some(name) = &req.filter.name {
+        where_parts.push("g.name_normalized = ?".to_string());
+        params.push(Value::Text(normalize_name_lookup(name)));
+    }
+    if let Some(prefix) = &req.filter.name_prefix {
+        where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
+        params.push(Value::Text(format!(
+            "{}%",
+            escape_like_prefix(&normalize_name_lookup(prefix))
+        )));
+    }
+    if let Some(biotype) = &req.filter.biotype {
+        where_parts.push("g.biotype = ?".to_string());
+        params.push(Value::Text(biotype.clone()));
+    }
 }
 
 #[must_use]

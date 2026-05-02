@@ -155,6 +155,17 @@ fn atlas_validate_deep_requires_manifest_lock() {
     manifest.toolchain_hash = "toolchain-hash".to_string();
     manifest.db_hash = sqlite_sha.clone();
     manifest.artifact_hash = sqlite_sha;
+    manifest.source_facts_path = "derived/source_facts.json".to_string();
+    manifest.normalized_input_identity_sha256 = "f".repeat(64);
+    manifest.software_version = "atlas-test".to_string();
+    manifest.config_version = "atlas-test-config".to_string();
+    manifest.build_policy_version = "atlas-test-policy".to_string();
+    manifest.build_metadata_path = "derived/build.metadata.json".to_string();
+    manifest.anomaly_summary_path = "derived/anomaly.summary.json".to_string();
+    manifest.dataset_stats_path = "derived/dataset.stats.json".to_string();
+    manifest.artifact_inventory_path = "derived/artifact.inventory.json".to_string();
+    manifest.evidence_bundle_path = "derived/evidence.bundle.json".to_string();
+    manifest.evidence_bundle_sha256 = "1".repeat(64);
     fs::write(
         &paths.manifest,
         serde_json::to_vec(&manifest).expect("manifest json"),

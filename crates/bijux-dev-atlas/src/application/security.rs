@@ -1539,14 +1539,19 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let main_source =
         fs::read_to_string(root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"))
             .map_err(|err| format!("failed to read runtime main source: {err}"))?;
+    let server_host_source =
+        fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/host.rs"))
+            .map_err(|err| format!("failed to read runtime server host source: {err}"))?;
     let runbook_text = fs::read_to_string(root.join(auth_docs_runbook))
         .map_err(|err| format!("failed to read {}: {err}", auth_docs_runbook))?;
     let auth_supports_disabled = auth_methods
         .iter()
         .filter_map(serde_yaml::Value::as_str)
         .any(|value| value == "disabled");
-    let sec_auth_003 = main_source.contains("event_id = \"auth_mode_selected\"")
-        && main_source.contains("auth_disabled =");
+    let sec_auth_003 = (server_host_source.contains("event_id = \"auth_mode_selected\"")
+        && server_host_source.contains("auth_disabled ="))
+        || (main_source.contains("event_id = \"auth_mode_selected\"")
+            && main_source.contains("auth_disabled ="));
     let runbook_text_lower = runbook_text.to_ascii_lowercase();
     let sec_auth_004 = !auth_supports_disabled
         || runbook_text_lower.contains("reverse proxy")
@@ -1591,7 +1596,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     let data_command_source =
         fs::read_to_string(root.join("crates/bijux-dev-atlas/src/application/data.rs"))
             .map_err(|err| format!("failed to read data command source: {err}"))?;
-    let main_audit_source_fields = collect_source_json_fields(&main_source);
+    let runtime_audit_source = format!("{main_source}\n{server_host_source}");
+    let main_audit_source_fields = collect_source_json_fields(&runtime_audit_source);
     let data_audit_source_fields = collect_source_json_fields(&data_command_source);
     let audit_event_names = [
         "config_loaded",
@@ -1603,8 +1609,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     ];
     let runtime_audit_sources_present = request_utils_source.contains("query_executed")
         && request_utils_source.contains("admin_action")
-        && main_source.contains("audit_config_loaded")
-        && main_source.contains("audit_startup")
+        && runtime_audit_source.contains("audit_config_loaded")
+        && runtime_audit_source.contains("audit_startup")
         && data_command_source.contains("audit_ingest_started")
         && data_command_source.contains("audit_ingest_completed");
     let audit_smoke_rows = vec![

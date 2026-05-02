@@ -8,6 +8,16 @@ fn fixture_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny")
 }
 
+fn read_canonical_summary(run: &IngestResult) -> serde_json::Value {
+    let path = run
+        .manifest_path
+        .parent()
+        .expect("manifest dir")
+        .join("canonical_summary.json");
+    serde_json::from_slice(&std::fs::read(path).expect("read canonical summary"))
+        .expect("parse canonical summary")
+}
+
 fn sqlite_logical_fingerprint(path: &Path) -> String {
     use rusqlite::types::ValueRef;
 
@@ -131,6 +141,8 @@ fn opts(root: &Path, strictness: StrictnessMode) -> IngestOptions {
         reject_normalized_seqid_collisions: true,
         max_threads: 1,
         fail_on_warn: false,
+        max_warn_anomalies: None,
+        max_error_anomalies: None,
         allow_overlap_gene_ids_across_contigs: false,
         emit_shards: false,
         shard_partitions: 0,
@@ -198,6 +210,44 @@ fn strict_mode_rejects_missing_parent() {
 }
 
 #[test]
+fn strict_mode_rejects_transcript_parent_that_is_not_gene() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    let gff = root.path().join("bad-parent.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=gene1\nchr1\tsrc\tmRNA\t1\t20\t.\t+\t.\tID=tx1;Parent=not_a_gene\n",
+    )
+    .expect("write gff");
+    o.gff3_path = gff;
+    let err = ingest_dataset(&o).expect_err("bad transcript parent must fail");
+    assert!(
+        err.to_string().contains("GFF3_PARENT_NOT_GENE"),
+        "unexpected error: {}",
+        err
+    );
+}
+
+#[test]
+fn strict_mode_rejects_exon_parent_that_is_not_transcript() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    let gff = root.path().join("bad-child-parent.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=gene1\nchr1\tsrc\texon\t1\t20\t.\t+\t.\tID=ex1;Parent=missing_tx\n",
+    )
+    .expect("write gff");
+    o.gff3_path = gff;
+    let err = ingest_dataset(&o).expect_err("bad child parent must fail");
+    assert!(
+        err.to_string().contains("GFF3_PARENT_NOT_TRANSCRIPT"),
+        "unexpected error: {}",
+        err
+    );
+}
+
+#[test]
 fn report_only_collects_anomalies() {
     let root = tempdir().expect("tempdir");
     let mut o = opts(root.path(), StrictnessMode::ReportOnly);
@@ -213,7 +263,17 @@ fn strict_warn_mode_fails_on_qc_warn() {
     o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
     o.fail_on_warn = true;
     let err = ingest_dataset(&o).expect_err("strict warn must fail");
-    assert!(err.to_string().contains("QC WARN"));
+    assert!(err.to_string().contains("INGEST_WARN_POLICY_REJECTED"));
+}
+
+#[test]
+fn anomaly_threshold_gate_refuses_ingest_when_warn_budget_exceeded() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::ReportOnly);
+    o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
+    o.max_warn_anomalies = Some(0);
+    let err = ingest_dataset(&o).expect_err("warn anomaly threshold must fail");
+    assert!(err.to_string().contains("max_warn_anomalies"));
 }
 
 #[test]
@@ -361,7 +421,7 @@ fn missing_fai_fails_by_default_but_can_autogenerate_in_dev_mode() {
     let mut o = opts(root.path(), StrictnessMode::Strict);
     o.fai_path = root.path().join("autogen.fai");
     let err = ingest_dataset(&o).expect_err("missing fai must fail by default");
-    assert!(err.to_string().contains("FAI index is required"));
+    assert!(err.to_string().contains("FAI_REQUIRED_FOR_INGEST"));
 
     let mut dev = opts(root.path(), StrictnessMode::Strict);
     dev.fai_path = root.path().join("autogen-dev.fai");
@@ -502,7 +562,8 @@ fn fixture_matrix_edgecases_runs_leniently() {
                 assert!(
                     msg.contains("gene_count must be > 0")
                         || msg.contains("contig")
-                        || msg.contains("invalid"),
+                        || msg.contains("invalid")
+                        || msg.contains("GFF3_REFERENCE_NOT_IN_FASTA_FAI"),
                     "unexpected edgecase failure: {msg}"
                 );
             }
@@ -753,6 +814,71 @@ fn feature_ordering_independence_holds() {
         run_b2.manifest.checksums.sqlite_sha256
     );
     assert_eq!(run_a.manifest.stats, run_b1.manifest.stats);
+    assert_eq!(
+        run_b1.manifest.canonical_query_semantic_sha256,
+        run_b2.manifest.canonical_query_semantic_sha256
+    );
+    assert_eq!(
+        run_b1.manifest.canonical_lineage_sha256,
+        run_b2.manifest.canonical_lineage_sha256
+    );
+    let summary_a = read_canonical_summary(&run_b1);
+    let summary_b = read_canonical_summary(&run_b2);
+    assert_eq!(
+        summary_a.pointer("/hashes/query_semantic_sha256"),
+        summary_b.pointer("/hashes/query_semantic_sha256")
+    );
+    assert_eq!(
+        summary_a.pointer("/summary/feature_type_counts/gene"),
+        summary_b.pointer("/summary/feature_type_counts/gene")
+    );
+}
+
+#[test]
+fn canonical_summary_and_manifest_hashes_are_emitted() {
+    let root = tempdir().expect("tempdir");
+    let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+    let summary = read_canonical_summary(&run);
+    let gene_count = summary
+        .pointer("/summary/genes")
+        .and_then(serde_json::Value::as_u64)
+        .expect("summary genes");
+    assert_eq!(gene_count, run.manifest.stats.gene_count);
+    assert_eq!(
+        summary.pointer("/hashes/query_semantic_sha256"),
+        Some(&serde_json::json!(run
+            .manifest
+            .canonical_query_semantic_sha256
+            .clone()))
+    );
+    assert_eq!(
+        summary.pointer("/hashes/lineage_sensitive_sha256"),
+        Some(&serde_json::json!(run
+            .manifest
+            .canonical_lineage_sha256
+            .clone()))
+    );
+    assert_eq!(run.manifest.canonical_model_schema_version, 1);
+    assert_eq!(
+        run.manifest.canonical_feature_summary_path,
+        "derived/canonical_summary.json".to_string()
+    );
+}
+
+#[test]
+fn canonical_query_semantic_hash_is_stable_across_repeated_runs() {
+    let root_a = tempdir().expect("tempdir");
+    let run_a = ingest_dataset(&opts(root_a.path(), StrictnessMode::Strict)).expect("run a");
+    let root_b = tempdir().expect("tempdir");
+    let run_b = ingest_dataset(&opts(root_b.path(), StrictnessMode::Strict)).expect("run b");
+    assert_eq!(
+        run_a.manifest.canonical_query_semantic_sha256,
+        run_b.manifest.canonical_query_semantic_sha256
+    );
+    assert_eq!(
+        run_a.manifest.canonical_lineage_sha256,
+        run_b.manifest.canonical_lineage_sha256
+    );
 }
 
 #[test]
@@ -772,6 +898,20 @@ fn report_contains_structured_rejections() {
         run.anomaly_report.rejections[0].code,
         "GFF3_UNKNOWN_FEATURE"
     );
+    let qc: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&run.qc_report_path).expect("read qc report"))
+            .expect("parse qc report");
+    assert!(
+        qc.pointer("/anomaly_classes/rejections")
+            .and_then(serde_json::Value::as_u64)
+            .unwrap_or(0)
+            > 0
+    );
+    assert_eq!(
+        qc.pointer("/anomaly_classes/unknown_feature_types")
+            .and_then(serde_json::Value::as_u64),
+        Some(1)
+    );
 }
 
 #[test]
@@ -789,5 +929,118 @@ fn manifest_stores_contig_normalization_aliases() {
             .get("1")
             .map(String::as_str),
         Some("chr1")
+    );
+}
+
+#[test]
+fn scientific_fixture_emits_contig_classes_and_reference_build_identity() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("annotations.gff3");
+    o.fasta_path = fixtures.join("genome.fa");
+    o.fai_path = fixtures.join("genome.fa.fai");
+    let run = ingest_dataset(&o).expect("scientific ingest");
+
+    assert!(!run.manifest.reference_build_identity_sha256.is_empty());
+    assert_eq!(run.manifest.coordinate_system, "1-based-closed");
+    assert_eq!(run.manifest.scientific_prerequisites_status, "complete");
+    assert_eq!(
+        run.manifest.scientific_profile_path,
+        "derived/scientific_profile.json".to_string()
+    );
+
+    let scientific_profile_path = run
+        .manifest_path
+        .parent()
+        .expect("manifest dir")
+        .join("scientific_profile.json");
+    let profile: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(scientific_profile_path).expect("read scientific profile"),
+    )
+    .expect("parse scientific profile");
+    assert_eq!(
+        profile["coordinate_system"].as_str(),
+        Some("1-based-closed")
+    );
+    assert!(
+        profile["contig_class_distribution"]["mitochondrial"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["plasmid"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["scaffold"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+    assert!(
+        profile["contig_class_distribution"]["alternate"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
+    );
+}
+
+#[test]
+fn scientific_incoherent_contig_naming_is_rejected_without_alias() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("incoherent_mixed_core_names.gff3");
+    o.fasta_path = fixtures.join("incoherent_genome.fa");
+    o.fai_path = fixtures.join("incoherent_genome.fa.fai");
+    let err = ingest_dataset(&o).expect_err("incoherent naming should fail");
+    assert!(err
+        .to_string()
+        .contains("SCIENTIFIC_INCOHERENT_SOURCE_COMBINATION"));
+}
+
+#[test]
+fn scientific_incoherent_contig_naming_can_be_resolved_by_alias_policy() {
+    let root = tempdir().expect("tempdir");
+    let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/scientific");
+    let mut o = opts(root.path(), StrictnessMode::Strict);
+    o.gff3_path = fixtures.join("incoherent_mixed_core_names.gff3");
+    o.fasta_path = fixtures.join("incoherent_genome.fa");
+    o.fai_path = fixtures.join("incoherent_genome.fa.fai");
+    o.seqid_policy = SeqidNormalizationPolicy::from_aliases(std::collections::BTreeMap::from([(
+        "1".to_string(),
+        "chr1".to_string(),
+    )]));
+    o.reject_normalized_seqid_collisions = false;
+    let run = ingest_dataset(&o).expect("alias mapping should restore coherence");
+    assert_eq!(run.manifest.scientific_prerequisites_status, "insufficient");
+    assert!(
+        run.anomaly_report
+            .scientific_ambiguities
+            .iter()
+            .any(|entry| entry.contains("multiple_source_seqids_for_normalized:chr1")),
+        "normalized seqid collision should be preserved as scientific evidence"
+    );
+}
+
+#[test]
+fn unknown_biotype_is_recorded_as_scientific_ambiguity() {
+    let root = tempdir().expect("tempdir");
+    let gff = root.path().join("unknown-biotype.gff3");
+    std::fs::write(
+        &gff,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\tmRNA\t1\t20\t.\t+\t.\tID=tx1;Parent=g1\n",
+    )
+    .expect("write gff");
+    let mut o = opts(root.path(), StrictnessMode::Lenient);
+    o.gff3_path = gff;
+    let run = ingest_dataset(&o).expect("ingest");
+    assert!(
+        !run.anomaly_report.scientific_ambiguities.is_empty(),
+        "scientific ambiguity evidence should be emitted"
     );
 }

@@ -4,14 +4,11 @@ use crate::adapters::inbound::http::genes::{
     admission as genes_admission, response as genes_response,
 };
 use crate::adapters::inbound::http::{genes_support, handlers};
+use crate::app::query as app_query;
 use crate::domain::dataset::artifact_paths;
 use crate::domain::dataset::ShardCatalog;
 use crate::domain::sha256_hex;
 use crate::*;
-use bijux_atlas::domain::query::{
-    estimate_work_units, prepared_sql_for_class_export, query_gene_by_id_fast,
-    query_gene_id_name_json_minimal_fast, query_genes_fanout, select_shards_for_request,
-};
 use serde_json::json;
 use tracing::{info, info_span, warn};
 
@@ -92,7 +89,7 @@ pub(crate) async fn genes_handler(
             }
         };
     let class = classify_query(&req);
-    let estimated_cost = estimate_work_units(&req);
+    let estimated_cost = app_query::estimate_work_units(&req);
     info!(
         request_id = %request_id,
         route = "/v1/genes",
@@ -429,7 +426,9 @@ pub(crate) async fn genes_handler(
     let work = async {
         info!(request_id = %request_id, dataset = ?dataset, "dataset resolve");
         let c = state.cache.open_dataset_connection(&dataset).await?;
-        let _ = c.conn.prepare_cached(prepared_sql_for_class_export(class));
+        let _ = c
+            .conn
+            .prepare_cached(app_query::prepared_sql_for_class(class));
         state
             .metrics
             .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
@@ -484,13 +483,14 @@ pub(crate) async fn genes_handler(
                     && !req.fields.transcript_count
                     && !req.fields.sequence_length
                 {
-                    if let Some(bytes) = query_gene_id_name_json_minimal_fast(&c.conn, gene_id)
-                        .map_err(|e| CacheError(e.to_string()))?
+                    if let Some(bytes) =
+                        app_query::query_gene_id_name_json_minimal(&c.conn, gene_id)
+                            .map_err(CacheError)?
                     {
                         let value: serde_json::Value = serde_json::from_slice(&bytes)
                             .map_err(|e| CacheError(e.to_string()))?;
-                        return Ok(bijux_atlas::domain::query::GeneQueryResponse {
-                            rows: vec![bijux_atlas::domain::query::GeneRow {
+                        return Ok(crate::domain::query::GeneQueryResponse {
+                            rows: vec![crate::domain::query::GeneRow {
                                 gene_id: value
                                     .get("gene_id")
                                     .and_then(serde_json::Value::as_str)
@@ -511,9 +511,9 @@ pub(crate) async fn genes_handler(
                         });
                     }
                 }
-                let row = query_gene_by_id_fast(&c.conn, gene_id, &req.fields)
-                    .map_err(|e| CacheError(e.to_string()))?;
-                return Ok(bijux_atlas::domain::query::GeneQueryResponse {
+                let row = app_query::query_gene_by_id(&c.conn, gene_id, &req.fields)
+                    .map_err(CacheError)?;
+                return Ok(crate::domain::query::GeneQueryResponse {
                     rows: row.into_iter().collect(),
                     next_cursor: None,
                 });
@@ -540,7 +540,7 @@ pub(crate) async fn genes_handler(
                         &catalog_path,
                     )?;
                     if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
-                        let selected_rel = select_shards_for_request(&req, &catalog);
+                        let selected_rel = app_query::select_shards(&req, &catalog);
                         let selected_all = shard_candidates.clone().unwrap_or_default();
                         let selected: Vec<std::path::PathBuf> = selected_all
                             .into_iter()
@@ -568,13 +568,13 @@ pub(crate) async fn genes_handler(
                                 shard_conns.push(conn);
                             }
                             let refs: Vec<&Connection> = shard_conns.iter().collect();
-                            let response = query_genes_fanout(
+                            let response = app_query::query_genes_fanout_execute(
                                 &refs,
                                 &req,
                                 &state.limits,
                                 b"atlas-server-cursor-secret",
                             )
-                            .map_err(|e| CacheError(e.to_string()))?;
+                            .map_err(CacheError)?;
                             info!(
                                 event_id = "shard_routing_selected",
                                 request_id = %request_id,

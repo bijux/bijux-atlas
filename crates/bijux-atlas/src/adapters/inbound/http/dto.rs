@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::cluster::resilience::FailureCategory;
-
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct ClusterRegisterRequest {
     pub cluster_id: String,
@@ -46,8 +44,15 @@ pub(crate) struct FailureInjectionRequest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum FailureInjectionCategory {
+    NodeCrash,
+    ShardCorruption,
+    NetworkPartition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct FailureInjectionPlan {
-    pub(crate) category: FailureCategory,
+    pub(crate) category: FailureInjectionCategory,
     pub(crate) target_id: String,
     pub(crate) detail: &'static str,
 }
@@ -64,17 +69,17 @@ pub(crate) fn resolve_failure_injection_plan(
 ) -> Result<FailureInjectionPlan, &'static str> {
     match req.kind.as_str() {
         "node_crash" => Ok(FailureInjectionPlan {
-            category: FailureCategory::NodeUnreachable,
+            category: FailureInjectionCategory::NodeCrash,
             target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
             detail: "simulated node crash",
         }),
         "shard_corruption" => Ok(FailureInjectionPlan {
-            category: FailureCategory::ShardCorruption,
+            category: FailureInjectionCategory::ShardCorruption,
             target_id: required_debug_target(req.shard_id.as_deref(), "shard_id")?,
             detail: "simulated shard corruption",
         }),
         "network_partition" => Ok(FailureInjectionPlan {
-            category: FailureCategory::NetworkPartition,
+            category: FailureInjectionCategory::NetworkPartition,
             target_id: required_debug_target(req.node_id.as_deref(), "node_id")?,
             detail: "simulated network partition",
         }),
@@ -91,9 +96,9 @@ pub(crate) fn resolve_chaos_target_node(
 #[cfg(test)]
 mod tests {
     use super::{
-        resolve_chaos_target_node, resolve_failure_injection_plan, FailureInjectionRequest,
+        resolve_chaos_target_node, resolve_failure_injection_plan, FailureInjectionCategory,
+        FailureInjectionRequest,
     };
-    use crate::domain::cluster::resilience::FailureCategory;
 
     #[test]
     fn failure_injection_requires_explicit_targets() {
@@ -134,9 +139,12 @@ mod tests {
         .expect("shard corruption plan");
 
         assert_eq!(node_crash.target_id, "node-prod-1");
-        assert_eq!(node_crash.category, FailureCategory::NodeUnreachable);
+        assert_eq!(node_crash.category, FailureInjectionCategory::NodeCrash);
         assert_eq!(shard_corruption.target_id, "shard-prod-9");
-        assert_eq!(shard_corruption.category, FailureCategory::ShardCorruption);
+        assert_eq!(
+            shard_corruption.category,
+            FailureInjectionCategory::ShardCorruption
+        );
     }
 
     #[test]

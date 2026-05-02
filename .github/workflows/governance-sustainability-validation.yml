@@ -24,4 +24,4 @@ jobs:
           cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json
           cargo run --locked -q -p bijux-dev-atlas -- governance report --format json
       - name: Governance sustainability contracts
-        run: cargo test --locked -p bijux-dev-atlas --test governance_sustainability_contracts -- --nocapture
+        run: cargo test --locked -p bijux-dev-atlas --test governance_policy_guards -- --nocapture

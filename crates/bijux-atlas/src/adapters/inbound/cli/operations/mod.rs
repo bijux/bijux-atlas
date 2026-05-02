@@ -30,7 +30,9 @@ mod dataset;
 
 #[cfg(test)]
 use dataset::validate_qc_thresholds;
-pub(crate) use dataset::{publish_dataset, validate_dataset, validate_ingest_qc};
+pub(crate) use dataset::{
+    publish_dataset, validate_dataset, validate_dataset_evidence, validate_ingest_qc,
+};
 #[cfg(test)]
 use gc::compute_gc_plan;
 
@@ -132,6 +134,8 @@ pub(crate) fn explain_policy(
 pub(crate) fn publish_catalog(
     store_root: PathBuf,
     catalog_path: PathBuf,
+    dry_run: bool,
+    explain: bool,
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let raw = fs::read_to_string(&catalog_path).map_err(|e| e.to_string())?;
@@ -139,6 +143,20 @@ pub(crate) fn publish_catalog(
     catalog.datasets = sorted_catalog_entries(catalog.datasets);
     catalog.validate_sorted().map_err(|e| e.to_string())?;
     let canonical = canonical_catalog_json(&catalog)?;
+
+    if dry_run || explain {
+        return emit_ok_payload(
+            output_mode,
+            json!({
+                "command":"atlas catalog publish",
+                "mode": if explain { "explain" } else { "dry-run" },
+                "status":"ok",
+                "catalog_entries": catalog.datasets.len(),
+                "target": store_root.join("catalog.json"),
+                "writes_artifacts": false
+            }),
+        );
+    }
 
     fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
     let tmp = store_root.join("catalog.json.tmp");
@@ -224,15 +242,26 @@ pub(crate) fn update_latest_alias(
         );
     }
     fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
+    let canonical_catalog = canonical_catalog_json(&catalog)?;
+    let alias_record = crate::domain::dataset::LatestAliasRecord::new(
+        dataset,
+        "promotion-gated".to_string(),
+        format!(
+            "{}",
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_err(|e| e.to_string())?
+                .as_secs()
+        ),
+        "atlas-cli".to_string(),
+        sha256_hex(canonical_catalog.as_bytes()),
+    );
+    alias_record.validate().map_err(|e| e.to_string())?;
     let alias_path = store_root.join("latest.alias.json");
     let tmp = store_root.join("latest.alias.json.tmp");
     fs::write(
         &tmp,
-        canonical::stable_json_bytes(&json!({
-            "dataset": dataset,
-            "policy": "promotion-gated"
-        }))
-        .map_err(|e| e.to_string())?,
+        canonical::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
     fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;

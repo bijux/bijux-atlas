@@ -5,7 +5,8 @@ use crate::contracts::api::{ApiError, ApiErrorCode};
 use crate::domain::canonical::sha256_hex;
 use crate::domain::dataset::DatasetId;
 use crate::domain::query::{
-    GeneFields, GeneFilter, GeneQueryRequest, QueryClass, QueryLimits, RegionFilter,
+    GeneFields, GeneFilter, GeneQueryRequest, IntervalSemantics, QueryClass, QueryLimits,
+    QuerySort, RegionFilter,
 };
 use crate::AppState;
 use serde_json::json;
@@ -185,19 +186,17 @@ pub(super) fn build_dataset_query(
             json!({}),
         ));
     }
-    if let Some(sort) = parsed.sort {
-        match sort {
-            SortKey::GeneIdAsc => {}
-            SortKey::RegionAsc => {
-                if parsed.range.is_none() {
-                    return Err(super::handlers::error_json(
-                        ApiErrorCode::InvalidQueryParameter,
-                        "sort=region:asc requires range filter",
-                        json!({}),
-                    ));
-                }
-            }
-        }
+    if matches!(
+        parsed.strand,
+        Some(crate::contracts::api::params::StrandMode::Plus)
+            | Some(crate::contracts::api::params::StrandMode::Minus)
+            | Some(crate::contracts::api::params::StrandMode::Unknown)
+    ) {
+        return Err(super::handlers::error_json(
+            ApiErrorCode::InvalidQueryParameter,
+            "strand filter is explicit but unsupported for current dataset schema",
+            json!({"allowed": "omit strand or use strand=any"}),
+        ));
     }
     let region = parse_region(parsed.range)?;
     let name_prefix = parsed.name_like.as_ref().map(|v| v.trim_end_matches('*'));
@@ -209,6 +208,34 @@ pub(super) fn build_dataset_query(
             name_prefix: name_prefix.map(ToString::to_string),
             biotype: parsed.biotype,
             region,
+            sort: match parsed.sort {
+                Some(SortKey::GeneIdAsc) => QuerySort::GeneIdAsc,
+                Some(SortKey::RegionAsc) => QuerySort::RegionAsc,
+                None => QuerySort::Auto,
+            },
+            interval: match parsed.interval_mode {
+                Some(crate::contracts::api::params::IntervalMode::Containment) => {
+                    IntervalSemantics::Containment
+                }
+                Some(crate::contracts::api::params::IntervalMode::BoundaryTouch) => {
+                    IntervalSemantics::BoundaryTouch
+                }
+                _ => IntervalSemantics::Overlap,
+            },
+            strand: match parsed.strand {
+                Some(crate::contracts::api::params::StrandMode::Any) | None => {
+                    crate::domain::query::StrandMode::Any
+                }
+                Some(crate::contracts::api::params::StrandMode::Plus) => {
+                    crate::domain::query::StrandMode::Plus
+                }
+                Some(crate::contracts::api::params::StrandMode::Minus) => {
+                    crate::domain::query::StrandMode::Minus
+                }
+                Some(crate::contracts::api::params::StrandMode::Unknown) => {
+                    crate::domain::query::StrandMode::Unknown
+                }
+            },
         },
         limit: parsed.limit,
         cursor: parsed.cursor,

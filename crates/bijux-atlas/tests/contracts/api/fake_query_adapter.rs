@@ -23,6 +23,7 @@ impl QueryAdapter for FakeAdapter {
 
 fn base_params() -> ListGenesParams {
     ListGenesParams {
+        dataset: None,
         release: "110".to_string(),
         species: "homo_sapiens".to_string(),
         assembly: "GRCh38".to_string(),
@@ -37,6 +38,8 @@ fn base_params() -> ListGenesParams {
         min_transcripts: None,
         max_transcripts: None,
         sort: None,
+        interval_mode: None,
+        strand: None,
         include: None,
         pretty: false,
     }

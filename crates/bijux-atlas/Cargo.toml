@@ -33,8 +33,10 @@ opentelemetry-otlp = { version = "0.31", features = ["http-proto", "reqwest-clie
 opentelemetry_sdk = { version = "0.31", features = ["rt-tokio"] }
 redis = { version = "1.2", features = ["tokio-comp"] }
 serde.workspace = true
+bijux-atlas-core = { workspace = true }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
+csv = "1.4"
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
 rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
@@ -96,6 +98,30 @@ path = "tests/contracts/api.rs"
 [[test]]
 name = "contracts_plugin"
 path = "tests/contracts/plugin.rs"
+
+[[test]]
+name = "contracts_architecture_iteration01"
+path = "tests/contracts_architecture_iteration01.rs"
+
+[[test]]
+name = "contracts_ingest_entrypoint_boundaries"
+path = "tests/contracts_ingest_entrypoint_boundaries.rs"
+
+[[test]]
+name = "contracts_wire_domain_separation"
+path = "tests/contracts_wire_domain_separation.rs"
+
+[[test]]
+name = "contracts_bench_ownership"
+path = "tests/contracts_bench_ownership.rs"
+
+[[test]]
+name = "contracts_cli_query_boundary"
+path = "tests/contracts_cli_query_boundary.rs"
+
+[[test]]
+name = "contracts_layering_direction"
+path = "tests/contracts_layering_direction.rs"
 
 [[test]]
 name = "governance_no_network"

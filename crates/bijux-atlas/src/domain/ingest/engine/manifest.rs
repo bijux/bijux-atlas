@@ -31,6 +31,10 @@ pub struct BuildManifestArgs<'a> {
     pub extract: &'a ExtractResult,
     pub contig_aliases: &'a BTreeMap<String, String>,
     pub sharding_plan: ShardingPlan,
+    pub canonical_model_schema_version: u64,
+    pub canonical_query_semantic_sha256: &'a str,
+    pub canonical_lineage_sha256: &'a str,
+    pub canonical_feature_counts: &'a BTreeMap<String, u64>,
 }
 
 pub fn build_and_write_manifest_and_reports(
@@ -48,6 +52,10 @@ pub fn build_and_write_manifest_and_reports(
         extract,
         contig_aliases,
         sharding_plan,
+        canonical_model_schema_version,
+        canonical_query_semantic_sha256,
+        canonical_lineage_sha256,
+        canonical_feature_counts,
     } = args;
     let mut total_transcripts = 0_u64;
     let mut contigs = BTreeSet::new();
@@ -83,7 +91,7 @@ pub fn build_and_write_manifest_and_reports(
         manifest.checksums.gff3_sha256.clone(),
         manifest.checksums.fasta_sha256.clone(),
         manifest.checksums.fai_sha256.clone(),
-        policy_hash,
+        policy_hash.clone(),
     );
     manifest.source_gff3_filename = gff3_path
         .file_name()
@@ -100,6 +108,24 @@ pub fn build_and_write_manifest_and_reports(
         .and_then(|s| s.to_str())
         .unwrap_or_default()
         .to_string();
+    manifest.source_facts_path = "derived/source_facts.json".to_string();
+    manifest.normalized_input_identity_sha256 =
+        compute_normalized_input_identity_sha256(&manifest, contig_aliases)?;
+    manifest.software_version = crate::version::runtime_version().to_string();
+    manifest.config_version = compute_config_version();
+    manifest.build_policy_version = format!("sha256:{policy_hash}");
+    manifest.build_metadata_path = "derived/build_metadata.json".to_string();
+    manifest.anomaly_summary_path = "derived/anomaly_summary.json".to_string();
+    manifest.dataset_stats_path = "derived/dataset_stats.json".to_string();
+    manifest.artifact_inventory_path = "derived/artifact_inventory.json".to_string();
+    manifest.evidence_bundle_path = "derived/evidence_bundle.lock.json".to_string();
+    manifest.evidence_bundle_sha256 = "pending".to_string();
+    manifest.reference_build_identity_sha256 =
+        compute_reference_build_identity_sha256(dataset, extract)?;
+    manifest.contig_naming_style = detect_contig_naming_style(extract);
+    manifest.coordinate_system = "1-based-closed".to_string();
+    manifest.scientific_prerequisites_status = scientific_prerequisites_status(extract);
+    manifest.scientific_profile_path = "derived/scientific_profile.json".to_string();
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
@@ -107,8 +133,30 @@ pub fn build_and_write_manifest_and_reports(
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
     manifest.sharding_plan = sharding_plan;
+    manifest.canonical_feature_summary_path = "derived/canonical_summary.json".to_string();
+    manifest.canonical_model_schema_version = canonical_model_schema_version;
+    manifest.canonical_query_semantic_sha256 = canonical_query_semantic_sha256.to_string();
+    manifest.canonical_lineage_sha256 = canonical_lineage_sha256.to_string();
+    manifest.canonical_feature_counts = canonical_feature_counts.clone();
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
     manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
+    manifest.identity = crate::domain::dataset::DatasetIdentity::from_components(
+        &manifest.dataset,
+        &serde_json::json!({
+            "gff3_sha256": manifest.checksums.gff3_sha256.clone(),
+            "fasta_sha256": manifest.checksums.fasta_sha256.clone(),
+            "fai_sha256": manifest.checksums.fai_sha256.clone()
+        }),
+        &serde_json::json!({
+            "manifest_version": manifest.manifest_version.clone(),
+            "schema_version": manifest.schema_version.clone(),
+            "db_schema_version": manifest.db_schema_version.clone()
+        }),
+        &serde_json::json!({
+            "sqlite_sha256": manifest.checksums.sqlite_sha256.clone()
+        }),
+    )
+    .map_err(|e| IngestError(e.to_string()))?;
 
     manifest
         .validate_strict()
@@ -123,6 +171,12 @@ pub fn build_and_write_manifest_and_reports(
         extract,
         total_transcripts,
         Some(manifest.dataset_signature_sha256.clone()),
+        Some(&json!({
+            "schema_version": canonical_model_schema_version,
+            "query_semantic_sha256": canonical_query_semantic_sha256,
+            "lineage_sensitive_sha256": canonical_lineage_sha256,
+            "feature_counts": canonical_feature_counts
+        })),
         false,
     )?;
     let qc_bytes =
@@ -170,6 +224,43 @@ fn compute_toolchain_hash() -> String {
     }
 }
 
+fn compute_config_version() -> String {
+    let mut bytes = Vec::new();
+    for rel in [
+        "configs/sources/operations/ops/dataset-qc-thresholds.v1.json",
+        "configs/sources/governance/policy/policy.json",
+    ] {
+        let p = workspace_file(rel);
+        if let Ok(b) = fs::read(p) {
+            bytes.extend_from_slice(&b);
+        }
+    }
+    if bytes.is_empty() {
+        "unknown".to_string()
+    } else {
+        sha256_hex(&bytes)
+    }
+}
+
+fn compute_normalized_input_identity_sha256(
+    manifest: &ArtifactManifest,
+    contig_aliases: &BTreeMap<String, String>,
+) -> Result<String, IngestError> {
+    let payload = json!({
+        "gff3_sha256": manifest.checksums.gff3_sha256.clone(),
+        "fasta_sha256": manifest.checksums.fasta_sha256.clone(),
+        "fai_sha256": manifest.checksums.fai_sha256.clone(),
+        "source_filenames": {
+            "gff3": manifest.source_gff3_filename.clone(),
+            "fasta": manifest.source_fasta_filename.clone(),
+            "fai": manifest.source_fai_filename.clone()
+        },
+        "contig_normalization_aliases": contig_aliases
+    });
+    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
+}
+
 fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String, IngestError> {
     let digest_source = serde_json::json!({
         "artifact_version": manifest.artifact_version,
@@ -180,12 +271,66 @@ fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String,
         "input_hashes": manifest.input_hashes,
         "stats": manifest.stats,
         "dataset_signature_sha256": manifest.dataset_signature_sha256,
+        "canonical_model_schema_version": manifest.canonical_model_schema_version,
+        "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+        "canonical_lineage_sha256": manifest.canonical_lineage_sha256,
+        "canonical_feature_counts": manifest.canonical_feature_counts,
+        "reference_build_identity_sha256": manifest.reference_build_identity_sha256,
+        "contig_naming_style": manifest.contig_naming_style,
+        "coordinate_system": manifest.coordinate_system,
+        "scientific_prerequisites_status": manifest.scientific_prerequisites_status,
         "toolchain_hash": manifest.toolchain_hash,
         "db_hash": manifest.db_hash
     });
     let bytes =
         canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
+}
+
+fn compute_reference_build_identity_sha256(
+    dataset: &DatasetId,
+    extract: &ExtractResult,
+) -> Result<String, IngestError> {
+    let payload = json!({
+        "assembly": dataset.assembly,
+        "species": dataset.species,
+        "contig_distribution": extract.contig_distribution,
+        "contig_class_distribution": extract.contig_class_distribution,
+    });
+    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn detect_contig_naming_style(extract: &ExtractResult) -> String {
+    let mut has_chr_prefix = false;
+    let mut has_plain_numeric = false;
+    for contig in extract.contig_distribution.keys() {
+        let lowered = contig.to_ascii_lowercase();
+        if lowered.starts_with("chr") {
+            has_chr_prefix = true;
+        }
+        let core = lowered.strip_prefix("chr").unwrap_or(lowered.as_str());
+        if core.parse::<u64>().is_ok() {
+            has_plain_numeric |= !lowered.starts_with("chr");
+        }
+    }
+    match (has_chr_prefix, has_plain_numeric) {
+        (true, true) => "mixed_chr_and_plain".to_string(),
+        (true, false) => "chr_prefixed".to_string(),
+        (false, true) => "plain_numeric".to_string(),
+        _ => "noncanonical".to_string(),
+    }
+}
+
+fn scientific_prerequisites_status(extract: &ExtractResult) -> String {
+    if !extract.anomaly.scientific_ambiguities.is_empty()
+        || !extract.anomaly.unknown_contigs.is_empty()
+        || !extract.anomaly.missing_required_fields.is_empty()
+    {
+        "insufficient".to_string()
+    } else {
+        "complete".to_string()
+    }
 }
 
 pub fn write_qc_and_anomaly_reports_only(
@@ -210,6 +355,7 @@ pub fn write_qc_and_anomaly_reports_only(
         extract,
         total_transcripts,
         Some(dataset_signature_merkle(extract)?),
+        None,
         true,
     )?;
     let qc_bytes =
@@ -230,58 +376,30 @@ fn build_qc_report_json(
     extract: &ExtractResult,
     total_transcripts: u64,
     manifest_signature: Option<String>,
+    canonical_summary: Option<&serde_json::Value>,
     report_only: bool,
 ) -> Result<serde_json::Value, IngestError> {
-    let warn_items = vec![
-        ("missing_parents", extract.anomaly.missing_parents.len()),
-        (
-            "missing_transcript_parents",
-            extract.anomaly.missing_transcript_parents.len(),
-        ),
-        (
-            "multiple_parent_transcripts",
-            extract.anomaly.multiple_parent_transcripts.len(),
-        ),
-        ("unknown_contigs", extract.anomaly.unknown_contigs.len()),
-        ("overlapping_ids", extract.anomaly.overlapping_ids.len()),
-        (
-            "duplicate_gene_ids",
-            extract.anomaly.duplicate_gene_ids.len(),
-        ),
-        (
-            "overlapping_gene_ids_across_contigs",
-            extract.anomaly.overlapping_gene_ids_across_contigs.len(),
-        ),
-        (
-            "orphan_transcripts",
-            extract.anomaly.orphan_transcripts.len(),
-        ),
-        ("parent_cycles", extract.anomaly.parent_cycles.len()),
-        (
-            "attribute_fallbacks",
-            extract.anomaly.attribute_fallbacks.len(),
-        ),
-        (
-            "unknown_feature_types",
-            extract.anomaly.unknown_feature_types.len(),
-        ),
-        (
-            "missing_required_fields",
-            extract.anomaly.missing_required_fields.len(),
-        ),
-        ("rejections", extract.anomaly.rejections.len()),
-    ];
-    let warn_codes: Vec<serde_json::Value> = warn_items
-        .into_iter()
-        .filter(|(_, count)| *count > 0)
-        .map(|(code, count)| {
+    let class_counts = extract.anomaly.anomaly_class_counts();
+    let class_items: Vec<serde_json::Value> = class_counts
+        .iter()
+        .filter(|(_, count)| **count > 0)
+        .map(|(class, count)| {
+            let severity = crate::domain::dataset::IngestAnomalyReport::severity_for_class(*class);
             json!({
-                "severity": QcSeverity::Warn,
-                "code": code,
+                "severity": severity,
+                "class": class,
                 "count": count,
             })
         })
         .collect();
+    let warn_count: usize = class_items
+        .iter()
+        .filter(|v| v.get("severity") == Some(&json!(QcSeverity::Warn)))
+        .count();
+    let error_count: usize = class_items
+        .iter()
+        .filter(|v| v.get("severity") == Some(&json!(QcSeverity::Error)))
+        .count();
     let mut rejections_by_reason = BTreeMap::<String, u64>::new();
     for rejection in &extract.anomaly.rejections {
         *rejections_by_reason
@@ -340,10 +458,12 @@ fn build_qc_report_json(
         },
         "severity_summary": {
             "INFO": 0,
-            "WARN": warn_codes.len(),
-            "ERROR": 0
+            "WARN": warn_count,
+            "ERROR": error_count
         },
-        "severity_items": warn_codes,
+        "severity_items": class_items,
+        "anomaly_classes": class_counts,
+        "canonical": canonical_summary.cloned().unwrap_or_else(|| json!({})),
     }))
 }
 

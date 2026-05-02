@@ -2,6 +2,7 @@
 members = [
   "crates/bijux-dev-atlas",
   "crates/bijux-atlas",
+  "crates/bijux-atlas-core",
 ]
 resolver = "2"
 
@@ -33,6 +34,7 @@ todo = "deny"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 bijux-atlas = { version = "=0.2.1", path = "crates/bijux-atlas" }
+bijux-atlas-core = { version = "=0.2.1", path = "crates/bijux-atlas-core" }
 bijux-dev-atlas = { version = "=0.2.1", path = "crates/bijux-dev-atlas" }
 bijux-cli = "0.3.6"
 semver = "1"

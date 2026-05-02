@@ -2,7 +2,8 @@
 
 use crate::adapters::inbound::http;
 use crate::adapters::inbound::http::request_policies::{
-    cors_middleware, provenance_headers_middleware, resilience_middleware, security_middleware,
+    cors_middleware, debug_route_hardening_middleware, provenance_headers_middleware,
+    resilience_middleware, security_middleware,
 };
 use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
@@ -353,7 +354,15 @@ pub fn build_router(state: AppState) -> Router {
             state.clone(),
             provenance_headers_middleware,
         ))
+        .layer(from_fn_with_state(
+            state.clone(),
+            debug_route_hardening_middleware,
+        ))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
+        .layer(from_fn_with_state(
+            state.clone(),
+            crate::adapters::inbound::http::middleware::error_envelope::error_envelope_middleware,
+        ))
         .with_state(state)
 }
 

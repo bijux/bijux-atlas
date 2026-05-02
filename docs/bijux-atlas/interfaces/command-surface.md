@@ -25,11 +25,13 @@ flowchart TD
     CLI[bijux atlas / bijux-atlas] --> Config[config]
     CLI --> Catalog[catalog]
     CLI --> Dataset[dataset]
+    CLI --> Query[query]
+    CLI --> Inspect[inspect]
+    CLI --> Export[export]
     CLI --> Diff[diff]
     CLI --> Gc[gc]
     CLI --> Policy[policy]
     CLI --> Ingest[ingest]
-    CLI --> OpenAPI[openapi]
 ```
 
 This command map is the quickest way to orient yourself in the runtime CLI. It
@@ -59,11 +61,13 @@ Use the automation reference when you are asking, "Which repository command chec
 - `config`: inspect config behavior
 - `catalog`: validate and mutate catalog state
 - `dataset`: validate, verify, publish, and pack dataset state
+- `query`: run and explain bounded gene queries
+- `inspect`: inspect dataset artifacts and SQLite layout
+- `export`: export OpenAPI specs and query result rows
 - `diff`: build dataset diff artifacts
 - `gc`: plan and apply garbage collection
 - `policy`: validate and explain active policy
 - `ingest`: build validated dataset state from source inputs
-- `openapi`: generate the OpenAPI description
 
 ## Code Authority
 

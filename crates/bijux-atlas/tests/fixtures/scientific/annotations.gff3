@@ -1,0 +1,21 @@
+##gff-version 3
+##sequence-region chr1 1 40
+##sequence-region chrM 1 20
+##sequence-region plasmidA 1 20
+##sequence-region scaffold_42 1 20
+##sequence-region chr1_GL383518v1_alt 1 20
+chr1	src	gene	1	20	.	+	.	ID=gene1;Name=GENE1;gene_biotype=protein_coding
+chr1	src	mRNA	1	20	.	+	.	ID=tx1;Parent=gene1;transcript_biotype=protein_coding
+chr1	src	exon	1	10	.	+	.	ID=ex1;Parent=tx1
+chrM	src	gene	1	10	.	+	.	ID=mt_gene;Name=MTG;gene_biotype=protein_coding
+chrM	src	mRNA	1	10	.	+	.	ID=mt_tx;Parent=mt_gene;transcript_biotype=protein_coding
+chrM	src	exon	1	10	.	+	.	ID=mt_ex;Parent=mt_tx
+plasmidA	src	gene	1	8	.	+	.	ID=pl_gene;Name=PLG;gene_biotype=protein_coding
+plasmidA	src	mRNA	1	8	.	+	.	ID=pl_tx;Parent=pl_gene;transcript_biotype=protein_coding
+plasmidA	src	exon	1	8	.	+	.	ID=pl_ex;Parent=pl_tx
+scaffold_42	src	gene	2	12	.	+	.	ID=scf_gene;Name=SCFG;gene_biotype=lncRNA
+scaffold_42	src	mRNA	2	12	.	+	.	ID=scf_tx;Parent=scf_gene;transcript_biotype=lncRNA
+scaffold_42	src	exon	2	12	.	+	.	ID=scf_ex;Parent=scf_tx
+chr1_GL383518v1_alt	src	gene	3	15	.	+	.	ID=alt_gene;Name=ALTG;gene_biotype=protein_coding
+chr1_GL383518v1_alt	src	mRNA	3	15	.	+	.	ID=alt_tx;Parent=alt_gene;transcript_biotype=protein_coding
+chr1_GL383518v1_alt	src	exon	3	15	.	+	.	ID=alt_ex;Parent=alt_tx

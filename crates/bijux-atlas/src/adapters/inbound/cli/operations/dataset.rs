@@ -31,6 +31,7 @@ pub(crate) fn validate_dataset(
     if manifest.stats.gene_count == 0 {
         return Err("manifest gene_count must be > 0".to_string());
     }
+    validate_canonical_evidence(&paths.derived_dir, &manifest)?;
     validate_sqlite_contract(&paths.sqlite)?;
     validate_shard_catalog_and_indexes(&paths.derived_dir)?;
     if !deep {
@@ -66,7 +67,17 @@ pub(crate) fn validate_dataset(
     } else {
         "atlas dataset validate"
     };
-    let payload = json!({"command":command_name,"status":"ok","deep":deep});
+    let payload = json!({
+        "command": command_name,
+        "status": "ok",
+        "deep": deep,
+        "identity": {
+            "release_id": manifest.identity.release_id,
+            "canonical_metadata_sha256": manifest.identity.canonical_metadata_sha256,
+            "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+            "canonical_lineage_sha256": manifest.canonical_lineage_sha256
+        }
+    });
     if output_mode.json {
         println!(
             "{}",
@@ -79,6 +90,176 @@ pub(crate) fn validate_dataset(
         );
     }
     Ok(())
+}
+
+pub(crate) fn validate_dataset_evidence(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    manifest.validate_strict().map_err(|e| e.to_string())?;
+
+    for path in [
+        &paths.anomaly_report,
+        &paths.anomaly_summary,
+        &paths.qc_report,
+        &paths.source_facts,
+        &paths.build_metadata,
+        &paths.dataset_stats,
+        &paths.scientific_profile,
+        &paths.artifact_inventory,
+        &paths.evidence_bundle,
+    ] {
+        if !path.exists() {
+            return Err(format!("evidence artifact missing: {}", path.display()));
+        }
+    }
+
+    let bundle_raw = fs::read_to_string(&paths.evidence_bundle).map_err(|e| e.to_string())?;
+    let bundle_json: serde_json::Value =
+        serde_json::from_str(&bundle_raw).map_err(|e| e.to_string())?;
+    let files = bundle_json
+        .get("files")
+        .and_then(serde_json::Value::as_object)
+        .ok_or_else(|| "evidence bundle is missing files map".to_string())?;
+
+    let mut verified = std::collections::BTreeMap::<String, String>::new();
+    for rel in files.keys() {
+        let absolute = paths.dataset_root.join(rel);
+        let raw = fs::read(&absolute).map_err(|e| {
+            format!(
+                "evidence bundle references missing artifact {}: {e}",
+                absolute.display()
+            )
+        })?;
+        verified.insert(rel.to_string(), sha256_hex(&raw));
+    }
+    let payload = json!({
+        "schema_version": 1,
+        "dataset": dataset,
+        "release_id": manifest.identity.release_id,
+        "files": verified
+    });
+    let payload_bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+    let computed_bundle_sha256 = sha256_hex(&payload_bytes);
+    let declared_bundle_sha256 = bundle_json
+        .get("bundle_sha256")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "evidence bundle is missing bundle_sha256".to_string())?;
+    if manifest.evidence_bundle_sha256.trim().is_empty() {
+        return Err("manifest evidence_bundle_sha256 is empty".to_string());
+    }
+    if manifest.evidence_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "manifest evidence bundle hash mismatch: manifest={} bundle={}",
+            manifest.evidence_bundle_sha256, declared_bundle_sha256
+        ));
+    }
+    for (rel, declared_hash) in files {
+        let declared = declared_hash
+            .as_str()
+            .ok_or_else(|| format!("invalid declared hash for bundle artifact {rel}"))?;
+        let computed = verified
+            .get(rel)
+            .ok_or_else(|| format!("bundle artifact missing from verification map: {rel}"))?;
+        if declared != computed {
+            return Err(format!(
+                "artifact hash mismatch for {rel}: declared={} computed={}",
+                declared, computed
+            ));
+        }
+    }
+    if computed_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "evidence bundle hash mismatch: declared={} computed={}",
+            declared_bundle_sha256, computed_bundle_sha256
+        ));
+    }
+
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas dataset evidence-verify",
+            "status":"ok",
+            "dataset": dataset.canonical_string(),
+            "files_verified": verified.len(),
+            "bundle_sha256": computed_bundle_sha256
+        }),
+    )
+}
+
+fn validate_canonical_evidence(
+    derived_dir: &Path,
+    manifest: &ArtifactManifest,
+) -> Result<(), String> {
+    if manifest.canonical_model_schema_version == 0 {
+        return Ok(());
+    }
+    let summary_path = derived_dir.join("canonical_summary.json");
+    let features_path = derived_dir.join("canonical_features.json");
+    let summary_raw = fs::read_to_string(&summary_path)
+        .map_err(|e| format!("missing canonical summary {}: {e}", summary_path.display()))?;
+    let summary: serde_json::Value = serde_json::from_str(&summary_raw)
+        .map_err(|e| format!("invalid canonical summary: {e}"))?;
+    let semantic = summary
+        .pointer("/hashes/query_semantic_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let lineage = summary
+        .pointer("/hashes/lineage_sensitive_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if semantic != manifest.canonical_query_semantic_sha256 {
+        return Err(format!(
+            "canonical query semantic hash mismatch: manifest={} summary={}",
+            manifest.canonical_query_semantic_sha256, semantic
+        ));
+    }
+    if lineage != manifest.canonical_lineage_sha256 {
+        return Err(format!(
+            "canonical lineage hash mismatch: manifest={} summary={}",
+            manifest.canonical_lineage_sha256, lineage
+        ));
+    }
+    if !features_path.exists() {
+        return Err(format!(
+            "missing canonical features artifact: {}",
+            features_path.display()
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
+
+    #[test]
+    fn validate_payload_exposes_manifest_identity_hash() {
+        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            dataset,
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        assert_eq!(manifest.identity.release_id, "110/homo_sapiens/GRCh38");
+        assert_eq!(manifest.identity.canonical_metadata_sha256.len(), 64);
+    }
 }
 
 fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
@@ -233,6 +414,8 @@ pub(crate) fn publish_dataset(
     release: &str,
     species: &str,
     assembly: &str,
+    dry_run: bool,
+    explain: bool,
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
@@ -246,6 +429,32 @@ pub(crate) fn publish_dataset(
     enforce_publish_gates(&source_root, &dataset, &manifest)?;
     let manifest_sha = sha256_hex(&manifest_bytes);
     let sqlite_sha = sha256_hex(&sqlite_bytes);
+    let target_paths = crate::domain::dataset::artifact_paths(&store_root, &dataset);
+
+    if dry_run || explain {
+        return emit_ok_payload(
+            output_mode,
+            json!({
+                "command":"atlas dataset publish",
+                "mode": if explain { "explain" } else { "dry-run" },
+                "status":"ok",
+                "dataset": dataset.canonical_string(),
+                "source": {
+                    "manifest": source_paths.manifest,
+                    "sqlite": source_paths.sqlite
+                },
+                "target": {
+                    "manifest": target_paths.manifest,
+                    "sqlite": target_paths.sqlite
+                },
+                "checksums": {
+                    "manifest_sha256": manifest_sha,
+                    "sqlite_sha256": sqlite_sha
+                },
+                "writes_artifacts": false
+            }),
+        );
+    }
 
     let store = LocalFsStore::new(store_root);
     match store.put_dataset(
@@ -289,6 +498,23 @@ fn enforce_publish_gates(
             anomaly.missing_parents.len(),
             policy.publish_gates.max_missing_parents
         ));
+    }
+    if !anomaly.scientific_ambiguities.is_empty() {
+        return Err(format!(
+            "publish gate failed: scientific ambiguities present ({})",
+            anomaly.scientific_ambiguities.len()
+        ));
+    }
+    if manifest.scientific_prerequisites_status != "complete" {
+        return Err(format!(
+            "publish gate failed: scientific prerequisites under-specified ({})",
+            manifest.scientific_prerequisites_status
+        ));
+    }
+    if manifest.contig_naming_style == "mixed_chr_and_plain" {
+        return Err(
+            "publish gate failed: mixed chr-prefixed and plain core contig naming".to_string(),
+        );
     }
     let conn = rusqlite::Connection::open(paths.sqlite).map_err(|e| e.to_string())?;
     for idx in &policy.publish_gates.required_indexes {

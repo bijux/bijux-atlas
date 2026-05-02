@@ -319,6 +319,51 @@ fn explain_plan_snapshots_by_query_class() {
 }
 
 #[test]
+fn frozen_query_model_is_deterministic_and_intent_explicit() {
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: Some("110/homo_sapiens/GRCh38".to_string()),
+        allow_full_scan: false,
+    };
+    let a = freeze_query_model(&req, &limits()).expect("freeze a");
+    let b = freeze_query_model(&req, &limits()).expect("freeze b");
+    assert_eq!(a, b);
+    assert_eq!(a.intent, QueryIntent::ExactIdLookup);
+    assert_eq!(a.schema_version, 1);
+    assert_eq!(a.predicates, vec!["gene_id".to_string()]);
+    assert_eq!(a.query_contract_sha256.len(), 64);
+}
+
+#[test]
+fn explicit_sort_mode_drives_order_mode_deterministically() {
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 100,
+            }),
+            sort: QuerySort::GeneIdAsc,
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: Some("110/homo_sapiens/GRCh38".to_string()),
+        allow_full_scan: false,
+    };
+    let ast = parse_gene_query_request(&req).expect("parse");
+    assert_eq!(format!("{:?}", ast.sort_key), "GeneId");
+    assert_eq!(super::super::db::order_mode_for(&req), OrderMode::GeneId);
+}
+
+#[test]
 fn legacy_v2_schema_remains_queryable() {
     let conn = setup_legacy_v2_db();
     let req = GeneQueryRequest {
@@ -551,4 +596,23 @@ fn region_estimated_rows_budget_rejects_large_scans() {
     let err = query_genes(&conn, &req, &strict, b"s").expect_err("must reject");
     assert_eq!(err.code, QueryErrorCode::Validation);
     assert!(err.message.contains("estimated region rows"));
+}
+
+#[test]
+fn strand_filter_is_explicitly_rejected_until_schema_support_exists() {
+    let conn = setup_db();
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            strand: StrandMode::Plus,
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    let err = query_genes(&conn, &req, &limits(), b"s").expect_err("strand rejected");
+    assert_eq!(err.code, QueryErrorCode::Validation);
+    assert!(err.message.contains("strand-aware filtering"));
 }

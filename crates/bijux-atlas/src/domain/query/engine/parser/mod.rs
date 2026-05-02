@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::filters::GeneQueryRequest;
+use super::filters::{GeneQueryRequest, IntervalSemantics, QuerySort, StrandMode};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -9,7 +9,13 @@ pub enum Predicate {
     NameEquals(String),
     NamePrefix(String),
     Biotype(String),
-    Region { seqid: String, start: u64, end: u64 },
+    Region {
+        seqid: String,
+        start: u64,
+        end: u64,
+        semantics: IntervalSemantics,
+    },
+    Strand(StrandMode),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -74,13 +80,23 @@ pub fn parse_gene_query(req: &GeneQueryRequest) -> Result<GeneQueryAst, ParseErr
             seqid: v.seqid.clone(),
             start: v.start,
             end: v.end,
+            semantics: req.filter.interval,
         });
     }
+    if req.filter.strand != StrandMode::Any {
+        predicates.push(Predicate::Strand(req.filter.strand));
+    }
 
-    let sort_key = if req.filter.region.is_some() {
-        SortKey::Region
-    } else {
-        SortKey::GeneId
+    let sort_key = match req.filter.sort {
+        QuerySort::GeneIdAsc => SortKey::GeneId,
+        QuerySort::RegionAsc => SortKey::Region,
+        QuerySort::Auto => {
+            if req.filter.region.is_some() {
+                SortKey::Region
+            } else {
+                SortKey::GeneId
+            }
+        }
     };
 
     Ok(GeneQueryAst {

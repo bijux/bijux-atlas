@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::cost::estimate_prefix_match_cost;
-use super::filters::GeneQueryRequest;
+use super::filters::{GeneQueryRequest, StrandMode};
 use super::limits::QueryLimits;
 use super::normalize::normalized_ast_format;
 use super::parser::{GeneQueryAst, Predicate, SortKey};
@@ -245,6 +245,12 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
         if span > limits.max_region_span {
             return Err(format!("region span exceeds {}", limits.max_region_span));
         }
+    }
+
+    if req.filter.strand != StrandMode::Any {
+        return Err(
+            "strand-aware filtering is not available for current dataset schema".to_string(),
+        );
     }
 
     let has_any_filter = req.filter.gene_id.is_some()

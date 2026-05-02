@@ -3,7 +3,8 @@
 use super::super::catalog::validate_catalog_strict;
 use super::super::manifest::ManifestLock;
 use super::super::paths::{
-    dataset_artifact_paths, manifest_lock_path, publish_lock_path, CATALOG_FILE,
+    dataset_artifact_paths, immutability_marker_path, lifecycle_state_path,
+    lifecycle_transitions_path, manifest_lock_path, publish_lock_path, CATALOG_FILE,
 };
 use crate::app::ports::store::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
@@ -125,6 +126,58 @@ impl ArtifactStore for LocalFsStore {
             manifest_lock_path(Path::new(&self.root), dataset),
         )
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+        let marker_path = immutability_marker_path(Path::new(&self.root), dataset);
+        let marker_tmp = paths.derived_dir.join("immutable.release.json.tmp");
+        let marker = serde_json::json!({
+            "schema_version": 1,
+            "immutability": "published",
+            "dataset": dataset,
+            "manifest_sha256": expected_manifest_sha256,
+            "sqlite_sha256": expected_sqlite_sha256
+        });
+        let marker_bytes = crate::domain::canonical::stable_json_bytes(&marker)
+            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        write_and_sync(&marker_tmp, &marker_bytes)?;
+        fs::rename(&marker_tmp, marker_path)
+            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+
+        let transition = crate::domain::dataset::DatasetLifecycleTransition::publish(
+            dataset.clone(),
+            unix_timestamp_seconds()?,
+            "atlas-store".to_string(),
+            "manifest-validated-publish".to_string(),
+            expected_manifest_sha256.to_string(),
+            expected_sqlite_sha256.to_string(),
+        );
+        transition
+            .validate()
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
+        let transitions_path = lifecycle_transitions_path(Path::new(&self.root), dataset);
+        let transitions_tmp = paths.derived_dir.join("lifecycle.transitions.json.tmp");
+        let transitions_payload = vec![transition.clone()];
+        let transitions_bytes =
+            crate::domain::canonical::stable_json_bytes(&transitions_payload)
+                .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        write_and_sync(&transitions_tmp, &transitions_bytes)?;
+        fs::rename(&transitions_tmp, transitions_path)
+            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+
+        let state_path = lifecycle_state_path(Path::new(&self.root), dataset);
+        let state_tmp = paths.derived_dir.join("lifecycle.state.json.tmp");
+        let state = serde_json::json!({
+            "schema_version": 1,
+            "dataset": dataset,
+            "state": "published",
+            "transition_at": transition.transition_at,
+            "transition_by": transition.transition_by,
+            "reason": transition.reason,
+            "transition_count": 1
+        });
+        let state_bytes = crate::domain::canonical::stable_json_bytes(&state)
+            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        write_and_sync(&state_tmp, &state_bytes)?;
+        fs::rename(&state_tmp, state_path)
+            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
 
         sync_dir(&paths.derived_dir)?;
 
@@ -160,9 +213,20 @@ impl ArtifactStore for LocalFsStore {
     }
 }
 
+fn unix_timestamp_seconds() -> Result<String, StoreError> {
+    Ok(format!(
+        "{}",
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?
+            .as_secs()
+    ))
+}
+
 fn enforce_dataset_immutability(root: &Path, dataset: &DatasetId) -> Result<(), StoreError> {
     let paths = dataset_artifact_paths(root, dataset);
-    if paths.manifest.exists() || paths.sqlite.exists() {
+    let marker = immutability_marker_path(root, dataset);
+    if marker.exists() || paths.manifest.exists() || paths.sqlite.exists() {
         return Err(StoreError::new(
             StoreErrorCode::Conflict,
             "dataset already published and immutable; existing artifacts must not be overwritten",

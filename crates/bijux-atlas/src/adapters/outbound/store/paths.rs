@@ -8,6 +8,9 @@ pub const MANIFEST_FILE: &str = "manifest.json";
 pub const SQLITE_FILE: &str = "gene_summary.sqlite";
 pub const MANIFEST_LOCK_FILE: &str = "manifest.lock";
 pub const PUBLISH_LOCK_FILE: &str = ".publish.lock";
+pub const IMMUTABILITY_MARKER_FILE: &str = "immutable.release.json";
+pub const LIFECYCLE_STATE_FILE: &str = "lifecycle.state.json";
+pub const LIFECYCLE_TRANSITIONS_FILE: &str = "lifecycle.transitions.json";
 
 #[must_use]
 pub fn dataset_artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
@@ -46,4 +49,25 @@ pub fn publish_lock_path(root: &Path, dataset: &DatasetId) -> PathBuf {
     dataset_artifact_paths(root, dataset)
         .derived_dir
         .join(PUBLISH_LOCK_FILE)
+}
+
+#[must_use]
+pub fn immutability_marker_path(root: &Path, dataset: &DatasetId) -> PathBuf {
+    dataset_artifact_paths(root, dataset)
+        .derived_dir
+        .join(IMMUTABILITY_MARKER_FILE)
+}
+
+#[must_use]
+pub fn lifecycle_state_path(root: &Path, dataset: &DatasetId) -> PathBuf {
+    dataset_artifact_paths(root, dataset)
+        .derived_dir
+        .join(LIFECYCLE_STATE_FILE)
+}
+
+#[must_use]
+pub fn lifecycle_transitions_path(root: &Path, dataset: &DatasetId) -> PathBuf {
+    dataset_artifact_paths(root, dataset)
+        .derived_dir
+        .join(LIFECYCLE_TRANSITIONS_FILE)
 }

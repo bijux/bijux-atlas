@@ -31,6 +31,15 @@ fn fixture_ingest_produces_expected_artifacts_and_hashes() {
     assert!(result.manifest_path.exists());
     assert!(result.sqlite_path.exists());
     assert!(result.release_gene_index_path.exists());
+    assert!(
+        result
+            .manifest_path
+            .parent()
+            .expect("manifest parent")
+            .join("source_facts.json")
+            .exists(),
+        "source facts evidence must be emitted"
+    );
 
     let manifest_bytes = std::fs::read(&result.manifest_path).expect("manifest bytes");
     let sqlite_bytes = std::fs::read(&result.sqlite_path).expect("sqlite bytes");

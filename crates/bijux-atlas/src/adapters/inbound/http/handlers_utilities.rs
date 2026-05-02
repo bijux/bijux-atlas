@@ -104,6 +104,14 @@ pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> im
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let overloaded = crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    let live = state.accepting_requests.load(Ordering::Relaxed);
+    let catalog_present = state.cache.current_catalog().await.is_some();
+    let ready = state.ready.load(Ordering::Relaxed)
+        && readyz_catalog_ready(
+            state.api.readiness_requires_catalog,
+            state.cache.cached_only_mode(),
+            catalog_present,
+        );
     let status = if overloaded {
         StatusCode::SERVICE_UNAVAILABLE
     } else {
@@ -113,7 +121,9 @@ pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> im
         status,
         Json(json!({
             "overloaded": overloaded,
-            "draining": !state.accepting_requests.load(Ordering::Relaxed),
+            "ready": ready,
+            "live": live,
+            "draining": !live,
             "cached_only_mode": state.cache.cached_only_mode(),
             "emergency_breaker": state.api.emergency_global_breaker
         })),
@@ -770,12 +780,13 @@ pub(crate) async fn failure_injection_handler(
     };
     let now_unix_ms = chrono_like_unix_millis() as u64;
     let mut resilience = state.resilience_registry.lock().await;
-    let event_id = resilience.record_failure(
-        plan.category,
-        plan.target_id.clone(),
-        now_unix_ms,
-        plan.detail,
-    );
+    let category = match plan.category {
+        FailureInjectionCategory::NodeCrash => FailureCategory::NodeUnreachable,
+        FailureInjectionCategory::ShardCorruption => FailureCategory::ShardCorruption,
+        FailureInjectionCategory::NetworkPartition => FailureCategory::NetworkPartition,
+    };
+    let event_id =
+        resilience.record_failure(category, plan.target_id.clone(), now_unix_ms, plan.detail);
     tracing::warn!(
         event_id = "failure_injection",
         route = "/debug/failure-injection",
