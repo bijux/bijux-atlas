@@ -131,6 +131,8 @@ fn opts(root: &Path, strictness: StrictnessMode) -> IngestOptions {
         reject_normalized_seqid_collisions: true,
         max_threads: 1,
         fail_on_warn: false,
+        max_warn_anomalies: None,
+        max_error_anomalies: None,
         allow_overlap_gene_ids_across_contigs: false,
         emit_shards: false,
         shard_partitions: 0,
@@ -252,6 +254,16 @@ fn strict_warn_mode_fails_on_qc_warn() {
     o.fail_on_warn = true;
     let err = ingest_dataset(&o).expect_err("strict warn must fail");
     assert!(err.to_string().contains("QC WARN"));
+}
+
+#[test]
+fn anomaly_threshold_gate_refuses_ingest_when_warn_budget_exceeded() {
+    let root = tempdir().expect("tempdir");
+    let mut o = opts(root.path(), StrictnessMode::ReportOnly);
+    o.gff3_path = fixture_dir().join("genes_missing_parent.gff3");
+    o.max_warn_anomalies = Some(0);
+    let err = ingest_dataset(&o).expect_err("warn anomaly threshold must fail");
+    assert!(err.to_string().contains("max_warn_anomalies"));
 }
 
 #[test]

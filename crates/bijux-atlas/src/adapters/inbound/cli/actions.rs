@@ -246,6 +246,8 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         max_threads: args.max_threads,
         report_only,
         fail_on_warn: args.strict,
+        max_warn_anomalies: None,
+        max_error_anomalies: None,
         allow_overlap_gene_ids_across_contigs: args.allow_overlap_gene_ids_across_contigs,
         dev_allow_auto_generate_fai: args.dev_auto_generate_fai,
         fasta_scanning_enabled: args.fasta_scanning,

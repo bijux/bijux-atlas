@@ -78,6 +78,8 @@ pub struct IngestOptions {
     pub compute_transcript_cds_length: bool,
     pub report_only: bool,
     pub fail_on_warn: bool,
+    pub max_warn_anomalies: Option<u64>,
+    pub max_error_anomalies: Option<u64>,
     pub allow_overlap_gene_ids_across_contigs: bool,
     pub dev_allow_auto_generate_fai: bool,
     pub emit_normalized_debug: bool,
@@ -115,6 +117,8 @@ impl IngestOptions {
             reject_normalized_seqid_collisions: true,
             max_threads: 1,
             fail_on_warn: false,
+            max_warn_anomalies: None,
+            max_error_anomalies: None,
             allow_overlap_gene_ids_across_contigs: false,
             emit_shards: false,
             shard_partitions: 0,
@@ -192,6 +196,10 @@ pub fn ingest_dataset_with_events(
         std::collections::BTreeMap::new(),
     );
 
+    let anomaly_gate = evaluate_anomaly_thresholds(&decoded.extract.anomaly, opts);
+    if let Err(err) = anomaly_gate {
+        return Err(err);
+    }
     if opts.fail_on_warn && has_qc_warn(&decoded.extract.anomaly) {
         return Err(IngestError(
             "strict warning policy rejected ingest: QC WARN present".to_string(),
@@ -225,6 +233,41 @@ fn has_qc_warn(anomaly: &IngestAnomalyReport) -> bool {
         || !anomaly.attribute_fallbacks.is_empty()
         || !anomaly.unknown_feature_types.is_empty()
         || !anomaly.missing_required_fields.is_empty()
+}
+
+fn evaluate_anomaly_thresholds(
+    anomaly: &IngestAnomalyReport,
+    opts: &IngestOptions,
+) -> Result<(), IngestError> {
+    let class_counts = anomaly.anomaly_class_counts();
+    let mut warn_total = 0_u64;
+    let mut error_total = 0_u64;
+    for (class, count) in class_counts {
+        match IngestAnomalyReport::severity_for_class(class) {
+            crate::domain::dataset::QcSeverity::Warn => warn_total = warn_total.saturating_add(count),
+            crate::domain::dataset::QcSeverity::Error => {
+                error_total = error_total.saturating_add(count)
+            }
+            crate::domain::dataset::QcSeverity::Info => {}
+        }
+    }
+    if let Some(max_warn) = opts.max_warn_anomalies {
+        if warn_total > max_warn {
+            return Err(IngestError(format!(
+                "ingest anomaly threshold exceeded: WARN {} > max_warn_anomalies {}",
+                warn_total, max_warn
+            )));
+        }
+    }
+    if let Some(max_error) = opts.max_error_anomalies {
+        if error_total > max_error {
+            return Err(IngestError(format!(
+                "ingest anomaly threshold exceeded: ERROR {} > max_error_anomalies {}",
+                error_total, max_error
+            )));
+        }
+    }
+    Ok(())
 }
 
 pub fn read_fai_contig_lengths(
