@@ -770,12 +770,12 @@ pub(crate) async fn failure_injection_handler(
     };
     let now_unix_ms = chrono_like_unix_millis() as u64;
     let mut resilience = state.resilience_registry.lock().await;
-    let event_id = resilience.record_failure(
-        plan.category,
-        plan.target_id.clone(),
-        now_unix_ms,
-        plan.detail,
-    );
+    let category = match plan.category {
+        FailureInjectionCategory::NodeCrash => FailureCategory::NodeUnreachable,
+        FailureInjectionCategory::ShardCorruption => FailureCategory::ShardCorruption,
+        FailureInjectionCategory::NetworkPartition => FailureCategory::NetworkPartition,
+    };
+    let event_id = resilience.record_failure(category, plan.target_id.clone(), now_unix_ms, plan.detail);
     tracing::warn!(
         event_id = "failure_injection",
         route = "/debug/failure-injection",
