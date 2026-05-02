@@ -650,6 +650,9 @@ mod tests {
             unknown_contig_features: 0,
             max_contig_name_length: 4,
             cds_feature_count: 0,
+            contig_class_distribution: BTreeMap::new(),
+            seqid_normalization_traces: BTreeMap::new(),
+            biotype_source_counts: BTreeMap::new(),
         };
         let records = vec![Gff3Record {
             line: 1,
