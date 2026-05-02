@@ -228,6 +228,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/anomaly_summary.json"),
         source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/dataset_stats.json"),
         source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/artifact_inventory.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/scientific_profile.json"),
         source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/evidence_bundle.lock.json"),
     ];
     for path in evidence_files {
@@ -442,4 +443,67 @@ fn dataset_evidence_verify_refuses_tampered_artifacts() {
     let stderr = String::from_utf8(verify.stderr).expect("stderr");
     assert!(stderr.contains("validation_error"));
     assert!(stderr.contains("artifact hash mismatch"));
+}
+
+#[test]
+fn publish_refuses_scientifically_underspecified_dataset() {
+    let root = repo_root();
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let source_root = tmp.path().join("source");
+    let store_root = tmp.path().join("store");
+    let gff3 = tmp.path().join("underspecified.gff3");
+    std::fs::write(
+        &gff3,
+        "##gff-version 3\nchr1\tsrc\tgene\t1\t20\t.\t+\t.\tID=g1;Name=G1\nchr1\tsrc\tmRNA\t1\t20\t.\t+\t.\tID=tx1;Parent=g1\n",
+    )
+    .expect("write gff3");
+
+    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "ingest",
+            "--gff3",
+            gff3.to_str().expect("gff3 path"),
+            "--fasta",
+            fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
+            "--fai",
+            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            "--output-root",
+            source_root.to_str().expect("source_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+        ])
+        .output()
+        .expect("run ingest");
+    assert!(ingest.status.success(), "ingest failed: {}", String::from_utf8_lossy(&ingest.stderr));
+
+    let publish = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "dataset",
+            "publish",
+            "--source-root",
+            source_root.to_str().expect("source_root"),
+            "--store-root",
+            store_root.to_str().expect("store_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+            "--dry-run",
+        ])
+        .output()
+        .expect("run publish");
+    assert_eq!(publish.status.code(), Some(3));
+    let stderr = String::from_utf8(publish.stderr).expect("stderr");
+    assert!(stderr.contains("validation_error"));
+    assert!(stderr.contains("scientific ambiguities"));
 }
