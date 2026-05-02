@@ -163,3 +163,63 @@ fn docs_reference_canonical_dataset_path() {
         "canonical dataset path missing from V1 surface docs"
     );
 }
+
+#[test]
+fn server_route_table_has_no_ambiguous_path_collisions() {
+    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .to_path_buf();
+    let server_src = std::fs::read_to_string(
+        root.join("crates/bijux-atlas/src/adapters/inbound/http/router.rs"),
+    )
+    .expect("read server routing source");
+    let route_re =
+        regex::Regex::new(r#"\.route\(\s*"([^"]+)"\s*,\s*(get|post)\("#).expect("route regex");
+    let mut routes = Vec::new();
+    for cap in route_re.captures_iter(&server_src) {
+        routes.push((cap[1].to_string(), cap[2].to_ascii_lowercase()));
+    }
+    for i in 0..routes.len() {
+        for j in (i + 1)..routes.len() {
+            let (a_path, a_method) = &routes[i];
+            let (b_path, b_method) = &routes[j];
+            if a_method != b_method || a_path == b_path {
+                continue;
+            }
+            assert!(
+                !paths_are_ambiguous(a_path, b_path),
+                "ambiguous route collision for method {}: {} vs {}",
+                a_method,
+                a_path,
+                b_path
+            );
+        }
+    }
+}
+
+fn paths_are_ambiguous(a: &str, b: &str) -> bool {
+    let mut a_parts = a.trim_start_matches('/').split('/');
+    let mut b_parts = b.trim_start_matches('/').split('/');
+    loop {
+        match (a_parts.next(), b_parts.next()) {
+            (None, None) => return true,
+            (Some(_), None) | (None, Some(_)) => return false,
+            (Some(a_seg), Some(b_seg)) => {
+                if a_seg == b_seg {
+                    continue;
+                }
+                let a_param = is_path_param_segment(a_seg);
+                let b_param = is_path_param_segment(b_seg);
+                if !a_param && !b_param {
+                    return false;
+                }
+            }
+        }
+    }
+}
+
+fn is_path_param_segment(segment: &str) -> bool {
+    segment.starts_with('{') && segment.ends_with('}') && segment.len() > 2
+}
