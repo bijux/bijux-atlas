@@ -31,6 +31,7 @@ pub(crate) fn validate_dataset(
     if manifest.stats.gene_count == 0 {
         return Err("manifest gene_count must be > 0".to_string());
     }
+    validate_canonical_evidence(&paths.derived_dir, &manifest)?;
     validate_sqlite_contract(&paths.sqlite)?;
     validate_shard_catalog_and_indexes(&paths.derived_dir)?;
     if !deep {
@@ -72,7 +73,9 @@ pub(crate) fn validate_dataset(
         "deep": deep,
         "identity": {
             "release_id": manifest.identity.release_id,
-            "canonical_metadata_sha256": manifest.identity.canonical_metadata_sha256
+            "canonical_metadata_sha256": manifest.identity.canonical_metadata_sha256,
+            "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+            "canonical_lineage_sha256": manifest.canonical_lineage_sha256
         }
     });
     if output_mode.json {
@@ -85,6 +88,45 @@ pub(crate) fn validate_dataset(
             "{}",
             serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
         );
+    }
+    Ok(())
+}
+
+fn validate_canonical_evidence(derived_dir: &Path, manifest: &ArtifactManifest) -> Result<(), String> {
+    if manifest.canonical_model_schema_version == 0 {
+        return Ok(());
+    }
+    let summary_path = derived_dir.join("canonical_summary.json");
+    let features_path = derived_dir.join("canonical_features.json");
+    let summary_raw = fs::read_to_string(&summary_path)
+        .map_err(|e| format!("missing canonical summary {}: {e}", summary_path.display()))?;
+    let summary: serde_json::Value =
+        serde_json::from_str(&summary_raw).map_err(|e| format!("invalid canonical summary: {e}"))?;
+    let semantic = summary
+        .pointer("/hashes/query_semantic_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let lineage = summary
+        .pointer("/hashes/lineage_sensitive_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if semantic != manifest.canonical_query_semantic_sha256 {
+        return Err(format!(
+            "canonical query semantic hash mismatch: manifest={} summary={}",
+            manifest.canonical_query_semantic_sha256, semantic
+        ));
+    }
+    if lineage != manifest.canonical_lineage_sha256 {
+        return Err(format!(
+            "canonical lineage hash mismatch: manifest={} summary={}",
+            manifest.canonical_lineage_sha256, lineage
+        ));
+    }
+    if !features_path.exists() {
+        return Err(format!(
+            "missing canonical features artifact: {}",
+            features_path.display()
+        ));
     }
     Ok(())
 }
