@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+mod contract;
 mod cost;
 mod cursor;
 mod db;
@@ -27,6 +28,7 @@ use rusqlite::{params_from_iter, types::Value, Connection};
 pub const CRATE_NAME: &str = "bijux-atlas-query";
 
 pub use cost::estimate_prefix_match_cost;
+pub use contract::{freeze_query_model, FrozenQueryModel, QueryIntent};
 pub use cursor::{
     decode_cursor, encode_cursor, CursorError, CursorErrorCode, CursorLastSeen, CursorPayload,
     OrderMode,

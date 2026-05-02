@@ -319,6 +319,28 @@ fn explain_plan_snapshots_by_query_class() {
 }
 
 #[test]
+fn frozen_query_model_is_deterministic_and_intent_explicit() {
+    let req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
+        limit: 10,
+        cursor: None,
+        dataset_key: Some("110/homo_sapiens/GRCh38".to_string()),
+        allow_full_scan: false,
+    };
+    let a = freeze_query_model(&req, &limits()).expect("freeze a");
+    let b = freeze_query_model(&req, &limits()).expect("freeze b");
+    assert_eq!(a, b);
+    assert_eq!(a.intent, QueryIntent::ExactIdLookup);
+    assert_eq!(a.schema_version, 1);
+    assert_eq!(a.predicates, vec!["gene_id".to_string()]);
+    assert_eq!(a.query_contract_sha256.len(), 64);
+}
+
+#[test]
 fn legacy_v2_schema_remains_queryable() {
     let conn = setup_legacy_v2_db();
     let req = GeneQueryRequest {
