@@ -8,6 +8,16 @@ fn fixture_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny")
 }
 
+fn read_canonical_summary(run: &IngestResult) -> serde_json::Value {
+    let path = run
+        .manifest_path
+        .parent()
+        .expect("manifest dir")
+        .join("canonical_summary.json");
+    serde_json::from_slice(&std::fs::read(path).expect("read canonical summary"))
+        .expect("parse canonical summary")
+}
+
 fn sqlite_logical_fingerprint(path: &Path) -> String {
     use rusqlite::types::ValueRef;
 
@@ -803,6 +813,67 @@ fn feature_ordering_independence_holds() {
         run_b2.manifest.checksums.sqlite_sha256
     );
     assert_eq!(run_a.manifest.stats, run_b1.manifest.stats);
+    assert_eq!(
+        run_b1.manifest.canonical_query_semantic_sha256,
+        run_b2.manifest.canonical_query_semantic_sha256
+    );
+    assert_eq!(
+        run_b1.manifest.canonical_lineage_sha256,
+        run_b2.manifest.canonical_lineage_sha256
+    );
+    let summary_a = read_canonical_summary(&run_b1);
+    let summary_b = read_canonical_summary(&run_b2);
+    assert_eq!(
+        summary_a.pointer("/hashes/query_semantic_sha256"),
+        summary_b.pointer("/hashes/query_semantic_sha256")
+    );
+    assert_eq!(
+        summary_a.pointer("/summary/feature_type_counts/gene"),
+        summary_b.pointer("/summary/feature_type_counts/gene")
+    );
+}
+
+#[test]
+fn canonical_summary_and_manifest_hashes_are_emitted() {
+    let root = tempdir().expect("tempdir");
+    let run = ingest_dataset(&opts(root.path(), StrictnessMode::Strict)).expect("ingest");
+    let summary = read_canonical_summary(&run);
+    let gene_count = summary
+        .pointer("/summary/genes")
+        .and_then(serde_json::Value::as_u64)
+        .expect("summary genes");
+    assert_eq!(gene_count, run.manifest.stats.gene_count);
+    assert_eq!(
+        summary.pointer("/hashes/query_semantic_sha256"),
+        Some(&serde_json::json!(
+            run.manifest.canonical_query_semantic_sha256.clone()
+        ))
+    );
+    assert_eq!(
+        summary.pointer("/hashes/lineage_sensitive_sha256"),
+        Some(&serde_json::json!(run.manifest.canonical_lineage_sha256.clone()))
+    );
+    assert_eq!(run.manifest.canonical_model_schema_version, 1);
+    assert_eq!(
+        run.manifest.canonical_feature_summary_path,
+        "derived/canonical_summary.json".to_string()
+    );
+}
+
+#[test]
+fn canonical_query_semantic_hash_is_stable_across_repeated_runs() {
+    let root_a = tempdir().expect("tempdir");
+    let run_a = ingest_dataset(&opts(root_a.path(), StrictnessMode::Strict)).expect("run a");
+    let root_b = tempdir().expect("tempdir");
+    let run_b = ingest_dataset(&opts(root_b.path(), StrictnessMode::Strict)).expect("run b");
+    assert_eq!(
+        run_a.manifest.canonical_query_semantic_sha256,
+        run_b.manifest.canonical_query_semantic_sha256
+    );
+    assert_eq!(
+        run_a.manifest.canonical_lineage_sha256,
+        run_b.manifest.canonical_lineage_sha256
+    );
 }
 
 #[test]
