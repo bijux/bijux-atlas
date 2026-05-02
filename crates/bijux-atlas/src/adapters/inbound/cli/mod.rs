@@ -112,6 +112,8 @@ impl CliError {
             || normalized.starts_with("cursor:")
             || normalized.contains("publish gate failed")
             || normalized.contains("immutability gate")
+            || normalized.contains("artifact hash mismatch")
+            || normalized.contains("evidence ")
             || normalized.contains("invalid")
             || normalized.contains("must be")
         {
