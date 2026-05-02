@@ -119,6 +119,10 @@ name = "contracts_cli_query_boundary"
 path = "tests/contracts_cli_query_boundary.rs"
 
 [[test]]
+name = "contracts_layering_direction"
+path = "tests/contracts_layering_direction.rs"
+
+[[test]]
 name = "governance_no_network"
 path = "tests/governance/no_network.rs"
 
