@@ -359,6 +359,66 @@ async fn etag_changes_when_filters_change() {
 }
 
 #[tokio::test]
+async fn etag_is_deterministic_for_identical_query_parameter_sets() {
+    let (ds, manifest, sqlite) = mk_dataset();
+    let store = Arc::new(FakeStore::default());
+    store.manifest.lock().await.insert(ds.clone(), manifest);
+    store.sqlite.lock().await.insert(ds, sqlite);
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, headers_a, _) = send_raw(
+        addr,
+        "/v1/genes?assembly=GRCh38&release=110&species=homo_sapiens&gene_id=g1&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, headers_b, _) = send_raw(
+        addr,
+        "/v1/genes?limit=1&species=homo_sapiens&gene_id=g1&release=110&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let etag_genes_a = header_value(&headers_a, "etag").expect("genes etag a");
+    let etag_genes_b = header_value(&headers_b, "etag").expect("genes etag b");
+    assert_eq!(etag_genes_a, etag_genes_b);
+
+    let (status, headers_a, _) = send_raw(
+        addr,
+        "/v1/datasets?release=110&assembly=GRCh38&species=homo_sapiens&limit=1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+    let (status, headers_b, _) = send_raw(
+        addr,
+        "/v1/datasets?species=homo_sapiens&limit=1&release=110&assembly=GRCh38",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 200);
+
+    let etag_dataset_a = header_value(&headers_a, "etag").expect("datasets etag a");
+    let etag_dataset_b = header_value(&headers_b, "etag").expect("datasets etag b");
+    assert_eq!(etag_dataset_a, etag_dataset_b);
+}
+
+#[tokio::test]
 async fn query_validate_endpoint_returns_classification() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
