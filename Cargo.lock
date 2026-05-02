@@ -230,6 +230,7 @@ dependencies = [
  "async-trait",
  "axum",
  "base64",
+ "bijux-atlas-core",
  "bijux-cli",
  "brotli",
  "clap",
@@ -264,6 +265,13 @@ dependencies = [
  "unicode-normalization",
  "walkdir",
  "zstd",
+]
+
+[[package]]
+name = "bijux-atlas-core"
+version = "0.2.1"
+dependencies = [
+ "sha2 0.11.0",
 ]
 
 [[package]]
