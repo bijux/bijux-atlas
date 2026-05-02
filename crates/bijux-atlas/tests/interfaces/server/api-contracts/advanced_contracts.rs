@@ -285,6 +285,7 @@ async fn request_length_limits_return_400_error_envelope() {
     let api = ApiConfig {
         max_uri_bytes: 80,
         max_header_bytes: 80,
+        max_query_params: 4,
         ..ApiConfig::default()
     };
     let app = build_router(AppState::with_config(cache, api, Default::default()));
@@ -311,6 +312,15 @@ async fn request_length_limits_return_400_error_envelope() {
     .await;
     assert_eq!(status, 400);
     assert!(body.contains("request headers too large"));
+
+    let (status, _, body) = send_raw(
+        addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&name=BRCA1",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("query parameter count exceeds limit"));
 }
 
 #[tokio::test]

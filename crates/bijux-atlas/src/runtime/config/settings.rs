@@ -240,6 +240,7 @@ pub struct ApiConfig {
     pub max_body_bytes: usize,
     pub max_uri_bytes: usize,
     pub max_header_bytes: usize,
+    pub max_query_params: usize,
     pub request_timeout: Duration,
     pub sql_timeout: Duration,
     pub response_max_bytes: usize,
@@ -314,6 +315,7 @@ impl Default for ApiConfig {
             max_body_bytes: 16 * 1024,
             max_uri_bytes: 2048,
             max_header_bytes: 16 * 1024,
+            max_query_params: 64,
             request_timeout: Duration::from_secs(5),
             sql_timeout: Duration::from_millis(800),
             response_max_bytes: 512 * 1024,
@@ -397,7 +399,11 @@ pub fn validate_startup_config_contract(
     api: &ApiConfig,
     cache: &crate::DatasetCacheConfig,
 ) -> Result<(), String> {
-    if api.max_body_bytes == 0 || api.max_uri_bytes == 0 || api.max_header_bytes == 0 {
+    if api.max_body_bytes == 0
+        || api.max_uri_bytes == 0
+        || api.max_header_bytes == 0
+        || api.max_query_params == 0
+    {
         return Err("api size limits must be > 0".to_string());
     }
     if api.request_timeout.is_zero() || api.sql_timeout.is_zero() {
@@ -872,6 +878,7 @@ impl RuntimeConfig {
             max_body_bytes: env_usize("ATLAS_MAX_BODY_BYTES", 16 * 1024)?,
             max_uri_bytes: env_usize("ATLAS_MAX_URI_BYTES", 2048)?,
             max_header_bytes: env_usize("ATLAS_MAX_HEADER_BYTES", 16 * 1024)?,
+            max_query_params: env_usize("ATLAS_MAX_QUERY_PARAMS", 64)?,
             request_timeout: env_duration_ms("ATLAS_REQUEST_TIMEOUT_MS", 5000)?,
             sql_timeout: env_duration_ms("ATLAS_SQL_TIMEOUT_MS", 800)?,
             response_max_bytes: env_usize("ATLAS_RESPONSE_MAX_BYTES", 512 * 1024)?,

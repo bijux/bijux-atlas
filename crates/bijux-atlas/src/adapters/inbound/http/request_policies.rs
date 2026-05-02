@@ -1035,6 +1035,28 @@ pub(crate) async fn security_middleware(
             &request_id,
         );
     }
+    if let Some(raw_query) = req.uri().query() {
+        let query_params = raw_query
+            .split('&')
+            .filter(|pair| !pair.is_empty())
+            .count();
+        if query_params > state.api.max_query_params {
+            record_policy_violation(&state, "query_params").await;
+            let err = Json(ApiError::new(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "query parameter count exceeds limit",
+                serde_json::json!({
+                    "max_query_params": state.api.max_query_params,
+                    "actual": query_params
+                }),
+                request_id.clone(),
+            ));
+            return crate::adapters::inbound::http::handlers::with_request_id(
+                (StatusCode::BAD_REQUEST, err).into_response(),
+                &request_id,
+            );
+        }
+    }
     let header_bytes: usize = req
         .headers()
         .iter()
