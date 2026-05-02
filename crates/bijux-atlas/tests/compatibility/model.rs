@@ -4,6 +4,8 @@
 mod dataset_key_contract;
 #[path = "model/dataset_identity_contract.rs"]
 mod dataset_identity_contract;
+#[path = "model/dataset_alias_contract.rs"]
+mod dataset_alias_contract;
 #[path = "model/dependency_guardrails.rs"]
 mod dependency_guardrails;
 #[path = "model/model_invariants.rs"]
