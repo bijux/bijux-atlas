@@ -354,6 +354,10 @@ pub fn build_router(state: AppState) -> Router {
             provenance_headers_middleware,
         ))
         .layer(DefaultBodyLimit::max(state.api.max_body_bytes))
+        .layer(from_fn_with_state(
+            state.clone(),
+            crate::adapters::inbound::http::middleware::error_envelope::error_envelope_middleware,
+        ))
         .with_state(state)
 }
 

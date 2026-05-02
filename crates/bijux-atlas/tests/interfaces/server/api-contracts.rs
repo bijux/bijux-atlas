@@ -660,6 +660,55 @@ async fn genes_count_applies_filters_consistently() {
 }
 
 #[tokio::test]
+async fn transport_not_found_and_method_not_allowed_use_error_envelope() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let cfg = DatasetCacheConfig {
+        disk_root: tmp.path().to_path_buf(),
+        ..Default::default()
+    };
+    let mgr = DatasetCacheManager::new(cfg, store);
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, _, body) = send_raw(addr, "/debug/datasets", &[]).await;
+    assert_eq!(status, 404);
+    let not_found: Value = serde_json::from_str(&body).expect("json envelope");
+    assert_eq!(
+        not_found["error"]["code"].as_str(),
+        Some("DatasetNotFound")
+    );
+    assert_eq!(
+        not_found["error"]["message"].as_str(),
+        Some("admin endpoints are disabled")
+    );
+
+    let (status, _, body) = send_raw_with_method(addr, "POST", "/healthz", &[], None).await;
+    assert_eq!(status, 405);
+    let method_not_allowed: Value = serde_json::from_str(&body).expect("json envelope");
+    assert_eq!(
+        method_not_allowed["error"]["code"].as_str(),
+        Some("InvalidQueryParameter")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["message"].as_str(),
+        Some("method not allowed for route")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["details"]["path"].as_str(),
+        Some("/healthz")
+    );
+    assert_eq!(
+        method_not_allowed["error"]["details"]["method"].as_str(),
+        Some("POST")
+    );
+}
+
+#[tokio::test]
 async fn expensive_include_is_policy_gated_by_projection_limits() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore::default());
