@@ -284,7 +284,13 @@ pub(crate) async fn dataset_identity_handler(
                 "db_schema_version": manifest.db_schema_version,
                 "identity_release_id": manifest.identity.release_id,
                 "identity_sha256": manifest.identity.canonical_metadata_sha256,
-                "stats": manifest.stats
+                "stats": manifest.stats,
+                "canonical": {
+                    "schema_version": manifest.canonical_model_schema_version,
+                    "query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+                    "lineage_sha256": manifest.canonical_lineage_sha256,
+                    "feature_counts": manifest.canonical_feature_counts
+                }
             },
             "qc_summary": {
                 "gene_count": manifest.stats.gene_count,
