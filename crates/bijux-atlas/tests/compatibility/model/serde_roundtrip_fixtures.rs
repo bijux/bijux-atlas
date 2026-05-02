@@ -35,6 +35,17 @@ fn top_level_models_roundtrip_and_validate() {
     manifest.db_hash = "d".into();
     manifest.artifact_hash = "x".into();
     manifest.toolchain_hash = "t".into();
+    manifest.source_facts_path = "derived/source_facts.json".into();
+    manifest.normalized_input_identity_sha256 = "n".repeat(64);
+    manifest.software_version = "0.2.1".into();
+    manifest.config_version = "c".repeat(64);
+    manifest.build_policy_version = "sha256:".to_string() + &"p".repeat(64);
+    manifest.build_metadata_path = "derived/build_metadata.json".into();
+    manifest.anomaly_summary_path = "derived/anomaly_summary.json".into();
+    manifest.dataset_stats_path = "derived/dataset_stats.json".into();
+    manifest.artifact_inventory_path = "derived/artifact_inventory.json".into();
+    manifest.evidence_bundle_path = "derived/evidence_bundle.lock.json".into();
+    manifest.evidence_bundle_sha256 = "e".repeat(64);
     manifest.created_at = "2026-02-24T00:00:00Z".into();
     assert!(manifest.validate().is_ok());
     let manifest_json = serde_json::to_string(&manifest).expect("manifest encode");
