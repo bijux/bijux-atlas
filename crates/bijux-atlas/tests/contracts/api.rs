@@ -10,3 +10,5 @@ mod fake_query_adapter;
 mod openapi_lint;
 #[path = "api/params_validation.rs"]
 mod params_validation;
+#[path = "query_edge_fixtures.rs"]
+mod query_edge_fixtures;
