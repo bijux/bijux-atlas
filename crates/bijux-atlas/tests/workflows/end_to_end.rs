@@ -128,6 +128,10 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let query_success_payload: Value =
         serde_json::from_slice(&query_success.stdout).expect("query success payload");
     assert_eq!(query_success_payload["command"].as_str(), Some("atlas query run"));
+    assert_eq!(
+        query_success_payload["runtime_query_evidence"]["engine"].as_str(),
+        Some("sqlite")
+    );
     assert!(query_success_payload["rows"].as_array().map(|rows| !rows.is_empty()).unwrap_or(false));
 
     let inspect_dataset = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
@@ -162,6 +166,73 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let inspect_db_payload: Value =
         serde_json::from_slice(&inspect_db.stdout).expect("inspect db payload");
     assert_eq!(inspect_db_payload["command"].as_str(), Some("atlas inspect db"));
+
+    let inspect_provenance = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "inspect",
+            "provenance",
+            "--root",
+            source_root.to_str().expect("source_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+        ])
+        .output()
+        .expect("run inspect provenance");
+    assert!(inspect_provenance.status.success());
+    let inspect_provenance_payload: Value =
+        serde_json::from_slice(&inspect_provenance.stdout).expect("inspect provenance payload");
+    assert_eq!(
+        inspect_provenance_payload["command"].as_str(),
+        Some("atlas inspect provenance")
+    );
+    assert_eq!(
+        inspect_provenance_payload["build_evidence"]["manifest_identity"]["release_id"].as_str(),
+        Some("110/homo_sapiens/GRCh38")
+    );
+
+    let evidence_verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "dataset",
+            "evidence-verify",
+            "--root",
+            source_root.to_str().expect("source_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+        ])
+        .output()
+        .expect("run dataset evidence-verify");
+    assert!(evidence_verify.status.success());
+    let evidence_verify_payload: Value =
+        serde_json::from_slice(&evidence_verify.stdout).expect("evidence verify payload");
+    assert_eq!(
+        evidence_verify_payload["command"].as_str(),
+        Some("atlas dataset evidence-verify")
+    );
+    assert_eq!(evidence_verify_payload["status"].as_str(), Some("ok"));
+
+    let evidence_files = [
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/source_facts.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/build_metadata.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/anomaly_summary.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/dataset_stats.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/artifact_inventory.json"),
+        source_root.join("release=110/species=homo_sapiens/assembly=GRCh38/derived/evidence_bundle.lock.json"),
+    ];
+    for path in evidence_files {
+        assert!(path.exists(), "expected evidence file {}", path.display());
+    }
 
     let query_refusal = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .current_dir(&root)
@@ -302,4 +373,73 @@ fn ingest_dry_run_and_explain_do_not_materialize_artifacts() {
     assert_eq!(explain_payload["mode"].as_str(), Some("explain"));
     assert_eq!(explain_payload["writes_artifacts"].as_bool(), Some(false));
     assert!(!expected_db.exists(), "explain should not create sqlite");
+}
+
+#[test]
+fn dataset_evidence_verify_refuses_tampered_artifacts() {
+    let root = repo_root();
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let source_root = tmp.path().join("source");
+    let derived_root = source_root
+        .join("release=110")
+        .join("species=homo_sapiens")
+        .join("assembly=GRCh38")
+        .join("derived");
+
+    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "ingest",
+            "--gff3",
+            fixture_tiny_path("genes.gff3").to_str().expect("gff3 path"),
+            "--fasta",
+            fixture_tiny_path("genome.fa").to_str().expect("fasta path"),
+            "--fai",
+            fixture_tiny_path("genome.fa.fai").to_str().expect("fai path"),
+            "--output-root",
+            source_root.to_str().expect("source_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+        ])
+        .output()
+        .expect("run ingest");
+    assert!(ingest.status.success(), "ingest failed: {}", String::from_utf8_lossy(&ingest.stderr));
+
+    let source_facts = derived_root.join("source_facts.json");
+    let mut source_facts_payload: Value =
+        serde_json::from_slice(&std::fs::read(&source_facts).expect("read source facts"))
+            .expect("parse source facts");
+    source_facts_payload["tampered"] = Value::Bool(true);
+    std::fs::write(
+        &source_facts,
+        serde_json::to_vec(&source_facts_payload).expect("serialize tampered source facts"),
+    )
+    .expect("write tampered source facts");
+
+    let verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .current_dir(&root)
+        .args([
+            "--json",
+            "dataset",
+            "evidence-verify",
+            "--root",
+            source_root.to_str().expect("source_root"),
+            "--release",
+            "110",
+            "--species",
+            "homo_sapiens",
+            "--assembly",
+            "GRCh38",
+        ])
+        .output()
+        .expect("run evidence verify");
+    assert_eq!(verify.status.code(), Some(3));
+    let stderr = String::from_utf8(verify.stderr).expect("stderr");
+    assert!(stderr.contains("validation_error"));
+    assert!(stderr.contains("artifact hash mismatch"));
 }
