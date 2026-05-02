@@ -56,15 +56,26 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
             )));
         }
 
-        let start: u64 = cols[3]
-            .parse()
-            .map_err(|_| IngestError(format!("invalid start coordinate: {}", cols[3])))?;
-        let end: u64 = cols[4]
-            .parse()
-            .map_err(|_| IngestError(format!("invalid end coordinate: {}", cols[4])))?;
+        let start: u64 = cols[3].parse().map_err(|_| {
+            IngestError(format!(
+                "GFF3_INVALID_START_COORDINATE line={} value={} sample={line}",
+                line_idx + 1,
+                cols[3]
+            ))
+        })?;
+        let end: u64 = cols[4].parse().map_err(|_| {
+            IngestError(format!(
+                "GFF3_INVALID_END_COORDINATE line={} value={} sample={line}",
+                line_idx + 1,
+                cols[4]
+            ))
+        })?;
         if start == 0 || end < start {
             return Err(IngestError(format!(
-                "invalid coordinate span: {start}-{end}"
+                "GFF3_INVALID_COORDINATE_SPAN line={} start={} end={} sample={line}",
+                line_idx + 1,
+                start,
+                end
             )));
         }
 

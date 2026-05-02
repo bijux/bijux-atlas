@@ -26,8 +26,9 @@ fn malformed_gff3_coordinates_fail_with_validation_error() {
 
     let err = ingest_dataset(&opts).expect_err("invalid coordinate must fail");
     assert!(
-        err.0.contains("invalid coordinate")
-            || err.0.contains("invalid coordinate span")
+        err.0.contains("GFF3_INVALID_START_COORDINATE")
+            || err.0.contains("GFF3_INVALID_END_COORDINATE")
+            || err.0.contains("GFF3_INVALID_COORDINATE_SPAN")
             || err.0.contains("exceeds contig"),
         "unexpected error: {}",
         err.0
