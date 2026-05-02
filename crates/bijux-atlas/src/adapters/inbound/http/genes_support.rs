@@ -198,20 +198,6 @@ pub(super) fn build_dataset_query(
             json!({"allowed": "omit strand or use strand=any"}),
         ));
     }
-    if let Some(sort) = parsed.sort {
-        match sort {
-            SortKey::GeneIdAsc => {}
-            SortKey::RegionAsc => {
-                if parsed.range.is_none() {
-                    return Err(super::handlers::error_json(
-                        ApiErrorCode::InvalidQueryParameter,
-                        "sort=region:asc requires range filter",
-                        json!({}),
-                    ));
-                }
-            }
-        }
-    }
     let region = parse_region(parsed.range)?;
     let name_prefix = parsed.name_like.as_ref().map(|v| v.trim_end_matches('*'));
     let req = GeneQueryRequest {

@@ -155,6 +155,15 @@ async fn error_contract_and_etag_behaviors() {
 
     let (status, _, body) = send_raw(
         addr,
+        "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&interval_mode=containment",
+        &[],
+    )
+    .await;
+    assert_eq!(status, 400);
+    assert!(body.contains("interval_mode requires range"));
+
+    let (status, _, body) = send_raw(
+        addr,
         "/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&gene_id=g1&cursor=bad.cursor",
         &[],
     )

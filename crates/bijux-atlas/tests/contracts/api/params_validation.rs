@@ -152,6 +152,37 @@ fn request_validation_strand_contract_is_strict() {
 }
 
 #[test]
+fn request_validation_rejects_ambiguous_and_invalid_filter_combos() {
+    let mut name_and_like = base_query();
+    name_and_like.insert("name".to_string(), "BRCA1".to_string());
+    name_and_like.insert("name_like".to_string(), "BR*".to_string());
+    let err = parse_list_genes_params(&name_and_like).expect_err("name + name_like");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut interval_without_range = base_query();
+    interval_without_range.insert("interval_mode".to_string(), "containment".to_string());
+    let err = parse_list_genes_params(&interval_without_range).expect_err("interval without range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut region_sort_without_range = base_query();
+    region_sort_without_range.insert("sort".to_string(), "region:asc".to_string());
+    let err = parse_list_genes_params(&region_sort_without_range).expect_err("region sort without range");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut conflicting_range_and_region = base_query();
+    conflicting_range_and_region.insert("range".to_string(), "chr1:1-10".to_string());
+    conflicting_range_and_region.insert("region".to_string(), "chr2:1-10".to_string());
+    let err = parse_list_genes_params(&conflicting_range_and_region).expect_err("conflicting range/region");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+
+    let mut exact_with_extra = base_query();
+    exact_with_extra.insert("gene_id".to_string(), "ENSG1".to_string());
+    exact_with_extra.insert("biotype".to_string(), "protein_coding".to_string());
+    let err = parse_list_genes_params(&exact_with_extra).expect_err("exact + extra");
+    assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
+}
+
+#[test]
 fn request_validation_filter_parsing_is_order_independent() {
     let mut q1 = base_query();
     q1.insert("gene_id".to_string(), "ENSG1".to_string());

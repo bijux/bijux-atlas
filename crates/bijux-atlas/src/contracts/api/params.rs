@@ -230,6 +230,15 @@ pub fn parse_list_genes_params_with_limit(
         .cloned()
         .or_else(|| query.get("region").cloned());
     let parsed_range = parse_range_filter(range.clone())?;
+    validate_filter_combinations(
+        query,
+        name_like.as_deref(),
+        parsed_range.as_ref(),
+        sort,
+        interval_mode,
+        min_transcripts,
+        max_transcripts,
+    )?;
     if let Some(contig) = query.get("contig") {
         let Some(region) = parsed_range.as_ref() else {
             return Err(ApiError::invalid_param(
@@ -404,4 +413,60 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
             unknown.join(",")
         ),
     ))
+}
+
+fn validate_filter_combinations(
+    query: &BTreeMap<String, String>,
+    name_like: Option<&str>,
+    parsed_range: Option<&RegionFilter>,
+    sort: Option<SortKey>,
+    interval_mode: Option<IntervalMode>,
+    min_transcripts: Option<u64>,
+    max_transcripts: Option<u64>,
+) -> Result<(), ApiError> {
+    if query.get("name").is_some() && name_like.is_some() {
+        return Err(ApiError::invalid_param(
+            "name",
+            "name cannot be combined with name_like",
+        ));
+    }
+    if interval_mode.is_some() && parsed_range.is_none() {
+        return Err(ApiError::invalid_param(
+            "interval_mode",
+            "interval_mode requires range=contig:start-end",
+        ));
+    }
+    if matches!(sort, Some(SortKey::RegionAsc)) && parsed_range.is_none() {
+        return Err(ApiError::invalid_param(
+            "sort",
+            "sort=region:asc requires range filter",
+        ));
+    }
+    if let Some(range) = query.get("range") {
+        if let Some(region) = query.get("region") {
+            if range != region {
+                return Err(ApiError::invalid_param(
+                    "range",
+                    "range and region must match when both are provided",
+                ));
+            }
+        }
+    }
+
+    if query.get("gene_id").is_some() {
+        let has_extra = query.get("name").is_some()
+            || name_like.is_some()
+            || query.get("biotype").is_some()
+            || parsed_range.is_some()
+            || query.get("contig").is_some()
+            || min_transcripts.is_some()
+            || max_transcripts.is_some();
+        if has_extra {
+            return Err(ApiError::invalid_param(
+                "gene_id",
+                "gene_id exact lookup cannot be combined with additional filters",
+            ));
+        }
+    }
+    Ok(())
 }
