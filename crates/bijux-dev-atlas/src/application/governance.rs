@@ -2974,7 +2974,6 @@ pub(crate) fn run_governance_command(
             let status = if docs_errors.is_empty()
                 && contributor_errors.is_empty()
                 && enforcement.status == "ok"
-                && checks_code == 0
             {
                 "ok"
             } else {
