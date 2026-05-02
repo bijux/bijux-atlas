@@ -131,6 +131,28 @@ pub struct ArtifactManifest {
     pub source_fasta_filename: String,
     #[serde(default)]
     pub source_fai_filename: String,
+    #[serde(default)]
+    pub source_facts_path: String,
+    #[serde(default)]
+    pub normalized_input_identity_sha256: String,
+    #[serde(default)]
+    pub software_version: String,
+    #[serde(default)]
+    pub config_version: String,
+    #[serde(default)]
+    pub build_policy_version: String,
+    #[serde(default)]
+    pub build_metadata_path: String,
+    #[serde(default)]
+    pub anomaly_summary_path: String,
+    #[serde(default)]
+    pub dataset_stats_path: String,
+    #[serde(default)]
+    pub artifact_inventory_path: String,
+    #[serde(default)]
+    pub evidence_bundle_path: String,
+    #[serde(default)]
+    pub evidence_bundle_sha256: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
     #[serde(default)]
@@ -190,6 +212,17 @@ impl ArtifactManifest {
             source_gff3_filename: String::new(),
             source_fasta_filename: String::new(),
             source_fai_filename: String::new(),
+            source_facts_path: String::new(),
+            normalized_input_identity_sha256: String::new(),
+            software_version: String::new(),
+            config_version: String::new(),
+            build_policy_version: String::new(),
+            build_metadata_path: String::new(),
+            anomaly_summary_path: String::new(),
+            dataset_stats_path: String::new(),
+            artifact_inventory_path: String::new(),
+            evidence_bundle_path: String::new(),
+            evidence_bundle_sha256: String::new(),
             sharding_plan: ShardingPlan::None,
             canonical_model_schema_version: 0,
             canonical_query_semantic_sha256: String::new(),
@@ -255,6 +288,33 @@ impl ArtifactManifest {
         if self.toolchain_hash.trim().is_empty() {
             return Err(ValidationError(
                 "manifest toolchain_hash must not be empty".to_string(),
+            ));
+        }
+        if self.source_facts_path.trim().is_empty()
+            || self.normalized_input_identity_sha256.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest source_facts_path and normalized_input_identity_sha256 are required"
+                    .to_string(),
+            ));
+        }
+        if self.software_version.trim().is_empty()
+            || self.config_version.trim().is_empty()
+            || self.build_policy_version.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest software/config/build policy versions must not be empty".to_string(),
+            ));
+        }
+        if self.build_metadata_path.trim().is_empty()
+            || self.anomaly_summary_path.trim().is_empty()
+            || self.dataset_stats_path.trim().is_empty()
+            || self.artifact_inventory_path.trim().is_empty()
+            || self.evidence_bundle_path.trim().is_empty()
+            || self.evidence_bundle_sha256.trim().is_empty()
+        {
+            return Err(ValidationError(
+                "manifest evidence artifact paths and bundle hash must be populated".to_string(),
             ));
         }
         if self.db_hash.trim().is_empty() {
@@ -409,7 +469,13 @@ pub struct ArtifactPaths {
     pub sqlite: PathBuf,
     pub manifest: PathBuf,
     pub anomaly_report: PathBuf,
+    pub anomaly_summary: PathBuf,
     pub qc_report: PathBuf,
+    pub source_facts: PathBuf,
+    pub build_metadata: PathBuf,
+    pub dataset_stats: PathBuf,
+    pub artifact_inventory: PathBuf,
+    pub evidence_bundle: PathBuf,
     pub release_gene_index: PathBuf,
 }
 
@@ -431,7 +497,13 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
         sqlite: derived.join("gene_summary.sqlite"),
         manifest: derived.join("manifest.json"),
         anomaly_report: derived.join("anomaly_report.json"),
+        anomaly_summary: derived.join("anomaly_summary.json"),
         qc_report: derived.join("qc_report.json"),
+        source_facts: derived.join("source_facts.json"),
+        build_metadata: derived.join("build_metadata.json"),
+        dataset_stats: derived.join("dataset_stats.json"),
+        artifact_inventory: derived.join("artifact_inventory.json"),
+        evidence_bundle: derived.join("evidence_bundle.lock.json"),
         release_gene_index: derived.join("release_gene_index.json"),
     }
 }
