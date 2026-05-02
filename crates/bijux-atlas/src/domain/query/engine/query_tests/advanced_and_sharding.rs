@@ -406,6 +406,40 @@ fn interval_semantics_overlap_containment_and_boundary_touch_are_distinct() {
 }
 
 #[test]
+fn count_and_list_queries_share_identical_filter_semantics() {
+    let conn = setup_db();
+    let mut req = GeneQueryRequest {
+        fields: GeneFields::default(),
+        filter: GeneFilter {
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 40,
+                end: 50,
+            }),
+            ..Default::default()
+        },
+        limit: 50,
+        cursor: None,
+        dataset_key: None,
+        allow_full_scan: false,
+    };
+    req.filter.interval = IntervalSemantics::Overlap;
+    let overlap_list = query_genes(&conn, &req, &limits(), b"s").expect("overlap list");
+    let overlap_count = query_gene_count(&conn, &req).expect("overlap count");
+    assert_eq!(overlap_count as usize, overlap_list.rows.len());
+
+    req.filter.interval = IntervalSemantics::Containment;
+    let containment_list = query_genes(&conn, &req, &limits(), b"s").expect("containment list");
+    let containment_count = query_gene_count(&conn, &req).expect("containment count");
+    assert_eq!(containment_count as usize, containment_list.rows.len());
+
+    req.filter.interval = IntervalSemantics::BoundaryTouch;
+    let touch_list = query_genes(&conn, &req, &limits(), b"s").expect("touch list");
+    let touch_count = query_gene_count(&conn, &req).expect("touch count");
+    assert_eq!(touch_count as usize, touch_list.rows.len());
+}
+
+#[test]
 fn cursor_error_maps_to_stable_code() {
     let conn = setup_db();
     let req = GeneQueryRequest {

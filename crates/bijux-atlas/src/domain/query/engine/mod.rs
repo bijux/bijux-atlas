@@ -122,6 +122,13 @@ pub fn query_gene_id_name_json_minimal_fast(
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
 }
 
+pub fn query_gene_count(
+    conn: &Connection,
+    req: &GeneQueryRequest,
+) -> Result<i64, QueryError> {
+    db::query_gene_count(conn, req).map_err(|e| QueryError::new(QueryErrorCode::Sql, e))
+}
+
 fn reject_impossible_filter_fast(
     req: &GeneQueryRequest,
     limits: &QueryLimits,

@@ -1,5 +1,6 @@
 use super::*;
 use crate::adapters::inbound::http::genes;
+use crate::domain::query::query_gene_count;
 use serde_json::json;
 
 pub(crate) async fn genes_handler(
@@ -54,7 +55,7 @@ pub(crate) async fn genes_count_handler(
 
     match state.cache.open_dataset_connection(&dataset).await {
         Ok(c) => {
-            let count = query_gene_count_with_filters(&c.conn, &req);
+            let count = query_gene_count(&c.conn, &req);
             match count {
                 Ok(v) => {
                     let epoch = state.cache.catalog_epoch().await;
@@ -111,53 +112,4 @@ pub(crate) async fn genes_count_handler(
             with_request_id(resp, &request_id)
         }
     }
-}
-fn query_gene_count_with_filters(
-    conn: &rusqlite::Connection,
-    req: &bijux_atlas::domain::query::GeneQueryRequest,
-) -> Result<i64, rusqlite::Error> {
-    let mut sql = "SELECT COUNT(*) FROM gene_summary g".to_string();
-    let mut where_parts: Vec<String> = Vec::new();
-    let mut params: Vec<rusqlite::types::Value> = Vec::new();
-
-    if let Some(region) = &req.filter.region {
-        sql.push_str(" JOIN gene_summary_rtree r ON r.gene_rowid = g.id");
-        where_parts.push("g.seqid = ?".to_string());
-        params.push(rusqlite::types::Value::Text(region.seqid.clone()));
-        where_parts.push("r.start <= ?".to_string());
-        params.push(rusqlite::types::Value::Real(region.end as f64));
-        where_parts.push("r.end >= ?".to_string());
-        params.push(rusqlite::types::Value::Real(region.start as f64));
-    }
-    if let Some(gene_id) = &req.filter.gene_id {
-        where_parts.push("g.gene_id = ?".to_string());
-        params.push(rusqlite::types::Value::Text(gene_id.clone()));
-    }
-    if let Some(name) = &req.filter.name {
-        where_parts.push("g.name_normalized = ?".to_string());
-        params.push(rusqlite::types::Value::Text(
-            bijux_atlas::domain::query::normalize_name_lookup(name),
-        ));
-    }
-    if let Some(prefix) = &req.filter.name_prefix {
-        where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
-        params.push(rusqlite::types::Value::Text(format!(
-            "{}%",
-            bijux_atlas::domain::query::escape_like_prefix(
-                &bijux_atlas::domain::query::normalize_name_lookup(prefix)
-            )
-        )));
-    }
-    if let Some(biotype) = &req.filter.biotype {
-        where_parts.push("g.biotype = ?".to_string());
-        params.push(rusqlite::types::Value::Text(biotype.clone()));
-    }
-    if !where_parts.is_empty() {
-        sql.push_str(" WHERE ");
-        sql.push_str(&where_parts.join(" AND "));
-    }
-
-    conn.query_row(&sql, rusqlite::params_from_iter(params.iter()), |row| {
-        row.get::<_, i64>(0)
-    })
 }
