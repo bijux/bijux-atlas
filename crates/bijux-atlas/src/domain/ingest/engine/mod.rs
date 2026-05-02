@@ -35,6 +35,7 @@ pub const CRATE_NAME: &str = "bijux-atlas";
 pub use hashing::{compute_input_hashes, hash_file, InputHashes};
 pub use job::{IngestInputs, IngestJob};
 pub use logging::{IngestEvent, IngestLog, IngestStage};
+pub use normalized::ReplayCounts;
 
 #[derive(Debug)]
 pub struct IngestError(pub String);

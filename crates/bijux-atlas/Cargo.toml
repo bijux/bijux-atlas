@@ -103,6 +103,10 @@ name = "contracts_architecture_iteration01"
 path = "tests/contracts_architecture_iteration01.rs"
 
 [[test]]
+name = "contracts_ingest_entrypoint_boundaries"
+path = "tests/contracts_ingest_entrypoint_boundaries.rs"
+
+[[test]]
 name = "governance_no_network"
 path = "tests/governance/no_network.rs"
 

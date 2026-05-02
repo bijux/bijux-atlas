@@ -11,7 +11,7 @@ pub(crate) mod output;
 use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
 use crate::domain::canonical;
 use crate::domain::dataset::{DatasetId, ShardingPlan};
-use crate::domain::ingest::{
+use crate::app::ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
 use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
