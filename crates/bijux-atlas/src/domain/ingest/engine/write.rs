@@ -29,6 +29,7 @@ pub fn write_ingest_outputs(
     fs::create_dir_all(&paths.derived_dir).map_err(|e| IngestError(e.to_string()))?;
 
     if opts.report_only {
+        write_canonical_evidence(&decoded, &paths.derived_dir)?;
         let qc_report_path = write_qc_and_anomaly_reports_only(
             &opts.output_root,
             &opts.dataset,
@@ -71,6 +72,7 @@ pub fn write_ingest_outputs(
     fs::copy(&job.inputs.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
 
     let hashes = compute_input_hashes(&paths.gff3, &paths.fasta, &paths.fai)?;
+    write_canonical_evidence(&decoded, &paths.derived_dir)?;
     write_source_facts(job, &decoded, &hashes)?;
 
     write_sqlite(WriteSqliteInput {
@@ -178,6 +180,24 @@ pub fn write_ingest_outputs(
     })
 }
 
+fn write_canonical_evidence(decoded: &DecodedIngest, derived_dir: &std::path::Path) -> Result<(), IngestError> {
+    let canonical_path = derived_dir.join("canonical_features.json");
+    let summary_path = derived_dir.join("canonical_summary.json");
+    let model_bytes =
+        canonical::stable_json_bytes(&decoded.canonical_model).map_err(|e| IngestError(e.to_string()))?;
+    std::fs::write(canonical_path, model_bytes).map_err(|e| IngestError(e.to_string()))?;
+    let summary_payload = serde_json::json!({
+        "schema_version": decoded.canonical_model.schema_version,
+        "summary": decoded.canonical_model.summary,
+        "hashes": decoded.canonical_model.hashes,
+        "query_semantic_payload": decoded.canonical_query_semantic_payload
+    });
+    let summary_bytes =
+        canonical::stable_json_bytes(&summary_payload).map_err(|e| IngestError(e.to_string()))?;
+    std::fs::write(summary_path, summary_bytes).map_err(|e| IngestError(e.to_string()))?;
+    Ok(())
+}
+
 fn write_source_facts(
     job: &IngestJob,
     decoded: &DecodedIngest,
@@ -205,6 +225,11 @@ fn write_source_facts(
         "feature_distribution": {
             "contigs": decoded.extract.contig_distribution,
             "biotypes": decoded.extract.biotype_distribution
+        },
+        "canonical_model": {
+            "schema_version": decoded.canonical_model.schema_version,
+            "hashes": decoded.canonical_model.hashes,
+            "summary": decoded.canonical_model.summary,
         }
     });
     let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
