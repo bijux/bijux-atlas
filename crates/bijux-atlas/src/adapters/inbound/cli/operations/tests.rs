@@ -131,6 +131,26 @@ fn diff_build_is_deterministic_for_same_inputs() {
     let d2 = fs::read(out2.join("diff.json")).expect("read diff2");
     assert_eq!(d1, d2, "diff output must be byte-identical");
     assert!(!sha256_hex(&d1).is_empty());
+    let parsed: serde_json::Value = serde_json::from_slice(&d1).expect("parse diff");
+    assert_eq!(
+        parsed
+            .pointer("/contract/scope")
+            .and_then(serde_json::Value::as_str),
+        Some("dataset-release")
+    );
+    assert_eq!(
+        parsed
+            .pointer("/contract/change_classes")
+            .and_then(serde_json::Value::as_array)
+            .map(std::vec::Vec::len),
+        Some(5)
+    );
+    assert_eq!(
+        parsed
+            .pointer("/contract/semantics/genes_changed_signature")
+            .and_then(serde_json::Value::as_str),
+        Some("shared gene identity with changed canonical row signature")
+    );
 }
 
 fn write_sqlite(path: &std::path::Path, rows: &[(&str, &str)]) {

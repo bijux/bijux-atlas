@@ -78,9 +78,30 @@ pub(crate) fn build_release_diff(
         "species": args.species,
         "assembly": args.assembly
     });
+    let contract = json!({
+        "schema_version": "1",
+        "scope": "dataset-release",
+        "from_dataset": from.canonical_string(),
+        "to_dataset": to.canonical_string(),
+        "change_classes": [
+            "genes_added",
+            "genes_removed",
+            "genes_changed_coords",
+            "genes_changed_biotype",
+            "genes_changed_signature"
+        ],
+        "semantics": {
+            "genes_added": "gene identity present only in target release",
+            "genes_removed": "gene identity present only in source release",
+            "genes_changed_coords": "shared gene identity with changed genomic coordinates",
+            "genes_changed_biotype": "shared gene identity with changed biotype annotation",
+            "genes_changed_signature": "shared gene identity with changed canonical row signature"
+        }
+    });
     let summary = json!({
         "schema_version": "1",
         "identity": identity,
+        "contract": contract,
         "counts": {
             "genes_added": genes_added.len(),
             "genes_removed": genes_removed.len(),
@@ -134,6 +155,7 @@ pub(crate) fn build_release_diff(
     let diff = json!({
         "schema_version": "1",
         "identity": identity,
+        "contract": contract,
         "genes_added": genes_added,
         "genes_removed": genes_removed,
         "genes_changed_coords": genes_changed_coords,
