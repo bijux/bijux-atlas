@@ -6,6 +6,8 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
+const MAX_FASTA_CONTIG_NAME_LEN: usize = 255;
+
 pub fn read_fai_contig_lengths(path: &Path) -> Result<BTreeMap<String, u64>, IngestError> {
     let file = fs::File::open(path).map_err(|e| IngestError(e.to_string()))?;
     let reader = BufReader::new(file);
@@ -19,10 +21,20 @@ pub fn read_fai_contig_lengths(path: &Path) -> Result<BTreeMap<String, u64>, Ing
         if cols.len() < 2 {
             return Err(IngestError(format!("invalid FAI line: {line}")));
         }
+        let contig = validate_fasta_contig_name(cols[0].trim(), 0)?;
         let len: u64 = cols[1]
             .parse()
             .map_err(|_| IngestError(format!("invalid FAI contig length: {}", cols[1])))?;
-        out.insert(cols[0].to_string(), len);
+        if let Some(previous) = out.insert(contig.clone(), len) {
+            if previous != len {
+                return Err(IngestError(format!(
+                    "conflicting FAI duplicate contig length for {contig}: {previous} vs {len}"
+                )));
+            }
+            return Err(IngestError(format!(
+                "duplicate FAI contig declaration for {contig}"
+            )));
+        }
     }
     Ok(out)
 }
@@ -44,12 +56,17 @@ pub fn read_fasta_contig_lengths(path: &Path) -> Result<BTreeMap<String, u64>, I
     for line in reader.lines() {
         let line = line.map_err(|e| IngestError(e.to_string()))?;
         if let Some(rest) = line.strip_prefix('>') {
-            let name = rest.split_whitespace().next().unwrap_or("").trim();
-            if name.is_empty() {
-                return Err(IngestError("FASTA header missing contig name".to_string()));
+            let name = validate_fasta_contig_name(
+                rest.split_whitespace().next().unwrap_or("").trim(),
+                out.len() + 1,
+            )?;
+            if out.contains_key(&name) {
+                return Err(IngestError(format!(
+                    "duplicate FASTA contig header detected: {name}"
+                )));
             }
-            current = Some(name.to_string());
-            out.entry(name.to_string()).or_insert(0);
+            current = Some(name.clone());
+            out.insert(name, 0);
             continue;
         }
         if line.trim().is_empty() {
@@ -90,12 +107,17 @@ pub fn read_fasta_contig_stats(
     for line in reader.lines() {
         let line = line.map_err(|e| IngestError(e.to_string()))?;
         if let Some(rest) = line.strip_prefix('>') {
-            let name = rest.split_whitespace().next().unwrap_or("").trim();
-            if name.is_empty() {
-                return Err(IngestError("FASTA header missing contig name".to_string()));
+            let name = validate_fasta_contig_name(
+                rest.split_whitespace().next().unwrap_or("").trim(),
+                out.len() + 1,
+            )?;
+            if out.contains_key(&name) {
+                return Err(IngestError(format!(
+                    "duplicate FASTA contig header detected: {name}"
+                )));
             }
-            current = Some(name.to_string());
-            out.entry(name.to_string()).or_insert((0, 0, 0));
+            current = Some(name.clone());
+            out.insert(name, (0, 0, 0));
             continue;
         }
         if line.trim().is_empty() {
@@ -146,4 +168,56 @@ pub fn read_fasta_contig_stats(
         })
         .collect();
     Ok(stats)
+}
+
+fn validate_fasta_contig_name(name: &str, header_index: usize) -> Result<String, IngestError> {
+    if name.trim().is_empty() {
+        return Err(IngestError("FASTA header missing contig name".to_string()));
+    }
+    let value = name.trim();
+    if value.len() > MAX_FASTA_CONTIG_NAME_LEN {
+        return Err(IngestError(format!(
+            "FASTA header contig name exceeds {} bytes: {}",
+            MAX_FASTA_CONTIG_NAME_LEN, value
+        )));
+    }
+    if value.chars().any(char::is_control)
+        || value.chars().any(|c| {
+            matches!(
+                c,
+                '\u{200B}' | '\u{200C}' | '\u{200D}' | '\u{2060}' | '\u{FEFF}' | '\u{00AD}'
+            )
+        })
+    {
+        return Err(IngestError(format!(
+            "FASTA header contig name contains forbidden control characters at header {}",
+            header_index
+        )));
+    }
+    Ok(value.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{read_fasta_contig_lengths, read_fasta_contig_stats};
+    use std::fs;
+    use tempfile::tempdir;
+
+    #[test]
+    fn fasta_parser_rejects_duplicate_headers() {
+        let tmp = tempdir().expect("tmp");
+        let fasta = tmp.path().join("dup.fa");
+        fs::write(&fasta, ">chr1\nACGT\n>chr1\nTGCA\n").expect("write fasta");
+        let err = read_fasta_contig_lengths(&fasta).expect_err("duplicate header must fail");
+        assert!(err.0.contains("duplicate FASTA contig header"));
+    }
+
+    #[test]
+    fn fasta_parser_rejects_forbidden_control_header_characters() {
+        let tmp = tempdir().expect("tmp");
+        let fasta = tmp.path().join("hidden.fa");
+        fs::write(&fasta, ">\u{200B}chr1\nACGT\n").expect("write fasta");
+        let err = read_fasta_contig_stats(&fasta, false, 10_000).expect_err("hidden char");
+        assert!(err.0.contains("forbidden control characters"));
+    }
 }
