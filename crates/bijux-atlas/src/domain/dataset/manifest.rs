@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::identity::DatasetIdentity;
 use super::keys::{DatasetId, ValidationError};
 use super::serde_helpers as dataset_serde;
 use super::version::ModelVersion;
@@ -92,6 +93,8 @@ pub struct ArtifactManifest {
     pub artifact_version: String,
     #[serde(default)]
     pub schema_version: String,
+    #[serde(default = "default_identity_schema_version")]
+    pub identity_schema_version: String,
     pub manifest_version: String,
     pub db_schema_version: String,
     pub dataset: DatasetId,
@@ -99,6 +102,8 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub input_hashes: ManifestInputHashes,
     pub stats: ManifestStats,
+    #[serde(default)]
+    pub identity: DatasetIdentity,
     #[serde(default)]
     pub dataset_signature_sha256: String,
     #[serde(default)]
@@ -144,6 +149,23 @@ impl ArtifactManifest {
         checksums: ArtifactChecksums,
         stats: ManifestStats,
     ) -> Self {
+        let identity = DatasetIdentity::from_components(
+            &dataset,
+            &serde_json::json!({
+                "gff3_sha256": checksums.gff3_sha256.clone(),
+                "fasta_sha256": checksums.fasta_sha256.clone(),
+                "fai_sha256": checksums.fai_sha256.clone()
+            }),
+            &serde_json::json!({
+                "manifest_version": manifest_version.clone(),
+                "db_schema_version": db_schema_version.clone()
+            }),
+            &serde_json::json!({
+                "sqlite_sha256": checksums.sqlite_sha256.clone()
+            }),
+        )
+        .unwrap_or_default();
+
         Self {
             model_version: ModelVersion::V1,
             manifest_version,
@@ -152,6 +174,7 @@ impl ArtifactManifest {
             checksums,
             artifact_version: "v1".to_string(),
             schema_version: "1".to_string(),
+            identity_schema_version: default_identity_schema_version(),
             input_hashes: ManifestInputHashes {
                 gff3_sha256: "unknown".to_string(),
                 fasta_sha256: "unknown".to_string(),
@@ -159,6 +182,7 @@ impl ArtifactManifest {
                 policy_sha256: "unknown".to_string(),
             },
             stats,
+            identity,
             dataset_signature_sha256: String::new(),
             db_hash: String::new(),
             artifact_hash: String::new(),
@@ -189,6 +213,11 @@ impl ArtifactManifest {
                 "schema_version must not be empty".to_string(),
             ));
         }
+        if self.identity_schema_version.trim().is_empty() {
+            return Err(ValidationError(
+                "identity_schema_version must not be empty".to_string(),
+            ));
+        }
         if self.manifest_version.trim().is_empty() {
             return Err(ValidationError(
                 "manifest_version must not be empty".to_string(),
@@ -207,6 +236,11 @@ impl ArtifactManifest {
         if self.schema_version != self.db_schema_version {
             return Err(ValidationError(
                 "schema_version and db_schema_version must match".to_string(),
+            ));
+        }
+        if self.identity_schema_version != "1" {
+            return Err(ValidationError(
+                "identity_schema_version must currently be 1".to_string(),
             ));
         }
         if self.input_hashes.gff3_sha256.trim().is_empty()
@@ -244,6 +278,12 @@ impl ArtifactManifest {
         if self.derived_column_origins.is_empty() {
             return Err(ValidationError(
                 "derived_column_origins must not be empty".to_string(),
+            ));
+        }
+        self.identity.validate()?;
+        if self.identity.release_id != self.dataset.canonical_string() {
+            return Err(ValidationError(
+                "identity release_id must match dataset canonical string".to_string(),
             ));
         }
         Ok(())
@@ -290,6 +330,10 @@ fn default_derived_column_origins() -> BTreeMap<String, String> {
         "Derived from transcript/mRNA + exon/CDS relationships from GFF3".to_string(),
     );
     out
+}
+
+fn default_identity_schema_version() -> String {
+    "1".to_string()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]

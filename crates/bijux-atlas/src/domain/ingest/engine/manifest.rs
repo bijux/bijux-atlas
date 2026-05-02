@@ -4,8 +4,8 @@ use super::extract::ExtractResult;
 use super::IngestError;
 use crate::domain::canonical;
 use crate::domain::dataset::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
-    ShardingPlan, ValidationError,
+    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats,
+    QcSeverity, ShardingPlan, ValidationError,
 };
 use crate::domain::sha256_hex;
 use serde_json::json;
@@ -109,6 +109,31 @@ pub fn build_and_write_manifest_and_reports(
     manifest.sharding_plan = sharding_plan;
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
     manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
+    manifest.identity = crate::domain::dataset::DatasetIdentity::from_components(
+        &manifest.dataset,
+        &serde_json::json!({
+            "input_hashes": manifest.input_hashes.clone(),
+            "source_files": {
+                "gff3": manifest.source_gff3_filename.clone(),
+                "fasta": manifest.source_fasta_filename.clone(),
+                "fai": manifest.source_fai_filename.clone()
+            }
+        }),
+        &serde_json::json!({
+            "manifest_version": manifest.manifest_version.clone(),
+            "schema_version": manifest.schema_version.clone(),
+            "db_schema_version": manifest.db_schema_version.clone(),
+            "ingest_toolchain": manifest.ingest_toolchain.clone(),
+            "ingest_build_hash": manifest.ingest_build_hash.clone(),
+            "toolchain_hash": manifest.toolchain_hash.clone()
+        }),
+        &serde_json::json!({
+            "db_hash": manifest.db_hash.clone(),
+            "artifact_hash": manifest.artifact_hash.clone(),
+            "dataset_signature_sha256": manifest.dataset_signature_sha256.clone()
+        }),
+    )
+    .map_err(|e| IngestError(e.to_string()))?;
 
     manifest
         .validate_strict()
