@@ -13,7 +13,7 @@ use std::path::PathBuf as CliPathBuf;
 #[command(about = "Bijux Atlas operations CLI")]
 #[command(help_template = super::BIJUX_HELP_TEMPLATE)]
 #[command(
-    after_help = "Workflows:\n  build dataset: ingest [--dry-run|--explain] -> dataset verify -> dataset publish [--dry-run|--explain] -> catalog promote\n  inspect/query: inspect dataset|db and query run|explain\n  export: export openapi or export query rows\n\nEnvironment:\n  BIJUX_LOG_LEVEL   Log verbosity override\n  BIJUX_CACHE_DIR   Shared cache directory"
+    after_help = "Workflows:\n  build dataset: ingest [--dry-run|--explain] -> dataset verify -> dataset evidence-verify -> dataset publish [--dry-run|--explain] -> catalog promote\n  inspect/query: inspect dataset|provenance|db and query run|explain\n  export: export openapi or export query rows\n\nEnvironment:\n  BIJUX_LOG_LEVEL   Log verbosity override\n  BIJUX_CACHE_DIR   Shared cache directory"
 )]
 pub(crate) struct Cli {
     #[arg(long, global = true, default_value_t = false)]
