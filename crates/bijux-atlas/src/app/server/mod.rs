@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
+pub mod host;
+
 pub(crate) mod cache;
 #[cfg(test)]
 mod dataset_cache_manager_tests;
