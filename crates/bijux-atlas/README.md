@@ -118,7 +118,7 @@ The following are not stable API promises:
 
 - `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis,
   telemetry, and filesystem code
-- `src/app`: use-case orchestration, ports, cache services, and server application state
+- `src/app`: use-case orchestration, ingest/query boundary facades, ports, cache services, and server application state
 - `src/contracts`: external schemas, runtime config contracts, and stable error definitions
 - `src/domain`: business rules for dataset, query, ingest, policy, cluster, and security behavior
 - `src/runtime`: runtime configuration and process-level setup
