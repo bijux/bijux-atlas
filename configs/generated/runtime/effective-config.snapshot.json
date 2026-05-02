@@ -46,6 +46,7 @@
     },
     "max_body_bytes": 16384,
     "max_header_bytes": 16384,
+    "max_query_params": 64,
     "max_request_queue_depth": 256,
     "max_sequence_bases": 20000,
     "max_uri_bytes": 2048,
