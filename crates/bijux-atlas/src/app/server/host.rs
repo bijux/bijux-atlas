@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::adapters::inbound::http::router::build_router;
+use crate::adapters::inbound::serve_server_router_with_shutdown;
 use crate::adapters::outbound::store::{
     FederatedBackend, LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
 };
 use crate::adapters::outbound::telemetry::logging::LoggingConfig;
-use crate::adapters::outbound::telemetry::tracing::{
-    init_tracing, TraceConfig, TraceExporterKind,
-};
+use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 use crate::app::ports::DatasetStoreBackend;
 use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use crate::domain::dataset::DatasetId;
@@ -622,8 +620,6 @@ pub async fn main_entry() -> Result<(), String> {
     let mut state = AppState::with_config(cache.clone(), runtime.api.clone(), query_limits);
     state.runtime_policy_hash = Arc::new(runtime_policy_hash);
     state.runtime_policy_mode = Arc::new(policy_mode);
-    let app = build_router(state.clone());
-
     // Ready only after first successful catalog refresh when required.
     state.ready.store(false, Ordering::Relaxed);
     if let Err(e) = cache.refresh_catalog().await {
@@ -702,18 +698,17 @@ pub async fn main_entry() -> Result<(), String> {
     }
     let accepting = state.accepting_requests.clone();
     let state_for_shutdown = state.clone();
-    axum::serve(listener, app)
-        .with_graceful_shutdown(async move {
-            if let Err(err) = wait_for_shutdown_signal().await {
-                warn!("shutdown signal handler failed: {err}");
-            }
-            accepting.store(false, Ordering::Relaxed);
-            // Stop admitting heavy work first, then drain remaining requests.
-            state_for_shutdown.begin_shutdown_drain_heavy();
-            tokio::time::sleep(Duration::from_millis(shutdown_drain_ms)).await;
-        })
-        .await
-        .map_err(|e| format!("server failed: {e}"))
+    serve_server_router_with_shutdown(listener, state.clone(), async move {
+        if let Err(err) = wait_for_shutdown_signal().await {
+            warn!("shutdown signal handler failed: {err}");
+        }
+        accepting.store(false, Ordering::Relaxed);
+        // Stop admitting heavy work first, then drain remaining requests.
+        state_for_shutdown.begin_shutdown_drain_heavy();
+        tokio::time::sleep(Duration::from_millis(shutdown_drain_ms)).await;
+    })
+    .await
+    .map_err(|e| format!("server failed: {e}"))
 }
 
 #[cfg(test)]
