@@ -48,3 +48,29 @@ fn cli_sources_depend_on_app_query_boundary_not_domain_query_path() {
         );
     }
 }
+
+#[test]
+fn cli_entrypoints_do_not_import_server_runtime_or_policy_loaders() {
+    let cli_root = crate_root().join("src/adapters/inbound/cli");
+    for file in rust_files_under(&cli_root) {
+        let rel = file
+            .strip_prefix(crate_root().join("src/adapters/inbound/cli"))
+            .expect("cli-relative path");
+        let rel_text = rel.to_string_lossy();
+        if rel_text.starts_with("operations/")
+            || rel_text == "output.rs"
+            || rel_text == "ingest_inputs.rs"
+        {
+            continue;
+        }
+        let text = std::fs::read_to_string(&file)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
+        for forbidden in ["crate::app::server", "load_policy_from_workspace"] {
+            assert!(
+                !text.contains(forbidden),
+                "cli entrypoint must not own server/policy runtime behavior (`{forbidden}`): {}",
+                file.display()
+            );
+        }
+    }
+}
