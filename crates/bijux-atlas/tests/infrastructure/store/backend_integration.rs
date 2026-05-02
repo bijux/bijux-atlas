@@ -33,6 +33,17 @@ fn manifest(dataset: DatasetId) -> ArtifactManifest {
     m.input_hashes.fai_sha256 = "c".repeat(64);
     m.input_hashes.policy_sha256 = "d".repeat(64);
     m.toolchain_hash = "e".repeat(64);
+    m.source_facts_path = "derived/source_facts.json".to_string();
+    m.normalized_input_identity_sha256 = "f".repeat(64);
+    m.software_version = "atlas-test".to_string();
+    m.config_version = "atlas-test-config".to_string();
+    m.build_policy_version = "atlas-test-policy".to_string();
+    m.build_metadata_path = "derived/build.metadata.json".to_string();
+    m.anomaly_summary_path = "derived/anomaly.summary.json".to_string();
+    m.dataset_stats_path = "derived/dataset.stats.json".to_string();
+    m.artifact_inventory_path = "derived/artifact.inventory.json".to_string();
+    m.evidence_bundle_path = "derived/evidence.bundle.json".to_string();
+    m.evidence_bundle_sha256 = "1".repeat(64);
     m
 }
 
