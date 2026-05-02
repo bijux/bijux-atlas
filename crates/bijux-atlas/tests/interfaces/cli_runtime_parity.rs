@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_cli::contracts::known_bijux_tool;
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
@@ -112,9 +111,19 @@ fn assert_same_output(left: &Output, right: &Output) {
 
 #[test]
 fn atlas_namespace_stays_registered_with_bijux_cli() {
-    let tool = known_bijux_tool("atlas").expect("atlas namespace");
-    assert_eq!(tool.runtime_binary(), "bijux-atlas");
-    assert_eq!(tool.control_binary(), "bijux-dev-atlas");
+    let runtime_bin_dir = runtime_bin_dir();
+    let bijux = bijux_cli_binary();
+    let output = run_output(&bijux, &["atlas", "--help"], runtime_bin_dir.path());
+    assert!(
+        output.status.success(),
+        "bijux atlas --help failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("Usage: bijux-atlas"),
+        "atlas namespace did not delegate to bijux-atlas help output"
+    );
 }
 
 #[test]
