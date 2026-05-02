@@ -4,7 +4,9 @@ use std::collections::BTreeMap;
 
 use super::extract::{extract_gene_rows, ExtractResult};
 use super::fai::{self, ContigStats};
-use super::gff3::parse_gff3_records;
+use super::gff3::{
+    parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts,
+};
 use super::job::IngestJob;
 use super::{IngestError, IngestOptions};
 
@@ -50,6 +52,8 @@ pub fn decode_ingest_inputs(job: &IngestJob) -> Result<DecodedIngest, IngestErro
             .collect()
     };
 
+    let sequence_regions = parse_sequence_regions(&job.inputs.gff3_path)?;
+    validate_sequence_region_conflicts(&sequence_regions)?;
     let records = parse_gff3_records(&job.inputs.gff3_path)?;
     let mut extract = extract_gene_rows(records, &contig_lengths, opts)?;
     apply_deterministic_ordering(&mut extract);

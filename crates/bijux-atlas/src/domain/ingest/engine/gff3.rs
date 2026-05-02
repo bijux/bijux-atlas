@@ -25,6 +25,14 @@ pub struct Gff3Record {
     pub raw_line: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SequenceRegion {
+    pub line: usize,
+    pub seqid: String,
+    pub start: u64,
+    pub end: u64,
+}
+
 pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
     let file = fs::File::open(path).map_err(|e| IngestError(e.to_string()))?;
     let reader = BufReader::new(file);
@@ -107,6 +115,74 @@ pub fn parse_gff3_records(path: &Path) -> Result<Vec<Gff3Record>, IngestError> {
     }
 
     Ok(out)
+}
+
+pub fn parse_sequence_regions(path: &Path) -> Result<Vec<SequenceRegion>, IngestError> {
+    let file = fs::File::open(path).map_err(|e| IngestError(e.to_string()))?;
+    let reader = BufReader::new(file);
+    let mut regions = Vec::new();
+
+    for (line_idx, line) in reader.lines().enumerate() {
+        let line = line.map_err(|e| IngestError(e.to_string()))?;
+        if !line.starts_with("##sequence-region") {
+            continue;
+        }
+        let parts = line.split_whitespace().collect::<Vec<_>>();
+        if parts.len() != 4 {
+            return Err(IngestError(format!(
+                "GFF3_INVALID_SEQUENCE_REGION line={} declaration={}",
+                line_idx + 1,
+                line
+            )));
+        }
+        let seqid = parts[1].trim();
+        let start: u64 = parts[2].parse().map_err(|_| {
+            IngestError(format!(
+                "GFF3_INVALID_SEQUENCE_REGION_START line={} value={}",
+                line_idx + 1,
+                parts[2]
+            ))
+        })?;
+        let end: u64 = parts[3].parse().map_err(|_| {
+            IngestError(format!(
+                "GFF3_INVALID_SEQUENCE_REGION_END line={} value={}",
+                line_idx + 1,
+                parts[3]
+            ))
+        })?;
+        if start == 0 || end < start {
+            return Err(IngestError(format!(
+                "GFF3_INVALID_SEQUENCE_REGION_SPAN line={} start={} end={}",
+                line_idx + 1,
+                start,
+                end
+            )));
+        }
+        regions.push(SequenceRegion {
+            line: line_idx + 1,
+            seqid: seqid.to_string(),
+            start,
+            end,
+        });
+    }
+    Ok(regions)
+}
+
+pub fn validate_sequence_region_conflicts(regions: &[SequenceRegion]) -> Result<(), IngestError> {
+    let mut seen = BTreeMap::<String, (u64, u64, usize)>::new();
+    for region in regions {
+        if let Some((start, end, line)) = seen.get(&region.seqid) {
+            if *start != region.start || *end != region.end {
+                return Err(IngestError(format!(
+                    "GFF3_CONFLICTING_SEQUENCE_REGION seqid={} first_line={} second_line={} first_span={}-{} second_span={}-{}",
+                    region.seqid, line, region.line, start, end, region.start, region.end
+                )));
+            }
+        } else {
+            seen.insert(region.seqid.clone(), (region.start, region.end, region.line));
+        }
+    }
+    Ok(())
 }
 
 fn decode_attr_value(raw: &str) -> String {
@@ -208,7 +284,7 @@ fn parse_attributes(
 
 #[cfg(test)]
 mod tests {
-    use super::parse_gff3_records;
+    use super::{parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts};
     use proptest::prelude::*;
     use std::fs;
     use tempfile::tempdir;
@@ -293,6 +369,21 @@ mod tests {
         fs::write(&gff, "\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1\n").expect("write gff3");
         let err = parse_gff3_records(&gff).expect_err("missing seqid must fail");
         assert!(err.0.contains("GFF3_MISSING_REQUIRED_FIELD"));
+    }
+
+    #[test]
+    fn sequence_region_conflicts_are_detected_deterministically() {
+        let tmp = tempdir().expect("tmp");
+        let gff = tmp.path().join("sequence-region-conflict.gff3");
+        fs::write(
+            &gff,
+            "##gff-version 3\n##sequence-region chr1 1 100\n##sequence-region chr1 1 120\nchr1\tsrc\tgene\t1\t10\t.\t+\t.\tID=g1\n",
+        )
+        .expect("write");
+        let regions = parse_sequence_regions(&gff).expect("regions");
+        let err =
+            validate_sequence_region_conflicts(&regions).expect_err("conflicting seq-region");
+        assert!(err.0.contains("GFF3_CONFLICTING_SEQUENCE_REGION"));
     }
 
     #[test]
