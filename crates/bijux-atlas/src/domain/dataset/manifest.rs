@@ -149,24 +149,7 @@ impl ArtifactManifest {
         checksums: ArtifactChecksums,
         stats: ManifestStats,
     ) -> Self {
-        let identity = DatasetIdentity::from_components(
-            &dataset,
-            &serde_json::json!({
-                "gff3_sha256": checksums.gff3_sha256.clone(),
-                "fasta_sha256": checksums.fasta_sha256.clone(),
-                "fai_sha256": checksums.fai_sha256.clone()
-            }),
-            &serde_json::json!({
-                "manifest_version": manifest_version.clone(),
-                "db_schema_version": db_schema_version.clone()
-            }),
-            &serde_json::json!({
-                "sqlite_sha256": checksums.sqlite_sha256.clone()
-            }),
-        )
-        .unwrap_or_default();
-
-        Self {
+        let mut manifest = Self {
             model_version: ModelVersion::V1,
             manifest_version,
             db_schema_version,
@@ -182,7 +165,7 @@ impl ArtifactManifest {
                 policy_sha256: "unknown".to_string(),
             },
             stats,
-            identity,
+            identity: DatasetIdentity::default(),
             dataset_signature_sha256: String::new(),
             db_hash: String::new(),
             artifact_hash: String::new(),
@@ -199,7 +182,9 @@ impl ArtifactManifest {
             sharding_plan: ShardingPlan::None,
             contig_normalization_aliases: BTreeMap::new(),
             derived_column_origins: default_derived_column_origins(),
-        }
+        };
+        manifest.identity = manifest.expected_identity().unwrap_or_default();
+        manifest
     }
 
     pub fn validate_strict(&self) -> Result<(), ValidationError> {
@@ -286,11 +271,49 @@ impl ArtifactManifest {
                 "identity release_id must match dataset canonical string".to_string(),
             ));
         }
+        let expected_identity = self.expected_identity()?;
+        if self.identity != expected_identity {
+            return Err(ValidationError(
+                "identity fields are contradictory to manifest source/build/artifact components"
+                    .to_string(),
+            ));
+        }
         Ok(())
     }
 
     pub fn validate(&self) -> Result<(), ValidationError> {
         self.validate_strict()
+    }
+
+    fn source_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "gff3_sha256": self.checksums.gff3_sha256.clone(),
+            "fasta_sha256": self.checksums.fasta_sha256.clone(),
+            "fai_sha256": self.checksums.fai_sha256.clone()
+        })
+    }
+
+    fn build_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "manifest_version": self.manifest_version.clone(),
+            "schema_version": self.schema_version.clone(),
+            "db_schema_version": self.db_schema_version.clone()
+        })
+    }
+
+    fn artifact_identity_component(&self) -> serde_json::Value {
+        serde_json::json!({
+            "sqlite_sha256": self.checksums.sqlite_sha256.clone()
+        })
+    }
+
+    fn expected_identity(&self) -> Result<DatasetIdentity, ValidationError> {
+        DatasetIdentity::from_components(
+            &self.dataset,
+            &self.source_identity_component(),
+            &self.build_identity_component(),
+            &self.artifact_identity_component(),
+        )
     }
 }
 
