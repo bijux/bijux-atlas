@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::actions::{
-    explain_query, explain_query_from_query_text, export_query_rows, inspect_dataset, inspect_db,
-    print_completion, print_config, print_version, run_ingest, run_query, smoke_dataset,
-    ExplainQueryArgs,
+    explain_query, explain_query_from_query_text, export_query_rows, inspect_dataset,
+    inspect_provenance, inspect_db, print_completion, print_config, print_version, run_ingest,
+    run_query, smoke_dataset, ExplainQueryArgs,
 };
 use super::ingest_inputs::verify_ingest_inputs;
 use super::operations;
@@ -98,6 +98,19 @@ pub(super) fn run_atlas_command(
             DatasetCommand::VerifyPack { pack } => {
                 operations::verify_pack(pack, output_mode).map_err(CliError::from_action_error)
             }
+            DatasetCommand::EvidenceVerify {
+                root,
+                release,
+                species,
+                assembly,
+            } => operations::validate_dataset_evidence(
+                root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
         },
         AtlasCommand::Diff { command } => match command {
             DiffCommand::Build {
@@ -360,6 +373,12 @@ pub(super) fn run_atlas_command(
                 inspect_dataset(root, &release, &species, &assembly, output_mode)
             }
             InspectCommand::Db { db, sample_rows } => inspect_db(db, sample_rows, output_mode),
+            InspectCommand::Provenance {
+                root,
+                release,
+                species,
+                assembly,
+            } => inspect_provenance(root, &release, &species, &assembly, output_mode),
         }
         .map_err(CliError::from_action_error),
         AtlasCommand::Export { command } => match command {

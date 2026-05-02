@@ -68,6 +68,16 @@ pub(crate) enum InspectCommand {
         #[arg(long, default_value_t = 5)]
         sample_rows: usize,
     },
+    Provenance {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
+    },
 }
 
 #[derive(Subcommand)]
@@ -203,6 +213,16 @@ pub(crate) enum DatasetCommand {
     VerifyPack {
         #[arg(long)]
         pack: PathBuf,
+    },
+    EvidenceVerify {
+        #[arg(long)]
+        root: PathBuf,
+        #[arg(long)]
+        release: String,
+        #[arg(long)]
+        species: String,
+        #[arg(long)]
+        assembly: String,
     },
 }
 
