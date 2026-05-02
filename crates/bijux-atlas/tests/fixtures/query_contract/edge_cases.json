@@ -39,6 +39,22 @@
       "interval_mode": "overlap",
       "limit": 50,
       "expected_gene_ids": []
+    },
+    {
+      "id": "chr1_containment_exact_match",
+      "description": "containment includes a gene only when boundaries match exactly",
+      "region": "chr1:10-40",
+      "interval_mode": "containment",
+      "limit": 50,
+      "expected_gene_ids": ["gene1"]
+    },
+    {
+      "id": "chr1_overlap_after_boundary_is_empty",
+      "description": "overlap does not leak one base beyond gene boundary",
+      "region": "chr1:41-49",
+      "interval_mode": "overlap",
+      "limit": 50,
+      "expected_gene_ids": []
     }
   ]
 }
