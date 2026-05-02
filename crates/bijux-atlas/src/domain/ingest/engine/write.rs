@@ -155,6 +155,10 @@ pub fn write_ingest_outputs(
         extract: &decoded.extract,
         contig_aliases: &opts.seqid_policy.aliases,
         sharding_plan: effective_sharding_plan,
+        canonical_model_schema_version: decoded.canonical_model.schema_version,
+        canonical_query_semantic_sha256: &decoded.canonical_model.hashes.query_semantic_sha256,
+        canonical_lineage_sha256: &decoded.canonical_model.hashes.lineage_sensitive_sha256,
+        canonical_feature_counts: &decoded.canonical_model.summary.feature_type_counts,
     })?;
 
     if opts.compute_gene_signatures {

@@ -31,6 +31,10 @@ pub struct BuildManifestArgs<'a> {
     pub extract: &'a ExtractResult,
     pub contig_aliases: &'a BTreeMap<String, String>,
     pub sharding_plan: ShardingPlan,
+    pub canonical_model_schema_version: u64,
+    pub canonical_query_semantic_sha256: &'a str,
+    pub canonical_lineage_sha256: &'a str,
+    pub canonical_feature_counts: &'a BTreeMap<String, u64>,
 }
 
 pub fn build_and_write_manifest_and_reports(
@@ -48,6 +52,10 @@ pub fn build_and_write_manifest_and_reports(
         extract,
         contig_aliases,
         sharding_plan,
+        canonical_model_schema_version,
+        canonical_query_semantic_sha256,
+        canonical_lineage_sha256,
+        canonical_feature_counts,
     } = args;
     let mut total_transcripts = 0_u64;
     let mut contigs = BTreeSet::new();
@@ -107,6 +115,11 @@ pub fn build_and_write_manifest_and_reports(
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
     manifest.sharding_plan = sharding_plan;
+    manifest.canonical_feature_summary_path = "derived/canonical_summary.json".to_string();
+    manifest.canonical_model_schema_version = canonical_model_schema_version;
+    manifest.canonical_query_semantic_sha256 = canonical_query_semantic_sha256.to_string();
+    manifest.canonical_lineage_sha256 = canonical_lineage_sha256.to_string();
+    manifest.canonical_feature_counts = canonical_feature_counts.clone();
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
     manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
     manifest.identity = crate::domain::dataset::DatasetIdentity::from_components(
@@ -197,6 +210,10 @@ fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String,
         "input_hashes": manifest.input_hashes,
         "stats": manifest.stats,
         "dataset_signature_sha256": manifest.dataset_signature_sha256,
+        "canonical_model_schema_version": manifest.canonical_model_schema_version,
+        "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+        "canonical_lineage_sha256": manifest.canonical_lineage_sha256,
+        "canonical_feature_counts": manifest.canonical_feature_counts,
         "toolchain_hash": manifest.toolchain_hash,
         "db_hash": manifest.db_hash
     });
