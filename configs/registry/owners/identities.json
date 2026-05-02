@@ -13,6 +13,9 @@
     "atlas-governance": {
       "github_handles": ["@bijan"]
     },
+    "atlas-runtime": {
+      "github_handles": ["@bijan"]
+    },
     "architecture": {
       "github_handles": ["@bijan"]
     },
