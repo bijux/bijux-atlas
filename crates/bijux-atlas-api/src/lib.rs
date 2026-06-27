@@ -12,8 +12,6 @@ pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DAT
 pub mod client;
 /// Compatibility policies shared with API consumers.
 pub mod compat;
-/// Conversion helpers between wire and internal domain types.
-pub mod convert;
 /// DTOs and stable API data contracts.
 pub mod dto;
 /// Stable API error codes and structures.

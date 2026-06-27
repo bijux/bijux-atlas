@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::dto::{DatasetKeyDto, GeneRowsDto, LinkCursorDto, ListGenesResponseDto, PageCursorDto};
-use super::errors::ApiError;
-use super::params::IncludeField;
+use crate::dto::{DatasetKeyDto, GeneRowsDto, LinkCursorDto, ListGenesResponseDto, PageCursorDto};
+use crate::errors::ApiError;
+use crate::params::IncludeField;
 use bijux_atlas_model::query::{GeneQueryResponse, GeneRow};
 use serde_json::{json, Map, Value};
 use std::collections::BTreeSet;
 
-pub fn list_genes_response_dto(
+pub(super) fn list_genes_response_dto(
     page: GeneQueryResponse,
     dataset: DatasetKeyDto,
     requested: Option<&BTreeSet<IncludeField>>,

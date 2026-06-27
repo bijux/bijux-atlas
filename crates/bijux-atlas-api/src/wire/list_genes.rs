@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::convert::list_genes_response_dto;
-use super::dto::DatasetKeyDto;
-use super::errors::ApiError;
-use super::params::ListGenesParams;
-use bijux_atlas_model::query::GeneQueryResponse;
+use super::serialization::list_genes_response_dto;
+use super::QueryAdapter;
+use crate::dto::DatasetKeyDto;
+use crate::errors::ApiError;
+use crate::params::ListGenesParams;
 use serde_json::Value;
 use std::collections::BTreeSet;
-
-pub trait QueryAdapter {
-    fn list_genes(&self, params: &ListGenesParams) -> Result<GeneQueryResponse, ApiError>;
-}
 
 pub fn list_genes_v1<A: QueryAdapter>(
     adapter: &A,
