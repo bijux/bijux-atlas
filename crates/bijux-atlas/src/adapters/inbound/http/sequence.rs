@@ -32,47 +32,26 @@ struct FaiRecord {
 }
 
 fn parse_dataset(params: &HashMap<String, String>) -> Result<DatasetId, ApiError> {
-    let release = params
-        .get("release")
-        .ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
-    let species = params
-        .get("species")
-        .ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
-    let assembly = params
-        .get("assembly")
-        .ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
+    let release = params.get("release").ok_or_else(|| ApiError::missing_dataset_dim("release"))?;
+    let species = params.get("species").ok_or_else(|| ApiError::missing_dataset_dim("species"))?;
+    let assembly =
+        params.get("assembly").ok_or_else(|| ApiError::missing_dataset_dim("assembly"))?;
     DatasetId::new(release, species, assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))
 }
 
 fn parse_region(raw: &str) -> Result<(String, u64, u64), ApiError> {
     let (seqid, span) = raw.split_once(':').ok_or_else(|| {
-        error_json(
-            ApiErrorCode::InvalidQueryParameter,
-            "invalid region",
-            json!({"region": raw}),
-        )
+        error_json(ApiErrorCode::InvalidQueryParameter, "invalid region", json!({"region": raw}))
     })?;
     let (start, end) = span.split_once('-').ok_or_else(|| {
-        error_json(
-            ApiErrorCode::InvalidQueryParameter,
-            "invalid region",
-            json!({"region": raw}),
-        )
+        error_json(ApiErrorCode::InvalidQueryParameter, "invalid region", json!({"region": raw}))
     })?;
     let start = start.parse::<u64>().map_err(|_| {
-        error_json(
-            ApiErrorCode::InvalidQueryParameter,
-            "invalid region",
-            json!({"region": raw}),
-        )
+        error_json(ApiErrorCode::InvalidQueryParameter, "invalid region", json!({"region": raw}))
     })?;
     let end = end.parse::<u64>().map_err(|_| {
-        error_json(
-            ApiErrorCode::InvalidQueryParameter,
-            "invalid region",
-            json!({"region": raw}),
-        )
+        error_json(ApiErrorCode::InvalidQueryParameter, "invalid region", json!({"region": raw}))
     })?;
     if start == 0 || end < start {
         return Err(error_json(
@@ -87,11 +66,7 @@ fn parse_region(raw: &str) -> Result<(String, u64, u64), ApiError> {
 fn parse_fai(path: &std::path::Path) -> Result<HashMap<String, FaiRecord>, ApiError> {
     let content =
         crate::adapters::inbound::http::effects_adapters::read_to_string(path).map_err(|e| {
-            error_json(
-                ApiErrorCode::Internal,
-                "fai read failed",
-                json!({"message": e.0}),
-            )
+            error_json(ApiErrorCode::Internal, "fai read failed", json!({"message": e.0}))
         })?;
     let mut out = HashMap::new();
     for line in content.lines() {
@@ -134,11 +109,7 @@ fn extract_sequence(
             want as usize,
         )
         .map_err(|e| {
-            error_json(
-                ApiErrorCode::Internal,
-                "fasta read failed",
-                json!({"message": e.0}),
-            )
+            error_json(ApiErrorCode::Internal, "fasta read failed", json!({"message": e.0}))
         })?;
         out.push_str(&String::from_utf8_lossy(&buf));
         pos += want;
@@ -176,6 +147,7 @@ async fn acquire_class_permit_for_sequence(
         QueryClass::Cheap => state.class_cheap.clone(),
         QueryClass::Medium => state.class_medium.clone(),
         QueryClass::Heavy => state.class_heavy.clone(),
+        _ => state.class_heavy.clone(),
     };
     sem.try_acquire_owned().map_err(|_| {
         error_json(
@@ -197,10 +169,7 @@ async fn sequence_common(
     let request_id =
         crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     info!(request_id = %request_id, route = route, "request start");
-    let queue_depth = state
-        .queued_requests
-        .fetch_add(1, Ordering::Relaxed)
-        .saturating_add(1);
+    let queue_depth = state.queued_requests.fetch_add(1, Ordering::Relaxed).saturating_add(1);
     if queue_depth as usize > state.api.max_request_queue_depth {
         crate::record_shed_reason(&state, "queue_depth_exceeded").await;
         state.queued_requests.fetch_sub(1, Ordering::Relaxed);
@@ -214,16 +183,10 @@ async fn sequence_common(
         );
         return with_request_id(resp, &request_id);
     }
-    let _queue_guard = QueueGuard {
-        counter: Arc::clone(&state.queued_requests),
-    };
+    let _queue_guard = QueueGuard { counter: Arc::clone(&state.queued_requests) };
     let overloaded_early =
         crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
-    let adaptive_rl = if overloaded_early {
-        state.api.adaptive_rate_limit_factor
-    } else {
-        1.0
-    };
+    let adaptive_rl = if overloaded_early { state.api.adaptive_rate_limit_factor } else { 1.0 };
 
     if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
         if !state
@@ -251,10 +214,7 @@ async fn sequence_common(
         Ok(v) => v,
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
-            state
-                .metrics
-                .observe_request(route, StatusCode::BAD_REQUEST, started.elapsed())
-                .await;
+            state.metrics.observe_request(route, StatusCode::BAD_REQUEST, started.elapsed()).await;
             return with_request_id(resp, &request_id);
         }
     };
@@ -262,10 +222,7 @@ async fn sequence_common(
         Ok(v) => v,
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
-            state
-                .metrics
-                .observe_request(route, StatusCode::BAD_REQUEST, started.elapsed())
-                .await;
+            state.metrics.observe_request(route, StatusCode::BAD_REQUEST, started.elapsed()).await;
             return with_request_id(resp, &request_id);
         }
     };
@@ -340,10 +297,7 @@ async fn sequence_common(
                 json!({"threshold_bases": state.api.sequence_api_key_required_bases}),
             ),
         );
-        state
-            .metrics
-            .observe_request(route, StatusCode::UNAUTHORIZED, started.elapsed())
-            .await;
+        state.metrics.observe_request(route, StatusCode::UNAUTHORIZED, started.elapsed()).await;
         return with_request_id(resp, &request_id);
     }
 
@@ -353,10 +307,7 @@ async fn sequence_common(
         region_raw,
         normalize_query(&params)
     );
-    state
-        .metrics
-        .observe_request_size(route, coalesce_key.len())
-        .await;
+    state.metrics.observe_request_size(route, coalesce_key.len()).await;
     let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
 
     let io_stage = Instant::now();
@@ -430,10 +381,7 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
     };
-    state
-        .metrics
-        .observe_stage("fasta_io", io_stage.elapsed())
-        .await;
+    state.metrics.observe_stage("fasta_io", io_stage.elapsed()).await;
 
     let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
     let artifact_hash = dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
@@ -442,17 +390,9 @@ async fn sequence_common(
         let mut resp = Response::new(Body::empty());
         *resp.status_mut() = StatusCode::NOT_MODIFIED;
         let mut h = HeaderMap::new();
-        put_cache_headers(
-            &mut h,
-            state.api.sequence_ttl,
-            &etag,
-            CachePolicy::ImmutableDataset,
-        );
+        put_cache_headers(&mut h, state.api.sequence_ttl, &etag, CachePolicy::ImmutableDataset);
         *resp.headers_mut() = h;
-        state
-            .metrics
-            .observe_request(route, StatusCode::NOT_MODIFIED, started.elapsed())
-            .await;
+        state.metrics.observe_request(route, StatusCode::NOT_MODIFIED, started.elapsed()).await;
         return with_request_id(resp, &request_id);
     }
 
@@ -478,29 +418,12 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
         let mut h = HeaderMap::new();
-        put_cache_headers(
-            &mut h,
-            state.api.sequence_ttl,
-            &etag,
-            CachePolicy::ImmutableDataset,
-        );
-        h.insert(
-            "content-type",
-            HeaderValue::from_static("text/plain; charset=utf-8"),
-        );
+        put_cache_headers(&mut h, state.api.sequence_ttl, &etag, CachePolicy::ImmutableDataset);
+        h.insert("content-type", HeaderValue::from_static("text/plain; charset=utf-8"));
         let mut resp = (StatusCode::OK, h, sequence).into_response();
-        state
-            .metrics
-            .observe_stage("serialization", serialize_stage.elapsed())
-            .await;
-        state
-            .metrics
-            .observe_response_size(route, sequence_len)
-            .await;
-        state
-            .metrics
-            .observe_request(route, StatusCode::OK, started.elapsed())
-            .await;
+        state.metrics.observe_stage("serialization", serialize_stage.elapsed()).await;
+        state.metrics.observe_response_size(route, sequence_len).await;
+        state.metrics.observe_request(route, StatusCode::OK, started.elapsed()).await;
         resp = with_request_id(resp, &request_id);
         return resp;
     }
@@ -552,10 +475,7 @@ async fn sequence_common(
             return with_request_id(resp, &request_id);
         }
     };
-    state
-        .metrics
-        .observe_response_size(route, encoded.len())
-        .await;
+    state.metrics.observe_response_size(route, encoded.len()).await;
     if encoded.len() > state.api.response_max_bytes {
         let resp = api_error_response(
             StatusCode::PAYLOAD_TOO_LARGE,
@@ -571,10 +491,7 @@ async fn sequence_common(
             .await;
         return with_request_id(resp, &request_id);
     }
-    state
-        .metrics
-        .observe_stage("serialization", serialize_stage.elapsed())
-        .await;
+    state.metrics.observe_stage("serialization", serialize_stage.elapsed()).await;
     let mut out_headers = HeaderMap::new();
     put_cache_headers(
         &mut out_headers,
@@ -582,18 +499,12 @@ async fn sequence_common(
         &etag,
         CachePolicy::ImmutableDataset,
     );
-    out_headers.insert(
-        "content-type",
-        HeaderValue::from_static("application/json; charset=utf-8"),
-    );
+    out_headers.insert("content-type", HeaderValue::from_static("application/json; charset=utf-8"));
     if let Some(enc) = encoding {
         out_headers.insert("content-encoding", HeaderValue::from_static(enc));
     }
     let resp = (StatusCode::OK, out_headers, encoded).into_response();
-    state
-        .metrics
-        .observe_request(route, StatusCode::OK, started.elapsed())
-        .await;
+    state.metrics.observe_request(route, StatusCode::OK, started.elapsed()).await;
     with_request_id(resp, &request_id)
 }
 
@@ -638,10 +549,7 @@ pub(crate) async fn gene_sequence_handler(
             } else if msg.contains("corrupt") {
                 (StatusCode::CONFLICT, ApiErrorCode::ArtifactCorrupted)
             } else {
-                (
-                    StatusCode::SERVICE_UNAVAILABLE,
-                    ApiErrorCode::UpstreamStoreUnavailable,
-                )
+                (StatusCode::SERVICE_UNAVAILABLE, ApiErrorCode::UpstreamStoreUnavailable)
             };
             let details = if code == ApiErrorCode::UpstreamStoreUnavailable {
                 json!({"message": msg, "retryable": true})
@@ -692,23 +600,9 @@ pub(crate) async fn gene_sequence_handler(
             }
         }
     };
-    let flank = params
-        .get("flank")
-        .and_then(|x| x.parse::<u64>().ok())
-        .unwrap_or(0);
-    let region = format!(
-        "{}:{}-{}",
-        row.0,
-        row.1.saturating_sub(flank).max(1),
-        row.2.saturating_add(flank)
-    );
+    let flank = params.get("flank").and_then(|x| x.parse::<u64>().ok()).unwrap_or(0);
+    let region =
+        format!("{}:{}-{}", row.0, row.1.saturating_sub(flank).max(1), row.2.saturating_add(flank));
     params.insert("region".to_string(), region.clone());
-    sequence_common(
-        state,
-        headers,
-        params,
-        "/v1/genes/{gene_id}/sequence",
-        region,
-    )
-    .await
+    sequence_common(state, headers, params, "/v1/genes/{gene_id}/sequence", region).await
 }

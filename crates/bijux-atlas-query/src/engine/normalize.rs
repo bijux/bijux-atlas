@@ -2,7 +2,7 @@
 
 use super::filters::GeneQueryRequest;
 use super::parser::{GeneQueryAst, Predicate};
-use crate::domain::canonical;
+use bijux_atlas_core::canonical;
 
 pub fn normalized_query_hash(req: &GeneQueryRequest) -> Result<String, String> {
     let normalized = normalize_request(req);
@@ -38,12 +38,9 @@ fn predicate_sort_key(predicate: &Predicate) -> String {
         Predicate::NameEquals(v) => format!("1:{v}"),
         Predicate::NamePrefix(v) => format!("2:{v}"),
         Predicate::Biotype(v) => format!("3:{v}"),
-        Predicate::Region {
-            seqid,
-            start,
-            end,
-            semantics,
-        } => format!("4:{seqid}:{start}:{end}:{semantics:?}"),
+        Predicate::Region { seqid, start, end, semantics } => {
+            format!("4:{seqid}:{start}:{end}:{semantics:?}")
+        }
         Predicate::Strand(v) => format!("5:{v:?}"),
     }
 }

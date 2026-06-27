@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::query::{
+use bijux_atlas_query::{
     normalized_query_hash_ssot, query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
@@ -84,10 +84,7 @@ fn setup_db() -> Connection {
 fn request_for_gene(gene_id: String) -> GeneQueryRequest {
     GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some(gene_id),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some(gene_id), ..Default::default() },
         limit: 1,
         cursor: None,
         dataset_key: None,
@@ -120,10 +117,7 @@ fn bench_query_cache(c: &mut Criterion) {
         let key = normalized_query_hash_ssot(&req).expect("hash");
         let response = query_genes(&conn, &req, &limits, b"bench-secret").expect("warm query");
         let mut cache: HashMap<String, Vec<u8>> = HashMap::new();
-        cache.insert(
-            key.clone(),
-            serde_json::to_vec(&response).expect("serialize"),
-        );
+        cache.insert(key.clone(), serde_json::to_vec(&response).expect("serialize"));
 
         b.iter(|| {
             let payload = cache.get(black_box(&key)).expect("cache hit");

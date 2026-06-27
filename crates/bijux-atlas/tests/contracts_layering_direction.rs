@@ -30,12 +30,13 @@ fn rust_files_under(root: &Path) -> Vec<PathBuf> {
 }
 
 #[test]
-fn workspace_declares_core_model_runtime_and_dev_crates_explicitly() {
+fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
     let root = workspace_root();
     let cargo = std::fs::read_to_string(root.join("Cargo.toml")).expect("workspace Cargo.toml");
     for member in [
         "crates/bijux-atlas-core",
         "crates/bijux-atlas-model",
+        "crates/bijux-atlas-query",
         "crates/bijux-atlas-api",
         "crates/bijux-atlas",
         "crates/bijux-dev-atlas",
@@ -53,14 +54,9 @@ fn core_crate_stays_runtime_independent_by_dependency_contract() {
     let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-core/Cargo.toml"))
         .expect("core cargo");
 
-    for forbidden in [
-        "bijux-atlas =",
-        "bijux-dev-atlas =",
-        "axum =",
-        "tokio =",
-        "rusqlite =",
-        "reqwest =",
-    ] {
+    for forbidden in
+        ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio =", "rusqlite =", "reqwest ="]
+    {
         assert!(
             !cargo.contains(forbidden),
             "core crate must not depend on runtime/dev surface `{forbidden}`"
@@ -74,14 +70,9 @@ fn model_crate_stays_transport_and_runtime_independent_by_dependency_contract() 
     let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-model/Cargo.toml"))
         .expect("model cargo");
 
-    for forbidden in [
-        "bijux-atlas =",
-        "bijux-dev-atlas =",
-        "axum =",
-        "tokio =",
-        "rusqlite =",
-        "reqwest =",
-    ] {
+    for forbidden in
+        ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio =", "rusqlite =", "reqwest ="]
+    {
         assert!(
             !cargo.contains(forbidden),
             "model crate must not depend on runtime/dev surface `{forbidden}`"
@@ -95,14 +86,9 @@ fn api_crate_stays_transport_and_runtime_independent_by_dependency_contract() {
     let cargo =
         std::fs::read_to_string(root.join("crates/bijux-atlas-api/Cargo.toml")).expect("api cargo");
 
-    for forbidden in [
-        "bijux-atlas =",
-        "bijux-dev-atlas =",
-        "axum =",
-        "tokio =",
-        "rusqlite =",
-        "reqwest =",
-    ] {
+    for forbidden in
+        ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio =", "rusqlite =", "reqwest ="]
+    {
         assert!(
             !cargo.contains(forbidden),
             "api crate must not depend on runtime/dev surface `{forbidden}`"
@@ -111,22 +97,28 @@ fn api_crate_stays_transport_and_runtime_independent_by_dependency_contract() {
 }
 
 #[test]
+fn query_crate_stays_runtime_and_http_independent_by_dependency_contract() {
+    let root = workspace_root();
+    let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-query/Cargo.toml"))
+        .expect("query cargo");
+
+    for forbidden in ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio =", "reqwest ="] {
+        assert!(
+            !cargo.contains(forbidden),
+            "query crate must not depend on runtime/dev surface `{forbidden}`"
+        );
+    }
+}
+
+#[test]
 fn domain_and_policy_layers_do_not_depend_on_adapter_or_runtime_modules() {
     let root = workspace_root().join("crates/bijux-atlas/src/domain");
-    let scoped_roots = [
-        root.join("dataset"),
-        root.join("query"),
-        root.join("policy"),
-    ];
+    let scoped_roots = [root.join("dataset"), root.join("query"), root.join("policy")];
     for scope in scoped_roots {
         for file in rust_files_under(&scope) {
             let text = std::fs::read_to_string(&file)
                 .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
-            for forbidden in [
-                "crate::adapters::",
-                "crate::runtime::",
-                "crate::app::server",
-            ] {
+            for forbidden in ["crate::adapters::", "crate::runtime::", "crate::app::server"] {
                 assert!(
                     !text.contains(forbidden),
                     "domain layer file {} contains forbidden dependency `{forbidden}`",

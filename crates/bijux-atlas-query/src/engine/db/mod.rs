@@ -33,9 +33,8 @@ pub fn build_sql(
                     .last_seqid
                     .clone()
                     .ok_or_else(|| "region cursor missing seqid".to_string())?;
-                let start = c
-                    .last_start
-                    .ok_or_else(|| "region cursor missing start".to_string())?;
+                let start =
+                    c.last_start.ok_or_else(|| "region cursor missing start".to_string())?;
                 where_parts.push(
                     "(g.seqid > ? OR (g.seqid = ? AND g.start > ?) OR (g.seqid = ? AND g.start = ? AND g.gene_id > ?))"
                         .to_string(),
@@ -78,10 +77,8 @@ pub fn build_count_sql(req: &GeneQueryRequest) -> (String, Vec<Value>) {
 
 pub fn query_gene_count(conn: &Connection, req: &GeneQueryRequest) -> Result<i64, String> {
     let (sql, params) = build_count_sql(req);
-    conn.query_row(&sql, params_from_iter(params.iter()), |row| {
-        row.get::<_, i64>(0)
-    })
-    .map_err(|e| e.to_string())
+    conn.query_row(&sql, params_from_iter(params.iter()), |row| row.get::<_, i64>(0))
+        .map_err(|e| e.to_string())
 }
 
 pub fn assert_index_usage(
@@ -91,13 +88,9 @@ pub fn assert_index_usage(
     allow_full_scan: bool,
 ) -> Result<(), String> {
     let explain_sql = format!("EXPLAIN QUERY PLAN {sql}");
-    let mut stmt = conn
-        .prepare_cached(&explain_sql)
-        .map_err(|e| e.to_string())?;
+    let mut stmt = conn.prepare_cached(&explain_sql).map_err(|e| e.to_string())?;
     let lines = stmt
-        .query_map(params_from_iter(params.iter()), |row| {
-            row.get::<_, String>(3)
-        })
+        .query_map(params_from_iter(params.iter()), |row| row.get::<_, String>(3))
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
@@ -131,13 +124,9 @@ pub fn explain_query_plan(
     let (sql, mut params) = build_sql(req, order_mode, cursor)?;
     params.push(Value::Integer((req.limit as i64) + 1));
     let explain_sql = format!("EXPLAIN QUERY PLAN {sql}");
-    let mut stmt = conn
-        .prepare_cached(&explain_sql)
-        .map_err(|e| e.to_string())?;
+    let mut stmt = conn.prepare_cached(&explain_sql).map_err(|e| e.to_string())?;
     let mut lines = stmt
-        .query_map(params_from_iter(params.iter()), |row| {
-            row.get::<_, String>(3)
-        })
+        .query_map(params_from_iter(params.iter()), |row| row.get::<_, String>(3))
         .map_err(|e| e.to_string())?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
@@ -237,10 +226,8 @@ fn append_base_filters(
     }
     if let Some(prefix) = &req.filter.name_prefix {
         where_parts.push("g.name_normalized LIKE ? ESCAPE '!'".to_string());
-        params.push(Value::Text(format!(
-            "{}%",
-            escape_like_prefix(&normalize_name_lookup(prefix))
-        )));
+        params
+            .push(Value::Text(format!("{}%", escape_like_prefix(&normalize_name_lookup(prefix)))));
     }
     if let Some(biotype) = &req.filter.biotype {
         where_parts.push("g.biotype = ?".to_string());

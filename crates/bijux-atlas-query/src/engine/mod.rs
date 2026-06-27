@@ -82,12 +82,9 @@ pub fn query_gene_by_id_fast(
              LIMIT 1",
         )
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
-    let mut rows = stmt
-        .query([gene_id])
-        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
-    let Some(row) = rows
-        .next()
-        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+    let mut rows =
+        stmt.query([gene_id]).map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let Some(row) = rows.next().map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
     else {
         return Ok(None);
     };
@@ -179,9 +176,7 @@ fn reject_impossible_filter_fast(
 }
 
 fn nearest_seqid_suggestion(conn: &Connection, requested: &str) -> Option<String> {
-    let mut stmt = conn
-        .prepare("SELECT value FROM dataset_stats WHERE dimension='seqid'")
-        .ok()?;
+    let mut stmt = conn.prepare("SELECT value FROM dataset_stats WHERE dimension='seqid'").ok()?;
     let rows = stmt
         .query_map([], |row| row.get::<_, String>(0))
         .ok()?
@@ -278,10 +273,7 @@ pub fn query_genes_fanout(
         merged.extend(partial.rows);
     }
     merged.sort_by(|a, b| {
-        a.seqid
-            .cmp(&b.seqid)
-            .then(a.start.cmp(&b.start))
-            .then(a.gene_id.cmp(&b.gene_id))
+        a.seqid.cmp(&b.seqid).then(a.start.cmp(&b.start)).then(a.gene_id.cmp(&b.gene_id))
     });
     merged.dedup_by(|a, b| a.gene_id == b.gene_id);
     let has_more = merged.len() > req.limit;
@@ -329,10 +321,7 @@ pub fn query_genes_fanout(
     } else {
         None
     };
-    Ok(GeneQueryResponse {
-        rows: merged,
-        next_cursor,
-    })
+    Ok(GeneQueryResponse { rows: merged, next_cursor })
 }
 
 pub fn query_transcripts(
@@ -340,10 +329,7 @@ pub fn query_transcripts(
     req: &TranscriptQueryRequest,
 ) -> Result<TranscriptQueryResponse, QueryError> {
     if req.limit == 0 || req.limit > 500 {
-        return Err(QueryError::new(
-            QueryErrorCode::Validation,
-            "limit must be between 1 and 500",
-        ));
+        return Err(QueryError::new(QueryErrorCode::Validation, "limit must be between 1 and 500"));
     }
     let mut sql = String::from(
         "SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary",
@@ -409,11 +395,7 @@ pub fn query_transcripts(
     if has_more {
         rows.truncate(req.limit);
     }
-    let next_cursor = if has_more {
-        rows.last().map(|r| r.transcript_id.clone())
-    } else {
-        None
-    };
+    let next_cursor = if has_more { rows.last().map(|r| r.transcript_id.clone()) } else { None };
     Ok(TranscriptQueryResponse { rows, next_cursor })
 }
 
@@ -424,12 +406,9 @@ pub fn query_transcript_by_id(
     let mut stmt = conn
         .prepare_cached("SELECT transcript_id, parent_gene_id, transcript_type, biotype, seqid, start, end, exon_count, total_exon_span, cds_present FROM transcript_summary WHERE transcript_id=?1 LIMIT 1")
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
-    let mut rows = stmt
-        .query([tx_id])
-        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
-    let Some(row) = rows
-        .next()
-        .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
+    let mut rows =
+        stmt.query([tx_id]).map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
+    let Some(row) = rows.next().map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
     else {
         return Ok(None);
     };
@@ -509,9 +488,7 @@ pub fn explain_transcript_query_plan(
         .prepare_cached(&explain_sql)
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;
     let mut lines = stmt
-        .query_map(params_from_iter(params.iter()), |row| {
-            row.get::<_, String>(3)
-        })
+        .query_map(params_from_iter(params.iter()), |row| row.get::<_, String>(3))
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| QueryError::new(QueryErrorCode::Sql, e.to_string()))?;

@@ -43,15 +43,11 @@ pub(crate) fn with_request_id(mut response: Response, request_id: &str) -> Respo
         .and_then(|v| v.to_str().ok())
         .is_none_or(|v| v.eq_ignore_ascii_case("application/json"));
     if should_set_json
-        && !matches!(
-            response.status(),
-            StatusCode::NO_CONTENT | StatusCode::NOT_MODIFIED
-        )
+        && !matches!(response.status(), StatusCode::NO_CONTENT | StatusCode::NOT_MODIFIED)
     {
-        response.headers_mut().insert(
-            "content-type",
-            HeaderValue::from_static("application/json; charset=utf-8"),
-        );
+        response
+            .headers_mut()
+            .insert("content-type", HeaderValue::from_static("application/json; charset=utf-8"));
     }
     response
 }
@@ -61,10 +57,9 @@ pub(crate) fn with_query_class(mut response: Response, class: QueryClass) -> Res
         QueryClass::Cheap => "cheap",
         QueryClass::Medium => "medium",
         QueryClass::Heavy => "heavy",
+        _ => "heavy",
     };
-    response
-        .headers_mut()
-        .insert("x-atlas-query-class", HeaderValue::from_static(value));
+    response.headers_mut().insert("x-atlas-query-class", HeaderValue::from_static(value));
     response
 }
 

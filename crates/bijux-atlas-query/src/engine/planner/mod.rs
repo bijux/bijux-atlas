@@ -5,7 +5,7 @@ use super::filters::{GeneQueryRequest, StrandMode};
 use super::limits::QueryLimits;
 use super::normalize::normalized_ast_format;
 use super::parser::{GeneQueryAst, Predicate, SortKey};
-use crate::domain::dataset::ShardCatalog;
+use bijux_atlas_model::ShardCatalog;
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -89,11 +89,7 @@ pub fn classify_query(req: &GeneQueryRequest) -> QueryClass {
 
 #[must_use]
 pub fn classify_ast(ast: &GeneQueryAst) -> QueryClass {
-    if ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::GeneId(_)))
-    {
+    if ast.predicates.iter().any(|p| matches!(p, Predicate::GeneId(_))) {
         QueryClass::Cheap
     } else if ast
         .predicates
@@ -134,10 +130,7 @@ pub fn plan_query(ast: &GeneQueryAst, limits: &QueryLimits) -> Result<QueryPlan,
 
     let class = classify_ast(ast);
     let cost = estimate_ast_cost(ast);
-    if !ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::GeneId(_)))
+    if !ast.predicates.iter().any(|p| matches!(p, Predicate::GeneId(_)))
         && cost.work_units > limits.max_work_units
     {
         return Err(PlanError::Validation(format!(
@@ -146,39 +139,20 @@ pub fn plan_query(ast: &GeneQueryAst, limits: &QueryLimits) -> Result<QueryPlan,
         )));
     }
 
-    let node = if ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::GeneId(_)))
-    {
+    let node = if ast.predicates.iter().any(|p| matches!(p, Predicate::GeneId(_))) {
         PlanNode::PointLookup
-    } else if ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::NamePrefix(_)))
-    {
+    } else if ast.predicates.iter().any(|p| matches!(p, Predicate::NamePrefix(_))) {
         PlanNode::PrefixSearch
-    } else if ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::Region { .. }))
-    {
+    } else if ast.predicates.iter().any(|p| matches!(p, Predicate::Region { .. })) {
         PlanNode::RegionScan
-    } else if ast
-        .predicates
-        .iter()
-        .any(|p| matches!(p, Predicate::NameEquals(_)))
-    {
+    } else if ast.predicates.iter().any(|p| matches!(p, Predicate::NameEquals(_))) {
         PlanNode::NameLookup
     } else {
         PlanNode::FilteredScan
     };
 
-    let budget_hooks = vec![
-        BudgetHook::MaxWorkUnits,
-        BudgetHook::MaxRegionSpan,
-        BudgetHook::MaxPrefixCostUnits,
-    ];
+    let budget_hooks =
+        vec![BudgetHook::MaxWorkUnits, BudgetHook::MaxRegionSpan, BudgetHook::MaxPrefixCostUnits];
 
     Ok(QueryPlan {
         node,
@@ -202,11 +176,8 @@ pub fn estimate_query_cost(req: &GeneQueryRequest) -> QueryCost {
         QueryClass::Medium => 200_u64,
         QueryClass::Heavy => 1200_u64,
     };
-    let region_cost = req
-        .filter
-        .region
-        .as_ref()
-        .map_or(0_u64, |r| (r.end.saturating_sub(r.start) + 1) / 10_000);
+    let region_cost =
+        req.filter.region.as_ref().map_or(0_u64, |r| (r.end.saturating_sub(r.start) + 1) / 10_000);
     QueryCost::new(base + (req.limit as u64) + region_cost)
 }
 
@@ -217,16 +188,10 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
 
     if let Some(prefix) = &req.filter.name_prefix {
         if prefix.len() < limits.min_prefix_len {
-            return Err(format!(
-                "name_prefix length must be >= {}",
-                limits.min_prefix_len
-            ));
+            return Err(format!("name_prefix length must be >= {}", limits.min_prefix_len));
         }
         if prefix.len() > limits.max_prefix_len {
-            return Err(format!(
-                "name_prefix length exceeds {}",
-                limits.max_prefix_len
-            ));
+            return Err(format!("name_prefix length exceeds {}", limits.max_prefix_len));
         }
         let prefix_cost = estimate_prefix_match_cost(req);
         if prefix_cost > limits.max_prefix_cost_units {
@@ -249,7 +214,7 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
 
     if req.filter.strand != StrandMode::Any {
         return Err(
-            "strand-aware filtering is not available for current dataset schema".to_string(),
+            "strand-aware filtering is not available for current dataset schema".to_string()
         );
     }
 
@@ -260,7 +225,7 @@ pub fn validate_request(req: &GeneQueryRequest, limits: &QueryLimits) -> Result<
         || req.filter.region.is_some();
     if !has_any_filter && !req.allow_full_scan {
         return Err(
-            "full table scan is forbidden without explicit allow_full_scan=true".to_string(),
+            "full table scan is forbidden without explicit allow_full_scan=true".to_string()
         );
     }
 

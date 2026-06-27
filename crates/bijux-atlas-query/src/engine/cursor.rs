@@ -34,10 +34,7 @@ pub struct CursorError {
 impl CursorError {
     #[must_use]
     pub fn new(code: CursorErrorCode, message: impl Into<String>) -> Self {
-        Self {
-            code,
-            message: message.into(),
-        }
+        Self { code, message: message.into() }
     }
 }
 
@@ -91,10 +88,7 @@ pub fn encode_cursor(payload: &CursorPayload, secret: &[u8]) -> Result<String, C
     mac.update(payload_part.as_bytes());
     let sig = mac.finalize().into_bytes();
     let sig_part = URL_SAFE_NO_PAD.encode(sig);
-    Ok(format!(
-        "{}.{}.{}",
-        CURSOR_VERSION_V1, payload_part, sig_part
-    ))
+    Ok(format!("{}.{}.{}", CURSOR_VERSION_V1, payload_part, sig_part))
 }
 
 pub fn decode_cursor(
@@ -105,10 +99,7 @@ pub fn decode_cursor(
     expected_dataset: Option<&str>,
 ) -> Result<CursorPayload, CursorError> {
     if token.len() > MAX_CURSOR_TOKEN_LEN {
-        return Err(CursorError::new(
-            CursorErrorCode::InvalidFormat,
-            "cursor exceeds max length",
-        ));
+        return Err(CursorError::new(CursorErrorCode::InvalidFormat, "cursor exceeds max length"));
     }
     let (payload_part, sig_part) = parse_cursor_parts(token)?;
     if payload_part.len() > MAX_CURSOR_PAYLOAD_PART_LEN || sig_part.len() > MAX_CURSOR_SIG_PART_LEN
@@ -126,10 +117,7 @@ pub fn decode_cursor(
         .decode(sig_part)
         .map_err(|e| CursorError::new(CursorErrorCode::InvalidFormat, e.to_string()))?;
     mac.verify_slice(&expected).map_err(|_| {
-        CursorError::new(
-            CursorErrorCode::InvalidSignature,
-            "cursor signature mismatch",
-        )
+        CursorError::new(CursorErrorCode::InvalidSignature, "cursor signature mismatch")
     })?;
 
     let payload_bytes = URL_SAFE_NO_PAD
@@ -168,10 +156,9 @@ pub fn decode_cursor(
             CursorErrorCode::OrderMismatch,
             "cursor order mismatch for gene_id query",
         )),
-        _ if payload.depth > MAX_CURSOR_DEPTH => Err(CursorError::new(
-            CursorErrorCode::InvalidPayload,
-            "cursor depth exceeds max",
-        )),
+        _ if payload.depth > MAX_CURSOR_DEPTH => {
+            Err(CursorError::new(CursorErrorCode::InvalidPayload, "cursor depth exceeds max"))
+        }
         _ => Ok(payload),
     }
 }
@@ -187,10 +174,7 @@ fn parse_cursor_parts(token: &str) -> Result<(&str, &str), CursorError> {
         )),
         // Legacy unversioned format kept for backward-compatible decoding.
         [payload, sig] => Ok((payload, sig)),
-        _ => Err(CursorError::new(
-            CursorErrorCode::InvalidFormat,
-            "invalid cursor format",
-        )),
+        _ => Err(CursorError::new(CursorErrorCode::InvalidFormat, "invalid cursor format")),
     }
 }
 

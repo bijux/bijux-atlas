@@ -233,6 +233,7 @@ dependencies = [
  "bijux-atlas-api",
  "bijux-atlas-core",
  "bijux-atlas-model",
+ "bijux-atlas-query",
  "bijux-cli",
  "brotli",
  "clap",
@@ -296,6 +297,24 @@ dependencies = [
  "bijux-atlas-core",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "bijux-atlas-query"
+version = "0.2.1"
+dependencies = [
+ "base64",
+ "bijux-atlas-core",
+ "bijux-atlas-model",
+ "criterion",
+ "hmac",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "tempfile",
+ "toml",
+ "unicode-normalization",
 ]
 
 [[package]]

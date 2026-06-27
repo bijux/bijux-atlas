@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::query::{
+use bijux_atlas_query::{
     normalized_query_hash_ssot, parse_gene_query_request, plan_gene_query, query_genes, GeneFields,
     GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
@@ -46,11 +46,7 @@ fn setup_db() -> Connection {
         let seqid = if i % 2 == 0 { "chr1" } else { "chr2" };
         let start = i * 25;
         let end = start + 100;
-        let biotype = if i % 5 == 0 {
-            "lncRNA"
-        } else {
-            "protein_coding"
-        };
+        let biotype = if i % 5 == 0 { "lncRNA" } else { "protein_coding" };
         let name = format!("GENE{i}");
         conn.execute(
             "INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length)
@@ -92,11 +88,7 @@ fn sample_request() -> GeneQueryRequest {
         filter: GeneFilter {
             name_prefix: Some("GENE".to_string()),
             biotype: Some("protein_coding".to_string()),
-            region: Some(RegionFilter {
-                seqid: "chr1".to_string(),
-                start: 1,
-                end: 100_000,
-            }),
+            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 100_000 }),
             ..Default::default()
         },
         limit: 100,
@@ -121,10 +113,7 @@ fn bench_query_planner_and_serialization(c: &mut Criterion) {
     });
 
     c.bench_function("query_cursor_generation", |b| {
-        let request = GeneQueryRequest {
-            limit: 25,
-            ..req.clone()
-        };
+        let request = GeneQueryRequest { limit: 25, ..req.clone() };
         b.iter(|| {
             let response = query_genes(
                 black_box(&conn),
@@ -139,13 +128,9 @@ fn bench_query_planner_and_serialization(c: &mut Criterion) {
 
     c.bench_function("query_response_serialization", |b| {
         b.iter(|| {
-            let response = query_genes(
-                black_box(&conn),
-                black_box(&req),
-                black_box(&limits),
-                b"bench-secret",
-            )
-            .expect("execute");
+            let response =
+                query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench-secret")
+                    .expect("execute");
             let json = serde_json::to_vec(&response).expect("serialize");
             black_box(json);
         })

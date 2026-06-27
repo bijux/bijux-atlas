@@ -36,6 +36,7 @@ serde.workspace = true
 bijux-atlas-api = { workspace = true }
 bijux-atlas-core = { workspace = true }
 bijux-atlas-model = { workspace = true }
+bijux-atlas-query = { workspace = true }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 csv = "1.4"
@@ -346,36 +347,6 @@ harness = false
 [[bench]]
 name = "policy_validate"
 path = "benches/policy/validate.rs"
-harness = false
-
-[[bench]]
-name = "query_cache"
-path = "benches/query/cache.rs"
-harness = false
-
-[[bench]]
-name = "query_concurrency"
-path = "benches/query/concurrency.rs"
-harness = false
-
-[[bench]]
-name = "query_patterns"
-path = "benches/query/patterns.rs"
-harness = false
-
-[[bench]]
-name = "query_planner_and_serialization"
-path = "benches/query/planner_and_serialization.rs"
-harness = false
-
-[[bench]]
-name = "query_routing_and_index"
-path = "benches/query/routing_and_index.rs"
-harness = false
-
-[[bench]]
-name = "query_stages"
-path = "benches/query/stages.rs"
 harness = false
 
 [[bench]]

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::query::{
+use bijux_atlas_query::{
     query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits, RegionFilter,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
@@ -47,11 +47,7 @@ fn setup_db_file() -> tempfile::NamedTempFile {
     for i in 1..=10_000_i64 {
         let name = format!("GENE{i}");
         let seqid = if i % 2 == 0 { "chr1" } else { "chr2" };
-        let biotype = if i % 5 == 0 {
-            "lncRNA"
-        } else {
-            "protein_coding"
-        };
+        let biotype = if i % 5 == 0 { "lncRNA" } else { "protein_coding" };
         let start = i * 10;
         let end = start + 20;
         conn.execute(

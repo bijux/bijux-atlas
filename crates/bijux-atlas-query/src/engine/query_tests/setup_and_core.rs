@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::query::*;
+use crate::*;
 use rusqlite::Connection;
 
 use super::super::planner::validate_request;
@@ -64,28 +64,8 @@ pub(super) fn setup_db() -> Connection {
         (3, "gene3", "TP53", "lncRNA", "chr2", 5, 25, 1, 21),
         (4, "gene4", "TNF", "lncRNA", "chr2", 30, 45, 1, 16),
         (5, "gene5", "BRCA_ABC", "unknown", "chr2", 50, 60, 1, 11),
-        (
-            6,
-            "gene6",
-            "DUPNAME",
-            "protein_coding",
-            "chr1",
-            95,
-            105,
-            1,
-            11,
-        ),
-        (
-            7,
-            "gene7",
-            "DUPNAME",
-            "protein_coding",
-            "chr1",
-            95,
-            105,
-            1,
-            11,
-        ),
+        (6, "gene6", "DUPNAME", "protein_coding", "chr1", 95, 105, 1, 11),
+        (7, "gene7", "DUPNAME", "protein_coding", "chr1", 95, 105, 1, 11),
     ];
     for r in rows {
         conn.execute(
@@ -112,33 +92,9 @@ pub(super) fn setup_db() -> Connection {
         .expect("insert rtree");
     }
     let tx_rows = vec![
-        (
-            "tx1",
-            "gene1",
-            "transcript",
-            Some("protein_coding"),
-            "chr1",
-            10,
-            20,
-        ),
-        (
-            "tx2",
-            "gene1",
-            "mRNA",
-            Some("protein_coding"),
-            "chr1",
-            21,
-            40,
-        ),
-        (
-            "tx3",
-            "gene2",
-            "transcript",
-            Some("protein_coding"),
-            "chr1",
-            50,
-            90,
-        ),
+        ("tx1", "gene1", "transcript", Some("protein_coding"), "chr1", 10, 20),
+        ("tx2", "gene1", "mRNA", Some("protein_coding"), "chr1", 21, 40),
+        ("tx3", "gene2", "transcript", Some("protein_coding"), "chr1", 50, 90),
     ];
     for (id, parent, kind, biotype, seqid, start, end) in tx_rows {
         conn.execute(
@@ -221,14 +177,9 @@ fn transcript_query_uses_indexes_and_paginates() {
     assert!(joined.contains("idx_transcript_summary_parent_gene_id"));
     let page1 = query_transcripts(&conn, &req).expect("page1");
     assert_eq!(page1.rows.len(), 1);
-    let page2 = query_transcripts(
-        &conn,
-        &TranscriptQueryRequest {
-            cursor: page1.next_cursor,
-            ..req
-        },
-    )
-    .expect("page2");
+    let page2 =
+        query_transcripts(&conn, &TranscriptQueryRequest { cursor: page1.next_cursor, ..req })
+            .expect("page2");
     assert_eq!(page2.rows.len(), 1);
 }
 
@@ -254,10 +205,7 @@ fn explain_plan_snapshots_by_query_class() {
 
     let cheap = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some("gene1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -265,10 +213,7 @@ fn explain_plan_snapshots_by_query_class() {
     };
     let medium = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            biotype: Some("protein_coding".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -277,11 +222,7 @@ fn explain_plan_snapshots_by_query_class() {
     let heavy = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter {
-                seqid: "chr1".to_string(),
-                start: 1,
-                end: 1_000,
-            }),
+            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 1_000 }),
             ..Default::default()
         },
         limit: 10,
@@ -322,10 +263,7 @@ fn explain_plan_snapshots_by_query_class() {
 fn frozen_query_model_is_deterministic_and_intent_explicit() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some("gene1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: Some("110/homo_sapiens/GRCh38".to_string()),
@@ -345,11 +283,7 @@ fn explicit_sort_mode_drives_order_mode_deterministically() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter {
-                seqid: "chr1".to_string(),
-                start: 1,
-                end: 100,
-            }),
+            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 100 }),
             sort: QuerySort::GeneIdAsc,
             ..Default::default()
         },
@@ -368,10 +302,7 @@ fn legacy_v2_schema_remains_queryable() {
     let conn = setup_legacy_v2_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some("gene1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -414,10 +345,7 @@ fn missing_index_produces_diagnostic_error() {
 
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            biotype: Some("pc".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { biotype: Some("pc".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -434,22 +362,14 @@ fn tie_break_ordering_is_stable_for_same_coordinates() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            name: Some("DUPNAME".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { name: Some("DUPNAME".to_string()), ..Default::default() },
         limit: 20,
         cursor: None,
         dataset_key: None,
         allow_full_scan: false,
     };
-    let rows = query_genes(&conn, &req, &limits(), b"s")
-        .expect("rows")
-        .rows;
-    assert_eq!(
-        rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>(),
-        vec!["gene6", "gene7"]
-    );
+    let rows = query_genes(&conn, &req, &limits(), b"s").expect("rows").rows;
+    assert_eq!(rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>(), vec!["gene6", "gene7"]);
 }
 
 #[test]
@@ -457,10 +377,7 @@ fn collation_normalized_name_lookup_is_case_insensitive() {
     let conn = setup_db();
     let upper = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            name: Some("BRCA1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { name: Some("BRCA1".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -468,29 +385,14 @@ fn collation_normalized_name_lookup_is_case_insensitive() {
     };
     let lower = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            name: Some("brca1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { name: Some("brca1".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
         allow_full_scan: false,
     };
-    assert_eq!(
-        query_genes(&conn, &upper, &limits(), b"s")
-            .expect("upper")
-            .rows
-            .len(),
-        1
-    );
-    assert_eq!(
-        query_genes(&conn, &lower, &limits(), b"s")
-            .expect("lower")
-            .rows
-            .len(),
-        1
-    );
+    assert_eq!(query_genes(&conn, &upper, &limits(), b"s").expect("upper").rows.len(), 1);
+    assert_eq!(query_genes(&conn, &lower, &limits(), b"s").expect("lower").rows.len(), 1);
 }
 
 #[test]
@@ -505,10 +407,7 @@ fn projection_specific_query_uses_covering_name_index() {
             transcript_count: false,
             sequence_length: false,
         },
-        filter: GeneFilter {
-            name_prefix: Some("BR".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { name_prefix: Some("BR".to_string()), ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -523,30 +422,21 @@ fn projection_specific_query_uses_covering_name_index() {
             || plan.contains("idx_gene_summary_gene_id"),
         "projection query must use an indexed path for projection query: {plan}"
     );
-    assert!(
-        !plan.contains("scan gene_summary"),
-        "projection query must not table-scan: {plan}"
-    );
+    assert!(!plan.contains("scan gene_summary"), "projection query must not table-scan: {plan}");
 }
 
 #[test]
 fn point_lookup_gene_id_is_always_cheap_and_budget_allowed() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some("gene1".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
         limit: 1,
         cursor: None,
         dataset_key: None,
         allow_full_scan: false,
     };
     assert_eq!(classify_query(&req), QueryClass::Cheap);
-    let tight = QueryLimits {
-        max_work_units: 1,
-        ..limits()
-    };
+    let tight = QueryLimits { max_work_units: 1, ..limits() };
     validate_request(&req, &tight).expect("exact gene_id lookup remains allowed");
 }
 
@@ -555,20 +445,14 @@ fn gene_id_lookup_is_parameterized_and_resists_injection_payloads() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            gene_id: Some("gene1' OR 1=1 --".to_string()),
-            ..Default::default()
-        },
+        filter: GeneFilter { gene_id: Some("gene1' OR 1=1 --".to_string()), ..Default::default() },
         limit: 50,
         cursor: None,
         dataset_key: None,
         allow_full_scan: false,
     };
     let resp = query_genes(&conn, &req, &limits(), b"s").expect("query executes");
-    assert!(
-        resp.rows.is_empty(),
-        "injection payload must not alter predicate semantics"
-    );
+    assert!(resp.rows.is_empty(), "injection payload must not alter predicate semantics");
 }
 
 #[test]
@@ -577,11 +461,7 @@ fn region_estimated_rows_budget_rejects_large_scans() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter {
-                seqid: "chr1".to_string(),
-                start: 1,
-                end: 1_000_000,
-            }),
+            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 1_000_000 }),
             ..Default::default()
         },
         limit: 100,
@@ -589,10 +469,7 @@ fn region_estimated_rows_budget_rejects_large_scans() {
         dataset_key: None,
         allow_full_scan: false,
     };
-    let strict = QueryLimits {
-        max_region_estimated_rows: 0,
-        ..limits()
-    };
+    let strict = QueryLimits { max_region_estimated_rows: 0, ..limits() };
     let err = query_genes(&conn, &req, &strict, b"s").expect_err("must reject");
     assert_eq!(err.code, QueryErrorCode::Validation);
     assert!(err.message.contains("estimated region rows"));
@@ -603,10 +480,7 @@ fn strand_filter_is_explicitly_rejected_until_schema_support_exists() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter {
-            strand: StrandMode::Plus,
-            ..Default::default()
-        },
+        filter: GeneFilter { strand: StrandMode::Plus, ..Default::default() },
         limit: 10,
         cursor: None,
         dataset_key: None,
