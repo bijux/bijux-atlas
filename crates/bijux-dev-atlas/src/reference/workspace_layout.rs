@@ -6,6 +6,14 @@ fn atlas_src_root(repo_root: &Path) -> PathBuf {
     repo_root.join("crates/bijux-atlas/src")
 }
 
+fn atlas_cli_crate_root(repo_root: &Path) -> PathBuf {
+    repo_root.join("crates/bijux-atlas-cli")
+}
+
+fn atlas_server_crate_root(repo_root: &Path) -> PathBuf {
+    repo_root.join("crates/bijux-atlas-server")
+}
+
 fn dev_atlas_src_root(repo_root: &Path) -> PathBuf {
     repo_root.join("crates/bijux-dev-atlas/src")
 }
@@ -33,6 +41,16 @@ pub fn atlas_http_response_contract_source(repo_root: &Path) -> PathBuf {
 #[must_use]
 pub fn atlas_runtime_config_tests_source(repo_root: &Path) -> PathBuf {
     atlas_src_root(repo_root).join("runtime/config/tests.rs")
+}
+
+#[must_use]
+pub fn atlas_cli_binary_source(repo_root: &Path) -> PathBuf {
+    atlas_cli_crate_root(repo_root).join("src/bin/bijux-atlas.rs")
+}
+
+#[must_use]
+pub fn atlas_server_binary_source(repo_root: &Path) -> PathBuf {
+    atlas_server_crate_root(repo_root).join("src/bin/bijux-atlas-server.rs")
 }
 
 #[must_use]
@@ -75,6 +93,8 @@ mod tests {
             atlas_http_handlers_utilities_source(&root),
             atlas_http_response_contract_source(&root),
             atlas_runtime_config_tests_source(&root),
+            atlas_cli_binary_source(&root),
+            atlas_server_binary_source(&root),
             dev_atlas_cli_dispatch_source(&root),
             dev_atlas_cli_mod_source(&root),
         ] {

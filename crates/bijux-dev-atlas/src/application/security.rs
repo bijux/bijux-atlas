@@ -1537,7 +1537,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
     }
     let sec_auth_002 = !policy_rows.is_empty() && auth_policy_unknowns.is_empty();
     let main_source =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"))
+        fs::read_to_string(crate::reference::workspace_layout::atlas_server_binary_source(&root))
             .map_err(|err| format!("failed to read runtime main source: {err}"))?;
     let server_host_source =
         fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/host.rs"))

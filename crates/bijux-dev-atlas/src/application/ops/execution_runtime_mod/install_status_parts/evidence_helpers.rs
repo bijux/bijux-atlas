@@ -617,9 +617,10 @@ pub(super) fn observability_contract_checks(
         && response_contract.contains("ApiErrorCode::RateLimited")
         && openapi.contains("\"ApiErrorCode\"");
 
-    let main_rs =
-        std::fs::read_to_string(repo_root.join("crates/bijux-atlas/src/bin/bijux-atlas-server.rs"))
-        .map_err(|err| format!("failed to read main.rs: {err}"))?;
+    let main_rs = std::fs::read_to_string(
+        crate::reference::workspace_layout::atlas_server_binary_source(repo_root),
+    )
+    .map_err(|err| format!("failed to read main.rs: {err}"))?;
     let startup_log_fields_present = main_rs.contains("event_id = \"startup\"")
         && main_rs.contains("release_id = %release_id")
         && main_rs.contains("governance_version = %governance_version");
