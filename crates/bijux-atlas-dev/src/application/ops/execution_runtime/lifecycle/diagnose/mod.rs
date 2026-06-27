@@ -7,6 +7,7 @@ use bijux_atlas_ops::diagnostics::bundle_contracts::{
     build_diagnose_bundle, collect_scenario_files, write_diagnose_bundle,
 };
 use bijux_atlas_ops::diagnostics::bundle_payload::diagnose_bundle_payload;
+use bijux_atlas_ops::diagnostics::explain_payload::diagnose_explain_payload;
 
 pub(crate) fn run_ops_diagnose_bundle(
     args: &crate::cli::OpsDiagnoseBundleArgs,
@@ -53,18 +54,22 @@ pub(crate) fn run_ops_diagnose_explain(
         .and_then(|v| v.as_array())
         .map(|v| v.len())
         .unwrap_or(0);
-    let payload = serde_json::json!({
-      "schema_version": 1,
-      "text": "ops diagnose explain",
-      "rows": [{
-        "bundle": bundle_path.strip_prefix(&repo_root).unwrap_or(&bundle_path).display().to_string(),
-        "kind": parsed.get("kind").and_then(|v| v.as_str()).unwrap_or("unknown"),
-        "run_id": parsed.get("run_id").and_then(|v| v.as_str()).unwrap_or("unknown"),
-        "file_count": file_count,
-        "summary": if file_count == 0 { "no evidence files discovered" } else { "bundle contains evidence files" }
-      }],
-      "summary": {"total": 1, "errors": 0, "warnings": 0}
-    });
+    let payload = diagnose_explain_payload(
+        &bundle_path
+            .strip_prefix(&repo_root)
+            .unwrap_or(&bundle_path)
+            .display()
+            .to_string(),
+        parsed
+            .get("kind")
+            .and_then(|value| value.as_str())
+            .unwrap_or("unknown"),
+        parsed
+            .get("run_id")
+            .and_then(|value| value.as_str())
+            .unwrap_or("unknown"),
+        file_count,
+    );
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
