@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
-#[path = "core_rendering.rs"]
-mod core_rendering;
-use core_rendering::{
+use super::core_rendering::{
     render_helm_configmap_env_report, render_helm_env_surface, run_profile_validation_pipeline,
     validate_helm_profile_matrix, validate_profile_mode, ProfileValidationMode,
 };
+use super::*;
 
 pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String, i32), String> {
     let _ = debug;

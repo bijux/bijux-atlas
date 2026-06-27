@@ -26,11 +26,9 @@ use crate::ops_support::{
 use crate::*;
 use std::io::{self, Write};
 
-#[path = "runtime_mod/core_handler.rs"]
 mod core_handler;
-#[path = "runtime_mod/execution_handler.rs"]
+mod core_rendering;
 mod execution_handler;
-#[path = "runtime_mod/profile_handler.rs"]
 mod profile_handler;
 
 fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
