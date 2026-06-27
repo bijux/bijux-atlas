@@ -293,11 +293,6 @@ harness = false
 required-features = ["bench-ingest-throughput"]
 
 [[bench]]
-name = "api_openapi_generation"
-path = "benches/api/openapi_generation.rs"
-harness = false
-
-[[bench]]
 name = "policy_evaluation"
 path = "benches/policy/evaluation.rs"
 harness = false

@@ -50,3 +50,25 @@ fn benches_directory_exists_as_benchmark_owner() {
         "runtime benches must use durable ownership buckets, not benches/domain"
     );
 }
+
+#[test]
+fn cargo_manifest_bench_paths_match_runtime_bench_tree() {
+    let manifest_path = crate_root().join("Cargo.toml");
+    let manifest_text = std::fs::read_to_string(&manifest_path)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", manifest_path.display()));
+    let manifest: toml::Value = toml::from_str(&manifest_text)
+        .unwrap_or_else(|err| panic!("failed to parse {}: {err}", manifest_path.display()));
+    let benches = manifest.get("bench").and_then(toml::Value::as_array).expect("bench array");
+
+    for bench in benches {
+        let path = bench.get("path").and_then(toml::Value::as_str).expect("bench path");
+        assert!(
+            !path.starts_with("benches/api/"),
+            "runtime manifest must not claim api-owned benches: {path}"
+        );
+        assert!(
+            crate_root().join(path).is_file(),
+            "declared runtime bench path must exist: {path}"
+        );
+    }
+}
