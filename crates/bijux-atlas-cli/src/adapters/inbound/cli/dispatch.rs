@@ -7,6 +7,7 @@ use super::command_execution::{
 use super::command_execution::{print_completion, print_config, print_version};
 use super::ingest_inputs::verify_ingest_inputs;
 use super::operations;
+use super::policy;
 use super::*;
 
 pub(super) fn run_atlas_command(
@@ -187,9 +188,9 @@ pub(super) fn run_atlas_command(
         },
         AtlasCommand::Policy { command } => match command {
             PolicyCommand::Validate => {
-                operations::validate_policy(output_mode).map_err(CliError::from_action_error)
+                policy::validate_policy(output_mode).map_err(CliError::from_action_error)
             }
-            PolicyCommand::Explain { mode } => operations::explain_policy(
+            PolicyCommand::Explain { mode } => policy::explain_policy(
                 mode.map(|m| match m {
                     PolicyModeCli::Strict => {
                         bijux_atlas_runtime::domain::policy::PolicyMode::Strict

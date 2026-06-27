@@ -8,6 +8,7 @@ mod dispatch;
 mod ingest_inputs;
 mod operations;
 pub(crate) mod output;
+mod policy;
 
 use bijux_atlas_ingest::{
     diff_normalized_ids, replay_normalized_counts, IngestOptions, TimestampPolicy,
