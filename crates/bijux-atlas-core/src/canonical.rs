@@ -2,6 +2,11 @@
 
 use sha2::{Digest, Sha256};
 
+#[cfg(feature = "serde")]
+use serde::Serialize;
+#[cfg(feature = "serde")]
+use serde_json::{Map, Value};
+
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Hash256([u8; 32]);
 
@@ -68,4 +73,46 @@ pub fn sha256_hex(bytes: &[u8]) -> String {
 #[must_use]
 pub fn sha256(bytes: &[u8]) -> Hash256 {
     stable_hash_bytes(bytes)
+}
+
+#[cfg(feature = "serde")]
+pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>, serde_json::Error> {
+    serde_json::to_vec(&normalize_json_value(serde_json::to_value(value)?))
+}
+
+#[cfg(feature = "serde")]
+#[must_use]
+pub fn stable_json_hash_hex<T: Serialize>(value: &T) -> Result<String, serde_json::Error> {
+    Ok(sha256_hex(&stable_json_bytes(value)?))
+}
+
+#[cfg(feature = "serde")]
+fn normalize_json_value(value: Value) -> Value {
+    match value {
+        Value::Number(n) => Value::Number(normalize_json_number(n)),
+        Value::Object(map) => {
+            let mut sorted = Map::new();
+            let mut entries: Vec<(String, Value)> = map
+                .into_iter()
+                .map(|(k, v)| (k, normalize_json_value(v)))
+                .collect();
+            entries.sort_by(|a, b| a.0.cmp(&b.0));
+            for (k, v) in entries {
+                sorted.insert(k, v);
+            }
+            Value::Object(sorted)
+        }
+        Value::Array(items) => Value::Array(items.into_iter().map(normalize_json_value).collect()),
+        other => other,
+    }
+}
+
+#[cfg(feature = "serde")]
+fn normalize_json_number(number: serde_json::Number) -> serde_json::Number {
+    if let Some(value) = number.as_f64() {
+        if value == 0.0 {
+            return serde_json::Number::from(0);
+        }
+    }
+    number
 }

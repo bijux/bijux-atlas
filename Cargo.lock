@@ -231,6 +231,7 @@ dependencies = [
  "axum",
  "base64",
  "bijux-atlas-core",
+ "bijux-atlas-model",
  "bijux-cli",
  "brotli",
  "clap",
@@ -272,7 +273,18 @@ dependencies = [
 name = "bijux-atlas-core"
 version = "0.2.1"
 dependencies = [
+ "serde",
+ "serde_json",
  "sha2 0.11.0",
+]
+
+[[package]]
+name = "bijux-atlas-model"
+version = "0.2.1"
+dependencies = [
+ "bijux-atlas-core",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

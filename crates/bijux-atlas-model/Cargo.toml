@@ -1,0 +1,22 @@
+[package]
+name = "bijux-atlas-model"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Persisted Atlas model types, serde contracts, and stable boundary values"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-model/latest/bijux_atlas_model/"
+readme = "README.md"
+categories = ["data-structures", "science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
+keywords = ["bioinformatics", "genomics", "model", "contracts", "serde"]
+
+[dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+serde.workspace = true
+serde_json.workspace = true
+
+[lib]
+path = "src/lib.rs"
