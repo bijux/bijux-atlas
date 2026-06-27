@@ -2,5 +2,6 @@
 
 pub mod path_contracts;
 pub mod pins_manifest;
+pub mod pins_policy;
 pub mod toolchain;
 pub mod tools_manifest;

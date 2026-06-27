@@ -2,7 +2,6 @@
 
 use crate::*;
 
-pub(crate) use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 pub(crate) use bijux_atlas_ops::inventory::toolchain::{ToolDefinition, ToolchainInventory};
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
 pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
