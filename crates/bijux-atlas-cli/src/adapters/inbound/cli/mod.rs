@@ -3,6 +3,7 @@
 mod actions;
 mod args;
 mod canonical_json;
+mod command_execution;
 mod commands;
 mod dispatch;
 mod ingest_inputs;
@@ -19,10 +20,8 @@ use bijux_atlas_query::{
     GeneFilter, GeneNamePolicy, GeneQueryRequest, RegionFilter, SeqidNormalizationPolicy,
     TranscriptTypePolicy,
 };
-use bijux_atlas_runtime::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
-use bijux_atlas_runtime::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
-use clap::{error::ErrorKind, CommandFactory, Parser};
-use clap_complete::{generate, Generator};
+use bijux_atlas_runtime::contracts::errors::{ExitCode, MachineError};
+use clap::{error::ErrorKind, Parser};
 use commands::{
     CatalogCommand, DatasetCommand, DiffCommand, ExportCommand, GcCommand, InspectCommand,
     QueryCommand,
@@ -204,14 +203,14 @@ fn run() -> Result<(), CliError> {
     };
     let output_mode = OutputMode { json: cli.json };
     if cli.bijux_plugin_metadata {
-        actions::emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
+        command_execution::emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
     if let Some(umbrella_version) = cli.umbrella_version.as_deref() {
-        actions::enforce_umbrella_compatibility(umbrella_version)?;
+        command_execution::enforce_umbrella_compatibility(umbrella_version)?;
     }
     if cli.print_config_paths {
-        actions::emit_config_paths(output_mode.json).map_err(CliError::internal)?;
+        command_execution::emit_config_paths(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
 

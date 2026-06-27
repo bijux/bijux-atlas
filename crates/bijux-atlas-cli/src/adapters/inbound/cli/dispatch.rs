@@ -2,9 +2,9 @@
 
 use super::actions::{
     explain_query, explain_query_from_query_text, export_query_rows, inspect_dataset, inspect_db,
-    inspect_provenance, print_completion, print_config, print_version, run_ingest, run_query,
-    smoke_dataset, ExplainQueryArgs,
+    inspect_provenance, run_ingest, run_query, smoke_dataset, ExplainQueryArgs,
 };
+use super::command_execution::{print_completion, print_config, print_version};
 use super::ingest_inputs::verify_ingest_inputs;
 use super::operations;
 use super::*;
