@@ -8,8 +8,9 @@ use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
 #[cfg(test)]
 #[allow(clippy::items_after_test_module)]
 mod install_status_tests {
-    use super::super::evidence::{contains_common_secret_pattern, redact_sensitive_text};
+    use super::super::evidence::contains_common_secret_pattern;
     use super::super::{install_plan_inventory, install_render_path, load_profile_intent};
+    use bijux_atlas_ops::lifecycle::evidence_artifacts::redact_sensitive_text;
 
     #[test]
     fn install_plan_inventory_summarizes_resources_deterministically() {
