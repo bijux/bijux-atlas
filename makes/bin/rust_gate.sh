@@ -174,7 +174,7 @@ default_fast_test_runner() {
 }
 
 audit_allowlist_path="configs/sources/security/audit-allowlist.toml"
-audit_ignore_args=()
+declare -a audit_ignore_args=()
 if [ -f "${audit_allowlist_path}" ]; then
   while IFS= read -r advisory_id; do
     [ -n "${advisory_id}" ] || continue
@@ -228,7 +228,7 @@ case "${command_name}" in
       CARGO_TARGET_DIR="${rs_target_dir}" cargo deny check bans licenses sources --config configs/rust/deny.toml || deny_status=$?
       echo
       echo "run: cargo audit ${audit_ignore_args[*]:-}"
-      CARGO_TARGET_DIR="${rs_target_dir}" cargo audit "${audit_ignore_args[@]}" || audit_status=$?
+      CARGO_TARGET_DIR="${rs_target_dir}" cargo audit ${audit_ignore_args[@]-} || audit_status=$?
     } 2>&1 | tee "${rs_audit_report}"
     test "${dependency_status}" -eq 0
     test "${deny_status}" -eq 0
