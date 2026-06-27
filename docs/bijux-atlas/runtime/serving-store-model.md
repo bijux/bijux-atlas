@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-27
 ---
 
 # Serving Store Model
@@ -37,10 +37,11 @@ runtime convenience around it.
 
 ## Repository Authority Map
 
-- dataset identity and domain meaning live under [`src/domain/dataset/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/domain/dataset)
-- serving-store paths and object layout are implemented under [`src/adapters/outbound/store/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/outbound/store)
-- manifest file naming is declared in [`src/adapters/outbound/store/paths.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/outbound/store/paths.rs:1)
-- runtime read ports for store-backed serving live in [`src/app/ports/dataset_store.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/app/ports/dataset_store.rs:1)
+- dataset identity and domain meaning live under [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
+- serving-store paths, manifest-lock rules, and backend implementations live under [`crates/bijux-atlas-store/src/`](../../../crates/bijux-atlas-store/src/)
+- manifest file naming is declared in [`crates/bijux-atlas-store/src/paths.rs`](../../../crates/bijux-atlas-store/src/paths.rs)
+- runtime store re-exports and registry-only adapters live under [`crates/bijux-atlas/src/adapters/outbound/store/`](../../../crates/bijux-atlas/src/adapters/outbound/store/)
+- runtime read ports for store-backed serving live in [`crates/bijux-atlas/src/app/ports/dataset_store.rs`](../../../crates/bijux-atlas/src/app/ports/dataset_store.rs)
 - runtime store access is exercised through the server and runtime layers, not through ingest internals
 
 ## Stable Boundary Versus Internals

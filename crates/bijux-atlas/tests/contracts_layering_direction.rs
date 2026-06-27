@@ -38,6 +38,7 @@ fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
         "crates/bijux-atlas-model",
         "crates/bijux-atlas-query",
         "crates/bijux-atlas-api",
+        "crates/bijux-atlas-store",
         "crates/bijux-atlas",
         "crates/bijux-dev-atlas",
     ] {
@@ -92,6 +93,20 @@ fn api_crate_stays_transport_and_runtime_independent_by_dependency_contract() {
         assert!(
             !cargo.contains(forbidden),
             "api crate must not depend on runtime/dev surface `{forbidden}`"
+        );
+    }
+}
+
+#[test]
+fn store_crate_stays_runtime_and_maintainer_independent_by_dependency_contract() {
+    let root = workspace_root();
+    let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-store/Cargo.toml"))
+        .expect("store cargo");
+
+    for forbidden in ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio ="] {
+        assert!(
+            !cargo.contains(forbidden),
+            "store crate must not depend on runtime/dev surface `{forbidden}`"
         );
     }
 }
