@@ -45,14 +45,9 @@ fn runtime_wrapper_modules_stay_reexport_only() {
             "runtime core wrapper must forward to src/compat/core.rs",
         ),
         (
-            "src/model/dataset.rs",
-            "pub use crate::compat::model::dataset::*;",
-            "runtime dataset wrapper must forward to src/compat/model/dataset.rs",
-        ),
-        (
-            "src/model/policy.rs",
-            "pub use crate::compat::model::policy::*;",
-            "runtime policy wrapper must forward to src/compat/model/policy.rs",
+            "src/model.rs",
+            "pub use crate::compat::model::{dataset, policy};",
+            "runtime model wrapper must forward dataset and policy to src/compat/model/",
         ),
         (
             "src/query.rs",
@@ -129,16 +124,13 @@ fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
         "core.rs",
         "domain/ingest.rs",
         "domain/mod.rs",
-        "model/dataset.rs",
-        "model/policy.rs",
+        "model.rs",
         "query.rs",
     ];
     let forbidden = [
         "crate::api::",
         "crate::core::",
         "crate::domain::ingest::",
-        "crate::model::dataset::",
-        "crate::model::policy::",
         "crate::query::",
     ];
 
