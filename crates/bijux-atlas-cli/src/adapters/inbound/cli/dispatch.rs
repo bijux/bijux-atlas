@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::artifact_commands;
 use super::command_execution::{
     explain_query, explain_query_from_query_text, export_query_rows, inspect_dataset, inspect_db,
     inspect_provenance, run_ingest, run_query, smoke_dataset, ExplainQueryArgs,
 };
 use super::command_execution::{print_completion, print_config, print_version};
 use super::ingest_inputs::verify_ingest_inputs;
-use super::operations;
 use super::policy;
 use super::*;
 
@@ -22,8 +22,15 @@ pub(super) fn run_atlas_command(
             species,
             assembly,
             deep,
-        } => operations::validate_dataset(root, &release, &species, &assembly, deep, output_mode)
-            .map_err(CliError::from_action_error),
+        } => artifact_commands::validate_dataset(
+            root,
+            &release,
+            &species,
+            &assembly,
+            deep,
+            output_mode,
+        )
+        .map_err(CliError::from_action_error),
         AtlasCommand::Version => {
             print_version(log_flags.verbose > 0, output_mode).map_err(CliError::from_action_error)
         }
@@ -36,39 +43,54 @@ pub(super) fn run_atlas_command(
         }
         AtlasCommand::Catalog { command } => match command {
             CatalogCommand::Validate { path } => {
-                operations::validate_catalog(path, output_mode).map_err(CliError::from_action_error)
+                artifact_commands::validate_catalog(path, output_mode)
+                    .map_err(CliError::from_action_error)
             }
             CatalogCommand::Publish {
                 store_root,
                 catalog,
                 dry_run,
                 explain,
-            } => operations::publish_catalog(store_root, catalog, dry_run, explain, output_mode)
-                .map_err(CliError::from_action_error),
+            } => artifact_commands::publish_catalog(
+                store_root,
+                catalog,
+                dry_run,
+                explain,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
             CatalogCommand::Rollback {
                 store_root,
                 release,
                 species,
                 assembly,
-            } => {
-                operations::rollback_catalog(store_root, &release, &species, &assembly, output_mode)
-                    .map_err(CliError::from_action_error)
-            }
+            } => artifact_commands::rollback_catalog(
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
             CatalogCommand::Promote {
                 store_root,
                 release,
                 species,
                 assembly,
-            } => {
-                operations::promote_catalog(store_root, &release, &species, &assembly, output_mode)
-                    .map_err(CliError::from_action_error)
-            }
+            } => artifact_commands::promote_catalog(
+                store_root,
+                &release,
+                &species,
+                &assembly,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
             CatalogCommand::LatestAliasUpdate {
                 store_root,
                 release,
                 species,
                 assembly,
-            } => operations::update_latest_alias(
+            } => artifact_commands::update_latest_alias(
                 store_root,
                 &release,
                 &species,
@@ -84,16 +106,21 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 deep,
-            } => {
-                operations::validate_dataset(root, &release, &species, &assembly, deep, output_mode)
-                    .map_err(CliError::from_action_error)
-            }
+            } => artifact_commands::validate_dataset(
+                root,
+                &release,
+                &species,
+                &assembly,
+                deep,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
             DatasetCommand::Validate {
                 root,
                 release,
                 species,
                 assembly,
-            } => operations::validate_dataset(
+            } => artifact_commands::validate_dataset(
                 root,
                 &release,
                 &species,
@@ -110,8 +137,8 @@ pub(super) fn run_atlas_command(
                 assembly,
                 dry_run,
                 explain,
-            } => operations::publish_dataset(
-                operations::PublishDatasetRequest {
+            } => artifact_commands::publish_dataset(
+                artifact_commands::PublishDatasetRequest {
                     source_root,
                     store_root,
                     release: &release,
@@ -129,17 +156,25 @@ pub(super) fn run_atlas_command(
                 species,
                 assembly,
                 out,
-            } => operations::pack_dataset(root, &release, &species, &assembly, out, output_mode)
-                .map_err(CliError::from_action_error),
+            } => artifact_commands::pack_dataset(
+                root,
+                &release,
+                &species,
+                &assembly,
+                out,
+                output_mode,
+            )
+            .map_err(CliError::from_action_error),
             DatasetCommand::VerifyPack { pack } => {
-                operations::verify_pack(pack, output_mode).map_err(CliError::from_action_error)
+                artifact_commands::verify_pack(pack, output_mode)
+                    .map_err(CliError::from_action_error)
             }
             DatasetCommand::EvidenceVerify {
                 root,
                 release,
                 species,
                 assembly,
-            } => operations::validate_dataset_evidence(
+            } => artifact_commands::validate_dataset_evidence(
                 root,
                 &release,
                 &species,
@@ -157,8 +192,8 @@ pub(super) fn run_atlas_command(
                 assembly,
                 out_dir,
                 max_inline_items,
-            } => operations::build_release_diff(
-                operations::BuildReleaseDiffArgs {
+            } => artifact_commands::build_release_diff(
+                artifact_commands::BuildReleaseDiffArgs {
                     root,
                     from_release,
                     to_release,
@@ -176,14 +211,14 @@ pub(super) fn run_atlas_command(
                 store_root,
                 catalog,
                 pins,
-            } => operations::gc_plan(store_root, catalog, pins, output_mode)
+            } => artifact_commands::gc_plan(store_root, catalog, pins, output_mode)
                 .map_err(CliError::from_action_error),
             GcCommand::Apply {
                 store_root,
                 catalog,
                 pins,
                 confirm,
-            } => operations::gc_apply(store_root, catalog, pins, confirm, output_mode)
+            } => artifact_commands::gc_apply(store_root, catalog, pins, confirm, output_mode)
                 .map_err(CliError::from_action_error),
         },
         AtlasCommand::Policy { command } => match command {
@@ -327,7 +362,7 @@ pub(super) fn run_atlas_command(
         AtlasCommand::IngestValidate {
             qc_report,
             thresholds,
-        } => operations::validate_ingest_qc(qc_report, thresholds, output_mode)
+        } => artifact_commands::validate_ingest_qc(qc_report, thresholds, output_mode)
             .map_err(CliError::from_action_error),
         AtlasCommand::InspectDb { db, sample_rows } => {
             inspect_db(db, sample_rows, output_mode).map_err(CliError::from_action_error)

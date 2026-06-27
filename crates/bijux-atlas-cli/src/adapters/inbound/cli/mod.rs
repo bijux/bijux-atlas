@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 mod args;
+mod artifact_commands;
 mod canonical_json;
 mod command_execution;
 mod commands;
 mod dispatch;
 mod ingest_inputs;
-mod operations;
 pub(crate) mod output;
 mod policy;
 

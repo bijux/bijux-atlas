@@ -16,7 +16,8 @@ use std::path::PathBuf;
 use tempfile::tempdir;
 
 fn operations_testdata_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/adapters/inbound/cli/operations/testdata")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("src/adapters/inbound/cli/artifact_commands/testdata")
 }
 
 #[test]
