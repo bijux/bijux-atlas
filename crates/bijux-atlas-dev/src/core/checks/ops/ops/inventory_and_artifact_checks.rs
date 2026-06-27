@@ -17,7 +17,11 @@ fn strip_cfg_test_modules(text: &str) -> String {
             let Some(next_line) = next_non_attribute else {
                 break;
             };
-            if next_line.contains("mod tests") {
+            let module_decl = next_line.trim_start();
+            if module_decl.starts_with("mod ")
+                || module_decl.starts_with("pub(crate) mod ")
+                || module_decl.starts_with("pub mod ")
+            {
                 let mut brace_depth = next_line.matches('{').count();
                 brace_depth = brace_depth.saturating_sub(next_line.matches('}').count());
                 while brace_depth > 0 {
