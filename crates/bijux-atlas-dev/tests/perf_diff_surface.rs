@@ -12,7 +12,7 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
-fn slow_load_comparison_is_available_via_control_plane_command() {
+fn perf_diff_command_accepts_system_load_baselines() {
     let output = std::process::Command::new("cargo")
         .args([
             "run",
