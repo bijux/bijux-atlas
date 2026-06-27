@@ -3,5 +3,5 @@
 include!("render.rs");
 include!("k8s.rs");
 include!("load.rs");
-include!("lifecycle.rs");
+include!("lifecycle/mod.rs");
 include!("tests.rs");
