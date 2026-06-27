@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use async_trait::async_trait;
+use bijux_atlas_model::dataset::{
+    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
+};
 use bijux_atlas_runtime::adapters::outbound::store::{FederatedBackend, RegistrySource};
 use bijux_atlas_runtime::app::cache::CacheError;
 use bijux_atlas_runtime::app::ports::{CatalogFetch, DatasetStoreBackend};
 use bijux_atlas_runtime::app::server::{DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas_runtime::domain::sha256_hex;
-use bijux_atlas_model::dataset::{
-    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
-};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;

@@ -11,7 +11,8 @@ fn security_data_protection_benchmarks(c: &mut Criterion) {
     let payload = vec![42_u8; 64 * 1024];
     let checksum = bijux_atlas_runtime::domain::sha256_hex(&payload);
     let signing_key = "atlas-signing-key";
-    let signature = bijux_atlas_runtime::domain::sha256_hex(format!("{checksum}:{signing_key}").as_bytes());
+    let signature =
+        bijux_atlas_runtime::domain::sha256_hex(format!("{checksum}:{signing_key}").as_bytes());
     let encryption = XorEncryption::new(b"benchmark-key");
 
     c.bench_function("security_encrypt_decrypt_roundtrip_64kb", |b| {
