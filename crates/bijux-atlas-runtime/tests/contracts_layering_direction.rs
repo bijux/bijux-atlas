@@ -39,12 +39,14 @@ fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
     let cargo = std::fs::read_to_string(root.join("Cargo.toml")).expect("workspace Cargo.toml");
     for member in [
         "crates/bijux-atlas",
+        "crates/bijux-atlas-cli",
         "crates/bijux-atlas-core",
         "crates/bijux-atlas-ingest",
         "crates/bijux-atlas-model",
         "crates/bijux-atlas-query",
         "crates/bijux-atlas-api",
         "crates/bijux-atlas-runtime",
+        "crates/bijux-atlas-server",
         "crates/bijux-atlas-store",
         "crates/bijux-atlas-dev",
     ] {
@@ -161,6 +163,7 @@ fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
 
     let allowlist = [
         "axum",
+        "bijux-atlas-server",
         "bijux-atlas-runtime",
         "criterion",
         "hex",

@@ -24,12 +24,15 @@ fn crate_boundary_contract_document_exists_with_required_sections() {
         "## Dependency Direction",
         "## Enforcement",
         "bijux-atlas",
+        "bijux-atlas-cli",
         "bijux-atlas-dev",
         "bijux-atlas-core",
         "bijux-atlas-ingest",
         "bijux-atlas-model",
         "bijux-atlas-query",
         "bijux-atlas-api",
+        "bijux-atlas-runtime",
+        "bijux-atlas-server",
         "bijux-atlas-store",
     ] {
         assert!(
