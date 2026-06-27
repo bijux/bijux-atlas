@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 mod atlas_client;
-#[cfg(test)]
-mod client_tests;
 mod config;
 mod error;
 mod metrics;
@@ -21,3 +19,21 @@ pub use query::{DatasetQuery, QueryFilter, QueryProjection, QueryResult, StreamQ
 pub use request::RequestBuilder;
 pub use retry::run_with_retry;
 pub use tracing::TraceContext;
+
+#[cfg(test)]
+mod tests {
+    use super::{AtlasClient, ClientConfig, ErrorClass};
+
+    #[test]
+    fn client_rejects_non_http_base_url() {
+        let config = ClientConfig {
+            base_url: "ftp://invalid".to_string(),
+            ..ClientConfig::default()
+        };
+        let err = match AtlasClient::new(config) {
+            Ok(_) => panic!("invalid config should fail"),
+            Err(err) => err,
+        };
+        assert_eq!(err.class, ErrorClass::InvalidConfig);
+    }
+}

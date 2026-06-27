@@ -3,8 +3,8 @@
 pub mod host;
 
 pub(crate) mod cache;
-#[cfg(test)]
-mod dataset_cache_manager_tests;
 pub(crate) mod state;
+#[cfg(test)]
+mod tests;
 
 pub use self::state::{AppState, DatasetCacheConfig, DatasetCacheManager};
