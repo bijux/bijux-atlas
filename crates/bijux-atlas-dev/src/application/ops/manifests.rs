@@ -11,10 +11,8 @@ pub(crate) fn resolve_ops_root(
     repo_root: &Path,
     ops_root: Option<PathBuf>,
 ) -> Result<PathBuf, OpsCommandError> {
-    let path = ops_root.unwrap_or_else(|| repo_root.join("ops"));
-    path.canonicalize().map_err(|err| {
-        OpsCommandError::Manifest(format!("cannot resolve ops root {}: {err}", path.display()))
-    })
+    bijux_atlas_ops::reference::ops_paths::resolve_ops_root(repo_root, ops_root)
+        .map_err(|err| OpsCommandError::Manifest(err.detail()))
 }
 
 pub(crate) fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> {
