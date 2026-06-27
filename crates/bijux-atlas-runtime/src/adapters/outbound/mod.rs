@@ -3,4 +3,3 @@
 pub mod fs;
 pub mod sqlite;
 pub mod store;
-pub mod telemetry;

@@ -229,7 +229,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
     );
 
     let trace_generated = std::fs::read_to_string(root.join(
-        "crates/bijux-atlas-runtime/src/adapters/outbound/telemetry/generated/trace_spans_contract.rs",
+        "crates/bijux-atlas-server/src/adapters/outbound/telemetry/generated/trace_spans_contract.rs",
     ))
     .expect("read generated spans");
     for span in contract.required_spans {
@@ -394,7 +394,7 @@ async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     .expect("parse ops metrics contract");
 
     let generated_metrics = std::fs::read_to_string(root.join(
-        "crates/bijux-atlas-runtime/src/adapters/outbound/telemetry/generated/metrics_contract.rs",
+        "crates/bijux-atlas-server/src/adapters/outbound/telemetry/generated/metrics_contract.rs",
     ))
     .expect("read generated metrics contract");
 

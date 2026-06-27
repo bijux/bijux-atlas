@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod generated {
-    pub use bijux_atlas_runtime::adapters::outbound::telemetry::generated::*;
-}
+pub mod generated;
 
 pub mod logging;
 
