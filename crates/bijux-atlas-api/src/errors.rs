@@ -3,6 +3,8 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use bijux_atlas_core::{sha256_hex, stable_json_bytes};
+
 pub use super::generated::error_codes::ApiErrorCode;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -77,10 +79,10 @@ impl ApiError {
 }
 
 #[must_use]
-pub(crate) fn fallback_request_id(code: ApiErrorCode, details: &Value) -> String {
-    let canonical = crate::domain::canonical::stable_json_bytes(&(code.as_str(), details))
+pub fn fallback_request_id(code: ApiErrorCode, details: &Value) -> String {
+    let canonical = stable_json_bytes(&(code.as_str(), details))
         .unwrap_or_else(|_| details.to_string().into_bytes());
-    let digest = crate::domain::canonical::sha256_hex(&canonical);
+    let digest = sha256_hex(&canonical);
     format!("req-{}", &digest[..16])
 }
 

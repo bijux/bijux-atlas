@@ -230,6 +230,7 @@ dependencies = [
  "async-trait",
  "axum",
  "base64",
+ "bijux-atlas-api",
  "bijux-atlas-core",
  "bijux-atlas-model",
  "bijux-cli",
@@ -267,6 +268,16 @@ dependencies = [
  "unicode-normalization",
  "walkdir",
  "zstd",
+]
+
+[[package]]
+name = "bijux-atlas-api"
+version = "0.2.1"
+dependencies = [
+ "bijux-atlas-core",
+ "bijux-atlas-model",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

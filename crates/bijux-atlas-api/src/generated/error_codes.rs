@@ -34,4 +34,4 @@ pub const API_ERROR_CODES: &[&str] = &[
     "ValidationFailed",
 ];
 
-pub type ApiErrorCode = crate::contracts::errors::ErrorCode;
+pub type ApiErrorCode = bijux_atlas_core::ErrorCode;

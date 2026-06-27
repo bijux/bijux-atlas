@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::contracts::api::{
+use bijux_atlas_api::{
     openapi_v1_spec, parse_list_genes_params, parse_region_filter, ApiError, ApiErrorCode,
 };
-use bijux_atlas::domain::canonical;
+use bijux_atlas_core::stable_json_bytes;
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
@@ -263,7 +263,7 @@ fn error_schema_rejects_unknown_fields() {
 
 #[test]
 fn openapi_snapshot_is_deterministic_and_matches_committed_contract() {
-    let generated = canonical::stable_json_bytes(&openapi_v1_spec()).expect("serialize generated");
+    let generated = stable_json_bytes(&openapi_v1_spec()).expect("serialize generated");
     let snapshot_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../configs/generated/openapi/v1/openapi.snapshot.json");
     let snapshot = std::fs::read(snapshot_path).expect("read snapshot");

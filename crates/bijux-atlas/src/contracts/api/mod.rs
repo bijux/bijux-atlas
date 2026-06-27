@@ -1,222 +1,55 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::manifest::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
+pub const CRATE_NAME: &str = bijux_atlas_api::CRATE_NAME;
+pub const API_POLICY_LATEST_ALIAS: &str = bijux_atlas_api::API_POLICY_LATEST_ALIAS;
+pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str =
+    bijux_atlas_api::API_POLICY_NO_IMPLICIT_DEFAULT_DATASET;
 
-pub const CRATE_NAME: &str = "bijux-atlas::api";
-pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
-pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
+pub mod compat {
+    pub use bijux_atlas_api::compat::*;
+}
 
-/// Compatibility policies shared with API consumers.
-pub mod compat;
-/// Conversion helpers between wire and internal domain types.
-pub mod convert;
-/// DTOs and stable API data contracts.
-pub mod dto;
-/// Mappings between runtime failures and API error envelopes.
-pub mod error_mapping;
-/// Stable API error codes and structures.
-pub mod errors;
-pub mod generated;
-/// OpenAPI document generation for v1.
-pub mod openapi;
-/// Query parameter parsing and normalization.
-pub mod params;
-/// API response envelope, media type, and negotiation models.
-pub mod responses;
-/// v1 handler surface for list/query endpoints.
-pub mod wire;
+pub mod convert {
+    pub use bijux_atlas_api::convert::*;
+}
 
-pub use dto::DatasetKeyDto;
-pub(crate) use errors::fallback_request_id;
-pub use errors::{ApiError, ApiErrorCode};
-pub use openapi::openapi_v1_spec;
-pub use params::{
-    parse_list_genes_params, parse_list_genes_params_with_limit, parse_range_filter,
-    parse_region_filter, IncludeField, ListGenesParams, MAX_CURSOR_BYTES,
+pub mod dto {
+    pub use bijux_atlas_api::dto::*;
+}
+
+pub mod error_mapping {
+    pub use bijux_atlas_api::error_mapping::*;
+}
+
+pub mod errors {
+    pub use bijux_atlas_api::errors::*;
+}
+
+pub mod generated {
+    pub mod error_codes {
+        pub use bijux_atlas_api::generated::error_codes::*;
+    }
+}
+
+pub mod openapi {
+    pub use bijux_atlas_api::openapi::*;
+}
+
+pub mod params {
+    pub use bijux_atlas_api::params::*;
+}
+
+pub mod responses {
+    pub use bijux_atlas_api::responses::*;
+}
+
+pub mod wire {
+    pub use bijux_atlas_api::wire::*;
+}
+
+pub use bijux_atlas_api::{
+    dataset_route_key, fallback_request_id, openapi_v1_spec, parse_list_genes_params,
+    parse_list_genes_params_with_limit, parse_range_filter, parse_region_filter, ApiContentType,
+    ApiError, ApiErrorCode, ApiResponseEnvelope, ContentNegotiation, DatasetKeyDto, IncludeField,
+    ListGenesParams, QueryAdapter, MAX_CURSOR_BYTES,
 };
-pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};
-pub use wire::{list_genes_v1, QueryAdapter};
-
-#[must_use]
-pub fn dataset_route_key(dataset: &DatasetKeyDto) -> String {
-    dataset.route_key()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::collections::BTreeMap;
-
-    fn required_dataset_dims() -> BTreeMap<String, String> {
-        let mut q = BTreeMap::new();
-        q.insert("release".to_string(), "110".to_string());
-        q.insert("species".to_string(), "homo_sapiens".to_string());
-        q.insert("assembly".to_string(), "GRCh38".to_string());
-        q
-    }
-
-    #[test]
-    fn parse_params_success_exhaustive() {
-        let mut q = required_dataset_dims();
-        q.insert("limit".to_string(), "42".to_string());
-        q.insert("name_like".to_string(), "BR*".to_string());
-
-        let parsed = parse_list_genes_params(&q).expect("params parse");
-        assert_eq!(parsed.limit, 42);
-        assert_eq!(parsed.name_like.as_deref(), Some("BR*"));
-        assert!(!parsed.pretty);
-    }
-
-    #[test]
-    fn parse_params_missing_dimensions() {
-        let q = BTreeMap::new();
-        let err = parse_list_genes_params(&q).expect_err("expected error");
-        assert_eq!(err.code, ApiErrorCode::MissingDatasetDimension);
-    }
-
-    #[test]
-    fn parse_params_invalid_limit() {
-        let mut q = required_dataset_dims();
-        q.insert("limit".to_string(), "nope".to_string());
-
-        let err = parse_list_genes_params(&q).expect_err("expected invalid limit");
-        assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
-    }
-
-    #[test]
-    fn parse_params_cursor_size_validation() {
-        let mut q = required_dataset_dims();
-        q.insert("cursor".to_string(), "x".repeat(MAX_CURSOR_BYTES + 1));
-        let err = parse_list_genes_params(&q).expect_err("cursor too large");
-        assert_eq!(err.code, ApiErrorCode::InvalidCursor);
-    }
-
-    #[test]
-    fn parse_params_invalid_include() {
-        let mut q = required_dataset_dims();
-        q.insert("include".to_string(), "coords,nope".to_string());
-        let err = parse_list_genes_params(&q).expect_err("invalid include");
-        assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
-    }
-
-    #[test]
-    fn parse_region_strict_and_stable() {
-        let parsed = parse_region_filter(Some("chr1:10-20".to_string())).expect("region parse");
-        assert_eq!(parsed.expect("region").seqid, "chr1");
-        let err = parse_region_filter(Some("chr1:20-10".to_string())).expect_err("invalid");
-        assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
-    }
-
-    #[test]
-    fn parse_range_strict_and_stable() {
-        let parsed = parse_range_filter(Some("chr1:10-20".to_string())).expect("range parse");
-        assert_eq!(parsed.expect("range").seqid, "chr1");
-        let err = parse_range_filter(Some("chr1:20-10".to_string())).expect_err("invalid");
-        assert_eq!(err.code, ApiErrorCode::InvalidQueryParameter);
-    }
-
-    #[test]
-    fn api_error_details_schema_stable() {
-        let e = ApiError::invalid_param("limit", "nope");
-        assert!(e.details.get("field_errors").is_some());
-        assert!(e.request_id.starts_with("req-"));
-    }
-
-    #[test]
-    fn openapi_routes_and_determinism() {
-        let spec = openapi_v1_spec();
-        for route in [
-            "/healthz",
-            "/readyz",
-            "/metrics",
-            "/v1/datasets",
-            "/v1/datasets/{release}/{species}/{assembly}",
-            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
-            "/v1/genes",
-            "/v1/genes/count",
-            "/v1/diff/genes",
-            "/v1/diff/region",
-            "/v1/sequence/region",
-            "/v1/genes/{gene_id}/sequence",
-            "/v1/genes/{gene_id}/transcripts",
-            "/v1/transcripts/{tx_id}",
-            "/debug/datasets",
-            "/debug/dataset-health",
-        ] {
-            assert!(spec["paths"].get(route).is_some(), "missing route: {route}");
-        }
-
-        let a = crate::domain::canonical::stable_json_bytes(&spec).expect("stable bytes a");
-        let b = crate::domain::canonical::stable_json_bytes(&openapi_v1_spec())
-            .expect("stable bytes b");
-        assert_eq!(a, b);
-    }
-
-    #[test]
-    fn api_error_json_field_order_is_stable() {
-        let err = ApiError::new(
-            ApiErrorCode::InvalidQueryParameter,
-            "invalid query parameter: limit",
-            serde_json::json!({
-                "field_errors": [{
-                    "parameter": "limit",
-                    "reason": "invalid",
-                    "value": "bad"
-                }]
-            }),
-            "req-contract",
-        );
-        let encoded = serde_json::to_string(&err).expect("encode");
-        assert_eq!(
-            encoded,
-            "{\"code\":\"InvalidQueryParameter\",\"message\":\"invalid query parameter: limit\",\"details\":{\"field_errors\":[{\"parameter\":\"limit\",\"reason\":\"invalid\",\"value\":\"bad\"}]},\"request_id\":\"req-contract\"}"
-        );
-    }
-
-    #[test]
-    fn error_codes_match_generated_contract() {
-        let generated = super::generated::error_codes::API_ERROR_CODES;
-        let from_enum = [
-            ApiErrorCode::AccessForbidden,
-            ApiErrorCode::AuthenticationRequired,
-            ApiErrorCode::ArtifactCorrupted,
-            ApiErrorCode::ArtifactQuarantined,
-            ApiErrorCode::DatasetNotFound,
-            ApiErrorCode::GeneNotFound,
-            ApiErrorCode::IngestDuplicateTranscriptId,
-            ApiErrorCode::IngestInvalidCdsPhase,
-            ApiErrorCode::IngestInvalidStrand,
-            ApiErrorCode::IngestMissingParent,
-            ApiErrorCode::IngestMissingRequiredField,
-            ApiErrorCode::IngestMissingTranscriptId,
-            ApiErrorCode::IngestMultiParentChild,
-            ApiErrorCode::IngestMultiParentTranscript,
-            ApiErrorCode::IngestSeqidCollision,
-            ApiErrorCode::IngestUnknownFeature,
-            ApiErrorCode::Internal,
-            ApiErrorCode::InvalidCursor,
-            ApiErrorCode::InvalidQueryParameter,
-            ApiErrorCode::MissingDatasetDimension,
-            ApiErrorCode::NotReady,
-            ApiErrorCode::PayloadTooLarge,
-            ApiErrorCode::QueryRejectedByPolicy,
-            ApiErrorCode::QueryTooExpensive,
-            ApiErrorCode::RangeTooLarge,
-            ApiErrorCode::RateLimited,
-            ApiErrorCode::ResponseTooLarge,
-            ApiErrorCode::Timeout,
-            ApiErrorCode::UpstreamStoreUnavailable,
-            ApiErrorCode::ValidationFailed,
-        ]
-        .map(ApiErrorCode::as_str);
-        assert_eq!(generated, from_enum);
-    }
-
-    #[test]
-    fn every_generated_error_code_is_parseable_and_stable() {
-        for code in super::generated::error_codes::API_ERROR_CODES {
-            let parsed = ApiErrorCode::parse(code).expect("generated error code parse");
-            assert_eq!(parsed.as_str(), *code);
-        }
-    }
-}

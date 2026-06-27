@@ -3,7 +3,7 @@
 use super::dto::{DatasetKeyDto, GeneRowsDto, LinkCursorDto, ListGenesResponseDto, PageCursorDto};
 use super::errors::ApiError;
 use super::params::IncludeField;
-use crate::domain::query::{GeneQueryResponse, GeneRow};
+use bijux_atlas_model::query::{GeneQueryResponse, GeneRow};
 use serde_json::{json, Map, Value};
 use std::collections::BTreeSet;
 

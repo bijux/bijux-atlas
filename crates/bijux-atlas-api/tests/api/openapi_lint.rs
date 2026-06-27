@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::contracts::api::openapi::{openapi_v1_spec, OPENAPI_V1_PINNED_SHA256};
-use bijux_atlas::domain::canonical;
+use bijux_atlas_api::openapi::{openapi_v1_spec, OPENAPI_V1_PINNED_SHA256};
+use bijux_atlas_core::stable_json_hash_hex;
 use serde_json::Value;
 
 #[test]
 fn openapi_hash_matches_pinned_contract() {
-    let hash = canonical::stable_json_hash_hex(&openapi_v1_spec()).expect("hash openapi");
+    let hash = stable_json_hash_hex(&openapi_v1_spec()).expect("hash openapi");
     assert_eq!(hash, OPENAPI_V1_PINNED_SHA256);
 }
 
