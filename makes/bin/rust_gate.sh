@@ -58,8 +58,24 @@ cargo_term_progress_when="${CARGO_TERM_PROGRESS_WHEN:-always}"
 cargo_term_progress_width="${CARGO_TERM_PROGRESS_WIDTH:-120}"
 cargo_term_verbose="${CARGO_TERM_VERBOSE:-false}"
 cargo_term_color="${CARGO_TERM_COLOR:-always}"
-nextest_threads="${NEXTEST_THREADS:-}"
-nextest_threads_all="${NEXTEST_THREADS_ALL:-8}"
+
+normalize_nextest_threads() {
+  local configured="${1:-}"
+  case "${configured}" in
+    "")
+      printf '%s' ""
+      ;;
+    auto)
+      printf '%s' "num-cpus"
+      ;;
+    *)
+      printf '%s' "${configured}"
+      ;;
+  esac
+}
+
+nextest_threads="$(normalize_nextest_threads "${NEXTEST_THREADS:-}")"
+nextest_threads_all="$(normalize_nextest_threads "${NEXTEST_THREADS_ALL:-8}")"
 
 mkdir -p \
   "${rs_artifact_root}" \
