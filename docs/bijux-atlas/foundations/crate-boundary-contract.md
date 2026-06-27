@@ -33,6 +33,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
 - `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
 - Runtime `src/compat/` is the only place allowed to own cross-crate compatibility bridges. Top-level runtime `src/api.rs`, `src/core.rs`, `src/model/`, `src/query.rs`, and `src/domain/ingest.rs` stay as thin path-stable wrappers only; implementation ownership remains in the dedicated Atlas subcrates.
+- Runtime must not act as a shared fixture warehouse. Ingest fixtures live under `crates/bijux-atlas-ingest/tests/fixtures/`, and CLI operation QC fixtures live beside their owning source tests under `crates/bijux-atlas/src/adapters/inbound/cli/operations/testdata/`.
 - Runtime `tests/interfaces/server` keeps runtime-only startup, cache, backend, and transport-wiring coverage. API-facing HTTP contract, response-shape, and observability suites belong under `crates/bijux-atlas-api/tests/`.
 - CLI and HTTP entrypoints must call application/domain services and must not embed parsing-normalization rules inline.
 - API DTO/wire shapes are owned under `crates/bijux-atlas-api/src/` and adapter HTTP DTOs, not in domain model modules.
