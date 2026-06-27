@@ -3,16 +3,9 @@
 use super::domain_support::OpsProfileRegistry;
 use crate::ops_support::StackManifestToml;
 use crate::*;
+use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 use bijux_atlas_ops::inventory::tools_manifest::ToolsToml;
 use bijux_atlas_ops::load::manifest::LoadToml;
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub(crate) struct StackPinsToml {
-    pub(crate) charts: std::collections::BTreeMap<String, String>,
-    pub(crate) images: std::collections::BTreeMap<String, String>,
-    pub(crate) crds: std::collections::BTreeMap<String, String>,
-}
 
 pub(crate) fn resolve_ops_root(
     repo_root: &Path,
@@ -63,46 +56,16 @@ pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsComm
 }
 
 pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsCommandError> {
-    let path = repo_root.join("ops/inventory/pins.yaml");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    let value: serde_yaml::Value = serde_yaml::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
-    })?;
-    let images = value
-        .get("images")
-        .and_then(serde_yaml::Value::as_mapping)
-        .map(|mapping| {
-            mapping
-                .iter()
-                .filter_map(|(k, v)| Some((k.as_str()?.to_string(), v.as_str()?.to_string())))
-                .collect::<std::collections::BTreeMap<_, _>>()
-        })
-        .unwrap_or_default();
-    let versions = value
-        .get("versions")
-        .and_then(serde_yaml::Value::as_mapping)
-        .map(|mapping| {
-            mapping
-                .iter()
-                .filter_map(|(k, v)| Some((k.as_str()?.to_string(), v.as_str()?.to_string())))
-                .collect::<std::collections::BTreeMap<_, _>>()
-        })
-        .unwrap_or_default();
-    let mut charts = std::collections::BTreeMap::new();
-    if let Some(chart) = versions.get("chart") {
-        charts.insert("bijux_atlas".to_string(), chart.clone());
-    }
-    let mut crds = std::collections::BTreeMap::new();
-    if let Some(crd) = versions.get("prometheus_operator_crd") {
-        crds.insert("prometheus_operator".to_string(), crd.clone());
-    }
-    Ok(StackPinsToml {
-        charts,
-        images,
-        crds,
-    })
+    bijux_atlas_ops::inventory::pins_manifest::load_pins_manifest(repo_root).map_err(
+        |err| match err {
+            bijux_atlas_ops::inventory::pins_manifest::PinsManifestError::Read { .. } => {
+                OpsCommandError::Manifest(err.detail())
+            }
+            bijux_atlas_ops::inventory::pins_manifest::PinsManifestError::Parse { .. } => {
+                OpsCommandError::Schema(err.detail())
+            }
+        },
+    )
 }
 
 pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml, OpsCommandError> {

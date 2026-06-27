@@ -18,6 +18,11 @@ pub fn atlas_tools_manifest_from_repo_root(repo_root: &Path) -> PathBuf {
 }
 
 #[must_use]
+pub fn atlas_pins_manifest_from_repo_root(repo_root: &Path) -> PathBuf {
+    repo_root.join("ops").join("inventory").join("pins.yaml")
+}
+
+#[must_use]
 pub fn atlas_toolchain_inventory(repo_root: &Path) -> PathBuf {
     repo_root
         .join("ops")
@@ -44,6 +49,7 @@ mod tests {
         for path in [
             atlas_inventory_root_from_ops_root(&ops_root),
             atlas_tools_manifest_from_repo_root(&root),
+            atlas_pins_manifest_from_repo_root(&root),
             atlas_toolchain_inventory_from_ops_root(&ops_root),
             atlas_toolchain_inventory(&root),
         ] {
