@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::runtime::config::RateLimitConfig;
+use bijux_atlas_runtime::runtime::config::RateLimitConfig;
 use redis::AsyncCommands;
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicU64, Ordering};

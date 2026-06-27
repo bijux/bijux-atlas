@@ -25,13 +25,12 @@ pub(crate) use tracing::Instrument;
 pub mod adapters;
 pub mod app;
 pub mod packaged;
-pub mod runtime;
 pub mod version;
 
 pub(crate) use crate::app::server::observability::{chrono_like_unix_millis, record_shed_reason};
 pub(crate) use crate::app::server::AppState;
 pub(crate) use bijux_atlas_runtime::app::cache::CacheError;
 #[rustfmt::skip]
-pub(crate) use crate::runtime::config::runtime_build_hash;
+pub(crate) use bijux_atlas_runtime::runtime::config::runtime_build_hash;
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";

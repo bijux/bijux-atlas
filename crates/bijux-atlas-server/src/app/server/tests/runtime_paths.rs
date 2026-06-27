@@ -81,8 +81,13 @@ async fn cache_root_permissions_are_hardened() {
 #[tokio::test]
 async fn relative_cache_root_is_anchored_to_the_workspace_artifacts_root() {
     let relative_cache_root = PathBuf::from("artifacts/test-relative-cache-root");
-    let expected_workspace_cache_root =
-        crate::runtime::config::resolve_runtime_path(relative_cache_root.clone());
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let repo_root = manifest_dir
+        .parent()
+        .and_then(|path| path.parent())
+        .map(std::path::Path::to_path_buf)
+        .unwrap_or(manifest_dir);
+    let expected_workspace_cache_root = repo_root.join(relative_cache_root.clone());
     let _cleanup = CreatedDirGuard::new(&expected_workspace_cache_root);
     let crate_local_cache_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("artifacts")

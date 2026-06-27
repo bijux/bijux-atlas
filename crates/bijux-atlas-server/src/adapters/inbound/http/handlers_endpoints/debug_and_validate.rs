@@ -418,7 +418,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
         "version": crate::version::runtime_version(),
         "os": std::env::consts::OS,
         "arch": std::env::consts::ARCH,
-        "hostname": crate::runtime::config::default_runtime_pod_id()
+        "hostname": bijux_atlas_runtime::runtime::config::default_runtime_pod_id()
     }))
     .into_response();
     state
@@ -451,9 +451,9 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
         return with_request_id(resp, &request_id);
     }
     let response = Json(json!({
-        "build_hash": crate::runtime::config::runtime_build_hash(),
-        "release_id": crate::runtime::config::runtime_release_id(),
-        "governance_version": crate::runtime::config::runtime_governance_version()
+        "build_hash": bijux_atlas_runtime::runtime::config::runtime_build_hash(),
+        "release_id": bijux_atlas_runtime::runtime::config::runtime_release_id(),
+        "governance_version": bijux_atlas_runtime::runtime::config::runtime_governance_version()
     }))
     .into_response();
     state

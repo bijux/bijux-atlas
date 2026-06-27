@@ -153,11 +153,11 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
             "name": "bijux-atlas",
             "version": crate::version::runtime_version(),
             "compatible_umbrella": ">=0.3.0,<0.4.0",
-            "build_hash": crate::runtime::config::runtime_build_hash(),
+            "build_hash": bijux_atlas_runtime::runtime::config::runtime_build_hash(),
         },
         "server": {
             "crate": CRATE_NAME,
-            "config_schema_version": crate::runtime::config::CONFIG_SCHEMA_VERSION,
+            "config_schema_version": bijux_atlas_runtime::runtime::config::CONFIG_SCHEMA_VERSION,
             "api_version": "v1",
             "api_contract_version": "v1",
             "runtime_policy_hash": &*state.runtime_policy_hash,
@@ -923,7 +923,9 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
     {
         info.insert(
             "x-build-id".to_string(),
-            serde_json::Value::String(crate::runtime::config::runtime_build_hash().to_string()),
+            serde_json::Value::String(
+                bijux_atlas_runtime::runtime::config::runtime_build_hash().to_string(),
+            ),
         );
     }
     let mut response = Json(spec).into_response();

@@ -189,8 +189,8 @@ mod bulkhead_tests {
     use super::*;
     use crate::adapters::outbound::store::testing::FakeStore;
     use crate::app::server::{DatasetCacheConfig, DatasetCacheManager};
-    use crate::runtime::config::ApiConfig;
     use bijux_atlas_query::{QueryClass, QueryLimits};
+    use bijux_atlas_runtime::runtime::config::ApiConfig;
     use std::sync::Arc;
 
     #[tokio::test]
@@ -278,7 +278,7 @@ mod bulkhead_tests {
 
         assert_eq!(
             state.runtime_policy_mode.as_str(),
-            crate::runtime::config::default_runtime_policy_mode()
+            bijux_atlas_runtime::runtime::config::default_runtime_policy_mode()
         );
     }
 }

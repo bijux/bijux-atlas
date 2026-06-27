@@ -202,7 +202,7 @@ fn token_header_value(headers: &HeaderMap) -> Option<String> {
 
 fn validate_signed_token(
     token: &str,
-    api: &crate::runtime::config::ApiConfig,
+    api: &bijux_atlas_runtime::runtime::config::ApiConfig,
 ) -> Result<AuthenticationContext, TokenValidationError> {
     let Some(secret) = api.token_signing_secret.as_deref() else {
         return Err(TokenValidationError::Malformed);
@@ -478,7 +478,7 @@ fn embedded_authorization_allows(
 }
 
 fn emit_auth_policy_decision(
-    auth_mode: crate::runtime::config::AuthMode,
+    auth_mode: bijux_atlas_runtime::runtime::config::AuthMode,
     principal: &str,
     route: &str,
     allowed: bool,
@@ -553,7 +553,7 @@ fn build_audit_event(
     action: &str,
     resource_kind: &str,
     resource_id: &str,
-    sink: crate::runtime::config::AuditSink,
+    sink: bijux_atlas_runtime::runtime::config::AuditSink,
     fields: &[(&str, &str)],
 ) -> serde_json::Value {
     let mut object = serde_json::Map::new();
@@ -608,7 +608,7 @@ fn build_audit_event(
 }
 
 fn emit_audit_event(
-    audit: &crate::runtime::config::AuditConfig,
+    audit: &bijux_atlas_runtime::runtime::config::AuditConfig,
     event_name: &str,
     principal: Option<&str>,
     action: &str,
@@ -625,7 +625,10 @@ fn emit_audit_event(
         audit.sink,
         fields,
     );
-    if matches!(audit.sink, crate::runtime::config::AuditSink::File) {
+    if matches!(
+        audit.sink,
+        bijux_atlas_runtime::runtime::config::AuditSink::File
+    ) {
         let _ = crate::adapters::outbound::fs::write_audit_file_record(
             &audit.file_path,
             audit.max_bytes,
@@ -883,15 +886,15 @@ fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
 
 fn proxy_authenticated_principal(
     headers: &HeaderMap,
-    auth_mode: crate::runtime::config::AuthMode,
+    auth_mode: bijux_atlas_runtime::runtime::config::AuthMode,
 ) -> Option<&'static str> {
     match auth_mode {
-        crate::runtime::config::AuthMode::Oidc => {
+        bijux_atlas_runtime::runtime::config::AuthMode::Oidc => {
             { normalized_header_value(headers, "x-forwarded-user", 256) }
                 .or_else(|| normalized_header_value(headers, "x-atlas-oidc-subject", 256))
                 .map(|_| "user")
         }
-        crate::runtime::config::AuthMode::Mtls => {
+        bijux_atlas_runtime::runtime::config::AuthMode::Mtls => {
             normalized_header_value(headers, "x-forwarded-client-cert", 512)
                 .or_else(|| normalized_header_value(headers, "x-atlas-mtls-subject", 256))
                 .map(|_| "service-account")
@@ -1109,7 +1112,10 @@ pub(crate) async fn security_middleware(
     }
 
     let token = token_header_value(req.headers());
-    let token_context = if matches!(state.api.auth_mode, crate::runtime::config::AuthMode::Token) {
+    let token_context = if matches!(
+        state.api.auth_mode,
+        bijux_atlas_runtime::runtime::config::AuthMode::Token
+    ) {
         let Some(raw_token) = token.as_deref() else {
             emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
             record_auth_failure(&state, "token_missing", &route).await;
@@ -1222,7 +1228,9 @@ pub(crate) async fn security_middleware(
             issuer: None,
             scopes: Vec::new(),
         }
-    } else if auth_exempt || state.api.auth_mode == crate::runtime::config::AuthMode::Disabled {
+    } else if auth_exempt
+        || state.api.auth_mode == bijux_atlas_runtime::runtime::config::AuthMode::Disabled
+    {
         AuthenticationContext {
             principal: "user",
             mechanism: "none",
@@ -1234,7 +1242,8 @@ pub(crate) async fn security_middleware(
         context
     } else if matches!(
         state.api.auth_mode,
-        crate::runtime::config::AuthMode::Oidc | crate::runtime::config::AuthMode::Mtls
+        bijux_atlas_runtime::runtime::config::AuthMode::Oidc
+            | bijux_atlas_runtime::runtime::config::AuthMode::Mtls
     ) {
         let Some(principal) = proxy_authenticated_principal(req.headers(), state.api.auth_mode)
         else {
@@ -1415,7 +1424,7 @@ fn classify_user_agent_family(user_agent: Option<&str>) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::runtime::config::AuthMode;
+    use bijux_atlas_runtime::runtime::config::AuthMode;
     use std::time::Duration;
 
     #[test]
@@ -1504,7 +1513,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::runtime::config::AuditSink::Stdout,
+            bijux_atlas_runtime::runtime::config::AuditSink::Stdout,
             &[("status", "200")],
         );
         assert_eq!(event["event_id"].as_str(), Some("audit_query_executed"));
@@ -1527,7 +1536,7 @@ mod tests {
             "dataset.read",
             "dataset-id",
             "/v1/datasets",
-            crate::runtime::config::AuditSink::Stdout,
+            bijux_atlas_runtime::runtime::config::AuditSink::Stdout,
             &[
                 ("status", "200"),
                 ("authorization", "Bearer topsecret"),
@@ -1650,12 +1659,12 @@ mod tests {
     #[test]
     fn token_validation_enforces_expiry_scope_issuer_audience_and_revocation() {
         let now = chrono_like_unix_secs();
-        let mut api = crate::runtime::config::ApiConfig {
+        let mut api = bijux_atlas_runtime::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
             token_required_issuer: Some("atlas-auth".to_string()),
             token_required_audience: Some("atlas-api".to_string()),
             token_required_scopes: vec!["dataset.read".to_string()],
-            ..crate::runtime::config::ApiConfig::default()
+            ..bijux_atlas_runtime::runtime::config::ApiConfig::default()
         };
         let token = signed_token(
             serde_json::json!({
@@ -1694,9 +1703,9 @@ mod tests {
 
     #[test]
     fn token_validation_rejects_malformed_tokens() {
-        let api = crate::runtime::config::ApiConfig {
+        let api = bijux_atlas_runtime::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
-            ..crate::runtime::config::ApiConfig::default()
+            ..bijux_atlas_runtime::runtime::config::ApiConfig::default()
         };
         assert_eq!(
             validate_signed_token("not.a.jwt", &api),
@@ -1707,9 +1716,9 @@ mod tests {
     #[test]
     fn token_validation_requires_a_non_empty_subject() {
         let now = chrono_like_unix_secs();
-        let api = crate::runtime::config::ApiConfig {
+        let api = bijux_atlas_runtime::runtime::config::ApiConfig {
             token_signing_secret: Some("token-secret".to_string()),
-            ..crate::runtime::config::ApiConfig::default()
+            ..bijux_atlas_runtime::runtime::config::ApiConfig::default()
         };
         let missing_subject = signed_token(
             serde_json::json!({

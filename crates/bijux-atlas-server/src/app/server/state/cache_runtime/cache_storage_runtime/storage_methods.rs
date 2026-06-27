@@ -1,8 +1,21 @@
 use super::*;
 
+fn resolve_workspace_runtime_path(path: PathBuf) -> PathBuf {
+    if path.is_absolute() {
+        return path;
+    }
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let repo_root = manifest_dir
+        .parent()
+        .and_then(|path| path.parent())
+        .map(std::path::Path::to_path_buf)
+        .unwrap_or(manifest_dir);
+    repo_root.join(path)
+}
+
 impl DatasetCacheManager {
     pub fn new(cfg: DatasetCacheConfig, store: Arc<dyn DatasetStoreBackend>) -> Arc<Self> {
-        let disk_root = crate::runtime::config::resolve_runtime_path(cfg.disk_root.clone());
+        let disk_root = resolve_workspace_runtime_path(cfg.disk_root.clone());
         let cfg = DatasetCacheConfig { disk_root, ..cfg };
         let max_concurrent_downloads = cfg
             .max_concurrent_downloads_node

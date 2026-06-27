@@ -4,7 +4,6 @@ use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::app::server::cache;
 use crate::app::server::observability::{route_sli_class, unix_time_millis};
-use crate::runtime::config::{ApiConfig, DatasetCacheConfig};
 use crate::sha256_hex;
 use crate::StatusCode;
 use bijux_atlas_model::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
@@ -23,6 +22,7 @@ use bijux_atlas_runtime::domain::cluster::resilience::{
     FailureDetectionPolicy, RecoveryPolicy, ResilienceGuarantees,
 };
 use bijux_atlas_runtime::domain::cluster::sharding::ShardRegistry;
+use bijux_atlas_runtime::runtime::config::{ApiConfig, DatasetCacheConfig};
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
@@ -545,7 +545,9 @@ impl AppState {
             replica_registry: Arc::new(Mutex::new(Self::init_replica_registry())),
             resilience_registry: Arc::new(Mutex::new(Self::init_resilience_registry())),
             runtime_policy_hash,
-            runtime_policy_mode: Arc::new(crate::runtime::config::default_runtime_policy_mode()),
+            runtime_policy_mode: Arc::new(
+                bijux_atlas_runtime::runtime::config::default_runtime_policy_mode(),
+            ),
             api,
             limits,
         }
