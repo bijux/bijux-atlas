@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::actions::{inspect_dataset, inspect_db, inspect_provenance, run_ingest, smoke_dataset};
+use super::actions::run_ingest;
 use super::command_execution::{
-    explain_query, explain_query_from_query_text, export_query_rows, run_query, ExplainQueryArgs,
+    explain_query, explain_query_from_query_text, export_query_rows, inspect_dataset, inspect_db,
+    inspect_provenance, run_query, smoke_dataset, ExplainQueryArgs,
 };
 use super::command_execution::{print_completion, print_config, print_version};
 use super::ingest_inputs::verify_ingest_inputs;

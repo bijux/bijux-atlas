@@ -2,11 +2,13 @@
 
 mod completion;
 mod environment;
+mod inspection;
 mod metadata;
 mod query;
 
 pub(super) use self::completion::print_completion;
 pub(super) use self::environment::{emit_config_paths, print_config};
+pub(super) use self::inspection::{inspect_dataset, inspect_db, inspect_provenance, smoke_dataset};
 pub(super) use self::metadata::{
     emit_plugin_metadata, enforce_umbrella_compatibility, print_version,
 };

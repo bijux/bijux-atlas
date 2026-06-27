@@ -25,8 +25,7 @@ use commands::{
     CatalogCommand, DatasetCommand, DiffCommand, ExportCommand, GcCommand, InspectCommand,
     QueryCommand,
 };
-use rusqlite::Connection;
-use serde_json::{json, Value};
+use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode as ProcessExitCode;
