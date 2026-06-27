@@ -50,6 +50,22 @@
       "used_in": []
     },
     {
+      "name": "audit-frozen",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "audit-rs",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
       "name": "build",
       "defined_in": [
         "makes/build.mk"
@@ -506,6 +522,14 @@
       "used_in": []
     },
     {
+      "name": "fmt-rs",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
       "name": "help",
       "defined_in": [
         "makes/entrypoints.mk"
@@ -585,6 +609,14 @@
       "used_in": []
     },
     {
+      "name": "lint-frozen",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
       "name": "lint-clippy-json",
       "defined_in": [
         "makes/cargo.mk"
@@ -610,6 +642,14 @@
     },
     {
       "name": "lint-policy-report",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "lint-rs",
       "defined_in": [
         "makes/cargo.mk"
       ],
@@ -967,6 +1007,30 @@
     },
     {
       "name": "test-all",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "test-all-frozen",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "test-all-rs",
+      "defined_in": [
+        "makes/cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "test-rs",
       "defined_in": [
         "makes/cargo.mk"
       ],

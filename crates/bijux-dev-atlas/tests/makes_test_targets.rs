@@ -17,8 +17,8 @@ fn test_all_runs_nextest_once_without_retries() {
     let cargo_mk =
         fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
     let start = cargo_mk
-        .find("test-all: ## Run all workspace tests including slow_ and ignored tests")
-        .expect("test-all target");
+        .find("test-all-rs: ## Run all workspace tests including slow_ and ignored tests")
+        .expect("test-all-rs target");
     let tail = &cargo_mk[start..];
     let end = tail.find("\n\n").unwrap_or(tail.len());
     let target_block = &tail[..end];
@@ -32,6 +32,54 @@ fn test_all_runs_nextest_once_without_retries() {
         target_block.contains("--retries 0"),
         "test-all must force retries to zero"
     );
+}
+
+#[test]
+fn cargo_gate_aliases_delegate_to_rust_lanes() {
+    let cargo_mk =
+        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
+
+    for (target, delegate) in [
+        ("fmt:", "$(MAKE) fmt-rs"),
+        ("lint:", "$(MAKE) lint-rs"),
+        ("audit:", "$(MAKE) audit-rs"),
+        ("test:", "$(MAKE) test-rs"),
+        ("test-all:", "$(MAKE) test-all-rs"),
+    ] {
+        let start = cargo_mk.find(target).expect("alias target");
+        let tail = &cargo_mk[start..];
+        let end = tail.find("\n\n").unwrap_or(tail.len());
+        let target_block = &tail[..end];
+        assert!(
+            target_block.contains(delegate),
+            "{target} should delegate to {delegate}"
+        );
+    }
+}
+
+#[test]
+fn frozen_gate_targets_delegate_to_pinned_ref_launcher() {
+    let cargo_mk =
+        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
+
+    for (target, gate_target) in [
+        ("test-all-frozen:", "PINNED_REF_GATE_TARGET=\"test-all\""),
+        ("lint-frozen:", "PINNED_REF_GATE_TARGET=\"lint\""),
+        ("audit-frozen:", "PINNED_REF_GATE_TARGET=\"audit\""),
+    ] {
+        let start = cargo_mk.find(target).expect("frozen target");
+        let tail = &cargo_mk[start..];
+        let end = tail.find("\n\n").unwrap_or(tail.len());
+        let target_block = &tail[..end];
+        assert!(
+            target_block.contains("$(PINNED_REF_GATE_BIN)"),
+            "{target} should use the pinned-ref launcher"
+        );
+        assert!(
+            target_block.contains(gate_target),
+            "{target} should set {gate_target}"
+        );
+    }
 }
 
 #[test]

@@ -55,6 +55,41 @@ fn dockerfile_paths_under(root: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
+fn validate_root_rustfmt_mirror(
+    ctx: &ConfigsContext,
+    errors: &mut Vec<String>,
+) -> Result<(), String> {
+    let root_rustfmt = ctx.repo_root.join("rustfmt.toml");
+    let governed_rustfmt = ctx
+        .repo_root
+        .join("configs/sources/repository/rust-tooling/rustfmt.toml");
+
+    if !root_rustfmt.exists() {
+        errors.push(
+            "CONFIGS_DRIFT_ERROR: root rustfmt.toml is required so plain cargo fmt matches make fmt"
+                .to_string(),
+        );
+        return Ok(());
+    }
+
+    if !governed_rustfmt.exists() {
+        return Ok(());
+    }
+
+    let root_text = fs::read_to_string(&root_rustfmt)
+        .map_err(|e| format!("failed to read {}: {e}", root_rustfmt.display()))?;
+    let governed_text = fs::read_to_string(&governed_rustfmt)
+        .map_err(|e| format!("failed to read {}: {e}", governed_rustfmt.display()))?;
+
+    if root_text != governed_text {
+        errors.push(
+            "CONFIGS_DRIFT_ERROR: rustfmt.toml must mirror configs/sources/repository/rust-tooling/rustfmt.toml so cargo fmt and make fmt stay equivalent".to_string(),
+        );
+    }
+
+    Ok(())
+}
+
 fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, String> {
     let mut errors = Vec::<String>::new();
     let forbidden_root_refs = [
@@ -109,13 +144,14 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
         }
     }
 
-    for root_path in ["clippy.toml", "rustfmt.toml", "deny.toml", "audit.toml"] {
+    for root_path in ["clippy.toml", "deny.toml", "audit.toml"] {
         if ctx.repo_root.join(root_path).exists() {
             errors.push(format!(
                 "CONFIGS_DRIFT_ERROR: root shim `{root_path}` is forbidden; use configs/** SSOT only"
             ));
         }
     }
+    validate_root_rustfmt_mirror(ctx, &mut errors)?;
 
     let mut check_text_ref = |path: &Path| -> Result<(), String> {
         let rel = path
@@ -156,6 +192,60 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
     errors.sort();
     errors.dedup();
     Ok(errors)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    fn test_context(repo_root: PathBuf) -> ConfigsContext {
+        ConfigsContext {
+            configs_root: repo_root.join("configs"),
+            repo_root,
+            artifacts_root: PathBuf::from("artifacts"),
+            run_id: RunId::from_seed("configs_path_drift_test"),
+        }
+    }
+
+    #[test]
+    fn root_rustfmt_mirror_accepts_matching_files() {
+        let temp = tempdir().expect("tempdir");
+        let repo_root = temp.path().to_path_buf();
+        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
+        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
+        let contents = "edition = \"2021\"\nnewline_style = \"Unix\"\n";
+        fs::write(repo_root.join("rustfmt.toml"), contents).expect("write root");
+        fs::write(&governed, contents).expect("write governed");
+
+        let ctx = test_context(repo_root);
+        let mut errors = Vec::new();
+        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
+        assert!(
+            errors.is_empty(),
+            "expected no drift errors, got {errors:?}"
+        );
+    }
+
+    #[test]
+    fn root_rustfmt_mirror_rejects_drift() {
+        let temp = tempdir().expect("tempdir");
+        let repo_root = temp.path().to_path_buf();
+        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
+        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
+        fs::write(repo_root.join("rustfmt.toml"), "edition = \"2021\"\n").expect("write root");
+        fs::write(&governed, "edition = \"2021\"\nmax_width = 100\n").expect("write governed");
+
+        let ctx = test_context(repo_root);
+        let mut errors = Vec::new();
+        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
+        assert!(
+            errors
+                .iter()
+                .any(|error| error.contains("cargo fmt and make fmt stay equivalent")),
+            "expected root rustfmt drift error, got {errors:?}"
+        );
+    }
 }
 
 pub(super) fn configs_verify_payload(
