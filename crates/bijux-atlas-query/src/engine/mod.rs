@@ -526,4 +526,4 @@ pub use filters::{
 pub use limits::QueryLimits;
 
 #[cfg(test)]
-mod query_tests;
+mod tests;
