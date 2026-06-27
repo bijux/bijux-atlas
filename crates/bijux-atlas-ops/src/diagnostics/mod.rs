@@ -4,3 +4,4 @@ pub mod bundle_contracts;
 pub mod bundle_payload;
 pub mod explain_payload;
 pub mod path_contracts;
+pub mod redaction_payload;

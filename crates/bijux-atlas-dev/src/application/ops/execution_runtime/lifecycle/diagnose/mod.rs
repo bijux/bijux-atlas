@@ -8,6 +8,9 @@ use bijux_atlas_ops::diagnostics::bundle_contracts::{
 };
 use bijux_atlas_ops::diagnostics::bundle_payload::diagnose_bundle_payload;
 use bijux_atlas_ops::diagnostics::explain_payload::diagnose_explain_payload;
+use bijux_atlas_ops::diagnostics::redaction_payload::{
+    diagnose_redaction_payload, redact_bundle_metadata, write_redacted_bundle,
+};
 
 pub(crate) fn run_ops_diagnose_bundle(
     args: &crate::cli::OpsDiagnoseBundleArgs,
@@ -91,44 +94,21 @@ pub(crate) fn run_ops_diagnose_redact(
     let mut parsed: serde_json::Value = serde_json::from_str(&raw)
         .map_err(|err| format!("failed to parse {}: {err}", bundle_path.display()))?;
 
-    // Explicit redaction policy keys that must never leak from bundle metadata.
-    let redact_keys = ["password", "secret", "token", "api_key"];
-    let mut redacted = Vec::new();
-    if let Some(object) = parsed.as_object_mut() {
-        for key in redact_keys {
-            if object.remove(key).is_some() {
-                redacted.push(key.to_string());
-            }
-        }
-        object.insert(
-            "redaction_policy".to_string(),
-            serde_json::json!(redact_keys),
-        );
-        object.insert("redaction_applied".to_string(), serde_json::json!(true));
-    }
-
-    let out_path = bundle_path
-        .parent()
-        .unwrap_or(&repo_root)
-        .join("bundle.redacted.json");
-    std::fs::write(
-        &out_path,
-        serde_json::to_string_pretty(&parsed)
-            .map_err(|err| format!("failed to encode {}: {err}", out_path.display()))?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
-
-    let payload = serde_json::json!({
-      "schema_version": 1,
-      "text": "ops diagnose redact",
-      "rows": [{
-        "source": bundle_path.strip_prefix(&repo_root).unwrap_or(&bundle_path).display().to_string(),
-        "redacted": out_path.strip_prefix(&repo_root).unwrap_or(&out_path).display().to_string(),
-        "redacted_keys": redacted,
-        "policy_keys": redact_keys
-      }],
-      "summary": {"total": 1, "errors": 0, "warnings": 0}
-    });
+    let redacted = redact_bundle_metadata(&mut parsed);
+    let out_path = write_redacted_bundle(&bundle_path, &parsed)?;
+    let payload = diagnose_redaction_payload(
+        &bundle_path
+            .strip_prefix(&repo_root)
+            .unwrap_or(&bundle_path)
+            .display()
+            .to_string(),
+        &out_path
+            .strip_prefix(&repo_root)
+            .unwrap_or(&out_path)
+            .display()
+            .to_string(),
+        redacted,
+    );
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
