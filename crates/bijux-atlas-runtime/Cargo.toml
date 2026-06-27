@@ -39,9 +39,6 @@ bijux-atlas-ingest = { workspace = true }
 bijux-atlas-model = { workspace = true }
 bijux-atlas-query = { workspace = true }
 bijux-atlas-store = { workspace = true, default-features = false }
-clap = { version = "4", features = ["derive"] }
-clap_complete = "4"
-csv = "1.4"
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
 rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
@@ -49,14 +46,11 @@ serde_json.workspace = true
 serde_yaml = "0.9"
 semver.workspace = true
 sha2 = "0.11"
-tar = "0.4"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 toml = "1.1"
 tracing = "0.1"
 tracing-opentelemetry = "0.33"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
-unicode-normalization = "0.1"
-zstd = "0.13"
 
 [build-dependencies]
 semver.workspace = true
