@@ -2,28 +2,9 @@
 
 use crate::*;
 use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
-
-pub(crate) fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
-    let re = Regex::new(pattern).ok()?;
-    re.captures(raw)
-        .and_then(|cap| cap.get(1))
-        .map(|m| m.as_str().to_string())
-}
-
-#[derive(Debug, Clone, Copy)]
-pub(crate) enum ToolMismatchCode {
-    MissingBinary,
-    VersionMismatch,
-}
-
-impl ToolMismatchCode {
-    pub(crate) const fn as_str(self) -> &'static str {
-        match self {
-            Self::MissingBinary => "TOOLS_MISSING_BINARY",
-            Self::VersionMismatch => "TOOLS_VERSION_MISMATCH",
-        }
-    }
-}
+pub(crate) use bijux_atlas_ops::inventory::tooling_support::{
+    normalize_tool_version_with_regex, ToolMismatchCode,
+};
 
 pub(crate) fn parse_tool_overrides(
     values: &[String],
