@@ -124,7 +124,7 @@ fn detects_invalid_pinned_dataset_ids() {
         .parent()
         .expect("repo")
         .to_path_buf();
-    let manifest_path = repo_root.join("ops/datasets/manifest.json");
+    let manifest_path = path_contracts::atlas_dataset_manifest(&repo_root);
     let manifest_ids = load_dataset_manifest_ids(&manifest_path).expect("manifest ids");
     let merged_values = serde_json::json!({
         "cache": {
@@ -148,7 +148,7 @@ fn accepts_valid_pinned_dataset_ids() {
         .parent()
         .expect("repo")
         .to_path_buf();
-    let manifest_path = repo_root.join("ops/datasets/manifest.json");
+    let manifest_path = path_contracts::atlas_dataset_manifest(&repo_root);
     let manifest_ids = load_dataset_manifest_ids(&manifest_path).expect("manifest ids");
     let merged_values = serde_json::json!({
         "cache": {

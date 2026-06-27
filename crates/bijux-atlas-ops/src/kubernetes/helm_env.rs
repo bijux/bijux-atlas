@@ -7,6 +7,8 @@ use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
 
+use super::path_contracts;
+
 #[derive(Debug, Clone)]
 pub struct YamlDoc {
     pub source: String,
@@ -69,7 +71,7 @@ struct ToolchainInventory {
 }
 
 pub fn resolve_helm_binary_from_inventory(repo_root: &Path) -> Result<String, String> {
-    let inventory_path = repo_root.join("ops/inventory/toolchain.json");
+    let inventory_path = path_contracts::atlas_toolchain_inventory(repo_root);
     let inventory_text = std::fs::read_to_string(&inventory_path)
         .map_err(|err| format!("failed to read {}: {err}", inventory_path.display()))?;
     let inventory: ToolchainInventory = serde_json::from_str(&inventory_text)
@@ -667,11 +669,15 @@ mod tests {
             .parent()
             .expect("repo")
             .to_path_buf();
+        let chart_dir = path_contracts::atlas_chart_dir(&repo_root);
+        let values_file = path_contracts::atlas_values_file_from_ops_root(
+            &path_contracts::atlas_ops_root(&repo_root),
+        );
         let error = render_chart(
             &repo_root,
             "definitely-missing-helm-binary",
-            &repo_root.join("ops/k8s/charts/bijux-atlas"),
-            &[repo_root.join("ops/k8s/charts/bijux-atlas/values.yaml")],
+            &chart_dir,
+            &[values_file],
             "bijux-atlas",
         )
         .expect_err("missing helm");
@@ -686,11 +692,14 @@ mod tests {
             .parent()
             .expect("repo")
             .to_path_buf();
+        let values_file = path_contracts::atlas_values_file_from_ops_root(
+            &path_contracts::atlas_ops_root(&repo_root),
+        );
         let error = render_chart(
             &repo_root,
             "helm",
             Path::new("missing-chart"),
-            &[repo_root.join("ops/k8s/charts/bijux-atlas/values.yaml")],
+            &[values_file],
             "bijux-atlas",
         )
         .expect_err("missing chart");

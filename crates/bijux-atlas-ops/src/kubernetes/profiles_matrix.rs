@@ -8,7 +8,7 @@ use std::time::{Duration, Instant};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use super::helm_env;
+use super::{helm_env, path_contracts};
 
 #[path = "profiles_matrix/validation_support.rs"]
 mod validation_support;
@@ -200,7 +200,7 @@ pub fn discover_profiles(values_root: &Path) -> Result<Vec<PathBuf>, String> {
 }
 
 fn load_tooling(repo_root: &Path) -> Result<Vec<ToolVersionRow>, String> {
-    let path = repo_root.join("ops/inventory/toolchain.json");
+    let path = path_contracts::atlas_toolchain_inventory(repo_root);
     let text = std::fs::read_to_string(&path)
         .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     let inventory: ToolchainInventory = serde_json::from_str(&text)
