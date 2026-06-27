@@ -518,9 +518,9 @@ pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String
                 "sha256": sha256_file(&institutional_delta_inputs)?
             }
         },
-        "reports": collect_report_paths(&repo_root, &run_id)?,
-        "simulation_summaries": collect_simulation_summary_paths(&repo_root, &run_id),
-        "drill_summaries": collect_drill_summary_paths(&repo_root, &run_id),
+        "reports": collect_report_paths(&repo_root, run_id.as_str())?,
+        "simulation_summaries": collect_simulation_summary_paths(&repo_root, run_id.as_str()),
+        "drill_summaries": collect_drill_summary_paths(&repo_root, run_id.as_str()),
         "ops_evidence": {
             "install_evidence": {
                 "path": install_evidence_path,

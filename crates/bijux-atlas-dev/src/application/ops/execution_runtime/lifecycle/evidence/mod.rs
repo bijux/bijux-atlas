@@ -19,4 +19,9 @@ pub(crate) use bijux_atlas_ops::lifecycle::evidence_artifacts::{
 pub(crate) use bijux_atlas_ops::lifecycle::evidence_support::{
     collect_image_artifacts, collect_sboms, evidence_root, sha256_file,
 };
+pub(crate) use bijux_atlas_ops::lifecycle::release_inventory::{
+    collect_dataset_assets, collect_docs_site_summary, collect_drill_summary_paths,
+    collect_governance_assets, collect_observability_assets, collect_perf_assets,
+    collect_report_paths, collect_simulation_summary_paths, collect_supply_chain_inventory,
+};
 pub(crate) use bijux_atlas_ops::observe::contract_checks::observability_contract_checks;
