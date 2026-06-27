@@ -1055,5 +1055,4 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
-#[path = "ci_surface.rs"]
 mod ci;

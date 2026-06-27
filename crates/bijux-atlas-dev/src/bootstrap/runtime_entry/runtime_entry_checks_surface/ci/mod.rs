@@ -1,5 +1,4 @@
 use super::*;
-#[path = "ci_surface_registry.rs"]
 mod ci_registry;
 
 use ci_registry::{
