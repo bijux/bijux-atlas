@@ -4,17 +4,18 @@ use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::*;
+use bijux_atlas_ops::kubernetes::render_policy::{
+    validate_helm_dependencies, validate_render_output, RenderSurfaceTarget,
+};
 use serde_json::Value;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
 
 pub(crate) mod cluster_safety;
-pub(crate) mod validation;
+pub(crate) mod kubeconform;
 
-use self::validation::{
-    run_kubeconform_validation, validate_helm_dependencies, validate_render_output,
-};
+use self::kubeconform::run_kubeconform_validation;
 
 pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32), String> {
     let common = &args.common;
@@ -84,8 +85,11 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
         }
     };
 
-    let mut validation_errors =
-        validate_render_output(&rendered_manifest, args.target, &profile.name);
+    let mut validation_errors = validate_render_output(
+        &rendered_manifest,
+        render_surface_target(args.target),
+        &profile.name,
+    );
     let mut kubeconform_result = None;
     if matches!(args.target, OpsRenderTarget::Helm) {
         validation_errors.extend(validate_helm_dependencies(&ops_root));
@@ -300,6 +304,14 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     let exit = if validation_errors.is_empty() { 0 } else { 1 };
     Ok((rendered, exit))
+}
+
+const fn render_surface_target(target: OpsRenderTarget) -> RenderSurfaceTarget {
+    match target {
+        OpsRenderTarget::Helm => RenderSurfaceTarget::Helm,
+        OpsRenderTarget::Kustomize => RenderSurfaceTarget::Kustomize,
+        OpsRenderTarget::Kind => RenderSurfaceTarget::Kind,
+    }
 }
 
 fn latest_render_hash(

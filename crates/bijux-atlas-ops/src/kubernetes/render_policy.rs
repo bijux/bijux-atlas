@@ -1,16 +1,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
+use std::fs;
+use std::path::Path;
 
-pub(super) fn validate_render_output(
+use super::path_contracts;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum RenderSurfaceTarget {
+    Helm,
+    Kustomize,
+    Kind,
+}
+
+pub fn validate_render_output(
     rendered: &str,
-    target: OpsRenderTarget,
+    target: RenderSurfaceTarget,
     profile_name: &str,
 ) -> Vec<String> {
     let mut errors = Vec::new();
     let required_kinds = match target {
-        OpsRenderTarget::Helm => ["Deployment", "Service"].to_vec(),
-        OpsRenderTarget::Kind | OpsRenderTarget::Kustomize => Vec::new(),
+        RenderSurfaceTarget::Helm => ["Deployment", "Service"].to_vec(),
+        RenderSurfaceTarget::Kind | RenderSurfaceTarget::Kustomize => Vec::new(),
     };
     for kind in required_kinds {
         let needle = format!("kind: {kind}");
@@ -29,48 +39,7 @@ pub(super) fn validate_render_output(
     errors
 }
 
-pub(super) fn run_kubeconform_validation(
-    process: &OpsProcess,
-    repo_root: &Path,
-    rendered: &str,
-) -> Result<(Vec<String>, Value), String> {
-    let tmp_dir = repo_root.join("artifacts/tmp/k8s-validate");
-    fs::create_dir_all(&tmp_dir)
-        .map_err(|err| format!("failed to create {}: {err}", tmp_dir.display()))?;
-    let manifest_path = tmp_dir.join("rendered.yaml");
-    fs::write(&manifest_path, rendered)
-        .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
-    let args = vec![
-        "-strict".to_string(),
-        "-ignore-missing-schemas".to_string(),
-        "-summary".to_string(),
-        manifest_path.display().to_string(),
-    ];
-    match process.run_subprocess("kubeconform", &args, repo_root) {
-        Ok((stdout, event)) => Ok((
-            Vec::new(),
-            serde_json::json!({
-                "tool":"kubeconform",
-                "status":"ok",
-                "stdout": stdout,
-                "subprocess_event": event
-            }),
-        )),
-        Err(err) => {
-            let message = err.to_stable_message();
-            Ok((
-                vec![format!("kubeconform validation failed: {message}")],
-                serde_json::json!({
-                    "tool":"kubeconform",
-                    "status":"failed",
-                    "error": message
-                }),
-            ))
-        }
-    }
-}
-
-pub(crate) fn scan_timestamps(rendered: &str) -> Vec<String> {
+pub fn scan_timestamps(rendered: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for marker in ["generatedAt:", "timestamp:", "creationTimestamp:"] {
         if rendered.contains(marker) {
@@ -82,14 +51,7 @@ pub(crate) fn scan_timestamps(rendered: &str) -> Vec<String> {
     errors
 }
 
-fn profile_requires_digest_pins(profile_name: &str) -> bool {
-    matches!(
-        profile_name,
-        "prod" | "prod-minimal" | "prod-ha" | "prod-airgap"
-    )
-}
-
-pub(crate) fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<String> {
+pub fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<String> {
     let mut errors = Vec::new();
     if !profile_requires_digest_pins(profile_name) {
         return errors;
@@ -110,6 +72,46 @@ pub(crate) fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<St
         }
     }
     errors
+}
+
+pub fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    if rendered.contains("kind: ClusterRole") {
+        errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
+    }
+    errors
+}
+
+pub fn validate_helm_dependencies(ops_root: &Path) -> Vec<String> {
+    let mut errors = Vec::new();
+    let chart_dir = path_contracts::atlas_chart_dir_from_ops_root(ops_root);
+    let chart_yaml_path = chart_dir.join("Chart.yaml");
+    let chart_yaml = match fs::read_to_string(&chart_yaml_path) {
+        Ok(value) => value,
+        Err(err) => {
+            return vec![format!(
+                "failed to read {}: {err}",
+                chart_yaml_path.display()
+            )];
+        }
+    };
+    if chart_yaml.contains("\ndependencies:") {
+        let lock_path = chart_dir.join("Chart.lock");
+        if !lock_path.exists() {
+            errors.push(format!(
+                "helm dependencies are declared but {} is missing",
+                lock_path.display()
+            ));
+        }
+    }
+    errors
+}
+
+fn profile_requires_digest_pins(profile_name: &str) -> bool {
+    matches!(
+        profile_name,
+        "prod" | "prod-minimal" | "prod-ha" | "prod-airgap"
+    )
 }
 
 fn scan_invalid_image_refs(rendered: &str) -> Vec<String> {
@@ -227,42 +229,9 @@ fn scan_alert_annotation_contract(rendered: &str) -> Vec<String> {
     errors
 }
 
-pub(crate) fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
-    let mut errors = Vec::new();
-    if rendered.contains("kind: ClusterRole") {
-        errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
-    }
-    errors
-}
-
-pub(super) fn validate_helm_dependencies(ops_root: &Path) -> Vec<String> {
-    let mut errors = Vec::new();
-    let chart_dir = ops_root.join("k8s/charts/bijux-atlas");
-    let chart_yaml_path = chart_dir.join("Chart.yaml");
-    let chart_yaml = match fs::read_to_string(&chart_yaml_path) {
-        Ok(value) => value,
-        Err(err) => {
-            return vec![format!(
-                "failed to read {}: {err}",
-                chart_yaml_path.display()
-            )];
-        }
-    };
-    if chart_yaml.contains("\ndependencies:") {
-        let lock_path = chart_dir.join("Chart.lock");
-        if !lock_path.exists() {
-            errors.push(format!(
-                "helm dependencies are declared but {} is missing",
-                lock_path.display()
-            ));
-        }
-    }
-    errors
-}
-
 #[cfg(test)]
 mod tests {
-    use super::{scan_alert_annotation_contract, scan_invalid_image_refs, scan_unpinned_images};
+    use super::*;
 
     #[test]
     fn rendered_image_reference_must_not_have_multiple_digest_separators() {
@@ -271,7 +240,7 @@ mod tests {
         assert!(
             errors
                 .iter()
-                .any(|e| e.contains("multiple digest separators")),
+                .any(|entry| entry.contains("multiple digest separators")),
             "expected invalid image reference error, got {errors:?}"
         );
     }
@@ -299,8 +268,28 @@ mod tests {
         assert!(
             errors
                 .iter()
-                .any(|e| e.contains("missing required label `owner`")),
+                .any(|entry| entry.contains("missing required label `owner`")),
             "expected owner contract violation, got {errors:?}"
+        );
+    }
+
+    #[test]
+    fn helm_dependencies_require_chart_lock_when_chart_declares_dependencies() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let ops_root = root.path().join("ops");
+        let chart_dir = path_contracts::atlas_chart_dir_from_ops_root(&ops_root);
+        std::fs::create_dir_all(&chart_dir).expect("mkdir chart");
+        std::fs::write(
+            chart_dir.join("Chart.yaml"),
+            "apiVersion: v2\nname: bijux-atlas\ndependencies:\n  - name: redis\n",
+        )
+        .expect("write chart");
+
+        let errors = validate_helm_dependencies(&ops_root);
+
+        assert!(
+            errors.iter().any(|entry| entry.contains("Chart.lock")),
+            "expected missing Chart.lock error, got {errors:?}"
         );
     }
 }
