@@ -357,6 +357,56 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
 }
 
 #[test]
+fn atlas_binary_ownership_matches_crate_boundaries() {
+    let root = repo_root();
+
+    for required in [
+        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs",
+    ] {
+        assert!(
+            root.join(required).is_file(),
+            "atlas binary owner is missing required entrypoint: {required}"
+        );
+    }
+
+    for forbidden in [
+        "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
+    ] {
+        assert!(
+            !root.join(forbidden).exists(),
+            "atlas runtime crate must not own stale or non-runtime binaries: {forbidden}"
+        );
+    }
+
+    let allowlist = fs::read_to_string(
+        root.join("configs/sources/governance/governance/repo-bin-allowlist.txt"),
+    )
+    .expect("repo bin allowlist");
+    for expected in [
+        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs",
+    ] {
+        assert!(
+            allowlist.contains(expected),
+            "repo bin allowlist must track the owned Atlas binary surface: {expected}"
+        );
+    }
+    for forbidden in [
+        "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
+    ] {
+        assert!(
+            !allowlist.contains(forbidden),
+            "repo bin allowlist must not preserve stale binary ownership: {forbidden}"
+        );
+    }
+}
+
+#[test]
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =
