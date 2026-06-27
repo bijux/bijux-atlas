@@ -14,7 +14,7 @@ use tempfile::tempdir;
 #[test]
 fn plugin_metadata_handshake_has_required_fields() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .arg("--bijux-plugin-metadata")
+        .arg(bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG)
         .output()
         .expect("run plugin metadata command");
     assert!(output.status.success());
@@ -54,7 +54,12 @@ fn atlas_validate_command_supports_deep_mode() {
 #[test]
 fn umbrella_version_compatibility_is_enforced() {
     let bad = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["--json", "--umbrella-version", "0.2.1", "version"])
+        .args([
+            "--json",
+            bijux_atlas::adapters::inbound::cli::UMBRELLA_VERSION_FLAG,
+            "0.2.1",
+            "version",
+        ])
         .output()
         .expect("run with incompatible umbrella version");
     assert_eq!(bad.status.code(), Some(2));
@@ -76,7 +81,7 @@ fn help_contains_standard_plugin_flags() {
         "--quiet",
         "--verbose",
         "--trace",
-        "--bijux-plugin-metadata",
+        bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
     ] {
         assert!(text.contains(needle), "help missing {needle}");
     }

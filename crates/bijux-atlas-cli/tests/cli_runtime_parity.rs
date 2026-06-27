@@ -110,7 +110,7 @@ fn assert_same_output(left: &Output, right: &Output) {
 }
 
 #[test]
-fn atlas_namespace_stays_registered_with_bijux_cli() {
+fn slow_atlas_namespace_stays_registered_with_bijux_cli() {
     let runtime_bin_dir = runtime_bin_dir();
     let bijux = bijux_cli_binary();
     let output = run_output(&bijux, &["atlas", "--help"], runtime_bin_dir.path());
@@ -127,7 +127,7 @@ fn atlas_namespace_stays_registered_with_bijux_cli() {
 }
 
 #[test]
-fn bijux_cli_dispatch_matches_bijux_atlas_runtime() {
+fn slow_bijux_cli_dispatch_matches_bijux_atlas_runtime() {
     let runtime_bin_dir = runtime_bin_dir();
     let atlas = runtime_bin_dir.path().join("bijux-atlas");
     let bijux = bijux_cli_binary();
@@ -139,7 +139,10 @@ fn bijux_cli_dispatch_matches_bijux_atlas_runtime() {
         vec!["query", "--help"],
         vec!["inspect", "--help"],
         vec!["export", "--help"],
-        vec!["--json", "--bijux-plugin-metadata"],
+        vec![
+            "--json",
+            bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
+        ],
     ] {
         let direct = run_output(&atlas, &args, runtime_bin_dir.path());
         let mut umbrella_args = vec!["atlas"];

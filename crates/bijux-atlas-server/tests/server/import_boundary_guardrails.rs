@@ -1,9 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
+fn repo_root() -> std::path::PathBuf {
+    std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(std::path::Path::parent)
+        .expect("workspace root")
+        .to_path_buf()
+}
+
+fn runtime_crate_root() -> std::path::PathBuf {
+    repo_root().join("crates/bijux-atlas")
+}
+
 #[test]
 fn http_layer_does_not_import_runtime_effect_internals() {
-    let root =
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/adapters/inbound/http");
+    let root = runtime_crate_root().join("src/adapters/inbound/http");
     let forbidden = [
         "runtime::dataset_cache_manager_storage",
         "crate::runtime::dataset_cache_manager_storage",
@@ -41,7 +52,7 @@ fn http_layer_does_not_import_runtime_effect_internals() {
 
 #[test]
 fn runtime_layer_does_not_import_http_protocol_modules() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/app");
+    let root = runtime_crate_root().join("src/app");
     let forbidden = [
         "crate::adapters::inbound::http::",
         "super::http::",
@@ -69,7 +80,7 @@ fn runtime_layer_does_not_import_http_protocol_modules() {
 
 #[test]
 fn effects_layer_avoids_http_server_framework_deps() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/effects");
+    let root = runtime_crate_root().join("src/effects");
     let forbidden = ["crate::adapters::inbound::http::", "axum::", "hyper::"];
 
     for path in rust_files_under(&root) {
@@ -90,7 +101,7 @@ fn effects_layer_avoids_http_server_framework_deps() {
 
 #[test]
 fn support_modules_remain_non_entrypoint() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let root = runtime_crate_root();
     let support_files = ["src/adapters/inbound/http/genes_support.rs"];
     let forbidden_tokens = [
         "pub async fn",
@@ -116,7 +127,7 @@ fn support_modules_remain_non_entrypoint() {
 
 #[test]
 fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
-    let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let root = runtime_crate_root();
     let path = root.join("src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs");
     let text = std::fs::read_to_string(&path).expect("read genes runtime handler");
     let forbidden_tokens = [

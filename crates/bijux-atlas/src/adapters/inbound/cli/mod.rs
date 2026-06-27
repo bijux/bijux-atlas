@@ -49,6 +49,8 @@ Options:
 Commands:
 {subcommands}
 {after-help}";
+pub const BIJUX_PLUGIN_METADATA_FLAG: &str = "--bijux-plugin-metadata";
+pub const UMBRELLA_VERSION_FLAG: &str = "--umbrella-version";
 const UMBRELLA_MIN_VERSION: &str = "0.3.0";
 const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.4.0";
 
