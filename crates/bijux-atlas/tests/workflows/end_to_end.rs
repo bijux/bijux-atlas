@@ -5,8 +5,8 @@ use serde_json::Value;
 use std::path::PathBuf;
 
 fn fixture_tiny_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/tiny")
+    repo_root()
+        .join("crates/bijux-atlas-ingest/tests/fixtures/tiny")
         .join(name)
 }
 

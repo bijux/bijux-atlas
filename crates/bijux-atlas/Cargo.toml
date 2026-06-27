@@ -152,10 +152,6 @@ path = "tests/interfaces/user_cli_surface.rs"
 name = "workflows_end_to_end"
 path = "tests/workflows/end_to_end.rs"
 
-[[test]]
-name = "workflows_ingest"
-path = "tests/workflows/ingest.rs"
-
 [[bench]]
 name = "security_data_protection"
 path = "benches/security/data_protection.rs"

@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-ingest/latest/bijux_atlas_ingest/"
 readme = "README.md"
 categories = ["science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
 keywords = ["bioinformatics", "genomics", "ingest", "gff3", "fasta"]
 
 [dependencies]
@@ -30,3 +31,7 @@ toml = "1.0"
 
 [lib]
 path = "src/lib.rs"
+
+[[test]]
+name = "workflows"
+path = "tests/workflows.rs"
