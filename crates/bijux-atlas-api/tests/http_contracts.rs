@@ -13,7 +13,18 @@ use serde_json::Value;
 use sha2::Sha256;
 use tempfile::tempdir;
 
-use super::api_contracts_support::{
+#[path = "http_contracts/advanced_contracts.rs"]
+mod advanced_contracts;
+#[path = "http_contracts/core_route_contracts.rs"]
+mod core_route_contracts;
+#[path = "http_contracts_support/mod.rs"]
+mod http_contracts_support;
+#[path = "http_contracts/security_input_resilience.rs"]
+mod security_input_resilience;
+#[path = "http_contracts/sqlite_query_guarantees.rs"]
+mod sqlite_query_guarantees;
+
+use crate::http_contracts_support::{
     fixture_fasta_and_fai, fixture_release_index, mk_dataset, send_raw, send_raw_with_method,
 };
 
@@ -962,8 +973,3 @@ async fn sequence_endpoint_boundary_conditions_are_enforced() {
     assert_eq!(status, 200);
     assert!(body.contains("\"gc_fraction\""));
 }
-
-#[path = "api-contracts/advanced_contracts.rs"]
-mod advanced_contracts;
-#[path = "api-contracts/sqlite_query_guarantees.rs"]
-mod sqlite_query_guarantees;

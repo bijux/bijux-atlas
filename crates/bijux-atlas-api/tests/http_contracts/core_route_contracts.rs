@@ -8,7 +8,7 @@ use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager
 use serde_json::Value;
 use tempfile::tempdir;
 
-use super::api_contracts_support::{mk_dataset, send_raw};
+use super::http_contracts_support::{mk_dataset, send_raw};
 
 fn header_value(headers: &str, name: &str) -> Option<String> {
     let prefix = format!("{}: ", name.to_ascii_lowercase());

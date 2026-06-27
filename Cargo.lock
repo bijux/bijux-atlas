@@ -276,12 +276,20 @@ dependencies = [
 name = "bijux-atlas-api"
 version = "0.2.1"
 dependencies = [
+ "axum",
+ "bijux-atlas",
  "bijux-atlas-core",
  "bijux-atlas-model",
  "criterion",
+ "hex",
+ "hmac",
  "reqwest 0.12.28",
+ "rusqlite",
  "serde",
  "serde_json",
+ "sha2 0.11.0",
+ "tempfile",
+ "tokio",
 ]
 
 [[package]]
