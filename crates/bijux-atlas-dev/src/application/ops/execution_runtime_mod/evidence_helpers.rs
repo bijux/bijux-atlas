@@ -712,7 +712,7 @@ pub(super) fn observability_contract_checks(
     let mut label_policy_passed = true;
     let mut alert_rules_reference_known_metrics = true;
     let label_policy: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../../configs/sources/operations/observability/label-policy.json"
+        "../../../../../../configs/sources/operations/observability/label-policy.json"
     ))
     .map_err(|err| format!("failed to parse label policy: {err}"))?;
     let alert_required_labels = label_policy["alerts_required_labels"]
