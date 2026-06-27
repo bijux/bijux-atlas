@@ -161,11 +161,6 @@ path = "benches/domain/security_data_protection.rs"
 harness = false
 
 [[bench]]
-name = "domain_query_parse_validation"
-path = "benches/domain/query_parse_validation.rs"
-harness = false
-
-[[bench]]
 name = "ingest_db_size_growth"
 path = "benches/ingest/db_size_growth.rs"
 harness = false

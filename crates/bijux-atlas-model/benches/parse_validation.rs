@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::query::{GeneId, Region, TranscriptId};
+use bijux_atlas_model::{GeneId, Region, TranscriptId};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 
@@ -22,10 +22,5 @@ fn bench_region_parse(c: &mut Criterion) {
     });
 }
 
-criterion_group!(
-    benches,
-    bench_gene_id_parse,
-    bench_transcript_id_parse,
-    bench_region_parse
-);
+criterion_group!(benches, bench_gene_id_parse, bench_transcript_id_parse, bench_region_parse);
 criterion_main!(benches);

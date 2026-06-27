@@ -18,3 +18,11 @@ bijux-atlas-core = { workspace = true, features = ["serde"] }
 bijux-atlas-model = { workspace = true }
 serde.workspace = true
 serde_json.workspace = true
+
+[dev-dependencies]
+criterion = "0.8"
+
+[[bench]]
+name = "openapi_generation"
+path = "benches/openapi_generation.rs"
+harness = false

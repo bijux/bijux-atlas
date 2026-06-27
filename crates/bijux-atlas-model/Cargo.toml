@@ -31,5 +31,10 @@ name = "manifest_codec"
 path = "benches/manifest_codec.rs"
 harness = false
 
+[[bench]]
+name = "parse_validation"
+path = "benches/parse_validation.rs"
+harness = false
+
 [lib]
 path = "src/lib.rs"

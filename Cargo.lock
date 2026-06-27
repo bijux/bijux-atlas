@@ -278,6 +278,7 @@ version = "0.2.1"
 dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
+ "criterion",
  "serde",
  "serde_json",
 ]
