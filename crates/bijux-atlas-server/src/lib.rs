@@ -30,12 +30,10 @@ pub mod query;
 pub mod runtime;
 pub mod version;
 
-pub(crate) use crate::app::server::observability::{
-    chrono_like_unix_millis, record_shed_reason, route_sli_class, unix_time_millis,
-};
-pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-pub(crate) use bijux_atlas_runtime::app::cache::{CacheError, RegistrySourceHealth};
+pub(crate) use crate::app::server::observability::{chrono_like_unix_millis, record_shed_reason};
+pub(crate) use crate::app::server::AppState;
+pub(crate) use bijux_atlas_runtime::app::cache::CacheError;
 #[rustfmt::skip]
-pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
+pub(crate) use crate::runtime::config::runtime_build_hash;
 
 pub const CRATE_NAME: &str = "bijux-atlas-server";

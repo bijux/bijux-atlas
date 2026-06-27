@@ -89,8 +89,8 @@ mod tests {
         headers.insert("x-correlation-id", HeaderValue::from_static("corr-1"));
         headers.insert("x-run-id", HeaderValue::from_static("run-1"));
 
-        let state = crate::AppState::new(crate::DatasetCacheManager::new(
-            crate::DatasetCacheConfig::default(),
+        let state = crate::AppState::new(crate::app::server::DatasetCacheManager::new(
+            crate::app::server::DatasetCacheConfig::default(),
             std::sync::Arc::new(FakeStore::default()),
         ));
         let trace = extract_request_trace(&headers, &state);
@@ -115,8 +115,8 @@ mod tests {
         headers.insert("traceparent", HeaderValue::from_static("00-not-a-trace"));
         headers.insert("x-request-origin", HeaderValue::from_static("origin\tbad"));
 
-        let state = crate::AppState::new(crate::DatasetCacheManager::new(
-            crate::DatasetCacheConfig::default(),
+        let state = crate::AppState::new(crate::app::server::DatasetCacheManager::new(
+            crate::app::server::DatasetCacheConfig::default(),
             std::sync::Arc::new(FakeStore::default()),
         ));
         let trace = extract_request_trace(&headers, &state);
@@ -134,8 +134,8 @@ mod tests {
             HeaderValue::from_static("00-4BF92F3577B34DA6A3CE929D0E0E4736-00F067AA0BA902B7-01"),
         );
 
-        let state = crate::AppState::new(crate::DatasetCacheManager::new(
-            crate::DatasetCacheConfig::default(),
+        let state = crate::AppState::new(crate::app::server::DatasetCacheManager::new(
+            crate::app::server::DatasetCacheConfig::default(),
             std::sync::Arc::new(FakeStore::default()),
         ));
         let trace = extract_request_trace(&headers, &state);
@@ -155,8 +155,8 @@ mod tests {
         );
         headers.insert("x-request-origin", HeaderValue::from_static("perf-test"));
 
-        let state = crate::AppState::new(crate::DatasetCacheManager::new(
-            crate::DatasetCacheConfig::default(),
+        let state = crate::AppState::new(crate::app::server::DatasetCacheManager::new(
+            crate::app::server::DatasetCacheConfig::default(),
             std::sync::Arc::new(FakeStore::default()),
         ));
         let started = std::time::Instant::now();

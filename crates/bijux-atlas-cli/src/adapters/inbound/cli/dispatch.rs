@@ -110,13 +110,15 @@ pub(super) fn run_atlas_command(
                 dry_run,
                 explain,
             } => operations::publish_dataset(
-                source_root,
-                store_root,
-                &release,
-                &species,
-                &assembly,
-                dry_run,
-                explain,
+                operations::PublishDatasetRequest {
+                    source_root,
+                    store_root,
+                    release: &release,
+                    species: &species,
+                    assembly: &assembly,
+                    dry_run,
+                    explain,
+                },
                 output_mode,
             )
             .map_err(CliError::from_action_error),

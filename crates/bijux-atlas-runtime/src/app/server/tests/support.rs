@@ -5,8 +5,10 @@ pub(super) use crate::adapters::outbound::store::testing::FakeStore;
 pub(super) use crate::app::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
-pub(super) use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
+pub(super) use bijux_atlas_core::sha256_hex;
 pub(super) use bijux_atlas_model::dataset::{ArtifactChecksums, ManifestStats};
+pub(super) use bijux_atlas_model::{ArtifactManifest, DatasetId};
+pub(super) use rusqlite::Connection;
 pub(super) use std::collections::HashSet;
 pub(super) use std::path::{Path, PathBuf};
 pub(super) use std::sync::Arc;

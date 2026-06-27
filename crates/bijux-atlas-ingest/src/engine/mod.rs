@@ -199,10 +199,7 @@ pub fn ingest_dataset_with_events(
         std::collections::BTreeMap::new(),
     );
 
-    let anomaly_gate = evaluate_anomaly_thresholds(&decoded.extract.anomaly, opts);
-    if let Err(err) = anomaly_gate {
-        return Err(err);
-    }
+    evaluate_anomaly_thresholds(&decoded.extract.anomaly, opts)?;
     if opts.fail_on_warn && has_qc_warn(&decoded.extract.anomaly) {
         let warn_count = decoded
             .extract

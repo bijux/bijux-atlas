@@ -238,31 +238,6 @@ fn validate_canonical_evidence(
     Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use bijux_atlas_model::dataset::{ArtifactChecksums, ManifestStats};
-
-    #[test]
-    fn validate_payload_exposes_manifest_identity_hash() {
-        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
-        let manifest = ArtifactManifest::new(
-            "1".to_string(),
-            "1".to_string(),
-            dataset,
-            ArtifactChecksums::new(
-                "a".repeat(64),
-                "b".repeat(64),
-                "c".repeat(64),
-                "d".repeat(64),
-            ),
-            ManifestStats::new(1, 1, 1),
-        );
-        assert_eq!(manifest.identity.release_id, "110/homo_sapiens/GRCh38");
-        assert_eq!(manifest.identity.canonical_metadata_sha256.len(), 64);
-    }
-}
-
 fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
     let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
     let thresholds_path =
@@ -410,34 +385,29 @@ fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
 }
 
 pub(crate) fn publish_dataset(
-    source_root: PathBuf,
-    store_root: PathBuf,
-    release: &str,
-    species: &str,
-    assembly: &str,
-    dry_run: bool,
-    explain: bool,
+    request: PublishDatasetRequest<'_>,
     output_mode: OutputMode,
 ) -> Result<(), String> {
-    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let source_paths = bijux_atlas_model::dataset::artifact_paths(&source_root, &dataset);
+    let dataset = DatasetId::new(request.release, request.species, request.assembly)
+        .map_err(|e| e.to_string())?;
+    let source_paths = bijux_atlas_model::dataset::artifact_paths(&request.source_root, &dataset);
     let manifest_bytes = fs::read(&source_paths.manifest).map_err(|e| e.to_string())?;
     let sqlite_bytes = fs::read(&source_paths.sqlite).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
         serde_json::from_slice(&manifest_bytes).map_err(|e| e.to_string())?;
     manifest.validate_strict().map_err(|e| e.to_string())?;
     verify_expected_sha256(&sqlite_bytes, &manifest.checksums.sqlite_sha256)?;
-    enforce_publish_gates(&source_root, &dataset, &manifest)?;
+    enforce_publish_gates(&request.source_root, &dataset, &manifest)?;
     let manifest_sha = sha256_hex(&manifest_bytes);
     let sqlite_sha = sha256_hex(&sqlite_bytes);
-    let target_paths = bijux_atlas_model::dataset::artifact_paths(&store_root, &dataset);
+    let target_paths = bijux_atlas_model::dataset::artifact_paths(&request.store_root, &dataset);
 
-    if dry_run || explain {
+    if request.dry_run || request.explain {
         return emit_ok_payload(
             output_mode,
             json!({
                 "command":"atlas dataset publish",
-                "mode": if explain { "explain" } else { "dry-run" },
+                "mode": if request.explain { "explain" } else { "dry-run" },
                 "status":"ok",
                 "dataset": dataset.canonical_string(),
                 "source": {
@@ -457,7 +427,7 @@ pub(crate) fn publish_dataset(
         );
     }
 
-    let store = LocalFsStore::new(store_root);
+    let store = LocalFsStore::new(request.store_root);
     match store.put_dataset(
         &dataset,
         &manifest_bytes,
@@ -474,6 +444,16 @@ pub(crate) fn publish_dataset(
         }
         Err(e) => Err(e.to_string()),
     }
+}
+
+pub(crate) struct PublishDatasetRequest<'a> {
+    pub(crate) source_root: PathBuf,
+    pub(crate) store_root: PathBuf,
+    pub(crate) release: &'a str,
+    pub(crate) species: &'a str,
+    pub(crate) assembly: &'a str,
+    pub(crate) dry_run: bool,
+    pub(crate) explain: bool,
 }
 
 fn enforce_publish_gates(
@@ -652,4 +632,29 @@ pub(super) fn validate_qc_thresholds(
         ));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bijux_atlas_model::dataset::{ArtifactChecksums, ManifestStats};
+
+    #[test]
+    fn validate_payload_exposes_manifest_identity_hash() {
+        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            dataset,
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        assert_eq!(manifest.identity.release_id, "110/homo_sapiens/GRCh38");
+        assert_eq!(manifest.identity.canonical_metadata_sha256.len(), 64);
+    }
 }

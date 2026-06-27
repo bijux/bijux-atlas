@@ -20,6 +20,18 @@ use super::normalized::{replay_counts_from_normalized, write_normalized_jsonl_zs
 use super::sqlite::{write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput};
 use super::{IngestError, IngestResult};
 
+struct EvidenceSidecarInputs<'a> {
+    dataset: &'a crate::model::dataset::DatasetId,
+    manifest: &'a ArtifactManifest,
+    anomaly: &'a IngestAnomalyReport,
+    contig_distribution: &'a std::collections::BTreeMap<String, u64>,
+    biotype_distribution: &'a std::collections::BTreeMap<String, u64>,
+    contig_class_distribution: &'a std::collections::BTreeMap<String, u64>,
+    seqid_normalization_traces:
+        &'a std::collections::BTreeMap<String, crate::query::SeqidNormalizationTrace>,
+    biotype_source_counts: &'a std::collections::BTreeMap<String, u64>,
+}
+
 pub fn write_ingest_outputs(
     job: &IngestJob,
     decoded: DecodedIngest,
@@ -175,14 +187,16 @@ pub fn write_ingest_outputs(
     let mut manifest = built.manifest.clone();
     let evidence_bundle_sha256 = write_evidence_sidecars(
         paths,
-        &opts.dataset,
-        &manifest,
-        &decoded.extract.anomaly,
-        &decoded.extract.contig_distribution,
-        &decoded.extract.biotype_distribution,
-        &decoded.extract.contig_class_distribution,
-        &decoded.extract.seqid_normalization_traces,
-        &decoded.extract.biotype_source_counts,
+        EvidenceSidecarInputs {
+            dataset: &opts.dataset,
+            manifest: &manifest,
+            anomaly: &decoded.extract.anomaly,
+            contig_distribution: &decoded.extract.contig_distribution,
+            biotype_distribution: &decoded.extract.biotype_distribution,
+            contig_class_distribution: &decoded.extract.contig_class_distribution,
+            seqid_normalization_traces: &decoded.extract.seqid_normalization_traces,
+            biotype_source_counts: &decoded.extract.biotype_source_counts,
+        },
     )?;
     manifest.evidence_bundle_sha256 = evidence_bundle_sha256;
     let manifest_bytes =
@@ -269,18 +283,18 @@ fn write_source_facts(
 
 fn write_evidence_sidecars(
     paths: &crate::model::dataset::ArtifactPaths,
-    dataset: &crate::model::dataset::DatasetId,
-    manifest: &ArtifactManifest,
-    anomaly: &IngestAnomalyReport,
-    contig_distribution: &std::collections::BTreeMap<String, u64>,
-    biotype_distribution: &std::collections::BTreeMap<String, u64>,
-    contig_class_distribution: &std::collections::BTreeMap<String, u64>,
-    seqid_normalization_traces: &std::collections::BTreeMap<
-        String,
-        crate::query::SeqidNormalizationTrace,
-    >,
-    biotype_source_counts: &std::collections::BTreeMap<String, u64>,
+    inputs: EvidenceSidecarInputs<'_>,
 ) -> Result<String, IngestError> {
+    let EvidenceSidecarInputs {
+        dataset,
+        manifest,
+        anomaly,
+        contig_distribution,
+        biotype_distribution,
+        contig_class_distribution,
+        seqid_normalization_traces,
+        biotype_source_counts,
+    } = inputs;
     let anomaly_counts = anomaly.anomaly_class_counts();
     let mut severity_summary = std::collections::BTreeMap::from([
         ("INFO".to_string(), 0_u64),

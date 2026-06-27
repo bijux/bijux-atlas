@@ -342,15 +342,14 @@ impl ArtifactManifest {
                 "manifest artifact_hash must not be empty".to_string(),
             ));
         }
-        if self.canonical_model_schema_version > 0 {
-            if self.canonical_query_semantic_sha256.trim().is_empty()
-                || self.canonical_lineage_sha256.trim().is_empty()
-            {
-                return Err(ValidationError(
-                    "canonical hashes are required when canonical_model_schema_version is set"
-                        .to_string(),
-                ));
-            }
+        if self.canonical_model_schema_version > 0
+            && (self.canonical_query_semantic_sha256.trim().is_empty()
+                || self.canonical_lineage_sha256.trim().is_empty())
+        {
+            return Err(ValidationError(
+                "canonical hashes are required when canonical_model_schema_version is set"
+                    .to_string(),
+            ));
         }
         if self.db_hash != self.checksums.sqlite_sha256 {
             return Err(ValidationError(

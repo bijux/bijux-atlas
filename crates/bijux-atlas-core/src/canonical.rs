@@ -146,7 +146,6 @@ pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>, CanonicalEr
 }
 
 #[cfg(feature = "serde")]
-#[must_use]
 pub fn stable_json_hash_hex<T: Serialize>(value: &T) -> Result<String, CanonicalError> {
     Ok(CanonicalJson::from_serialize(value)?.hash()?.to_hex())
 }

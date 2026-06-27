@@ -413,10 +413,11 @@ fn compare_cds(a: &CanonicalCds, b: &CanonicalCds) -> Ordering {
         .then(a.cds_id.cmp(&b.cds_id))
 }
 
-fn build_lineage_index(
-    records: &[Gff3Record],
-) -> Result<BTreeMap<(String, String, u64, u64), Vec<LineageRecord>>, IngestError> {
-    let mut out: BTreeMap<(String, String, u64, u64), Vec<LineageRecord>> = BTreeMap::new();
+type LineageIndexKey = (String, String, u64, u64);
+type LineageIndex = BTreeMap<LineageIndexKey, Vec<LineageRecord>>;
+
+fn build_lineage_index(records: &[Gff3Record]) -> Result<LineageIndex, IngestError> {
+    let mut out: LineageIndex = BTreeMap::new();
     for rec in records {
         let key = (
             rec.feature_type.clone(),

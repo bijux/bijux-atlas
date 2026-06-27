@@ -34,7 +34,7 @@ pub(super) fn build_success_payload(
             "class": format!("{class:?}").to_lowercase(),
             "rows": resp.rows
         }),
-        next_cursor.clone().map(|c| json!({ "next_cursor": c })),
+        next_cursor.map(|c| json!({ "next_cursor": c })),
         Some(warnings),
     );
     if explain_mode {
