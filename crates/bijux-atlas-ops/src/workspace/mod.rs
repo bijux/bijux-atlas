@@ -2,3 +2,4 @@
 
 pub mod inventory;
 pub mod profiles;
+pub mod stack;

@@ -63,12 +63,12 @@ pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsComm
 }
 
 pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml, OpsCommandError> {
-    bijux_atlas_ops::stack::manifest::load_stack_manifest(repo_root).map_err(|err| match err {
-        bijux_atlas_ops::stack::manifest::StackManifestLoadError::Read { .. } => {
-            OpsCommandError::Manifest(err.detail())
+    bijux_atlas_ops::workspace::stack::load_stack_manifest(repo_root).map_err(|err| match err {
+        bijux_atlas_ops::workspace::stack::WorkspaceStackError::Manifest(detail) => {
+            OpsCommandError::Manifest(detail)
         }
-        bijux_atlas_ops::stack::manifest::StackManifestLoadError::Parse { .. } => {
-            OpsCommandError::Schema(err.detail())
+        bijux_atlas_ops::workspace::stack::WorkspaceStackError::Schema(detail) => {
+            OpsCommandError::Schema(detail)
         }
     })
 }
@@ -97,7 +97,7 @@ pub(crate) fn validate_stack_manifest(
     repo_root: &Path,
     manifest: &StackManifestToml,
 ) -> Result<Vec<String>, OpsCommandError> {
-    Ok(bijux_atlas_ops::stack::manifest::validate_stack_manifest(
+    Ok(bijux_atlas_ops::workspace::stack::validate_stack_manifest(
         repo_root, manifest,
     ))
 }
