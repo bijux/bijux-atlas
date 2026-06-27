@@ -36,6 +36,14 @@ pub fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, WorkspaceInven
     crate::inventory::pins_manifest::load_pins_manifest(repo_root).map_err(map_pins_error)
 }
 
+pub fn validate_pins_completeness(
+    repo_root: &Path,
+    pins: &StackPinsToml,
+) -> Result<Vec<String>, WorkspaceInventoryError> {
+    crate::inventory::pins_policy::validate_pins_completeness(repo_root, pins)
+        .map_err(map_pins_policy_error)
+}
+
 fn map_toolchain_error(
     error: crate::inventory::toolchain::ToolchainInventoryError,
 ) -> WorkspaceInventoryError {
@@ -70,6 +78,19 @@ fn map_pins_error(
             WorkspaceInventoryError::Manifest(error.detail())
         }
         crate::inventory::pins_manifest::PinsManifestError::Parse { .. } => {
+            WorkspaceInventoryError::Schema(error.detail())
+        }
+    }
+}
+
+fn map_pins_policy_error(
+    error: crate::inventory::pins_policy::PinsPolicyError,
+) -> WorkspaceInventoryError {
+    match error {
+        crate::inventory::pins_policy::PinsPolicyError::Read { .. } => {
+            WorkspaceInventoryError::Manifest(error.detail())
+        }
+        crate::inventory::pins_policy::PinsPolicyError::Parse { .. } => {
             WorkspaceInventoryError::Schema(error.detail())
         }
     }
@@ -128,5 +149,50 @@ mod tests {
             .expect("load toolchain");
 
         assert!(inventory.tools.contains_key("helm"));
+    }
+
+    #[test]
+    fn workspace_inventory_validates_pins_completeness_through_owned_surface() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/stack/generated")).expect("mkdir generated");
+        std::fs::create_dir_all(root.path().join("ops/k8s/charts/bijux-atlas"))
+            .expect("mkdir chart");
+        std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
+        std::fs::write(
+            root.path()
+                .join("ops/stack/generated/version-manifest.json"),
+            "{\"schema_version\":1,\"redis\":\"redis:latest\"}",
+        )
+        .expect("write manifest");
+        std::fs::write(
+            root.path().join("ops/k8s/charts/bijux-atlas/values.yaml"),
+            "image: redis:latest\n",
+        )
+        .expect("write values");
+        std::fs::write(
+            root.path()
+                .join("ops/k8s/charts/bijux-atlas/values-offline.yaml"),
+            "image: redis:latest\n",
+        )
+        .expect("write values offline");
+        std::fs::write(
+            root.path().join("ops/inventory/contracts.json"),
+            "{\"contracts\":[{\"path\":\"ops/inventory/tools.toml\"},{\"path\":\"ops/inventory/pins.yaml\"}]}",
+        )
+        .expect("write contracts");
+        let pins = StackPinsToml {
+            charts: std::collections::BTreeMap::new(),
+            images: std::collections::BTreeMap::from([(
+                "redis".to_string(),
+                "redis:latest".to_string(),
+            )]),
+            crds: std::collections::BTreeMap::new(),
+        };
+
+        let errors = validate_pins_completeness(root.path(), &pins).expect("validate pins");
+
+        assert!(errors
+            .iter()
+            .any(|entry| entry.contains("floating tag forbidden")));
     }
 }
