@@ -13,15 +13,15 @@ use serde_json::Value;
 use sha2::Sha256;
 use tempfile::tempdir;
 
-#[path = "http_contracts/advanced_contracts.rs"]
+#[path = "api_delivery_contracts/advanced_contracts.rs"]
 mod advanced_contracts;
-#[path = "http_contracts/core_route_contracts.rs"]
+#[path = "api_delivery_contracts/core_route_contracts.rs"]
 mod core_route_contracts;
-#[path = "http_contracts_support/mod.rs"]
+#[path = "api_delivery_contract_support/mod.rs"]
 mod http_contracts_support;
-#[path = "http_contracts/security_input_resilience.rs"]
+#[path = "api_delivery_contracts/security_input_resilience.rs"]
 mod security_input_resilience;
-#[path = "http_contracts/sqlite_query_guarantees.rs"]
+#[path = "api_delivery_contracts/sqlite_query_guarantees.rs"]
 mod sqlite_query_guarantees;
 
 use crate::http_contracts_support::{

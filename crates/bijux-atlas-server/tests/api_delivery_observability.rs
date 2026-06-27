@@ -13,7 +13,7 @@ use serde::Deserialize;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-#[path = "http_observability/logging_format.rs"]
+#[path = "api_delivery_observability/logging_format.rs"]
 mod logging_format;
 
 #[derive(Debug, Deserialize)]
@@ -200,11 +200,11 @@ async fn metrics_endpoint_matches_metrics_contract() {
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diff.rs"),
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/sequence.rs"),
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/genes/main_handler.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/catalog_routes.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diagnostic_routes.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/gene_routes.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/transcript_routes.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/service_routes.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/genes/routes.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/catalog/mod.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diagnostics/mod.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/service/mod.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/transcripts/mod.rs"),
     ];
     let source_concat = server_sources
         .iter()

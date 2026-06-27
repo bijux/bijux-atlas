@@ -21,21 +21,9 @@ serde.workspace = true
 serde_json.workspace = true
 
 [dev-dependencies]
-axum = "0.8"
 bijux-atlas-core = { workspace = true, features = ["serde"] }
-bijux-atlas-query.workspace = true
-bijux-atlas-runtime = { workspace = true }
-bijux-atlas-server = { workspace = true }
 criterion = "0.8"
-hex = "0.4"
-hmac = "0.13"
 regex = "1.11"
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
-sha2 = "0.11"
-tempfile = "=3.27.0"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["fmt", "json"] }
 
 [[bin]]
 name = "bijux-atlas-openapi"
@@ -48,18 +36,6 @@ path = "tests/api_contracts.rs"
 [[test]]
 name = "client_contracts"
 path = "tests/client_contracts.rs"
-
-[[test]]
-name = "http_contracts"
-path = "tests/http_contracts.rs"
-
-[[test]]
-name = "http_surface"
-path = "tests/http_surface.rs"
-
-[[test]]
-name = "http_observability"
-path = "tests/http_observability.rs"
 
 [[bench]]
 name = "openapi_generation"
