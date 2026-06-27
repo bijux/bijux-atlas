@@ -1,5 +1,57 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::simulation_paths::{simulation_current_chart_path, simulation_previous_chart_path};
+use sha2::{Digest, Sha256};
+use std::path::{Path, PathBuf};
+
+fn sha256_hex(content: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    hex::encode(hasher.finalize())
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub enum ReleaseChartSource {
+    Current,
+    Previous,
+}
+
+pub fn release_chart_source_path(
+    repo_root: &Path,
+    source: ReleaseChartSource,
+) -> Result<PathBuf, String> {
+    let path = match source {
+        ReleaseChartSource::Current => simulation_current_chart_path(repo_root),
+        ReleaseChartSource::Previous => simulation_previous_chart_path(repo_root),
+    };
+    if path.exists() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "missing chart source {}; current uses the working tree chart and previous uses artifacts/ops/chart-sources/previous/bijux-atlas.tgz",
+            path.display()
+        ))
+    }
+}
+
+pub fn manifest_diff_summary(before: &str, after: &str) -> serde_json::Value {
+    let before_lines = before.lines().collect::<Vec<_>>();
+    let after_lines = after.lines().collect::<Vec<_>>();
+    let shared = before_lines.len().min(after_lines.len());
+    let changed_lines = (0..shared)
+        .filter(|index| before_lines[*index] != after_lines[*index])
+        .count()
+        + before_lines.len().saturating_sub(shared)
+        + after_lines.len().saturating_sub(shared);
+    serde_json::json!({
+        "before_sha256": sha256_hex(before),
+        "after_sha256": sha256_hex(after),
+        "before_lines": before_lines.len(),
+        "after_lines": after_lines.len(),
+        "changed_lines": changed_lines
+    })
+}
+
 pub fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
     let mut keys = std::collections::BTreeSet::<String>::new();
     for document in serde_yaml::Deserializer::from_str(manifest) {
@@ -245,7 +297,10 @@ pub fn lifecycle_compatibility_checks(
 
 #[cfg(test)]
 mod tests {
-    use super::{configmap_env_keys_from_manifest, lifecycle_compatibility_checks};
+    use super::{
+        configmap_env_keys_from_manifest, lifecycle_compatibility_checks, manifest_diff_summary,
+        release_chart_source_path, ReleaseChartSource,
+    };
 
     #[test]
     fn configmap_contract_filters_to_env_style_keys() {
@@ -291,5 +346,24 @@ data:
             checks["removed_required_env_keys"],
             serde_json::json!(["FEATURE_FLAG_X"])
         );
+    }
+
+    #[test]
+    fn manifest_diff_summary_counts_changed_lines() {
+        let diff = manifest_diff_summary("alpha\nbeta\n", "alpha\ngamma\ndelta\n");
+
+        assert_eq!(diff["before_lines"], 2);
+        assert_eq!(diff["after_lines"], 3);
+        assert_eq!(diff["changed_lines"], 2);
+    }
+
+    #[test]
+    fn release_chart_source_path_reports_missing_previous_archive() {
+        let root = tempfile::tempdir().expect("tempdir");
+
+        let error = release_chart_source_path(root.path(), ReleaseChartSource::Previous)
+            .expect_err("missing archive should fail");
+
+        assert!(error.contains("artifacts/ops/chart-sources/previous/bijux-atlas.tgz"));
     }
 }
