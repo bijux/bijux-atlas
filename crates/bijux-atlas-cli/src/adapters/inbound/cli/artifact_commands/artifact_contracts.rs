@@ -15,7 +15,7 @@ use std::fs;
 use std::path::PathBuf;
 use tempfile::tempdir;
 
-fn operations_testdata_root() -> PathBuf {
+fn artifact_fixture_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures")
 }
 
@@ -60,7 +60,7 @@ fn qc_thresholds_fail_when_orphan_rate_exceeds_max() {
 
 #[test]
 fn qc_edgecase_fixture_orphan_rate_regression_is_rejected() {
-    let root = operations_testdata_root();
+    let root = artifact_fixture_root();
     let qc = serde_json::from_slice::<serde_json::Value>(
         &std::fs::read(root.join("qc_edgecases/qc_orphan_high.json")).expect("read qc fixture"),
     )

@@ -213,4 +213,4 @@ fn check_sha(path: &PathBuf, expected: &str) -> Result<(), String> {
 }
 
 #[cfg(test)]
-mod tests;
+mod artifact_contracts;
