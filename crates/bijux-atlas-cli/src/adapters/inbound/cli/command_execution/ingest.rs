@@ -1,14 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::ingest_inputs::resolve_verify_and_lock_inputs;
-use super::operations;
-use super::*;
+use super::super::ingest_inputs::resolve_verify_and_lock_inputs;
+use super::super::{operations, output, IngestCliArgs, OutputMode, ShardingPlanCli};
+use super::super::{
+    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateGeneIdPolicyCli,
+    GeneIdentifierPolicy, GeneIdentifierPolicyCli, GeneNamePolicy, IngestOptions,
+    SeqidNormalizationPolicy, ShardingPlan, StrictnessCli, StrictnessMode, TimestampPolicy,
+    TranscriptTypePolicy,
+};
+use bijux_atlas_ingest::ingest_dataset;
 use bijux_atlas_query::{
     DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy, TranscriptIdPolicy,
     UnknownFeaturePolicy,
 };
+use serde_json::json;
 
-pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
+pub(crate) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String> {
     if args.no_fai_check {
         return Err(
             "policy gate: --no-fai-check is forbidden in production; use --dev-auto-generate-fai for local development"

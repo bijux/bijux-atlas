@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-mod actions;
 mod args;
 mod canonical_json;
 mod command_execution;
@@ -11,7 +10,7 @@ mod operations;
 pub(crate) mod output;
 
 use bijux_atlas_ingest::{
-    diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
+    diff_normalized_ids, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
 use bijux_atlas_model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas_model::policy::{GeneIdentifierPolicy, StrictnessMode};
