@@ -205,7 +205,7 @@ fn gc_plan_respects_catalog_and_dataset_pins() {
     let catalog_path = root.join("catalog.json");
     fs::write(
         &catalog_path,
-        crate::adapters::outbound::store::canonical_catalog_json(&catalog).expect("catalog json"),
+        bijux_atlas_store::canonical_catalog_json(&catalog).expect("catalog json"),
     )
     .expect("write catalog");
     let pins_path = tmp.path().join("pins.json");
@@ -270,7 +270,7 @@ fn gc_plan_multiple_catalog_paths_are_deterministic() {
         let path = root.join(name);
         fs::write(
             &path,
-            crate::adapters::outbound::store::canonical_catalog_json(&c).expect("catalog json"),
+            bijux_atlas_store::canonical_catalog_json(&c).expect("catalog json"),
         )
         .expect("write catalog");
         path
@@ -443,7 +443,7 @@ fn promote_failure_does_not_mutate_existing_catalog_and_latest_alias_is_promotio
         "release=109/species=homo_sapiens/assembly=GRCh38/derived/manifest.json".to_string(),
         "release=109/species=homo_sapiens/assembly=GRCh38/derived/gene_summary.sqlite".to_string(),
     )]);
-    let initial_bytes = crate::adapters::outbound::store::canonical_catalog_json(&existing_catalog)
+    let initial_bytes = bijux_atlas_store::canonical_catalog_json(&existing_catalog)
         .expect("catalog json")
         .into_bytes();
     fs::write(root.join("catalog.json"), &initial_bytes).expect("catalog");

@@ -266,6 +266,7 @@ dependencies = [
  "bijux-atlas-model",
  "bijux-atlas-query",
  "bijux-atlas-runtime",
+ "bijux-atlas-store",
  "bijux-cli",
  "clap",
  "clap_complete",

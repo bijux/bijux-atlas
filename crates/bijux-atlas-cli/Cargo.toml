@@ -18,6 +18,7 @@ bijux-atlas-ingest.workspace = true
 bijux-atlas-model.workspace = true
 bijux-atlas-query.workspace = true
 bijux-atlas-runtime.workspace = true
+bijux-atlas-store.workspace = true
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 csv = "1.4"
