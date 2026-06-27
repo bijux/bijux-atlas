@@ -8,16 +8,16 @@ mod ingest_inputs;
 mod operations;
 pub(crate) mod output;
 
-use crate::app::ingest::{
+use bijux_atlas_ingest::{
     diff_normalized_ids, ingest_dataset, replay_normalized_counts, IngestOptions, TimestampPolicy,
 };
-use crate::app::query::{
+use bijux_atlas_query::{
     classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
-    GeneFilter, GeneNamePolicy, GeneQueryRequest, QueryLimits, RegionFilter,
-    SeqidNormalizationPolicy, TranscriptTypePolicy,
+    GeneFilter, GeneNamePolicy, GeneQueryRequest, RegionFilter, SeqidNormalizationPolicy,
+    TranscriptTypePolicy,
 };
-use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
-use crate::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
+use bijux_atlas_runtime::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
+use bijux_atlas_runtime::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 use bijux_atlas_model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas_model::policy::{GeneIdentifierPolicy, StrictnessMode};
 use clap::{error::ErrorKind, CommandFactory, Parser};

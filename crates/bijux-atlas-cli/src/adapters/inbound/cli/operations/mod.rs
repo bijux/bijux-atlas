@@ -5,10 +5,10 @@ use crate::adapters::outbound::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
-use crate::domain::policy::{
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_runtime::domain::policy::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
-use crate::domain::sha256_hex;
 use bijux_atlas_model::dataset::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
 };

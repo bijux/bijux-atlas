@@ -14,6 +14,7 @@ keywords = ["bioinformatics", "genomics", "atlas", "cli", "query"]
 
 [dependencies]
 bijux-atlas-core.workspace = true
+bijux-atlas-ingest.workspace = true
 bijux-atlas-model.workspace = true
 bijux-atlas-query.workspace = true
 bijux-atlas-runtime.workspace = true

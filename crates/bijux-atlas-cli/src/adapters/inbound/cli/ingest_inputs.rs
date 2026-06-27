@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use crate::domain::sha256_hex;
+use bijux_atlas_core::sha256_hex;
 
 pub(super) fn verify_ingest_inputs(
     gff3: PathBuf,

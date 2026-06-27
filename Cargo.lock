@@ -259,6 +259,7 @@ version = "0.2.1"
 dependencies = [
  "assert_cmd",
  "bijux-atlas-core",
+ "bijux-atlas-ingest",
  "bijux-atlas-model",
  "bijux-atlas-query",
  "bijux-atlas-runtime",

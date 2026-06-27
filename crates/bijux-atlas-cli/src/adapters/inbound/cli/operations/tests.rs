@@ -4,7 +4,7 @@ use super::{
     build_release_diff, compute_gc_plan, gc_apply, promote_catalog, update_latest_alias,
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
-use crate::domain::sha256_hex;
+use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::dataset::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId,
     ManifestStats, ShardCatalog, ShardEntry, ShardId,

@@ -4,8 +4,15 @@ use super::ingest_inputs::resolve_verify_and_lock_inputs;
 use super::operations;
 use super::*;
 use crate::adapters::inbound::cli::commands::ExportFormat;
-use crate::app::query::{IntervalSemantics, QuerySort, StrandMode};
 use bijux_atlas_model::dataset::ArtifactManifest;
+use bijux_atlas_query::{
+    estimate_work_units, query_genes, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
+    IntervalSemantics, QueryLimits, QuerySort, StrandMode, TranscriptIdPolicy,
+    UnknownFeaturePolicy,
+};
+use bijux_atlas_runtime::contracts::errors::ExitCode;
+use bijux_atlas_runtime::runtime::config::runtime_build_hash;
+use bijux_atlas_runtime::version::{runtime_semver, runtime_version, runtime_version_source};
 
 use std::path::PathBuf;
 
@@ -91,10 +98,10 @@ pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<()
         json!({
                 "plugin": {
                     "name": "bijux-atlas",
-                    "version": crate::version::runtime_version(),
-                    "semver": crate::version::runtime_semver(),
-                    "source": crate::version::runtime_version_source(),
-                    "build_hash": crate::runtime::config::runtime_build_hash(),
+                    "version": runtime_version(),
+                    "semver": runtime_semver(),
+                    "source": runtime_version_source(),
+                    "build_hash": runtime_build_hash(),
                     "rustc": option_env!("RUSTC_VERSION").unwrap_or("unknown")
                 },
             "schemas": {
@@ -103,7 +110,7 @@ pub(super) fn print_version(verbose: bool, output_mode: OutputMode) -> Result<()
             }
         })
     } else {
-        json!({"name":"bijux-atlas","version": crate::version::runtime_version()})
+        json!({"name":"bijux-atlas","version": runtime_version()})
     };
     output::emit_ok(output_mode, payload)?;
     Ok(())
@@ -113,19 +120,19 @@ fn plugin_metadata_payload() -> Value {
     json!({
         "schema_version": "v1",
         "name": "bijux-atlas",
-        "version": crate::version::runtime_semver(),
-        "version_display": crate::version::runtime_version(),
+        "version": runtime_semver(),
+        "version_display": runtime_version(),
         "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
         "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
         "compatible_umbrella": ">=0.3.0,<0.4.0",
-        "build_hash": crate::runtime::config::runtime_build_hash(),
+        "build_hash": runtime_build_hash(),
     })
 }
 
 pub(super) fn enforce_umbrella_compatibility(version: &str) -> Result<(), CliError> {
     if !version_in_supported_range(version) {
         return Err(CliError {
-            exit_code: crate::contracts::errors::ExitCode::Usage,
+            exit_code: ExitCode::Usage,
             machine: MachineError::new(
                 "umbrella_incompatible",
                 "umbrella version is outside plugin compatibility range",
@@ -272,10 +279,10 @@ pub(super) fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result
         compute_contig_fractions: false,
         compute_transcript_spliced_length: false,
         compute_transcript_cds_length: false,
-        duplicate_transcript_id_policy: crate::app::query::DuplicateTranscriptIdPolicy::Reject,
-        transcript_id_policy: crate::app::query::TranscriptIdPolicy::default(),
-        unknown_feature_policy: crate::app::query::UnknownFeaturePolicy::IgnoreWithWarning,
-        feature_id_uniqueness_policy: crate::app::query::FeatureIdUniquenessPolicy::Reject,
+        duplicate_transcript_id_policy: DuplicateTranscriptIdPolicy::Reject,
+        transcript_id_policy: TranscriptIdPolicy::default(),
+        unknown_feature_policy: UnknownFeaturePolicy::IgnoreWithWarning,
+        feature_id_uniqueness_policy: FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
         timestamp_policy: TimestampPolicy::DeterministicZero,
     };
@@ -419,8 +426,8 @@ pub(super) fn run_query(args: ExplainQueryArgs, output_mode: OutputMode) -> Resu
     let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
     let req = build_query_request(args)?;
     let query_class = classify_query(&req);
-    let cost_units = crate::app::query::estimate_work_units(&req);
-    let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
+    let cost_units = estimate_work_units(&req);
+    let resp = query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
     output::emit_ok(
         output_mode,
@@ -446,7 +453,7 @@ pub(super) fn explain_query(args: ExplainQueryArgs, output_mode: OutputMode) -> 
     let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
     let req = build_query_request(args)?;
     let query_class = classify_query(&req);
-    let cost_units = crate::app::query::estimate_work_units(&req);
+    let cost_units = estimate_work_units(&req);
     let lines = explain_query_plan(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
     output::emit_ok(
@@ -560,7 +567,7 @@ pub(super) fn export_query_rows(
 ) -> Result<(), String> {
     let conn = Connection::open(args.db.clone()).map_err(|e| e.to_string())?;
     let req = build_query_request(args)?;
-    let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
+    let resp = query_genes(&conn, &req, &QueryLimits::default(), b"atlas-cli")
         .map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
@@ -701,7 +708,7 @@ pub(super) fn smoke_dataset(
             .get("query")
             .ok_or_else(|| "golden query missing query object".to_string())?;
         let req = output::query_request_from_json(body)?;
-        let resp = crate::app::query::query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
+        let resp = query_genes(&conn, &req, &QueryLimits::default(), b"smoke")
             .map_err(|e| e.to_string())?;
         if resp.rows.is_empty() && name == "by_gene_id" {
             return Err("smoke failed: by_gene_id returned zero rows".to_string());
