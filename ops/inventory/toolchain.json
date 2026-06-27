@@ -9,16 +9,16 @@
       "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae"
     },
     "actions/checkout": {
-      "ref": "v6.0.2",
-      "sha": "de0fac2e4500dabe0009e67214ff5f5447ce83dd"
+      "ref": "v7.0.0",
+      "sha": "9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0"
     },
     "actions/configure-pages": {
       "ref": "v6",
       "sha": "45bfe0192ca1faeb007ade9deae92b16b8254a0d"
     },
     "actions/dependency-review-action": {
-      "ref": "v4.8.7",
-      "sha": "2031cfc080254a8a887f58cffee85186f0e49e48"
+      "ref": "v4.9.0",
+      "sha": "a1d282b36b6f3519aa1f3fc636f609c47dddb294"
     },
     "actions/deploy-pages": {
       "ref": "v5",
@@ -65,8 +65,8 @@
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
-      "ref": "v2.3.3",
-      "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
+      "ref": "v3.0.1",
+      "sha": "718ea10b132b3b2eba29c1007bb80653f286566b"
     },
     "actions/github-script": {
       "ref": "v9.0.0",
