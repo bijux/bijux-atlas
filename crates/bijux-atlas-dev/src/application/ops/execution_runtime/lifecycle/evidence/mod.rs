@@ -17,3 +17,6 @@ pub(crate) use self::helpers::{
     build_lifecycle_evidence_bundle, contains_common_secret_pattern, observability_contract_checks,
     redact_sensitive_text,
 };
+pub(crate) use bijux_atlas_ops::lifecycle::evidence_support::{
+    collect_image_artifacts, collect_sboms, evidence_root, reset_directory, sha256_file,
+};
