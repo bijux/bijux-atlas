@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
-use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
-use bijux_atlas::model::policy::StrictnessMode;
+use bijux_atlas_ingest::model::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas_ingest::model::policy::StrictnessMode;
+use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use criterion::{criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;
 

@@ -318,6 +318,7 @@ dependencies = [
  "bijux-atlas-query",
  "criterion",
  "hex",
+ "proptest",
  "rusqlite",
  "serde",
  "serde_json",

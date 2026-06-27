@@ -1,28 +1,27 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
-use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
-use bijux_atlas::model::policy::{GeneIdentifierPolicy, StrictnessMode};
-use bijux_atlas::query::{
+use bijux_atlas_ingest::ingest_dataset;
+use bijux_atlas_ingest::model::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas_ingest::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+use bijux_atlas_ingest::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
 };
+use bijux_atlas_ingest::IngestOptions;
 use criterion::{criterion_group, criterion_main, Criterion};
-use std::hint::black_box;
-use std::path::PathBuf;
 use tempfile::tempdir;
 
-fn opts_for_fixture(base: &std::path::Path, fixture_dir: &str) -> IngestOptions {
-    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(fixture_dir);
+fn make_options(root: &std::path::Path) -> IngestOptions {
+    let fixture = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tiny");
     IngestOptions {
         gff3_path: fixture.join("genes.gff3"),
         fasta_path: fixture.join("genome.fa"),
         fai_path: fixture.join("genome.fa.fai"),
-        output_root: base.to_path_buf(),
+        output_root: root.to_path_buf(),
         build_hash: String::new(),
-        dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        strictness: StrictnessMode::Lenient,
+        dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id"),
+        strictness: StrictnessMode::Strict,
         duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,
         gene_identifier_policy: GeneIdentifierPolicy::Gff3Id,
         gene_name_policy: GeneNamePolicy::default(),
@@ -54,35 +53,20 @@ fn opts_for_fixture(base: &std::path::Path, fixture_dir: &str) -> IngestOptions 
         prod_mode: false,
         max_warn_anomalies: None,
         max_error_anomalies: None,
-        timestamp_policy: bijux_atlas::domain::ingest::TimestampPolicy::DeterministicZero,
+        timestamp_policy: bijux_atlas_ingest::TimestampPolicy::DeterministicZero,
     }
 }
 
-fn bench_sqlite_size_growth(c: &mut Criterion) {
-    c.bench_function("sqlite_size_growth_tiny_vs_realistic", |b| {
+fn bench_transcript_extraction(c: &mut Criterion) {
+    c.bench_function("ingest_transcript_extraction", |b| {
         b.iter(|| {
-            let tiny_root = tempdir().expect("tiny tempdir");
-            let tiny = ingest_dataset(&opts_for_fixture(tiny_root.path(), "tests/fixtures/tiny"))
-                .expect("tiny ingest");
-            let tiny_bytes = std::fs::metadata(&tiny.sqlite_path)
-                .expect("tiny metadata")
-                .len();
-
-            let real_root = tempdir().expect("real tempdir");
-            let realistic = ingest_dataset(&opts_for_fixture(
-                real_root.path(),
-                "tests/fixtures/realistic",
-            ))
-            .expect("real ingest");
-            let realistic_bytes = std::fs::metadata(&realistic.sqlite_path)
-                .expect("real metadata")
-                .len();
-
-            black_box((tiny_bytes, realistic_bytes));
-            assert!(realistic_bytes > tiny_bytes);
+            let root = tempdir().expect("tempdir");
+            let opts = make_options(root.path());
+            let run = ingest_dataset(&opts).expect("ingest");
+            assert!(run.manifest.stats.transcript_count > 0);
         })
     });
 }
 
-criterion_group!(benches, bench_sqlite_size_growth);
+criterion_group!(benches, bench_transcript_extraction);
 criterion_main!(benches);

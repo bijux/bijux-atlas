@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
-use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
-use bijux_atlas::model::policy::{GeneIdentifierPolicy, StrictnessMode};
-use bijux_atlas::query::{
+use bijux_atlas_ingest::model::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas_ingest::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+use bijux_atlas_ingest::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
 };
+use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::path::PathBuf;
 use tempfile::tempdir;
@@ -56,7 +56,7 @@ fn bench_ingest_throughput(c: &mut Criterion) {
                 prod_mode: false,
                 max_warn_anomalies: None,
                 max_error_anomalies: None,
-                timestamp_policy: bijux_atlas::domain::ingest::TimestampPolicy::DeterministicZero,
+                timestamp_policy: bijux_atlas_ingest::TimestampPolicy::DeterministicZero,
             };
             ingest_dataset(&opts).expect("ingest benchmark");
         })

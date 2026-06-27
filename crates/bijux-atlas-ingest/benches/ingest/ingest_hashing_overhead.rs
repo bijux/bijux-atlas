@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::compute_input_hashes;
+use bijux_atlas_ingest::compute_input_hashes;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 
