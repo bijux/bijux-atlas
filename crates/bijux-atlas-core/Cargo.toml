@@ -14,9 +14,10 @@ keywords = ["bioinformatics", "genomics", "core", "invariants", "hash"]
 
 [features]
 default = []
-serde = ["dep:serde_json"]
+serde = ["dep:base64", "dep:serde_json"]
 
 [dependencies]
+base64 = { version = "0.22", optional = true }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", optional = true }
 sha2 = "0.11"

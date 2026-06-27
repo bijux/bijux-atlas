@@ -7,6 +7,7 @@ codes that other Atlas crates consume without pulling in runtime adapters.
 Use this crate when you need:
 
 - deterministic JSON or hashing helpers
+- canonical cursor-payload encoding or decoding helpers
 - stable key-based sorting primitives
 - `Hash256` and related checksum utilities
 - generated Atlas error-code definitions shared across crates

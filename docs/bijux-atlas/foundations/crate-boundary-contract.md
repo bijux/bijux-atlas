@@ -29,6 +29,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-api` owns API DTOs, error envelopes, and OpenAPI definitions. Runtime code may route requests through that surface but must not duplicate or redefine it.
 - `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
 - `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
+- Runtime `src/api`, `src/core`, `src/model`, and `src/query` are compatibility facades only; implementation ownership remains in the dedicated Atlas subcrates.
 - CLI and HTTP entrypoints must call application/domain services and must not embed parsing-normalization rules inline.
 - API DTO/wire shapes are owned under `crates/bijux-atlas-api/src/` and adapter HTTP DTOs, not in domain model modules.
 - Bench-only logic is owned under `benches/` and test harnesses, not runtime `src/` modules.

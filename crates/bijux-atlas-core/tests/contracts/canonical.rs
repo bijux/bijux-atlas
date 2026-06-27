@@ -27,3 +27,11 @@ fn stable_json_hash_repeatable_across_invocations() {
     let h2 = canonical::stable_json_hash_hex(&value).expect("hash2");
     assert_eq!(h1, h2);
 }
+
+#[test]
+fn cursor_payload_roundtrips_through_canonical_encoding() {
+    let payload = json!({"dataset": "ensembl-110", "offset": 42, "gene": "BRCA1"});
+    let encoded = canonical::encode_cursor_payload(&payload).expect("encode");
+    let decoded = canonical::decode_cursor_payload(&encoded).expect("decode");
+    assert_eq!(decoded, payload);
+}

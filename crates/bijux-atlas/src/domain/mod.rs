@@ -20,4 +20,4 @@ pub mod query {
 pub mod security;
 pub mod time;
 
-pub use crate::core::{sha256, sha256_hex, Hash256};
+pub use canonical::{sha256, sha256_hex, Hash256};
