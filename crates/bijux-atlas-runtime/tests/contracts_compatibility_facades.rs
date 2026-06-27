@@ -32,22 +32,22 @@ fn rust_files_under(root: &std::path::Path) -> Vec<PathBuf> {
 }
 
 #[test]
-fn runtime_wrapper_modules_stay_reexport_only() {
+fn runtime_leaf_forwarders_bind_directly_to_owning_crates() {
     let checks = [
         (
             "src/api.rs",
-            "pub use crate::compat::api::*;",
-            "runtime api wrapper must forward to src/compat/api.rs",
+            "pub use bijux_atlas_api::*;",
+            "runtime api forwarding surface must bind directly to bijux-atlas-api",
         ),
         (
             "src/query.rs",
-            "pub use crate::compat::query::*;",
-            "runtime query wrapper must forward to src/compat/query.rs",
+            "pub use bijux_atlas_query::*;",
+            "runtime query forwarding surface must bind directly to bijux-atlas-query",
         ),
         (
             "src/domain/ingest.rs",
-            "pub use crate::compat::ingest::*;",
-            "runtime ingest wrapper must forward to src/compat/ingest.rs",
+            "pub use bijux_atlas_ingest::*;",
+            "runtime ingest forwarding surface must bind directly to bijux-atlas-ingest",
         ),
     ];
 
@@ -66,10 +66,7 @@ fn runtime_wrapper_modules_stay_reexport_only() {
 #[test]
 fn compatibility_implementation_surface_stays_under_src_compat() {
     let root = crate_root();
-    let expected = [(
-        "src/compat",
-        vec!["api.rs", "core.rs", "ingest.rs", "mod.rs", "query.rs"],
-    )];
+    let expected = [("src/compat", vec!["core.rs", "mod.rs"])];
 
     for (relative, allowed) in expected {
         let dir = root.join(relative);

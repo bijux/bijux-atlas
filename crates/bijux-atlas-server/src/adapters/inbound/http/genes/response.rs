@@ -9,7 +9,7 @@ pub(super) fn build_success_payload(
     dataset: &DatasetId,
     req: &GeneQueryRequest,
     class: QueryClass,
-    resp: bijux_atlas_runtime::query::GeneQueryResponse,
+    resp: bijux_atlas_query::GeneQueryResponse,
     explain_mode: bool,
     provenance: serde_json::Value,
 ) -> serde_json::Value {
@@ -70,7 +70,7 @@ pub(super) fn build_success_payload(
     payload
 }
 
-fn explain_row_bounds(row: Option<&bijux_atlas_runtime::query::GeneRow>) -> Value {
+fn explain_row_bounds(row: Option<&bijux_atlas_query::GeneRow>) -> Value {
     let Some(row) = row else {
         return Value::Null;
     };

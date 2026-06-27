@@ -1,3 +1,3 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use crate::compat::query::*;
+pub use bijux_atlas_query::*;
