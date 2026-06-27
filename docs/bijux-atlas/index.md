@@ -108,4 +108,4 @@ of four places:
 - `crates/bijux-atlas/`
 - `crates/bijux-atlas/src/bin/bijux-atlas.rs`
 - `crates/bijux-atlas/src/bin/bijux-atlas-server.rs`
-- `crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs`
+- `crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs`
