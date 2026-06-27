@@ -3,7 +3,7 @@
 mod args;
 mod artifact_commands;
 mod canonical_json;
-mod command_execution;
+mod command_handlers;
 mod commands;
 mod dispatch;
 mod ingest_inputs;
@@ -200,14 +200,14 @@ fn run() -> Result<(), CliError> {
     };
     let output_mode = OutputMode { json: cli.json };
     if cli.bijux_plugin_metadata {
-        command_execution::emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
+        command_handlers::emit_plugin_metadata(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
     if let Some(umbrella_version) = cli.umbrella_version.as_deref() {
-        command_execution::enforce_umbrella_compatibility(umbrella_version)?;
+        command_handlers::enforce_umbrella_compatibility(umbrella_version)?;
     }
     if cli.print_config_paths {
-        command_execution::emit_config_paths(output_mode.json).map_err(CliError::internal)?;
+        command_handlers::emit_config_paths(output_mode.json).map_err(CliError::internal)?;
         return Ok(());
     }
 
