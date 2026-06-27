@@ -10,18 +10,18 @@ use bijux_atlas_model::dataset::{artifact_paths, ArtifactManifest, Catalog, Data
 use bijux_atlas_query::QueryLimits;
 use bijux_atlas_runtime::app::cache::{CacheError, RegistrySourceHealth};
 use bijux_atlas_runtime::app::ports::{CatalogFetch, DatasetStoreBackend};
-use bijux_atlas_runtime::domain::cluster::config::load_cluster_config_from_path;
-use bijux_atlas_runtime::domain::cluster::membership::MembershipPolicy;
-use bijux_atlas_runtime::domain::cluster::membership::MembershipRegistry;
-use bijux_atlas_runtime::domain::cluster::replication::ReplicaRegistry;
-use bijux_atlas_runtime::domain::cluster::replication::{
+use bijux_atlas_runtime::domain::cluster::coordination::replication::ReplicaRegistry;
+use bijux_atlas_runtime::domain::cluster::coordination::replication::{
     ConsistencyGuarantee, ConsistencyLevel, ReplicationPolicy,
 };
-use bijux_atlas_runtime::domain::cluster::resilience::FailureRecoveryRegistry;
-use bijux_atlas_runtime::domain::cluster::resilience::{
+use bijux_atlas_runtime::domain::cluster::coordination::resilience::FailureRecoveryRegistry;
+use bijux_atlas_runtime::domain::cluster::coordination::resilience::{
     FailureDetectionPolicy, RecoveryPolicy, ResilienceGuarantees,
 };
-use bijux_atlas_runtime::domain::cluster::sharding::ShardRegistry;
+use bijux_atlas_runtime::domain::cluster::placement::sharding::ShardRegistry;
+use bijux_atlas_runtime::domain::cluster::topology::config::load_cluster_config_from_path;
+use bijux_atlas_runtime::domain::cluster::topology::membership::MembershipPolicy;
+use bijux_atlas_runtime::domain::cluster::topology::membership::MembershipRegistry;
 use bijux_atlas_runtime::runtime::config::{ApiConfig, DatasetCacheConfig};
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};

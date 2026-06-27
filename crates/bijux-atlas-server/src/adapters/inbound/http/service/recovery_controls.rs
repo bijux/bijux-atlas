@@ -2,7 +2,7 @@
 
 use crate::adapters::inbound::http::route_support::*;
 use crate::*;
-use bijux_atlas_runtime::domain::cluster::resilience::FailureCategory;
+use bijux_atlas_runtime::domain::cluster::coordination::resilience::FailureCategory;
 use serde_json::json;
 
 #[tracing::instrument(skip(state))]

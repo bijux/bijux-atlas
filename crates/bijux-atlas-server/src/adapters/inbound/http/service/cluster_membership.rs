@@ -2,14 +2,14 @@
 
 use crate::adapters::inbound::http::route_support::*;
 use crate::*;
-use bijux_atlas_runtime::domain::cluster::config::{
-    load_cluster_config_from_path, load_node_config_from_path,
-};
-use bijux_atlas_runtime::domain::cluster::distributed::{
+use bijux_atlas_runtime::domain::cluster::coordination::distributed::{
     NodeDescriptor, NodeIdentity, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
 };
-use bijux_atlas_runtime::domain::cluster::membership::HeartbeatMessage;
-use bijux_atlas_runtime::domain::cluster::state::{ClusterStateRegistry, NodeMetadata};
+use bijux_atlas_runtime::domain::cluster::topology::config::{
+    load_cluster_config_from_path, load_node_config_from_path,
+};
+use bijux_atlas_runtime::domain::cluster::topology::membership::HeartbeatMessage;
+use bijux_atlas_runtime::domain::cluster::topology::state::{ClusterStateRegistry, NodeMetadata};
 use serde_json::json;
 use serde_json::Value;
 
