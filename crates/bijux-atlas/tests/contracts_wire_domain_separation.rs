@@ -8,7 +8,10 @@ fn crate_root() -> PathBuf {
 
 #[test]
 fn api_dto_module_does_not_depend_on_domain_modules() {
-    let path = crate_root().join("src/contracts/api/dto.rs");
+    let path = crate_root()
+        .parent()
+        .expect("crates directory")
+        .join("bijux-atlas-api/src/dto.rs");
     let text = std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
     for forbidden in ["crate::domain::", "bijux_atlas::domain::"] {
