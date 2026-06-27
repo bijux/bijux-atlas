@@ -92,10 +92,8 @@ fn normalize_json_value(value: Value) -> Value {
         Value::Number(n) => Value::Number(normalize_json_number(n)),
         Value::Object(map) => {
             let mut sorted = Map::new();
-            let mut entries: Vec<(String, Value)> = map
-                .into_iter()
-                .map(|(k, v)| (k, normalize_json_value(v)))
-                .collect();
+            let mut entries: Vec<(String, Value)> =
+                map.into_iter().map(|(k, v)| (k, normalize_json_value(v))).collect();
             entries.sort_by(|a, b| a.0.cmp(&b.0));
             for (k, v) in entries {
                 sorted.insert(k, v);

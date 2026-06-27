@@ -286,9 +286,12 @@ dependencies = [
 name = "bijux-atlas-core"
 version = "0.2.1"
 dependencies = [
+ "criterion",
+ "proptest",
  "serde",
  "serde_json",
  "sha2 0.11.0",
+ "walkdir",
 ]
 
 [[package]]
@@ -296,6 +299,8 @@ name = "bijux-atlas-model"
 version = "0.2.1"
 dependencies = [
  "bijux-atlas-core",
+ "criterion",
+ "proptest",
  "serde",
  "serde_json",
 ]

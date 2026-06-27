@@ -88,12 +88,8 @@ name = "bijux-atlas-server"
 path = "src/bin/bijux-atlas-server.rs"
 
 [[test]]
-name = "compatibility_core"
-path = "tests/compatibility/core.rs"
-
-[[test]]
-name = "compatibility_model"
-path = "tests/compatibility/model.rs"
+name = "contracts_runtime_foundations"
+path = "tests/contracts_runtime_foundations.rs"
 
 [[test]]
 name = "contracts_plugin"
@@ -160,16 +156,6 @@ name = "workflows_ingest"
 path = "tests/workflows/ingest.rs"
 
 [[bench]]
-name = "domain_canonical_json"
-path = "benches/domain/canonical_json.rs"
-harness = false
-
-[[bench]]
-name = "domain_stable_sorting"
-path = "benches/domain/stable_sorting.rs"
-harness = false
-
-[[bench]]
 name = "domain_security_data_protection"
 path = "benches/domain/security_data_protection.rs"
 harness = false
@@ -177,11 +163,6 @@ harness = false
 [[bench]]
 name = "domain_query_parse_validation"
 path = "benches/domain/query_parse_validation.rs"
-harness = false
-
-[[bench]]
-name = "domain_dataset_manifest_codec"
-path = "benches/domain/dataset_manifest_codec.rs"
 harness = false
 
 [[bench]]

@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{
+use bijux_atlas_model::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, DatasetId,
-    ManifestStats,
+    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, ManifestStats, SeqId,
 };
-use bijux_atlas::domain::query::{DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, SeqId};
 
 #[test]
 fn manifest_validate_rejects_empty_hashes() {

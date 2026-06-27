@@ -4,19 +4,16 @@ use std::path::PathBuf;
 
 fn model_crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("crates directory")
-        .join("bijux-atlas-model")
 }
 
 #[test]
 fn removed_model_root_does_not_reappear() {
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/model.rs");
-    assert!(
-        !path.exists(),
-        "legacy model root must stay removed: {}",
-        path.display()
-    );
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .join("crates/bijux-atlas/src/model.rs");
+    assert!(!path.exists(), "legacy model root must stay removed: {}", path.display());
 }
 
 #[test]

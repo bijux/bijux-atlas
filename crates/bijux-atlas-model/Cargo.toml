@@ -18,5 +18,18 @@ bijux-atlas-core = { workspace = true, features = ["serde"] }
 serde.workspace = true
 serde_json.workspace = true
 
+[dev-dependencies]
+criterion = "0.8"
+proptest = "1"
+
+[[test]]
+name = "contracts"
+path = "tests/contracts.rs"
+
+[[bench]]
+name = "manifest_codec"
+path = "benches/manifest_codec.rs"
+harness = false
+
 [lib]
 path = "src/lib.rs"

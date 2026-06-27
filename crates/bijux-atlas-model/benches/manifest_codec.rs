@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 
@@ -9,12 +9,7 @@ fn large_manifest() -> ArtifactManifest {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            "d".repeat(64),
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
         ManifestStats::new(100_000, 200_000, 24),
     );
 
@@ -34,9 +29,7 @@ fn large_manifest() -> ArtifactManifest {
     manifest.source_fasta_filename = "genome.fa.bgz".to_string();
     manifest.source_fai_filename = "genome.fa.bgz.fai".to_string();
     for i in 0..256 {
-        manifest
-            .derived_column_origins
-            .insert(format!("field_{i}"), format!("origin_{i}"));
+        manifest.derived_column_origins.insert(format!("field_{i}"), format!("origin_{i}"));
     }
     manifest
 }

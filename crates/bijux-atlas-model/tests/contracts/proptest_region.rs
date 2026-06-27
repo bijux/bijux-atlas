@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::query::Region;
+use bijux_atlas_model::Region;
 use proptest::prelude::*;
 use proptest::test_runner::Config;
 

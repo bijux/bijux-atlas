@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{
-    normalize_assembly, normalize_release, normalize_species, parse_species_normalized, DatasetId,
-    DatasetSelector,
-};
-use bijux_atlas::domain::query::{
-    BiotypePolicy, GeneId, GeneNamePolicy, Region, SeqId, Strand, TranscriptId,
-    TranscriptTypePolicy, ID_MAX_LEN, SEQID_MAX_LEN,
+use bijux_atlas_model::{
+    normalize_assembly, normalize_release, normalize_species, parse_species_normalized,
+    BiotypePolicy, DatasetId, DatasetSelector, GeneId, GeneNamePolicy, Region, SeqId, Strand,
+    TranscriptId, TranscriptTypePolicy, ID_MAX_LEN, SEQID_MAX_LEN,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -32,9 +29,7 @@ fn release_species_assembly_parsing_is_strict() {
     assert!(normalize_species("homo sapiens").is_err());
     assert!(normalize_assembly("GRCh38!").is_err());
     assert_eq!(
-        parse_species_normalized("Homo-sapiens")
-            .expect("normalized parse")
-            .as_str(),
+        parse_species_normalized("Homo-sapiens").expect("normalized parse").as_str(),
         "homo_sapiens"
     );
 }
@@ -92,10 +87,7 @@ fn gene_name_biotype_and_transcript_policies_remain_deterministic() {
     attrs.insert("Name".to_string(), " BRCA1 ".to_string());
     attrs.insert("gene_biotype".to_string(), "protein_coding".to_string());
 
-    assert_eq!(
-        GeneNamePolicy::default().resolve(&attrs, "fallback"),
-        "BRCA1"
-    );
+    assert_eq!(GeneNamePolicy::default().resolve(&attrs, "fallback"), "BRCA1");
     assert_eq!(BiotypePolicy::default().resolve(&attrs), "protein_coding");
 
     let accepted = BTreeSet::from(["mRNA".to_string(), "transcript".to_string()]);

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{DatasetId, LatestAliasRecord};
+use bijux_atlas_model::{DatasetId, LatestAliasRecord};
 
 #[test]
 fn latest_alias_record_validates_canonical_trace_fields() {
@@ -25,10 +25,7 @@ fn latest_alias_record_rejects_non_latest_alias_or_non_hex_catalog_hash() {
         "atlas-cli".to_string(),
         "A".repeat(64),
     );
-    assert!(
-        record.validate().is_err(),
-        "uppercase hex should be rejected"
-    );
+    assert!(record.validate().is_err(), "uppercase hex should be rejected");
 
     record.catalog_sha256 = "b".repeat(64);
     record.alias = "most_recent".to_string();

@@ -5,9 +5,6 @@ use std::path::PathBuf;
 
 fn core_crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("crates directory")
-        .join("bijux-atlas-core")
 }
 
 fn core_sources() -> Vec<PathBuf> {
@@ -54,9 +51,7 @@ fn core_module_rand_dependency_is_forbidden() {
         let text = fs::read_to_string(&path).expect("read source");
         let rand_dependency_markers = ["use rand", "rand::", "extern crate rand", " rand ="];
         assert!(
-            !rand_dependency_markers
-                .iter()
-                .any(|marker| text.contains(marker)),
+            !rand_dependency_markers.iter().any(|marker| text.contains(marker)),
             "core module must not reference rand in {}",
             path.display()
         );
@@ -67,11 +62,7 @@ fn core_module_rand_dependency_is_forbidden() {
 fn core_module_isolated_from_runtime_modules() {
     for path in core_sources() {
         let text = fs::read_to_string(&path).expect("read source");
-        for forbidden in [
-            "crate::adapters::",
-            "crate::app::server",
-            "crate::runtime::wiring",
-        ] {
+        for forbidden in ["crate::adapters::", "crate::app::server", "crate::runtime::wiring"] {
             assert!(
                 !text.contains(forbidden),
                 "core module must not reference runtime module `{forbidden}` in {}",

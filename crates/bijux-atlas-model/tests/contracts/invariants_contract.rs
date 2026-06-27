@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{DatasetId, ShardId};
+use bijux_atlas_model::{DatasetId, ShardId};
 
 #[test]
 fn dataset_id_rejects_invalid_characters() {

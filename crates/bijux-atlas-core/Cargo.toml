@@ -7,6 +7,9 @@ rust-version.workspace = true
 description = "Runtime-independent Atlas core primitives and invariants"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-core/latest/bijux_atlas_core/"
+readme = "README.md"
+categories = ["algorithms", "science::bioinformatics"]
 keywords = ["bioinformatics", "genomics", "core", "invariants", "hash"]
 
 [features]
@@ -17,3 +20,26 @@ serde = ["dep:serde_json"]
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", optional = true }
 sha2 = "0.11"
+
+[dev-dependencies]
+criterion = "0.8"
+proptest = "1"
+serde_json = "1"
+walkdir = "2"
+
+[[test]]
+name = "contracts"
+path = "tests/contracts.rs"
+required-features = ["serde"]
+
+[[bench]]
+name = "canonical_json"
+path = "benches/canonical_json.rs"
+harness = false
+required-features = ["serde"]
+
+[[bench]]
+name = "stable_sorting"
+path = "benches/stable_sorting.rs"
+harness = false
+required-features = ["serde"]

@@ -4,9 +4,6 @@ use std::path::PathBuf;
 
 fn core_crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("crates directory")
-        .join("bijux-atlas-core")
 }
 
 #[test]
@@ -54,25 +51,23 @@ fn error_code_enum_is_defined_only_in_core_generated_module() {
         }
     }
 
-    let expected = root
-        .join("crates/bijux-atlas-core/src/error_codes.rs")
-        .to_string_lossy()
-        .to_string();
+    let expected =
+        root.join("crates/bijux-atlas-core/src/error_codes.rs").to_string_lossy().to_string();
     assert_eq!(definitions, vec![expected]);
 }
 
 #[test]
 fn legacy_surface_roots_do_not_reappear() {
-    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .expect("workspace root")
+        .join("crates/bijux-atlas");
     for path in [
         manifest_dir.join("src/core.rs"),
         manifest_dir.join("src/model.rs"),
         manifest_dir.join("src/foundation"),
     ] {
-        assert!(
-            !path.exists(),
-            "legacy surface root must stay removed: {}",
-            path.display()
-        );
+        assert!(!path.exists(), "legacy surface root must stay removed: {}", path.display());
     }
 }

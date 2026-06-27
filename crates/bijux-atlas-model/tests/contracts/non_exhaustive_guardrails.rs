@@ -4,9 +4,6 @@ use std::path::PathBuf;
 
 fn model_crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("crates directory")
-        .join("bijux-atlas-model")
 }
 
 #[test]

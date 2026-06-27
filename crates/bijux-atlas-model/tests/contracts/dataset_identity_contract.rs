@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{canonical_identity_hash, DatasetId, DatasetIdentity};
+use bijux_atlas_model::{canonical_identity_hash, DatasetId, DatasetIdentity};
 
 #[test]
 fn dataset_identity_hash_is_canonical_and_repeatable() {

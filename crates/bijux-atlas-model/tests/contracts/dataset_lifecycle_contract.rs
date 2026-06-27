@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{DatasetId, DatasetLifecycleState, DatasetLifecycleTransition};
+use bijux_atlas_model::{DatasetId, DatasetLifecycleState, DatasetLifecycleTransition};
 
 #[test]
 fn dataset_lifecycle_transition_accepts_only_draft_to_published() {
