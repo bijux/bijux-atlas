@@ -3,30 +3,8 @@
 use crate::*;
 use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 pub(crate) use bijux_atlas_ops::inventory::tooling_support::{
-    normalize_tool_version_with_regex, ToolMismatchCode,
+    normalize_tool_version_with_regex, parse_tool_overrides, ToolMismatchCode,
 };
-
-pub(crate) fn parse_tool_overrides(
-    values: &[String],
-) -> Result<std::collections::BTreeMap<String, String>, String> {
-    let mut out = std::collections::BTreeMap::new();
-    for raw in values {
-        let Some((name, path)) = raw.split_once('=') else {
-            return Err(format!(
-                "invalid --tool override `{raw}`; expected name=path"
-            ));
-        };
-        let name = name.trim();
-        let path = path.trim();
-        if name.is_empty() || path.is_empty() {
-            return Err(format!(
-                "invalid --tool override `{raw}`; expected name=path"
-            ));
-        }
-        out.insert(name.to_string(), path.to_string());
-    }
-    Ok(out)
-}
 
 pub(crate) fn validate_pins_completeness(
     repo_root: &Path,

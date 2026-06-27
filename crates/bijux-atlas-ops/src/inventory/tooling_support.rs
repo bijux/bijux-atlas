@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use regex::Regex;
+use std::collections::BTreeMap;
 
 pub fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
     let re = Regex::new(pattern).ok()?;
@@ -25,6 +26,26 @@ impl ToolMismatchCode {
     }
 }
 
+pub fn parse_tool_overrides(values: &[String]) -> Result<BTreeMap<String, String>, String> {
+    let mut out = BTreeMap::new();
+    for raw in values {
+        let Some((name, path)) = raw.split_once('=') else {
+            return Err(format!(
+                "invalid --tool override `{raw}`; expected name=path"
+            ));
+        };
+        let name = name.trim();
+        let path = path.trim();
+        if name.is_empty() || path.is_empty() {
+            return Err(format!(
+                "invalid --tool override `{raw}`; expected name=path"
+            ));
+        }
+        out.insert(name.to_string(), path.to_string());
+    }
+    Ok(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -46,5 +67,22 @@ mod tests {
             ToolMismatchCode::VersionMismatch.as_str(),
             "TOOLS_VERSION_MISMATCH"
         );
+    }
+
+    #[test]
+    fn tool_override_parser_rejects_malformed_entries() {
+        let error = parse_tool_overrides(&["helm".to_string()]).expect_err("invalid override");
+        assert_eq!(error, "invalid --tool override `helm`; expected name=path");
+    }
+
+    #[test]
+    fn tool_override_parser_preserves_stable_pairs() {
+        let overrides = parse_tool_overrides(&[
+            "helm=/opt/bin/helm".to_string(),
+            "kubectl=/opt/bin/kubectl".to_string(),
+        ])
+        .expect("parse overrides");
+        assert_eq!(overrides["helm"], "/opt/bin/helm");
+        assert_eq!(overrides["kubectl"], "/opt/bin/kubectl");
     }
 }
