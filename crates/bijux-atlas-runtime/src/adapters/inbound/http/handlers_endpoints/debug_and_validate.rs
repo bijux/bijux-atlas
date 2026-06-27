@@ -336,7 +336,7 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
     let live = state
         .accepting_requests
         .load(std::sync::atomic::Ordering::Relaxed);
-    let runtime_stats = state.metrics.runtime_stats_snapshot().await;
+    let runtime_stats = state.metrics().runtime_stats_snapshot().await;
     let cache_stats = state.cache.cache_stats_snapshot().await;
     let response = Json(json!({
         "health": {
@@ -382,7 +382,7 @@ pub(crate) async fn runtime_stats_handler(State(state): State<AppState>) -> impl
             .await;
         return with_request_id(resp, &request_id);
     }
-    let runtime_stats = state.metrics.runtime_stats_snapshot().await;
+    let runtime_stats = state.metrics().runtime_stats_snapshot().await;
     let response = Json(runtime_stats).into_response();
     state
         .metrics
@@ -595,7 +595,7 @@ pub(crate) async fn query_planner_stats_dump_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let response = Json(state.metrics.query_planner_stats_snapshot().await).into_response();
+    let response = Json(state.metrics().query_planner_stats_snapshot().await).into_response();
     state
         .metrics
         .observe_request(

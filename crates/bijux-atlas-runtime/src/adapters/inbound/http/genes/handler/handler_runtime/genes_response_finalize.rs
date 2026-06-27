@@ -46,7 +46,7 @@ pub(super) async fn finalize_genes_success_response<R>(
         .and_then(serde_json::Value::as_array)
     {
         state
-            .metrics
+            .metrics()
             .observe_query_row_count("/v1/genes", rows.len())
             .await;
     }
@@ -62,7 +62,7 @@ pub(super) async fn finalize_genes_success_response<R>(
         Err(err) => {
             let resp = handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes",
                     StatusCode::INTERNAL_SERVER_ERROR,
@@ -73,7 +73,7 @@ pub(super) async fn finalize_genes_success_response<R>(
         }
     };
     state
-        .metrics
+        .metrics()
         .observe_stage("serialize", serialize_started.elapsed())
         .await;
     if bytes.len() > state.api.response_max_bytes {
@@ -86,7 +86,7 @@ pub(super) async fn finalize_genes_success_response<R>(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes",
                 StatusCode::PAYLOAD_TOO_LARGE,
@@ -105,17 +105,15 @@ pub(super) async fn finalize_genes_success_response<R>(
         );
         resp = handlers::with_query_class(resp, class);
         state
-            .metrics
+            .metrics()
             .observe_request("/v1/genes", StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
         return handlers::with_request_id(resp, request_id);
     }
     if state.api.enable_redis_response_cache {
-        if let (Some(redis), Some(cache_key), Some(_)) =
-            (&state.redis_backend, redis_cache_key, exact_gene_id)
-        {
-            if let Err(e) = redis
-                .set_gene_cache(cache_key, &bytes, state.api.redis_response_cache_ttl_secs)
+        if let (Some(cache_key), Some(_)) = (redis_cache_key, exact_gene_id) {
+            if let Err(e) = state
+                .redis_gene_cache_set(cache_key, &bytes, state.api.redis_response_cache_ttl_secs)
                 .await
             {
                 tracing::warn!("redis cache write fallback: {e}");
@@ -129,7 +127,7 @@ pub(super) async fn finalize_genes_success_response<R>(
             Err(err) => {
                 let resp = handlers::api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/genes",
                         StatusCode::INTERNAL_SERVER_ERROR,
@@ -140,7 +138,7 @@ pub(super) async fn finalize_genes_success_response<R>(
             }
         };
     state
-        .metrics
+        .metrics()
         .observe_response_size("/v1/genes", response_bytes.len())
         .await;
     if handlers::wants_text(headers) {
@@ -154,7 +152,7 @@ pub(super) async fn finalize_genes_success_response<R>(
         );
         resp = handlers::with_query_class(resp, class);
         state
-            .metrics
+            .metrics()
             .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
             .await;
         return handlers::with_request_id(resp, request_id);
@@ -183,18 +181,19 @@ pub(super) async fn finalize_genes_success_response<R>(
         cache_key_debug,
     );
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
-        let mut cache = state.hot_query_cache.lock().await;
-        cache.insert(
-            coalesce_key,
-            HotEntry {
-                body: response_bytes,
-                etag: etag.to_string(),
-                created_at: Instant::now(),
-            },
-        );
+        state
+            .hot_query_insert(
+                coalesce_key,
+                HotEntry {
+                    body: response_bytes,
+                    etag: etag.to_string(),
+                    created_at: Instant::now(),
+                },
+            )
+            .await;
     }
     state
-        .metrics
+        .metrics()
         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
         .await;
     tracing::info!(request_id = %request_id, status = 200_u16, "request complete");

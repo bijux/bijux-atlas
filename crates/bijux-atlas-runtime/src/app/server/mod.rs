@@ -6,4 +6,4 @@ pub(crate) mod state;
 #[cfg(test)]
 mod tests;
 
-pub use self::state::{AppState, DatasetCacheConfig, DatasetCacheManager};
+pub use self::state::{AppState, DatasetCacheConfig, DatasetCacheManager, RequestQueueGuard};

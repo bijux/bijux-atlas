@@ -11,40 +11,20 @@ use bijux_atlas_query::{
 };
 use serde_json::json;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::Arc;
 
-pub(super) struct QueueGuard {
-    counter: Arc<AtomicU64>,
-}
-
-impl Drop for QueueGuard {
-    fn drop(&mut self) {
-        self.counter.fetch_sub(1, Ordering::Relaxed);
-    }
-}
-
-pub(super) fn try_enter_queue(state: &AppState) -> Result<QueueGuard, ApiError> {
-    let depth = state
-        .queued_requests
-        .fetch_add(1, Ordering::Relaxed)
-        .saturating_add(1);
+pub(super) fn try_enter_queue(
+    state: &AppState,
+) -> Result<crate::app::server::RequestQueueGuard, ApiError> {
+    let depth = state.increment_queued_requests();
     if depth as usize > state.api.max_request_queue_depth {
-        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
-        state
-            .cache
-            .metrics
-            .policy_violations_total
-            .fetch_add(1, Ordering::Relaxed);
+        state.decrement_queued_requests();
         return Err(super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "request queue depth exceeded",
             json!({"depth": depth, "max": state.api.max_request_queue_depth}),
         ));
     }
-    Ok(QueueGuard {
-        counter: Arc::clone(&state.queued_requests),
-    })
+    Ok(state.request_queue_guard())
 }
 
 pub(super) fn parse_include(include: Option<Vec<IncludeField>>) -> GeneFields {
@@ -121,18 +101,7 @@ pub(super) async fn acquire_class_permit(
     state: &AppState,
     class: QueryClass,
 ) -> Result<tokio::sync::OwnedSemaphorePermit, ApiError> {
-    let sem = match class {
-        QueryClass::Cheap => state.class_cheap.clone(),
-        QueryClass::Medium => state.class_medium.clone(),
-        QueryClass::Heavy => state.class_heavy.clone(),
-        _ => state.class_heavy.clone(),
-    };
-    sem.try_acquire_owned().map_err(|_| {
-        state
-            .cache
-            .metrics
-            .policy_violations_total
-            .fetch_add(1, Ordering::Relaxed);
+    state.try_acquire_query_class_permit(class).map_err(|_| {
         super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "concurrency limit reached",

@@ -5,7 +5,7 @@ use bijux_atlas_runtime::query::QueryClass;
 
 pub async fn overloaded(state: &AppState) -> bool {
     let latency_overloaded = state
-        .metrics
+        .metrics()
         .should_shed_heavy(
             state.api.shed_latency_min_samples,
             state.api.shed_latency_p95_threshold_ms,
@@ -36,7 +36,7 @@ pub fn memory_pressure_overloaded(state: &AppState) -> bool {
 #[must_use]
 pub fn heavy_backoff_ms(state: &AppState) -> u64 {
     let cap = state.api.concurrency_heavy.max(1) as u64;
-    let inflight = cap.saturating_sub(state.class_heavy.available_permits() as u64);
+    let inflight = cap.saturating_sub(state.heavy_available_permits() as u64);
     let level = inflight.saturating_mul(4) / cap;
     25_u64.saturating_mul(2_u64.saturating_pow((level.min(5)) as u32))
 }

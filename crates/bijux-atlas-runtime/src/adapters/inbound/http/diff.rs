@@ -16,16 +16,6 @@ use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;
 
-struct QueueGuard {
-    counter: Arc<AtomicU64>,
-}
-
-impl Drop for QueueGuard {
-    fn drop(&mut self) {
-        self.counter.fetch_sub(1, Ordering::Relaxed);
-    }
-}
-
 fn parse_dataset_dims(params: &HashMap<String, String>) -> Result<(String, String), ApiError> {
     let species = params
         .get("species")
@@ -156,13 +146,10 @@ async fn diff_common(
         }
     };
     info!(request_id = %request_id, route = route, "request start");
-    let queue_depth = state
-        .queued_requests
-        .fetch_add(1, Ordering::Relaxed)
-        .saturating_add(1);
+    let queue_depth = state.increment_queued_requests();
     if queue_depth as usize > state.api.max_request_queue_depth {
         crate::record_shed_reason(&state, "queue_depth_exceeded").await;
-        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        state.decrement_queued_requests();
         let resp = api_error_response(
             StatusCode::TOO_MANY_REQUESTS,
             error_json(
@@ -173,9 +160,7 @@ async fn diff_common(
         );
         return with_request_id(resp, &request_id);
     }
-    let _queue_guard = QueueGuard {
-        counter: Arc::clone(&state.queued_requests),
-    };
+    let _queue_guard = state.request_queue_guard();
 
     let (species, assembly) = match parse_dataset_dims(&params) {
         Ok(v) => v,
@@ -281,7 +266,7 @@ async fn diff_common(
             .max(1.0) as usize;
         limit = limit.min(adaptive_max);
     }
-    let _class_permit = match state.class_heavy.clone().try_acquire_owned() {
+    let _class_permit = match state.try_acquire_query_class_permit(QueryClass::Heavy) {
         Ok(v) => v,
         Err(_) => {
             let resp = api_error_response(
@@ -298,12 +283,12 @@ async fn diff_common(
 
     let normalized_query = normalize_query(&params);
     state
-        .metrics
+        .metrics()
         .observe_request_size(route, normalized_query.len())
         .await;
     let query_hash = sha256_hex(normalized_query.as_bytes());
     let coalesce_key = format!("{route}:{scope:?}:{query_hash}");
-    let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
+    let _coalesce_guard = state.acquire_coalesced_query(&coalesce_key).await;
     let cursor_gene = if let Some(token) = params.get("cursor") {
         match decode_cursor(
             token,

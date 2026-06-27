@@ -17,11 +17,7 @@ pub(super) async fn enforce_ip_rate_limit(
     request_id: &str,
 ) -> Option<Response> {
     if let Some(ip) = handlers::normalized_forwarded_for(headers) {
-        if !state
-            .ip_limiter
-            .allow_with_factor(&ip, &state.api.rate_limit_per_ip, adaptive_rl)
-            .await
-        {
+        if !state.allow_ip_with_factor(&ip, adaptive_rl).await {
             let resp = handlers::api_error_response(
                 StatusCode::TOO_MANY_REQUESTS,
                 handlers::error_json(
@@ -53,11 +49,7 @@ pub(super) async fn enforce_api_key_rate_limit(
 ) -> Option<Response> {
     if state.api.enable_api_key_rate_limit {
         if let Some(key) = handlers::normalized_api_key(headers) {
-            if !state
-                .api_key_limiter
-                .allow_with_factor(&key, &state.api.rate_limit_per_api_key, adaptive_rl)
-                .await
-            {
+            if !state.allow_api_key_with_factor(&key, adaptive_rl).await {
                 let resp = handlers::api_error_response(
                     StatusCode::TOO_MANY_REQUESTS,
                     handlers::error_json(
@@ -88,7 +80,7 @@ pub(super) async fn acquire_heavy_worker_permit(
     request_id: &str,
 ) -> Result<Option<tokio::sync::OwnedSemaphorePermit>, Response> {
     if class == QueryClass::Heavy {
-        match state.heavy_workers.clone().try_acquire_owned() {
+        match state.try_acquire_heavy_worker_permit() {
             Ok(permit) => Ok(Some(permit)),
             Err(_) => {
                 let resp = handlers::api_error_response(
@@ -117,6 +109,6 @@ pub(super) async fn acquire_heavy_worker_permit(
 
 pub(super) fn try_enter_request_queue(
     state: &AppState,
-) -> Result<genes_support::QueueGuard, ApiError> {
+) -> Result<crate::app::server::RequestQueueGuard, ApiError> {
     genes_support::try_enter_queue(state)
 }

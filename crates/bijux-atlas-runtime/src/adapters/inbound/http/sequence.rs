@@ -13,16 +13,6 @@ use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;
 
-struct QueueGuard {
-    counter: Arc<AtomicU64>,
-}
-
-impl Drop for QueueGuard {
-    fn drop(&mut self) {
-        self.counter.fetch_sub(1, Ordering::Relaxed);
-    }
-}
-
 #[derive(Debug, Clone)]
 struct FaiRecord {
     len: u64,
@@ -172,13 +162,7 @@ async fn acquire_class_permit_for_sequence(
     state: &AppState,
     class: QueryClass,
 ) -> Result<tokio::sync::OwnedSemaphorePermit, ApiError> {
-    let sem = match class {
-        QueryClass::Cheap => state.class_cheap.clone(),
-        QueryClass::Medium => state.class_medium.clone(),
-        QueryClass::Heavy => state.class_heavy.clone(),
-        _ => state.class_heavy.clone(),
-    };
-    sem.try_acquire_owned().map_err(|_| {
+    state.try_acquire_query_class_permit(class).map_err(|_| {
         error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "query class concurrency limit exceeded",
@@ -198,13 +182,10 @@ async fn sequence_common(
     let request_id =
         crate::adapters::inbound::http::handlers::propagated_request_id(&headers, &state);
     info!(request_id = %request_id, route = route, "request start");
-    let queue_depth = state
-        .queued_requests
-        .fetch_add(1, Ordering::Relaxed)
-        .saturating_add(1);
+    let queue_depth = state.increment_queued_requests();
     if queue_depth as usize > state.api.max_request_queue_depth {
         crate::record_shed_reason(&state, "queue_depth_exceeded").await;
-        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        state.decrement_queued_requests();
         let resp = api_error_response(
             StatusCode::TOO_MANY_REQUESTS,
             error_json(
@@ -215,9 +196,7 @@ async fn sequence_common(
         );
         return with_request_id(resp, &request_id);
     }
-    let _queue_guard = QueueGuard {
-        counter: Arc::clone(&state.queued_requests),
-    };
+    let _queue_guard = state.request_queue_guard();
     let overloaded_early =
         crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
     let adaptive_rl = if overloaded_early {
@@ -227,11 +206,7 @@ async fn sequence_common(
     };
 
     if let Some(ip) = super::handlers::normalized_forwarded_for(&headers) {
-        if !state
-            .sequence_ip_limiter
-            .allow_with_factor(&ip, &state.api.sequence_rate_limit_per_ip, adaptive_rl)
-            .await
-        {
+        if !state.allow_sequence_ip_with_factor(&ip, adaptive_rl).await {
             let resp = api_error_response(
                 StatusCode::TOO_MANY_REQUESTS,
                 error_json(
@@ -241,7 +216,7 @@ async fn sequence_common(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::TOO_MANY_REQUESTS, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -253,7 +228,7 @@ async fn sequence_common(
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::BAD_REQUEST, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -264,7 +239,7 @@ async fn sequence_common(
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::BAD_REQUEST, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -297,7 +272,7 @@ async fn sequence_common(
             resp.headers_mut().insert("retry-after", v);
         }
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::SERVICE_UNAVAILABLE, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -308,7 +283,7 @@ async fn sequence_common(
             crate::record_shed_reason(&state, "class_permit_saturated").await;
             let resp = api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::TOO_MANY_REQUESTS, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -325,7 +300,7 @@ async fn sequence_common(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::UNPROCESSABLE_ENTITY, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -342,7 +317,7 @@ async fn sequence_common(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::UNAUTHORIZED, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -355,10 +330,10 @@ async fn sequence_common(
         normalize_query(&params)
     );
     state
-        .metrics
+        .metrics()
         .observe_request_size(route, coalesce_key.len())
         .await;
-    let _coalesce_guard = state.coalescer.acquire(&coalesce_key).await;
+    let _coalesce_guard = state.acquire_coalesced_query(&coalesce_key).await;
 
     let io_stage = Instant::now();
     let (fasta_path, fai_path) = match state.cache.ensure_sequence_inputs_cached(&dataset).await {
@@ -373,7 +348,7 @@ async fn sequence_common(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::SERVICE_UNAVAILABLE, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);

@@ -246,14 +246,14 @@ pub(crate) async fn genes_handler(
     let etag = handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
     let cache_key_debug = format!("/v1/genes?{normalized}");
     state
-        .metrics
+        .metrics()
         .observe_request_size("/v1/genes", cache_key_debug.len())
         .await;
     let explain_mode = handlers::bool_query_flag(&params, "explain");
     let mut redis_fill_guard = None;
     if state.api.enable_redis_response_cache {
-        if let (Some(redis), Some(cache_key)) = (&state.redis_backend, &redis_cache_key) {
-            match redis.get_gene_cache(cache_key).await {
+        if let Some(cache_key) = &redis_cache_key {
+            match state.redis_gene_cache_get(cache_key).await {
                 Ok(Some(cached_bytes)) => {
                     if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
                         let mut resp = StatusCode::NOT_MODIFIED.into_response();
@@ -265,7 +265,7 @@ pub(crate) async fn genes_handler(
                         );
                         resp = handlers::with_query_class(resp, class);
                         state
-                            .metrics
+                            .metrics()
                             .observe_request(
                                 "/v1/genes",
                                 StatusCode::NOT_MODIFIED,
@@ -291,14 +291,14 @@ pub(crate) async fn genes_handler(
                     }
                     resp = handlers::with_query_class(resp, class);
                     state
-                        .metrics
+                        .metrics()
                         .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                         .await;
                     return handlers::with_request_id(resp, &request_id);
                 }
                 Ok(None) => {
-                    let guard = redis.acquire_fill_lock(cache_key).await;
-                    match redis.get_gene_cache(cache_key).await {
+                    let guard = state.acquire_redis_fill_lock(cache_key).await;
+                    match state.redis_gene_cache_get(cache_key).await {
                         Ok(Some(cached_bytes)) => {
                             if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
                                 let mut resp = StatusCode::NOT_MODIFIED.into_response();
@@ -310,7 +310,7 @@ pub(crate) async fn genes_handler(
                                 );
                                 resp = handlers::with_query_class(resp, class);
                                 state
-                                    .metrics
+                                    .metrics()
                                     .observe_request(
                                         "/v1/genes",
                                         StatusCode::NOT_MODIFIED,
@@ -340,17 +340,17 @@ pub(crate) async fn genes_handler(
                             }
                             resp = handlers::with_query_class(resp, class);
                             state
-                                .metrics
+                                .metrics()
                                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                                 .await;
                             return handlers::with_request_id(resp, &request_id);
                         }
                         Ok(None) => {
-                            redis_fill_guard = Some(guard);
+                            redis_fill_guard = guard;
                         }
                         Err(e) => {
                             warn!("redis cache read fallback after fill-lock: {e}");
-                            redis_fill_guard = Some(guard);
+                            redis_fill_guard = guard;
                         }
                     }
                 }
@@ -369,15 +369,15 @@ pub(crate) async fn genes_handler(
         let hash = sha256_hex(dataset.canonical_string().as_bytes());
         format!("ds-{}", &hash[..12])
     };
-    state.metrics.observe_dataset_query(&dataset_key).await;
+    state.metrics().observe_dataset_query(&dataset_key).await;
     if class == QueryClass::Heavy || class == QueryClass::Cheap {
-        let mut cache = state.hot_query_cache.lock().await;
         if let Some(entry) = info_span!(
             "cache_lookup_hot_query",
             dataset_id = %dataset.canonical_string(),
             query_type = "genes"
         )
-        .in_scope(|| cache.get(&coalesce_key))
+        .in_scope(|| async { state.hot_query_get(&coalesce_key).await })
+        .await
         {
             info!(
                 event_id = "cache_hit_hot_query",
@@ -387,7 +387,7 @@ pub(crate) async fn genes_handler(
                 query_type = "genes",
                 "hot query cache hit"
             );
-            state.metrics.observe_query_cache_hit();
+            state.metrics().observe_query_cache_hit();
             let mut resp = Response::builder()
                 .status(StatusCode::OK)
                 .body(Body::from(entry.body))
@@ -402,7 +402,7 @@ pub(crate) async fn genes_handler(
             );
             resp = handlers::with_query_class(resp, class);
             state
-                .metrics
+                .metrics()
                 .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
                 .await;
             return handlers::with_request_id(resp, &request_id);
@@ -415,10 +415,10 @@ pub(crate) async fn genes_handler(
             query_type = "genes",
             "hot query cache miss"
         );
-        state.metrics.observe_query_cache_miss();
+        state.metrics().observe_query_cache_miss();
     }
     let _coalesce_guard = if class == QueryClass::Heavy || class == QueryClass::Cheap {
-        Some(state.coalescer.acquire(&coalesce_key).await)
+        Some(state.acquire_coalesced_query(&coalesce_key).await)
     } else {
         None
     };
@@ -430,7 +430,7 @@ pub(crate) async fn genes_handler(
             .conn
             .prepare_cached(app_query::prepared_sql_for_class(class));
         state
-            .metrics
+            .metrics()
             .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
             .await;
         let deadline = Instant::now() + state.api.sql_timeout;
@@ -594,7 +594,7 @@ pub(crate) async fn genes_handler(
         })?;
         let query_elapsed = query_started.elapsed();
         if query_elapsed > state.api.slow_query_threshold {
-            state.metrics.observe_slow_query();
+            state.metrics().observe_slow_query();
             warn!(
                 event_id = "slow_query_detected",
                 request_id = %request_id,
@@ -612,10 +612,10 @@ pub(crate) async fn genes_handler(
     let payload = match result {
         Ok(Ok((resp, query_elapsed))) => {
             state
-                .metrics
+                .metrics()
                 .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
                 .await;
-            state.metrics.observe_stage("query", query_elapsed).await;
+            state.metrics().observe_stage("query", query_elapsed).await;
             let provenance = handlers::dataset_provenance(&state, &dataset).await;
             info_span!(
                 "cursor_generation",

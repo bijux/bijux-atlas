@@ -198,7 +198,8 @@ pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> imp
                     last_heartbeat_unix_ms: chrono_like_unix_millis() as u64,
                 });
                 let snapshot = registry.snapshot();
-                let membership = state.membership.lock().await;
+                let membership_registry = state.membership_registry();
+                let membership = membership_registry.lock().await;
                 let membership_metrics = membership.metrics();
                 json!({
                     "cluster_id": cluster.cluster_id,
@@ -260,7 +261,8 @@ pub(crate) async fn cluster_nodes_handler(State(state): State<AppState>) -> impl
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let now_unix_ms = chrono_like_unix_millis() as u64;
-    let mut membership = state.membership.lock().await;
+    let membership_registry = state.membership_registry();
+    let mut membership = membership_registry.lock().await;
     let _timed_out = membership.detect_timeouts(now_unix_ms);
     let nodes = membership
         .nodes()
@@ -340,7 +342,8 @@ pub(crate) async fn cluster_register_handler(
     };
 
     let now_unix_ms = chrono_like_unix_millis() as u64;
-    let mut membership = state.membership.lock().await;
+    let membership_registry = state.membership_registry();
+    let mut membership = membership_registry.lock().await;
     membership.join_node(descriptor, now_unix_ms);
     membership.activate_node(&req.node_id);
     tracing::info!(
@@ -376,7 +379,8 @@ pub(crate) async fn cluster_heartbeat_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let mut membership = state.membership.lock().await;
+    let membership_registry = state.membership_registry();
+    let mut membership = membership_registry.lock().await;
     membership.apply_heartbeat(HeartbeatMessage {
         identity: NodeIdentity {
             cluster_id: req.cluster_id,
@@ -419,7 +423,8 @@ pub(crate) async fn cluster_mode_handler(
     let request_id = make_request_id(&state);
     let started = Instant::now();
     let now_unix_ms = chrono_like_unix_millis() as u64;
-    let mut membership = state.membership.lock().await;
+    let membership_registry = state.membership_registry();
+    let mut membership = membership_registry.lock().await;
     match req.mode.as_str() {
         "quarantine" => membership.set_quarantine(&req.node_id),
         "maintenance" => membership.set_maintenance(&req.node_id),
@@ -464,7 +469,8 @@ pub(crate) async fn cluster_replica_list_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let registry = state.replica_registry.lock().await;
+    let replica_registry = state.replica_registry();
+    let registry = replica_registry.lock().await;
     let replicas = registry
         .list()
         .into_iter()
@@ -505,7 +511,8 @@ pub(crate) async fn cluster_replica_health_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let registry = state.replica_registry.lock().await;
+    let replica_registry = state.replica_registry();
+    let registry = replica_registry.lock().await;
     let metrics = registry.metrics();
     let payload = json!({
         "schema_version": 1,
@@ -540,7 +547,8 @@ pub(crate) async fn cluster_replica_failover_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let mut registry = state.replica_registry.lock().await;
+    let replica_registry = state.replica_registry();
+    let mut registry = replica_registry.lock().await;
     let succeeded = registry.failover(&req.dataset_id, &req.shard_id, &req.promote_node_id);
     let status = if succeeded {
         StatusCode::OK
@@ -573,7 +581,8 @@ pub(crate) async fn cluster_replica_diagnostics_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let registry = state.replica_registry.lock().await;
+    let replica_registry = state.replica_registry();
+    let registry = replica_registry.lock().await;
     let diagnostics = registry
         .list()
         .into_iter()
@@ -609,7 +618,8 @@ pub(crate) async fn cluster_recovery_run_handler(
     let started = Instant::now();
     let now_unix_ms = chrono_like_unix_millis() as u64;
 
-    let mut membership = state.membership.lock().await;
+    let membership_registry = state.membership_registry();
+    let mut membership = membership_registry.lock().await;
     let timed_out_nodes = membership.detect_timeouts(now_unix_ms);
     let live_nodes = membership
         .nodes()
@@ -619,9 +629,12 @@ pub(crate) async fn cluster_recovery_run_handler(
         .collect::<Vec<_>>();
     drop(membership);
 
-    let mut shard_registry = state.shard_registry.lock().await;
-    let mut replica_registry = state.replica_registry.lock().await;
-    let mut resilience = state.resilience_registry.lock().await;
+    let shard_registry_handle = state.shard_registry();
+    let replica_registry_handle = state.replica_registry();
+    let resilience_registry = state.resilience_registry();
+    let mut shard_registry = shard_registry_handle.lock().await;
+    let mut replica_registry = replica_registry_handle.lock().await;
+    let mut resilience = resilience_registry.lock().await;
 
     let mut shard_failovers = 0_u64;
     let mut replica_failovers = 0_u64;
@@ -725,7 +738,8 @@ pub(crate) async fn recovery_diagnostics_handler(
 ) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let diagnostics = state.resilience_registry.lock().await.diagnostics();
+    let resilience_registry = state.resilience_registry();
+    let diagnostics = resilience_registry.lock().await.diagnostics();
     let payload = json!({
         "schema_version": 1,
         "kind": "cluster_recovery_diagnostics_report",
@@ -779,7 +793,8 @@ pub(crate) async fn failure_injection_handler(
         }
     };
     let now_unix_ms = chrono_like_unix_millis() as u64;
-    let mut resilience = state.resilience_registry.lock().await;
+    let resilience_registry = state.resilience_registry();
+    let mut resilience = resilience_registry.lock().await;
     let category = match plan.category {
         FailureInjectionCategory::NodeCrash => FailureCategory::NodeUnreachable,
         FailureInjectionCategory::ShardCorruption => FailureCategory::ShardCorruption,
@@ -849,7 +864,8 @@ pub(crate) async fn chaos_run_handler(
         }
     };
     let now_unix_ms = chrono_like_unix_millis() as u64;
-    let mut resilience = state.resilience_registry.lock().await;
+    let resilience_registry = state.resilience_registry();
+    let mut resilience = resilience_registry.lock().await;
     let id1 = resilience.record_failure(
         FailureCategory::NodeUnreachable,
         target_node_id.clone(),

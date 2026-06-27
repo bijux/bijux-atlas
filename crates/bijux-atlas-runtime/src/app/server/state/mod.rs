@@ -29,7 +29,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
-use tokio::sync::{Mutex, OwnedSemaphorePermit, RwLock, Semaphore};
+use tokio::sync::{Mutex, OwnedMutexGuard, OwnedSemaphorePermit, RwLock, Semaphore};
 use tokio::time::timeout;
 use tracing::{error, info, warn, Instrument};
 
@@ -160,7 +160,7 @@ pub struct CacheMetrics {
 }
 
 #[derive(Default)]
-pub(crate) struct RequestMetrics {
+pub struct RequestMetrics {
     pub(crate) counts: Mutex<HashMap<(String, String, u16, String), u64>>,
     pub(crate) latency_ns: Mutex<HashMap<String, Vec<u64>>>,
     pub(crate) sqlite_latency_ns: Mutex<HashMap<String, Vec<u64>>>,
@@ -181,12 +181,12 @@ type RequestMetricKey = (String, String, u16, String);
 type RequestExemplar = (String, u128);
 
 impl RequestMetrics {
-    pub(crate) async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
+    pub async fn observe_request(&self, route: &str, status: StatusCode, latency: Duration) {
         self.observe_request_with_trace_and_method(route, "GET", status, latency, None)
             .await;
     }
 
-    pub(crate) async fn observe_request_with_method(
+    pub async fn observe_request_with_method(
         &self,
         route: &str,
         method: &str,
@@ -197,7 +197,7 @@ impl RequestMetrics {
             .await;
     }
 
-    pub(crate) async fn observe_request_with_trace(
+    pub async fn observe_request_with_trace(
         &self,
         route: &str,
         status: StatusCode,
@@ -208,7 +208,7 @@ impl RequestMetrics {
             .await;
     }
 
-    pub(crate) async fn observe_request_with_trace_and_method(
+    pub async fn observe_request_with_trace_and_method(
         &self,
         route: &str,
         method: &str,
@@ -246,7 +246,7 @@ impl RequestMetrics {
         }
     }
 
-    pub(crate) async fn observe_sqlite_query(&self, query_type: &str, latency: Duration) {
+    pub async fn observe_sqlite_query(&self, query_type: &str, latency: Duration) {
         let mut q = self.sqlite_latency_ns.lock().await;
         q.entry(query_type.to_string())
             .or_insert_with(Vec::new)
@@ -260,61 +260,61 @@ impl RequestMetrics {
         }
     }
 
-    pub(crate) async fn observe_stage(&self, stage: &str, latency: Duration) {
+    pub async fn observe_stage(&self, stage: &str, latency: Duration) {
         let mut m = self.stage_latency_ns.lock().await;
         m.entry(stage.to_string())
             .or_insert_with(Vec::new)
             .push(latency.as_nanos() as u64);
     }
 
-    pub(crate) async fn observe_request_size(&self, route: &str, bytes: usize) {
+    pub async fn observe_request_size(&self, route: &str, bytes: usize) {
         let mut m = self.request_size_bytes.lock().await;
         m.entry(route.to_string())
             .or_insert_with(Vec::new)
             .push(bytes as u64);
     }
 
-    pub(crate) async fn observe_response_size(&self, route: &str, bytes: usize) {
+    pub async fn observe_response_size(&self, route: &str, bytes: usize) {
         let mut m = self.response_size_bytes.lock().await;
         m.entry(route.to_string())
             .or_insert_with(Vec::new)
             .push(bytes as u64);
     }
 
-    pub(crate) async fn observe_query_row_count(&self, route: &str, rows: usize) {
+    pub async fn observe_query_row_count(&self, route: &str, rows: usize) {
         let mut m = self.query_row_count.lock().await;
         m.entry(route.to_string())
             .or_insert_with(Vec::new)
             .push(rows as u64);
     }
 
-    pub(crate) fn observe_query_cache_hit(&self) {
+    pub fn observe_query_cache_hit(&self) {
         self.query_cache_hits_total.fetch_add(1, Ordering::Relaxed);
     }
 
-    pub(crate) fn observe_query_cache_miss(&self) {
+    pub fn observe_query_cache_miss(&self) {
         self.query_cache_misses_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
-    pub(crate) fn observe_slow_query(&self) {
+    pub fn observe_slow_query(&self) {
         self.slow_queries_total.fetch_add(1, Ordering::Relaxed);
     }
 
-    pub(crate) fn slow_queries_total(&self) -> u64 {
+    pub fn slow_queries_total(&self) -> u64 {
         self.slow_queries_total.load(Ordering::Relaxed)
     }
 
-    pub(crate) async fn observe_dataset_query(&self, dataset_key: &str) {
+    pub async fn observe_dataset_query(&self, dataset_key: &str) {
         let mut m = self.dataset_query_distribution.lock().await;
         *m.entry(dataset_key.to_string()).or_insert(0) += 1;
     }
 
-    pub(crate) async fn dataset_query_distribution_snapshot(&self) -> HashMap<String, u64> {
+    pub async fn dataset_query_distribution_snapshot(&self) -> HashMap<String, u64> {
         self.dataset_query_distribution.lock().await.clone()
     }
 
-    pub(crate) async fn query_planner_stats_snapshot(&self) -> serde_json::Value {
+    pub async fn query_planner_stats_snapshot(&self) -> serde_json::Value {
         let stage_latency = self.stage_latency_ns.lock().await;
         let query_plan = stage_latency.get("query_plan").cloned().unwrap_or_default();
         let query_exec = stage_latency.get("query").cloned().unwrap_or_default();
@@ -330,7 +330,7 @@ impl RequestMetrics {
         })
     }
 
-    pub(crate) async fn runtime_stats_snapshot(&self) -> serde_json::Value {
+    pub async fn runtime_stats_snapshot(&self) -> serde_json::Value {
         let counts = self.counts.lock().await.clone();
         let latency = self.latency_ns.lock().await.clone();
         let request_sizes = self.request_size_bytes.lock().await.clone();
@@ -349,7 +349,7 @@ impl RequestMetrics {
         })
     }
 
-    pub(crate) async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
+    pub async fn should_shed_heavy(&self, min_samples: usize, threshold_ms: u64) -> bool {
         let recent = self.heavy_latency_recent_ns.lock().await;
         if recent.len() < min_samples {
             return false;
@@ -361,11 +361,7 @@ impl RequestMetrics {
         p95_ns > (threshold_ms * 1_000_000)
     }
 
-    pub(crate) async fn observe_client_fingerprint(
-        &self,
-        client_type: &str,
-        user_agent_family: &str,
-    ) {
+    pub async fn observe_client_fingerprint(&self, client_type: &str, user_agent_family: &str) {
         let mut counts = self.client_fingerprint_counts.lock().await;
         *counts
             .entry((client_type.to_string(), user_agent_family.to_string()))
@@ -439,6 +435,17 @@ pub struct DatasetCacheManager {
     pub(crate) retry_budget_remaining: AtomicU64,
     pub(crate) dataset_retry_budget: Mutex<HashMap<DatasetId, u32>>,
     pub metrics: Arc<CacheMetrics>,
+}
+
+#[derive(Clone)]
+pub struct RequestQueueGuard {
+    counter: Arc<AtomicU64>,
+}
+
+impl Drop for RequestQueueGuard {
+    fn drop(&mut self) {
+        self.counter.fetch_sub(1, Ordering::Relaxed);
+    }
 }
 
 #[derive(Clone)]
@@ -628,6 +635,149 @@ impl AppState {
     pub fn begin_shutdown_drain_heavy(&self) {
         self.class_heavy.close();
         self.heavy_workers.close();
+    }
+
+    pub fn next_request_id(&self) -> String {
+        let id = self.request_id_seed.fetch_add(1, Ordering::Relaxed);
+        format!("req-{id:016x}")
+    }
+
+    pub fn increment_queued_requests(&self) -> u64 {
+        self.queued_requests
+            .fetch_add(1, Ordering::Relaxed)
+            .saturating_add(1)
+    }
+
+    pub fn decrement_queued_requests(&self) {
+        self.queued_requests.fetch_sub(1, Ordering::Relaxed);
+    }
+
+    pub fn request_queue_guard(&self) -> RequestQueueGuard {
+        RequestQueueGuard {
+            counter: Arc::clone(&self.queued_requests),
+        }
+    }
+
+    pub fn try_acquire_query_class_permit(
+        &self,
+        class: crate::query::QueryClass,
+    ) -> Result<OwnedSemaphorePermit, tokio::sync::TryAcquireError> {
+        let limiter = match class {
+            crate::query::QueryClass::Cheap => Arc::clone(&self.class_cheap),
+            crate::query::QueryClass::Medium => Arc::clone(&self.class_medium),
+            crate::query::QueryClass::Heavy => Arc::clone(&self.class_heavy),
+            _ => Arc::clone(&self.class_heavy),
+        };
+        limiter.try_acquire_owned()
+    }
+
+    pub fn try_acquire_heavy_worker_permit(
+        &self,
+    ) -> Result<OwnedSemaphorePermit, tokio::sync::TryAcquireError> {
+        Arc::clone(&self.heavy_workers).try_acquire_owned()
+    }
+
+    pub fn heavy_available_permits(&self) -> usize {
+        self.class_heavy.available_permits()
+    }
+
+    pub fn metrics(&self) -> Arc<RequestMetrics> {
+        Arc::clone(&self.metrics)
+    }
+
+    pub async fn allow_ip_with_factor(&self, key: &str, factor: f64) -> bool {
+        self.ip_limiter
+            .allow_with_factor(key, &self.api.rate_limit_per_ip, factor)
+            .await
+    }
+
+    pub async fn allow_sequence_ip_with_factor(&self, key: &str, factor: f64) -> bool {
+        self.sequence_ip_limiter
+            .allow_with_factor(key, &self.api.sequence_rate_limit_per_ip, factor)
+            .await
+    }
+
+    pub async fn allow_api_key_with_factor(&self, key: &str, factor: f64) -> bool {
+        self.api_key_limiter
+            .allow_with_factor(key, &self.api.rate_limit_per_api_key, factor)
+            .await
+    }
+
+    pub async fn acquire_coalesced_query(&self, key: &str) -> OwnedMutexGuard<()> {
+        self.coalescer.acquire(key).await
+    }
+
+    pub async fn hot_query_get(&self, key: &str) -> Option<cache::hot::HotEntry> {
+        let mut cache = self.hot_query_cache.lock().await;
+        cache.get(key)
+    }
+
+    pub async fn hot_query_insert(&self, key: String, entry: cache::hot::HotEntry) {
+        let mut cache = self.hot_query_cache.lock().await;
+        cache.insert(key, entry);
+    }
+
+    pub async fn acquire_redis_fill_lock(&self, key: &str) -> Option<OwnedMutexGuard<()>> {
+        match &self.redis_backend {
+            Some(redis) => Some(redis.acquire_fill_lock(key).await),
+            None => None,
+        }
+    }
+
+    pub async fn redis_gene_cache_get(&self, key: &str) -> Result<Option<Vec<u8>>, String> {
+        match &self.redis_backend {
+            Some(redis) => redis.get_gene_cache(key).await,
+            None => Ok(None),
+        }
+    }
+
+    pub async fn redis_gene_cache_set(
+        &self,
+        key: &str,
+        value: &[u8],
+        ttl_secs: usize,
+    ) -> Result<(), String> {
+        match &self.redis_backend {
+            Some(redis) => redis.set_gene_cache(key, value, ttl_secs).await,
+            None => Ok(()),
+        }
+    }
+
+    pub fn membership_registry(&self) -> Arc<Mutex<MembershipRegistry>> {
+        Arc::clone(&self.membership)
+    }
+
+    pub fn shard_registry(&self) -> Arc<Mutex<ShardRegistry>> {
+        Arc::clone(&self.shard_registry)
+    }
+
+    pub fn replica_registry(&self) -> Arc<Mutex<ReplicaRegistry>> {
+        Arc::clone(&self.replica_registry)
+    }
+
+    pub fn resilience_registry(&self) -> Arc<Mutex<FailureRecoveryRegistry>> {
+        Arc::clone(&self.resilience_registry)
+    }
+
+    pub async fn record_policy_violation(&self, policy: &str) {
+        self.cache
+            .metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
+        let mut by = self.cache.metrics.policy_violations_by_policy.lock().await;
+        *by.entry(policy.to_string()).or_insert(0) += 1;
+    }
+
+    pub async fn increment_policy_violation_bucket(&self, key: &str) -> u64 {
+        let mut by = self.cache.metrics.policy_violations_by_policy.lock().await;
+        let count = by.entry(key.to_string()).or_insert(0);
+        *count += 1;
+        *count
+    }
+
+    pub async fn record_invariant_violation(&self, invariant: &str) {
+        let mut by = self.cache.metrics.invariant_violations_by_name.lock().await;
+        *by.entry(invariant.to_string()).or_insert(0) += 1;
     }
 }
 

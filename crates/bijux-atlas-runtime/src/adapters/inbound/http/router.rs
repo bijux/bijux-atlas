@@ -188,7 +188,10 @@ pub fn build_router(state: AppState) -> Router {
 mod bulkhead_tests {
     use super::*;
     use crate::adapters::outbound::store::testing::FakeStore;
-    use crate::app::server::state::DatasetCacheConfig;
+    use crate::app::server::{DatasetCacheConfig, DatasetCacheManager};
+    use crate::runtime::config::ApiConfig;
+    use bijux_atlas_query::{QueryClass, QueryLimits};
+    use std::sync::Arc;
 
     #[tokio::test]
     async fn heavy_bulkhead_saturation_does_not_block_cheap_permits() {
@@ -229,10 +232,10 @@ mod bulkhead_tests {
 
         state.begin_shutdown_drain_heavy();
 
-        let heavy = state.class_heavy.clone().try_acquire_owned();
+        let heavy = state.try_acquire_query_class_permit(QueryClass::Heavy);
         assert!(heavy.is_err(), "heavy permits must be closed during drain");
 
-        let worker = state.heavy_workers.clone().try_acquire_owned();
+        let worker = state.try_acquire_heavy_worker_permit();
         assert!(
             worker.is_err(),
             "heavy worker permits must be closed during drain"
@@ -252,9 +255,9 @@ mod bulkhead_tests {
         let cache = DatasetCacheManager::new(DatasetCacheConfig::default(), store);
         let state = AppState::with_config(cache, ApiConfig::default(), QueryLimits::default());
 
-        let shard_count = state.shard_registry.lock().await.metrics().shard_count;
+        let shard_count = state.shard_registry().lock().await.metrics().shard_count;
         let replica_groups = state
-            .replica_registry
+            .replica_registry()
             .lock()
             .await
             .metrics()

@@ -1,22 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::Arc;
-
-pub(crate) struct RequestQueueGuard {
-    pub(crate) counter: Arc<AtomicU64>,
-}
-
-impl Drop for RequestQueueGuard {
-    fn drop(&mut self) {
-        self.counter.fetch_sub(1, Ordering::Relaxed);
-    }
-}
 
 pub(crate) fn make_request_id(state: &AppState) -> String {
-    let id = state.request_id_seed.fetch_add(1, Ordering::Relaxed);
-    format!("req-{id:016x}")
+    state.next_request_id()
 }
 
 pub(crate) fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> String {

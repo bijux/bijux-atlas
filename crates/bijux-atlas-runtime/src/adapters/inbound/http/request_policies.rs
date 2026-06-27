@@ -20,7 +20,6 @@ use bijux_atlas_api::{ApiError, ApiErrorCode};
 use bijux_atlas_model::dataset::DatasetId;
 use hmac::{digest::KeyInit, Hmac, Mac};
 use sha2::Sha256;
-use std::sync::atomic::Ordering;
 use std::time::Instant;
 use tracing::{error, info, warn};
 
@@ -909,28 +908,20 @@ fn build_hmac_signature(secret: &str, method: &str, uri: &str, ts: &str) -> Opti
 }
 
 async fn record_policy_violation(state: &AppState, policy: &str) {
-    state
-        .cache
-        .metrics
-        .policy_violations_total
-        .fetch_add(1, Ordering::Relaxed);
-    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
-    *by.entry(policy.to_string()).or_insert(0) += 1;
+    state.record_policy_violation(policy).await;
 }
 
 async fn record_auth_failure(state: &AppState, reason: &str, route: &str) {
     record_policy_violation(state, reason).await;
     let key = format!("auth.{reason}");
-    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
-    let count = by.entry(key).or_insert(0);
-    *count += 1;
-    if *count % 50 == 0 {
+    let count = state.increment_policy_violation_bucket(&key).await;
+    if count % 50 == 0 {
         warn!(
             event_id = "authentication_failure_alert",
             event = "authentication_failure_alert",
             route = route,
             reason = reason,
-            count = *count,
+            count = count,
             "authentication failure threshold reached"
         );
     }
@@ -943,29 +934,23 @@ async fn record_authorization_denial(
     resource_kind: &str,
 ) {
     record_policy_violation(state, "authorization.denied").await;
-    let mut by = state.cache.metrics.policy_violations_by_policy.lock().await;
-    let count = by.entry("authorization.denied".to_string()).or_insert(0);
-    *count += 1;
+    let count = state
+        .increment_policy_violation_bucket("authorization.denied")
+        .await;
     warn!(
         event_id = "authorization_denied",
         event = "authorization_denied",
         route = route,
         action = action,
         resource_kind = resource_kind,
-        denial_count = *count,
+        denial_count = count,
         "authorization denied"
     );
 }
 
 #[allow(dead_code)] // ATLAS-EXC-0001
 pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str) {
-    let mut by = state
-        .cache
-        .metrics
-        .invariant_violations_by_name
-        .lock()
-        .await;
-    *by.entry(invariant.to_string()).or_insert(0) += 1;
+    state.record_invariant_violation(invariant).await;
 }
 
 pub(crate) async fn security_middleware(

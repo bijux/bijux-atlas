@@ -12,12 +12,9 @@ pub(crate) async fn gene_transcripts_handler(
 ) -> Response {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
-    let queue_depth = state
-        .queued_requests
-        .fetch_add(1, Ordering::Relaxed)
-        .saturating_add(1);
+    let queue_depth = state.increment_queued_requests();
     if queue_depth as usize > state.api.max_request_queue_depth {
-        state.queued_requests.fetch_sub(1, Ordering::Relaxed);
+        state.decrement_queued_requests();
         let resp = api_error_response(
             StatusCode::TOO_MANY_REQUESTS,
             error_json(
@@ -28,9 +25,7 @@ pub(crate) async fn gene_transcripts_handler(
         );
         return with_request_id(resp, &request_id);
     }
-    let _queue_guard = RequestQueueGuard {
-        counter: Arc::clone(&state.queued_requests),
-    };
+    let _queue_guard = state.request_queue_guard();
     let release = params.get("release").cloned().unwrap_or_default();
     let species = params.get("species").cloned().unwrap_or_default();
     let assembly = params.get("assembly").cloned().unwrap_or_default();
@@ -46,7 +41,7 @@ pub(crate) async fn gene_transcripts_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/{gene_id}/transcripts",
                     StatusCode::BAD_REQUEST,
@@ -91,7 +86,7 @@ pub(crate) async fn gene_transcripts_handler(
             resp.headers_mut().insert("retry-after", v);
         }
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes/{gene_id}/transcripts",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -100,7 +95,7 @@ pub(crate) async fn gene_transcripts_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let _class_permit = match state.class_heavy.clone().try_acquire_owned() {
+    let _class_permit = match state.try_acquire_query_class_permit(QueryClass::Heavy) {
         Ok(v) => v,
         Err(_) => {
             let resp = api_error_response(
@@ -112,7 +107,7 @@ pub(crate) async fn gene_transcripts_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/{gene_id}/transcripts",
                     StatusCode::TOO_MANY_REQUESTS,
@@ -143,7 +138,7 @@ pub(crate) async fn gene_transcripts_handler(
             };
             let resp = api_error_response(status, error_json(code, "dataset unavailable", details));
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/{gene_id}/transcripts",
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -169,7 +164,7 @@ pub(crate) async fn gene_transcripts_handler(
             ))
             .into_response();
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/{gene_id}/transcripts",
                     StatusCode::OK,
@@ -188,7 +183,7 @@ pub(crate) async fn gene_transcripts_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/{gene_id}/transcripts",
                     StatusCode::BAD_REQUEST,
@@ -256,7 +251,7 @@ pub(crate) async fn transcript_summary_handler(
             .await;
         return with_request_id(resp, &request_id);
     }
-    let _class_permit = match state.class_medium.clone().try_acquire_owned() {
+    let _class_permit = match state.try_acquire_query_class_permit(QueryClass::Medium) {
         Ok(v) => v,
         Err(_) => {
             let resp = api_error_response(
