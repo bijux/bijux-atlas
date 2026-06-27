@@ -7,15 +7,11 @@ use crate::*;
 use bijux_atlas_ops::kubernetes::render_policy::{
     validate_helm_dependencies, validate_render_output, RenderSurfaceTarget,
 };
+use bijux_atlas_ops::kubernetes::schema_validation::run_kubeconform_validation;
 use serde_json::Value;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
-
-pub(crate) mod cluster_safety;
-pub(crate) mod kubeconform;
-
-use self::kubeconform::run_kubeconform_validation;
 
 pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32), String> {
     let common = &args.common;

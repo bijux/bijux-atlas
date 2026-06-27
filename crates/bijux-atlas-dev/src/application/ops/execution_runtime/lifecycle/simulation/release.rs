@@ -7,11 +7,9 @@ use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default,
 };
 use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
+use bijux_atlas_ops::kubernetes::access_guard::{ensure_kind_context, ensure_namespace_exists};
+use bijux_atlas_ops::kubernetes::safety_policy::expected_kind_context;
 use std::fs;
-
-use crate::ops_execution_runtime::render::cluster_safety::{
-    ensure_kind_context, ensure_namespace_exists, expected_kind_context,
-};
 
 pub(crate) fn run_ops_helm_upgrade(
     args: &crate::cli::OpsHelmUpgradeArgs,
@@ -653,10 +651,8 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
     if args.apply {
         steps.push("kubectl apply".to_string());
         if !args.plan {
-            ensure_kind_context(&process, &profile, common.force)
-                .map_err(|e| e.to_stable_message())?;
-            ensure_namespace_exists(&process, "bijux-atlas", &args.dry_run)
-                .map_err(|e| e.to_stable_message())?;
+            ensure_kind_context(&process, &profile.kind_profile, common.force)?;
+            ensure_namespace_exists(&process, "bijux-atlas", &args.dry_run)?;
             let render_path = repo_root
                 .join("artifacts/ops")
                 .join(run_id.as_str())
@@ -705,7 +701,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         "plan_mode": args.plan,
         "dry_run": args.dry_run,
         "steps": steps,
-        "kind_context_expected": expected_kind_context(&profile),
+        "kind_context_expected": expected_kind_context(&profile.kind_profile),
         "profile_intent": profile_intent,
         "install_plan": render_inventory,
     });

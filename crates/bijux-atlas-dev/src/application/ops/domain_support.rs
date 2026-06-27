@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
+use bijux_atlas_ops::kubernetes::execution::{KubernetesCommandRunner, SubprocessCapture};
 
 pub(crate) use bijux_atlas_ops::inventory::toolchain::{ToolDefinition, ToolchainInventory};
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
@@ -196,6 +197,15 @@ impl OpsProcess {
                 stderr.lines().next().unwrap_or_default()
             )))
         }
+    }
+}
+
+impl KubernetesCommandRunner for OpsProcess {
+    fn run(&self, binary: &str, args: &[String], cwd: &Path) -> Result<SubprocessCapture, String> {
+        let (stdout, event) = self
+            .run_subprocess(binary, args, cwd)
+            .map_err(|err| err.to_stable_message())?;
+        Ok(SubprocessCapture { stdout, event })
     }
 }
 
