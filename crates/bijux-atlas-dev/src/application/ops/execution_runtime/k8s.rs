@@ -9,6 +9,7 @@ use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
 use bijux_atlas_ops::kubernetes::conformance_report::{
     build_conformance_report, write_conformance_report,
 };
+use bijux_atlas_ops::kubernetes::service_inventory::service_port_rows;
 use serde_json::Value;
 use std::fs;
 use std::time::Instant;
@@ -275,39 +276,7 @@ pub(crate) fn run_ops_k8s_ports(common: &OpsCommonArgs) -> Result<(String, i32),
         .map_err(|e| e.to_stable_message())?;
     let services: Value = serde_json::from_str(&svc_stdout)
         .map_err(|e| format!("failed parsing service json: {e}"))?;
-    let rows = services
-        .get("items")
-        .and_then(Value::as_array)
-        .cloned()
-        .unwrap_or_default()
-        .into_iter()
-        .map(|svc| {
-            let name = svc
-                .get("metadata")
-                .and_then(|v| v.get("name"))
-                .and_then(Value::as_str)
-                .unwrap_or("unknown")
-                .to_string();
-            let cluster_ip = svc
-                .get("spec")
-                .and_then(|v| v.get("clusterIP"))
-                .and_then(Value::as_str)
-                .unwrap_or("")
-                .to_string();
-            let ports = svc
-                .get("spec")
-                .and_then(|v| v.get("ports"))
-                .and_then(Value::as_array)
-                .cloned()
-                .unwrap_or_default();
-            serde_json::json!({
-                "kind":"service_port_discovery",
-                "service": name,
-                "cluster_ip": cluster_ip,
-                "ports": ports
-            })
-        })
-        .collect::<Vec<_>>();
+    let rows = service_port_rows(&services);
     let payload = serde_json::json!({
         "schema_version":1,
         "text":"k8s ports discovery complete",
