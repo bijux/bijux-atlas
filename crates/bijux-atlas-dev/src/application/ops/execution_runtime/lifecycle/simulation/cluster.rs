@@ -498,8 +498,12 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
     let _ = child.kill();
     let _ = child.wait();
     let payload = result?;
-    let report_path =
-        write_simulation_report(&repo_root, &run_id, "ops-obs-verify.json", &payload)?;
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-obs-verify.json",
+        &payload,
+    )?;
     let status = payload["status"].as_str().unwrap_or("failed");
     let rendered = emit_payload(
         common.format,
@@ -526,14 +530,16 @@ pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let drills = load_drill_registry(&repo_root)?;
+    let drills = bijux_atlas_ops::lifecycle::simulation_records::load_drill_registry(&repo_root)?;
     let drill = drills
         .iter()
         .find(|row| row.get("name").and_then(serde_json::Value::as_str) == Some(args.name.as_str()))
         .cloned()
         .ok_or_else(|| format!("unknown drill `{}`", args.name))?;
     let mut checks = Vec::new();
-    for (name, path) in drill_check_paths(&repo_root, &args.name) {
+    for (name, path) in
+        bijux_atlas_ops::lifecycle::simulation_records::drill_check_paths(&repo_root, &args.name)
+    {
         checks.push(serde_json::json!({
             "name": name,
             "status": if path.exists() { "pass" } else { "fail" },
@@ -552,15 +558,16 @@ pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(Strin
     } else {
         "fail"
     };
-    let evidence_paths = drill_check_paths(&repo_root, &args.name)
-        .into_iter()
-        .map(|(_, path)| {
-            path.strip_prefix(&repo_root)
-                .unwrap_or(&path)
-                .display()
-                .to_string()
-        })
-        .collect::<Vec<_>>();
+    let evidence_paths =
+        bijux_atlas_ops::lifecycle::simulation_records::drill_check_paths(&repo_root, &args.name)
+            .into_iter()
+            .map(|(_, path)| {
+                path.strip_prefix(&repo_root)
+                    .unwrap_or(&path)
+                    .display()
+                    .to_string()
+            })
+            .collect::<Vec<_>>();
     let payload = serde_json::json!({
         "schema_version": 1,
         "drill": args.name,
@@ -570,13 +577,19 @@ pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(Strin
         "checks": checks,
         "evidence_paths": evidence_paths
     });
-    let report_path = write_simulation_report(
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
         &repo_root,
-        &run_id,
+        run_id.as_str(),
         &format!("ops-drill-{}.json", args.name),
         &payload,
     )?;
-    let summary_path = update_drill_summary(&repo_root, &run_id, &args.name, &report_path, status)?;
+    let summary_path = bijux_atlas_ops::lifecycle::simulation_records::update_drill_summary(
+        &repo_root,
+        run_id.as_str(),
+        &args.name,
+        &report_path,
+        status,
+    )?;
     let rendered = emit_payload(
         common.format,
         common.out.clone(),
@@ -642,7 +655,12 @@ pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), S
             "result": detail
         }
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-kind.json",
+        &payload,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "kind cluster ready" } else { "kind cluster failed" },
@@ -694,7 +712,12 @@ pub(crate) fn run_ops_kind_down(common: &OpsCommonArgs) -> Result<(String, i32),
             "result": detail
         }
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-kind.json",
+        &payload,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "kind cluster deleted" } else { "kind cluster delete failed" },
@@ -768,7 +791,12 @@ pub(crate) fn run_ops_kind_status(common: &OpsCommonArgs) -> Result<(String, i32
         "status": status,
         "details": details
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-kind.json",
+        &payload,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "kind cluster status collected" } else { "kind cluster status failed" },
@@ -824,7 +852,12 @@ pub(crate) fn run_ops_kind_preload(
             "result": details
         }
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-kind.json", &payload)?;
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-kind.json",
+        &payload,
+    )?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "kind image preload complete" } else { "kind image preload failed" },
@@ -915,8 +948,12 @@ pub(crate) fn run_ops_helm_install(
         "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
         "checks": smoke_rows
     });
-    let smoke_report_path =
-        write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &smoke_payload)?;
+    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+        &repo_root,
+        run_id.as_str(),
+        "ops-smoke.json",
+        &smoke_payload,
+    )?;
     let render_path = install_render_path(&repo_root, run_id.as_str(), &profile);
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -951,13 +988,18 @@ pub(crate) fn run_ops_helm_install(
             "profile_metadata": load_profile_registry(&repo_root, &profile)?
         }
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-install.json", &payload)?;
-    let summary_path = update_simulation_summary(
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
         &repo_root,
-        &run_id,
+        run_id.as_str(),
+        "ops-install.json",
+        &payload,
+    )?;
+    let summary_path = bijux_atlas_ops::lifecycle::simulation_records::update_simulation_summary(
+        &repo_root,
+        run_id.as_str(),
         &profile,
         &namespace,
-        SimulationSummaryUpdate {
+        bijux_atlas_ops::lifecycle::simulation_records::SimulationSummaryUpdate {
             install_report_path: Some(&report_path),
             install_status: Some(status),
             smoke_report_path: Some(&smoke_report_path),
@@ -1042,7 +1084,12 @@ pub(crate) fn run_ops_helm_uninstall(
         "leftovers": leftovers
     });
     let cleanup_report_path =
-        write_simulation_report(&repo_root, &run_id, "ops-cleanup.json", &cleanup_payload)?;
+        bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+            &repo_root,
+            run_id.as_str(),
+            "ops-cleanup.json",
+            &cleanup_payload,
+        )?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "profile": profile,
@@ -1061,13 +1108,18 @@ pub(crate) fn run_ops_helm_uninstall(
             }
         }
     });
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-uninstall.json", &payload)?;
-    let summary_path = update_simulation_summary(
+    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
         &repo_root,
-        &run_id,
+        run_id.as_str(),
+        "ops-uninstall.json",
+        &payload,
+    )?;
+    let summary_path = bijux_atlas_ops::lifecycle::simulation_records::update_simulation_summary(
+        &repo_root,
+        run_id.as_str(),
         &profile,
         &namespace,
-        SimulationSummaryUpdate {
+        bijux_atlas_ops::lifecycle::simulation_records::SimulationSummaryUpdate {
             install_report_path: None,
             install_status: None,
             smoke_report_path: None,
