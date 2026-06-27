@@ -194,60 +194,6 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
     Ok(errors)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use tempfile::tempdir;
-
-    fn test_context(repo_root: PathBuf) -> ConfigsContext {
-        ConfigsContext {
-            configs_root: repo_root.join("configs"),
-            repo_root,
-            artifacts_root: PathBuf::from("artifacts"),
-            run_id: RunId::from_seed("configs_path_drift_test"),
-        }
-    }
-
-    #[test]
-    fn root_rustfmt_mirror_accepts_matching_files() {
-        let temp = tempdir().expect("tempdir");
-        let repo_root = temp.path().to_path_buf();
-        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
-        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
-        let contents = "edition = \"2021\"\nnewline_style = \"Unix\"\n";
-        fs::write(repo_root.join("rustfmt.toml"), contents).expect("write root");
-        fs::write(&governed, contents).expect("write governed");
-
-        let ctx = test_context(repo_root);
-        let mut errors = Vec::new();
-        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
-        assert!(
-            errors.is_empty(),
-            "expected no drift errors, got {errors:?}"
-        );
-    }
-
-    #[test]
-    fn root_rustfmt_mirror_rejects_drift() {
-        let temp = tempdir().expect("tempdir");
-        let repo_root = temp.path().to_path_buf();
-        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
-        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
-        fs::write(repo_root.join("rustfmt.toml"), "edition = \"2021\"\n").expect("write root");
-        fs::write(&governed, "edition = \"2021\"\nmax_width = 100\n").expect("write governed");
-
-        let ctx = test_context(repo_root);
-        let mut errors = Vec::new();
-        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
-        assert!(
-            errors
-                .iter()
-                .any(|error| error.contains("cargo fmt and make fmt stay equivalent")),
-            "expected root rustfmt drift error, got {errors:?}"
-        );
-    }
-}
-
 pub(super) fn configs_verify_payload(
     ctx: &ConfigsContext,
     common: &ConfigsCommonArgs,
@@ -320,4 +266,58 @@ pub(crate) fn parse_config_file(path: &Path) -> Result<(), String> {
         _ => {}
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    fn test_context(repo_root: PathBuf) -> ConfigsContext {
+        ConfigsContext {
+            configs_root: repo_root.join("configs"),
+            repo_root,
+            artifacts_root: PathBuf::from("artifacts"),
+            run_id: RunId::from_seed("configs_path_drift_test"),
+        }
+    }
+
+    #[test]
+    fn root_rustfmt_mirror_accepts_matching_files() {
+        let temp = tempdir().expect("tempdir");
+        let repo_root = temp.path().to_path_buf();
+        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
+        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
+        let contents = "edition = \"2021\"\nnewline_style = \"Unix\"\n";
+        fs::write(repo_root.join("rustfmt.toml"), contents).expect("write root");
+        fs::write(&governed, contents).expect("write governed");
+
+        let ctx = test_context(repo_root);
+        let mut errors = Vec::new();
+        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
+        assert!(
+            errors.is_empty(),
+            "expected no drift errors, got {errors:?}"
+        );
+    }
+
+    #[test]
+    fn root_rustfmt_mirror_rejects_drift() {
+        let temp = tempdir().expect("tempdir");
+        let repo_root = temp.path().to_path_buf();
+        let governed = repo_root.join("configs/sources/repository/rust-tooling/rustfmt.toml");
+        fs::create_dir_all(governed.parent().expect("governed parent")).expect("mkdirs");
+        fs::write(repo_root.join("rustfmt.toml"), "edition = \"2021\"\n").expect("write root");
+        fs::write(&governed, "edition = \"2021\"\nmax_width = 100\n").expect("write governed");
+
+        let ctx = test_context(repo_root);
+        let mut errors = Vec::new();
+        validate_root_rustfmt_mirror(&ctx, &mut errors).expect("validate rustfmt");
+        assert!(
+            errors
+                .iter()
+                .any(|error| error.contains("cargo fmt and make fmt stay equivalent")),
+            "expected root rustfmt drift error, got {errors:?}"
+        );
+    }
 }
