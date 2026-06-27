@@ -22,7 +22,7 @@ use crate::runtime::config::ApiConfig;
 use crate::StatusCode;
 use crate::{route_sli_class, unix_time_millis};
 use bijux_atlas_model::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
-use bijux_atlas_runtime::query::QueryLimits;
+use bijux_atlas_query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};

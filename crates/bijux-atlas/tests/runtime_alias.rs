@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_atlas::domain::ingest::IngestOptions as AliasIngestOptions;
 use bijux_atlas::domain::sha256_hex as alias_sha256_hex;
 use bijux_atlas::query::Region as AliasRegion;
+use bijux_atlas_ingest::IngestOptions as RuntimeIngestOptions;
+use bijux_atlas_query::Region as QueryRegion;
 use bijux_atlas_runtime::domain::sha256_hex as runtime_sha256_hex;
-use bijux_atlas_runtime::query::Region as RuntimeRegion;
 
 #[test]
 fn alias_reexports_runtime_root_functions() {
@@ -19,11 +21,18 @@ fn alias_reexports_runtime_module_functions() {
 }
 
 #[test]
-fn alias_types_match_runtime_types() {
-    let runtime_region = RuntimeRegion::parse("chr1:10-20").expect("runtime region");
-    let alias_region: AliasRegion = runtime_region;
+fn alias_query_types_match_canonical_query_types() {
+    let query_region = QueryRegion::parse("chr1:10-20").expect("query region");
+    let alias_region: AliasRegion = query_region;
     assert_eq!(
         alias_region,
-        RuntimeRegion::parse("chr1:10-20").expect("runtime region again")
+        QueryRegion::parse("chr1:10-20").expect("query region again")
     );
+}
+
+#[test]
+fn alias_ingest_types_match_canonical_ingest_types() {
+    let alias_type_name = std::any::type_name::<AliasIngestOptions>();
+    let ingest_type_name = std::any::type_name::<RuntimeIngestOptions>();
+    assert_eq!(alias_type_name, ingest_type_name);
 }

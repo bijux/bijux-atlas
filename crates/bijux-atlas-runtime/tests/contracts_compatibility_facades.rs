@@ -1,18 +1,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn crate_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
-fn read_source(relative: &str) -> String {
-    let path = crate_root().join(relative);
+fn workspace_root() -> PathBuf {
+    crate_root()
+        .parent()
+        .and_then(|path| path.parent())
+        .expect("workspace root")
+        .to_path_buf()
+}
+
+fn read_workspace_source(relative: &str) -> String {
+    let path = workspace_root().join(relative);
     std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
-fn rust_files_under(root: &std::path::Path) -> Vec<PathBuf> {
+fn rust_files_under(root: &Path) -> Vec<PathBuf> {
     let mut out = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(dir) = stack.pop() {
@@ -32,39 +40,39 @@ fn rust_files_under(root: &std::path::Path) -> Vec<PathBuf> {
 }
 
 #[test]
-fn runtime_leaf_forwarders_bind_directly_to_owning_crates() {
+fn alias_leaf_forwarders_bind_directly_to_owning_crates() {
     let checks = [
         (
-            "src/api.rs",
+            "crates/bijux-atlas/src/api.rs",
             "pub use bijux_atlas_api::*;",
-            "runtime api forwarding surface must bind directly to bijux-atlas-api",
+            "atlas alias api forwarding surface must bind directly to bijux-atlas-api",
         ),
         (
-            "src/query.rs",
+            "crates/bijux-atlas/src/query.rs",
             "pub use bijux_atlas_query::*;",
-            "runtime query forwarding surface must bind directly to bijux-atlas-query",
+            "atlas alias query forwarding surface must bind directly to bijux-atlas-query",
         ),
         (
-            "src/domain/ingest.rs",
+            "crates/bijux-atlas/src/domain/ingest.rs",
             "pub use bijux_atlas_ingest::*;",
-            "runtime ingest forwarding surface must bind directly to bijux-atlas-ingest",
+            "atlas alias ingest forwarding surface must bind directly to bijux-atlas-ingest",
         ),
     ];
 
     for (relative, required, context) in checks {
-        let text = read_source(relative);
+        let text = read_workspace_source(relative);
         assert!(text.contains(required), "{context}");
         for forbidden in ["pub struct ", "pub enum ", "pub trait ", "impl ", "pub fn "] {
             assert!(
                 !text.contains(forbidden),
-                "{relative} must stay a thin path-stable wrapper without `{forbidden}`"
+                "{relative} must stay a thin compatibility wrapper without `{forbidden}`"
             );
         }
     }
 }
 
 #[test]
-fn compatibility_implementation_surface_stays_under_src_compat() {
+fn runtime_compatibility_implementation_surface_stays_bounded() {
     let root = crate_root();
     let expected = [("src/compat", vec!["core.rs", "mod.rs"])];
 
@@ -91,9 +99,18 @@ fn compatibility_implementation_surface_stays_under_src_compat() {
 }
 
 #[test]
+fn runtime_leaf_forwarders_do_not_reappear() {
+    for relative in ["src/api.rs", "src/query.rs", "src/domain/ingest.rs"] {
+        assert!(
+            !crate_root().join(relative).exists(),
+            "runtime must not own a compatibility wrapper at {relative}"
+        );
+    }
+}
+
+#[test]
 fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
     let root = crate_root().join("src");
-    let allowlist = ["api.rs", "domain/ingest.rs", "query.rs"];
     let forbidden = ["crate::api::", "crate::domain::ingest::", "crate::query::"];
 
     for path in rust_files_under(&root) {
@@ -102,9 +119,6 @@ fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
             .unwrap_or(&path)
             .to_string_lossy()
             .replace('\\', "/");
-        if allowlist.contains(&rel.as_str()) {
-            continue;
-        }
         let text = std::fs::read_to_string(&path)
             .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
         for token in forbidden {

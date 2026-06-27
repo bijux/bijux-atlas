@@ -13,6 +13,9 @@ categories = ["science::bioinformatics", "command-line-utilities"]
 keywords = ["bioinformatics", "genomics", "atlas", "compatibility", "runtime"]
 
 [dependencies]
+bijux-atlas-api.workspace = true
+bijux-atlas-ingest.workspace = true
+bijux-atlas-query.workspace = true
 bijux-atlas-runtime.workspace = true
 
 [lib]

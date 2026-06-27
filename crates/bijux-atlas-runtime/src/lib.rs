@@ -9,13 +9,11 @@ pub(crate) use axum::http::StatusCode;
 pub(crate) use std::sync::atomic::Ordering;
 
 pub mod adapters;
-pub mod api;
 pub mod app;
 pub(crate) mod compat;
 pub mod contracts;
 pub mod domain;
 pub mod packaged;
-pub mod query;
 pub mod runtime;
 pub mod version;
 #[allow(dead_code)]

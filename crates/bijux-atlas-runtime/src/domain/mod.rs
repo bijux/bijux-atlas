@@ -5,10 +5,7 @@ pub mod canonical {
 }
 
 pub mod cluster;
-
-pub mod ingest;
 pub mod policy;
-
 pub mod security;
 pub mod time;
 

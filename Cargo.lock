@@ -226,6 +226,9 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 name = "bijux-atlas"
 version = "0.2.1"
 dependencies = [
+ "bijux-atlas-api",
+ "bijux-atlas-ingest",
+ "bijux-atlas-query",
  "bijux-atlas-runtime",
 ]
 
