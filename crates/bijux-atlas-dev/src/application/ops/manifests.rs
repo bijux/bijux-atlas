@@ -3,21 +3,9 @@
 use super::domain_support::OpsProfileRegistry;
 use crate::ops_support::StackManifestToml;
 use crate::*;
+use bijux_atlas_ops::inventory::tools_manifest::ToolsToml;
 use bijux_atlas_ops::load::manifest::LoadToml;
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Deserialize)]
-pub(crate) struct ToolsToml {
-    pub(crate) tools: Vec<ToolTomlEntry>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub(crate) struct ToolTomlEntry {
-    pub(crate) name: String,
-    pub(crate) required: bool,
-    pub(crate) version_regex: String,
-    pub(crate) probe_argv: Vec<String>,
-}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub(crate) struct StackPinsToml {
@@ -62,12 +50,15 @@ fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCo
 }
 
 pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsCommandError> {
-    let path = repo_root.join("ops/inventory/tools.toml");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    toml::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    bijux_atlas_ops::inventory::tools_manifest::load_tools_manifest(repo_root).map_err(|err| {
+        match err {
+            bijux_atlas_ops::inventory::tools_manifest::ToolsManifestError::Read { .. } => {
+                OpsCommandError::Manifest(err.detail())
+            }
+            bijux_atlas_ops::inventory::tools_manifest::ToolsManifestError::Parse { .. } => {
+                OpsCommandError::Schema(err.detail())
+            }
+        }
     })
 }
 
@@ -172,25 +163,4 @@ pub(crate) fn load_toolchain_inventory_for_ops(
     ops_root: &Path,
 ) -> Result<ToolchainInventory, OpsCommandError> {
     load_toolchain_inventory(ops_root)
-}
-
-#[cfg(test)]
-#[allow(clippy::expect_used)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn tools_manifest_parses() {
-        let root = tempfile::tempdir().expect("tempdir");
-        let tools_dir = root.path().join("ops/inventory");
-        std::fs::create_dir_all(&tools_dir).expect("mkdir");
-        std::fs::write(
-            tools_dir.join("tools.toml"),
-            "[[tools]]\nname=\"helm\"\nrequired=true\nversion_regex=\"(\\\\d+\\\\.\\\\d+\\\\.\\\\d+)\"\nprobe_argv=[\"version\",\"--short\"]\n",
-        )
-        .expect("write");
-        let parsed = load_tools_manifest(root.path()).expect("parse");
-        assert_eq!(parsed.tools.len(), 1);
-        assert_eq!(parsed.tools[0].name, "helm");
-    }
 }

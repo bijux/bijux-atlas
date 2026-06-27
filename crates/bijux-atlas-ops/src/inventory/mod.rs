@@ -2,3 +2,4 @@
 
 pub mod path_contracts;
 pub mod toolchain;
+pub mod tools_manifest;
