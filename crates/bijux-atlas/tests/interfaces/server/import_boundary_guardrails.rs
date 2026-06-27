@@ -120,12 +120,12 @@ fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
     let path = root.join("src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs");
     let text = std::fs::read_to_string(&path).expect("read genes runtime handler");
     let forbidden_tokens = [
-        "bijux_atlas::domain::query::",
-        "crate::domain::query::query_gene_by_id_fast",
-        "crate::domain::query::query_gene_id_name_json_minimal_fast",
-        "crate::domain::query::query_genes_fanout",
-        "crate::domain::query::select_shards_for_request",
-        "crate::domain::query::prepared_sql_for_class_export",
+        "bijux_atlas::query::",
+        "crate::query::query_gene_by_id_fast",
+        "crate::query::query_gene_id_name_json_minimal_fast",
+        "crate::query::query_genes_fanout",
+        "crate::query::select_shards_for_request",
+        "crate::query::prepared_sql_for_class_export",
     ];
     for token in forbidden_tokens {
         assert!(

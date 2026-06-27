@@ -7,8 +7,8 @@ use crate::adapters::inbound::http::handlers::{
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
     with_request_id, CachePolicy,
 };
-use crate::domain::dataset::Catalog;
-use crate::domain::query::{
+use crate::model::dataset::Catalog;
+use crate::query::{
     DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndex, ReleaseGeneIndexEntry,
 };
 use crate::*;
@@ -487,7 +487,7 @@ async fn diff_common(
                     cursor_version: "v1".to_string(),
                     dataset_id: None,
                     sort_key: Some("gene_id".to_string()),
-                    last_seen: Some(bijux_atlas::domain::query::CursorLastSeen {
+                    last_seen: Some(bijux_atlas::query::CursorLastSeen {
                         gene_id: x.gene_id.as_str().to_string(),
                         seqid: None,
                         start: None,

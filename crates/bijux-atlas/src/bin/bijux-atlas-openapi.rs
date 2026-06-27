@@ -6,7 +6,7 @@ use std::env;
 use std::fs;
 use std::path::PathBuf;
 
-use bijux_atlas::contracts::api;
+use bijux_atlas::api;
 
 fn main() -> Result<(), String> {
     let mut out: Option<PathBuf> = None;
@@ -20,7 +20,7 @@ fn main() -> Result<(), String> {
 
     let spec = api::openapi_v1_spec();
     let bytes =
-        bijux_atlas::domain::canonical::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+        bijux_atlas::core::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }

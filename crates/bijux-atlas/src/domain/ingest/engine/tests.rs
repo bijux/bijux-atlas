@@ -126,6 +126,7 @@ fn opts(root: &Path, strictness: StrictnessMode) -> IngestOptions {
         fasta_path: fixture_dir().join("genome.fa"),
         fai_path: fixture_dir().join("genome.fa.fai"),
         output_root: root.to_path_buf(),
+        build_hash: String::new(),
         dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id"),
         strictness,
         duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,

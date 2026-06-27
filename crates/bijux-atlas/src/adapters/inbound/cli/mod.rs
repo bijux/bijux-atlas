@@ -17,9 +17,8 @@ use crate::app::query::{
     SeqidNormalizationPolicy, TranscriptTypePolicy,
 };
 use crate::contracts::errors::{ConfigPathScope, ExitCode, MachineError};
-use crate::domain::canonical;
-use crate::domain::dataset::{DatasetId, ShardingPlan};
-use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
+use crate::model::dataset::{DatasetId, ShardingPlan};
+use crate::model::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::runtime::config::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 use clap::{error::ErrorKind, CommandFactory, Parser};
 use clap_complete::{generate, Generator};

@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use super::settings::{RegistrySourceSpec, StoreRetryConfig};
 use super::*;
-use crate::domain::dataset::DatasetId;
+use crate::model::dataset::DatasetId;
 
 pub(super) fn invalid_format(name: &str, value: String, message: String) -> RuntimeConfigError {
     RuntimeConfigError::InvalidFormat {

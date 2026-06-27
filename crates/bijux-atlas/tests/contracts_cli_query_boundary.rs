@@ -42,7 +42,7 @@ fn cli_sources_depend_on_app_query_boundary_not_domain_query_path() {
         let text = std::fs::read_to_string(&file)
             .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
         assert!(
-            !text.contains("crate::domain::query::"),
+            !text.contains("crate::query::"),
             "cli source must depend on app query boundary: {}",
             file.display()
         );

@@ -1,6 +1,6 @@
 use super::*;
 use crate::adapters::inbound::http::genes;
-use crate::domain::query::query_gene_count;
+use crate::query::query_gene_count;
 use serde_json::json;
 
 pub(crate) async fn genes_handler(

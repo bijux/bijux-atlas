@@ -2,8 +2,7 @@
 
 use super::extract::ExtractResult;
 use super::IngestError;
-use crate::domain::canonical;
-use crate::domain::dataset::{
+use crate::model::dataset::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
     ShardingPlan, ValidationError,
 };
@@ -21,6 +20,7 @@ pub struct BuiltManifest {
 
 pub struct BuildManifestArgs<'a> {
     pub output_root: &'a Path,
+    pub build_hash: &'a str,
     pub dataset: &'a DatasetId,
     pub gff3_path: &'a Path,
     pub fasta_path: &'a Path,
@@ -42,6 +42,7 @@ pub fn build_and_write_manifest_and_reports(
 ) -> Result<BuiltManifest, IngestError> {
     let BuildManifestArgs {
         output_root,
+        build_hash,
         dataset,
         gff3_path,
         fasta_path,
@@ -129,7 +130,7 @@ pub fn build_and_write_manifest_and_reports(
     manifest.ingest_toolchain = option_env!("RUSTUP_TOOLCHAIN")
         .unwrap_or("unknown")
         .to_string();
-    manifest.ingest_build_hash = crate::runtime::config::runtime_build_hash().to_string();
+    manifest.ingest_build_hash = build_hash.to_string();
     manifest.toolchain_hash = compute_toolchain_hash();
     manifest.contig_normalization_aliases = contig_aliases.clone();
     manifest.sharding_plan = sharding_plan;
@@ -140,7 +141,7 @@ pub fn build_and_write_manifest_and_reports(
     manifest.canonical_feature_counts = canonical_feature_counts.clone();
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
     manifest.artifact_hash = compute_manifest_artifact_hash(&manifest)?;
-    manifest.identity = crate::domain::dataset::DatasetIdentity::from_components(
+    manifest.identity = crate::model::dataset::DatasetIdentity::from_components(
         &manifest.dataset,
         &serde_json::json!({
             "gff3_sha256": manifest.checksums.gff3_sha256.clone(),
@@ -163,7 +164,7 @@ pub fn build_and_write_manifest_and_reports(
         .map_err(|e: ValidationError| IngestError(e.to_string()))?;
 
     let anomaly_bytes =
-        canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     let qc_report = build_qc_report_json(
@@ -180,7 +181,7 @@ pub fn build_and_write_manifest_and_reports(
         false,
     )?;
     let qc_bytes =
-        canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
     let derived_dir = output_root
         .join(format!("release={}", dataset.release))
         .join(format!("species={}", dataset.species))
@@ -192,7 +193,7 @@ pub fn build_and_write_manifest_and_reports(
     manifest.qc_report_path = "derived/qc_report.json".to_string();
 
     let manifest_bytes =
-        canonical::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
     fs::write(manifest_path, manifest_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     Ok(BuiltManifest {
@@ -257,7 +258,7 @@ fn compute_normalized_input_identity_sha256(
         },
         "contig_normalization_aliases": contig_aliases
     });
-    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -283,7 +284,7 @@ fn compute_manifest_artifact_hash(manifest: &ArtifactManifest) -> Result<String,
         "db_hash": manifest.db_hash
     });
     let bytes =
-        canonical::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&digest_source).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -297,7 +298,7 @@ fn compute_reference_build_identity_sha256(
         "contig_distribution": extract.contig_distribution,
         "contig_class_distribution": extract.contig_class_distribution,
     });
-    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -347,7 +348,7 @@ pub fn write_qc_and_anomaly_reports_only(
     }
 
     let anomaly_bytes =
-        canonical::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&extract.anomaly).map_err(|e| IngestError(e.to_string()))?;
     fs::write(anomaly_path, anomaly_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     let qc_report = build_qc_report_json(
@@ -359,7 +360,7 @@ pub fn write_qc_and_anomaly_reports_only(
         true,
     )?;
     let qc_bytes =
-        canonical::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&qc_report).map_err(|e| IngestError(e.to_string()))?;
     let derived_dir = output_root
         .join(format!("release={}", dataset.release))
         .join(format!("species={}", dataset.species))
@@ -384,7 +385,7 @@ fn build_qc_report_json(
         .iter()
         .filter(|(_, count)| **count > 0)
         .map(|(class, count)| {
-            let severity = crate::domain::dataset::IngestAnomalyReport::severity_for_class(*class);
+            let severity = crate::model::dataset::IngestAnomalyReport::severity_for_class(*class);
             json!({
                 "severity": severity,
                 "class": class,
@@ -471,13 +472,13 @@ fn dataset_signature_merkle(extract: &ExtractResult) -> Result<String, IngestErr
     let gene_hashes: Vec<String> = extract
         .gene_rows
         .iter()
-        .map(|row| canonical::stable_json_bytes(row).map(|b| sha256_hex(&b)))
+        .map(|row| crate::core::stable_json_bytes(row).map(|b| sha256_hex(&b)))
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| IngestError(e.to_string()))?;
     let tx_hashes: Vec<String> = extract
         .transcript_rows
         .iter()
-        .map(|row| canonical::stable_json_bytes(row).map(|b| sha256_hex(&b)))
+        .map(|row| crate::core::stable_json_bytes(row).map(|b| sha256_hex(&b)))
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| IngestError(e.to_string()))?;
     let root_payload = json!({
@@ -487,7 +488,7 @@ fn dataset_signature_merkle(extract: &ExtractResult) -> Result<String, IngestErr
         "transcript_count": extract.transcript_rows.len(),
     });
     let bytes =
-        canonical::stable_json_bytes(&root_payload).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&root_payload).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 

@@ -2,7 +2,6 @@
 
 use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use super::IngestError;
-use crate::domain::canonical;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::fs;
@@ -90,7 +89,7 @@ pub fn write_normalized_jsonl_zst(
         zstd::stream::write::Encoder::new(file, 3).map_err(|e| IngestError(e.to_string()))?;
     for item in items {
         let mut line =
-            canonical::stable_json_bytes(&item).map_err(|e| IngestError(e.to_string()))?;
+            crate::core::stable_json_bytes(&item).map_err(|e| IngestError(e.to_string()))?;
         line.push(b'\n');
         encoder
             .write_all(&line)

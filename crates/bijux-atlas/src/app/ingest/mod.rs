@@ -5,7 +5,11 @@ use std::path::Path;
 pub use crate::domain::ingest::{IngestError, IngestOptions, IngestResult, TimestampPolicy};
 
 pub fn ingest_dataset(options: &IngestOptions) -> Result<IngestResult, IngestError> {
-    crate::domain::ingest::ingest_dataset(options)
+    let mut runtime_options = options.clone();
+    if runtime_options.build_hash.is_empty() {
+        runtime_options.build_hash = crate::runtime::config::runtime_build_hash().to_string();
+    }
+    crate::domain::ingest::ingest_dataset(&runtime_options)
 }
 
 pub fn replay_normalized_counts(

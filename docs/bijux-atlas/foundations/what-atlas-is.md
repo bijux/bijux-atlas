@@ -142,9 +142,9 @@ Atlas is opinionated in ways that matter operationally:
 
 - ingest and validation concerns live under
   `crates/bijux-atlas/src/domain/ingest/` and
-  `crates/bijux-atlas/src/domain/dataset/`
+  `crates/bijux-atlas-model/src/dataset/`
 - query and runtime-serving concerns live under
-  `crates/bijux-atlas/src/domain/query/` and
+  `crates/bijux-atlas-query/src/` and
   `crates/bijux-atlas/src/runtime/`
 - user-facing interfaces live under
   `crates/bijux-atlas/src/adapters/inbound/` and `crates/bijux-atlas/src/bin/`

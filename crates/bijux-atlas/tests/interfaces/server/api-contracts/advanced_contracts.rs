@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use bijux_atlas::domain::dataset::{Catalog, CatalogEntry};
+use bijux_atlas::model::dataset::{Catalog, CatalogEntry};
 use hmac::KeyInit;
 
 #[tokio::test]
@@ -337,7 +337,7 @@ async fn query_budget_caps_return_expected_status_codes() {
         },
         store,
     );
-    let limits = bijux_atlas::domain::query::QueryLimits {
+    let limits = bijux_atlas::query::QueryLimits {
         max_region_span: 10,
         ..Default::default()
     };

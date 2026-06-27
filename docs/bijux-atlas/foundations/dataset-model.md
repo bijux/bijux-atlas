@@ -47,7 +47,7 @@ operations honest about what is actually being changed.
 
 ## Repository Authorities
 
-- dataset domain logic: `crates/bijux-atlas/src/domain/dataset/`
+- dataset domain logic: `crates/bijux-atlas-model/src/dataset/`
 - ingest-time dataset construction:
   `crates/bijux-atlas/src/domain/ingest/engine/`
 - manifest and serving-shape contracts:

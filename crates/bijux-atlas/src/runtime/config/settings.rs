@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::DatasetId;
+use crate::model::dataset::DatasetId;
 use crate::packaged::ENV_CONTRACT_SCHEMA_JSON;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;

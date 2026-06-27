@@ -168,7 +168,7 @@ pub(super) fn resolve_verify_and_lock_inputs(
     let lock_tmp = lockfile_path.with_extension("json.tmp");
     fs::write(
         &lock_tmp,
-        canonical::stable_json_bytes(&lock).map_err(|e| e.to_string())?,
+        crate::core::stable_json_bytes(&lock).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
     fs::rename(&lock_tmp, &lockfile_path).map_err(|e| e.to_string())?;

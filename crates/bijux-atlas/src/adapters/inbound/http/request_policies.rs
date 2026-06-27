@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::app::server::state::AppState;
-use crate::contracts::api::{ApiError, ApiErrorCode};
-use crate::domain::dataset::DatasetId;
+use crate::api::{ApiError, ApiErrorCode};
+use crate::model::dataset::DatasetId;
 use crate::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
     PermissionEvaluator, RoleCatalog, RoleRegistry,

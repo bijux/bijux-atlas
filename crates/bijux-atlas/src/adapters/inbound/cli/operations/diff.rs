@@ -20,8 +20,8 @@ pub(crate) fn build_release_diff(
         .map_err(|e| e.to_string())?;
     let to = DatasetId::new(&args.to_release, &args.species, &args.assembly)
         .map_err(|e| e.to_string())?;
-    let from_paths = crate::domain::dataset::artifact_paths(&args.root, &from);
-    let to_paths = crate::domain::dataset::artifact_paths(&args.root, &to);
+    let from_paths = crate::model::dataset::artifact_paths(&args.root, &from);
+    let to_paths = crate::model::dataset::artifact_paths(&args.root, &to);
     let from_index = read_release_index(&from_paths.release_gene_index)?;
     let to_index = read_release_index(&to_paths.release_gene_index)?;
     let from_biotype = read_gene_biotypes(&from_paths.sqlite)?;
@@ -169,8 +169,8 @@ pub(crate) fn build_release_diff(
 
     let diff_path = args.out_dir.join("diff.json");
     let summary_path = args.out_dir.join("diff.summary.json");
-    let diff_bytes = canonical::stable_json_bytes(&diff).map_err(|e| e.to_string())?;
-    let summary_bytes = canonical::stable_json_bytes(&summary).map_err(|e| e.to_string())?;
+    let diff_bytes = crate::core::stable_json_bytes(&diff).map_err(|e| e.to_string())?;
+    let summary_bytes = crate::core::stable_json_bytes(&summary).map_err(|e| e.to_string())?;
     fs::write(&diff_path, &diff_bytes).map_err(|e| e.to_string())?;
     fs::write(&summary_path, &summary_bytes).map_err(|e| e.to_string())?;
     let diff_sha = sha256_hex(&diff_bytes);
@@ -210,8 +210,8 @@ fn read_gene_biotypes(sqlite: &Path) -> Result<HashMap<String, String>, String> 
 }
 
 fn index_by_identity(
-    entries: &[crate::domain::query::ReleaseGeneIndexEntry],
-) -> HashMap<String, crate::domain::query::ReleaseGeneIndexEntry> {
+    entries: &[crate::query::ReleaseGeneIndexEntry],
+) -> HashMap<String, crate::query::ReleaseGeneIndexEntry> {
     let mut out = HashMap::with_capacity(entries.len());
     for e in entries {
         out.insert(stable_gene_identity(e), e.clone());
@@ -219,7 +219,7 @@ fn index_by_identity(
     out
 }
 
-fn stable_gene_identity(entry: &crate::domain::query::ReleaseGeneIndexEntry) -> String {
+fn stable_gene_identity(entry: &crate::query::ReleaseGeneIndexEntry) -> String {
     if !entry.gene_id.as_str().trim().is_empty() {
         return entry.gene_id.as_str().to_string();
     }
@@ -265,7 +265,7 @@ fn chunk_or_inline(
                 .map(serde_json::Value::String)
                 .collect(),
         );
-        let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
         fs::write(&path, bytes).map_err(|e| e.to_string())?;
         chunk_manifest.push(json!({
             "field": name,

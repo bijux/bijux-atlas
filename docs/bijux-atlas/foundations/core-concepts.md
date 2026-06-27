@@ -144,9 +144,9 @@ When in doubt, ask three questions:
 
 ## Code And Config Authority
 
-- dataset: `crates/bijux-atlas/src/domain/dataset/` and
+- dataset: `crates/bijux-atlas-model/src/dataset/` and
   `configs/sources/runtime/datasets/`
-- query: `crates/bijux-atlas/src/domain/query/`
+- query: `crates/bijux-atlas-query/src/`
 - release and published artifact shape:
   `configs/schemas/contracts/release/` and
   `configs/schemas/contracts/datasets/`

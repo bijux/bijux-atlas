@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::DatasetId;
+use bijux_atlas::model::dataset::DatasetId;
 use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
-use bijux_atlas::domain::policy::StrictnessMode;
-use bijux_atlas::domain::query::UnknownFeaturePolicy;
+use bijux_atlas::model::policy::StrictnessMode;
+use bijux_atlas::query::UnknownFeaturePolicy;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 use tempfile::tempdir;

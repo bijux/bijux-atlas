@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::http::handlers;
-use crate::domain::dataset::DatasetId;
-use crate::domain::query::{BiotypePolicy, GeneNamePolicy, GeneQueryRequest, QueryClass};
+use crate::model::dataset::DatasetId;
+use crate::query::{BiotypePolicy, GeneNamePolicy, GeneQueryRequest, QueryClass};
 use serde_json::{json, Value};
 
 pub(super) fn build_success_payload(
     dataset: &DatasetId,
     req: &GeneQueryRequest,
     class: QueryClass,
-    resp: bijux_atlas::domain::query::GeneQueryResponse,
+    resp: bijux_atlas::query::GeneQueryResponse,
     explain_mode: bool,
     provenance: serde_json::Value,
 ) -> serde_json::Value {
@@ -70,7 +70,7 @@ pub(super) fn build_success_payload(
     payload
 }
 
-fn explain_row_bounds(row: Option<&bijux_atlas::domain::query::GeneRow>) -> Value {
+fn explain_row_bounds(row: Option<&bijux_atlas::query::GeneRow>) -> Value {
     let Some(row) = row else {
         return Value::Null;
     };

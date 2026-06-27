@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::http::handlers;
-use crate::contracts::api::ApiErrorCode;
+use crate::api::ApiErrorCode;
 use crate::AppState;
 use axum::body::{to_bytes, Body};
 use axum::extract::State;
@@ -110,7 +110,7 @@ async fn normalize_json_error_envelope(response: Response, max_response_bytes: u
 #[cfg(test)]
 mod tests {
     use super::{normalize_error_response, normalize_json_error_envelope};
-    use crate::contracts::api::{ApiError, ApiErrorCode};
+    use crate::api::{ApiError, ApiErrorCode};
     use axum::body::to_bytes;
     use axum::http::StatusCode;
     use axum::response::IntoResponse;

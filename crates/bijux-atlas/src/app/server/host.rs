@@ -8,7 +8,7 @@ use crate::adapters::outbound::telemetry::logging::LoggingConfig;
 use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 use crate::app::ports::DatasetStoreBackend;
 use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use crate::domain::dataset::DatasetId;
+use crate::model::dataset::DatasetId;
 use crate::domain::sha256_hex;
 use crate::runtime::config::{
     effective_runtime_config_payload, load_runtime_config, runtime_governance_version,
@@ -575,7 +575,7 @@ pub async fn main_entry() -> Result<(), String> {
     )
     .await;
 
-    let query_limits = bijux_atlas::domain::query::QueryLimits::default();
+    let query_limits = bijux_atlas::query::QueryLimits::default();
     let policy_mode = runtime.policy_mode.clone();
     let runtime_policy_payload = serde_json::json!({
         "policy_mode": policy_mode,
@@ -584,7 +584,7 @@ pub async fn main_entry() -> Result<(), String> {
         "limits": &query_limits
     });
     let runtime_policy_hash =
-        match bijux_atlas::domain::canonical::stable_json_bytes(&runtime_policy_payload) {
+        match bijux_atlas::core::stable_json_bytes(&runtime_policy_payload) {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         };

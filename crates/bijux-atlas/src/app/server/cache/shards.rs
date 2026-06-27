@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::{DatasetId, ShardCatalog};
+use crate::model::dataset::{DatasetId, ShardCatalog};
 use crate::{CacheError, DatasetCacheManager};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};

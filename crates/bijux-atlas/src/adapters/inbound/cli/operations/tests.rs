@@ -4,11 +4,11 @@ use super::{
     build_release_diff, compute_gc_plan, gc_apply, promote_catalog, update_latest_alias,
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
-use crate::domain::dataset::{
+use crate::model::dataset::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId,
     ManifestStats, ShardCatalog, ShardEntry, ShardId,
 };
-use crate::domain::query::SeqId;
+use crate::query::SeqId;
 use crate::domain::sha256_hex;
 use serde_json::json;
 use std::fs;
@@ -503,7 +503,7 @@ fn latest_alias_update_writes_traceable_record_after_promotion() {
     .expect("latest alias update");
 
     let alias_raw = fs::read_to_string(root.join("latest.alias.json")).expect("alias file");
-    let alias: crate::domain::dataset::LatestAliasRecord =
+    let alias: crate::model::dataset::LatestAliasRecord =
         serde_json::from_str(&alias_raw).expect("alias json");
     alias.validate().expect("alias validate");
     assert_eq!(alias.dataset, dataset);

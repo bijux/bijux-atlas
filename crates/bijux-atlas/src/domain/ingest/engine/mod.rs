@@ -16,11 +16,11 @@ mod normalized;
 mod sqlite;
 mod write;
 
-use crate::domain::dataset::{
+use crate::model::dataset::{
     ArtifactManifest, DatasetId, IngestAnomalyReport, ShardCatalog, ShardingPlan,
 };
-use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
-use crate::domain::query::{
+use crate::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+use crate::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
@@ -53,6 +53,7 @@ pub struct IngestOptions {
     pub fasta_path: PathBuf,
     pub fai_path: PathBuf,
     pub output_root: PathBuf,
+    pub build_hash: String,
     pub dataset: DatasetId,
     pub strictness: StrictnessMode,
     pub duplicate_gene_id_policy: DuplicateGeneIdPolicy,
@@ -103,6 +104,7 @@ impl IngestOptions {
             fasta_path: PathBuf::new(),
             fai_path: PathBuf::new(),
             output_root: PathBuf::new(),
+            build_hash: String::new(),
             dataset,
             strictness: StrictnessMode::Strict,
             duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,
@@ -210,7 +212,7 @@ pub fn ingest_dataset_with_events(
             .filter(|(class, _)| {
                 matches!(
                     IngestAnomalyReport::severity_for_class(*class),
-                    crate::domain::dataset::QcSeverity::Warn
+                    crate::model::dataset::QcSeverity::Warn
                 )
             })
             .map(|(_, count)| count)
@@ -261,13 +263,13 @@ fn evaluate_anomaly_thresholds(
     let mut error_total = 0_u64;
     for (class, count) in class_counts {
         match IngestAnomalyReport::severity_for_class(class) {
-            crate::domain::dataset::QcSeverity::Warn => {
+            crate::model::dataset::QcSeverity::Warn => {
                 warn_total = warn_total.saturating_add(count)
             }
-            crate::domain::dataset::QcSeverity::Error => {
+            crate::model::dataset::QcSeverity::Error => {
                 error_total = error_total.saturating_add(count)
             }
-            crate::domain::dataset::QcSeverity::Info => {}
+            crate::model::dataset::QcSeverity::Info => {}
             _ => error_total = error_total.saturating_add(count),
         }
     }

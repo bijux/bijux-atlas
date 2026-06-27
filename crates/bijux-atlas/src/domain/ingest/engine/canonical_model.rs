@@ -3,7 +3,6 @@
 use super::extract::{ExonRecord, ExtractResult, GeneRecord, TranscriptRecord};
 use super::gff3::Gff3Record;
 use super::IngestError;
-use crate::domain::canonical;
 use crate::domain::sha256_hex;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
@@ -219,12 +218,12 @@ pub fn build_canonical_model(
     let summary = summarize_model(&genes);
     let query_semantic_payload = semantic_payload(&genes, &summary);
     let query_semantic_sha256 = {
-        let bytes = canonical::stable_json_bytes(&query_semantic_payload)
+        let bytes = crate::core::stable_json_bytes(&query_semantic_payload)
             .map_err(|e| IngestError(e.to_string()))?;
         sha256_hex(&bytes)
     };
     let lineage_sensitive_sha256 = {
-        let bytes = canonical::stable_json_bytes(&genes).map_err(|e| IngestError(e.to_string()))?;
+        let bytes = crate::core::stable_json_bytes(&genes).map_err(|e| IngestError(e.to_string()))?;
         sha256_hex(&bytes)
     };
     let model = CanonicalModel {
@@ -606,7 +605,7 @@ fn semantic_payload(genes: &[CanonicalGene], summary: &CanonicalSummary) -> serd
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::dataset::IngestAnomalyReport;
+    use crate::model::dataset::IngestAnomalyReport;
 
     #[test]
     fn contig_order_rank_is_stable_for_numeric_and_special_contigs() {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::app::cache::{CacheError, RegistrySourceHealth};
-use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
+use crate::model::dataset::{ArtifactManifest, Catalog, DatasetId};
 use async_trait::async_trait;
 
 /// Runtime read port used by the server cache and query-serving path.

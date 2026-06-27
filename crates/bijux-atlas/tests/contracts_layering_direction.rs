@@ -128,18 +128,15 @@ fn query_crate_stays_runtime_and_http_independent_by_dependency_contract() {
 #[test]
 fn domain_and_policy_layers_do_not_depend_on_adapter_or_runtime_modules() {
     let root = workspace_root().join("crates/bijux-atlas/src/domain");
-    let scoped_roots = [root.join("dataset"), root.join("query"), root.join("policy")];
-    for scope in scoped_roots {
-        for file in rust_files_under(&scope) {
-            let text = std::fs::read_to_string(&file)
-                .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
-            for forbidden in ["crate::adapters::", "crate::runtime::", "crate::app::server"] {
-                assert!(
-                    !text.contains(forbidden),
-                    "domain layer file {} contains forbidden dependency `{forbidden}`",
-                    file.display()
-                );
-            }
+    for file in rust_files_under(&root) {
+        let text = std::fs::read_to_string(&file)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
+        for forbidden in ["crate::adapters::", "crate::runtime::", "crate::app::server"] {
+            assert!(
+                !text.contains(forbidden),
+                "domain layer file {} contains forbidden dependency `{forbidden}`",
+                file.display()
+            );
         }
     }
 }

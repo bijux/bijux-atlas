@@ -2,10 +2,9 @@
 
 use super::gff3::Gff3Record;
 use super::{IngestError, IngestOptions};
-use crate::domain::canonical;
-use crate::domain::dataset::{IngestAnomalyReport, IngestRejection};
-use crate::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
-use crate::domain::query::{
+use crate::model::dataset::{IngestAnomalyReport, IngestRejection};
+use crate::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+use crate::query::{
     classify_contig, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     SeqidNormalizationTrace, UnknownFeaturePolicy,
 };
@@ -617,29 +616,29 @@ pub fn extract_gene_rows(
         }
     }
 
-    anomaly.missing_parents = canonical::stable_sort_by_key(anomaly.missing_parents, |x| x.clone());
+    anomaly.missing_parents = crate::core::stable_sort_by_key(anomaly.missing_parents, |x| x.clone());
     anomaly.missing_transcript_parents =
-        canonical::stable_sort_by_key(anomaly.missing_transcript_parents, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.missing_transcript_parents, |x| x.clone());
     anomaly.multiple_parent_transcripts =
-        canonical::stable_sort_by_key(anomaly.multiple_parent_transcripts, |x| x.clone());
-    anomaly.unknown_contigs = canonical::stable_sort_by_key(anomaly.unknown_contigs, |x| x.clone());
-    anomaly.overlapping_ids = canonical::stable_sort_by_key(anomaly.overlapping_ids, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.multiple_parent_transcripts, |x| x.clone());
+    anomaly.unknown_contigs = crate::core::stable_sort_by_key(anomaly.unknown_contigs, |x| x.clone());
+    anomaly.overlapping_ids = crate::core::stable_sort_by_key(anomaly.overlapping_ids, |x| x.clone());
     anomaly.duplicate_gene_ids =
-        canonical::stable_sort_by_key(anomaly.duplicate_gene_ids, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.duplicate_gene_ids, |x| x.clone());
     anomaly.overlapping_gene_ids_across_contigs =
-        canonical::stable_sort_by_key(anomaly.overlapping_gene_ids_across_contigs, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.overlapping_gene_ids_across_contigs, |x| x.clone());
     anomaly.orphan_transcripts =
-        canonical::stable_sort_by_key(anomaly.orphan_transcripts, |x| x.clone());
-    anomaly.parent_cycles = canonical::stable_sort_by_key(anomaly.parent_cycles, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.orphan_transcripts, |x| x.clone());
+    anomaly.parent_cycles = crate::core::stable_sort_by_key(anomaly.parent_cycles, |x| x.clone());
     anomaly.attribute_fallbacks =
-        canonical::stable_sort_by_key(anomaly.attribute_fallbacks, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.attribute_fallbacks, |x| x.clone());
     anomaly.unknown_feature_types =
-        canonical::stable_sort_by_key(anomaly.unknown_feature_types, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.unknown_feature_types, |x| x.clone());
     anomaly.missing_required_fields =
-        canonical::stable_sort_by_key(anomaly.missing_required_fields, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.missing_required_fields, |x| x.clone());
     anomaly.scientific_ambiguities =
-        canonical::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
-    anomaly.rejections = canonical::stable_sort_by_key(anomaly.rejections, |x| {
+        crate::core::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
+    anomaly.rejections = crate::core::stable_sort_by_key(anomaly.rejections, |x| {
         (x.line, x.code.clone(), x.sample.clone())
     });
     anomaly.missing_parents.dedup();
@@ -696,7 +695,7 @@ pub fn extract_gene_rows(
         }
     }
     anomaly.scientific_ambiguities =
-        canonical::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
+        crate::core::stable_sort_by_key(anomaly.scientific_ambiguities, |x| x.clone());
     anomaly.scientific_ambiguities.dedup();
 
     Ok(ExtractResult {

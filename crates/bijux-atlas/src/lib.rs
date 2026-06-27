@@ -5,15 +5,15 @@
 
 extern crate self as bijux_atlas;
 
-pub(crate) use crate::contracts::api::{ApiError, ApiErrorCode};
-pub(crate) use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
-pub(crate) use crate::domain::sha256_hex;
+pub(crate) use crate::api::{ApiError, ApiErrorCode};
+pub(crate) use crate::core::sha256_hex;
+pub(crate) use crate::model::dataset::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use axum::body::Body;
 pub(crate) use axum::extract::State;
 pub(crate) use axum::http::{HeaderMap, HeaderValue, StatusCode};
 pub(crate) use axum::response::{IntoResponse, Response};
 pub(crate) use axum::Json;
-pub(crate) use bijux_atlas::domain::query::{
+pub(crate) use bijux_atlas::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneQueryRequest, OrderMode, QueryClass, RegionFilter, TranscriptFilter,
     TranscriptQueryRequest,
@@ -26,10 +26,14 @@ pub(crate) use std::time::{Duration, Instant};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::Instrument;
 
+pub mod api;
 pub mod adapters;
 pub mod app;
+pub mod core;
 pub mod contracts;
 pub mod domain;
+pub mod model;
+pub mod query;
 pub(crate) mod packaged;
 pub mod runtime;
 pub mod version;

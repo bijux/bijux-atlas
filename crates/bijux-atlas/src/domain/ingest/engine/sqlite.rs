@@ -3,10 +3,10 @@
 use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use super::fai::ContigStats;
 use super::IngestError;
-use crate::domain::canonical::{self, sha256_hex};
-use crate::domain::dataset::manifest::ShardId;
-use crate::domain::dataset::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
-use crate::domain::query::SeqId;
+use crate::core::sha256_hex;
+use crate::model::dataset::manifest::ShardId;
+use crate::model::dataset::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
+use crate::query::SeqId;
 use rusqlite::{params, Connection};
 use std::collections::BTreeMap;
 use std::fs;
@@ -424,7 +424,7 @@ pub fn write_sharded_sqlite_catalog(
                 }
             } else {
                 for g in genes {
-                    let shard = (canonical::stable_hash_hex(g.seqid.as_bytes())
+                    let shard = (crate::core::stable_hash_hex(g.seqid.as_bytes())
                         .bytes()
                         .fold(0_u64, |acc, b| acc.wrapping_add(b as u64))
                         % shard_partitions as u64) as usize;
@@ -525,7 +525,7 @@ pub fn write_sharded_sqlite_catalog(
         .validate_sorted()
         .map_err(|e| IngestError(e.to_string()))?;
     let catalog_path = derived_dir.join("catalog_shards.json");
-    let bytes = canonical::stable_json_bytes(&catalog).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&catalog).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&catalog_path, bytes).map_err(|e| IngestError(e.to_string()))?;
     Ok((catalog_path, catalog))
 }

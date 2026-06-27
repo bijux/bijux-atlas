@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::contracts::api::params::{IncludeField, SortKey};
-use crate::contracts::api::{ApiError, ApiErrorCode};
-use crate::domain::canonical::sha256_hex;
-use crate::domain::dataset::DatasetId;
-use crate::domain::query::{
+use crate::api::params::{IncludeField, SortKey};
+use crate::api::{ApiError, ApiErrorCode};
+use crate::core::sha256_hex;
+use crate::model::dataset::DatasetId;
+use crate::query::{
     GeneFields, GeneFilter, GeneQueryRequest, IntervalSemantics, QueryClass, QueryLimits,
     QuerySort, RegionFilter,
 };
@@ -156,7 +156,7 @@ pub(super) fn build_dataset_query(
 ) -> Result<(DatasetId, GeneQueryRequest), ApiError> {
     let parse_map: std::collections::BTreeMap<String, String> =
         params.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
-    let parsed = crate::contracts::api::params::parse_list_genes_params_with_limit(
+    let parsed = crate::api::params::parse_list_genes_params_with_limit(
         &parse_map, 100, max_limit,
     )?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
@@ -170,9 +170,9 @@ pub(super) fn build_dataset_query(
     }
     if matches!(
         parsed.strand,
-        Some(crate::contracts::api::params::StrandMode::Plus)
-            | Some(crate::contracts::api::params::StrandMode::Minus)
-            | Some(crate::contracts::api::params::StrandMode::Unknown)
+        Some(crate::api::params::StrandMode::Plus)
+            | Some(crate::api::params::StrandMode::Minus)
+            | Some(crate::api::params::StrandMode::Unknown)
     ) {
         return Err(super::handlers::error_json(
             ApiErrorCode::InvalidQueryParameter,
@@ -196,26 +196,26 @@ pub(super) fn build_dataset_query(
                 None => QuerySort::Auto,
             },
             interval: match parsed.interval_mode {
-                Some(crate::contracts::api::params::IntervalMode::Containment) => {
+                Some(crate::api::params::IntervalMode::Containment) => {
                     IntervalSemantics::Containment
                 }
-                Some(crate::contracts::api::params::IntervalMode::BoundaryTouch) => {
+                Some(crate::api::params::IntervalMode::BoundaryTouch) => {
                     IntervalSemantics::BoundaryTouch
                 }
                 _ => IntervalSemantics::Overlap,
             },
             strand: match parsed.strand {
-                Some(crate::contracts::api::params::StrandMode::Any) | None => {
-                    crate::domain::query::StrandMode::Any
+                Some(crate::api::params::StrandMode::Any) | None => {
+                    crate::query::StrandMode::Any
                 }
-                Some(crate::contracts::api::params::StrandMode::Plus) => {
-                    crate::domain::query::StrandMode::Plus
+                Some(crate::api::params::StrandMode::Plus) => {
+                    crate::query::StrandMode::Plus
                 }
-                Some(crate::contracts::api::params::StrandMode::Minus) => {
-                    crate::domain::query::StrandMode::Minus
+                Some(crate::api::params::StrandMode::Minus) => {
+                    crate::query::StrandMode::Minus
                 }
-                Some(crate::contracts::api::params::StrandMode::Unknown) => {
-                    crate::domain::query::StrandMode::Unknown
+                Some(crate::api::params::StrandMode::Unknown) => {
+                    crate::query::StrandMode::Unknown
                 }
             },
         },

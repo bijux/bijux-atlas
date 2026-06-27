@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::dataset::{DatasetId, ShardingPlan};
+use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas::domain::ingest::ingest_dataset;
 use bijux_atlas::domain::ingest::IngestOptions;
-use bijux_atlas::domain::policy::{GeneIdentifierPolicy, StrictnessMode};
-use bijux_atlas::domain::query::{
+use bijux_atlas::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+use bijux_atlas::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
@@ -19,6 +19,7 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         fasta_path: fixture.join("genome.fa"),
         fai_path: fixture.join("genome.fa.fai"),
         output_root: root.to_path_buf(),
+        build_hash: String::new(),
         dataset: DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset id"),
         strictness: StrictnessMode::Strict,
         duplicate_gene_id_policy: DuplicateGeneIdPolicy::Fail,

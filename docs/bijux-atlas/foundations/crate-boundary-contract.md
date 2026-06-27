@@ -30,7 +30,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
 - `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
 - CLI and HTTP entrypoints must call application/domain services and must not embed parsing-normalization rules inline.
-- API DTO/wire shapes are owned under `src/contracts/api` and adapter HTTP DTOs, not in domain model modules.
+- API DTO/wire shapes are owned under `crates/bijux-atlas-api/src/` and adapter HTTP DTOs, not in domain model modules.
 - Bench-only logic is owned under `benches/` and test harnesses, not runtime `src/` modules.
 
 ## Dependency Direction

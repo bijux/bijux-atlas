@@ -9,7 +9,7 @@ use super::fai::{self, ContigStats};
 use super::gff3::{parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts};
 use super::job::IngestJob;
 use super::{IngestError, IngestOptions};
-use crate::domain::query::canonical_contig_label;
+use crate::query::canonical_contig_label;
 
 pub struct DecodedIngest {
     pub contig_stats: BTreeMap<String, ContigStats>,

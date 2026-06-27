@@ -2,8 +2,7 @@
 
 use std::fs;
 
-use crate::domain::canonical;
-use crate::domain::dataset::{
+use crate::model::dataset::{
     ArtifactChecksums, ArtifactManifest, IngestAnomalyReport, ManifestStats, ShardCatalog,
     ShardingPlan,
 };
@@ -148,6 +147,7 @@ pub fn write_ingest_outputs(
 
     let built = build_and_write_manifest_and_reports(BuildManifestArgs {
         output_root: &opts.output_root,
+        build_hash: &opts.build_hash,
         dataset: &opts.dataset,
         gff3_path: &paths.gff3,
         fasta_path: &paths.fasta,
@@ -186,7 +186,7 @@ pub fn write_ingest_outputs(
     )?;
     manifest.evidence_bundle_sha256 = evidence_bundle_sha256;
     let manifest_bytes =
-        canonical::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&manifest).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.manifest, manifest_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     Ok(IngestResult {
@@ -210,7 +210,7 @@ fn write_canonical_evidence(
 ) -> Result<(), IngestError> {
     let canonical_path = derived_dir.join("canonical_features.json");
     let summary_path = derived_dir.join("canonical_summary.json");
-    let model_bytes = canonical::stable_json_bytes(&decoded.canonical_model)
+    let model_bytes = crate::core::stable_json_bytes(&decoded.canonical_model)
         .map_err(|e| IngestError(e.to_string()))?;
     std::fs::write(canonical_path, model_bytes).map_err(|e| IngestError(e.to_string()))?;
     let summary_payload = serde_json::json!({
@@ -220,7 +220,7 @@ fn write_canonical_evidence(
         "query_semantic_payload": decoded.canonical_query_semantic_payload
     });
     let summary_bytes =
-        canonical::stable_json_bytes(&summary_payload).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&summary_payload).map_err(|e| IngestError(e.to_string()))?;
     std::fs::write(summary_path, summary_bytes).map_err(|e| IngestError(e.to_string()))?;
     Ok(())
 }
@@ -263,13 +263,13 @@ fn write_source_facts(
         },
         "scientific_ambiguities": decoded.extract.anomaly.scientific_ambiguities,
     });
-    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
     fs::write(path, bytes).map_err(|e| IngestError(e.to_string()))
 }
 
 fn write_evidence_sidecars(
-    paths: &crate::domain::dataset::ArtifactPaths,
-    dataset: &crate::domain::dataset::DatasetId,
+    paths: &crate::model::dataset::ArtifactPaths,
+    dataset: &crate::model::dataset::DatasetId,
     manifest: &ArtifactManifest,
     anomaly: &IngestAnomalyReport,
     contig_distribution: &std::collections::BTreeMap<String, u64>,
@@ -277,7 +277,7 @@ fn write_evidence_sidecars(
     contig_class_distribution: &std::collections::BTreeMap<String, u64>,
     seqid_normalization_traces: &std::collections::BTreeMap<
         String,
-        crate::domain::query::SeqidNormalizationTrace,
+        crate::query::SeqidNormalizationTrace,
     >,
     biotype_source_counts: &std::collections::BTreeMap<String, u64>,
 ) -> Result<String, IngestError> {
@@ -291,9 +291,9 @@ fn write_evidence_sidecars(
     for (class, count) in anomaly_counts.iter().filter(|(_, count)| **count > 0) {
         let severity = IngestAnomalyReport::severity_for_class(*class);
         let key = match severity {
-            crate::domain::dataset::QcSeverity::Info => "INFO",
-            crate::domain::dataset::QcSeverity::Warn => "WARN",
-            crate::domain::dataset::QcSeverity::Error => "ERROR",
+            crate::model::dataset::QcSeverity::Info => "INFO",
+            crate::model::dataset::QcSeverity::Warn => "WARN",
+            crate::model::dataset::QcSeverity::Error => "ERROR",
             _ => "ERROR",
         };
         *severity_summary.entry(key.to_string()).or_insert(0) += *count;
@@ -312,7 +312,7 @@ fn write_evidence_sidecars(
         "items": class_items
     });
     let anomaly_summary_bytes =
-        canonical::stable_json_bytes(&anomaly_summary).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&anomaly_summary).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.anomaly_summary, anomaly_summary_bytes)
         .map_err(|e| IngestError(e.to_string()))?;
 
@@ -328,7 +328,7 @@ fn write_evidence_sidecars(
         "ingest_build_hash": manifest.ingest_build_hash
     });
     let build_metadata_bytes =
-        canonical::stable_json_bytes(&build_metadata).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&build_metadata).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.build_metadata, build_metadata_bytes)
         .map_err(|e| IngestError(e.to_string()))?;
 
@@ -345,7 +345,7 @@ fn write_evidence_sidecars(
         "rejected_record_count": anomaly.rejections.len(),
     });
     let dataset_stats_bytes =
-        canonical::stable_json_bytes(&dataset_stats).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&dataset_stats).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.dataset_stats, dataset_stats_bytes).map_err(|e| IngestError(e.to_string()))?;
 
     let scientific_profile = json!({
@@ -360,7 +360,7 @@ fn write_evidence_sidecars(
         "seqid_normalization_traces": seqid_normalization_traces,
         "scientific_ambiguities": anomaly.scientific_ambiguities,
     });
-    let scientific_profile_bytes = canonical::stable_json_bytes(&scientific_profile)
+    let scientific_profile_bytes = crate::core::stable_json_bytes(&scientific_profile)
         .map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.scientific_profile, scientific_profile_bytes)
         .map_err(|e| IngestError(e.to_string()))?;
@@ -422,7 +422,7 @@ fn write_evidence_sidecars(
         "items": inventory_items
     });
     let inventory_bytes =
-        canonical::stable_json_bytes(&inventory).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&inventory).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.artifact_inventory, inventory_bytes)
         .map_err(|e| IngestError(e.to_string()))?;
 
@@ -455,7 +455,7 @@ fn write_evidence_sidecars(
         "files": bundle_files,
     });
     let bundle_bytes =
-        canonical::stable_json_bytes(&bundle_payload).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&bundle_payload).map_err(|e| IngestError(e.to_string()))?;
     let bundle_sha = sha256_hex(&bundle_bytes);
     let bundle_lock = json!({
         "schema_version": 1,
@@ -465,7 +465,7 @@ fn write_evidence_sidecars(
         "files": bundle_payload["files"],
     });
     let bundle_lock_bytes =
-        canonical::stable_json_bytes(&bundle_lock).map_err(|e| IngestError(e.to_string()))?;
+        crate::core::stable_json_bytes(&bundle_lock).map_err(|e| IngestError(e.to_string()))?;
     fs::write(&paths.evidence_bundle, bundle_lock_bytes).map_err(|e| IngestError(e.to_string()))?;
     Ok(bundle_sha)
 }

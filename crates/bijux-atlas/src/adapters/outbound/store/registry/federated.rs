@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
+use crate::model::dataset::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
 use crate::domain::sha256_hex;
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend, RegistrySourceHealth};
 use async_trait::async_trait;

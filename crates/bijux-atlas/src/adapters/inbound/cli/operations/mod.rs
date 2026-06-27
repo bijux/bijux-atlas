@@ -5,14 +5,13 @@ use crate::adapters::outbound::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
-use crate::domain::canonical;
-use crate::domain::dataset::{
+use crate::model::dataset::{
     parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
 };
 use crate::domain::policy::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
-use crate::domain::query::ReleaseGeneIndex;
+use crate::query::ReleaseGeneIndex;
 use crate::domain::sha256_hex;
 use serde_json::json;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -201,7 +200,7 @@ pub(crate) fn promote_catalog(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::domain::dataset::artifact_paths(&store_root, &dataset);
+    let paths = crate::model::dataset::artifact_paths(&store_root, &dataset);
     if !paths.manifest.exists() || !paths.sqlite.exists() {
         return Err(format!(
             "promote requires published artifact first: missing {} or {}",
@@ -243,7 +242,7 @@ pub(crate) fn update_latest_alias(
     }
     fs::create_dir_all(&store_root).map_err(|e| e.to_string())?;
     let canonical_catalog = canonical_catalog_json(&catalog)?;
-    let alias_record = crate::domain::dataset::LatestAliasRecord::new(
+    let alias_record = crate::model::dataset::LatestAliasRecord::new(
         dataset,
         "promotion-gated".to_string(),
         format!(
@@ -261,7 +260,7 @@ pub(crate) fn update_latest_alias(
     let tmp = store_root.join("latest.alias.json.tmp");
     fs::write(
         &tmp,
-        canonical::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
+        crate::core::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
     fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;
@@ -305,7 +304,7 @@ pub(crate) fn pack_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::domain::dataset::artifact_paths(&root, &dataset);
+    let paths = crate::model::dataset::artifact_paths(&root, &dataset);
     let manifest = fs::read(&paths.manifest).map_err(|e| e.to_string())?;
     let sqlite = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
     let lock = ManifestLock::from_bytes(&manifest, &sqlite);

@@ -2,9 +2,9 @@
 
 use super::extract::GeneRecord;
 use super::IngestError;
-use crate::domain::canonical::{self, sha256_hex};
-use crate::domain::dataset::DatasetId;
-use crate::domain::query::{
+use crate::core::sha256_hex;
+use crate::model::dataset::DatasetId;
+use crate::query::{
     GeneId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId,
 };
 use std::path::Path;
@@ -19,7 +19,7 @@ fn signature_for_gene(row: &GeneRecord) -> Result<String, IngestError> {
         row.end,
         row.transcript_count,
     );
-    let bytes = canonical::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| IngestError(e.to_string()))?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -40,6 +40,6 @@ pub fn build_and_write_release_gene_index(
     }
     entries.sort();
     let index = ReleaseGeneIndex::new("1".to_string(), dataset.clone(), entries);
-    let bytes = canonical::stable_json_bytes(&index).map_err(|e| IngestError(e.to_string()))?;
+    let bytes = crate::core::stable_json_bytes(&index).map_err(|e| IngestError(e.to_string()))?;
     std::fs::write(output_path, bytes).map_err(|e| IngestError(e.to_string()))
 }

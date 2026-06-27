@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::contracts::api::{fallback_request_id, ApiError, ApiErrorCode};
+use crate::api::{fallback_request_id, ApiError, ApiErrorCode};
 use axum::http::{HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::Json;
@@ -59,7 +59,7 @@ pub(crate) fn api_error(code: ApiErrorCode, message: &str, details: Value) -> Ap
 #[cfg(test)]
 mod tests {
     use super::api_error_status;
-    use crate::contracts::api::ApiErrorCode;
+    use crate::api::ApiErrorCode;
     use crate::packaged::ERROR_CODES_JSON;
     use axum::http::StatusCode;
 
@@ -67,7 +67,7 @@ mod tests {
     fn error_registry_matches_openapi_and_status_mapping() {
         let registry: serde_json::Value = serde_json::from_str(ERROR_CODES_JSON)
             .unwrap_or_else(|err| panic!("error registry: {err}"));
-        let spec = crate::contracts::api::openapi_v1_spec().to_string();
+        let spec = crate::api::openapi_v1_spec().to_string();
         let expected = [
             (
                 "AccessForbidden",

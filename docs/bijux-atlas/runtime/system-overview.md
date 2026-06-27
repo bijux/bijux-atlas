@@ -109,8 +109,8 @@ most. For crate layout and deeper runtime structure, keep reading:
 ## Where This Picture Lives In The Repo
 
 - ingest and build concerns: `crates/bijux-atlas/src/domain/ingest/`
-- dataset and query semantics: `crates/bijux-atlas/src/domain/dataset/` and
-  `crates/bijux-atlas/src/domain/query/`
+- dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and
+  `crates/bijux-atlas-query/src/`
 - runtime assembly: `crates/bijux-atlas/src/runtime/` and `src/app/`
 - interfaces: `crates/bijux-atlas/src/adapters/inbound/`
 - contract and generated reference surfaces:

@@ -5,7 +5,7 @@ use crate::adapters::outbound::store::testing::FakeStore;
 use crate::app::server::state::cache_runtime::cache_storage_runtime::{
     dataset_index_path, local_cache_paths,
 };
-use crate::domain::dataset::{ArtifactChecksums, ManifestStats};
+use crate::model::dataset::{ArtifactChecksums, ManifestStats};
 use crate::{sha256_hex, ArtifactManifest, Connection, DatasetId};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};

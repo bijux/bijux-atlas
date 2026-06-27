@@ -9,7 +9,6 @@ use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::app::server::cache;
 use crate::app::server::state::{AppState, DatasetCacheManager, RequestMetrics};
-use crate::domain::canonical;
 use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::cluster::membership::{MembershipPolicy, MembershipRegistry};
 use crate::domain::cluster::replication::{
@@ -25,7 +24,7 @@ use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
 use axum::routing::{get, post};
 use axum::Router;
-use bijux_atlas::domain::query::QueryLimits;
+use bijux_atlas::query::QueryLimits;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 use std::sync::Arc;
 use std::time::Duration;
@@ -41,7 +40,7 @@ impl AppState {
             "api": api,
             "limits": limits
         });
-        match canonical::stable_json_bytes(&payload) {
+        match crate::core::stable_json_bytes(&payload) {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         }
