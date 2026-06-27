@@ -20,4 +20,4 @@ pub(crate) mod route_support;
 pub mod router;
 pub(crate) mod sequence;
 pub(crate) mod service_routes;
-pub(crate) mod transcript_routes;
+pub(crate) mod transcripts;

@@ -6,7 +6,7 @@ use crate::adapters::inbound::http::request_policies::{
     resilience_middleware, security_middleware,
 };
 use crate::adapters::inbound::http::{
-    catalog, diagnostic_routes, gene_routes, service_routes, transcript_routes,
+    catalog, diagnostic_routes, gene_routes, service_routes, transcripts,
 };
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
@@ -56,11 +56,11 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route(
             "/v1/genes/{gene_id}/transcripts",
-            get(transcript_routes::gene_transcripts_handler),
+            get(transcripts::gene_transcripts_handler),
         )
         .route(
             "/v1/transcripts/{tx_id}",
-            get(transcript_routes::transcript_summary_handler),
+            get(transcripts::transcript_summary_handler),
         );
     if state.api.enable_admin_endpoints {
         router = router
