@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Foundational helpers for install-status flows.
+//! Release rollout observation and readiness baseline record helpers.
 
 use super::simulation_report_path;
 use crate::{OpsProcess, RunId};
@@ -103,6 +103,13 @@ pub(super) fn pods_restart_count(
         .unwrap_or(0)
 }
 
+pub(super) struct LifecycleSummaryUpdate<'a> {
+    pub(super) upgrade_report_path: Option<&'a std::path::Path>,
+    pub(super) upgrade_status: Option<&'a str>,
+    pub(super) rollback_report_path: Option<&'a std::path::Path>,
+    pub(super) rollback_status: Option<&'a str>,
+}
+
 pub(super) fn update_lifecycle_summary(
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -185,13 +192,6 @@ pub(super) fn update_lifecycle_summary(
     Ok(summary_path)
 }
 
-pub(super) struct LifecycleSummaryUpdate<'a> {
-    pub(super) upgrade_report_path: Option<&'a std::path::Path>,
-    pub(super) upgrade_status: Option<&'a str>,
-    pub(super) rollback_report_path: Option<&'a std::path::Path>,
-    pub(super) rollback_status: Option<&'a str>,
-}
-
 pub(super) fn load_readiness_baseline(
     repo_root: &std::path::Path,
     profile: &str,
@@ -244,32 +244,4 @@ pub(super) fn update_readiness_baseline(
     )
     .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
     Ok(path)
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::ops_execution_runtime::lifecycle::simulation_records::drill_check_paths;
-    use std::path::PathBuf;
-
-    fn repo_root() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(|path| path.parent())
-            .expect("workspace root")
-            .to_path_buf()
-    }
-
-    #[test]
-    fn drill_source_paths_exist_for_current_workspace_layout() {
-        let root = repo_root();
-        for drill in ["catalog-unreachable", "invalid-config-rejected"] {
-            for (_, path) in drill_check_paths(&root, drill) {
-                assert!(
-                    path.exists(),
-                    "missing drill source path: {}",
-                    path.display()
-                );
-            }
-        }
-    }
 }

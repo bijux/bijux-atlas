@@ -215,3 +215,31 @@ pub(super) fn update_simulation_summary(
     .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
     Ok(summary_path)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::drill_check_paths;
+    use std::path::PathBuf;
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn drill_source_paths_exist_for_current_workspace_layout() {
+        let root = repo_root();
+        for drill in ["catalog-unreachable", "invalid-config-rejected"] {
+            for (_, path) in drill_check_paths(&root, drill) {
+                assert!(
+                    path.exists(),
+                    "missing drill source path: {}",
+                    path.display()
+                );
+            }
+        }
+    }
+}
