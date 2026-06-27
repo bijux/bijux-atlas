@@ -370,7 +370,6 @@ version = "0.2.1"
 dependencies = [
  "assert_cmd",
  "async-trait",
- "axum",
  "base64",
  "bijux-atlas-api",
  "bijux-atlas-core",
@@ -384,12 +383,8 @@ dependencies = [
  "flate2",
  "hex",
  "hmac",
- "opentelemetry",
- "opentelemetry-otlp",
- "opentelemetry_sdk",
  "predicates",
  "proptest",
- "redis",
  "regex",
  "reqwest 0.12.28",
  "rusqlite",
@@ -404,8 +399,6 @@ dependencies = [
  "tokio",
  "toml",
  "tracing",
- "tracing-opentelemetry",
- "tracing-subscriber",
  "walkdir",
 ]
 
@@ -427,6 +420,9 @@ dependencies = [
  "flate2",
  "hex",
  "hmac",
+ "opentelemetry",
+ "opentelemetry-otlp",
+ "opentelemetry_sdk",
  "redis",
  "regex",
  "reqwest 0.12.28",
@@ -439,6 +435,8 @@ dependencies = [
  "tikv-jemallocator",
  "tokio",
  "tracing",
+ "tracing-opentelemetry",
+ "tracing-subscriber",
 ]
 
 [[package]]

@@ -228,6 +228,45 @@ fn query_crate_stays_runtime_and_http_independent_by_dependency_contract() {
 }
 
 #[test]
+fn runtime_crate_production_dependencies_stay_orchestration_scoped() {
+    let root = workspace_root();
+    let manifest_path = root.join("crates/bijux-atlas-runtime/Cargo.toml");
+    let cargo = std::fs::read_to_string(&manifest_path).expect("runtime cargo");
+    let manifest: toml::Value = toml::from_str(&cargo)
+        .unwrap_or_else(|err| panic!("failed to parse {}: {err}", manifest_path.display()));
+    let dependencies = manifest_table(&manifest, "dependencies").expect("runtime dependencies");
+
+    for forbidden in [
+        "axum",
+        "opentelemetry",
+        "opentelemetry-otlp",
+        "opentelemetry_sdk",
+        "redis",
+        "tracing-opentelemetry",
+        "tracing-subscriber",
+    ] {
+        assert!(
+            !dependencies.contains_key(forbidden),
+            "runtime production dependencies must not retain server-only surface `{forbidden}`"
+        );
+    }
+
+    for required in [
+        "bijux-atlas-api",
+        "bijux-atlas-core",
+        "bijux-atlas-ingest",
+        "bijux-atlas-model",
+        "bijux-atlas-query",
+        "bijux-atlas-store",
+    ] {
+        assert!(
+            dependencies.contains_key(required),
+            "runtime production dependencies must keep orchestration dependency `{required}`"
+        );
+    }
+}
+
+#[test]
 fn domain_and_policy_layers_do_not_depend_on_adapter_or_runtime_modules() {
     let root = workspace_root().join("crates/bijux-atlas-runtime/src/domain");
     for file in rust_files_under(&root) {
