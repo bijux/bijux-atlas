@@ -7,6 +7,7 @@ use crate::{resolve_repo_root, OpsProcess, RunId};
 use bijux_atlas_ops::load::path_contracts::{load_report_path, load_run_root, load_summary_path};
 use bijux_atlas_ops::load::plan_payload::load_plan_payload;
 use bijux_atlas_ops::load::report_contract::evaluate_load_report;
+use bijux_atlas_ops::load::run_payload::load_run_payload;
 use serde_json::Value;
 use std::fs;
 
@@ -89,19 +90,15 @@ pub(crate) fn run_ops_load_run(
     let (report_payload, report_code) = run_ops_load_report(common, suite, Some(run_id.clone()))?;
     let report_json: Value =
         serde_json::from_str(&report_payload).unwrap_or_else(|_| serde_json::json!({}));
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text": format!("ops load run suite={suite}"),
-        "rows":[{
-            "suite":suite,
-            "run_id":run_id.as_str(),
-            "k6_stdout":stdout,
-            "subprocess_event":event,
-            "summary_path":summary_path.display().to_string(),
-            "report":report_json
-        }],
-        "summary":{"total":1,"errors": if report_code==0 {0} else {1},"warnings":0}
-    });
+    let payload = load_run_payload(
+        suite,
+        run_id.as_str(),
+        &stdout,
+        event,
+        &summary_path.display().to_string(),
+        report_json,
+        report_code,
+    );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, if report_code == 0 { 0 } else { 1 }))
 }
