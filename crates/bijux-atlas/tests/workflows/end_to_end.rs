@@ -19,6 +19,10 @@ fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn atlas_command() -> Command {
+    Command::cargo_bin("bijux-atlas").expect("locate bijux-atlas binary")
+}
+
 fn dataset_db_path(root: &std::path::Path) -> PathBuf {
     root.join("release=110")
         .join("species=homo_sapiens")
@@ -29,7 +33,7 @@ fn dataset_db_path(root: &std::path::Path) -> PathBuf {
 #[test]
 fn config_json_workflow_is_parseable() {
     let root = repo_root();
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let output = atlas_command()
         .current_dir(&root)
         .args(["--json", "config"])
         .output()
@@ -47,7 +51,7 @@ fn openapi_generate_workflow_writes_contract_file() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let out = tmp.path().join("openapi.generated.json");
 
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let output = atlas_command()
         .current_dir(&root)
         .args(["--json", "openapi", "generate", "--out"])
         .arg(&out)
@@ -69,7 +73,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let store_root = tmp.path().join("store");
     let export_path = tmp.path().join("rows.jsonl");
 
-    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let ingest = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -99,7 +103,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         String::from_utf8_lossy(&ingest.stderr)
     );
 
-    let verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let verify = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -125,7 +129,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let db = dataset_db_path(&source_root);
     assert!(db.exists(), "expected sqlite output at {}", db.display());
 
-    let query_success = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let query_success = atlas_command()
         .current_dir(&root)
         .args(["--json", "query", "run", "--db"])
         .arg(&db)
@@ -148,7 +152,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         .map(|rows| !rows.is_empty())
         .unwrap_or(false));
 
-    let inspect_dataset = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let inspect_dataset = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -173,7 +177,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         Some("atlas inspect dataset")
     );
 
-    let inspect_db = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let inspect_db = atlas_command()
         .current_dir(&root)
         .args(["--json", "inspect", "db", "--db"])
         .arg(&db)
@@ -187,7 +191,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         Some("atlas inspect db")
     );
 
-    let inspect_provenance = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let inspect_provenance = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -216,7 +220,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         Some("110/homo_sapiens/GRCh38")
     );
 
-    let evidence_verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let evidence_verify = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -265,7 +269,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
         assert!(path.exists(), "expected evidence file {}", path.display());
     }
 
-    let query_refusal = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let query_refusal = atlas_command()
         .current_dir(&root)
         .args(["--json", "query", "run", "--db"])
         .arg(&db)
@@ -275,7 +279,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     let query_refusal_stderr = String::from_utf8(query_refusal.stderr).expect("stderr");
     assert!(query_refusal_stderr.contains("validation_error"));
 
-    let export_rows = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let export_rows = atlas_command()
         .current_dir(&root)
         .args(["--json", "export", "query", "--db"])
         .arg(&db)
@@ -287,7 +291,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert!(export_rows.status.success());
     assert!(export_path.exists());
 
-    let publish_dry_run = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let publish_dry_run = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -313,7 +317,7 @@ fn cli_fixture_workflow_covers_dataset_create_validate_query_and_refusal() {
     assert_eq!(publish_payload["mode"].as_str(), Some("dry-run"));
     assert_eq!(publish_payload["writes_artifacts"].as_bool(), Some(false));
 
-    let publish_explain = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let publish_explain = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -350,7 +354,7 @@ fn ingest_dry_run_and_explain_do_not_materialize_artifacts() {
     let source_root = tmp.path().join("source");
     let expected_db = dataset_db_path(&source_root);
 
-    let dry_run = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let dry_run = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -381,7 +385,7 @@ fn ingest_dry_run_and_explain_do_not_materialize_artifacts() {
     assert_eq!(payload["writes_artifacts"].as_bool(), Some(false));
     assert!(!expected_db.exists(), "dry-run should not create sqlite");
 
-    let explain = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let explain = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -424,7 +428,7 @@ fn dataset_evidence_verify_refuses_tampered_artifacts() {
         .join("assembly=GRCh38")
         .join("derived");
 
-    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let ingest = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -465,7 +469,7 @@ fn dataset_evidence_verify_refuses_tampered_artifacts() {
     )
     .expect("write tampered source facts");
 
-    let verify = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let verify = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -501,7 +505,7 @@ fn publish_refuses_scientifically_underspecified_dataset() {
     )
     .expect("write gff3");
 
-    let ingest = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let ingest = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
@@ -531,7 +535,7 @@ fn publish_refuses_scientifically_underspecified_dataset() {
         String::from_utf8_lossy(&ingest.stderr)
     );
 
-    let publish = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+    let publish = atlas_command()
         .current_dir(&root)
         .args([
             "--json",
