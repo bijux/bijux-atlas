@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::adapters::inbound::http::{genes_support, handlers};
+use crate::adapters::inbound::http::handlers;
 use crate::AppState;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
@@ -110,5 +110,5 @@ pub(super) async fn acquire_heavy_worker_permit(
 pub(super) fn try_enter_request_queue(
     state: &AppState,
 ) -> Result<crate::app::server::RequestQueueGuard, ApiError> {
-    genes_support::try_enter_queue(state)
+    super::support::try_enter_queue(state)
 }

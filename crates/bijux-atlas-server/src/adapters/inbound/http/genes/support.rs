@@ -18,7 +18,7 @@ pub(super) fn try_enter_queue(
     let depth = state.increment_queued_requests();
     if depth as usize > state.api.max_request_queue_depth {
         state.decrement_queued_requests();
-        return Err(super::handlers::error_json(
+        return Err(super::super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "request queue depth exceeded",
             json!({"depth": depth, "max": state.api.max_request_queue_depth}),
@@ -61,28 +61,28 @@ pub(super) fn parse_include(include: Option<Vec<IncludeField>>) -> GeneFields {
 pub(super) fn parse_region(raw: Option<String>) -> Result<Option<RegionFilter>, ApiError> {
     if let Some(value) = raw {
         let (seqid, span) = value.split_once(':').ok_or_else(|| {
-            super::handlers::error_json(
+            super::super::handlers::error_json(
                 ApiErrorCode::InvalidQueryParameter,
                 "invalid region",
                 json!({"value": value}),
             )
         })?;
         let (start, end) = span.split_once('-').ok_or_else(|| {
-            super::handlers::error_json(
+            super::super::handlers::error_json(
                 ApiErrorCode::InvalidQueryParameter,
                 "invalid region",
                 json!({"value": value}),
             )
         })?;
         let start = start.parse::<u64>().map_err(|_| {
-            super::handlers::error_json(
+            super::super::handlers::error_json(
                 ApiErrorCode::InvalidQueryParameter,
                 "invalid region",
                 json!({"value": value}),
             )
         })?;
         let end = end.parse::<u64>().map_err(|_| {
-            super::handlers::error_json(
+            super::super::handlers::error_json(
                 ApiErrorCode::InvalidQueryParameter,
                 "invalid region",
                 json!({"value": value}),
@@ -102,7 +102,7 @@ pub(super) async fn acquire_class_permit(
     class: QueryClass,
 ) -> Result<tokio::sync::OwnedSemaphorePermit, ApiError> {
     state.try_acquire_query_class_permit(class).map_err(|_| {
-        super::handlers::error_json(
+        super::super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "concurrency limit reached",
             json!({"class": format!("{class:?}")}),
@@ -129,7 +129,7 @@ pub(super) fn check_serialization_budget(
         .limit
         .saturating_mul(32 + selected_fields.saturating_mul(32));
     if estimated_serialized > limits.max_serialization_bytes {
-        return Some(super::handlers::error_json(
+        return Some(super::super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "serialization budget exceeded",
             json!({"estimated_bytes": estimated_serialized, "max": limits.max_serialization_bytes}),
@@ -138,7 +138,7 @@ pub(super) fn check_serialization_budget(
     None
 }
 
-pub(super) fn build_dataset_query(
+pub(crate) fn build_dataset_query(
     params: &HashMap<String, String>,
     max_limit: usize,
 ) -> Result<(DatasetId, GeneQueryRequest), ApiError> {
@@ -149,7 +149,7 @@ pub(super) fn build_dataset_query(
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {
-        return Err(super::handlers::error_json(
+        return Err(super::super::handlers::error_json(
             ApiErrorCode::InvalidQueryParameter,
             "min_transcripts/max_transcripts are not yet supported",
             json!({}),
@@ -161,7 +161,7 @@ pub(super) fn build_dataset_query(
             | Some(bijux_atlas_api::params::StrandMode::Minus)
             | Some(bijux_atlas_api::params::StrandMode::Unknown)
     ) {
-        return Err(super::handlers::error_json(
+        return Err(super::super::handlers::error_json(
             ApiErrorCode::InvalidQueryParameter,
             "strand filter is explicit but unsupported for current dataset schema",
             json!({"allowed": "omit strand or use strand=any"}),
@@ -218,12 +218,13 @@ pub(super) fn exact_lookup_cache_keys(
     dataset: &DatasetId,
     req: &GeneQueryRequest,
 ) -> (Option<String>, Option<String>) {
-    let exact_gene_id = super::handlers::is_gene_id_exact_query(req).map(ToString::to_string);
+    let exact_gene_id =
+        super::super::handlers::is_gene_id_exact_query(req).map(ToString::to_string);
     let redis_cache_key = exact_gene_id.as_ref().map(|gene_id| {
         let dataset_hash = sha256_hex(dataset.canonical_string().as_bytes());
         format!(
             "{dataset_hash}:{gene_id}:{}",
-            super::handlers::gene_fields_key(&req.fields)
+            super::super::handlers::gene_fields_key(&req.fields)
         )
     });
     (exact_gene_id, redis_cache_key)

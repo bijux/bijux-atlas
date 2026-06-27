@@ -6,5 +6,6 @@ pub(crate) mod admission;
 mod main_handler;
 pub(crate) mod response;
 mod response_finalize;
+pub(crate) mod support;
 
 pub(crate) use self::main_handler::genes_handler;

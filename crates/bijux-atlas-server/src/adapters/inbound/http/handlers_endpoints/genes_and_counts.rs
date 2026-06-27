@@ -37,7 +37,7 @@ pub(crate) async fn genes_count_handler(
         return with_request_id(resp, &request_id);
     }
     let (dataset, req) =
-        match crate::adapters::inbound::http::genes_support::build_dataset_query(&params, 500) {
+        match crate::adapters::inbound::http::genes::support::build_dataset_query(&params, 500) {
             Ok(v) => v,
             Err(e) => {
                 let resp = api_error_response(StatusCode::BAD_REQUEST, e);

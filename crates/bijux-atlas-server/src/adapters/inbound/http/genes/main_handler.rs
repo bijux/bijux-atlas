@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::http::genes::{
-    admission as genes_admission, response as genes_response,
+    admission as genes_admission, response as genes_response, support as genes_support,
 };
-use crate::adapters::inbound::http::{genes_support, handlers};
+use crate::adapters::inbound::http::handlers;
 use crate::app::query as app_query;
 use crate::sha256_hex;
 use crate::*;

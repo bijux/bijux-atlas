@@ -206,7 +206,7 @@ pub(crate) async fn query_validate_handler(
 ) -> impl IntoResponse {
     let started = Instant::now();
     let request_id = propagated_request_id(&headers, &state);
-    let (dataset, req) = match crate::adapters::inbound::http::genes_support::build_dataset_query(
+    let (dataset, req) = match crate::adapters::inbound::http::genes::support::build_dataset_query(
         &params,
         state.limits.max_limit,
     ) {

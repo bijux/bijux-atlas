@@ -106,7 +106,7 @@ fn effects_layer_avoids_http_server_framework_deps() {
 #[test]
 fn support_modules_remain_non_entrypoint() {
     let root = server_crate_root();
-    let support_files = ["src/adapters/inbound/http/genes_support.rs"];
+    let support_files = ["src/adapters/inbound/http/genes/support.rs"];
     let forbidden_tokens = [
         "pub async fn",
         "route(",
