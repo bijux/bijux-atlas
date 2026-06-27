@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use serde_json::{json, Map, Value};
+use super::canonical_json::sort_json_keys;
+use serde_json::{json, Value};
 
 pub const OPENAPI_V1_PINNED_SHA256: &str =
     "20bccf9b12503924f3f88c5bd8eca391386fc330be106efbd54fd41d4af9afff";
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
-    let error_codes = super::errors::codes::API_ERROR_CODES;
+    let error_codes = crate::errors::codes::API_ERROR_CODES;
     sort_json_keys(json!({
       "openapi": "3.0.3",
       "info": {
@@ -486,21 +487,4 @@ pub fn openapi_v1_spec() -> Value {
         }
       }
     }))
-}
-
-fn sort_json_keys(value: Value) -> Value {
-    match value {
-        Value::Object(object) => {
-            let mut sorted = Map::new();
-            let mut keys = object.keys().cloned().collect::<Vec<_>>();
-            keys.sort();
-            for key in keys {
-                let nested = object.get(&key).cloned().expect("known key");
-                sorted.insert(key, sort_json_keys(nested));
-            }
-            Value::Object(sorted)
-        }
-        Value::Array(items) => Value::Array(items.into_iter().map(sort_json_keys).collect()),
-        other => other,
-    }
 }
