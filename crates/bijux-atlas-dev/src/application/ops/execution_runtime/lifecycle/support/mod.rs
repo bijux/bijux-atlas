@@ -1,45 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Foundational helpers for install-status flows.
 
+use super::{
+    simulation_current_chart_path, simulation_previous_chart_path, simulation_report_path,
+};
 use crate::ops_commands::sha256_hex;
 use crate::{OpsProcess, RunId};
-
-pub(super) fn simulation_cluster_name() -> &'static str {
-    "bijux-atlas-sim"
-}
-
-pub(super) fn simulation_cluster_context() -> String {
-    format!("kind-{}", simulation_cluster_name())
-}
-
-pub(super) fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("ops/k8s/kind/cluster.yaml")
-}
-
-pub(super) fn simulation_current_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("ops/k8s/charts/bijux-atlas")
-}
-
-pub(super) fn simulation_previous_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("artifacts/ops/chart-sources/previous/bijux-atlas.tgz")
-}
-
-pub(super) fn simulation_report_path(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    file_name: &str,
-) -> Result<std::path::PathBuf, String> {
-    let path = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join("reports")
-        .join(file_name);
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
-    }
-    Ok(path)
-}
 
 pub(super) fn readiness_baseline_path(
     repo_root: &std::path::Path,
@@ -50,82 +16,6 @@ pub(super) fn readiness_baseline_path(
             .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
     }
     Ok(path)
-}
-
-pub(super) fn write_simulation_report(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    file_name: &str,
-    payload: &serde_json::Value,
-) -> Result<std::path::PathBuf, String> {
-    let path = simulation_report_path(repo_root, run_id, file_name)?;
-    std::fs::write(
-        &path,
-        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
-    Ok(path)
-}
-
-pub(super) fn load_drill_registry(
-    repo_root: &std::path::Path,
-) -> Result<Vec<serde_json::Value>, String> {
-    let path = repo_root.join("ops/observe/drills.json");
-    let payload: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(&path)
-            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
-    Ok(payload
-        .get("drills")
-        .and_then(serde_json::Value::as_array)
-        .cloned()
-        .unwrap_or_default())
-}
-
-pub(super) fn update_drill_summary(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    drill: &str,
-    report_path: &std::path::Path,
-    status: &str,
-) -> Result<std::path::PathBuf, String> {
-    let summary_path = simulation_report_path(repo_root, run_id, "ops-drills-summary.json")?;
-    let mut payload = if summary_path.exists() {
-        serde_json::from_str::<serde_json::Value>(
-            &std::fs::read_to_string(&summary_path)
-                .map_err(|err| format!("failed to read {}: {err}", summary_path.display()))?,
-        )
-        .map_err(|err| format!("failed to parse {}: {err}", summary_path.display()))?
-    } else {
-        serde_json::json!({
-            "schema_version": 1,
-            "drills": []
-        })
-    };
-    if !payload["drills"].is_array() {
-        payload["drills"] = serde_json::json!([]);
-    }
-    let rows = payload["drills"]
-        .as_array_mut()
-        .ok_or_else(|| "drill summary rows must be an array".to_string())?;
-    rows.retain(|row| row.get("name").and_then(serde_json::Value::as_str) != Some(drill));
-    rows.push(serde_json::json!({
-        "name": drill,
-        "status": status,
-        "report_path": report_path.strip_prefix(repo_root).unwrap_or(report_path).display().to_string()
-    }));
-    rows.sort_by(|left, right| {
-        left.get("name")
-            .and_then(serde_json::Value::as_str)
-            .cmp(&right.get("name").and_then(serde_json::Value::as_str))
-    });
-    std::fs::write(
-        &summary_path,
-        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
-    Ok(summary_path)
 }
 
 pub(super) fn drill_check_paths(
