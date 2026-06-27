@@ -2,10 +2,10 @@
 
 use std::sync::Arc;
 
-use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas_runtime::domain::sha256_hex;
+use bijux_atlas_server::adapters::inbound::build_server_router;
+use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_server::domain::sha256_hex;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
 use tempfile::tempdir;
@@ -54,7 +54,7 @@ async fn integration_server_download_then_serve() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
@@ -119,7 +119,7 @@ async fn integration_cached_only_mode_serves_when_store_unavailable() {
         },
         outage_store,
     );
-    let app = build_router(AppState::new(cached_only_mgr));
+    let app = build_server_router(AppState::new(cached_only_mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
@@ -167,7 +167,7 @@ async fn integration_partial_store_payload_fails_checksum_and_never_serves() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await

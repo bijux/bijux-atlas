@@ -2,11 +2,11 @@
 
 use std::sync::Arc;
 
-use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas_runtime::domain::sha256_hex;
-use bijux_atlas_runtime::runtime::config::ApiConfig;
+use bijux_atlas_server::adapters::inbound::build_server_router;
+use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_server::domain::sha256_hex;
+use bijux_atlas_server::runtime::config::ApiConfig;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
@@ -73,7 +73,7 @@ fn start_server() -> (tokio::runtime::Runtime, String) {
             sequence_api_key_required_bases: 100,
             ..ApiConfig::default()
         };
-        let app = build_router(AppState::with_config(mgr, api, Default::default()));
+        let app = build_server_router(AppState::with_config(mgr, api, Default::default()));
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
             .await
             .expect("bind listener");
