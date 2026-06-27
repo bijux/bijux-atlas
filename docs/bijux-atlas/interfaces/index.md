@@ -39,7 +39,7 @@ Use this section when the question is exact rather than conceptual.
 ## User-Facing Surfaces In This Repository
 
 - CLI surface: `crates/bijux-atlas/src/adapters/inbound/cli/` and
-  `crates/bijux-atlas/src/bin/`
+  `crates/bijux-atlas-cli/src/bin/`
 - HTTP and API surface:
   `crates/bijux-atlas/src/adapters/inbound/http/`
 - runtime configuration surface: `crates/bijux-atlas/src/runtime/config/` and
@@ -84,6 +84,7 @@ changes shape:
 
 ## Source Anchors
 
-- `crates/bijux-atlas/src/bin/`
+- `crates/bijux-atlas-cli/src/bin/`
+- `crates/bijux-atlas-server/src/bin/`
 - `crates/bijux-atlas/src/interfaces/`
 - `configs/generated/openapi/`

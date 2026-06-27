@@ -147,7 +147,9 @@ Atlas is opinionated in ways that matter operationally:
   `crates/bijux-atlas-query/src/` and
   `crates/bijux-atlas/src/runtime/`
 - user-facing interfaces live under
-  `crates/bijux-atlas/src/adapters/inbound/` and `crates/bijux-atlas/src/bin/`
+  `crates/bijux-atlas/src/adapters/inbound/`,
+  `crates/bijux-atlas-cli/src/bin/`, and
+  `crates/bijux-atlas-server/src/bin/`
 
 ## Main Takeaway
 

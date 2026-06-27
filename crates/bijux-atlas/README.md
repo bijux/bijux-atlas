@@ -1,8 +1,8 @@
 # bijux-atlas
 
-`bijux-atlas` is the published Atlas runtime crate for genomics dataset delivery.
-It ingests GFF3 and FASTA inputs into immutable dataset artifacts, serves gene-query workflows
-through CLI and HTTP surfaces, and exports the OpenAPI contract for those APIs.
+`bijux-atlas` is the Atlas runtime composition crate for genomics dataset delivery.
+It composes ingest, query, store, API, and runtime wiring so the direct CLI and server owner
+crates can expose stable Atlas product surfaces.
 
 This crate is the right starting point if you are looking for:
 
@@ -13,10 +13,10 @@ This crate is the right starting point if you are looking for:
 
 ## What Ships
 
-- `bijux-atlas`: end-user CLI for dataset, catalog, ingest, diff, garbage-collection, config, and
-  OpenAPI workflows
-- `bijux-atlas-server`: runtime HTTP server for Atlas APIs
-- `bijux-atlas-openapi`: OpenAPI export utility
+- `bijux-atlas-cli`: end-user CLI owner for dataset, catalog, ingest, diff, garbage-collection,
+  config, and OpenAPI workflows
+- `bijux-atlas-server`: runtime HTTP server owner for Atlas APIs
+- `bijux-atlas-api`: OpenAPI export owner for `bijux-atlas-openapi`
 - Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and `runtime`
 
 ## How It Fits With `bijux-cli`
@@ -36,7 +36,9 @@ Install the published crate directly when you want the Atlas binaries or crate A
 umbrella runtime:
 
 ```bash
-cargo install --locked bijux-atlas
+cargo install --locked bijux-atlas-cli --bin bijux-atlas
+cargo install --locked bijux-atlas-server --bin bijux-atlas-server
+cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 ```
 
 Verify the installed runtime surfaces:
@@ -51,9 +53,9 @@ bijux-atlas-openapi --help
 Run the current checkout directly:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- --help
-cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
-cargo run -p bijux-atlas --bin bijux-atlas-openapi -- --out ./openapi.json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
+cargo run -p bijux-atlas-api --bin bijux-atlas-openapi -- --out ./openapi.json
 ```
 
 ## Documentation
@@ -72,8 +74,8 @@ Use this crate when you need to:
 
 - build immutable genomic dataset artifacts from GFF3 and FASTA inputs
 - run Atlas dataset and catalog workflows locally or in CI
-- serve Atlas through the HTTP runtime
-- generate the published OpenAPI description
+- serve Atlas through the HTTP runtime via `bijux-atlas-server`
+- generate the published OpenAPI description via `bijux-atlas-api`
 - integrate against the crate-owned domain, contract, and runtime modules
 
 This crate does not own repository governance, release automation, or documentation publishing.
@@ -89,7 +91,7 @@ contracts.
 - `diff`: compare dataset and catalog artifacts
 - `gc`: plan and apply garbage collection for managed artifacts
 - `policy`: validate and inspect policy-governed behavior
-- `openapi`: export the API contract from the runtime-owned surface
+- `openapi`: export the API contract through the API-owned binary surface
 
 ## Feature Flags
 

@@ -65,7 +65,7 @@ version.
 ## Step 1: Verify the Runtime CLI Entrypoint
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- --help
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
 bijux-atlas --help
 bijux atlas --help
 ```
@@ -79,8 +79,8 @@ getting-started flow.
 ## Step 2: Verify Runtime, Server, and Maintainer Surfaces
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- config --help
-cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --help
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
 cargo run -p bijux-dev-atlas -- --help
 bijux dev atlas --help
 ```
@@ -115,7 +115,7 @@ docs assume one workspace root, committed fixtures, and disposable outputs under
 ## Step 4: Sanity-Check Structured Output
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- config --canonical --json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --canonical --json
 cargo run -p bijux-dev-atlas -- list --format json
 ```
 

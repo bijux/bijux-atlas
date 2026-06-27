@@ -48,8 +48,8 @@ Keep all throwaway local outputs under `artifacts/`. Do not create crate-local s
 ## Inspect the Main Surfaces
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- --help
-cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
 ```
 
 ## Understand the Local Loop

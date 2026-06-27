@@ -54,7 +54,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `adapters` own transport and storage integrations.
 - `runtime` owns process configuration and startup wiring.
 - `bin/` surfaces remain thin wrappers around owned modules.
-- `crates/bijux-atlas/src/bin/` is limited to the runtime-owned `bijux-atlas` and `bijux-atlas-server` entrypoints. The `bijux-atlas-openapi` binary belongs under `crates/bijux-atlas-api/src/bin/`.
+- `crates/bijux-atlas-cli/src/bin/` owns the direct `bijux-atlas` executable, `crates/bijux-atlas-server/src/bin/` owns `bijux-atlas-server`, and `crates/bijux-atlas-api/src/bin/` owns `bijux-atlas-openapi`. The runtime crate owns library composition, not direct binary entrypoint files.
 
 ## Enforcement
 

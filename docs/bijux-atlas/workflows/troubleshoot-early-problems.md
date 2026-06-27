@@ -93,14 +93,14 @@ One common reason is using the ingest build root as if it were the serving store
 Run these steps before startup:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset publish \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset publish \
   --source-root artifacts/getting-started/tiny-build \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \
   --assembly GRCh38
 
-cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog promote \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \
@@ -124,7 +124,7 @@ shape, cache-root setup, or resolved runtime config.
 Use:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas-server -- \
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache \
   --validate-config

@@ -58,13 +58,13 @@ Atlas uses dataset commands both before and after publication:
 Validate and deeply verify a build root:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset validate \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset validate \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
   --assembly GRCh38
 
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset verify \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
@@ -75,7 +75,7 @@ cargo run -p bijux-atlas --bin bijux-atlas -- dataset verify \
 Publish into a store:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset publish \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset publish \
   --source-root artifacts/getting-started/tiny-build \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \

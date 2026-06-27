@@ -62,7 +62,7 @@ Not every surface has the same audience:
 ## Practical Startup
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas-server -- \
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --bind 127.0.0.1:8080 \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache

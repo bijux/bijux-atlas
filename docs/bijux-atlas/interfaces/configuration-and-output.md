@@ -100,13 +100,13 @@ output class and field shape.
 Inspect canonical config:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- config --canonical --json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --canonical --json
 ```
 
 Inspect server runtime surface:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
 ```
 
 ## Good Habits

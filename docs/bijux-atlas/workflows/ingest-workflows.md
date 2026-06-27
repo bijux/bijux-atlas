@@ -62,7 +62,7 @@ That distinction is what allows Atlas to:
 ## Example Ingest Command
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- ingest \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
   --gff3 crates/bijux-atlas/tests/fixtures/tiny/genes.gff3 \
   --fasta crates/bijux-atlas/tests/fixtures/tiny/genome.fa \
   --fai crates/bijux-atlas/tests/fixtures/tiny/genome.fa.fai \

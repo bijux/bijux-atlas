@@ -110,10 +110,12 @@ This README intentionally describes the shipped release surfaces and their contr
 ```mermaid
 flowchart TD
     Workspace[Repository workspace] --> Runtime[bijux-atlas crate]
+    Workspace --> CLI[bijux-atlas-cli crate]
+    Workspace --> ServerCrate[bijux-atlas-server crate]
     Workspace --> API[bijux-atlas-api crate]
     Workspace --> ControlPlane[bijux-dev-atlas crate]
-    Runtime --> RuntimeCLI[bijux-atlas]
-    Runtime --> Server[bijux-atlas-server]
+    CLI --> RuntimeCLI[bijux-atlas]
+    ServerCrate --> Server[bijux-atlas-server]
     API --> OpenAPI[bijux-atlas-openapi]
     Workspace --> Docs[Numbered docs spine]
     Workspace --> Governance[configs and ops validation]
@@ -125,7 +127,7 @@ runtime use and which are for repository maintenance.
 
 ## Crate Boundary Map
 
-Atlas currently enforces an eight-crate workspace boundary:
+Atlas currently enforces a ten-crate workspace boundary:
 
 * `crates/bijux-atlas-core/`: runtime-independent primitives and invariants
 * `crates/bijux-atlas-model/`: stable dataset, gene, diff, and policy types
@@ -133,7 +135,9 @@ Atlas currently enforces an eight-crate workspace boundary:
 * `crates/bijux-atlas-ingest/`: ingest normalization, anomaly handling, and artifact build execution
 * `crates/bijux-atlas-store/`: immutable artifact publication and backend contracts
 * `crates/bijux-atlas-api/`: API DTOs, Rust client surface, OpenAPI generation, and the `bijux-atlas-openapi` binary
-* `crates/bijux-atlas/`: runtime product crate with CLI and server entrypoints, application orchestration, adapters, and startup wiring
+* `crates/bijux-atlas/`: runtime composition crate with application orchestration, adapters, cache wiring, and startup flows
+* `crates/bijux-atlas-cli/`: direct `bijux-atlas` binary owner plus CLI contract tests
+* `crates/bijux-atlas-server/`: direct `bijux-atlas-server` binary owner plus server-facing integration tests and benchmarks
 * `crates/bijux-dev-atlas/`: maintainer-only control plane for governance and repository operations
 
 The boundary contract for this map lives at
@@ -163,7 +167,8 @@ Atlas treats dataset builds as release artifacts with explicit manifests, proven
 
 ### Runtime Surfaces With Clear Boundaries
 
-`bijux-atlas` and `bijux-atlas-server` are runtime-owned entrypoints.
+`bijux-atlas` is owned by `bijux-atlas-cli`.
+`bijux-atlas-server` is owned by `bijux-atlas-server`.
 `bijux-atlas-openapi` remains a user-facing Atlas binary, but it is API-owned and built from `bijux-atlas-api`.
 The installed umbrella runtime namespace is `bijux atlas ...`.
 The maintainer namespace is `bijux dev atlas ...`, backed by the `bijux-dev-atlas` binary.
@@ -198,7 +203,8 @@ bijux atlas version
 Use direct Cargo installation when you want Atlas by itself, or when CI and local Rust workflows call the binaries directly:
 
 ```bash
-cargo install --locked bijux-atlas
+cargo install --locked bijux-atlas-cli --bin bijux-atlas
+cargo install --locked bijux-atlas-server --bin bijux-atlas-server
 cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 bijux-atlas --help
 bijux-atlas version
@@ -223,7 +229,8 @@ bijux-atlas-openapi --help
 From a workspace checkout, run the current source tree directly with:
 
 ```bash
-cargo run -q -p bijux-atlas --bin bijux-atlas -- version
+cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- version
+cargo run -q -p bijux-atlas-server --bin bijux-atlas-server -- --help
 cargo run -q -p bijux-atlas-api --bin bijux-atlas-openapi -- --help
 cargo run -q -p bijux-dev-atlas -- --help
 ```

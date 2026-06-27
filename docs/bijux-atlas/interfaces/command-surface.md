@@ -74,8 +74,8 @@ Use the automation reference when you are asking, "Which repository command chec
 - command tree and argument structure:
   `crates/bijux-atlas/src/adapters/inbound/cli/args.rs`
 - runtime binaries:
-  `crates/bijux-atlas/src/bin/bijux-atlas.rs`,
-  `crates/bijux-atlas/src/bin/bijux-atlas-server.rs`, and
+  `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`,
+  `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`, and
   `crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs`
 - generated command references: `configs/generated/docs/command-index.json` and
   `configs/generated/docs/configs-command-list.txt`

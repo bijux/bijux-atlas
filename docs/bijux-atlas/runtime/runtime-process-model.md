@@ -35,7 +35,7 @@ the same concern and should not collapse into one vague notion of "the server."
 
 ## Repository Authority Map
 
-- the long-running server entrypoint lives in [`src/bin/bijux-atlas-server.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/bin/bijux-atlas-server.rs:1)
+- the long-running server entrypoint lives in [`bijux-atlas-server/src/bin/bijux-atlas-server.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs:1)
 - runtime composition and application wiring live under [`src/runtime/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/runtime) and [`src/app/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/app)
 - inbound HTTP behavior lives under [`src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http)
 - startup config shape is documented under [`configs/generated/runtime/runtime-startup-config.md`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime/runtime-startup-config.md:1)

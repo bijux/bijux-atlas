@@ -53,7 +53,8 @@ These docs are intentionally separate from:
 - HTTP and API surface lives under
   `crates/bijux-atlas/src/adapters/inbound/http/`
 - CLI surface and user-facing command handling live under
-  `crates/bijux-atlas/src/adapters/inbound/cli/` and `crates/bijux-atlas/src/bin/`
+  `crates/bijux-atlas/src/adapters/inbound/cli/`, `crates/bijux-atlas-cli/src/bin/`, and
+  `crates/bijux-atlas-server/src/bin/`
 - generated API and runtime references live under `configs/generated/openapi/`
   and `configs/generated/runtime/`
 - workflow examples and machine-checked contract shapes live under
@@ -106,6 +107,6 @@ of four places:
 ## Source Anchors
 
 - `crates/bijux-atlas/`
-- `crates/bijux-atlas/src/bin/bijux-atlas.rs`
-- `crates/bijux-atlas/src/bin/bijux-atlas-server.rs`
+- `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`
+- `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`
 - `crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs`

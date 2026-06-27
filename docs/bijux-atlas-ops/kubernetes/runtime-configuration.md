@@ -61,7 +61,7 @@ defaults.
 ## Example Runtime Validation
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas-server -- \
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache \
   --validate-config

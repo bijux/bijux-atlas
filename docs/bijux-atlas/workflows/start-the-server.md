@@ -37,7 +37,7 @@ explicit cache and configuration inputs.
 ```bash
 mkdir -p artifacts/getting-started/server-cache
 
-cargo run -p bijux-atlas --bin bijux-atlas-server -- \
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache \
   --validate-config
@@ -51,7 +51,7 @@ If `--validate-config` fails, fix that before trying to bind the server. A broke
 ## Start the Local Server
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas-server -- \
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --bind 127.0.0.1:8080 \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache
