@@ -23,8 +23,8 @@ criterion = "0.8"
 proptest = "1"
 
 [[test]]
-name = "contracts"
-path = "tests/contracts.rs"
+name = "model_contracts"
+path = "tests/model_contracts.rs"
 
 [[bench]]
 name = "manifest_codec"
