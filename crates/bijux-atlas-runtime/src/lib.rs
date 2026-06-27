@@ -22,7 +22,8 @@ pub(crate) mod version_support;
 pub(crate) use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 pub(crate) use crate::app::server::observability::{route_sli_class, unix_time_millis};
-pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+pub(crate) use crate::app::server::{AppState, DatasetCacheManager};
+pub(crate) use crate::runtime::config::DatasetCacheConfig;
 #[allow(unused_imports)]
 pub(crate) use crate::runtime::config::{runtime_build_hash, RateLimitConfig};
 

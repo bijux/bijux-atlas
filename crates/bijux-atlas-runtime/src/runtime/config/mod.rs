@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
+mod cache;
 mod env;
 mod paths;
 mod settings;
 #[cfg(test)]
 mod tests;
 
+pub use self::cache::DatasetCacheConfig;
 pub use self::paths::{resolve_bijux_cache_dir, resolve_bijux_config_path};
 pub(crate) use self::settings::resolve_runtime_path;
 pub use self::settings::{
