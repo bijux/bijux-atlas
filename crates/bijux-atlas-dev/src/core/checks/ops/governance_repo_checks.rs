@@ -331,15 +331,15 @@ pub(super) fn check_crates_bijux_atlas_owns_umbrella_dispatch(
             }
         }
     }
-    if owners == BTreeSet::from(["bijux-atlas-runtime".to_string()]) {
+    if owners == BTreeSet::from(["bijux-atlas-cli".to_string()]) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "CRATES_UMBRELLA_DISPATCH_OWNER_INVALID",
             format!(
-                "umbrella dispatch implementation must be owned by bijux-atlas-runtime only; found {owners:?}"
+                "umbrella dispatch implementation must be owned by bijux-atlas-cli only; found {owners:?}"
             ),
-            "keep bijux-atlas-runtime as the only owner of umbrella dispatch metadata flags",
+            "keep bijux-atlas-cli as the only owner of umbrella dispatch metadata flags",
             Some(Path::new("crates")),
         )])
     }
@@ -367,7 +367,7 @@ pub(super) fn check_crates_bijux_atlas_dev_help_dispatch_present(
 ) -> Result<Vec<Violation>, CheckError> {
     let src = ctx
         .repo_root
-        .join("crates/bijux-atlas-runtime/src/adapters/inbound/cli/mod.rs");
+        .join("crates/bijux-atlas-cli/src/adapters/inbound/cli/mod.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("bijux dev atlas <command>") {
         Ok(Vec::new())
@@ -377,7 +377,7 @@ pub(super) fn check_crates_bijux_atlas_dev_help_dispatch_present(
             "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
             "restore dev atlas dispatch hint in bijux-atlas help routing",
             Some(Path::new(
-                "crates/bijux-atlas-runtime/src/adapters/inbound/cli/mod.rs",
+                "crates/bijux-atlas-cli/src/adapters/inbound/cli/mod.rs",
             )),
         )])
     }

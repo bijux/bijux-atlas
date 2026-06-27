@@ -14,7 +14,7 @@ use tempfile::tempdir;
 #[test]
 fn plugin_metadata_handshake_has_required_fields() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .arg(bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG)
+        .arg(bijux_atlas_cli::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG)
         .output()
         .expect("run plugin metadata command");
     assert!(output.status.success());
@@ -56,7 +56,7 @@ fn umbrella_version_compatibility_is_enforced() {
     let bad = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .args([
             "--json",
-            bijux_atlas::adapters::inbound::cli::UMBRELLA_VERSION_FLAG,
+            bijux_atlas_cli::adapters::inbound::cli::UMBRELLA_VERSION_FLAG,
             "0.2.1",
             "version",
         ])
@@ -81,7 +81,7 @@ fn help_contains_standard_plugin_flags() {
         "--quiet",
         "--verbose",
         "--trace",
-        bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
+        bijux_atlas_cli::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
     ] {
         assert!(text.contains(needle), "help missing {needle}");
     }
@@ -146,18 +146,18 @@ fn atlas_validate_deep_requires_manifest_lock() {
         "1".to_string(),
         dataset,
         ArtifactChecksums::new(
-            bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
-            bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
-            bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
-            bijux_atlas::domain::sha256_hex(&sqlite_bytes),
+            bijux_atlas_runtime::domain::sha256_hex(b"##gff-version 3\n"),
+            bijux_atlas_runtime::domain::sha256_hex(b">chr1\nACGT\n"),
+            bijux_atlas_runtime::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
+            bijux_atlas_runtime::domain::sha256_hex(&sqlite_bytes),
         ),
         ManifestStats::new(1, 1, 1),
     );
-    let sqlite_sha = bijux_atlas::domain::sha256_hex(&sqlite_bytes);
+    let sqlite_sha = bijux_atlas_runtime::domain::sha256_hex(&sqlite_bytes);
     manifest.input_hashes = ManifestInputHashes::new(
-        bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
-        bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
-        bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
+        bijux_atlas_runtime::domain::sha256_hex(b"##gff-version 3\n"),
+        bijux_atlas_runtime::domain::sha256_hex(b">chr1\nACGT\n"),
+        bijux_atlas_runtime::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
         "policy-hash".to_string(),
     );
     manifest.toolchain_hash = "toolchain-hash".to_string();

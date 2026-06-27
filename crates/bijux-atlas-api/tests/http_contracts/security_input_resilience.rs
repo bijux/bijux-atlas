@@ -2,10 +2,10 @@
 
 use std::sync::Arc;
 
-use bijux_atlas::adapters::inbound::http::router::build_router;
-use bijux_atlas::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::runtime::config::ApiConfig;
+use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
+use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_runtime::runtime::config::ApiConfig;
 use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use tempfile::tempdir;

@@ -2,10 +2,10 @@
 
 use std::sync::Arc;
 
-use bijux_atlas::adapters::inbound::http::router::build_router;
-use bijux_atlas::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas::domain::sha256_hex;
+use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
+use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_runtime::domain::sha256_hex;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
 use tempfile::tempdir;

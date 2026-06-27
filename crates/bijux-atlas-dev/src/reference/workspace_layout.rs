@@ -3,7 +3,7 @@
 use std::path::{Path, PathBuf};
 
 fn atlas_src_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas/src")
+    repo_root.join("crates/bijux-atlas-runtime/src")
 }
 
 fn atlas_cli_crate_root(repo_root: &Path) -> PathBuf {

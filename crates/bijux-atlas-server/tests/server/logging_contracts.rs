@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::adapters::outbound::telemetry::logging::{redact_if_needed, LoggingConfig};
+use bijux_atlas_runtime::adapters::outbound::telemetry::logging::{redact_if_needed, LoggingConfig};
 use serde_json::json;
 
 #[test]

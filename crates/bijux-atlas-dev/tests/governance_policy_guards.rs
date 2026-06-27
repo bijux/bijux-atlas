@@ -108,8 +108,8 @@ fn crate_roots_do_not_accumulate_local_artifacts_directories() {
 fn atlas_app_server_shims_do_not_reappear() {
     let root = repo_root();
     for path in [
-        "crates/bijux-atlas/src/app/server/state/router.rs",
-        "crates/bijux-atlas/src/app/server/state/request_utils.rs",
+        "crates/bijux-atlas-runtime/src/app/server/state/router.rs",
+        "crates/bijux-atlas-runtime/src/app/server/state/request_utils.rs",
     ] {
         assert!(
             !root.join(path).exists(),
@@ -121,7 +121,7 @@ fn atlas_app_server_shims_do_not_reappear() {
 #[test]
 fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
     let root = repo_root();
-    let text = fs::read_to_string(root.join("crates/bijux-atlas/src/domain/mod.rs"))
+    let text = fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/domain/mod.rs"))
         .expect("domain surface");
     assert!(
         !text.contains("resolve_bijux_cache_dir")
@@ -137,7 +137,7 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
 fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
     let root = repo_root();
     let text = fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/inbound/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_utilities.rs"),
     )
     .expect("handlers utilities surface");
 
@@ -163,7 +163,7 @@ fn atlas_http_handlers_utilities_stays_a_compatibility_surface() {
 fn atlas_lib_hides_legacy_ownership_roots() {
     let root = repo_root();
     let text =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/lib.rs")).expect("atlas lib surface");
+        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/lib.rs")).expect("atlas lib surface");
 
     for expected in [
         "pub mod adapters;",
@@ -212,13 +212,13 @@ fn atlas_lib_hides_legacy_ownership_roots() {
 fn atlas_removed_legacy_root_modules_do_not_reappear() {
     let root = repo_root();
     for path in [
-        "crates/bijux-atlas/src/bootstrap/mod.rs",
-        "crates/bijux-atlas/src/runtime/wiring/mod.rs",
-        "crates/bijux-atlas/src/runtime/wiring/server.rs",
-        "crates/bijux-atlas/src/runtime/wiring/cli.rs",
-        "crates/bijux-atlas/src/contracts/generated/mod.rs",
-        "crates/bijux-atlas/src/contracts/store/mod.rs",
-        "crates/bijux-atlas/src/contracts/telemetry/mod.rs",
+        "crates/bijux-atlas-runtime/src/bootstrap/mod.rs",
+        "crates/bijux-atlas-runtime/src/runtime/wiring/mod.rs",
+        "crates/bijux-atlas-runtime/src/runtime/wiring/server.rs",
+        "crates/bijux-atlas-runtime/src/runtime/wiring/cli.rs",
+        "crates/bijux-atlas-runtime/src/contracts/generated/mod.rs",
+        "crates/bijux-atlas-runtime/src/contracts/store/mod.rs",
+        "crates/bijux-atlas-runtime/src/contracts/telemetry/mod.rs",
     ] {
         assert!(
             !root.join(path).exists(),
@@ -231,7 +231,7 @@ fn atlas_removed_legacy_root_modules_do_not_reappear() {
 fn atlas_runtime_surface_keeps_wiring_internal() {
     let root = repo_root();
     let text =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/runtime/mod.rs")).expect("runtime");
+        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/runtime/mod.rs")).expect("runtime");
     assert!(
         text.contains("pub mod config;"),
         "runtime root must expose config as the canonical public runtime surface"
@@ -245,9 +245,9 @@ fn atlas_runtime_surface_keeps_wiring_internal() {
 #[test]
 fn atlas_contract_roots_stay_contract_owned() {
     let root = repo_root();
-    let contracts = fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/mod.rs"))
+    let contracts = fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/contracts/mod.rs"))
         .expect("contracts");
-    let config = fs::read_to_string(root.join("crates/bijux-atlas/src/contracts/config/mod.rs"))
+    let config = fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/contracts/config/mod.rs"))
         .expect("contracts config");
 
     for expected in ["pub mod api;", "pub mod config;", "pub mod errors;"] {
@@ -273,12 +273,12 @@ fn atlas_runtime_test_surface_does_not_duplicate_api_client_suite() {
     let root = repo_root();
     assert!(
         !root
-            .join("crates/bijux-atlas/tests/interfaces/client.rs")
+            .join("crates/bijux-atlas-runtime/tests/interfaces/client.rs")
             .exists(),
         "runtime test surface must not mirror the API-owned client suite"
     );
     assert!(
-        root.join("crates/bijux-atlas/tests/interfaces/client_compatibility.rs")
+        root.join("crates/bijux-atlas-runtime/tests/interfaces/client_compatibility.rs")
             .is_file(),
         "runtime must keep the narrow legacy client compatibility check"
     );
@@ -329,12 +329,12 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
     let root = repo_root();
 
     for forbidden in [
-        "crates/bijux-atlas/src/.DS_Store",
-        "crates/bijux-atlas/src/app/.DS_Store",
+        "crates/bijux-atlas-runtime/src/.DS_Store",
+        "crates/bijux-atlas-runtime/src/app/.DS_Store",
         "crates/bijux-atlas-api/src/client/client_tests.rs",
         "crates/bijux-atlas-ingest/src/engine/tests.rs",
-        "crates/bijux-atlas/src/app/server/dataset_cache_manager_tests.rs",
-        "crates/bijux-atlas/src/app/server/tests.rs",
+        "crates/bijux-atlas-runtime/src/app/server/dataset_cache_manager_tests.rs",
+        "crates/bijux-atlas-runtime/src/app/server/tests.rs",
         "crates/bijux-atlas-query/src/engine/query_tests/mod.rs",
     ] {
         assert!(
@@ -344,7 +344,7 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
     }
 
     for required in [
-        "crates/bijux-atlas/src/app/server/tests/mod.rs",
+        "crates/bijux-atlas-runtime/src/app/server/tests/mod.rs",
         "crates/bijux-atlas-api/src/client/mod.rs",
         "crates/bijux-atlas-ingest/src/engine/tests/mod.rs",
         "crates/bijux-atlas-query/src/engine/tests/mod.rs",
@@ -372,10 +372,10 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
     }
 
     for forbidden in [
-        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-openapi.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-client.rs",
     ] {
         assert!(
             !root.join(forbidden).exists(),
@@ -398,10 +398,10 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
         );
     }
     for forbidden in [
-        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-openapi.rs",
+        "crates/bijux-atlas-runtime/src/bin/bijux-atlas-client.rs",
     ] {
         assert!(
             !allowlist.contains(forbidden),
@@ -429,12 +429,12 @@ fn atlas_cli_contract_tests_live_with_cli_owner_crate() {
     }
 
     for forbidden in [
-        "crates/bijux-atlas/tests/interfaces/cli_surface.rs",
-        "crates/bijux-atlas/tests/interfaces/help_surface.rs",
-        "crates/bijux-atlas/tests/interfaces/cli_runtime_parity.rs",
-        "crates/bijux-atlas/tests/interfaces/user_cli_surface.rs",
-        "crates/bijux-atlas/tests/interfaces/plugin_surface.rs",
-        "crates/bijux-atlas/tests/interfaces/snapshots/help.commands.txt",
+        "crates/bijux-atlas-runtime/tests/interfaces/cli_surface.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/help_surface.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/cli_runtime_parity.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/user_cli_surface.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/plugin_surface.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/snapshots/help.commands.txt",
     ] {
         assert!(
             !root.join(forbidden).exists(),
@@ -472,22 +472,22 @@ fn atlas_server_contract_surfaces_live_with_server_owner_crate() {
     }
 
     for forbidden in [
-        "crates/bijux-atlas/tests/interfaces/server.rs",
-        "crates/bijux-atlas/tests/interfaces/server/async_runtime_contract.rs",
-        "crates/bijux-atlas/tests/interfaces/server/download_then_serve.rs",
-        "crates/bijux-atlas/tests/interfaces/server/import_boundary_guardrails.rs",
-        "crates/bijux-atlas/tests/interfaces/server/logging_contracts.rs",
-        "crates/bijux-atlas/tests/interfaces/server/p99-regression.rs",
-        "crates/bijux-atlas/tests/interfaces/server/redis_optional.rs",
-        "crates/bijux-atlas/tests/interfaces/server/runtime_env_contract_startup.rs",
-        "crates/bijux-atlas/tests/interfaces/server/s3_backend.rs",
-        "crates/bijux-atlas/tests/interfaces/server/schema_evolution_regression.rs",
-        "crates/bijux-atlas/tests/interfaces/server/snapshots/api-surface.responses.v1.json",
-        "crates/bijux-atlas/benches/server/cache_manager.rs",
-        "crates/bijux-atlas/benches/server/sequence_fetch.rs",
-        "crates/bijux-atlas/benches/server/diff_merge.rs",
-        "crates/bijux-atlas/benches/server/bulkhead_tuning.rs",
-        "crates/bijux-atlas/benches/server/gene_lookup_p99.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/async_runtime_contract.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/download_then_serve.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/import_boundary_guardrails.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/logging_contracts.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/p99-regression.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/redis_optional.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/runtime_env_contract_startup.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/s3_backend.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/schema_evolution_regression.rs",
+        "crates/bijux-atlas-runtime/tests/interfaces/server/snapshots/api-surface.responses.v1.json",
+        "crates/bijux-atlas-runtime/benches/server/cache_manager.rs",
+        "crates/bijux-atlas-runtime/benches/server/sequence_fetch.rs",
+        "crates/bijux-atlas-runtime/benches/server/diff_merge.rs",
+        "crates/bijux-atlas-runtime/benches/server/bulkhead_tuning.rs",
+        "crates/bijux-atlas-runtime/benches/server/gene_lookup_p99.rs",
     ] {
         assert!(
             !root.join(forbidden).exists(),
@@ -500,7 +500,7 @@ fn atlas_server_contract_surfaces_live_with_server_owner_crate() {
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/domain/mod.rs")).expect("domain");
+        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/domain/mod.rs")).expect("domain");
 
     assert!(
         text.contains("pub use canonical::{sha256, sha256_hex, Hash256};"),
@@ -527,9 +527,9 @@ fn atlas_domain_barrel_stays_thin() {
 #[test]
 fn atlas_app_server_surface_stays_app_owned() {
     let root = repo_root();
-    let app_server = fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/mod.rs"))
+    let app_server = fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/mod.rs"))
         .expect("app server");
-    let app_state = fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/state/mod.rs"))
+    let app_state = fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/state/mod.rs"))
         .expect("app server state");
 
     for forbidden in [

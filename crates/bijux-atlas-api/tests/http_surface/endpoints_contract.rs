@@ -29,7 +29,7 @@ fn server_routes_match_endpoints_contract_and_telemetry_annotations() {
             .expect("parse endpoints contract");
 
     let server_src = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/inbound/http/router.rs"),
+        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/router.rs"),
     )
     .expect("read server routing source");
 
@@ -172,7 +172,7 @@ fn server_route_table_has_no_ambiguous_path_collisions() {
         .expect("workspace root")
         .to_path_buf();
     let server_src = std::fs::read_to_string(
-        root.join("crates/bijux-atlas/src/adapters/inbound/http/router.rs"),
+        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/router.rs"),
     )
     .expect("read server routing source");
     let route_re =

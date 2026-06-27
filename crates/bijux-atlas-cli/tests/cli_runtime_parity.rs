@@ -141,7 +141,7 @@ fn slow_bijux_cli_dispatch_matches_bijux_atlas_runtime() {
         vec!["export", "--help"],
         vec![
             "--json",
-            bijux_atlas::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
+            bijux_atlas_cli::adapters::inbound::cli::BIJUX_PLUGIN_METADATA_FLAG,
         ],
     ] {
         let direct = run_output(&atlas, &args, runtime_bin_dir.path());

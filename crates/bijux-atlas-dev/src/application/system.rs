@@ -6,10 +6,10 @@ use crate::cli::{
     SystemCommand, SystemDebugCommand, SystemSimulateCommand,
 };
 use crate::{emit_payload, resolve_repo_root};
-use bijux_atlas::domain::cluster::config::{
+use bijux_atlas_runtime::domain::cluster::config::{
     load_cluster_config_from_path, load_node_config_from_path, ClusterConfigFile, NodeConfigFile,
 };
-use bijux_atlas::domain::cluster::sharding::ShardRegistry;
+use bijux_atlas_runtime::domain::cluster::sharding::ShardRegistry;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;

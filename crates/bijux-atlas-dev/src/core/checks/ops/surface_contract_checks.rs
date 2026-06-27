@@ -489,7 +489,7 @@ pub(super) fn check_docs_dev_command_list_matches_contract(
 pub(super) fn check_crates_bijux_atlas_reserved_verbs_exclude_dev(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-atlas/src/lib.rs");
+    let rel = Path::new("crates/bijux-atlas-runtime/src/lib.rs");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("\"dev\"") && text.contains("reserved") {

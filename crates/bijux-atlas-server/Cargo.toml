@@ -17,7 +17,7 @@ default = []
 jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
-bijux-atlas.workspace = true
+bijux-atlas-runtime.workspace = true
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 [dependencies.tikv-jemallocator]

@@ -12,7 +12,7 @@ fn removed_model_root_does_not_reappear() {
         .parent()
         .and_then(|p| p.parent())
         .expect("workspace root")
-        .join("crates/bijux-atlas/src/model.rs");
+        .join("crates/bijux-atlas-runtime/src/model.rs");
     assert!(
         !path.exists(),
         "legacy model root must stay removed: {}",

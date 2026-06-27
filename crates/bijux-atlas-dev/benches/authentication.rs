@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::security::runtime::load_security_config_from_path;
+use bijux_atlas_runtime::domain::security::runtime::load_security_config_from_path;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::fs;
 use std::hint::black_box;

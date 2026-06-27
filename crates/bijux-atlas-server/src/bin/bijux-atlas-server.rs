@@ -8,5 +8,5 @@ static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
 #[tokio::main]
 async fn main() -> Result<(), String> {
-    bijux_atlas::app::server::host::main_entry().await
+    bijux_atlas_runtime::app::server::host::main_entry().await
 }

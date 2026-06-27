@@ -4,141 +4,20 @@ version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
 rust-version.workspace = true
-description = "Genomics runtime for GFF3/FASTA ingest, immutable dataset artifacts, gene-query APIs, and OpenAPI export"
+description = "Compatibility alias crate for the canonical bijux-atlas-runtime library surface"
 repository.workspace = true
-homepage = "https://bijux.github.io/bijux-atlas/"
+homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
 readme = "README.md"
 categories = ["science::bioinformatics", "command-line-utilities"]
-exclude = ["tests/fixtures/**"]
-keywords = ["bioinformatics", "genomics", "gff3", "fasta", "gene-query"]
-
-[features]
-default = ["serde", "backend-local"]
-serde = []
-backend-local = ["serde", "bijux-atlas-store/backend-local"]
-backend-s3 = ["backend-local", "bijux-atlas-store/backend-s3"]
-bench-ingest-throughput = []
-jemalloc = ["dep:tikv-jemallocator"]
+keywords = ["bioinformatics", "genomics", "atlas", "compatibility", "runtime"]
 
 [dependencies]
-async-trait = "0.1"
-axum = "0.8"
-base64 = "0.22"
-brotli = "8"
-hex = "0.4"
-hmac = "0.13"
-opentelemetry = "0.32"
-opentelemetry-otlp = { version = "0.32", features = ["http-proto", "reqwest-client"] }
-opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"] }
-redis = { version = "1.2", features = ["tokio-comp"] }
-serde.workspace = true
-bijux-atlas-api = { workspace = true }
-bijux-atlas-core = { workspace = true }
-bijux-atlas-ingest = { workspace = true }
-bijux-atlas-model = { workspace = true }
-bijux-atlas-query = { workspace = true }
-bijux-atlas-store = { workspace = true, default-features = false }
-clap = { version = "4", features = ["derive"] }
-clap_complete = "4"
-csv = "1.4"
-flate2 = "1"
-reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
-serde_json.workspace = true
-serde_yaml = "0.9"
-semver.workspace = true
-sha2 = "0.11"
-tar = "0.4"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
-toml = "1.1"
-tracing = "0.1"
-tracing-opentelemetry = "0.33"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
-unicode-normalization = "0.1"
-zstd = "0.13"
+bijux-atlas-runtime.workspace = true
 
-[build-dependencies]
-semver.workspace = true
-
-[dependencies.tikv-jemallocator]
-version = "0.6"
-optional = true
-
-[dev-dependencies]
-assert_cmd = "2"
-bijux-cli = { workspace = true }
-criterion = "0.8"
-predicates = "3"
-proptest = "1"
-regex = "1.11"
-tempfile = "=3.27.0"
-tiny_http = "0.12"
-walkdir = "2"
+[lib]
+path = "src/lib.rs"
 
 [[test]]
-name = "contracts_runtime_foundations"
-path = "tests/contracts_runtime_foundations.rs"
-
-[[test]]
-name = "contracts_crate_boundary_contract"
-path = "tests/contracts_crate_boundary_contract.rs"
-
-[[test]]
-name = "contracts_ingest_entrypoint_boundaries"
-path = "tests/contracts_ingest_entrypoint_boundaries.rs"
-
-[[test]]
-name = "contracts_wire_domain_separation"
-path = "tests/contracts_wire_domain_separation.rs"
-
-[[test]]
-name = "contracts_bench_ownership"
-path = "tests/contracts_bench_ownership.rs"
-
-[[test]]
-name = "contracts_cli_query_boundary"
-path = "tests/contracts_cli_query_boundary.rs"
-
-[[test]]
-name = "contracts_compatibility_facades"
-path = "tests/contracts_compatibility_facades.rs"
-
-[[test]]
-name = "contracts_fixture_ownership"
-path = "tests/contracts_fixture_ownership.rs"
-
-[[test]]
-name = "contracts_layering_direction"
-path = "tests/contracts_layering_direction.rs"
-
-[[test]]
-name = "governance_no_network"
-path = "tests/governance/no_network.rs"
-
-[[test]]
-name = "interfaces_client_compatibility"
-path = "tests/interfaces/client_compatibility.rs"
-
-[[test]]
-name = "workflows_end_to_end"
-path = "tests/workflows/end_to_end.rs"
-
-[[bench]]
-name = "security_data_protection"
-path = "benches/security/data_protection.rs"
-harness = false
-
-[[bench]]
-name = "policy_evaluation"
-path = "benches/policy/evaluation.rs"
-harness = false
-
-[[bench]]
-name = "policy_validate"
-path = "benches/policy/validate.rs"
-harness = false
-
-[[example]]
-name = "library_getting_started"
-path = "examples/library/getting_started.rs"
+name = "runtime_alias"
+path = "tests/runtime_alias.rs"

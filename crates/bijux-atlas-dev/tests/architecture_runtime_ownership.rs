@@ -49,7 +49,7 @@ fn dev_atlas_source_does_not_implement_runtime_ingest_or_query_semantics() {
     let root = crate_root().join("src");
     let forbidden = [
         "crate::domain::ingest",
-        "bijux_atlas::domain::ingest",
+        "bijux_atlas_runtime::domain::ingest",
         "query_genes(",
         "parse_gene_query_request(",
         "plan_gene_query(",

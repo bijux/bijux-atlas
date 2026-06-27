@@ -13,14 +13,24 @@ categories = ["command-line-utilities", "science::bioinformatics"]
 keywords = ["bioinformatics", "genomics", "atlas", "cli", "query"]
 
 [dependencies]
-bijux-atlas.workspace = true
+bijux-atlas-core.workspace = true
+bijux-atlas-model.workspace = true
+bijux-atlas-query.workspace = true
+bijux-atlas-runtime.workspace = true
+clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
+csv = "1.4"
+flate2 = "1"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde.workspace = true
+serde_json.workspace = true
+tar = "0.4"
+zstd = "0.13"
 
 [dev-dependencies]
 assert_cmd = "2"
 bijux-cli.workspace = true
-bijux-atlas-model.workspace = true
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
-serde_json.workspace = true
 tempfile = "=3.27.0"
 
 [[bin]]

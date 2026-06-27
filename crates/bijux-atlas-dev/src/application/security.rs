@@ -8,8 +8,8 @@ use crate::cli::{
 };
 use crate::{emit_payload, resolve_repo_root};
 use base64::Engine as _;
-use bijux_atlas::domain::security::authorization::{PermissionCatalog, RoleCatalog};
-use bijux_atlas::domain::security::runtime::{
+use bijux_atlas_runtime::domain::security::authorization::{PermissionCatalog, RoleCatalog};
+use bijux_atlas_runtime::domain::security::runtime::{
     load_security_config_from_path, validate_security_config, SecurityPolicy,
     SecurityPolicyRegistry,
 };
@@ -1540,7 +1540,7 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         fs::read_to_string(crate::reference::workspace_layout::atlas_server_binary_source(&root))
             .map_err(|err| format!("failed to read runtime main source: {err}"))?;
     let server_host_source =
-        fs::read_to_string(root.join("crates/bijux-atlas/src/app/server/host.rs"))
+        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/host.rs"))
             .map_err(|err| format!("failed to read runtime server host source: {err}"))?;
     let runbook_text = fs::read_to_string(root.join(auth_docs_runbook))
         .map_err(|err| format!("failed to read {}: {err}", auth_docs_runbook))?;
