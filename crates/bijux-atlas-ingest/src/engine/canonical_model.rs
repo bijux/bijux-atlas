@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::extract::{ExonRecord, ExtractResult, GeneRecord, TranscriptRecord};
-use super::gff3::Gff3Record;
+use super::sources::gff3::Gff3Record;
 use super::IngestError;
 use crate::domain::sha256_hex;
 use serde::{Deserialize, Serialize};

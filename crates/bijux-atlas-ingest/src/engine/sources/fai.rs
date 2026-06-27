@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::IngestError;
+use super::super::IngestError;
 use serde::Serialize;
 use std::collections::BTreeMap;
 use std::fs;

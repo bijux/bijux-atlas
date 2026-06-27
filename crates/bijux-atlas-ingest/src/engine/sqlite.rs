@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
-use super::fai::ContigStats;
+use super::sources::ContigStats;
 use super::IngestError;
 use crate::core::sha256_hex;
 use crate::model::dataset::manifest::ShardId;

@@ -3,16 +3,14 @@
 #![forbid(unsafe_code)]
 
 mod canonical_model;
-mod decode;
 mod diff_index;
 mod extract;
-mod fai;
-mod gff3;
 mod hashing;
 mod job;
 mod logging;
 mod manifest;
 mod normalized;
+mod sources;
 mod sqlite;
 mod write;
 
@@ -25,6 +23,7 @@ use crate::query::{
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
 };
+use sources::decode_ingest_inputs;
 use sqlite::explain_plan_for_region_query;
 #[cfg(test)]
 use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
@@ -192,7 +191,7 @@ pub fn ingest_dataset_with_events(
         "ingest.decode.begin",
         std::collections::BTreeMap::new(),
     );
-    let decoded = decode::decode_ingest_inputs(&job)?;
+    let decoded = decode_ingest_inputs(&job)?;
     log.emit(
         logging::IngestStage::Decode,
         "ingest.decode.complete",
@@ -292,7 +291,7 @@ fn evaluate_anomaly_thresholds(
 pub fn read_fai_contig_lengths(
     path: &Path,
 ) -> Result<std::collections::BTreeMap<String, u64>, IngestError> {
-    fai::read_fai_contig_lengths(path)
+    sources::fai::read_fai_contig_lengths(path)
 }
 
 pub fn explain_region_query_plan(sqlite_path: &Path) -> Result<Vec<String>, IngestError> {

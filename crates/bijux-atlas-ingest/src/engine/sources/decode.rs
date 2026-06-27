@@ -3,12 +3,12 @@
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
-use super::canonical_model::{build_canonical_model, CanonicalModel};
-use super::extract::{extract_gene_rows, ExtractResult};
+use super::super::canonical_model::{build_canonical_model, CanonicalModel};
+use super::super::extract::{extract_gene_rows, ExtractResult};
+use super::super::job::IngestJob;
+use super::super::{IngestError, IngestOptions};
 use super::fai::{self, ContigStats};
 use super::gff3::{parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts};
-use super::job::IngestJob;
-use super::{IngestError, IngestOptions};
 use crate::query::canonical_contig_label;
 
 pub struct DecodedIngest {
