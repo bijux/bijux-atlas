@@ -6,7 +6,6 @@ pub(crate) mod diagnostics;
 pub(crate) mod diff;
 pub(crate) mod dto;
 pub(crate) mod effects_adapters;
-pub(crate) mod gene_routes;
 pub(crate) mod genes;
 pub(crate) mod handlers;
 pub(crate) mod middleware;

@@ -5,7 +5,7 @@ use crate::adapters::inbound::http::request_policies::{
     cors_middleware, debug_route_hardening_middleware, provenance_headers_middleware,
     resilience_middleware, security_middleware,
 };
-use crate::adapters::inbound::http::{catalog, diagnostics, gene_routes, service, transcripts};
+use crate::adapters::inbound::http::{catalog, diagnostics, genes, service, transcripts};
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
@@ -33,12 +33,12 @@ pub fn build_router(state: AppState) -> Router {
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             get(catalog::release_dataset_handler),
         )
-        .route("/v1/genes", get(gene_routes::genes_handler))
+        .route("/v1/genes", get(genes::genes_handler))
         .route(
             "/v1/query/validate",
             post(diagnostics::query_validate_handler),
         )
-        .route("/v1/genes/count", get(gene_routes::genes_count_handler))
+        .route("/v1/genes/count", get(genes::genes_count_handler))
         .route("/v1/diff/genes", get(http::diff::diff_genes_handler))
         .route("/v1/diff/region", get(http::diff::diff_region_handler))
         .route(

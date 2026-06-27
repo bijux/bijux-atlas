@@ -1,16 +1,7 @@
-use crate::adapters::inbound::http::genes;
 use crate::adapters::inbound::http::route_support::*;
 use crate::*;
 use bijux_atlas_query::query_gene_count;
 use serde_json::json;
-
-pub(crate) async fn genes_handler(
-    State(state): State<AppState>,
-    headers: HeaderMap,
-    axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
-) -> Response {
-    genes::genes_handler(State(state), headers, axum::extract::Query(params)).await
-}
 
 pub(crate) async fn genes_count_handler(
     State(state): State<AppState>,
