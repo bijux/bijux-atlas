@@ -33,4 +33,4 @@ include makes/verification.mk
 SHELL := /bin/bash
 
 CURATED_TARGETS := \
-	build ci-fast ci-nightly ci-pr clean docker doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make openapi-generate ops-contracts ops-contracts-effect registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-list tests-all
+	build ci-fast ci-nightly ci-pr clean docker doctor help k8s-render k8s-validate kind-down kind-reset kind-status kind-up lint-make openapi-generate ops-contracts ops-contracts-effect registry-doctor release-plan release-verify root-surface-explain stack-down stack-up suites-list test-all

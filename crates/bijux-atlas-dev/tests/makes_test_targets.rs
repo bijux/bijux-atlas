@@ -23,15 +23,33 @@ fn test_all_runs_nextest_once_without_retries() {
     let end = tail.find("\n\n").unwrap_or(tail.len());
     let target_block = &tail[..end];
 
-    assert_eq!(
-        target_block.matches("cargo nextest run").count(),
-        2,
-        "test-all should define one printed command and one execution command"
+    assert!(
+        target_block.contains("\"$(RUST_GATE_BIN)\" test-all"),
+        "test-all should delegate through the standardized rust gate wrapper"
     );
     assert!(
-        target_block.contains("--retries 0"),
-        "test-all must force retries to zero"
+        target_block.contains("NEXTEST_THREADS_ALL"),
+        "test-all must pass the governed full-suite concurrency setting"
     );
+}
+
+#[test]
+fn cargo_gate_module_declares_standardized_rust_gate_wiring() {
+    let cargo_mk =
+        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
+
+    for expected in [
+        "NEXTEST_PROFILE_FAST ?= fast-unit",
+        "NEXTEST_PROFILE_SLOW ?= slow-integration",
+        "NEXTEST_PROFILE_ALL ?= full",
+        "RUST_GATE_BIN ?= makes/bin/rust_gate.sh",
+        "NEXTEST_EXPR_BIN ?= makes/bin/nextest_expr.sh",
+    ] {
+        assert!(
+            cargo_mk.contains(expected),
+            "cargo gate wiring should declare `{expected}`"
+        );
+    }
 }
 
 #[test]

@@ -5,9 +5,27 @@ CARGO_TERM_PROGRESS_WHEN ?= always
 CARGO_TERM_PROGRESS_WIDTH ?= 120
 CARGO_TERM_VERBOSE ?= false
 CARGO_TERM_COLOR ?= always
+NEXTEST_PROFILE ?= full
+NEXTEST_PROFILE_FAST ?= fast-unit
+NEXTEST_PROFILE_SLOW ?= slow-integration
+NEXTEST_PROFILE_CERT ?= certification
+NEXTEST_PROFILE_ALL ?= full
+CARGO_BUILD_JOBS ?= $(JOBS)
+NEXTEST_THREADS_ALL ?= $(if $(CARGO_BUILD_JOBS),$(CARGO_BUILD_JOBS),8)
+NEXTEST_TOML := configs/rust/nextest.toml
+NEXTEST_EXPR_BIN ?= makes/bin/nextest_expr.sh
+NEXTEST_FAST_EXPR ?= $(shell "$(NEXTEST_EXPR_BIN)" fast)
+NEXTEST_SLOW_EXPR ?= $(shell "$(NEXTEST_EXPR_BIN)" slow)
+RUST_GATE_BIN ?= makes/bin/rust_gate.sh
 PINNED_REF_GATE_BIN ?= makes/bin/run_pinned_ref_gate.sh
 RS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/rust
 RS_RUN_ID ?= $(RUN_ID)
+RS_TARGET_DIR ?= $(CARGO_TARGET_DIR)
+RS_NEXTEST_CACHE_DIR ?= $(NEXTEST_CACHE_DIR)
+RS_NEXTEST_CONFIG_HOME ?= $(abspath $(RS_ARTIFACT_ROOT)/nextest/config)
+RS_PROFRAW_DIR ?= $(abspath $(RS_ARTIFACT_ROOT)/coverage/profraw)
+RS_LLVM_PROFILE_FILE ?= $(abspath $(RS_PROFRAW_DIR)/default_%m_%p.profraw)
+RS_COVERAGE_TARGET_DIR ?= $(abspath $(RS_ARTIFACT_ROOT)/coverage/target)
 RS_FMT_REPORT ?= $(RS_ARTIFACT_ROOT)/fmt/$(RS_RUN_ID)/report.txt
 RS_LINT_REPORT ?= $(RS_ARTIFACT_ROOT)/lint/$(RS_RUN_ID)/report.txt
 RS_TEST_REPORT ?= $(RS_ARTIFACT_ROOT)/test/$(RS_RUN_ID)/nextest.log
@@ -15,102 +33,29 @@ RS_TEST_SLOW_REPORT ?= $(RS_ARTIFACT_ROOT)/test/$(RS_RUN_ID)/nextest-slow.log
 RS_TEST_ALL_REPORT ?= $(RS_ARTIFACT_ROOT)/test/$(RS_RUN_ID)/nextest-all.log
 RS_AUDIT_REPORT ?= $(RS_ARTIFACT_ROOT)/audit/$(RS_RUN_ID)/report.txt
 
-cleanup_root_nextest = \
-	if [ -d "$(CURDIR)/target/nextest" ]; then rm -rf "$(CURDIR)/target/nextest"; fi; \
-	if [ -d "$(CURDIR)/target" ]; then rm -rf "$(CURDIR)/target"; fi
-
-nextest_summary = \
-	summary_line=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | grep 'Summary \[' | tail -n 1); \
-	set -- $$(printf '%s\n' "$$summary_line" | awk ' \
-		{ \
-			for (i = 1; i <= NF; i++) { \
-				prev = (i > 1) ? $$(i - 1) : $$1; \
-				gsub(/[^0-9]/, "", prev); \
-				if ($$i ~ /^test/) total = prev; \
-				else if ($$i ~ /^passed/) passed = prev; \
-				else if ($$i ~ /^failed/) failed = prev; \
-				else if ($$i ~ /^skipped/) skipped = prev; \
-			} \
-		} \
-		END { \
-			printf "%s %s %s %s\n", total + 0, passed + 0, failed + 0, skipped + 0; \
-		}'); \
-	total=$$1; \
-	passed=$$2; \
-	failed=$$3; \
-	skipped=$$4; \
-	leaky=$$(grep -c ' LEAK ' "$$report_file" || true); \
-	max_list_items=50; \
-	failed_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ FAIL / { test_name = $$0; sub(/^.* FAIL \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
-	skipped_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ SKIP / { test_name = $$0; sub(/^.* SKIP \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
-	leaky_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ LEAK / { test_name = $$0; sub(/^.* LEAK \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
-	print_test_group() { \
-		label="$$1"; color="$$2"; tests="$$3"; \
-		[ -n "$$tests" ] || return 0; \
-		total_items=$$(printf '%s\n' "$$tests" | sed '/^$$/d' | wc -l | tr -d ' '); \
-		printf '\033[%sm%s\033[0m\n' "$$color" "$$label"; \
-		printf '%s\n' "$$tests" | sed '/^$$/d' | head -n "$$max_list_items" | sed 's/^/  /'; \
-		if [ "$$total_items" -gt "$$max_list_items" ]; then \
-			printf '  ... %s more\n' "$$((total_items - max_list_items))"; \
-		fi; \
-	}; \
-	printf '\033[1;36m%s\033[0m total=%s \033[1;32mpassed=%s\033[0m \033[1;31mfailed=%s\033[0m \033[1;33mskipped=%s\033[0m \033[1;35mleaky=%s\033[0m\n' "nextest-summary:" "$$total" "$$passed" "$$failed" "$$skipped" "$$leaky"; \
-	print_test_group "failed-tests:" "1;31" "$$failed_tests"; \
-	print_test_group "leaky-tests:" "1;35" "$$leaky_tests"; \
-	print_test_group "skipped-tests:" "1;33" "$$skipped_tests"
-
 audit:
 	@$(MAKE) audit-rs
 
 audit-rs: ## Run cargo dependency audit
-	@mkdir -p "$(dir $(RS_AUDIT_REPORT))"
-	@{ \
-		$(DEV_ATLAS) security dependency-audit --repo-root "$(CURDIR)" --format json >/dev/null && \
-		command -v cargo-audit >/dev/null 2>&1 || (echo "cargo-audit is required. Install with: cargo install cargo-audit"; exit 1); \
-		CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo audit; \
-	} 2>&1 | tee "$(RS_AUDIT_REPORT)"
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_AUDIT_REPORT="$(RS_AUDIT_REPORT)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" audit
 
 check: ## Run cargo check for the workspace
 	@CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check --workspace --all-targets
 
 coverage: ## Run workspace coverage with cargo llvm-cov + nextest
-	@command -v cargo-llvm-cov >/dev/null 2>&1 || { \
-		echo "cargo-llvm-cov is required. Install with: cargo install cargo-llvm-cov"; \
-		exit 1; \
-	}
-	@mkdir -p artifacts/coverage
-	@mkdir -p artifacts/coverage/profraw
-	@status=0; \
-	LLVM_PROFILE_FILE="$(CURDIR)/artifacts/coverage/profraw/default_%m_%p.profraw" CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) CARGO_TARGET_DIR="$(CARGO_TARGET_DIR)" NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo llvm-cov nextest --color always --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/rust/nextest.toml --run-ignored all --cargo-quiet || status=$$?; \
-	$(cleanup_root_nextest); \
-	test $$status -eq 0
-	@CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov report
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_NEXTEST_CACHE_DIR="$(RS_NEXTEST_CACHE_DIR)" RS_NEXTEST_CONFIG_HOME="$(RS_NEXTEST_CONFIG_HOME)" RS_PROFRAW_DIR="$(RS_PROFRAW_DIR)" RS_LLVM_PROFILE_FILE="$(RS_LLVM_PROFILE_FILE)" RS_COVERAGE_TARGET_DIR="$(RS_COVERAGE_TARGET_DIR)" NEXTEST_CONFIG_FILE="$(NEXTEST_TOML)" NEXTEST_PROFILE_ALL="$(NEXTEST_PROFILE_ALL)" NEXTEST_THREADS_ALL="$(NEXTEST_THREADS_ALL)" NEXTEST_STATUS_LEVEL="$(NEXTEST_STATUS_LEVEL)" NEXTEST_FINAL_STATUS_LEVEL="$(NEXTEST_FINAL_STATUS_LEVEL)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" coverage
 
 fmt:
 	@$(MAKE) fmt-rs
 
 fmt-rs: ## Run cargo fmt --check
-	@printf '%s\n' "run: cargo fmt --all -- --check --config-path configs/sources/repository/rust-tooling/rustfmt.toml"
-	@mkdir -p "$(dir $(RS_FMT_REPORT))"
-	@output="$$(CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo fmt --all -- --check --config-path configs/sources/repository/rust-tooling/rustfmt.toml 2>&1)"; \
-	status=$$?; \
-	printf '%s\n' "$$output" | tee "$(RS_FMT_REPORT)"; \
-	if [ $$status -eq 0 ]; then \
-		printf '%s\n' "fmt check complete"; \
-	fi; \
-	exit $$status
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_FMT_REPORT="$(RS_FMT_REPORT)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" fmt
 
 lint:
 	@$(MAKE) lint-rs
 
 lint-rs: ## Run cargo clippy with warnings denied
-	@printf '%s\n' "run: cargo clippy -p bijux-atlas-dev --all-targets --all-features --locked --no-deps -- -D warnings"
-	@printf '%s\n' "run: cargo check -p bijux-atlas --all-targets --all-features --locked"
-	@mkdir -p "$(dir $(RS_LINT_REPORT))"
-	@{ \
-		CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-atlas-dev --all-targets --all-features --locked --no-deps -- -D warnings && \
-		CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check -p bijux-atlas --all-targets --all-features --locked; \
-	} 2>&1 | tee "$(RS_LINT_REPORT)"
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_LINT_REPORT="$(RS_LINT_REPORT)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" lint
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@$(DEV_ATLAS) makes lint-policy-report --allow-write --format $(FORMAT)
@@ -132,52 +77,16 @@ test:
 	@$(MAKE) test-rs
 
 test-rs: ## Run workspace tests with cargo nextest
-	@command -v cargo-nextest >/dev/null 2>&1 || { \
-		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
-		exit 1; \
-	}
-	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all}"
-	@mkdir -p "$(dir $(RS_TEST_REPORT))" "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
-	@status=0; report_file="$(RS_TEST_REPORT)"; \
-	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
-	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --workspace --config-file configs/rust/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS[0]}; \
-	$(nextest_summary); \
-	trap - EXIT INT TERM; cleanup; \
-	test $$status -eq 0
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_NEXTEST_CACHE_DIR="$(RS_NEXTEST_CACHE_DIR)" RS_NEXTEST_CONFIG_HOME="$(RS_NEXTEST_CONFIG_HOME)" RS_PROFRAW_DIR="$(RS_PROFRAW_DIR)" RS_LLVM_PROFILE_FILE="$(RS_LLVM_PROFILE_FILE)" RS_TEST_REPORT="$(RS_TEST_REPORT)" NEXTEST_CONFIG_FILE="$(NEXTEST_TOML)" NEXTEST_EXPR_BIN="$(NEXTEST_EXPR_BIN)" NEXTEST_PROFILE_FAST="$(NEXTEST_PROFILE_FAST)" NEXTEST_FAST_EXPR="$(NEXTEST_FAST_EXPR)" NEXTEST_STATUS_LEVEL="$(NEXTEST_STATUS_LEVEL)" NEXTEST_FINAL_STATUS_LEVEL="$(NEXTEST_FINAL_STATUS_LEVEL)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" test
 
 test-slow: ## Run only slow_ tests with cargo nextest
-	@command -v cargo-nextest >/dev/null 2>&1 || { \
-		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
-		exit 1; \
-	}
-	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all} -E test(/(^|::)slow_/)"
-	@mkdir -p "$(dir $(RS_TEST_SLOW_REPORT))" "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
-	@status=0; report_file="$(RS_TEST_SLOW_REPORT)"; \
-	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
-	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --cargo-quiet --workspace --config-file configs/rust/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" -E "test(/(^|::)slow_/)" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS[0]}; \
-	$(nextest_summary); \
-	trap - EXIT INT TERM; cleanup; \
-	test $$status -eq 0
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_NEXTEST_CACHE_DIR="$(RS_NEXTEST_CACHE_DIR)" RS_NEXTEST_CONFIG_HOME="$(RS_NEXTEST_CONFIG_HOME)" RS_PROFRAW_DIR="$(RS_PROFRAW_DIR)" RS_LLVM_PROFILE_FILE="$(RS_LLVM_PROFILE_FILE)" RS_TEST_SLOW_REPORT="$(RS_TEST_SLOW_REPORT)" NEXTEST_CONFIG_FILE="$(NEXTEST_TOML)" NEXTEST_EXPR_BIN="$(NEXTEST_EXPR_BIN)" NEXTEST_PROFILE_SLOW="$(NEXTEST_PROFILE_SLOW)" NEXTEST_SLOW_EXPR="$(NEXTEST_SLOW_EXPR)" NEXTEST_STATUS_LEVEL="$(NEXTEST_STATUS_LEVEL)" NEXTEST_FINAL_STATUS_LEVEL="$(NEXTEST_FINAL_STATUS_LEVEL)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" test-slow
 
 test-all:
 	@$(MAKE) test-all-rs
 
 test-all-rs: ## Run all workspace tests including slow_ and ignored tests
-	@command -v cargo-nextest >/dev/null 2>&1 || { \
-		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
-		exit 1; \
-	}
-	@printf '%s\n' "run: cargo nextest run --workspace --all-features --run-ignored all --retries 0 --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all}"
-	@mkdir -p "$(dir $(RS_TEST_ALL_REPORT))" "$(CARGO_TARGET_DIR)" "$(NEXTEST_CACHE_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
-	@status=0; report_file="$(RS_TEST_ALL_REPORT)"; \
-	cleanup() { $(cleanup_root_nextest); }; trap cleanup EXIT INT TERM; \
-	CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --color always --cargo-quiet --workspace --all-features --config-file configs/rust/nextest.toml --target-dir "$(CARGO_TARGET_DIR)" --run-ignored all --retries 0 --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" 2>&1 | tee "$$report_file"; \
-	status=$${PIPESTATUS[0]}; \
-	$(nextest_summary); \
-	trap - EXIT INT TERM; cleanup; \
-	test $$status -eq 0
+	@RS_ARTIFACT_ROOT="$(RS_ARTIFACT_ROOT)" RS_RUN_ID="$(RS_RUN_ID)" RS_TARGET_DIR="$(RS_TARGET_DIR)" RS_NEXTEST_CACHE_DIR="$(RS_NEXTEST_CACHE_DIR)" RS_NEXTEST_CONFIG_HOME="$(RS_NEXTEST_CONFIG_HOME)" RS_PROFRAW_DIR="$(RS_PROFRAW_DIR)" RS_LLVM_PROFILE_FILE="$(RS_LLVM_PROFILE_FILE)" RS_TEST_ALL_REPORT="$(RS_TEST_ALL_REPORT)" NEXTEST_CONFIG_FILE="$(NEXTEST_TOML)" NEXTEST_PROFILE_ALL="$(NEXTEST_PROFILE_ALL)" NEXTEST_THREADS_ALL="$(NEXTEST_THREADS_ALL)" NEXTEST_STATUS_LEVEL="$(NEXTEST_STATUS_LEVEL)" NEXTEST_FINAL_STATUS_LEVEL="$(NEXTEST_FINAL_STATUS_LEVEL)" CARGO_TERM_COLOR="$(CARGO_TERM_COLOR)" CARGO_TERM_PROGRESS_WHEN="$(CARGO_TERM_PROGRESS_WHEN)" CARGO_TERM_PROGRESS_WIDTH="$(CARGO_TERM_PROGRESS_WIDTH)" CARGO_TERM_VERBOSE="$(CARGO_TERM_VERBOSE)" "$(RUST_GATE_BIN)" test-all
 
 test-all-frozen: ## Start a detached background full-suite run for a frozen commit and write artifacts plus frozen source under artifacts/<sha>/.
 	@PINNED_REF_GATE_TARGET="test-all" "$(PINNED_REF_GATE_BIN)"
