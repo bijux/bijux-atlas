@@ -16,6 +16,7 @@ keywords = ["bioinformatics", "genomics", "api", "openapi", "contracts"]
 [dependencies]
 bijux-atlas-core = { workspace = true, features = ["serde"] }
 bijux-atlas-model = { workspace = true }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
 serde.workspace = true
 serde_json.workspace = true
 

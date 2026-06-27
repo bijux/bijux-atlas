@@ -4,8 +4,11 @@ use crate::app::server::AppState;
 use std::future::Future;
 
 pub mod cli;
-pub mod client;
 pub mod http;
+
+pub mod client {
+    pub use bijux_atlas_api::client::*;
+}
 
 /// Build the HTTP server router through the inbound adapter surface.
 pub fn build_server_router(state: AppState) -> axum::Router {

@@ -10,6 +10,8 @@ pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DAT
 
 /// Compatibility policies shared with API consumers.
 pub mod compat;
+/// Rust client bindings for the stable Atlas API surface.
+pub mod client;
 /// Conversion helpers between wire and internal domain types.
 pub mod convert;
 /// DTOs and stable API data contracts.
@@ -28,6 +30,11 @@ pub mod responses;
 /// v1 handler surface for list/query endpoints.
 pub mod wire;
 
+pub use client::{
+    run_with_retry, AtlasClient, ClientConfig, ClientError, ClientLogger, ClientMetrics,
+    DatasetQuery, ErrorClass, InMemoryMetrics, Page, PaginationCursor, QueryFilter,
+    QueryProjection, QueryResult, RequestBuilder, StreamQuery, TraceContext,
+};
 pub use dto::DatasetKeyDto;
 pub use errors::fallback_request_id;
 pub use errors::{ApiError, ApiErrorCode};
