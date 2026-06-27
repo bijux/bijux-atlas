@@ -3,47 +3,9 @@
 use crate::emit_payload;
 use crate::ops_commands::run_id_or_default;
 use crate::resolve_repo_root;
-
-fn diagnose_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
-    let path = repo_root.join("artifacts/ops/diagnose");
-    std::fs::create_dir_all(&path)
-        .map_err(|err| format!("failed to create {}: {err}", path.display()))?;
-    Ok(path)
-}
-
-fn collect_scenario_files(repo_root: &std::path::Path, scenario: Option<&str>) -> Vec<String> {
-    let base = repo_root.join("artifacts/ops/scenarios");
-    let mut rows = Vec::new();
-    if !base.exists() {
-        return rows;
-    }
-    let Ok(entries) = std::fs::read_dir(&base) else {
-        return rows;
-    };
-    for scenario_entry in entries.flatten() {
-        let scenario_name = scenario_entry.file_name().to_string_lossy().to_string();
-        if let Some(filter) = scenario {
-            if filter != scenario_name {
-                continue;
-            }
-        }
-        let Ok(runs) = std::fs::read_dir(scenario_entry.path()) else {
-            continue;
-        };
-        for run in runs.flatten() {
-            let Ok(files) = std::fs::read_dir(run.path()) else {
-                continue;
-            };
-            for file in files.flatten() {
-                if let Ok(rel) = file.path().strip_prefix(repo_root) {
-                    rows.push(rel.display().to_string());
-                }
-            }
-        }
-    }
-    rows.sort();
-    rows
-}
+use bijux_atlas_ops::diagnostics::bundle_contracts::{
+    build_diagnose_bundle, collect_scenario_files, write_diagnose_bundle,
+};
 
 pub(crate) fn run_ops_diagnose_bundle(
     args: &crate::cli::OpsDiagnoseBundleArgs,
@@ -53,26 +15,9 @@ pub(crate) fn run_ops_diagnose_bundle(
     }
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let run_id = run_id_or_default(args.common.run_id.clone())?;
-    let out_dir = diagnose_root(&repo_root)?.join(run_id.as_str());
-    std::fs::create_dir_all(&out_dir)
-        .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
-
     let files = collect_scenario_files(&repo_root, args.scenario.as_deref());
-    let bundle = serde_json::json!({
-        "schema_version": 1,
-        "kind": "ops_diagnose_bundle",
-        "run_id": run_id.as_str(),
-        "scenario_filter": args.scenario,
-        "files": files,
-        "sensitive_keys": ["password", "secret", "token", "api_key"]
-    });
-    let bundle_path = out_dir.join("bundle.json");
-    std::fs::write(
-        &bundle_path,
-        serde_json::to_string_pretty(&bundle)
-            .map_err(|err| format!("failed to encode {}: {err}", bundle_path.display()))?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", bundle_path.display()))?;
+    let bundle = build_diagnose_bundle(run_id.as_str(), args.scenario.as_deref(), files);
+    let bundle_path = write_diagnose_bundle(&repo_root, run_id.as_str(), &bundle)?;
 
     let payload = serde_json::json!({
       "schema_version": 1,
