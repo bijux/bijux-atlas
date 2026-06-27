@@ -112,7 +112,7 @@ mod tests {
     }
 
     #[test]
-    fn workspace_surface_registry_points_to_existing_owned_paths() {
+    fn workspace_surfaces_point_to_existing_owned_paths() {
         let root = repo_root();
         for path in [
             atlas_server_router_source(&root),

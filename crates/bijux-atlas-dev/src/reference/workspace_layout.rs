@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use bijux_atlas_ops::reference::workspace_surface_registry::{
+pub use bijux_atlas_ops::reference::workspace_surfaces::{
     atlas_cli_binary_source, atlas_http_request_policies_source,
     atlas_http_response_contract_source, atlas_http_route_support_source,
     atlas_runtime_config_tests_source, atlas_runtime_generated_artifact,
