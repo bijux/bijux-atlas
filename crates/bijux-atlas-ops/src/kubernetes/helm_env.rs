@@ -7,7 +7,9 @@ use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
 
-use super::path_contracts;
+use crate::inventory::toolchain;
+#[cfg(test)]
+use crate::kubernetes::path_contracts;
 
 #[derive(Debug, Clone)]
 pub struct YamlDoc {
@@ -65,23 +67,14 @@ pub struct RenderedChart {
     pub timeout_seconds: u64,
 }
 
-#[derive(Debug, Deserialize)]
-struct ToolchainInventory {
-    tools: std::collections::BTreeMap<String, serde_json::Value>,
-}
-
 pub fn resolve_helm_binary_from_inventory(repo_root: &Path) -> Result<String, String> {
-    let inventory_path = path_contracts::atlas_toolchain_inventory(repo_root);
-    let inventory_text = std::fs::read_to_string(&inventory_path)
-        .map_err(|err| format!("failed to read {}: {err}", inventory_path.display()))?;
-    let inventory: ToolchainInventory = serde_json::from_str(&inventory_text)
-        .map_err(|err| format!("failed to parse {}: {err}", inventory_path.display()))?;
+    let inventory = toolchain::load_toolchain_inventory(repo_root).map_err(|err| err.detail())?;
     if inventory.tools.contains_key("helm") {
         Ok("helm".to_string())
     } else {
         Err(format!(
             "ops toolchain inventory {} must declare tool `helm`",
-            inventory_path.display()
+            crate::inventory::path_contracts::atlas_toolchain_inventory(repo_root).display()
         ))
     }
 }

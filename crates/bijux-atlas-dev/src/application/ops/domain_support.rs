@@ -1,22 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
-use std::collections::BTreeMap;
 
+pub(crate) use bijux_atlas_ops::inventory::toolchain::{ToolDefinition, ToolchainInventory};
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
 pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct ToolchainInventory {
-    pub(crate) tools: BTreeMap<String, ToolDefinition>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct ToolDefinition {
-    pub(crate) required: bool,
-    pub(crate) version_regex: String,
-    pub(crate) probe_argv: Vec<String>,
-}
 
 #[derive(Debug, Deserialize, Clone)]
 pub(crate) struct SurfacesInventory {

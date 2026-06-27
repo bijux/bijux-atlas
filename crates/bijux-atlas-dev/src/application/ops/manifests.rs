@@ -49,13 +49,16 @@ pub(crate) fn load_profile_registry(
 }
 
 fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {
-    let path = ops_root.join("inventory/toolchain.json");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    serde_json::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
-    })
+    bijux_atlas_ops::inventory::toolchain::load_toolchain_inventory_from_ops_root(ops_root).map_err(
+        |err| match err {
+            bijux_atlas_ops::inventory::toolchain::ToolchainInventoryError::Read { .. } => {
+                OpsCommandError::Manifest(err.detail())
+            }
+            bijux_atlas_ops::inventory::toolchain::ToolchainInventoryError::Parse { .. } => {
+                OpsCommandError::Schema(err.detail())
+            }
+        },
+    )
 }
 
 pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsCommandError> {

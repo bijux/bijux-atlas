@@ -8,7 +8,9 @@ use std::time::{Duration, Instant};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use super::{helm_env, path_contracts};
+use crate::inventory::toolchain;
+
+use super::helm_env;
 
 #[path = "profiles_matrix/validation_support.rs"]
 mod validation_support;
@@ -83,16 +85,6 @@ pub struct ProfilesMatrixReport {
     pub tooling: Vec<ToolVersionRow>,
     pub rows: Vec<ProfileMatrixRow>,
     pub summary: ProfileMatrixSummary,
-}
-
-#[derive(Debug, Deserialize)]
-struct ToolchainInventory {
-    tools: BTreeMap<String, ToolDefinition>,
-}
-
-#[derive(Debug, Deserialize)]
-struct ToolDefinition {
-    probe_argv: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -200,11 +192,7 @@ pub fn discover_profiles(values_root: &Path) -> Result<Vec<PathBuf>, String> {
 }
 
 fn load_tooling(repo_root: &Path) -> Result<Vec<ToolVersionRow>, String> {
-    let path = path_contracts::atlas_toolchain_inventory(repo_root);
-    let text = std::fs::read_to_string(&path)
-        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-    let inventory: ToolchainInventory = serde_json::from_str(&text)
-        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    let inventory = toolchain::load_toolchain_inventory(repo_root).map_err(|err| err.detail())?;
     let mut rows = Vec::new();
     for binary in ["helm", "kubeconform"] {
         let declared = inventory.tools.contains_key(binary);

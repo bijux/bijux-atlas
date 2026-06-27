@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod inventory;
 pub mod kubernetes;
 pub mod load;
 pub mod reference;

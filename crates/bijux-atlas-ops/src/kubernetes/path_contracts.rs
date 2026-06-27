@@ -43,16 +43,6 @@ pub fn atlas_values_file_from_ops_root(ops_root: &Path) -> PathBuf {
 }
 
 #[must_use]
-pub fn atlas_toolchain_inventory_from_ops_root(ops_root: &Path) -> PathBuf {
-    ops_root.join("inventory/toolchain.json")
-}
-
-#[must_use]
-pub fn atlas_toolchain_inventory(repo_root: &Path) -> PathBuf {
-    atlas_toolchain_inventory_from_ops_root(&atlas_ops_root(repo_root))
-}
-
-#[must_use]
 pub fn atlas_dataset_manifest_from_ops_root(ops_root: &Path) -> PathBuf {
     ops_root.join("datasets/manifest.json")
 }
@@ -108,7 +98,6 @@ mod tests {
             atlas_values_root(&root),
             atlas_values_schema(&root),
             atlas_values_file_from_ops_root(&atlas_ops_root(&root)),
-            atlas_toolchain_inventory(&root),
             atlas_dataset_manifest(&root),
             atlas_install_matrix(&root),
             atlas_rollout_safety_contract(&root),

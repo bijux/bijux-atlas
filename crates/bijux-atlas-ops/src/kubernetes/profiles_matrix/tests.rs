@@ -3,6 +3,8 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
+use crate::kubernetes::path_contracts;
+
 use super::*;
 
 #[test]
