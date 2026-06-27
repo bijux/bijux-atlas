@@ -4,14 +4,6 @@
 use crate::RunId;
 use bijux_atlas_ops::lifecycle::{simulation_paths, simulation_records};
 
-pub(super) fn simulation_report_path(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    file_name: &str,
-) -> Result<std::path::PathBuf, String> {
-    simulation_paths::simulation_report_path(repo_root, run_id.as_str(), file_name)
-}
-
 pub(super) fn write_simulation_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
