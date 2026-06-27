@@ -189,7 +189,7 @@ pub(crate) fn run_ops_helm_upgrade(
             rollback_status: None,
         },
     )?;
-    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, &run_id)?;
+    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, run_id.as_str())?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm upgrade completed" } else { "helm upgrade failed" },
@@ -374,7 +374,7 @@ pub(crate) fn run_ops_helm_rollback(
     } else {
         None
     };
-    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, &run_id)?;
+    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, run_id.as_str())?;
     let envelope = serde_json::json!({
         "schema_version": 1,
         "text": if status == "ok" { "helm rollback completed" } else { "helm rollback failed" },
