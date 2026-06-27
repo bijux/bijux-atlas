@@ -3,6 +3,7 @@
 pub mod evidence_artifacts;
 pub mod evidence_support;
 pub mod install_status;
+pub mod release_bundle;
 pub mod release_contracts;
 pub mod release_inventory;
 pub mod release_records;
