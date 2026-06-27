@@ -9,15 +9,15 @@ use crate::model::dataset::{
 };
 use serde_json::json;
 
-use super::annotation::{replay_counts_from_normalized, write_normalized_jsonl_zst};
-use super::artifacts::diff_index::build_and_write_release_gene_index;
-use super::artifacts::sqlite::{write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput};
+use super::super::annotation::{replay_counts_from_normalized, write_normalized_jsonl_zst};
+use super::super::pipeline::{compute_input_hashes, IngestJob};
+use super::super::sources::DecodedIngest;
+use super::super::{IngestError, IngestResult};
+use super::diff_index::build_and_write_release_gene_index;
 use super::manifest::{
     build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
 };
-use super::pipeline::{compute_input_hashes, IngestJob};
-use super::sources::DecodedIngest;
-use super::{IngestError, IngestResult};
+use super::sqlite::{write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput};
 
 struct EvidenceSidecarInputs<'a> {
     dataset: &'a crate::model::dataset::DatasetId,
@@ -241,7 +241,7 @@ fn write_canonical_evidence(
 fn write_source_facts(
     job: &IngestJob,
     decoded: &DecodedIngest,
-    hashes: &super::pipeline::InputHashes,
+    hashes: &super::super::pipeline::InputHashes,
 ) -> Result<(), IngestError> {
     let path = job.output_layout.source_facts.clone();
     let payload = serde_json::json!({

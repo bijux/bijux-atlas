@@ -4,10 +4,8 @@
 
 mod annotation;
 mod artifacts;
-mod manifest;
 mod pipeline;
 mod sources;
-mod write;
 
 use crate::model::dataset::{
     ArtifactManifest, DatasetId, IngestAnomalyReport, ShardCatalog, ShardingPlan,
@@ -221,7 +219,7 @@ pub fn ingest_dataset_with_events(
         "ingest.persist.begin",
         std::collections::BTreeMap::new(),
     );
-    let mut result = write::write_ingest_outputs(&job, decoded)?;
+    let mut result = artifacts::publication::write_ingest_outputs(&job, decoded)?;
     log.emit(
         pipeline::IngestStage::Finalize,
         "ingest.persist.complete",
