@@ -35,6 +35,7 @@ redis = { version = "1.2", features = ["tokio-comp"] }
 serde.workspace = true
 bijux-atlas-api = { workspace = true }
 bijux-atlas-core = { workspace = true }
+bijux-atlas-ingest = { workspace = true }
 bijux-atlas-model = { workspace = true }
 bijux-atlas-query = { workspace = true }
 bijux-atlas-store = { workspace = true, default-features = false }

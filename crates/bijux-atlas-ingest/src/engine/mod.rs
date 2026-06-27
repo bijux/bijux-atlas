@@ -31,7 +31,7 @@ use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
 
-pub const CRATE_NAME: &str = "bijux-atlas";
+pub const CRATE_NAME: &str = crate::CRATE_NAME;
 
 pub use hashing::{compute_input_hashes, hash_file, InputHashes};
 pub use job::{IngestInputs, IngestJob};

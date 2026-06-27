@@ -25,4 +25,9 @@ pub mod query {
     pub use bijux_atlas_query::*;
 }
 
+pub mod engine;
+pub mod version;
+
+pub use engine::*;
+
 pub const CRATE_NAME: &str = "bijux-atlas-ingest";
