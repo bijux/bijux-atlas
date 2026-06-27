@@ -6,16 +6,8 @@ pub mod canonical {
 
 pub mod cluster;
 
-pub mod dataset {
-    pub use crate::model::dataset::*;
-}
-
 pub mod ingest;
 pub mod policy;
-
-pub mod query {
-    pub use crate::query::*;
-}
 
 pub mod security;
 pub mod time;

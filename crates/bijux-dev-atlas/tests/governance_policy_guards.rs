@@ -300,6 +300,8 @@ fn atlas_domain_barrel_stays_thin() {
         "domain barrel must keep only canonical hashing helpers as top-level reexports"
     );
     for forbidden in [
+        "pub mod dataset",
+        "pub mod query",
         "pub use cluster::",
         "pub use distributed::",
         "pub use membership::",
