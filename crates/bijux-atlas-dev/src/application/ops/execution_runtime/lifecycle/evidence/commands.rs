@@ -1328,29 +1328,6 @@ pub(crate) fn load_profile_registry(
         .map_err(|err| err.detail())
 }
 
-pub(crate) fn record_kubeconform_result(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    profile: &str,
-) -> serde_json::Value {
-    let render_path = install_render_path(repo_root, run_id.as_str(), profile);
-    let args = vec!["-summary".to_string(), render_path.display().to_string()];
-    match process.run_subprocess("kubeconform", &args, repo_root) {
-        Ok((stdout, event)) => serde_json::json!({
-            "status": "ok",
-            "stdout": stdout,
-            "event": event,
-            "render_path": render_path.display().to_string()
-        }),
-        Err(err) => serde_json::json!({
-            "status": "failed",
-            "error": err.to_stable_message(),
-            "render_path": render_path.display().to_string()
-        }),
-    }
-}
-
 pub(crate) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
     let path = repo_root.join("configs/schemas/contracts/env.schema.json");
     serde_json::json!({

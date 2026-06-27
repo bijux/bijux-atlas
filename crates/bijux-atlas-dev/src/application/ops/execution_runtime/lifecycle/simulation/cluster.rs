@@ -917,6 +917,7 @@ pub(crate) fn run_ops_helm_install(
     });
     let smoke_report_path =
         write_simulation_report(&repo_root, &run_id, "ops-smoke.json", &smoke_payload)?;
+    let render_path = install_render_path(&repo_root, run_id.as_str(), &profile);
     let payload = serde_json::json!({
         "schema_version": 1,
         "profile": profile,
@@ -939,7 +940,7 @@ pub(crate) fn run_ops_helm_install(
                 "rows": wait_rows,
                 "errors": wait_errors
             },
-            "kubeconform": record_kubeconform_result(&process, &repo_root, &run_id, &profile),
+            "kubeconform": record_kubeconform_result(&process, &repo_root, &render_path),
             "configmap_env_keys": extract_configmap_env_keys(&repo_root, run_id.as_str(), &profile)?,
             "runtime_allowlist": runtime_allowlist_status(&repo_root),
             "smoke": {

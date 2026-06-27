@@ -43,6 +43,28 @@ pub fn run_kubeconform_validation(
     }
 }
 
+#[must_use]
+pub fn record_kubeconform_result(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    render_path: &Path,
+) -> Value {
+    let args = vec!["-summary".to_string(), render_path.display().to_string()];
+    match runner.run("kubeconform", &args, repo_root) {
+        Ok(result) => json!({
+            "status": "ok",
+            "stdout": result.stdout,
+            "event": result.event,
+            "render_path": render_path.display().to_string()
+        }),
+        Err(err) => json!({
+            "status": "failed",
+            "error": err,
+            "render_path": render_path.display().to_string()
+        }),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -109,6 +131,32 @@ mod tests {
         assert_eq!(
             args.last().expect("manifest path arg should exist"),
             &manifest_path.display().to_string()
+        );
+    }
+
+    #[test]
+    fn kubeconform_result_records_render_path_and_failure_status() {
+        let repo_root = tempdir().expect("temp dir should exist");
+        let render_path = repo_root
+            .path()
+            .join("artifacts/ops/run-local/render/kind/render.yaml");
+        let runner = MockRunner {
+            last_call: RefCell::new(None),
+            result: RefCell::new(Err("missing schema".to_string())),
+        };
+
+        let result = record_kubeconform_result(&runner, repo_root.path(), &render_path);
+
+        assert_eq!(result["status"], "failed");
+        assert_eq!(result["error"], "missing schema");
+        assert_eq!(result["render_path"], render_path.display().to_string());
+        let call = runner.last_call.borrow();
+        let (binary, args, cwd) = call.as_ref().expect("call should be recorded");
+        assert_eq!(binary, "kubeconform");
+        assert_eq!(cwd, repo_root.path());
+        assert_eq!(
+            args.last().expect("render path arg should exist"),
+            &render_path.display().to_string()
         );
     }
 }
