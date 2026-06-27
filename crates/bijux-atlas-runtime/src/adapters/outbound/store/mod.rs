@@ -19,4 +19,4 @@ pub use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
 pub use registry::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 pub use registry::federated::{FederatedBackend, RegistrySource};
 
-pub const CRATE_NAME: &str = "bijux-atlas";
+pub const CRATE_NAME: &str = "bijux-atlas-store";

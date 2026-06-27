@@ -41,3 +41,16 @@ fn crate_boundary_contract_document_exists_with_required_sections() {
         );
     }
 }
+
+#[test]
+fn runtime_identity_constants_match_owned_crates() {
+    assert_eq!(bijux_atlas_runtime::CRATE_NAME, "bijux-atlas-runtime");
+    assert_eq!(
+        bijux_atlas_runtime::adapters::outbound::store::CRATE_NAME,
+        "bijux-atlas-store"
+    );
+    assert_eq!(
+        bijux_atlas_runtime::no_randomness_policy(),
+        "Randomness is forbidden in bijux-atlas-runtime"
+    );
+}

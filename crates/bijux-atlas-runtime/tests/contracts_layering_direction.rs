@@ -163,8 +163,9 @@ fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
 
     let allowlist = [
         "axum",
+        "bijux-atlas-core",
+        "bijux-atlas-query",
         "bijux-atlas-server",
-        "bijux-atlas-runtime",
         "criterion",
         "hex",
         "hmac",

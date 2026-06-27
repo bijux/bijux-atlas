@@ -26,12 +26,12 @@ pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 pub(crate) use crate::app::server::observability::{route_sli_class, unix_time_millis};
 pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 #[allow(unused_imports)]
-pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
+pub(crate) use crate::runtime::config::{runtime_build_hash, RateLimitConfig};
 
-pub const CRATE_NAME: &str = "bijux-atlas";
+pub const CRATE_NAME: &str = "bijux-atlas-runtime";
 pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";
 pub const ENV_BIJUX_CACHE_DIR: &str = "BIJUX_CACHE_DIR";
-pub const NO_RANDOMNESS_POLICY: &str = "Randomness is forbidden in bijux-atlas";
+pub const NO_RANDOMNESS_POLICY: &str = "Randomness is forbidden in bijux-atlas-runtime";
 
 #[must_use]
 pub const fn no_randomness_policy() -> &'static str {
