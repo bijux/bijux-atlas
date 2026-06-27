@@ -32,7 +32,7 @@
   },
   "repo": {
     "loc_allowlist": [
-      "crates/bijux-atlas/src/lib.rs",
+      "crates/bijux-atlas-runtime/src/lib.rs",
       "crates/bijux-atlas-dev/src/main.rs",
       "crates/bijux-atlas-dev/src/application/ops/runtime.rs",
       "crates/bijux-atlas-dev/src/application/ops/execution_runtime.rs"
@@ -43,7 +43,7 @@
     "max_modules_per_dir_hard": 16,
     "max_rs_files_per_dir_hard": 10,
     "rs_files_per_dir_allowlist": [
-      "crates/bijux-atlas/tests"
+      "crates/bijux-atlas-runtime/tests"
     ]
   },
   "schema_version": "1"

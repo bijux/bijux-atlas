@@ -9,7 +9,7 @@ fn repo_root() -> std::path::PathBuf {
 }
 
 fn runtime_crate_root() -> std::path::PathBuf {
-    repo_root().join("crates/bijux-atlas")
+    repo_root().join("crates/bijux-atlas-runtime")
 }
 
 #[test]
@@ -131,7 +131,7 @@ fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
     let path = root.join("src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs");
     let text = std::fs::read_to_string(&path).expect("read genes runtime handler");
     let forbidden_tokens = [
-        "bijux_atlas::query::",
+        "bijux_atlas_runtime::query::",
         "crate::query::query_gene_by_id_fast",
         "crate::query::query_gene_id_name_json_minimal_fast",
         "crate::query::query_genes_fanout",
