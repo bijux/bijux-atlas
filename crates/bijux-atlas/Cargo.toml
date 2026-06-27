@@ -117,6 +117,10 @@ name = "contracts_cli_query_boundary"
 path = "tests/contracts_cli_query_boundary.rs"
 
 [[test]]
+name = "contracts_compatibility_facades"
+path = "tests/contracts_compatibility_facades.rs"
+
+[[test]]
 name = "contracts_layering_direction"
 path = "tests/contracts_layering_direction.rs"
 
