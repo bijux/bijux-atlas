@@ -209,3 +209,13 @@ fn domain_and_policy_layers_do_not_depend_on_adapter_or_runtime_modules() {
         }
     }
 }
+
+#[test]
+fn runtime_crate_does_not_contain_shadow_workspace_tree() {
+    let shadow_root = workspace_root().join("crates/bijux-atlas/crates");
+    assert!(
+        !shadow_root.exists(),
+        "runtime crate must not accumulate nested shadow crate roots: {}",
+        shadow_root.display()
+    );
+}
