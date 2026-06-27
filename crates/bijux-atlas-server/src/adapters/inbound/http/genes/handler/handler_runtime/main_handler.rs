@@ -34,7 +34,7 @@ pub(crate) async fn genes_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -82,7 +82,7 @@ pub(crate) async fn genes_handler(
             Err(e) => {
                 let resp = handlers::api_error_response(StatusCode::BAD_REQUEST, e);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
                 return handlers::with_request_id(resp, &request_id);
@@ -111,7 +111,7 @@ pub(crate) async fn genes_handler(
         );
     }
     let overloaded = state
-        .metrics
+        .metrics()
         .should_shed_heavy(
             state.api.shed_latency_min_samples,
             state.api.shed_latency_p95_threshold_ms,
@@ -134,7 +134,7 @@ pub(crate) async fn genes_handler(
     if let Some(error) = genes_support::check_serialization_budget(&req, &state.limits) {
         let resp = handlers::api_error_response(StatusCode::UNPROCESSABLE_ENTITY, error);
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes",
                 StatusCode::UNPROCESSABLE_ENTITY,
@@ -153,7 +153,7 @@ pub(crate) async fn genes_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes",
                 StatusCode::UNPROCESSABLE_ENTITY,
@@ -184,7 +184,7 @@ pub(crate) async fn genes_handler(
             resp.headers_mut().insert("retry-after", v);
         }
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -199,7 +199,7 @@ pub(crate) async fn genes_handler(
             crate::record_shed_reason(&state, "queue_depth_exceeded").await;
             let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes",
                     StatusCode::TOO_MANY_REQUESTS,
@@ -215,7 +215,7 @@ pub(crate) async fn genes_handler(
             crate::record_shed_reason(&state, "class_permit_saturated").await;
             let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes",
                     StatusCode::TOO_MANY_REQUESTS,
@@ -460,7 +460,7 @@ pub(crate) async fn genes_handler(
         })
         .await?;
         state
-            .metrics
+            .metrics()
             .observe_stage("query_plan", query_plan_started.elapsed())
             .await;
         let query_started = Instant::now();
@@ -684,7 +684,7 @@ pub(crate) async fn genes_handler(
                     ),
                 );
                 state
-                    .metrics
+                    .metrics()
                     .observe_request("/v1/genes", status, started.elapsed())
                     .await;
                 return handlers::with_request_id(resp, &request_id);
@@ -699,7 +699,7 @@ pub(crate) async fn genes_handler(
                     ),
                 );
                 state
-                    .metrics
+                    .metrics()
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
                 return handlers::with_request_id(resp, &request_id);
@@ -721,7 +721,7 @@ pub(crate) async fn genes_handler(
                     ),
                 );
                 state
-                    .metrics
+                    .metrics()
                     .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
                     .await;
                 return handlers::with_request_id(resp, &request_id);
@@ -735,7 +735,7 @@ pub(crate) async fn genes_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes",
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -767,7 +767,7 @@ pub(crate) async fn genes_handler(
                 handlers::error_json(ApiErrorCode::Timeout, "request timed out", json!({})),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request("/v1/genes", StatusCode::GATEWAY_TIMEOUT, started.elapsed())
                 .await;
             return handlers::with_request_id(resp, &request_id);

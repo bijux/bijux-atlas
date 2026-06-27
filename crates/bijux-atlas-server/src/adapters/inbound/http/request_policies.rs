@@ -1043,7 +1043,7 @@ pub(crate) async fn security_middleware(
         .map(|(k, v)| k.as_str().len() + v.as_bytes().len())
         .sum();
     state
-        .metrics
+        .metrics()
         .observe_request_size(&route, uri_text.len().saturating_add(header_bytes))
         .await;
     if header_bytes > state.api.max_header_bytes {
@@ -1064,7 +1064,7 @@ pub(crate) async fn security_middleware(
     let client_type = classify_client_type(user_agent.as_deref());
     let ua_family = classify_user_agent_family(user_agent.as_deref());
     state
-        .metrics
+        .metrics()
         .observe_client_fingerprint(client_type, ua_family)
         .await;
 

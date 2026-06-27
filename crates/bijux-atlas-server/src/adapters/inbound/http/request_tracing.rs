@@ -19,12 +19,7 @@ pub(crate) fn extract_request_trace(headers: &HeaderMap, state: &AppState) -> Re
     let traceparent = normalized_traceparent(headers);
     let request_origin = normalized_trace_value(headers, "x-request-origin", 256);
 
-    let request_id = normalized_request_id(headers).unwrap_or_else(|| {
-        let id = state
-            .request_id_seed
-            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-        format!("req-{id:016x}")
-    });
+    let request_id = normalized_request_id(headers).unwrap_or_else(|| state.next_request_id());
 
     RequestTrace {
         request_id,

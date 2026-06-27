@@ -5,7 +5,7 @@ use std::io;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
-pub(crate) fn write_audit_file_record(
+pub fn write_audit_file_record(
     file_path: &str,
     max_bytes: u64,
     payload: &serde_json::Value,

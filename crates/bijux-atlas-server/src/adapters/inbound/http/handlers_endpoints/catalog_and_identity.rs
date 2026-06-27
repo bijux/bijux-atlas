@@ -27,7 +27,7 @@ pub(crate) async fn datasets_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/datasets",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -132,7 +132,7 @@ pub(crate) async fn datasets_handler(
             Err(err) => {
                 let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/datasets",
                         StatusCode::INTERNAL_SERVER_ERROR,
@@ -152,7 +152,7 @@ pub(crate) async fn datasets_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/datasets",
                 StatusCode::PAYLOAD_TOO_LARGE,
@@ -171,7 +171,7 @@ pub(crate) async fn datasets_handler(
             CachePolicy::CatalogDiscovery,
         );
         state
-            .metrics
+            .metrics()
             .observe_request("/v1/datasets", StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -190,7 +190,7 @@ pub(crate) async fn datasets_handler(
         CachePolicy::CatalogDiscovery,
     );
     state
-        .metrics
+        .metrics()
         .observe_request("/v1/datasets", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -220,7 +220,7 @@ pub(crate) async fn dataset_identity_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/datasets/{release}/{species}/{assembly}",
                     StatusCode::BAD_REQUEST,
@@ -256,7 +256,7 @@ pub(crate) async fn dataset_identity_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/datasets/{release}/{species}/{assembly}",
                 StatusCode::NOT_FOUND,
@@ -278,7 +278,7 @@ pub(crate) async fn dataset_identity_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/datasets/{release}/{species}/{assembly}",
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -358,7 +358,7 @@ pub(crate) async fn dataset_identity_handler(
             Err(err) => {
                 let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, err);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/datasets/{release}/{species}/{assembly}",
                         StatusCode::INTERNAL_SERVER_ERROR,
@@ -378,7 +378,7 @@ pub(crate) async fn dataset_identity_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/datasets/{release}/{species}/{assembly}",
                 StatusCode::PAYLOAD_TOO_LARGE,
@@ -397,7 +397,7 @@ pub(crate) async fn dataset_identity_handler(
             CachePolicy::ImmutableDataset,
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/datasets/{release}/{species}/{assembly}",
                 StatusCode::NOT_MODIFIED,
@@ -422,7 +422,7 @@ pub(crate) async fn dataset_identity_handler(
         CachePolicy::ImmutableDataset,
     );
     state
-        .metrics
+        .metrics()
         .observe_request(
             "/v1/datasets/{release}/{species}/{assembly}",
             StatusCode::OK,

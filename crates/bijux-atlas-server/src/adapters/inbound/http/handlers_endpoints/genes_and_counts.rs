@@ -27,7 +27,7 @@ pub(crate) async fn genes_count_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/genes/count",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -42,7 +42,7 @@ pub(crate) async fn genes_count_handler(
             Err(e) => {
                 let resp = api_error_response(StatusCode::BAD_REQUEST, e);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/genes/count",
                         StatusCode::BAD_REQUEST,
@@ -66,7 +66,7 @@ pub(crate) async fn genes_count_handler(
                     }))
                     .into_response();
                     state
-                        .metrics
+                        .metrics()
                         .observe_request("/v1/genes/count", StatusCode::OK, started.elapsed())
                         .await;
                     with_request_id(resp, &request_id)
@@ -81,7 +81,7 @@ pub(crate) async fn genes_count_handler(
                         ),
                     );
                     state
-                        .metrics
+                        .metrics()
                         .observe_request(
                             "/v1/genes/count",
                             StatusCode::INTERNAL_SERVER_ERROR,
@@ -102,7 +102,7 @@ pub(crate) async fn genes_count_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes/count",
                     StatusCode::SERVICE_UNAVAILABLE,

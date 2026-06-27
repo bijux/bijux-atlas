@@ -3,11 +3,11 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
+use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas_runtime::domain::sha256_hex;
 use bijux_atlas_server::adapters::inbound::build_server_router;
 use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas_runtime::domain::sha256_hex;
-use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
 use serde::Deserialize;
 use tempfile::tempdir;
@@ -195,16 +195,16 @@ async fn metrics_endpoint_matches_metrics_contract() {
     )
     .expect("parse endpoints");
     let server_sources = [
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/router.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/diff.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/sequence.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_endpoints/catalog_and_identity.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_endpoints/debug_and_validate.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_endpoints/genes_and_counts.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_endpoints/transcripts.rs"),
-        root.join("crates/bijux-atlas-runtime/src/adapters/inbound/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/router.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diff.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/sequence.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/catalog_and_identity.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/debug_and_validate.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/genes_and_counts.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/transcripts.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_utilities.rs"),
     ];
     let source_concat = server_sources
         .iter()
@@ -393,11 +393,10 @@ async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     )
     .expect("parse ops metrics contract");
 
-    let generated_metrics =
-        std::fs::read_to_string(root.join(
-            "crates/bijux-atlas-runtime/src/adapters/outbound/telemetry/generated/metrics_contract.rs",
-        ))
-        .expect("read generated metrics contract");
+    let generated_metrics = std::fs::read_to_string(root.join(
+        "crates/bijux-atlas-runtime/src/adapters/outbound/telemetry/generated/metrics_contract.rs",
+    ))
+    .expect("read generated metrics contract");
 
     for metric in ops_contract.required_metrics.keys() {
         assert!(

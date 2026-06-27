@@ -23,8 +23,11 @@ fn api_dto_module_does_not_depend_on_domain_modules() {
 }
 
 #[test]
-fn http_dto_module_uses_wire_categories_not_domain_categories() {
-    let path = crate_root().join("src/adapters/inbound/http/dto.rs");
+fn server_http_dto_module_uses_wire_categories_not_domain_categories() {
+    let path = crate_root()
+        .parent()
+        .expect("crates directory")
+        .join("bijux-atlas-server/src/adapters/inbound/http/dto.rs");
     let text = std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
 

@@ -359,7 +359,7 @@ async fn sequence_common(
         Err(e) => {
             let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::INTERNAL_SERVER_ERROR, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -375,7 +375,7 @@ async fn sequence_common(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::UNPROCESSABLE_ENTITY, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -390,7 +390,7 @@ async fn sequence_common(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::UNPROCESSABLE_ENTITY, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -400,14 +400,14 @@ async fn sequence_common(
         Err(e) => {
             let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::INTERNAL_SERVER_ERROR, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
         }
     };
     state
-        .metrics
+        .metrics()
         .observe_stage("fasta_io", io_stage.elapsed())
         .await;
 
@@ -426,7 +426,7 @@ async fn sequence_common(
         );
         *resp.headers_mut() = h;
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -448,7 +448,7 @@ async fn sequence_common(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::PAYLOAD_TOO_LARGE, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
@@ -466,15 +466,15 @@ async fn sequence_common(
         );
         let mut resp = (StatusCode::OK, h, sequence).into_response();
         state
-            .metrics
+            .metrics()
             .observe_stage("serialization", serialize_stage.elapsed())
             .await;
         state
-            .metrics
+            .metrics()
             .observe_response_size(route, sequence_len)
             .await;
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::OK, started.elapsed())
             .await;
         resp = with_request_id(resp, &request_id);
@@ -511,7 +511,7 @@ async fn sequence_common(
             Err(e) => {
                 let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e);
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(route, StatusCode::INTERNAL_SERVER_ERROR, started.elapsed())
                     .await;
                 return with_request_id(resp, &request_id);
@@ -522,14 +522,14 @@ async fn sequence_common(
         Err(e) => {
             let resp = api_error_response(StatusCode::INTERNAL_SERVER_ERROR, e);
             state
-                .metrics
+                .metrics()
                 .observe_request(route, StatusCode::INTERNAL_SERVER_ERROR, started.elapsed())
                 .await;
             return with_request_id(resp, &request_id);
         }
     };
     state
-        .metrics
+        .metrics()
         .observe_response_size(route, encoded.len())
         .await;
     if encoded.len() > state.api.response_max_bytes {
@@ -542,13 +542,13 @@ async fn sequence_common(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::PAYLOAD_TOO_LARGE, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
     }
     state
-        .metrics
+        .metrics()
         .observe_stage("serialization", serialize_stage.elapsed())
         .await;
     let mut out_headers = HeaderMap::new();
@@ -567,7 +567,7 @@ async fn sequence_common(
     }
     let resp = (StatusCode::OK, out_headers, encoded).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request(route, StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)

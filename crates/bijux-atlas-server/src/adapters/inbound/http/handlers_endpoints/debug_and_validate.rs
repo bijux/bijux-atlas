@@ -30,7 +30,7 @@ pub(crate) async fn release_dataset_handler(
         .insert("deprecation", HeaderValue::from_static("true"));
 
     state
-        .metrics
+        .metrics()
         .observe_request(
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
             StatusCode::PERMANENT_REDIRECT,
@@ -53,7 +53,7 @@ pub(crate) async fn debug_datasets_handler(State(state): State<AppState>) -> imp
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request("/debug/datasets", StatusCode::NOT_FOUND, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -73,7 +73,7 @@ pub(crate) async fn debug_datasets_handler(State(state): State<AppState>) -> imp
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/datasets", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)
@@ -95,7 +95,7 @@ pub(crate) async fn dataset_health_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/dataset-health",
                 StatusCode::NOT_FOUND,
@@ -119,7 +119,7 @@ pub(crate) async fn dataset_health_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/debug/dataset-health",
                     StatusCode::BAD_REQUEST,
@@ -141,7 +141,7 @@ pub(crate) async fn dataset_health_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/debug/dataset-health",
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -165,7 +165,7 @@ pub(crate) async fn dataset_health_handler(
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/dataset-health", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)
@@ -214,7 +214,7 @@ pub(crate) async fn query_validate_handler(
         Err(e) => {
             let resp = api_error_response(StatusCode::BAD_REQUEST, e);
             state
-                .metrics
+                .metrics()
                 .observe_request_with_method(
                     "/v1/query/validate",
                     "POST",
@@ -261,7 +261,7 @@ pub(crate) async fn query_validate_handler(
     let payload = json_envelope(None, None, data, None, None);
     let resp = with_query_class(Json(payload).into_response(), class);
     state
-        .metrics
+        .metrics()
         .observe_request_with_method(
             "/v1/query/validate",
             "POST",
@@ -285,7 +285,7 @@ pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> im
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/registry-health",
                 StatusCode::NOT_FOUND,
@@ -303,7 +303,7 @@ pub(crate) async fn registry_health_handler(State(state): State<AppState>) -> im
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/registry-health", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)
@@ -322,7 +322,7 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/diagnostics",
                 StatusCode::NOT_FOUND,
@@ -354,7 +354,7 @@ pub(crate) async fn diagnostics_handler(State(state): State<AppState>) -> impl I
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/diagnostics", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -373,7 +373,7 @@ pub(crate) async fn runtime_stats_handler(State(state): State<AppState>) -> impl
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/runtime-stats",
                 StatusCode::NOT_FOUND,
@@ -385,7 +385,7 @@ pub(crate) async fn runtime_stats_handler(State(state): State<AppState>) -> impl
     let runtime_stats = state.metrics().runtime_stats_snapshot().await;
     let response = Json(runtime_stats).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/runtime-stats", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -404,7 +404,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/system-info",
                 StatusCode::NOT_FOUND,
@@ -422,7 +422,7 @@ pub(crate) async fn system_info_handler(State(state): State<AppState>) -> impl I
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/system-info", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -441,7 +441,7 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/build-metadata",
                 StatusCode::NOT_FOUND,
@@ -457,7 +457,7 @@ pub(crate) async fn build_metadata_handler(State(state): State<AppState>) -> imp
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/build-metadata", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -478,7 +478,7 @@ pub(crate) async fn runtime_config_dump_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/runtime-config",
                 StatusCode::NOT_FOUND,
@@ -507,7 +507,7 @@ pub(crate) async fn runtime_config_dump_handler(
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/runtime-config", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -528,7 +528,7 @@ pub(crate) async fn dataset_registry_dump_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/dataset-registry",
                 StatusCode::NOT_FOUND,
@@ -539,7 +539,7 @@ pub(crate) async fn dataset_registry_dump_handler(
     }
     let response = Json(state.cache.dataset_registry_dump().await).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/dataset-registry", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -558,14 +558,14 @@ pub(crate) async fn shard_map_dump_handler(State(state): State<AppState>) -> imp
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request("/debug/shard-map", StatusCode::NOT_FOUND, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
     }
     let response = Json(state.cache.shard_map_dump().await).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/shard-map", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -586,7 +586,7 @@ pub(crate) async fn query_planner_stats_dump_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/query-planner-stats",
                 StatusCode::NOT_FOUND,
@@ -597,7 +597,7 @@ pub(crate) async fn query_planner_stats_dump_handler(
     }
     let response = Json(state.metrics().query_planner_stats_snapshot().await).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request(
             "/debug/query-planner-stats",
             StatusCode::OK,
@@ -620,7 +620,7 @@ pub(crate) async fn cache_stats_dump_handler(State(state): State<AppState>) -> i
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/debug/cache-stats",
                 StatusCode::NOT_FOUND,
@@ -631,7 +631,7 @@ pub(crate) async fn cache_stats_dump_handler(State(state): State<AppState>) -> i
     }
     let response = Json(state.cache.cache_stats_snapshot().await).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request("/debug/cache-stats", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)

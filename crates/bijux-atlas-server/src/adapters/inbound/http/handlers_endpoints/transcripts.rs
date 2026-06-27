@@ -219,7 +219,7 @@ pub(crate) async fn transcript_summary_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::BAD_REQUEST,
@@ -242,7 +242,7 @@ pub(crate) async fn transcript_summary_handler(
             ),
         );
         state
-            .metrics
+            .metrics()
             .observe_request(
                 "/v1/transcripts/{tx_id}",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -263,7 +263,7 @@ pub(crate) async fn transcript_summary_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::TOO_MANY_REQUESTS,
@@ -294,7 +294,7 @@ pub(crate) async fn transcript_summary_handler(
             };
             let resp = api_error_response(status, error_json(code, "dataset unavailable", details));
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -316,7 +316,7 @@ pub(crate) async fn transcript_summary_handler(
             ))
             .into_response();
             state
-                .metrics
+                .metrics()
                 .observe_request("/v1/transcripts/{tx_id}", StatusCode::OK, started.elapsed())
                 .await;
             with_request_id(body, &request_id)
@@ -331,7 +331,7 @@ pub(crate) async fn transcript_summary_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::NOT_FOUND,
@@ -350,7 +350,7 @@ pub(crate) async fn transcript_summary_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/transcripts/{tx_id}",
                     StatusCode::BAD_REQUEST,

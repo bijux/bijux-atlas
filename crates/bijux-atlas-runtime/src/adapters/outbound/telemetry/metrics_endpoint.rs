@@ -2,4 +2,4 @@
 
 mod metrics_runtime;
 
-pub(crate) use self::metrics_runtime::*;
+pub use self::metrics_runtime::*;

@@ -31,7 +31,7 @@ pub mod app;
 pub(crate) mod compat;
 pub mod contracts;
 pub mod domain;
-pub(crate) mod packaged;
+pub mod packaged;
 pub mod query;
 pub mod runtime;
 pub mod version;

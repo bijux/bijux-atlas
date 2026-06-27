@@ -35,7 +35,7 @@ fn current_open_fd_count() -> u64 {
     0
 }
 
-pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
+pub async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     if !state.api.enable_metrics_endpoint {
         return with_request_id(
             StatusCode::SERVICE_UNAVAILABLE.into_response(),

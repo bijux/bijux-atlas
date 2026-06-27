@@ -545,7 +545,7 @@ async fn diff_common(
             CachePolicy::ImmutableDataset,
         );
         state
-            .metrics
+            .metrics()
             .observe_request(route, StatusCode::NOT_MODIFIED, started.elapsed())
             .await;
         return with_request_id(resp, &request_id);
@@ -570,7 +570,7 @@ async fn diff_common(
         }
     };
     state
-        .metrics
+        .metrics()
         .observe_response_size(route, encoded.len())
         .await;
     if encoded.len() > state.api.response_max_bytes {
@@ -600,7 +600,7 @@ async fn diff_common(
     }
     let resp = (StatusCode::OK, out_headers, encoded).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request(route, StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)

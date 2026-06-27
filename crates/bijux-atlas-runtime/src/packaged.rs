@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub(crate) const ENV_CONTRACT_SCHEMA_JSON: &str =
-    include_str!("../resources/contracts/env.schema.json");
-#[cfg(test)]
-pub(crate) const ERROR_CODES_JSON: &str =
-    include_str!("../resources/observability/error-codes.json");
-pub(crate) const AUTH_POLICY_YAML: &str = include_str!("../resources/security/policy.yaml");
-pub(crate) const PERMISSIONS_YAML: &str = include_str!("../resources/security/permissions.yaml");
-pub(crate) const ROLES_YAML: &str = include_str!("../resources/security/roles.yaml");
+pub const ENV_CONTRACT_SCHEMA_JSON: &str = include_str!("../resources/contracts/env.schema.json");
+pub const ERROR_CODES_JSON: &str = include_str!("../resources/observability/error-codes.json");
+pub const AUTH_POLICY_YAML: &str = include_str!("../resources/security/policy.yaml");
+pub const PERMISSIONS_YAML: &str = include_str!("../resources/security/permissions.yaml");
+pub const ROLES_YAML: &str = include_str!("../resources/security/roles.yaml");
 
 #[cfg(test)]
 mod tests {

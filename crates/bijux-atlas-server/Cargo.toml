@@ -17,13 +17,24 @@ default = []
 jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
+base64 = "0.22"
 axum = "0.8"
+bijux-atlas-api.workspace = true
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
+bijux-atlas-query.workspace = true
 bijux-atlas-runtime.workspace = true
+brotli = "8"
 clap = { version = "4", features = ["derive"] }
+flate2 = "1"
+hmac = "0.13"
+hex = "0.4"
 redis = { version = "1.2", features = ["tokio-comp"] }
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde.workspace = true
 serde_json.workspace = true
+serde_yaml = "0.9"
+sha2 = "0.11"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
 tracing = "0.1"
 

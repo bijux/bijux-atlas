@@ -3,9 +3,7 @@
 use crate::app::server::AppState;
 use std::future::Future;
 
-pub mod http {
-    pub use bijux_atlas_runtime::adapters::inbound::http::*;
-}
+pub mod http;
 
 /// Build the HTTP server router through the server-owned inbound boundary.
 pub fn build_server_router(state: AppState) -> axum::Router {

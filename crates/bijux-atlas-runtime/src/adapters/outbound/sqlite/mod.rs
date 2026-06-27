@@ -14,7 +14,7 @@ pub(crate) fn open_readonly(path: &std::path::Path) -> Result<Connection, CacheE
     .map_err(|e| CacheError(e.to_string()))
 }
 
-pub(crate) fn open_readonly_no_mutex(path: &std::path::Path) -> Result<Connection, CacheError> {
+pub fn open_readonly_no_mutex(path: &std::path::Path) -> Result<Connection, CacheError> {
     let uri = format!("file:{}?mode=ro&immutable=1", path.display());
     Connection::open_with_flags(
         &uri,
@@ -25,7 +25,7 @@ pub(crate) fn open_readonly_no_mutex(path: &std::path::Path) -> Result<Connectio
     .map_err(|e| CacheError(e.to_string()))
 }
 
-pub(crate) fn apply_readonly_pragmas(
+pub fn apply_readonly_pragmas(
     conn: &Connection,
     cache_kib: i64,
     mmap_bytes: i64,

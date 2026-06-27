@@ -11,4 +11,4 @@ use self::helpers::{
 mod main_handler;
 mod request_and_latency_metrics;
 
-pub(crate) use self::main_handler::metrics_handler;
+pub use self::main_handler::metrics_handler;

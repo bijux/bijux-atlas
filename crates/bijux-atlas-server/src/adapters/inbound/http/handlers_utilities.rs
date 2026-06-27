@@ -62,7 +62,7 @@ pub(crate) async fn landing_handler(
         HeaderValue::from_static("text/html; charset=utf-8"),
     );
     state
-        .metrics
+        .metrics()
         .observe_request("/", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(resp, &request_id)
@@ -73,7 +73,7 @@ pub(crate) async fn healthz_handler(State(state): State<AppState>) -> impl IntoR
     let started = Instant::now();
     let resp = (StatusCode::OK, "ok").into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/healthz",
             StatusCode::OK,
@@ -89,7 +89,7 @@ pub(crate) async fn health_handler(State(state): State<AppState>) -> impl IntoRe
     let started = Instant::now();
     let resp = (StatusCode::OK, "ok").into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/health",
             StatusCode::OK,
@@ -130,7 +130,7 @@ pub(crate) async fn overload_health_handler(State(state): State<AppState>) -> im
     )
         .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/healthz/overload",
             status,
@@ -170,7 +170,7 @@ pub(crate) async fn version_handler(State(state): State<AppState>) -> impl IntoR
         response.headers_mut().insert("cache-control", value);
     }
     state
-        .metrics
+        .metrics()
         .observe_request("/v1/version", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -246,7 +246,7 @@ pub(crate) async fn cluster_status_handler(State(state): State<AppState>) -> imp
     let mut response = Json(payload).into_response();
     *response.status_mut() = response_status;
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster-status",
             response_status,
@@ -295,7 +295,7 @@ pub(crate) async fn cluster_nodes_handler(State(state): State<AppState>) -> impl
     );
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/nodes",
             StatusCode::OK,
@@ -362,7 +362,7 @@ pub(crate) async fn cluster_register_handler(
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/register",
             StatusCode::OK,
@@ -405,7 +405,7 @@ pub(crate) async fn cluster_heartbeat_handler(
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/heartbeat",
             StatusCode::OK,
@@ -453,7 +453,7 @@ pub(crate) async fn cluster_mode_handler(
     }))
     .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/mode",
             StatusCode::OK,
@@ -495,7 +495,7 @@ pub(crate) async fn cluster_replica_list_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/replicas",
             StatusCode::OK,
@@ -530,7 +530,7 @@ pub(crate) async fn cluster_replica_health_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/replicas/health",
             StatusCode::OK,
@@ -565,7 +565,7 @@ pub(crate) async fn cluster_replica_failover_handler(
     });
     let response = (status, Json(payload)).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/replicas/failover",
             status,
@@ -599,7 +599,7 @@ pub(crate) async fn cluster_replica_diagnostics_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/cluster/replicas/diagnostics",
             StatusCode::OK,
@@ -721,7 +721,7 @@ pub(crate) async fn cluster_recovery_run_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/recovery/run",
             StatusCode::OK,
@@ -747,7 +747,7 @@ pub(crate) async fn recovery_diagnostics_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/recovery/diagnostics",
             StatusCode::OK,
@@ -781,7 +781,7 @@ pub(crate) async fn failure_injection_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request_with_trace(
                     "/debug/failure-injection",
                     StatusCode::BAD_REQUEST,
@@ -819,7 +819,7 @@ pub(crate) async fn failure_injection_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/failure-injection",
             StatusCode::OK,
@@ -852,7 +852,7 @@ pub(crate) async fn chaos_run_handler(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request_with_trace(
                     "/debug/chaos/run",
                     StatusCode::BAD_REQUEST,
@@ -900,7 +900,7 @@ pub(crate) async fn chaos_run_handler(
     });
     let response = Json(payload).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace(
             "/debug/chaos/run",
             StatusCode::OK,
@@ -929,7 +929,7 @@ pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoR
         response.headers_mut().insert("cache-control", value);
     }
     state
-        .metrics
+        .metrics()
         .observe_request("/v1/openapi.json", StatusCode::OK, started.elapsed())
         .await;
     with_request_id(response, &request_id)
@@ -947,7 +947,7 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
     if state.ready.load(Ordering::Relaxed) && catalog_ready {
         let resp = (StatusCode::OK, "ready").into_response();
         state
-            .metrics
+            .metrics()
             .observe_request_with_trace(
                 "/readyz",
                 StatusCode::OK,
@@ -959,7 +959,7 @@ pub(crate) async fn readyz_handler(State(state): State<AppState>) -> impl IntoRe
     } else {
         let resp = (StatusCode::SERVICE_UNAVAILABLE, "not-ready").into_response();
         state
-            .metrics
+            .metrics()
             .observe_request_with_trace(
                 "/readyz",
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -992,7 +992,7 @@ pub(crate) async fn ready_handler(State(state): State<AppState>) -> impl IntoRes
     };
     let resp = (status, body).into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace("/ready", status, started.elapsed(), Some(&request_id))
         .await;
     with_request_id(resp, &request_id)
@@ -1016,7 +1016,7 @@ pub(crate) async fn live_handler(State(state): State<AppState>) -> impl IntoResp
     )
         .into_response();
     state
-        .metrics
+        .metrics()
         .observe_request_with_trace("/live", status, started.elapsed(), Some(&request_id))
         .await;
     with_request_id(resp, &request_id)

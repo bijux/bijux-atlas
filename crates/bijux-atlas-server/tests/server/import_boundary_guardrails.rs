@@ -12,9 +12,13 @@ fn runtime_crate_root() -> std::path::PathBuf {
     repo_root().join("crates/bijux-atlas-runtime")
 }
 
+fn server_crate_root() -> std::path::PathBuf {
+    repo_root().join("crates/bijux-atlas-server")
+}
+
 #[test]
 fn http_layer_does_not_import_runtime_effect_internals() {
-    let root = runtime_crate_root().join("src/adapters/inbound/http");
+    let root = server_crate_root().join("src/adapters/inbound/http");
     let forbidden = [
         "runtime::dataset_cache_manager_storage",
         "crate::runtime::dataset_cache_manager_storage",
@@ -101,7 +105,7 @@ fn effects_layer_avoids_http_server_framework_deps() {
 
 #[test]
 fn support_modules_remain_non_entrypoint() {
-    let root = runtime_crate_root();
+    let root = server_crate_root();
     let support_files = ["src/adapters/inbound/http/genes_support.rs"];
     let forbidden_tokens = [
         "pub async fn",
@@ -127,7 +131,7 @@ fn support_modules_remain_non_entrypoint() {
 
 #[test]
 fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
-    let root = runtime_crate_root();
+    let root = server_crate_root();
     let path = root.join("src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs");
     let text = std::fs::read_to_string(&path).expect("read genes runtime handler");
     let forbidden_tokens = [
@@ -146,7 +150,7 @@ fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
     }
     assert!(
         text.contains("crate::app::query as app_query"),
-        "runtime transport layer should use app::query boundary alias"
+        "server transport layer should use app::query boundary alias"
     );
 }
 

@@ -27,7 +27,7 @@ pub(super) async fn enforce_ip_rate_limit(
                 ),
             );
             state
-                .metrics
+                .metrics()
                 .observe_request(
                     "/v1/genes",
                     StatusCode::TOO_MANY_REQUESTS,
@@ -59,7 +59,7 @@ pub(super) async fn enforce_api_key_rate_limit(
                     ),
                 );
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/genes",
                         StatusCode::TOO_MANY_REQUESTS,
@@ -92,7 +92,7 @@ pub(super) async fn acquire_heavy_worker_permit(
                     ),
                 );
                 state
-                    .metrics
+                    .metrics()
                     .observe_request(
                         "/v1/genes",
                         StatusCode::TOO_MANY_REQUESTS,
