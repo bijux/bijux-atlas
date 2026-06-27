@@ -8,17 +8,23 @@ fn crate_root() -> PathBuf {
 
 #[test]
 fn api_dto_module_does_not_depend_on_domain_modules() {
-    let path = crate_root()
+    let dto_root = crate_root()
         .parent()
         .expect("crates directory")
-        .join("bijux-atlas-api/src/dto.rs");
-    let text = std::fs::read_to_string(&path)
-        .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
-    for forbidden in ["crate::domain::", "bijux_atlas_runtime::domain::"] {
-        assert!(
-            !text.contains(forbidden),
-            "api dto module must stay wire-owned and domain-independent"
-        );
+        .join("bijux-atlas-api/src/dto");
+    for path in ["mod.rs", "dataset.rs", "gene_page.rs"]
+        .into_iter()
+        .map(|file| dto_root.join(file))
+    {
+        let text = std::fs::read_to_string(&path)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
+        for forbidden in ["crate::domain::", "bijux_atlas_runtime::domain::"] {
+            assert!(
+                !text.contains(forbidden),
+                "api dto module must stay wire-owned and domain-independent: {}",
+                path.display()
+            );
+        }
     }
 }
 

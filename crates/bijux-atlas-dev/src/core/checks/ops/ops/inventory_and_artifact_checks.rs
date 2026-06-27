@@ -1,3 +1,50 @@
+fn strip_cfg_test_modules(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut lines = text.lines();
+    while let Some(line) = lines.next() {
+        if line.trim() == "#[cfg(test)]" {
+            let mut buffered = Vec::new();
+            let mut next_non_attribute = None;
+            for candidate in lines.by_ref() {
+                let trimmed = candidate.trim();
+                if trimmed.starts_with("#[") {
+                    buffered.push(candidate);
+                    continue;
+                }
+                next_non_attribute = Some(candidate);
+                break;
+            }
+            let Some(next_line) = next_non_attribute else {
+                break;
+            };
+            if next_line.contains("mod tests") {
+                let mut brace_depth = next_line.matches('{').count();
+                brace_depth = brace_depth.saturating_sub(next_line.matches('}').count());
+                while brace_depth > 0 {
+                    let Some(test_line) = lines.next() else {
+                        break;
+                    };
+                    brace_depth += test_line.matches('{').count();
+                    brace_depth = brace_depth.saturating_sub(test_line.matches('}').count());
+                }
+                continue;
+            }
+            out.push_str(line);
+            out.push('\n');
+            for attribute in buffered {
+                out.push_str(attribute);
+                out.push('\n');
+            }
+            out.push_str(next_line);
+            out.push('\n');
+            continue;
+        }
+        out.push_str(line);
+        out.push('\n');
+    }
+    out
+}
+
 fn checks_ops_manifest_integrity(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let manifests: [(&str, &[&str]); 4] = [
         (
@@ -224,6 +271,7 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
             let Ok(text) = fs::read_to_string(&file) else {
                 continue;
             };
+            let text = strip_cfg_test_modules(&text);
             for line in text.lines() {
                 let trimmed = line.trim();
                 let writes_ops_tree = (trimmed.contains("create_dir_all(")

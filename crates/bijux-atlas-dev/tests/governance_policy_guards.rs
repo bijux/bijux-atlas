@@ -370,7 +370,7 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
         "crates/bijux-atlas-server/src/app/server/tests/mod.rs",
         "crates/bijux-atlas-api/src/client/mod.rs",
         "crates/bijux-atlas-ingest/src/engine/tests/mod.rs",
-        "crates/bijux-atlas-query/src/engine/tests/mod.rs",
+        "crates/bijux-atlas-query/src/engine/query_scenarios/mod.rs",
     ] {
         assert!(
             root.join(required).is_file(),

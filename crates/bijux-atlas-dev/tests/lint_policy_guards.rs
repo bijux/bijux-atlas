@@ -18,7 +18,18 @@ fn strip_cfg_test_modules(text: &str) -> String {
     let mut lines = text.lines();
     while let Some(line) = lines.next() {
         if line.trim() == "#[cfg(test)]" {
-            let Some(next_line) = lines.next() else {
+            let mut buffered = Vec::new();
+            let mut next_non_attribute = None;
+            for candidate in lines.by_ref() {
+                let trimmed = candidate.trim();
+                if trimmed.starts_with("#[") {
+                    buffered.push(candidate);
+                    continue;
+                }
+                next_non_attribute = Some(candidate);
+                break;
+            }
+            let Some(next_line) = next_non_attribute else {
                 break;
             };
             if next_line.contains("mod tests") {
@@ -35,6 +46,10 @@ fn strip_cfg_test_modules(text: &str) -> String {
             }
             out.push_str(line);
             out.push('\n');
+            for attribute in buffered {
+                out.push_str(attribute);
+                out.push('\n');
+            }
             out.push_str(next_line);
             out.push('\n');
             continue;

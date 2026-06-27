@@ -9,8 +9,8 @@ fn model_crate_dir() -> PathBuf {
 #[test]
 fn public_enums_are_non_exhaustive() {
     let files = [
-        "src/diff.rs",
-        "src/gene.rs",
+        "src/diff/mod.rs",
+        "src/gene/mod.rs",
         "src/dataset/manifest.rs",
         "src/dataset/keys.rs",
         "src/dataset/version.rs",

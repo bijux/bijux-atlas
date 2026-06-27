@@ -27,8 +27,8 @@ fn canonical_model_types_stay_free_of_runtime_dependencies() {
         manifest_dir.join("src/dataset/keys.rs"),
         manifest_dir.join("src/dataset/manifest.rs"),
         manifest_dir.join("src/dataset/version.rs"),
-        manifest_dir.join("src/diff.rs"),
-        manifest_dir.join("src/gene.rs"),
+        manifest_dir.join("src/diff/mod.rs"),
+        manifest_dir.join("src/gene/mod.rs"),
         manifest_dir.join("src/policy.rs"),
         manifest_dir.join("src/query.rs"),
     ] {

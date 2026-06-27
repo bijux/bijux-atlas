@@ -26,10 +26,8 @@ fn ingest_and_cli_fixtures_live_with_their_owning_surfaces() {
         "ingest policy fixtures must live under the ingest crate"
     );
     assert!(
-        root.join(
-            "crates/bijux-atlas-cli/src/adapters/inbound/cli/operations/testdata/qc_edgecases"
-        )
-        .is_dir(),
+        root.join("crates/bijux-atlas-cli/tests/fixtures/qc_edgecases")
+            .is_dir(),
         "cli operation QC fixtures must live beside the owning CLI operation tests"
     );
 }

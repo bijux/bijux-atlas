@@ -4,7 +4,7 @@
     "stack": {
       "entrypoint": "crates/bijux-atlas-dev/src/domains/ops/commands.rs",
       "runtime": "crates/bijux-atlas-dev/src/application/ops/runtime.rs",
-      "execution": "crates/bijux-atlas-dev/src/application/ops/execution_runtime.rs"
+      "execution": "crates/bijux-atlas-dev/src/application/ops/execution_runtime/mod.rs"
     },
     "deploy": {
       "entrypoint": "crates/bijux-atlas-dev/src/domains/ops/commands.rs",

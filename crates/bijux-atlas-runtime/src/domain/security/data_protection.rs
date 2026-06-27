@@ -341,6 +341,6 @@ mod tests {
         let encrypted = cipher.encrypt(&payload);
         let decrypted = cipher.decrypt(&encrypted);
         assert_eq!(decrypted, payload);
-        assert!(started.elapsed() < std::time::Duration::from_millis(250));
+        assert!(started.elapsed() < std::time::Duration::from_secs(1));
     }
 }

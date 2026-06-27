@@ -41,7 +41,10 @@ fn cli_entrypoints_depend_on_app_ingest_boundary_not_domain_ingest() {
 
 #[test]
 fn ingest_facade_owns_entrypoint_bridge() {
-    let path = crate_root().join("src/app/ingest/mod.rs");
+    let path = crate_root()
+        .parent()
+        .expect("crates directory")
+        .join("bijux-atlas-ingest/src/engine/mod.rs");
     let text = std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
     for required in [
