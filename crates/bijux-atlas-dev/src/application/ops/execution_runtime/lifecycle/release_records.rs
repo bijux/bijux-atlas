@@ -2,6 +2,7 @@
 //! Release rollout observation and readiness baseline record helpers.
 
 use crate::{OpsProcess, RunId};
+use bijux_atlas_ops::lifecycle::release_observation;
 pub(super) use bijux_atlas_ops::lifecycle::release_records::LifecycleSummaryUpdate;
 
 pub(super) fn deployment_revision(
@@ -9,22 +10,7 @@ pub(super) fn deployment_revision(
     repo_root: &std::path::Path,
     namespace: &str,
 ) -> Option<i64> {
-    let argv = vec![
-        "get".to_string(),
-        "deployment".to_string(),
-        "bijux-atlas".to_string(),
-        "-n".to_string(),
-        namespace.to_string(),
-        "-o".to_string(),
-        "json".to_string(),
-    ];
-    let (stdout, _) = process.run_subprocess("kubectl", &argv, repo_root).ok()?;
-    let json: serde_json::Value = serde_json::from_str(&stdout).ok()?;
-    json.get("metadata")
-        .and_then(|row| row.get("annotations"))
-        .and_then(|row| row.get("deployment.kubernetes.io/revision"))
-        .and_then(serde_json::Value::as_str)
-        .and_then(|value| value.parse::<i64>().ok())
+    release_observation::deployment_revision(process, repo_root, namespace)
 }
 
 pub(super) fn rollout_history(
@@ -32,24 +18,7 @@ pub(super) fn rollout_history(
     repo_root: &std::path::Path,
     namespace: &str,
 ) -> serde_json::Value {
-    let argv = vec![
-        "rollout".to_string(),
-        "history".to_string(),
-        "deployment/bijux-atlas".to_string(),
-        "-n".to_string(),
-        namespace.to_string(),
-    ];
-    match process.run_subprocess("kubectl", &argv, repo_root) {
-        Ok((stdout, event)) => serde_json::json!({
-            "status": "ok",
-            "stdout": stdout,
-            "event": event
-        }),
-        Err(err) => serde_json::json!({
-            "status": "failed",
-            "error": err.to_stable_message()
-        }),
-    }
+    release_observation::rollout_history(process, repo_root, namespace)
 }
 
 pub(super) fn pods_restart_count(
@@ -57,39 +26,7 @@ pub(super) fn pods_restart_count(
     repo_root: &std::path::Path,
     namespace: &str,
 ) -> u64 {
-    let argv = vec![
-        "get".to_string(),
-        "pods".to_string(),
-        "-n".to_string(),
-        namespace.to_string(),
-        "-o".to_string(),
-        "json".to_string(),
-    ];
-    let Ok((stdout, _)) = process.run_subprocess("kubectl", &argv, repo_root) else {
-        return 0;
-    };
-    let Ok(json) = serde_json::from_str::<serde_json::Value>(&stdout) else {
-        return 0;
-    };
-    json.get("items")
-        .and_then(serde_json::Value::as_array)
-        .map(|rows| {
-            rows.iter()
-                .flat_map(|row| {
-                    row.get("status")
-                        .and_then(|status| status.get("containerStatuses"))
-                        .and_then(serde_json::Value::as_array)
-                        .cloned()
-                        .unwrap_or_default()
-                })
-                .filter_map(|container| {
-                    container
-                        .get("restartCount")
-                        .and_then(serde_json::Value::as_u64)
-                })
-                .sum()
-        })
-        .unwrap_or(0)
+    release_observation::pods_restart_count(process, repo_root, namespace)
 }
 
 pub(super) fn update_lifecycle_summary(
