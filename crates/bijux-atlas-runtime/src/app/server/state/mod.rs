@@ -660,12 +660,12 @@ impl AppState {
 
     pub fn try_acquire_query_class_permit(
         &self,
-        class: crate::query::QueryClass,
+        class: bijux_atlas_query::QueryClass,
     ) -> Result<OwnedSemaphorePermit, tokio::sync::TryAcquireError> {
         let limiter = match class {
-            crate::query::QueryClass::Cheap => Arc::clone(&self.class_cheap),
-            crate::query::QueryClass::Medium => Arc::clone(&self.class_medium),
-            crate::query::QueryClass::Heavy => Arc::clone(&self.class_heavy),
+            bijux_atlas_query::QueryClass::Cheap => Arc::clone(&self.class_cheap),
+            bijux_atlas_query::QueryClass::Medium => Arc::clone(&self.class_medium),
+            bijux_atlas_query::QueryClass::Heavy => Arc::clone(&self.class_heavy),
             _ => Arc::clone(&self.class_heavy),
         };
         limiter.try_acquire_owned()

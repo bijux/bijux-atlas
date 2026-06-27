@@ -6,6 +6,10 @@ fn atlas_src_root(repo_root: &Path) -> PathBuf {
     repo_root.join("crates/bijux-atlas-runtime/src")
 }
 
+fn atlas_server_http_src_root(repo_root: &Path) -> PathBuf {
+    repo_root.join("crates/bijux-atlas-server/src/adapters/inbound/http")
+}
+
 fn atlas_cli_crate_root(repo_root: &Path) -> PathBuf {
     repo_root.join("crates/bijux-atlas-cli")
 }
@@ -20,22 +24,22 @@ fn dev_atlas_src_root(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_server_router_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("adapters/inbound/http/router.rs")
+    atlas_server_http_src_root(repo_root).join("router.rs")
 }
 
 #[must_use]
 pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("adapters/inbound/http/request_policies.rs")
+    atlas_server_http_src_root(repo_root).join("request_policies.rs")
 }
 
 #[must_use]
 pub fn atlas_http_handlers_utilities_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("adapters/inbound/http/handlers_utilities.rs")
+    atlas_server_http_src_root(repo_root).join("handlers_utilities.rs")
 }
 
 #[must_use]
 pub fn atlas_http_response_contract_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("adapters/inbound/http/response_contract.rs")
+    atlas_server_http_src_root(repo_root).join("response_contract.rs")
 }
 
 #[must_use]
