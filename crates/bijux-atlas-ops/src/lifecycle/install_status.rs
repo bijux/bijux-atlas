@@ -165,11 +165,20 @@ pub fn extract_configmap_env_keys(
     Ok(keys.into_iter().collect())
 }
 
+#[must_use]
+pub fn runtime_env_allowlist_status(repo_root: &Path) -> serde_json::Value {
+    let path = repo_root.join("configs/schemas/contracts/env.schema.json");
+    serde_json::json!({
+        "status": if path.exists() { "ok" } else { "failed" },
+        "path": path.display().to_string()
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
         extract_configmap_env_keys, install_plan_inventory, install_render_path,
-        load_profile_intent,
+        load_profile_intent, runtime_env_allowlist_status,
     };
     use std::path::{Path, PathBuf};
 
@@ -291,5 +300,23 @@ data:
             extract_configmap_env_keys(root.path(), "atlas-run", "kind").expect("extract keys");
 
         assert_eq!(keys, vec!["FEATURE_FLAG_X", "LOG_LEVEL"]);
+    }
+
+    #[test]
+    fn runtime_env_allowlist_status_reports_owned_contract_path() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let contract_path = root.path().join("configs/schemas/contracts");
+        let expected_path = root
+            .path()
+            .join("configs/schemas/contracts/env.schema.json")
+            .display()
+            .to_string();
+        std::fs::create_dir_all(&contract_path).expect("mkdir contracts");
+        std::fs::write(contract_path.join("env.schema.json"), "{}").expect("write env schema");
+
+        let payload = runtime_env_allowlist_status(root.path());
+
+        assert_eq!(payload["status"], "ok");
+        assert_eq!(payload["path"].as_str(), Some(expected_path.as_str()));
     }
 }

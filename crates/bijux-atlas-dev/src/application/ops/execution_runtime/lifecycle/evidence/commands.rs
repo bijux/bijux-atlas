@@ -1329,11 +1329,7 @@ pub(crate) fn load_profile_registry(
 }
 
 pub(crate) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
-    let path = repo_root.join("configs/schemas/contracts/env.schema.json");
-    serde_json::json!({
-        "status": if path.exists() { "ok" } else { "failed" },
-        "path": path.display().to_string()
-    })
+    bijux_atlas_ops::lifecycle::install_status::runtime_env_allowlist_status(repo_root)
 }
 
 pub(crate) fn emit_debug_bundle_report(
