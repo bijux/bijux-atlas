@@ -5,6 +5,9 @@ use crate::adapters::inbound::http::request_policies::{
     cors_middleware, debug_route_hardening_middleware, provenance_headers_middleware,
     resilience_middleware, security_middleware,
 };
+use crate::adapters::inbound::http::{
+    catalog_routes, diagnostic_routes, gene_routes, service_routes, transcript_routes,
+};
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
@@ -13,34 +16,34 @@ use axum::Router;
 
 pub fn build_router(state: AppState) -> Router {
     let mut router = Router::new()
-        .route("/", get(http::handlers::landing_handler))
-        .route("/health", get(http::handlers::health_handler))
-        .route("/healthz", get(http::handlers::healthz_handler))
+        .route("/", get(service_routes::landing_handler))
+        .route("/health", get(service_routes::health_handler))
+        .route("/healthz", get(service_routes::healthz_handler))
         .route(
             "/healthz/overload",
-            get(http::handlers::overload_health_handler),
+            get(service_routes::overload_health_handler),
         )
-        .route("/ready", get(http::handlers::ready_handler))
-        .route("/readyz", get(http::handlers::readyz_handler))
-        .route("/live", get(http::handlers::live_handler))
-        .route("/metrics", get(http::handlers::metrics_handler))
-        .route("/v1/openapi.json", get(http::handlers::openapi_handler))
-        .route("/v1/version", get(http::handlers::version_handler))
-        .route("/v1/datasets", get(http::handlers::datasets_handler))
+        .route("/ready", get(service_routes::ready_handler))
+        .route("/readyz", get(service_routes::readyz_handler))
+        .route("/live", get(service_routes::live_handler))
+        .route("/metrics", get(catalog_routes::metrics_handler))
+        .route("/v1/openapi.json", get(service_routes::openapi_handler))
+        .route("/v1/version", get(service_routes::version_handler))
+        .route("/v1/datasets", get(catalog_routes::datasets_handler))
         .route(
             "/v1/datasets/{release}/{species}/{assembly}",
-            get(http::handlers::dataset_identity_handler),
+            get(catalog_routes::dataset_identity_handler),
         )
         .route(
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
-            get(http::handlers::release_dataset_handler),
+            get(catalog_routes::release_dataset_handler),
         )
-        .route("/v1/genes", get(http::handlers::genes_handler))
+        .route("/v1/genes", get(gene_routes::genes_handler))
         .route(
             "/v1/query/validate",
-            post(http::handlers::query_validate_handler),
+            post(diagnostic_routes::query_validate_handler),
         )
-        .route("/v1/genes/count", get(http::handlers::genes_count_handler))
+        .route("/v1/genes/count", get(gene_routes::genes_count_handler))
         .route("/v1/diff/genes", get(http::diff::diff_genes_handler))
         .route("/v1/diff/region", get(http::diff::diff_region_handler))
         .route(
@@ -53,112 +56,115 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route(
             "/v1/genes/{gene_id}/transcripts",
-            get(http::handlers::gene_transcripts_handler),
+            get(transcript_routes::gene_transcripts_handler),
         )
         .route(
             "/v1/transcripts/{tx_id}",
-            get(http::handlers::transcript_summary_handler),
+            get(transcript_routes::transcript_summary_handler),
         );
     if state.api.enable_admin_endpoints {
         router = router
             .route(
                 "/debug/datasets",
-                get(http::handlers::debug_datasets_handler),
+                get(diagnostic_routes::debug_datasets_handler),
             )
             .route(
                 "/debug/dataset-health",
-                get(http::handlers::dataset_health_handler),
+                get(diagnostic_routes::dataset_health_handler),
             )
             .route(
                 "/debug/registry-health",
-                get(http::handlers::registry_health_handler),
+                get(diagnostic_routes::registry_health_handler),
             )
             .route(
                 "/debug/diagnostics",
-                get(http::handlers::diagnostics_handler),
+                get(diagnostic_routes::diagnostics_handler),
             )
             .route(
                 "/debug/runtime-stats",
-                get(http::handlers::runtime_stats_handler),
+                get(diagnostic_routes::runtime_stats_handler),
             )
             .route(
                 "/debug/system-info",
-                get(http::handlers::system_info_handler),
+                get(diagnostic_routes::system_info_handler),
             )
             .route(
                 "/debug/build-metadata",
-                get(http::handlers::build_metadata_handler),
+                get(diagnostic_routes::build_metadata_handler),
             )
             .route(
                 "/debug/runtime-config",
-                get(http::handlers::runtime_config_dump_handler),
+                get(diagnostic_routes::runtime_config_dump_handler),
             )
             .route(
                 "/debug/dataset-registry",
-                get(http::handlers::dataset_registry_dump_handler),
+                get(diagnostic_routes::dataset_registry_dump_handler),
             )
             .route(
                 "/debug/shard-map",
-                get(http::handlers::shard_map_dump_handler),
+                get(diagnostic_routes::shard_map_dump_handler),
             )
             .route(
                 "/debug/query-planner-stats",
-                get(http::handlers::query_planner_stats_dump_handler),
+                get(diagnostic_routes::query_planner_stats_dump_handler),
             )
             .route(
                 "/debug/cache-stats",
-                get(http::handlers::cache_stats_dump_handler),
+                get(diagnostic_routes::cache_stats_dump_handler),
             )
             .route(
                 "/debug/cluster/nodes",
-                get(http::handlers::cluster_nodes_handler),
+                get(service_routes::cluster_nodes_handler),
             )
             .route(
                 "/debug/cluster-status",
-                get(http::handlers::cluster_status_handler),
+                get(service_routes::cluster_status_handler),
             )
             .route(
                 "/debug/cluster/register",
-                post(http::handlers::cluster_register_handler),
+                post(service_routes::cluster_register_handler),
             )
             .route(
                 "/debug/cluster/heartbeat",
-                post(http::handlers::cluster_heartbeat_handler),
+                post(service_routes::cluster_heartbeat_handler),
             )
             .route(
                 "/debug/cluster/mode",
-                post(http::handlers::cluster_mode_handler),
+                post(service_routes::cluster_mode_handler),
             )
             .route(
                 "/debug/cluster/replicas",
-                get(http::handlers::cluster_replica_list_handler),
+                get(service_routes::cluster_replica_list_handler),
             )
             .route(
                 "/debug/cluster/replicas/health",
-                get(http::handlers::cluster_replica_health_handler),
+                get(service_routes::cluster_replica_health_handler),
             )
             .route(
                 "/debug/cluster/replicas/failover",
-                post(http::handlers::cluster_replica_failover_handler),
+                post(service_routes::cluster_replica_failover_handler),
             )
             .route(
                 "/debug/cluster/replicas/diagnostics",
-                get(http::handlers::cluster_replica_diagnostics_handler),
+                get(service_routes::cluster_replica_diagnostics_handler),
             )
             .route(
                 "/debug/recovery/run",
-                post(http::handlers::cluster_recovery_run_handler),
+                post(service_routes::cluster_recovery_run_handler),
             )
             .route(
                 "/debug/recovery/diagnostics",
-                get(http::handlers::recovery_diagnostics_handler),
+                get(service_routes::recovery_diagnostics_handler),
             )
             .route(
                 "/debug/failure-injection",
-                post(http::handlers::failure_injection_handler),
+                post(service_routes::failure_injection_handler),
             )
-            .route("/debug/chaos/run", post(http::handlers::chaos_run_handler))
-            .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler));
+            .route("/debug/chaos/run", post(service_routes::chaos_run_handler))
+            .route(
+                "/v1/_debug/echo",
+                get(diagnostic_routes::debug_echo_handler),
+            );
     }
     router
         .layer(from_fn_with_state(
