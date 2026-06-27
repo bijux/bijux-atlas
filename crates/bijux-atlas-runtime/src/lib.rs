@@ -25,7 +25,8 @@ pub(crate) use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 pub(crate) use crate::app::server::observability::{route_sli_class, unix_time_millis};
 pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-pub(crate) use crate::runtime::config::RateLimitConfig;
+#[allow(unused_imports)]
+pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
 
 pub const CRATE_NAME: &str = "bijux-atlas";
 pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";
