@@ -4,6 +4,7 @@
 
 pub mod inventory;
 pub mod kubernetes;
+pub mod lifecycle;
 pub mod load;
 pub mod reference;
 pub mod stack;

@@ -19,3 +19,7 @@ pub(crate) use self::simulation::*;
 use self::simulation_layout::*;
 use self::simulation_records::*;
 pub(crate) use self::status::*;
+use bijux_atlas_ops::lifecycle::simulation_paths::{
+    simulation_cluster_config, simulation_cluster_context, simulation_cluster_name,
+    simulation_current_chart_path, simulation_previous_chart_path,
+};

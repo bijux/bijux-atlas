@@ -1,43 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Simulation cluster identity, chart location, and report layout helpers.
+//! Simulation drill registry helpers and RunId-aware report path adapters.
 
 use crate::RunId;
-
-pub(super) fn simulation_cluster_name() -> &'static str {
-    "bijux-atlas-sim"
-}
-
-pub(super) fn simulation_cluster_context() -> String {
-    format!("kind-{}", simulation_cluster_name())
-}
-
-pub(super) fn simulation_cluster_config(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("ops/k8s/kind/cluster.yaml")
-}
-
-pub(super) fn simulation_current_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("ops/k8s/charts/bijux-atlas")
-}
-
-pub(super) fn simulation_previous_chart_path(repo_root: &std::path::Path) -> std::path::PathBuf {
-    repo_root.join("artifacts/ops/chart-sources/previous/bijux-atlas.tgz")
-}
+use bijux_atlas_ops::lifecycle::simulation_paths;
 
 pub(super) fn simulation_report_path(
     repo_root: &std::path::Path,
     run_id: &RunId,
     file_name: &str,
 ) -> Result<std::path::PathBuf, String> {
-    let path = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join("reports")
-        .join(file_name);
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
-    }
-    Ok(path)
+    simulation_paths::simulation_report_path(repo_root, run_id.as_str(), file_name)
 }
 
 pub(super) fn write_simulation_report(
@@ -46,13 +18,7 @@ pub(super) fn write_simulation_report(
     file_name: &str,
     payload: &serde_json::Value,
 ) -> Result<std::path::PathBuf, String> {
-    let path = simulation_report_path(repo_root, run_id, file_name)?;
-    std::fs::write(
-        &path,
-        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
-    Ok(path)
+    simulation_paths::write_simulation_report(repo_root, run_id.as_str(), file_name, payload)
 }
 
 pub(super) fn load_drill_registry(
