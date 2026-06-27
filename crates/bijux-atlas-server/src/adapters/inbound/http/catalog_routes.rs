@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
+use crate::adapters::inbound::http::route_support::*;
+use crate::*;
 use bijux_atlas_model::dataset::ShardingPlan;
 use serde_json::json;
 use serde_json::Value;
@@ -8,6 +9,44 @@ use tracing::info;
 
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     crate::adapters::outbound::telemetry::metrics_endpoint::metrics_handler(State(state)).await
+}
+
+pub(crate) async fn release_dataset_handler(
+    State(state): State<AppState>,
+    axum::extract::Path((release, species, assembly)): axum::extract::Path<(
+        String,
+        String,
+        String,
+    )>,
+    uri: axum::extract::OriginalUri,
+) -> impl IntoResponse {
+    let started = Instant::now();
+    let request_id = make_request_id(&state);
+    let mut location = format!("/v1/datasets/{release}/{species}/{assembly}");
+    if let Some(raw_query) = uri.0.query() {
+        location.push('?');
+        location.push_str(raw_query);
+    }
+
+    let mut resp = StatusCode::PERMANENT_REDIRECT.into_response();
+    if let Ok(v) = HeaderValue::from_str(&location) {
+        resp.headers_mut().insert("location", v);
+    }
+    if let Ok(v) = HeaderValue::from_str(&format!("<{location}>; rel=\"canonical\"")) {
+        resp.headers_mut().insert("link", v);
+    }
+    resp.headers_mut()
+        .insert("deprecation", HeaderValue::from_static("true"));
+
+    state
+        .metrics()
+        .observe_request(
+            "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+            StatusCode::PERMANENT_REDIRECT,
+            started.elapsed(),
+        )
+        .await;
+    with_request_id(resp, &request_id)
 }
 
 pub(crate) async fn datasets_handler(

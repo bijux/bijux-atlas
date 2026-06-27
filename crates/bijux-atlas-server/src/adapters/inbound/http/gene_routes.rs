@@ -1,5 +1,6 @@
-use super::*;
 use crate::adapters::inbound::http::genes;
+use crate::adapters::inbound::http::route_support::*;
+use crate::*;
 use bijux_atlas_query::query_gene_count;
 use serde_json::json;
 

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub(crate) mod cache_headers;
+pub(crate) mod catalog_routes;
+pub(crate) mod diagnostic_routes;
 pub(crate) mod diff;
 pub(crate) mod dto;
 pub(crate) mod effects_adapters;
+pub(crate) mod gene_routes;
 pub(crate) mod genes;
 pub(crate) mod handlers;
-pub(crate) mod handlers_endpoints;
 pub(crate) mod middleware;
 pub(crate) mod presenters;
 pub(crate) mod request_identity;
@@ -18,3 +20,4 @@ pub(crate) mod route_support;
 pub mod router;
 pub(crate) mod sequence;
 pub(crate) mod service_routes;
+pub(crate) mod transcript_routes;

@@ -2,9 +2,12 @@
 
 #![deny(clippy::redundant_clone)]
 
-pub(crate) use crate::adapters::inbound::http::handlers_endpoints::*;
+pub(crate) use crate::adapters::inbound::http::catalog_routes::*;
+pub(crate) use crate::adapters::inbound::http::diagnostic_routes::*;
+pub(crate) use crate::adapters::inbound::http::gene_routes::*;
 pub(crate) use crate::adapters::inbound::http::route_support::*;
 pub(crate) use crate::adapters::inbound::http::service_routes::*;
+pub(crate) use crate::adapters::inbound::http::transcript_routes::*;
 
 #[cfg(test)]
 mod tests {

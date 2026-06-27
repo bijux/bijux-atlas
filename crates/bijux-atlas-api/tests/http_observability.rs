@@ -200,10 +200,10 @@ async fn metrics_endpoint_matches_metrics_contract() {
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diff.rs"),
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/sequence.rs"),
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/genes/main_handler.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/catalog_and_identity.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/debug_and_validate.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/genes_and_counts.rs"),
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_endpoints/transcripts.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/catalog_routes.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/diagnostic_routes.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/gene_routes.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/transcript_routes.rs"),
         root.join("crates/bijux-atlas-server/src/adapters/inbound/http/service_routes.rs"),
     ];
     let source_concat = server_sources
