@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::domain::cluster::distributed::{
+use crate::domain::cluster::coordination::distributed::{
     ClusterDescriptor, ClusterHealth, NodeDescriptor, NodeState,
 };
 
@@ -74,7 +74,7 @@ impl ClusterStateRegistry {
 #[cfg(test)]
 mod tests {
     use super::{ClusterStateRegistry, NodeMetadata};
-    use crate::domain::cluster::distributed::{
+    use crate::domain::cluster::coordination::distributed::{
         BootstrapPolicy, ClusterDescriptor, ClusterMetadataStore, CompatibilityPolicy,
         DiscoveryStrategy, HealthPolicy, MetadataBackend, NodeDescriptor, NodeIdentity, NodeRole,
         NodeState, ReadinessPolicy, ShutdownPolicy, TopologyMode,
@@ -137,7 +137,7 @@ mod tests {
         assert_eq!(snapshot.node_count, 1);
         assert_eq!(
             snapshot.health,
-            crate::domain::cluster::distributed::ClusterHealth::Healthy
+            crate::domain::cluster::coordination::distributed::ClusterHealth::Healthy
         );
     }
 }
