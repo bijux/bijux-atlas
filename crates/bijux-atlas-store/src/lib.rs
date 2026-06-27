@@ -2,7 +2,6 @@
 
 #![forbid(unsafe_code)]
 
-mod backend;
 mod backend_capabilities;
 pub mod backends;
 mod catalog;
@@ -10,11 +9,8 @@ mod contracts;
 mod manifest;
 mod paths;
 mod retry;
+mod store;
 
-pub use backend::{
-    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
-    StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
-};
 pub use backend_capabilities::{validate_backend_compiled, BackendKind};
 #[cfg(feature = "backend-s3")]
 pub use backends::http::HttpReadonlyStore;
@@ -34,5 +30,9 @@ pub use paths::{
     PUBLISH_LOCK_FILE, SQLITE_FILE,
 };
 pub use retry::{BackoffPolicy, RetryPolicy};
+pub use store::{
+    ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
+    StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
+};
 
 pub const CRATE_NAME: &str = "bijux-atlas-store";

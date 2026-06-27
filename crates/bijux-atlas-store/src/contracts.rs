@@ -2,7 +2,7 @@
 
 use bijux_atlas_model::{ArtifactManifest, DatasetId};
 
-use crate::backend::{ArtifactStore, PublishLockGuard, StoreError, StoreErrorCode};
+use crate::store::{ArtifactStore, PublishLockGuard, StoreError, StoreErrorCode};
 
 #[derive(
     Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
