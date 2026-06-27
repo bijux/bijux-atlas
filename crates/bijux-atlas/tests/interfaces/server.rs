@@ -8,8 +8,6 @@ mod download_then_serve;
 mod import_boundary_guardrails;
 #[path = "server/logging_contracts.rs"]
 mod logging_contracts;
-#[path = "server/observability_contract.rs"]
-mod observability_contract;
 #[path = "server/p99-regression.rs"]
 mod p99_regression;
 #[path = "server/redis_optional.rs"]

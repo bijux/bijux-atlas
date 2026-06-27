@@ -13,7 +13,7 @@ use serde::Deserialize;
 use tempfile::tempdir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-#[path = "observability/logging_format.rs"]
+#[path = "http_observability/logging_format.rs"]
 mod logging_format;
 
 #[derive(Debug, Deserialize)]
