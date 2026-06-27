@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 mod diagnose;
-mod evidence_commands;
-mod evidence_helpers;
+mod evidence;
 mod foundations;
 mod simulation_cluster;
 mod simulation_release;
 mod tests_and_status;
 
 pub(crate) use self::diagnose::*;
-pub(crate) use self::evidence_commands::*;
-use self::evidence_helpers::*;
+pub(crate) use self::evidence::*;
 use self::foundations::*;
 pub(crate) use self::simulation_cluster::*;
 pub(crate) use self::simulation_release::*;
