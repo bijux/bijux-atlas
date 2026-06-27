@@ -984,7 +984,7 @@ pub(crate) fn run_ops_helm_install(
                 "errors": wait_errors
             },
             "kubeconform": record_kubeconform_result(&process, &repo_root, &run_id, &profile),
-            "configmap_env_keys": extract_configmap_env_keys(&repo_root, &run_id, &profile)?,
+            "configmap_env_keys": extract_configmap_env_keys(&repo_root, run_id.as_str(), &profile)?,
             "runtime_allowlist": runtime_allowlist_status(&repo_root),
             "smoke": {
                 "report_path": smoke_report_path.display().to_string(),

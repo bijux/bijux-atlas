@@ -1387,42 +1387,6 @@ pub(crate) fn load_profile_registry(
         }))
 }
 
-pub(crate) fn extract_configmap_env_keys(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    profile: &str,
-) -> Result<Vec<String>, String> {
-    let render_path = install_render_path(repo_root, run_id.as_str(), profile);
-    if !render_path.exists() {
-        return Ok(Vec::new());
-    }
-    let rendered = std::fs::read_to_string(&render_path)
-        .map_err(|err| format!("failed to read {}: {err}", render_path.display()))?;
-    let mut keys = std::collections::BTreeSet::<String>::new();
-    for document in serde_yaml::Deserializer::from_str(&rendered) {
-        let value: serde_yaml::Value = match serde::Deserialize::deserialize(document) {
-            Ok(value) => value,
-            Err(_) => continue,
-        };
-        if value.get("kind").and_then(serde_yaml::Value::as_str) != Some("ConfigMap") {
-            continue;
-        }
-        let data = match value.get("data").and_then(serde_yaml::Value::as_mapping) {
-            Some(data) => data,
-            None => continue,
-        };
-        for key in data.keys().filter_map(serde_yaml::Value::as_str) {
-            if key
-                .chars()
-                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
-            {
-                keys.insert(key.to_string());
-            }
-        }
-    }
-    Ok(keys.into_iter().collect())
-}
-
 pub(crate) fn record_kubeconform_result(
     process: &OpsProcess,
     repo_root: &std::path::Path,
