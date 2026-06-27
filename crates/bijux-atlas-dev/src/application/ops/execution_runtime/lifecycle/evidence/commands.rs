@@ -5,9 +5,7 @@ use super::*;
 use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
 use crate::{resolve_repo_root, OpsProcess, RunId};
-use std::io::{Read, Write};
-use std::net::{Shutdown, TcpStream};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
@@ -1370,72 +1368,20 @@ pub(crate) fn run_simulation_wait(
 }
 
 pub(crate) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
-    let start = Instant::now();
-    while start.elapsed() < timeout {
-        if TcpStream::connect(("127.0.0.1", port)).is_ok() {
-            return Ok(());
-        }
-        std::thread::sleep(Duration::from_millis(100));
-    }
-    Err(format!("timed out waiting for localhost:{port}"))
+    bijux_atlas_ops::kubernetes::service_probe::wait_for_local_port(port, timeout)
 }
 
 pub(super) fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
-    let response = perform_http_request(local_port, path)?;
-    Ok(serde_json::json!({
-        "path": path,
-        "status": response.status,
-        "latency_ms": response.latency_ms,
-        "body_sha256": sha256_hex(&response.body)
-    }))
+    bijux_atlas_ops::kubernetes::service_probe::perform_http_check(local_port, path, sha256_hex)
 }
 
-pub(crate) struct HttpCheckResponse {
-    pub(crate) status: u16,
-    pub(crate) latency_ms: u128,
-    pub(crate) body: String,
-}
+pub(crate) type HttpCheckResponse = bijux_atlas_ops::kubernetes::service_probe::HttpCheckResponse;
 
 pub(crate) fn perform_http_request(
     local_port: u16,
     path: &str,
 ) -> Result<HttpCheckResponse, String> {
-    let started = Instant::now();
-    let mut stream = TcpStream::connect(("127.0.0.1", local_port))
-        .map_err(|err| format!("connect failed: {err}"))?;
-    stream
-        .set_read_timeout(Some(Duration::from_secs(5)))
-        .map_err(|err| format!("set read timeout failed: {err}"))?;
-    stream
-        .set_write_timeout(Some(Duration::from_secs(5)))
-        .map_err(|err| format!("set write timeout failed: {err}"))?;
-    let request = format!("GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n");
-    stream
-        .write_all(request.as_bytes())
-        .map_err(|err| format!("write failed: {err}"))?;
-    let _ = stream.shutdown(Shutdown::Write);
-    let mut response = Vec::new();
-    stream
-        .read_to_end(&mut response)
-        .map_err(|err| format!("read failed: {err}"))?;
-    let response_text = String::from_utf8_lossy(&response);
-    let mut lines = response_text.lines();
-    let status_line = lines.next().unwrap_or_default().to_string();
-    let status_code = status_line
-        .split_whitespace()
-        .nth(1)
-        .and_then(|value| value.parse::<u16>().ok())
-        .unwrap_or(0);
-    let body = response
-        .windows(4)
-        .position(|window| window == b"\r\n\r\n")
-        .map(|offset| &response[offset + 4..])
-        .unwrap_or_default();
-    Ok(HttpCheckResponse {
-        status: status_code,
-        latency_ms: started.elapsed().as_millis(),
-        body: String::from_utf8_lossy(body).to_string(),
-    })
+    bijux_atlas_ops::kubernetes::service_probe::perform_http_request(local_port, path)
 }
 
 pub(crate) fn run_smoke_checks(
