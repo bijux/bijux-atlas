@@ -325,6 +325,33 @@ fn atlas_leaf_crate_test_roots_use_owned_surface_names() {
 }
 
 #[test]
+fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
+    let root = repo_root();
+
+    for forbidden in [
+        "crates/bijux-atlas/src/.DS_Store",
+        "crates/bijux-atlas/src/app/.DS_Store",
+        "crates/bijux-atlas-api/src/client/client_tests.rs",
+        "crates/bijux-atlas/src/app/server/dataset_cache_manager_tests.rs",
+    ] {
+        assert!(
+            !root.join(forbidden).exists(),
+            "atlas source tree must not keep disposable artifacts or ownership-free test files: {forbidden}"
+        );
+    }
+
+    for required in [
+        "crates/bijux-atlas/src/app/server/tests.rs",
+        "crates/bijux-atlas-api/src/client/mod.rs",
+    ] {
+        assert!(
+            root.join(required).is_file(),
+            "atlas source tree must keep stable source-owned test surfaces: {required}"
+        );
+    }
+}
+
+#[test]
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =
