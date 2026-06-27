@@ -1,0 +1,30 @@
+[package]
+name = "bijux-atlas-ingest"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Atlas ingest engine contracts, normalization, and artifact build surfaces"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-ingest/latest/bijux_atlas_ingest/"
+readme = "README.md"
+categories = ["science::bioinformatics"]
+keywords = ["bioinformatics", "genomics", "ingest", "gff3", "fasta"]
+
+[dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-model = { workspace = true }
+bijux-atlas-query = { workspace = true }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+criterion = "0.8"
+hex = "0.4"
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+tempfile = "=3.27.0"
+toml = "1.0"
+
+[lib]
+path = "src/lib.rs"

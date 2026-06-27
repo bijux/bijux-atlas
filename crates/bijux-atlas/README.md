@@ -131,9 +131,9 @@ The following are not stable API promises:
   telemetry, and filesystem code
 - `src/app`: use-case orchestration, ingest/query boundary facades, ports, cache services, and server application state
 - `src/contracts`: external schemas, runtime config contracts, and stable error definitions
-- `src/domain`: business rules for dataset, query, ingest, policy, cluster, and security behavior
+- `src/domain`: business rules for cluster, policy, security, and compatibility facades for owned Atlas subcrates
 - `src/runtime`: runtime configuration and process-level setup
-- `src/api`, `src/core`, `src/model`, `src/query`: compatibility facades that point callers to the owning Atlas subcrates
+- `src/api`, `src/core`, `src/model`, `src/query`, `src/domain/ingest`: compatibility facades that point callers to the owning Atlas subcrates
 
 If a change affects transport or persistence details, it usually belongs in `adapters`. If it
 changes business behavior, it usually belongs in `domain`. If it changes an external schema or

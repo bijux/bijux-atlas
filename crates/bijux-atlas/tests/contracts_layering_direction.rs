@@ -39,6 +39,7 @@ fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
     let cargo = std::fs::read_to_string(root.join("Cargo.toml")).expect("workspace Cargo.toml");
     for member in [
         "crates/bijux-atlas-core",
+        "crates/bijux-atlas-ingest",
         "crates/bijux-atlas-model",
         "crates/bijux-atlas-query",
         "crates/bijux-atlas-api",
@@ -70,6 +71,26 @@ fn core_crate_stays_runtime_independent_by_dependency_contract() {
         assert!(
             !cargo.contains(forbidden),
             "core crate must not depend on runtime/dev surface `{forbidden}`"
+        );
+    }
+}
+
+#[test]
+fn ingest_crate_stays_runtime_and_http_independent_by_dependency_contract() {
+    let root = workspace_root();
+    let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-ingest/Cargo.toml"))
+        .expect("ingest cargo");
+
+    for forbidden in [
+        "bijux-atlas =",
+        "bijux-dev-atlas =",
+        "axum =",
+        "reqwest =",
+        "tracing-subscriber =",
+    ] {
+        assert!(
+            !cargo.contains(forbidden),
+            "ingest crate must not depend on runtime/http surface `{forbidden}`"
         );
     }
 }
