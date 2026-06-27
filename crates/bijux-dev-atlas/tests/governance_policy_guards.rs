@@ -283,10 +283,43 @@ fn atlas_runtime_test_surface_does_not_duplicate_api_client_suite() {
         "runtime must keep the narrow legacy client compatibility check"
     );
     assert!(
-        root.join("crates/bijux-atlas-api/tests/client.rs")
+        root.join("crates/bijux-atlas-api/tests/client_contracts.rs")
             .is_file(),
         "api crate must own the full Rust client test suite"
     );
+}
+
+#[test]
+fn atlas_leaf_crate_test_roots_use_owned_surface_names() {
+    let root = repo_root();
+
+    for forbidden in [
+        "crates/bijux-atlas-api/tests/contracts.rs",
+        "crates/bijux-atlas-api/tests/client.rs",
+        "crates/bijux-atlas-core/tests/contracts.rs",
+        "crates/bijux-atlas-model/tests/contracts.rs",
+        "crates/bijux-atlas-query/tests/contracts.rs",
+        "crates/bijux-atlas-store/tests/infrastructure_store.rs",
+    ] {
+        assert!(
+            !root.join(forbidden).exists(),
+            "leaf crate test root must not use a generic ownership-free name: {forbidden}"
+        );
+    }
+
+    for required in [
+        "crates/bijux-atlas-api/tests/api_contracts.rs",
+        "crates/bijux-atlas-api/tests/client_contracts.rs",
+        "crates/bijux-atlas-core/tests/core_contracts.rs",
+        "crates/bijux-atlas-model/tests/model_contracts.rs",
+        "crates/bijux-atlas-query/tests/query_contracts.rs",
+        "crates/bijux-atlas-store/tests/store_backend_contracts.rs",
+    ] {
+        assert!(
+            root.join(required).is_file(),
+            "leaf crate test root must keep an owned, crate-specific name: {required}"
+        );
+    }
 }
 
 #[test]
