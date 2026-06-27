@@ -488,6 +488,13 @@ pub fn extract_gene_rows(
                             .then(a.biotype.cmp(&b.biotype))
                     });
                 }
+                _ => {
+                    if matches!(opts.strictness, StrictnessMode::Strict) {
+                        return Err(IngestError(format!(
+                            "duplicate gene_id policy does not support duplicate gene_id: {key}"
+                        )));
+                    }
+                }
             }
         }
         if let Some(first) = candidates.into_iter().next() {
@@ -739,6 +746,7 @@ fn used_gene_id_fallback(
                 .iter()
                 .any(|k| attrs.get(k).map(|v| !v.trim().is_empty()).unwrap_or(false))
         }
+        _ => false,
     }
 }
 

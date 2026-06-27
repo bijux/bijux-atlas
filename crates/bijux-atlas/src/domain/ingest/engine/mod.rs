@@ -268,6 +268,7 @@ fn evaluate_anomaly_thresholds(
                 error_total = error_total.saturating_add(count)
             }
             crate::domain::dataset::QcSeverity::Info => {}
+            _ => error_total = error_total.saturating_add(count),
         }
     }
     if let Some(max_warn) = opts.max_warn_anomalies {

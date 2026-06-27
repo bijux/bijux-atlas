@@ -34,6 +34,7 @@ opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"] }
 redis = { version = "1.2", features = ["tokio-comp"] }
 serde.workspace = true
 bijux-atlas-core = { workspace = true }
+bijux-atlas-model = { workspace = true }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 csv = "1.4"
@@ -100,8 +101,8 @@ name = "contracts_plugin"
 path = "tests/contracts/plugin.rs"
 
 [[test]]
-name = "contracts_architecture_iteration01"
-path = "tests/contracts_architecture_iteration01.rs"
+name = "contracts_crate_boundary_contract"
+path = "tests/contracts_crate_boundary_contract.rs"
 
 [[test]]
 name = "contracts_ingest_entrypoint_boundaries"

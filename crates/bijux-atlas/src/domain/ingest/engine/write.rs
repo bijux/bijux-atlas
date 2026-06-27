@@ -294,6 +294,7 @@ fn write_evidence_sidecars(
             crate::domain::dataset::QcSeverity::Info => "INFO",
             crate::domain::dataset::QcSeverity::Warn => "WARN",
             crate::domain::dataset::QcSeverity::Error => "ERROR",
+            _ => "ERROR",
         };
         *severity_summary.entry(key.to_string()).or_insert(0) += *count;
         class_items.push(json!({

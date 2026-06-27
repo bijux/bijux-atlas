@@ -143,6 +143,17 @@ async fn diff_common(
     let route = match scope {
         DiffScope::Genes => "/v1/diff/genes",
         DiffScope::Region => "/v1/diff/region",
+        _ => {
+            let resp = api_error_response(
+                StatusCode::BAD_REQUEST,
+                error_json(
+                    ApiErrorCode::InvalidQueryParameter,
+                    "unsupported diff scope",
+                    json!({"scope": format!("{scope:?}")}),
+                ),
+            );
+            return with_request_id(resp, &request_id);
+        }
     };
     info!(request_id = %request_id, route = route, "request start");
     let queue_depth = state
@@ -334,6 +345,17 @@ async fn diff_common(
                 return with_request_id(resp, &request_id);
             }
         },
+        _ => {
+            let resp = api_error_response(
+                StatusCode::BAD_REQUEST,
+                error_json(
+                    ApiErrorCode::InvalidQueryParameter,
+                    "unsupported diff scope",
+                    json!({"scope": format!("{scope:?}")}),
+                ),
+            );
+            return with_request_id(resp, &request_id);
+        }
     };
 
     let from_index_path = match state
