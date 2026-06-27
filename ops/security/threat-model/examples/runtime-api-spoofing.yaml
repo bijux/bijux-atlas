@@ -11,5 +11,5 @@ mitigations:
   - MIT-HTTP-BOUNDARY
   - MIT-AUTH-MODEL
 validation:
-  command: bijux-dev-atlas security threats verify --format json
+  command: bijux-atlas-dev security threats verify --format json
   expected_status: ok

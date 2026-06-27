@@ -10,7 +10,7 @@ key_custody_model:
   storage: repository-governed evidence workspace
   rotation_expectation: rotate signing metadata on release process changes and before any trust-root change
 verification:
-  command: bijux-dev-atlas ops evidence verify ops/release/evidence/bundle.tar --format json
+  command: bijux-atlas-dev ops evidence verify ops/release/evidence/bundle.tar --format json
   airgap_supported: true
   notes:
     - verification reads only local evidence files

@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "crates/bijux-dev-atlas/src/application/audit.rs"
-      - "crates/bijux-dev-atlas/src/application/docs/**"
+      - "crates/bijux-atlas-dev/src/application/audit.rs"
+      - "crates/bijux-atlas-dev/src/application/docs/**"
       - "configs/sources/governance/audit/**"
       - "docs/bijux-atlas-dev/delivery/**"
       - "docs/bijux-atlas-ops/**"
@@ -28,12 +28,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts/system/simulation artifacts/audit
-          cargo run --locked -q -p bijux-dev-atlas -- system simulate suite --output-format json > artifacts/system/simulation/run.json
-          cargo run --locked -q -p bijux-dev-atlas -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
-          cargo run --locked -q -p bijux-dev-atlas -- governance validate --output-format json > artifacts/audit/governance-validate.json || true
-          cargo run --locked -q -p bijux-dev-atlas -- audit bundle generate --output-format json > artifacts/audit/generate.json
-          cargo run --locked -q -p bijux-dev-atlas -- audit compliance report --output-format json > artifacts/audit/compliance.json
-          cargo run --locked -q -p bijux-dev-atlas -- audit readiness validate --output-format json > artifacts/audit/readiness.json
+          cargo run --locked -q -p bijux-atlas-dev -- system simulate suite --output-format json > artifacts/system/simulation/run.json
+          cargo run --locked -q -p bijux-atlas-dev -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
+          cargo run --locked -q -p bijux-atlas-dev -- governance validate --output-format json > artifacts/audit/governance-validate.json || true
+          cargo run --locked -q -p bijux-atlas-dev -- audit bundle generate --output-format json > artifacts/audit/generate.json
+          cargo run --locked -q -p bijux-atlas-dev -- audit compliance report --output-format json > artifacts/audit/compliance.json
+          cargo run --locked -q -p bijux-atlas-dev -- audit readiness validate --output-format json > artifacts/audit/readiness.json
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:

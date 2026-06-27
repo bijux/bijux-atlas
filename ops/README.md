@@ -3,8 +3,8 @@
 `ops/` is the repository-owned source of truth for Atlas operational inputs, inventories, schemas, fixtures, and generated examples.
 
 - Intent: keep `ops/` as operational data, schemas, inventories, fixtures, and generated evidence examples.
-- Machine validation entrypoint: `bijux-dev-atlas ops validate --format json`.
-- Focused execution entrypoints: `bijux-dev-atlas ops profiles ...`, `bijux-dev-atlas ops render ...`, `bijux-dev-atlas ops install ...`, and `bijux-dev-atlas ops stack ...`.
+- Machine validation entrypoint: `bijux-atlas-dev ops validate --format json`.
+- Focused execution entrypoints: `bijux-atlas-dev ops profiles ...`, `bijux-atlas-dev ops render ...`, `bijux-atlas-dev ops install ...`, and `bijux-atlas-dev ops stack ...`.
 - Human walkthroughs and procedures live in `docs/04-operations/`, `docs/06-development/`, and `docs/07-reference/`.
 
 ## Root Docs

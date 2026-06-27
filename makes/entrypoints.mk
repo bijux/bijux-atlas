@@ -107,7 +107,7 @@ registry-doctor: ## Validate governed suite registries and mappings
 tests-all: ## Run the deterministic test suite without external network
 	@$(DEV_ATLAS) tests run --mode all --artifacts-root $(ARTIFACT_ROOT) --run-id $(RUN_ID) $(if $(filter 1 true yes,$(INCLUDE_CLIENT_PYTHON)),--include-client-python,) --format $(FORMAT)
 
-release-verify: ## Verify a release evidence tarball through bijux-dev-atlas
+release-verify: ## Verify a release evidence tarball through bijux-atlas-dev
 	@[ -n "$${EVIDENCE:-}" ] || { echo "usage: make release-verify EVIDENCE=<tarball>" >&2; exit 2; }
 	@$(DEV_ATLAS) release verify --evidence "$${EVIDENCE}" --format $(FORMAT)
 

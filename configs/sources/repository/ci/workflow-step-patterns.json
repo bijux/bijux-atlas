@@ -86,7 +86,7 @@
       "step_kind": "run",
       "classification": "orchestration",
       "match_mode": "contains",
-      "needle": "cargo run --locked -q -p bijux-dev-atlas --",
+      "needle": "cargo run --locked -q -p bijux-atlas-dev --",
       "allowed": true
     },
     {

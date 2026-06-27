@@ -39,7 +39,7 @@ The current workflow:
 
 - accepts a version input for manual dispatch and also runs on pushed version tags
 - prepares isolated cache and temp roots under `artifacts/isolates/release-candidate`
-- runs release-candidate preflight through `bijux-dev-atlas`
+- runs release-candidate preflight through `bijux-atlas-dev`
 - runs the release doctor gate when enabled
 - validates docs completeness, release checks, reproducibility, and ops readiness
 - builds distribution artifacts and uploads the full artifact bundle

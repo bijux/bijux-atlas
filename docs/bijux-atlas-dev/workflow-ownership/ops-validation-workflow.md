@@ -39,7 +39,7 @@ is the source of truth for the current ops validation lane.
 
 The current workflow:
 
-- triggers on changes to `ops/**`, `crates/bijux-dev-atlas/**`, `makes/ops.mk`, and the workflow itself
+- triggers on changes to `ops/**`, `crates/bijux-atlas-dev/**`, `makes/ops.mk`, and the workflow itself
 - prepares isolated cache and temp roots under `artifacts/isolates/ops-validate`
 - runs `make doctor`, `make makes-target-list`, and `make ops-validate`
 - captures JSON reports for doctor, makes target inventory, ops validate, schema validate, inventory validate, and k8s render

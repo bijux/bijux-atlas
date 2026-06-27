@@ -139,7 +139,7 @@
     {
       "path": "ops/inventory/pins.yaml",
       "schema": "ops/schema/inventory/pins.schema.json",
-      "generator": "bijux-dev-atlas ops generate pins-index",
+      "generator": "bijux-atlas-dev ops generate pins-index",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {

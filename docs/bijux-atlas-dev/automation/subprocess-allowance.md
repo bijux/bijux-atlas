@@ -32,9 +32,9 @@ not an implementation detail that should disappear inside a command.
 
 ## Repository Anchors
 
-- [`crates/bijux-dev-atlas/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/mod.rs:1) defines command surfaces that may request subprocess capability
-- [`crates/bijux-dev-atlas/src/core/registry.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/core/registry.rs:144) enforces declared `effects_required`
-- [`crates/bijux-dev-atlas/src/engine/runner.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/engine/runner.rs:96) fails closed when subprocess capability was not granted
+- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines command surfaces that may request subprocess capability
+- [`crates/bijux-atlas-dev/src/core/registry.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/core/registry.rs:144) enforces declared `effects_required`
+- [`crates/bijux-atlas-dev/src/engine/runner.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/engine/runner.rs:96) fails closed when subprocess capability was not granted
 
 ## Main Takeaway
 

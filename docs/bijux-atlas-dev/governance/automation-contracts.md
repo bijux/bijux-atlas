@@ -9,7 +9,7 @@ last_reviewed: 2026-03-15
 
 # Automation Contracts
 
-This page defines the stable promises around the Atlas development control plane, especially `bijux-dev-atlas`, suite execution, and governed report artifacts.
+This page defines the stable promises around the Atlas development control plane, especially `bijux-atlas-dev`, suite execution, and governed report artifacts.
 
 ## Contract Scope
 
@@ -26,7 +26,7 @@ to document for maintainers and automation consumers.
 
 ## Main Promises
 
-- repository automation remains discoverable through `bijux-dev-atlas` and documented wrapper entrypoints
+- repository automation remains discoverable through `bijux-atlas-dev` and documented wrapper entrypoints
 - effectful commands fail closed when required capabilities are not explicitly allowed
 - governed reports use versioned JSON schemas under `configs/schemas/contracts/reports/`
 - suite and check execution expose explicit selection inputs instead of hidden lane behavior

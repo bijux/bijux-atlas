@@ -1,4 +1,4 @@
-# Scope: contracts wrapper targets delegated to bijux-dev-atlas checks and suite runners.
+# Scope: contracts wrapper targets delegated to bijux-atlas-dev checks and suite runners.
 # Public targets: contract, contract-effect, contract-all, contracts-pr, contracts-merge, contracts-release, contracts-configs-required, contracts-docs-required, contracts-make-required, contracts-help, contracts-group, contracts-tag, contracts-pure
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
 CONTRACT_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)

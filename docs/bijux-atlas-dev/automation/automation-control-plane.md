@@ -11,7 +11,7 @@ last_reviewed: 2026-04-13
 
 Atlas uses `bijux dev atlas ...` as the canonical installed automation surface for repository
 checks, docs workflows, governance validation, and machine-readable evidence. The direct binary that
-backs that namespace is `bijux-dev-atlas`, and `make` remains the convenience wrapper for the most
+backs that namespace is `bijux-atlas-dev`, and `make` remains the convenience wrapper for the most
 common maintainer lanes.
 
 ## Why This Exists
@@ -77,8 +77,8 @@ or policy is quietly weakened.
 
 - `make ci-fast`, `make ci-pr`, `make ci-nightly`, and `make docs-build` are curated maintainer shortcuts
 - `bijux dev atlas ...` is the canonical installed namespace for repository automation
-- `cargo run -q -p bijux-dev-atlas -- ...` is the direct binary path when you need exact command parity inside the repo
-- [`crates/bijux-dev-atlas/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/mod.rs:1) defines the command families and global flags
+- `cargo run -q -p bijux-atlas-dev -- ...` is the direct binary path when you need exact command parity inside the repo
+- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the command families and global flags
 - [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed top-level command surface
 - generated reports and indexes are evidence outputs; they are not a substitute for the authored rules they summarize
 
@@ -96,10 +96,10 @@ The narrow workflow is:
 ```bash
 bijux dev atlas suites list
 bijux dev atlas check list
-cargo run -q -p bijux-dev-atlas -- suites list
-cargo run -q -p bijux-dev-atlas -- check run --suite ci_pr --include-internal --include-slow --allow-git --format json
-cargo run -q -p bijux-dev-atlas -- check list
-cargo run -q -p bijux-dev-atlas -- check run --tag lint --format json
+cargo run -q -p bijux-atlas-dev -- suites list
+cargo run -q -p bijux-atlas-dev -- check run --suite ci_pr --include-internal --include-slow --allow-git --format json
+cargo run -q -p bijux-atlas-dev -- check list
+cargo run -q -p bijux-atlas-dev -- check run --tag lint --format json
 ```
 
 Pick the smallest surface that matches the question you are answering. Do not bypass required lanes by inventing a different command path.
@@ -122,7 +122,7 @@ Use this quick routing model when you are deciding where to start:
 - choose `bijux dev atlas suites ...` when the question is "run the maintained group of checks"
 - choose `bijux dev atlas check ...` when the question is "inspect or rerun one governed check"
 - choose `bijux dev atlas governance ...` or `... reports ...` when the question is "show me the rule state or the evidence set"
-- choose the direct `cargo run -q -p bijux-dev-atlas -- ...` form when you need repo-local parity, debugging, or a command that has not been installed globally
+- choose the direct `cargo run -q -p bijux-atlas-dev -- ...` form when you need repo-local parity, debugging, or a command that has not been installed globally
 
 The main discipline is to keep command choice aligned with the question you are answering. Fast
 feedback, governed suites, focused checks, and evidence lookup are different maintainer jobs and
@@ -148,8 +148,8 @@ Common entry points:
 ```bash
 make ci-pr
 make docs-build
-cargo run -q -p bijux-dev-atlas -- governance check --format json
-cargo run -q -p bijux-dev-atlas -- reports index --format json
+cargo run -q -p bijux-atlas-dev -- governance check --format json
+cargo run -q -p bijux-atlas-dev -- reports index --format json
 ```
 
 ## Operational Guardrails

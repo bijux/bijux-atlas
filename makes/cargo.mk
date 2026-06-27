@@ -104,11 +104,11 @@ lint:
 	@$(MAKE) lint-rs
 
 lint-rs: ## Run cargo clippy with warnings denied
-	@printf '%s\n' "run: cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings"
+	@printf '%s\n' "run: cargo clippy -p bijux-atlas-dev --all-targets --all-features --locked --no-deps -- -D warnings"
 	@printf '%s\n' "run: cargo check -p bijux-atlas --all-targets --all-features --locked"
 	@mkdir -p "$(dir $(RS_LINT_REPORT))"
 	@{ \
-		CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-dev-atlas --all-targets --all-features --locked --no-deps -- -D warnings && \
+		CLIPPY_CONF_DIR=configs/rust CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy -p bijux-atlas-dev --all-targets --all-features --locked --no-deps -- -D warnings && \
 		CARGO_TERM_COLOR=$(CARGO_TERM_COLOR) CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check -p bijux-atlas --all-targets --all-features --locked; \
 	} 2>&1 | tee "$(RS_LINT_REPORT)"
 
@@ -118,7 +118,7 @@ lint-policy-report: ## Emit effective lint policy report artifact
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates
 	@! rg -n '\bdbg!\(' crates
-	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas/src crates/bijux-dev-atlas/src --glob '!**/tests/**' --glob '!**/benches/**' --glob '!**/main.rs' --glob '!**/bin/**'
+	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas/src crates/bijux-atlas-dev/src --glob '!**/tests/**' --glob '!**/benches/**' --glob '!**/main.rs' --glob '!**/bin/**'
 	@! rg -n '\bpanic!\(' crates/bijux-atlas --glob '!**/tests/**' --glob '!**/benches/**'
 	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas/Cargo.toml
 	@! rg -n 'reqwest::blocking' crates/bijux-atlas/src

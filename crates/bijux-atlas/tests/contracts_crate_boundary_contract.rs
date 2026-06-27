@@ -24,7 +24,7 @@ fn crate_boundary_contract_document_exists_with_required_sections() {
         "## Dependency Direction",
         "## Enforcement",
         "bijux-atlas",
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "bijux-atlas-core",
         "bijux-atlas-ingest",
         "bijux-atlas-model",

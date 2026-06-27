@@ -4,7 +4,7 @@
 - Release date: {{date}}
 - Commit: {{commit}}
 - Release type: {{release_type}}
-- Crates: `bijux-atlas`, `bijux-dev-atlas`
+- Crates: `bijux-atlas`, `bijux-atlas-dev`
 - Installed commands: `bijux atlas ...`, `bijux dev atlas ...`
 - Container image: `ghcr.io/bijux/bijux-atlas:{{tag}}`
 
@@ -19,12 +19,12 @@
 ### Install or Upgrade
 ```bash
 bijux install bijux-atlas
-bijux install bijux-dev-atlas
+bijux install bijux-atlas-dev
 
 # or
 
 cargo install --locked bijux-atlas
-cargo install --locked bijux-dev-atlas
+cargo install --locked bijux-atlas-dev
 ```
 
 ### Verify

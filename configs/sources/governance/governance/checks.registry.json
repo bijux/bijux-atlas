@@ -641,7 +641,7 @@
       ],
       "retries": 0,
       "requires_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ],
       "missing_tools_policy": "fail",
       "suite_membership": [

@@ -32,7 +32,7 @@
       "surface": "make wrappers",
       "command_family": "make <target>",
       "selection_model": "curated public entrypoints",
-      "capability_model": "delegated to bijux-dev-atlas"
+      "capability_model": "delegated to bijux-atlas-dev"
     }
   ]
 }

@@ -8,7 +8,7 @@
   "area_budgets": {
     "docs-root": 800,
     "bijux-atlas": 20,
-    "bijux-dev-atlas": 20
+    "bijux-atlas-dev": 20
   },
   "naming": {
     "forbidden_words": ["phase", "task", "legacy", "migration"],

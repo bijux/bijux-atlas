@@ -183,7 +183,7 @@
     },
     {
       "name": "release-verify",
-      "description": "Verify a release evidence tarball through bijux-dev-atlas",
+      "description": "Verify a release evidence tarball through bijux-atlas-dev",
       "lanes": [
         "dev",
         "ci"

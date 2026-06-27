@@ -21,14 +21,14 @@ jobs:
         run: cargo test --locked -p bijux-atlas --test compatibility_core security_data_protection_contracts -- --nocapture
 
       - name: run governance contract
-        run: cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json
+        run: cargo run --locked -q -p bijux-atlas-dev -- governance validate --format json
 
       - name: generate governance evidence required by security policy
         run: |
-          cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
-          cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance exceptions validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance deprecations validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance breaking validate --repo-root "${GITHUB_WORKSPACE}" --format json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance doctor --repo-root "${GITHUB_WORKSPACE}" --format json || true
       - name: verify governance evidence files exist
         shell: bash
         run: |
@@ -49,4 +49,4 @@ jobs:
           done
 
       - name: validate security controls
-        run: cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
+        run: cargo run --locked -q -p bijux-atlas-dev -- security validate --format json

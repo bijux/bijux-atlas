@@ -26,13 +26,13 @@ flowchart TD
 ```
 
 Automation here means the governed execution surface of the repository. That
-includes `bijux dev atlas`, the direct `bijux-dev-atlas` binary, thin `make`
+includes `bijux dev atlas`, the direct `bijux-atlas-dev` binary, thin `make`
 wrappers, and the report or evidence families those entrypoints produce.
 
 ## Control Model
 
 - `bijux dev atlas` is the canonical human-facing control-plane surface
-- `bijux-dev-atlas` is the direct binary surface beneath it
+- `bijux-atlas-dev` is the direct binary surface beneath it
 - `make` remains a thin convenience wrapper, not the ultimate authority
 - configs, registries, and generated outputs determine whether the automation is
   behaving correctly

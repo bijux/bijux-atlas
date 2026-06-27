@@ -15,4 +15,4 @@ free-form readme snippets.
 ## Source Anchors
 
 - `ops/tutorials/`
-- `crates/bijux-dev-atlas/src/application/tutorials.rs`
+- `crates/bijux-atlas-dev/src/application/tutorials.rs`

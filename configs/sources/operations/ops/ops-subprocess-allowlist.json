@@ -2,10 +2,10 @@
   "schema_version": 1,
   "policy": "Allowed ops subprocess call sites that orchestrate external cluster and packaging tools.",
   "paths": [
-    "crates/bijux-dev-atlas/src/application/ops/support/domain_support.rs",
-    "crates/bijux-dev-atlas/src/application/ops/runtime_mod/core_handler.rs",
-    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/k8s.rs",
-    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/render.rs",
-    "crates/bijux-dev-atlas/src/application/ops/execution_runtime_mod/install_status_parts/simulation_cluster.rs"
+    "crates/bijux-atlas-dev/src/application/ops/support/domain_support.rs",
+    "crates/bijux-atlas-dev/src/application/ops/runtime_mod/core_handler.rs",
+    "crates/bijux-atlas-dev/src/application/ops/execution_runtime_mod/k8s.rs",
+    "crates/bijux-atlas-dev/src/application/ops/execution_runtime_mod/render.rs",
+    "crates/bijux-atlas-dev/src/application/ops/execution_runtime_mod/install_status_parts/simulation_cluster.rs"
   ]
 }

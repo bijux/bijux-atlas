@@ -6,7 +6,7 @@
     "version": "0.2.0"
   },
   "crates": {
-    "ops_control_plane": "bijux-dev-atlas",
+    "ops_control_plane": "bijux-atlas-dev",
     "workspace": "0.2.0"
   },
   "kind": "ops_release_bundle_manifest",

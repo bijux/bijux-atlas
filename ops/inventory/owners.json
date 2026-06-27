@@ -21,6 +21,6 @@
     "ops/report": "bijux-atlas-operations",
     "ops/datasets/fixtures": "bijux-atlas-operations",
     "ops/run": "bijux-atlas-operations",
-    "crates/bijux-dev-atlas": "bijux-atlas-platform"
+    "crates/bijux-atlas-dev": "bijux-atlas-platform"
   }
 }

@@ -134,5 +134,5 @@
     }
   ],
   "status": "ok",
-  "verification_command": "bijux-dev-atlas ops evidence verify ops/release/evidence/bundle.tar --format json"
+  "verification_command": "bijux-atlas-dev ops evidence verify ops/release/evidence/bundle.tar --format json"
 }

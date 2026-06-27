@@ -3,7 +3,7 @@
   "report_id": "exceptions-expiry-warning",
   "version": 1,
   "inputs": {
-    "generator": "bijux-dev-atlas governance exceptions validate",
+    "generator": "bijux-atlas-dev governance exceptions validate",
     "sources": [
       "configs/sources/governance/governance/exceptions.yaml"
     ]

@@ -85,7 +85,7 @@ fn user_cli_cargo_manifest_must_not_depend_on_dev_atlas() {
     let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas-cli/Cargo.toml"))
         .expect("read user cli Cargo.toml");
     assert!(
-        !cargo_toml.contains("bijux-dev-atlas"),
+        !cargo_toml.contains("bijux-atlas-dev"),
         "user CLI must not depend on dev-only crates"
     );
 }

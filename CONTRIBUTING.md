@@ -26,8 +26,8 @@ Start from the repository root and verify the control-plane surfaces before maki
 
 ```bash
 cargo fetch
-cargo run -q -p bijux-dev-atlas -- docs doctor --format json
-cargo run -q -p bijux-dev-atlas -- governance validate --format json
+cargo run -q -p bijux-atlas-dev -- docs doctor --format json
+cargo run -q -p bijux-atlas-dev -- governance validate --format json
 make help
 ```
 
@@ -52,7 +52,7 @@ Start here before opening a broad change:
 ## Working Rules
 
 - work from the repository root
-- use `bijux-dev-atlas` as the canonical automation surface
+- use `bijux-atlas-dev` as the canonical automation surface
 - use `make` only through the curated wrapper targets exposed by [`makes/root.mk`](makes/root.mk)
 - keep make recipes boring and thin; orchestration belongs in Rust
 - keep one coherent concern per commit
@@ -70,9 +70,9 @@ These commands are a good first pass from a fresh checkout:
 
 ```bash
 cargo fetch
-cargo test -p bijux-dev-atlas --no-run
-cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo run -q -p bijux-dev-atlas -- docs doctor --format json
+cargo test -p bijux-atlas-dev --no-run
+cargo run -q -p bijux-atlas-dev -- governance validate --format json
+cargo run -q -p bijux-atlas-dev -- docs doctor --format json
 make help
 ```
 
@@ -85,9 +85,9 @@ When your change touches install guidance or the `bijux atlas ...` routed surfac
 Run the smallest meaningful proof for the surface you changed, then the wrapper or lane that reviewers will rely on.
 
 - runtime behavior change: run focused crate tests and update the matching reference or contract page
-- docs, configs, ops, or makes change: run the relevant `bijux-dev-atlas` validation command and the narrowest matching lane
+- docs, configs, ops, or makes change: run the relevant `bijux-atlas-dev` validation command and the narrowest matching lane
 - public command, schema, or contract change: update the checked-in documentation and any generated outputs that describe the surface
-- moved or renamed docs page: regenerate redirects with `cargo run -q -p bijux-dev-atlas -- docs redirects sync --allow-write`
+- moved or renamed docs page: regenerate redirects with `cargo run -q -p bijux-atlas-dev -- docs redirects sync --allow-write`
 - release-sensitive change: review [`docs/06-development/release-and-versioning.md`](docs/06-development/release-and-versioning.md) and refresh the supporting evidence
 
 ```mermaid
@@ -121,7 +121,7 @@ Do not solve repository problems by adding one more shell wrapper, hidden script
 
 Prefer this order:
 
-1. extend `bijux-dev-atlas`
+1. extend `bijux-atlas-dev`
 2. expose a thin curated `make` wrapper only if it improves ergonomics
 3. document the surface in the numbered docs spine
 

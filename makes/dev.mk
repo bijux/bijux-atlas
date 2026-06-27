@@ -3,7 +3,7 @@
 SHELL := /bin/sh
 
 BIJUX ?= bijux
-DEV_ATLAS ?= cargo run -q -p bijux-dev-atlas --
+DEV_ATLAS ?= cargo run -q -p bijux-atlas-dev --
 
 # Compatibility alias during makefile cutover; wrappers should use DEV_ATLAS directly.
 BIJUX_DEV_ATLAS ?= $(DEV_ATLAS)
@@ -16,7 +16,7 @@ dev-doctor: ## Run dev control-plane doctor suite
 dev-check-ci: ## Run dev control-plane ci suite
 	@$(DEV_ATLAS) check run --suite ci_fast --include-internal --include-slow --format $(FORMAT)
 
-install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
+install-local: ## Build and install bijux-atlas + bijux-atlas-dev into artifacts/bin
 	@$(DEV_ATLAS) build install-local --allow-subprocess --allow-write --format $(FORMAT)
 
 .PHONY: dev-doctor dev-check-ci install-local

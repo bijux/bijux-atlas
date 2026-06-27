@@ -21,10 +21,10 @@ gh-lint: lint ## Run GitHub lint checks
 
 gh-security: ## Run GitHub security checks through the Rust control plane
 	@mkdir -p artifacts/governance "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
-	@cargo run --locked -q -p bijux-dev-atlas -- governance exceptions validate --repo-root "$(CURDIR)" --format json || true
-	@cargo run --locked -q -p bijux-dev-atlas -- governance deprecations validate --repo-root "$(CURDIR)" --format json || true
-	@cargo run --locked -q -p bijux-dev-atlas -- governance breaking validate --repo-root "$(CURDIR)" --format json || true
-	@cargo run --locked -q -p bijux-dev-atlas -- governance doctor --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-atlas-dev -- governance exceptions validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-atlas-dev -- governance deprecations validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-atlas-dev -- governance breaking validate --repo-root "$(CURDIR)" --format json || true
+	@cargo run --locked -q -p bijux-atlas-dev -- governance doctor --repo-root "$(CURDIR)" --format json || true
 	@for file in \
 		artifacts/governance/exceptions-summary.json \
 		artifacts/governance/exceptions-expiry-warning.json \
@@ -37,8 +37,8 @@ gh-security: ## Run GitHub security checks through the Rust control plane
 		artifacts/governance/institutional-delta-inputs.json; do \
 		test -f "$${file}" || { echo "missing governance evidence file: $${file}" >&2; exit 1; }; \
 	done
-	@cargo run --locked -q -p bijux-dev-atlas -- security validate --format json
-	@cargo run --locked -q -p bijux-dev-atlas -- security dependency-audit --format json
+	@cargo run --locked -q -p bijux-atlas-dev -- security validate --format json
+	@cargo run --locked -q -p bijux-atlas-dev -- security dependency-audit --format json
 
 gh-test: test ## Run GitHub test suites
 

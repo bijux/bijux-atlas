@@ -1,7 +1,7 @@
 {
   "checksum_list_path": "ops/release/signing/checksums.json",
   "evidence_manifest_path": "ops/release/evidence/manifest.json",
-  "generated_by": "bijux-dev-atlas release sign",
+  "generated_by": "bijux-atlas-dev release sign",
   "git_sha": "39f207e4b20efe6b4e4728c6bbf77d396997358b",
   "governance_version": "main@39f207e4b20efe6b4e4728c6bbf77d396997358b",
   "release_id": "ops_run-39f207e4b20e",

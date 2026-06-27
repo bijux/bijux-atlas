@@ -6,8 +6,8 @@ on:
       - "docs/06-development/**"
       - "configs/sources/governance/governance/**"
       - "ops/governance/**"
-      - "crates/bijux-dev-atlas/src/commands/governance.rs"
-      - "crates/bijux-dev-atlas/tests/*governance*"
+      - "crates/bijux-atlas-dev/src/commands/governance.rs"
+      - "crates/bijux-atlas-dev/tests/*governance*"
   workflow_dispatch: {}
 
 jobs:
@@ -20,8 +20,8 @@ jobs:
           toolchain: stable
       - name: Governance checks
         run: |
-          cargo run --locked -q -p bijux-dev-atlas -- governance check --format json
-          cargo run --locked -q -p bijux-dev-atlas -- governance validate --format json
-          cargo run --locked -q -p bijux-dev-atlas -- governance report --format json
+          cargo run --locked -q -p bijux-atlas-dev -- governance check --format json
+          cargo run --locked -q -p bijux-atlas-dev -- governance validate --format json
+          cargo run --locked -q -p bijux-atlas-dev -- governance report --format json
       - name: Governance sustainability contracts
-        run: cargo test --locked -p bijux-dev-atlas --test governance_policy_guards -- --nocapture
+        run: cargo test --locked -p bijux-atlas-dev --test governance_policy_guards -- --nocapture

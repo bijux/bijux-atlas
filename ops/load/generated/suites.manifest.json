@@ -96,7 +96,7 @@
       "name": "cold-start-prefetch-5pods",
       "purpose": "measure cold-start latency across five warmed pods with pinned dataset",
       "kind": "script",
-      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/cold_start_prefetch_5pods.py",
+      "runner": "crates/bijux-atlas-dev/src/bijux-atlas-dev/commands/ops/load/run/cold_start_prefetch_5pods.py",
       "must_pass": true,
       "run_in": [
         "full",
@@ -376,7 +376,7 @@
       "name": "load-under-rollout",
       "purpose": "measure request latency and error budgets while deployment rollout occurs",
       "kind": "script",
-      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/load_under_rollout.py",
+      "runner": "crates/bijux-atlas-dev/src/bijux-atlas-dev/commands/ops/load/run/load_under_rollout.py",
       "must_pass": true,
       "run_in": [
         "nightly",
@@ -396,7 +396,7 @@
       "name": "load-under-rollback",
       "purpose": "measure request latency and error budgets while rollback/undo executes",
       "kind": "script",
-      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/load_under_rollback.py",
+      "runner": "crates/bijux-atlas-dev/src/bijux-atlas-dev/commands/ops/load/run/load_under_rollback.py",
       "must_pass": true,
       "run_in": [
         "nightly",

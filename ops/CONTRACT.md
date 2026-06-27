@@ -4,8 +4,8 @@
 
 - Governed surface: `ops/` and this document.
 - Source of truth for operational metadata: `ops/inventory/contracts-map.json`, `ops/inventory/authority-index.json`, and `ops/inventory/surfaces.json`.
-- Current validation entrypoint: `bijux-dev-atlas ops validate --format json`.
-- Current focused entrypoints: `bijux-dev-atlas ops profiles ...`, `bijux-dev-atlas ops render ...`, `bijux-dev-atlas ops install ...`, and `bijux-dev-atlas ops stack ...`.
+- Current validation entrypoint: `bijux-atlas-dev ops validate --format json`.
+- Current focused entrypoints: `bijux-atlas-dev ops profiles ...`, `bijux-atlas-dev ops render ...`, `bijux-atlas-dev ops install ...`, and `bijux-atlas-dev ops stack ...`.
 - This document describes boundaries and durable invariants. It does not replace machine validation output.
 
 ## Durable Rules
@@ -33,8 +33,8 @@
 
 ## Evidence
 
-- Whole-tree validation report: `bijux-dev-atlas ops validate --format json`
-- Profile validation report: `bijux-dev-atlas ops profiles validate --allow-subprocess --format json`
+- Whole-tree validation report: `bijux-atlas-dev ops validate --format json`
+- Profile validation report: `bijux-atlas-dev ops profiles validate --allow-subprocess --format json`
 - Generated example registry snapshot: `ops/_generated.example/contracts-registry-snapshot.json`
 - Generated example inventory index: `ops/_generated.example/inventory-index.json`
 

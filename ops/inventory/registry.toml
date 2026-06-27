@@ -92,7 +92,7 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
-id = "checks_crates_bijux_dev_atlas_help_dispatch_present"
+id = "checks_crates_bijux_atlas_dev_help_dispatch_present"
 domain = "crates"
 title = "bijux atlas routes dev control plane to bijux dev atlas help"
 docs = "docs/08-contracts/plugin-contracts.md"
@@ -103,7 +103,7 @@ budget_ms = 1200
 visibility = "public"
 
 [[checks]]
-id = "checks_crates_bijux_dev_atlas_not_umbrella_binary"
+id = "checks_crates_bijux_atlas_dev_not_umbrella_binary"
 domain = "crates"
 title = "dev atlas crate does not define umbrella binary name"
 docs = "docs/08-contracts/plugin-contracts.md"

@@ -63,7 +63,7 @@ cargo run -p bijux-atlas-api --bin bijux-atlas-openapi -- --out ./openapi.json
 - Product documentation: <https://bijux.github.io/bijux-atlas/>
 - Rust API documentation: <https://docs.rs/bijux-atlas/latest/bijux_atlas/>
 - Source repository: <https://github.com/bijux/bijux-atlas>
-- Maintainer control plane: <https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-dev-atlas>
+- Maintainer control plane: <https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-dev>
 
 The GitHub Pages site is the human-facing documentation surface. `docs.rs` is the API reference
 for the Rust crate itself.
@@ -79,7 +79,7 @@ Use this crate when you need to:
 - integrate against the crate-owned domain, contract, and runtime modules
 
 This crate does not own repository governance, release automation, or documentation publishing.
-Those maintainer workflows live in `bijux-dev-atlas` and the repository-level docs and ops
+Those maintainer workflows live in `bijux-atlas-dev` and the repository-level docs and ops
 contracts.
 
 ## Main Workflows

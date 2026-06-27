@@ -32,7 +32,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ## v0.2.0
 
 ### Added
-- Added the public runtime release line around the shipped binaries `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`, plus the workspace maintainer control plane `bijux-dev-atlas`.
+- Added the public runtime release line around the shipped binaries `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`, plus the workspace maintainer control plane `bijux-atlas-dev`.
 - Added a numbered documentation spine and GitHub Pages structure that map directly to the live runtime, operations, contracts, development, and reference surfaces.
 - Added release evidence generation, signing, packet assembly, and verification flows that bundle docs, SBOMs, ops reports, and publish artifacts under `ops/release/`.
 - Added crates.io release support for `bijux-atlas` with crate-owned runtime contracts, packaged security policy inputs, and publish-time validation that succeeds from the crate tarball instead of only from the workspace checkout.
@@ -73,7 +73,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Fixed repo integration contract expectations for workspace package metadata version consistency.
 - Fixed slow tutorial workflow summary test classification by tagging it with the `slow_` convention.
 - Fixed CI workflow policy allowlist coverage for normalized temp/cache root setup steps.
-- Fixed `ci-pr` supply-chain lane by routing through `bijux-dev-atlas` security commands instead of brittle tool installs.
+- Fixed `ci-pr` supply-chain lane by routing through `bijux-atlas-dev` security commands instead of brittle tool installs.
 - Fixed security supply-chain governance bootstrap by ensuring required governance evidence files are present before validation.
 - Fixed system simulation and final readiness workflows by creating artifact directories before output redirection.
 - Fixed dependency-review workflow behavior to avoid blocking repository validation on external platform-side issues.
@@ -83,7 +83,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Added
 - Established a Rust workspace with runtime crates and a dedicated control-plane crate.
 - Delivered runtime crates for core, model, policies, store, query, ingest, api, client, cli, and server.
-- Standardized command surfaces so make/workflows route through `bijux-dev-atlas`.
+- Standardized command surfaces so make/workflows route through `bijux-atlas-dev`.
 - Built contract-driven governance across `ops/`, `configs/`, `docs/`, `make/`, and root surfaces.
 - Added docs inventory, link validation, nav integrity checks, and generated docs registries.
 - Introduced real-data tutorial run contracts, dataset metadata, and evidence-oriented docs pages.

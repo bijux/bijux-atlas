@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'ops/**'
-      - 'crates/bijux-dev-atlas/**'
+      - 'crates/bijux-atlas-dev/**'
       - 'makes/ops.mk'
       - '.github/workflows/ops-validate.yml'
 
@@ -81,7 +81,7 @@ jobs:
           make makes-target-list > "${logs_root}/makes-target-list.stdout.log" 2> "${logs_root}/makes-target-list.stderr.log"
           capture_report "makes/target-list.json" "${report_root}/makes-target-list.json"
           make FORMAT=json ops-validate > "${logs_root}/ops-validate.stdout.log" 2> "${logs_root}/ops-validate.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- ops validate --profile kind --format json > "${report_root}/ops-validate.json" 2> "${logs_root}/ops-validate-report.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- ops validate --profile kind --format json > "${report_root}/ops-validate.json" 2> "${logs_root}/ops-validate-report.stderr.log"
           printf -- "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/ops-validate.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
@@ -117,8 +117,8 @@ jobs:
           mkdir -p "${report_root}" "${logs_root}"
           make FORMAT=json k8s-render > "${logs_root}/ops-k8s-render.stdout.log" 2> "${logs_root}/ops-k8s-render.stderr.log"
           capture_report "artifacts/k8s-render/${RUN_ID}/report.json" "${report_root}/ops-k8s-render.json"
-          cargo run --locked -q -p bijux-dev-atlas -- ops schema validate --format json > "${report_root}/ops-schema-validate.json" 2> "${logs_root}/ops-schema-validate.stderr.log"
-          cargo run --locked -q -p bijux-dev-atlas -- ops inventory --format json > "${report_root}/ops-inventory-validate.json" 2> "${logs_root}/ops-inventory-validate.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- ops schema validate --format json > "${report_root}/ops-schema-validate.json" 2> "${logs_root}/ops-schema-validate.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- ops inventory --format json > "${report_root}/ops-inventory-validate.json" 2> "${logs_root}/ops-inventory-validate.stderr.log"
       - name: Save cargo cache
         if: success()
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae

@@ -45,7 +45,7 @@ fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
         "crates/bijux-atlas-api",
         "crates/bijux-atlas-store",
         "crates/bijux-atlas",
-        "crates/bijux-dev-atlas",
+        "crates/bijux-atlas-dev",
     ] {
         assert!(
             cargo.contains(member),
@@ -62,7 +62,7 @@ fn core_crate_stays_runtime_independent_by_dependency_contract() {
 
     for forbidden in [
         "bijux-atlas =",
-        "bijux-dev-atlas =",
+        "bijux-atlas-dev =",
         "axum =",
         "tokio =",
         "rusqlite =",
@@ -83,7 +83,7 @@ fn ingest_crate_stays_runtime_and_http_independent_by_dependency_contract() {
 
     for forbidden in [
         "bijux-atlas =",
-        "bijux-dev-atlas =",
+        "bijux-atlas-dev =",
         "axum =",
         "reqwest =",
         "tracing-subscriber =",
@@ -103,7 +103,7 @@ fn model_crate_stays_transport_and_runtime_independent_by_dependency_contract() 
 
     for forbidden in [
         "bijux-atlas =",
-        "bijux-dev-atlas =",
+        "bijux-atlas-dev =",
         "axum =",
         "tokio =",
         "rusqlite =",
@@ -127,7 +127,7 @@ fn api_crate_production_dependencies_stay_runtime_independent_by_contract() {
 
     for forbidden in [
         "bijux-atlas",
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "axum",
         "tokio",
         "rusqlite",
@@ -183,7 +183,7 @@ fn store_crate_stays_runtime_and_maintainer_independent_by_dependency_contract()
     let cargo = std::fs::read_to_string(root.join("crates/bijux-atlas-store/Cargo.toml"))
         .expect("store cargo");
 
-    for forbidden in ["bijux-atlas =", "bijux-dev-atlas =", "axum =", "tokio ="] {
+    for forbidden in ["bijux-atlas =", "bijux-atlas-dev =", "axum =", "tokio ="] {
         assert!(
             !cargo.contains(forbidden),
             "store crate must not depend on runtime/dev surface `{forbidden}`"
@@ -199,7 +199,7 @@ fn query_crate_stays_runtime_and_http_independent_by_dependency_contract() {
 
     for forbidden in [
         "bijux-atlas =",
-        "bijux-dev-atlas =",
+        "bijux-atlas-dev =",
         "axum =",
         "tokio =",
         "reqwest =",

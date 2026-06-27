@@ -20,7 +20,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-api`: stable API contracts, request parsing, response DTOs, Rust client compatibility surface, OpenAPI generation, and API-facing HTTP contract suites.
 - `bijux-atlas-store`: publish-time store contracts, immutable artifact layout rules, and store backend implementations shared by runtime and tooling.
 - `bijux-atlas`: runtime product crate that wires application flow, contracts, adapters, and orchestration around the owned model surface.
-- `bijux-dev-atlas`: maintainer control-plane crate for repository governance and automation.
+- `bijux-atlas-dev`: maintainer control-plane crate for repository governance and automation.
 
 ## Ownership Rules
 
@@ -32,7 +32,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-api` also owns the standalone `bijux-atlas-openapi` binary because OpenAPI export is an API-contract surface, not a runtime-wiring concern.
 - Full Rust client integration, retry, schema, and runtime-compatibility suites belong under `crates/bijux-atlas-api/tests/`. Runtime keeps only the narrow legacy import compatibility checks that prove its client facade still forwards to the API-owned surface.
 - `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
-- `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
+- `bijux-atlas-dev` must not become an owner of runtime ingest/query/server behavior.
 - Runtime `src/compat/` is the only place allowed to own cross-crate compatibility bridges. Top-level runtime `src/api.rs`, `src/core.rs`, `src/model.rs`, `src/query.rs`, and `src/domain/ingest.rs` stay as thin path-stable wrappers only; implementation ownership remains in the dedicated Atlas subcrates.
 - Runtime must not act as a shared fixture warehouse. Ingest fixtures live under `crates/bijux-atlas-ingest/tests/fixtures/`, and CLI operation QC fixtures live beside their owning source tests under `crates/bijux-atlas/src/adapters/inbound/cli/operations/testdata/`.
 - Runtime `tests/interfaces/server` keeps runtime-only startup, cache, backend, and transport-wiring coverage. API-facing HTTP contract, response-shape, and observability suites belong under `crates/bijux-atlas-api/tests/`.
@@ -64,6 +64,6 @@ Atlas enforces this contract through architecture tests in:
 - `crates/bijux-atlas/tests/contracts_bench_ownership.rs`
 - `crates/bijux-atlas/tests/contracts_compatibility_facades.rs`
 - `crates/bijux-atlas-ingest/tests/contracts_bench_ownership.rs`
-- `crates/bijux-dev-atlas/tests/architecture_runtime_ownership.rs`
+- `crates/bijux-atlas-dev/tests/architecture_runtime_ownership.rs`
 
 When those tests fail, boundary drift is treated as a product defect.

@@ -51,7 +51,7 @@
       "directory": "ops/_generated",
       "lifecycle": "transient_runtime",
       "retention": "no_commit_retention",
-      "producer": "bijux-dev-atlas ops generate"
+      "producer": "bijux-atlas-dev ops generate"
     },
     {
       "directory": "ops/_generated.example",
@@ -64,56 +64,56 @@
       "directory": "ops/datasets/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
       "directory": "ops/e2e/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
       "directory": "ops/k8s/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
       "directory": "ops/load/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
       "directory": "ops/observe/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
       "directory": "ops/report/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops report",
+      "producer": "bijux-atlas-dev ops report",
       "regenerate": "make ops-readiness-scorecard"
     },
     {
       "directory": "ops/schema/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops schema regen-index",
+      "producer": "bijux-atlas-dev ops schema regen-index",
       "regenerate": "make ops-schema-index"
     },
     {
       "directory": "ops/stack/generated",
       "lifecycle": "domain_derived",
       "retention": "current_contract_outputs_only",
-      "producer": "bijux-dev-atlas ops generate",
+      "producer": "bijux-atlas-dev ops generate",
       "regenerate": "make ops-generated-example-refresh"
     }
   ],

@@ -42,9 +42,9 @@ different questions, and the right mix depends on the surface you changed.
 
 ```bash
 cargo test -p bijux-atlas
-cargo test -p bijux-dev-atlas
-cargo bench -p bijux-dev-atlas
-cargo run -q -p bijux-dev-atlas -- perf run --scenario gene-lookup --format json
+cargo test -p bijux-atlas-dev
+cargo bench -p bijux-atlas-dev
+cargo run -q -p bijux-atlas-dev -- perf run --scenario gene-lookup --format json
 make test
 ```
 

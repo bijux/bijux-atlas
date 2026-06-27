@@ -4,7 +4,7 @@
     ".bijux/shared",
     ".github/scripts",
     "configs/sources/repository/docs/node_modules",
-    "crates/bijux-dev-atlas/tests/fixtures",
+    "crates/bijux-atlas-dev/tests/fixtures",
     "docs/assets/javascripts",
     "docs/assets/javascripts/mermaid-init.js",
     "docs/hooks",

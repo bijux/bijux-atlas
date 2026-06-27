@@ -9,7 +9,7 @@ last_reviewed: 2026-03-15
 
 # Automation Architecture
 
-This page explains how `bijux-dev-atlas` is organized as Atlas's development control plane.
+This page explains how `bijux-atlas-dev` is organized as Atlas's development control plane.
 
 ## Architectural Zones
 
@@ -27,7 +27,7 @@ flowchart LR
 
 The intent is to keep command parsing, orchestration, registry lookup, and host effects in visibly separate places.
 
-This architectural zone map explains why `bijux-dev-atlas` does not look like a pile of shell
+This architectural zone map explains why `bijux-atlas-dev` does not look like a pile of shell
 wrappers. The control plane stays reviewable by giving command parsing, registry logic, execution,
 and host effects different homes.
 

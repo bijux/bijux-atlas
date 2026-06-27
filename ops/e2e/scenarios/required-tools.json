@@ -4,225 +4,225 @@
     {
       "scenario_id": "artifact-integrity",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "boot-invalid-config",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "boot-missing-artifact",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "cold-start",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "corrupted-shard-isolation",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "disk-full-controlled-failure",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "high-concurrency",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "ingest-crash-partial-state",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "ingest-retry",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "k8s-suite",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "kubectl"
       ]
     },
     {
       "scenario_id": "low-resource",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "medium-single-node",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "minimal-single-node",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "mixed-load",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "multi-dataset",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "offline-mode",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "out-of-memory-crash-report",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "perf-e2e",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "query-crash-cache-integrity",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "query-filter-projection",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "query-pagination",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "readonly-mode",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "realdata",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "repeated-bad-requests-rate-limited",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "restart-resume",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "rollback-after-failed-upgrade",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "rollback-after-successful-upgrade",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "schema-evolution",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "slow-query-warning-metric",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     },
     {
       "scenario_id": "smoke",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "upgrade-config-migration",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "upgrade-existing-datasets",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "upgrade-feature-default-change",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "upgrade-minor",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "upgrade-patch",
       "required_tools": [
-        "bijux-dev-atlas"
+        "bijux-atlas-dev"
       ]
     },
     {
       "scenario_id": "warm-start",
       "required_tools": [
-        "bijux-dev-atlas",
+        "bijux-atlas-dev",
         "k6"
       ]
     }

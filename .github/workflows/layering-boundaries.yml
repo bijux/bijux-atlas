@@ -20,4 +20,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo test --locked -p bijux-dev-atlas --test layering_enforcement -- --nocapture
+          cargo test --locked -p bijux-atlas-dev --test layering_enforcement -- --nocapture

@@ -12,7 +12,7 @@ last_reviewed: 2026-04-13
 Atlas documentation works better when ownership is explicit at package level.
 
 `bijux-atlas` owns the product runtime: ingest, dataset state, query behavior,
-runtime configuration, and user-facing contracts. `bijux-dev-atlas` owns the
+runtime configuration, and user-facing contracts. `bijux-atlas-dev` owns the
 repository control plane and maintainer automation. `bijux-atlas-ops` names the
 operational surface shaped by `ops/`, `ops/k8s/`, `ops/stack/`, `ops/load/`,
 and related evidence.
@@ -22,7 +22,7 @@ and related evidence.
 ```mermaid
 flowchart TD
     Repo[Atlas repository] --> Product[`bijux-atlas`]
-    Repo --> ControlPlane[`bijux-dev-atlas`]
+    Repo --> ControlPlane[`bijux-atlas-dev`]
     Repo --> Ops[`bijux-atlas-ops`]
 
     Product --> Runtime[Product runtime and interfaces]
@@ -48,14 +48,14 @@ workflows, and governance material that serves a different audience.
 ## Code Anchors
 
 - [`crates/bijux-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas)
-- [`crates/bijux-dev-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas)
+- [`crates/bijux-atlas-dev/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev)
 - [`ops/`](/Users/bijan/bijux/bijux-atlas/ops)
 - [`makes/`](/Users/bijan/bijux/bijux-atlas/makes)
 
 ## Placement Guide
 
 - product runtime, dataset behavior, query semantics, and user-facing interfaces belong under `crates/bijux-atlas/`
-- repository governance, maintainer automation, and release-control work belong under `crates/bijux-dev-atlas/`
+- repository governance, maintainer automation, and release-control work belong under `crates/bijux-atlas-dev/`
 - cluster, deployment, observability, and operational evidence belong under `ops/`
 - `makes/` may provide convenience entrypoints, but it should not silently redefine product or maintainer truth
 

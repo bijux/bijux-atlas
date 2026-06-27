@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "crates/bijux-dev-atlas/src/commands/system.rs"
+      - "crates/bijux-atlas-dev/src/commands/system.rs"
       - "configs/sources/operations/system/**"
       - ".github/workflows/system-simulation.yml"
 
@@ -29,7 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts/system/simulation
-          cargo run --locked -q -p bijux-dev-atlas -- system simulate suite --output-format json > artifacts/system/simulation/run.json
+          cargo run --locked -q -p bijux-atlas-dev -- system simulate suite --output-format json > artifacts/system/simulation/run.json
           test -f artifacts/system/simulation/index.json
           test -f artifacts/system/simulation/coverage.json
           test -f artifacts/system/simulation/resilience-report.json

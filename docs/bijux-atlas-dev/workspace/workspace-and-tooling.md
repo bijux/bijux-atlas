@@ -16,7 +16,7 @@ Atlas lives in a multi-crate workspace. Development works best when you treat th
 ```mermaid
 flowchart LR
     Workspace[Workspace root] --> Atlas[crates/bijux-atlas]
-    Workspace --> DevAtlas[crates/bijux-dev-atlas]
+    Workspace --> DevAtlas[crates/bijux-atlas-dev]
     Workspace --> Docs[docs/]
     Workspace --> Ops[ops/]
     Workspace --> Configs[configs/]
@@ -32,17 +32,17 @@ flowchart TD
     Cargo[Cargo] --> Build[Build and test]
     MkDocs[MkDocs] --> DocsSite[Docs site]
     Make[Make targets] --> Automation[Common workflows]
-    DevAtlas[bijux-dev-atlas] --> ControlPlane[Governed checks and reports]
+    DevAtlas[bijux-atlas-dev] --> ControlPlane[Governed checks and reports]
 ```
 
 This tooling view keeps the main developer entry points visible. Each tool has a role, but
-`bijux-dev-atlas` is the unifying control plane for governed repository checks and generated
+`bijux-atlas-dev` is the unifying control plane for governed repository checks and generated
 evidence.
 
 ## Practical Advice
 
 - run commands from the workspace root
-- treat `bijux-dev-atlas` as part of the development toolchain, not as a separate afterthought
+- treat `bijux-atlas-dev` as part of the development toolchain, not as a separate afterthought
 - keep artifacts under `artifacts/`
 - prefer explicit paths over current-directory assumptions
 
