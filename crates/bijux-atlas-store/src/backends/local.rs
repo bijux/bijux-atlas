@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::super::catalog::validate_catalog_strict;
+use super::super::integrity::ManifestLock;
 use super::super::layout::{
     dataset_artifact_paths, immutability_marker_path, lifecycle_state_path,
     lifecycle_transitions_path, manifest_lock_path, publish_lock_path, CATALOG_FILE,
 };
-use super::super::manifest::ManifestLock;
 use crate::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
@@ -98,9 +98,9 @@ impl ArtifactStore for LocalFsStore {
         let _guard = self.acquire_publish_lock(dataset)?;
         enforce_dataset_immutability(&self.root, dataset)?;
 
-        super::super::manifest::verify_expected_sha256(manifest_bytes, expected_manifest_sha256)
+        super::super::integrity::verify_expected_sha256(manifest_bytes, expected_manifest_sha256)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
-        super::super::manifest::verify_expected_sha256(sqlite_bytes, expected_sqlite_sha256)
+        super::super::integrity::verify_expected_sha256(sqlite_bytes, expected_sqlite_sha256)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
 
         let paths = dataset_artifact_paths(Path::new(&self.root), dataset);

@@ -3,12 +3,12 @@
 #[cfg(feature = "backend-s3")]
 use super::super::catalog::validate_catalog_strict;
 #[cfg(feature = "backend-s3")]
+use super::super::integrity::{verify_expected_sha256, ManifestLock};
+#[cfg(feature = "backend-s3")]
 use super::super::layout::{
     dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
     CATALOG_FILE,
 };
-#[cfg(feature = "backend-s3")]
-use super::super::manifest::{verify_expected_sha256, ManifestLock};
 #[cfg(feature = "backend-s3")]
 use super::super::retry::{BackoffPolicy, RetryPolicy};
 #[cfg(feature = "backend-s3")]

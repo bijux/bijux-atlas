@@ -3,11 +3,11 @@
 #[cfg(feature = "backend-s3")]
 use super::super::catalog::validate_catalog_strict;
 #[cfg(feature = "backend-s3")]
+use super::super::integrity::ManifestLock;
+#[cfg(feature = "backend-s3")]
 use super::super::layout::{
     dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key,
 };
-#[cfg(feature = "backend-s3")]
-use super::super::manifest::ManifestLock;
 #[cfg(feature = "backend-s3")]
 use crate::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
