@@ -28,42 +28,38 @@ pub(crate) fn load_profile_registry(
 }
 
 fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {
-    bijux_atlas_ops::inventory::toolchain::load_toolchain_inventory_from_ops_root(ops_root).map_err(
+    bijux_atlas_ops::workspace::inventory::load_toolchain_inventory_from_ops_root(ops_root).map_err(
         |err| match err {
-            bijux_atlas_ops::inventory::toolchain::ToolchainInventoryError::Read { .. } => {
-                OpsCommandError::Manifest(err.detail())
+            bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
+                OpsCommandError::Manifest(detail)
             }
-            bijux_atlas_ops::inventory::toolchain::ToolchainInventoryError::Parse { .. } => {
-                OpsCommandError::Schema(err.detail())
+            bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Schema(detail) => {
+                OpsCommandError::Schema(detail)
             }
         },
     )
 }
 
 pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsCommandError> {
-    bijux_atlas_ops::inventory::tools_manifest::load_tools_manifest(repo_root).map_err(|err| {
-        match err {
-            bijux_atlas_ops::inventory::tools_manifest::ToolsManifestError::Read { .. } => {
-                OpsCommandError::Manifest(err.detail())
-            }
-            bijux_atlas_ops::inventory::tools_manifest::ToolsManifestError::Parse { .. } => {
-                OpsCommandError::Schema(err.detail())
-            }
+    bijux_atlas_ops::workspace::inventory::load_tools_manifest(repo_root).map_err(|err| match err {
+        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
+            OpsCommandError::Manifest(detail)
+        }
+        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Schema(detail) => {
+            OpsCommandError::Schema(detail)
         }
     })
 }
 
 pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsCommandError> {
-    bijux_atlas_ops::inventory::pins_manifest::load_pins_manifest(repo_root).map_err(
-        |err| match err {
-            bijux_atlas_ops::inventory::pins_manifest::PinsManifestError::Read { .. } => {
-                OpsCommandError::Manifest(err.detail())
-            }
-            bijux_atlas_ops::inventory::pins_manifest::PinsManifestError::Parse { .. } => {
-                OpsCommandError::Schema(err.detail())
-            }
-        },
-    )
+    bijux_atlas_ops::workspace::inventory::load_stack_pins(repo_root).map_err(|err| match err {
+        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
+            OpsCommandError::Manifest(detail)
+        }
+        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Schema(detail) => {
+            OpsCommandError::Schema(detail)
+        }
+    })
 }
 
 pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml, OpsCommandError> {
