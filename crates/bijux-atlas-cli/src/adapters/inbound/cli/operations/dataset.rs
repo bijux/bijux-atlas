@@ -259,6 +259,66 @@ fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<()
         .map_err(|e| format!("dataset validate failed: qc gate failed: {e}"))
 }
 
+pub(crate) fn pack_dataset(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    out: PathBuf,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
+    let manifest = fs::read(&paths.manifest).map_err(|e| e.to_string())?;
+    let sqlite = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
+    let lock = ManifestLock::from_bytes(&manifest, &sqlite);
+    let lock_bytes = serde_json::to_vec(&lock).map_err(|e| e.to_string())?;
+
+    let file = fs::File::create(&out).map_err(|e| e.to_string())?;
+    let mut builder = Builder::new(file);
+    append_tar_file(&mut builder, "manifest.json", &manifest)?;
+    append_tar_file(&mut builder, "gene_summary.sqlite", &sqlite)?;
+    append_tar_file(&mut builder, "manifest.lock", &lock_bytes)?;
+    builder.finish().map_err(|e| e.to_string())?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset pack","status":"ok","out":out}),
+    )
+}
+
+pub(crate) fn verify_pack(pack: PathBuf, output_mode: OutputMode) -> Result<(), String> {
+    let file = fs::File::open(pack).map_err(|e| e.to_string())?;
+    let mut archive = Archive::new(file);
+    let mut manifest: Option<Vec<u8>> = None;
+    let mut sqlite: Option<Vec<u8>> = None;
+    let mut lock_raw: Option<Vec<u8>> = None;
+    for entry in archive.entries().map_err(|e| e.to_string())? {
+        let mut e = entry.map_err(|e| e.to_string())?;
+        let path = e
+            .path()
+            .map_err(|e| e.to_string())?
+            .to_string_lossy()
+            .to_string();
+        let mut bytes = Vec::new();
+        std::io::Read::read_to_end(&mut e, &mut bytes).map_err(|e| e.to_string())?;
+        match path.as_str() {
+            "manifest.json" => manifest = Some(bytes),
+            "gene_summary.sqlite" => sqlite = Some(bytes),
+            "manifest.lock" => lock_raw = Some(bytes),
+            _ => {}
+        }
+    }
+    let manifest = manifest.ok_or_else(|| "manifest.json missing in pack".to_string())?;
+    let sqlite = sqlite.ok_or_else(|| "gene_summary.sqlite missing in pack".to_string())?;
+    let lock_raw = lock_raw.ok_or_else(|| "manifest.lock missing in pack".to_string())?;
+    let lock: ManifestLock = serde_json::from_slice(&lock_raw).map_err(|e| e.to_string())?;
+    lock.validate(&manifest, &sqlite)?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset verify-pack","status":"ok"}),
+    )
+}
+
 pub(crate) fn validate_ingest_qc(
     qc_report: PathBuf,
     thresholds: PathBuf,
