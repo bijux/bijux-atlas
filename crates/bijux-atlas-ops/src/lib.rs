@@ -2,4 +2,5 @@
 
 #![forbid(unsafe_code)]
 
+pub mod kubernetes;
 pub mod reference;
