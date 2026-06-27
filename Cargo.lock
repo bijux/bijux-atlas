@@ -341,9 +341,11 @@ dependencies = [
 name = "bijux-atlas-ops"
 version = "0.2.1"
 dependencies = [
+ "regex",
  "serde",
  "serde_json",
  "serde_yaml",
+ "tempfile",
 ]
 
 [[package]]

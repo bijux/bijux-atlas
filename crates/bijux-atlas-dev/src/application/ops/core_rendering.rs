@@ -155,9 +155,9 @@ pub(super) fn validate_helm_profile_matrix(
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let ops_root = resolve_ops_root(&repo_root, args.common.ops_root.clone())
         .map_err(|e| e.to_stable_message())?;
-    let report = bijux_atlas_dev::ops::profiles_matrix::validate_profiles(
+    let report = bijux_atlas_ops::kubernetes::profiles_matrix::validate_profiles(
         &repo_root,
-        &bijux_atlas_dev::ops::profiles_matrix::ValidateProfilesOptions {
+        &bijux_atlas_ops::kubernetes::profiles_matrix::ValidateProfilesOptions {
             chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
             values_root: ops_root.join("k8s/values"),
             schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
@@ -172,7 +172,7 @@ pub(super) fn validate_helm_profile_matrix(
     )?;
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
     let schema_path = repo_root.join("configs/schemas/contracts/reports/ops-profiles.schema.json");
-    bijux_atlas_dev::ops::profiles_matrix::validate_report_value(&payload, &schema_path)?;
+    bijux_atlas_ops::kubernetes::profiles_matrix::validate_report_value(&payload, &schema_path)?;
     let exe =
         std::env::current_exe().map_err(|err| format!("ops profiles validate failed: {err}"))?;
     let mut deprecations_args = vec![
@@ -236,9 +236,9 @@ pub(super) fn validate_profile_mode(
 
     let profile_set =
         matches!(mode, ProfileValidationMode::RolloutSafety).then(|| "rollout-safety".to_string());
-    let report = bijux_atlas_dev::ops::profiles_matrix::validate_profiles(
+    let report = bijux_atlas_ops::kubernetes::profiles_matrix::validate_profiles(
         &repo_root,
-        &bijux_atlas_dev::ops::profiles_matrix::ValidateProfilesOptions {
+        &bijux_atlas_ops::kubernetes::profiles_matrix::ValidateProfilesOptions {
             chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
             values_root: ops_root.join("k8s/values"),
             schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
@@ -349,9 +349,9 @@ pub(super) fn run_profile_validation_pipeline(
     ops_root: &Path,
 ) -> Result<(serde_json::Value, i32), String> {
     let report = if common.allow_subprocess {
-        bijux_atlas_dev::ops::profiles_matrix::validate_profiles(
+        bijux_atlas_ops::kubernetes::profiles_matrix::validate_profiles(
             repo_root,
-            &bijux_atlas_dev::ops::profiles_matrix::ValidateProfilesOptions {
+            &bijux_atlas_ops::kubernetes::profiles_matrix::ValidateProfilesOptions {
                 chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
                 values_root: ops_root.join("k8s/values"),
                 schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
@@ -365,9 +365,9 @@ pub(super) fn run_profile_validation_pipeline(
             },
         )?
     } else {
-        bijux_atlas_dev::ops::profiles_matrix::validate_profiles(
+        bijux_atlas_ops::kubernetes::profiles_matrix::validate_profiles(
             repo_root,
-            &bijux_atlas_dev::ops::profiles_matrix::ValidateProfilesOptions {
+            &bijux_atlas_ops::kubernetes::profiles_matrix::ValidateProfilesOptions {
                 chart_dir: ops_root.join("k8s/charts/bijux-atlas"),
                 values_root: ops_root.join("k8s/values"),
                 schema_path: ops_root.join("k8s/charts/bijux-atlas/values.schema.json"),
