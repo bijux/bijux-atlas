@@ -3,20 +3,8 @@
 use crate::*;
 use std::collections::BTreeMap;
 
+pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
 pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct StackManifestToml {
-    pub(crate) profiles: BTreeMap<String, StackManifestProfile>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct StackManifestProfile {
-    pub(crate) kind_profile: String,
-    pub(crate) cluster_config: String,
-    pub(crate) namespace: String,
-    pub(crate) components: Vec<String>,
-}
 
 #[derive(Debug, Deserialize, Clone)]
 pub(crate) struct ToolchainInventory {

@@ -8,6 +8,11 @@ pub fn atlas_stack_root_from_ops_root(ops_root: &Path) -> PathBuf {
 }
 
 #[must_use]
+pub fn atlas_stack_manifest_from_repo_root(repo_root: &Path) -> PathBuf {
+    repo_root.join("ops").join("stack").join("stack.toml")
+}
+
+#[must_use]
 pub fn atlas_stack_profiles_manifest_from_ops_root(ops_root: &Path) -> PathBuf {
     atlas_stack_root_from_ops_root(ops_root).join("profiles.json")
 }
@@ -39,6 +44,7 @@ mod tests {
         let ops_root = repo_root().join("ops");
         for path in [
             atlas_stack_root_from_ops_root(&ops_root),
+            atlas_stack_manifest_from_repo_root(&repo_root()),
             atlas_stack_profiles_manifest_from_ops_root(&ops_root),
             atlas_stack_profile_registry_from_ops_root(&ops_root),
             atlas_stack_hpa_policy_from_ops_root(&ops_root),

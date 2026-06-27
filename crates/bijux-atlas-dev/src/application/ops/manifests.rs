@@ -124,12 +124,13 @@ pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsComm
 }
 
 pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml, OpsCommandError> {
-    let path = repo_root.join("ops/stack/stack.toml");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    toml::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    bijux_atlas_ops::stack::manifest::load_stack_manifest(repo_root).map_err(|err| match err {
+        bijux_atlas_ops::stack::manifest::StackManifestLoadError::Read { .. } => {
+            OpsCommandError::Manifest(err.detail())
+        }
+        bijux_atlas_ops::stack::manifest::StackManifestLoadError::Parse { .. } => {
+            OpsCommandError::Schema(err.detail())
+        }
     })
 }
 
@@ -169,47 +170,9 @@ pub(crate) fn validate_stack_manifest(
     repo_root: &Path,
     manifest: &StackManifestToml,
 ) -> Result<Vec<String>, OpsCommandError> {
-    let mut errors = Vec::new();
-    if manifest.profiles.is_empty() {
-        errors.push("stack manifest must declare at least one profile".to_string());
-    }
-    for (name, profile) in &manifest.profiles {
-        let cluster_path = repo_root.join(&profile.cluster_config);
-        if !cluster_path.exists() {
-            errors.push(format!(
-                "stack profile `{name}` references missing cluster config `{}`",
-                profile.cluster_config
-            ));
-        }
-        if profile.components.is_empty() {
-            errors.push(format!("stack profile `{name}` must declare components"));
-            continue;
-        }
-        let mut sorted = profile.components.clone();
-        sorted.sort();
-        sorted.dedup();
-        if sorted.len() != profile.components.len() {
-            errors.push(format!(
-                "stack profile `{name}` has duplicate components; ordering must be deterministic"
-            ));
-        }
-        if profile.components != sorted {
-            errors.push(format!(
-                "stack profile `{name}` components must be lexicographically sorted"
-            ));
-        }
-        for component in &profile.components {
-            let component_path = repo_root.join(component);
-            if !component_path.exists() {
-                errors.push(format!(
-                    "stack profile `{name}` references missing component `{component}`"
-                ));
-            }
-        }
-    }
-    errors.sort();
-    errors.dedup();
-    Ok(errors)
+    Ok(bijux_atlas_ops::stack::manifest::validate_stack_manifest(
+        repo_root, manifest,
+    ))
 }
 
 pub(crate) fn resolve_profile(
@@ -236,7 +199,6 @@ pub(crate) fn load_toolchain_inventory_for_ops(
 #[allow(clippy::expect_used)]
 mod tests {
     use super::*;
-    use crate::ops_support::StackManifestProfile;
 
     #[test]
     fn tools_manifest_parses() {
@@ -251,36 +213,6 @@ mod tests {
         let parsed = load_tools_manifest(root.path()).expect("parse");
         assert_eq!(parsed.tools.len(), 1);
         assert_eq!(parsed.tools[0].name, "helm");
-    }
-
-    #[test]
-    fn stack_manifest_validation_checks_component_order_and_paths() {
-        let root = tempfile::tempdir().expect("tempdir");
-        std::fs::create_dir_all(root.path().join("ops/stack/kind")).expect("mkdir");
-        std::fs::write(
-            root.path().join("ops/stack/kind/cluster.yaml"),
-            "kind: Cluster\n",
-        )
-        .expect("write cluster");
-        let manifest = StackManifestToml {
-            profiles: std::collections::BTreeMap::from([(
-                "kind".to_string(),
-                StackManifestProfile {
-                    kind_profile: "normal".to_string(),
-                    cluster_config: "ops/stack/kind/cluster.yaml".to_string(),
-                    namespace: "bijux-atlas".to_string(),
-                    components: vec![
-                        "ops/stack/redis/redis.yaml".to_string(),
-                        "ops/observe/pack/k8s/namespace.yaml".to_string(),
-                    ],
-                },
-            )]),
-        };
-        let errors = validate_stack_manifest(root.path(), &manifest).expect("validate");
-        assert!(errors
-            .iter()
-            .any(|e| e.contains("components must be lexicographically sorted")));
-        assert!(errors.iter().any(|e| e.contains("missing component")));
     }
 
     #[test]
