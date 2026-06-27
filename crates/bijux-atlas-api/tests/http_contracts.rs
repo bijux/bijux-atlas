@@ -4,10 +4,10 @@ use std::sync::Arc;
 
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_runtime::runtime::config::ApiConfig;
 use bijux_atlas_server::adapters::inbound::build_server_router;
-use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
-use bijux_atlas_server::runtime::config::ApiConfig;
 use hmac::{Hmac, Mac};
 use serde_json::Value;
 use sha2::Sha256;
@@ -605,7 +605,7 @@ async fn overload_health_endpoint_reports_state() {
     let app = build_server_router(AppState::with_config(
         cache,
         api,
-        bijux_atlas_server::query::QueryLimits::default(),
+        bijux_atlas_query::QueryLimits::default(),
     ));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
@@ -636,11 +636,7 @@ async fn health_readiness_liveness_contract_is_explicit_and_consistent() {
         readiness_requires_catalog: true,
         ..ApiConfig::default()
     };
-    let state = AppState::with_config(
-        cache,
-        api,
-        bijux_atlas_server::query::QueryLimits::default(),
-    );
+    let state = AppState::with_config(cache, api, bijux_atlas_query::QueryLimits::default());
     let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await

@@ -2,8 +2,8 @@
 
 use std::sync::Arc;
 
+use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas_server::adapters::inbound::build_server_router;
-use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
 use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use serde_json::Value;
 use tempfile::tempdir;

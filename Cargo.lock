@@ -240,6 +240,7 @@ dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
  "bijux-atlas-query",
+ "bijux-atlas-runtime",
  "bijux-atlas-server",
  "criterion",
  "hex",
