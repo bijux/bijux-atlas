@@ -80,7 +80,7 @@ fn is_trace_char(ch: u8) -> bool {
 mod tests {
     use super::*;
     use axum::http::{HeaderMap, HeaderValue};
-    use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+    use bijux_atlas_runtime::adapters::outbound::store::FakeStore;
 
     #[test]
     fn extracts_request_trace_fields() {

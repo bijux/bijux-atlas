@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_runtime::adapters::outbound::store::FakeStore;
 use bijux_atlas_runtime::domain::sha256_hex;
 use bijux_atlas_server::adapters::inbound::build_server_router;
 use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};

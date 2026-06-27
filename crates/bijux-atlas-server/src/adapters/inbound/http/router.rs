@@ -189,7 +189,7 @@ mod bulkhead_tests {
     use super::*;
     use crate::app::server::{DatasetCacheConfig, DatasetCacheManager};
     use bijux_atlas_query::{QueryClass, QueryLimits};
-    use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
+    use bijux_atlas_runtime::adapters::outbound::store::FakeStore;
     use bijux_atlas_runtime::runtime::config::ApiConfig;
     use std::sync::Arc;
 

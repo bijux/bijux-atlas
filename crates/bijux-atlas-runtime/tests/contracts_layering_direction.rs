@@ -165,6 +165,7 @@ fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
         "axum",
         "bijux-atlas-core",
         "bijux-atlas-query",
+        "bijux-atlas-runtime",
         "bijux-atlas-server",
         "criterion",
         "hex",
