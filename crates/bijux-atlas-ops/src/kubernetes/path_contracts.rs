@@ -82,6 +82,26 @@ pub fn atlas_hpa_policy_from_ops_root(ops_root: &Path) -> PathBuf {
     ops_root.join("stack/hpa-policy.json")
 }
 
+#[must_use]
+pub fn atlas_generated_root_from_ops_root(ops_root: &Path) -> PathBuf {
+    ops_root.join("k8s/generated")
+}
+
+#[must_use]
+pub fn atlas_generated_root(repo_root: &Path) -> PathBuf {
+    atlas_generated_root_from_ops_root(&atlas_ops_root(repo_root))
+}
+
+#[must_use]
+pub fn atlas_conformance_report_from_ops_root(ops_root: &Path) -> PathBuf {
+    atlas_generated_root_from_ops_root(ops_root).join("conformance-report.json")
+}
+
+#[must_use]
+pub fn atlas_conformance_report(repo_root: &Path) -> PathBuf {
+    atlas_conformance_report_from_ops_root(&atlas_ops_root(repo_root))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -108,6 +128,7 @@ mod tests {
             atlas_install_matrix(&root),
             atlas_rollout_safety_contract(&root),
             atlas_hpa_policy_from_ops_root(&atlas_ops_root(&root)),
+            atlas_generated_root(&root),
         ] {
             assert!(
                 path.exists(),

@@ -2,6 +2,7 @@
 
 pub mod access_guard;
 pub mod conformance;
+pub mod conformance_report;
 pub mod execution;
 pub mod helm_env;
 pub mod path_contracts;
