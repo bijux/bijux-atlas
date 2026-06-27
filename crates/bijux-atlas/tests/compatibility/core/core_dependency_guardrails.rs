@@ -3,15 +3,16 @@
 use std::fs;
 use std::path::PathBuf;
 
+fn core_crate_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("crates directory")
+        .join("bijux-atlas-core")
+}
+
 fn core_sources() -> Vec<PathBuf> {
-    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let roots = [
-        manifest_dir.join("src/contracts/errors"),
-        manifest_dir.join("src/domain/canonical.rs"),
-        manifest_dir.join("src/domain/dataset/keys.rs"),
-        manifest_dir.join("src/domain/dataset/version.rs"),
-        manifest_dir.join("src/domain/security/data_protection.rs"),
-    ];
+    let manifest_dir = core_crate_dir();
+    let roots = [manifest_dir.join("src")];
 
     let mut files = Vec::new();
     for root in roots {
@@ -83,15 +84,13 @@ fn core_module_isolated_from_runtime_modules() {
 #[test]
 fn serde_json_usage_is_limited_to_canonical_module() {
     for path in core_sources() {
-        if path.ends_with("src/domain/canonical.rs")
-            || path.ends_with("src/domain/security/data_protection.rs")
-        {
+        if path.ends_with("src/canonical.rs") {
             continue;
         }
         let content = std::fs::read_to_string(&path).expect("read source");
         assert!(
             !content.contains("serde_json"),
-            "serde_json usage must be limited to src/domain/canonical.rs: {}",
+            "serde_json usage must be limited to src/canonical.rs: {}",
             path.display()
         );
     }

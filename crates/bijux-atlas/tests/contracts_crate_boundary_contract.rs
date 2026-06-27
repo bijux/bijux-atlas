@@ -26,6 +26,7 @@ fn crate_boundary_contract_document_exists_with_required_sections() {
         "bijux-atlas",
         "bijux-dev-atlas",
         "bijux-atlas-core",
+        "bijux-atlas-model",
     ] {
         assert!(
             text.contains(required),
