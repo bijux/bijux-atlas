@@ -3,5 +3,5 @@
 include!("render.rs");
 include!("k8s.rs");
 include!("load.rs");
-include!("install_status.rs");
+include!("lifecycle.rs");
 include!("tests.rs");
