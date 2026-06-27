@@ -29,8 +29,8 @@ serde_json = "1"
 walkdir = "2"
 
 [[test]]
-name = "contracts"
-path = "tests/contracts.rs"
+name = "core_contracts"
+path = "tests/core_contracts.rs"
 required-features = ["serde"]
 
 [[bench]]
