@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::kubernetes::execution::KubernetesCommandRunner;
 use serde_json::{json, Value};
+use std::path::Path;
+use std::time::Instant;
 
 pub fn readiness_wait_commands(namespace: &str, timeout_seconds: u64) -> Vec<Vec<String>> {
     let timeout = format!("{timeout_seconds}s");
@@ -53,9 +56,38 @@ pub fn readiness_wait_payload(rows: Vec<Value>, errors: &[String], elapsed_ms: u
     })
 }
 
+pub fn run_readiness_wait(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    namespace: &str,
+    timeout_seconds: u64,
+) -> (Vec<Value>, Vec<String>, u128) {
+    let start = Instant::now();
+    let mut rows = Vec::new();
+    let mut errors = Vec::new();
+    for argv in readiness_wait_commands(namespace, timeout_seconds) {
+        match runner.run("kubectl", &argv, repo_root) {
+            Ok(capture) => rows.push(readiness_wait_success_row(
+                &argv,
+                &capture.stdout,
+                capture.event,
+            )),
+            Err(err) => {
+                errors.push(err);
+                rows.push(readiness_wait_failure_row(&argv));
+            }
+        }
+    }
+    (rows, errors, start.elapsed().as_millis())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::kubernetes::execution::SubprocessCapture;
+    use std::cell::RefCell;
+    use std::collections::VecDeque;
+    use std::path::{Path, PathBuf};
 
     #[test]
     fn readiness_wait_commands_cover_deployments_and_pods() {
@@ -80,5 +112,53 @@ mod tests {
         assert_eq!(payload["text"], "k8s wait failed");
         assert_eq!(payload["summary"]["errors"], 1);
         assert_eq!(payload["elapsed_ms"], 1200);
+    }
+
+    struct MockRunner {
+        cwd: PathBuf,
+        calls: RefCell<Vec<Vec<String>>>,
+        results: RefCell<VecDeque<Result<SubprocessCapture, String>>>,
+    }
+
+    impl crate::kubernetes::execution::KubernetesCommandRunner for MockRunner {
+        fn run(
+            &self,
+            binary: &str,
+            args: &[String],
+            cwd: &Path,
+        ) -> Result<SubprocessCapture, String> {
+            assert_eq!(binary, "kubectl");
+            assert_eq!(cwd, self.cwd);
+            self.calls.borrow_mut().push(args.to_vec());
+            self.results
+                .borrow_mut()
+                .pop_front()
+                .expect("mock result should exist")
+        }
+    }
+
+    #[test]
+    fn run_readiness_wait_collects_rows_and_errors() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let runner = MockRunner {
+            cwd: root.path().to_path_buf(),
+            calls: RefCell::new(Vec::new()),
+            results: RefCell::new(VecDeque::from([
+                Ok(SubprocessCapture {
+                    stdout: "deployment available".to_string(),
+                    event: json!({"binary": "kubectl"}),
+                }),
+                Err("pod wait failed".to_string()),
+            ])),
+        };
+
+        let (rows, errors, elapsed_ms) = run_readiness_wait(&runner, root.path(), "atlas-kind", 30);
+
+        assert_eq!(rows.len(), 2);
+        assert_eq!(rows[0]["status"], "ok");
+        assert_eq!(rows[1]["status"], "failed");
+        assert_eq!(errors, vec!["pod wait failed".to_string()]);
+        assert!(elapsed_ms < 5_000);
+        assert_eq!(runner.calls.borrow().len(), 2);
     }
 }

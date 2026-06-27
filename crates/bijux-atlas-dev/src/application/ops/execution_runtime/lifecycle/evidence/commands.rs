@@ -1361,47 +1361,12 @@ pub(crate) fn run_simulation_wait(
     namespace: &str,
     timeout_seconds: u64,
 ) -> (Vec<serde_json::Value>, Vec<String>, u128) {
-    let start = Instant::now();
-    let timeout = format!("{timeout_seconds}s");
-    let checks = vec![
-        vec![
-            "wait".to_string(),
-            "deployment/bijux-atlas".to_string(),
-            "-n".to_string(),
-            namespace.to_string(),
-            "--for=condition=Available".to_string(),
-            format!("--timeout={timeout}"),
-        ],
-        vec![
-            "wait".to_string(),
-            "pod".to_string(),
-            "--all".to_string(),
-            "-n".to_string(),
-            namespace.to_string(),
-            "--for=condition=Ready".to_string(),
-            format!("--timeout={timeout}"),
-        ],
-    ];
-    let mut rows = Vec::new();
-    let mut errors = Vec::new();
-    for argv in checks {
-        match process.run_subprocess("kubectl", &argv, repo_root) {
-            Ok((stdout, event)) => rows.push(serde_json::json!({
-                "argv": argv,
-                "stdout": stdout,
-                "event": event,
-                "status": "ok"
-            })),
-            Err(err) => {
-                errors.push(err.to_stable_message());
-                rows.push(serde_json::json!({
-                    "argv": argv,
-                    "status": "failed"
-                }));
-            }
-        }
-    }
-    (rows, errors, start.elapsed().as_millis())
+    bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
+        process,
+        repo_root,
+        namespace,
+        timeout_seconds,
+    )
 }
 
 pub(crate) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
