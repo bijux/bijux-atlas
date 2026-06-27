@@ -191,8 +191,12 @@ pub(super) fn run_atlas_command(
             }
             PolicyCommand::Explain { mode } => operations::explain_policy(
                 mode.map(|m| match m {
-                    PolicyModeCli::Strict => bijux_atlas_runtime::domain::policy::PolicyMode::Strict,
-                    PolicyModeCli::Compat => bijux_atlas_runtime::domain::policy::PolicyMode::Compat,
+                    PolicyModeCli::Strict => {
+                        bijux_atlas_runtime::domain::policy::PolicyMode::Strict
+                    }
+                    PolicyModeCli::Compat => {
+                        bijux_atlas_runtime::domain::policy::PolicyMode::Compat
+                    }
                     PolicyModeCli::Dev => bijux_atlas_runtime::domain::policy::PolicyMode::Dev,
                 }),
                 output_mode,
