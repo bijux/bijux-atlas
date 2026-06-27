@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod host;
-
 pub(crate) mod cache;
 pub(crate) mod state;
 #[cfg(test)]

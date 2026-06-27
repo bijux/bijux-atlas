@@ -17,8 +17,15 @@ default = []
 jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
+axum = "0.8"
+bijux-atlas-core.workspace = true
+bijux-atlas-model.workspace = true
 bijux-atlas-runtime.workspace = true
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+clap = { version = "4", features = ["derive"] }
+redis = { version = "1.2", features = ["tokio-comp"] }
+serde_json.workspace = true
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
+tracing = "0.1"
 
 [dependencies.tikv-jemallocator]
 version = "0.6"

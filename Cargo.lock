@@ -415,8 +415,10 @@ name = "bijux-atlas-server"
 version = "0.2.1"
 dependencies = [
  "axum",
+ "bijux-atlas-core",
  "bijux-atlas-model",
  "bijux-atlas-runtime",
+ "clap",
  "criterion",
  "redis",
  "regex",
@@ -426,6 +428,7 @@ dependencies = [
  "tempfile",
  "tikv-jemallocator",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
