@@ -307,7 +307,7 @@ pub(super) fn drill_check_paths(
         "catalog-unreachable" => vec![
             (
                 "readiness handler",
-                crate::reference::workspace_layout::atlas_http_service_routes_source(repo_root),
+                crate::reference::workspace_layout::atlas_http_route_support_source(repo_root),
             ),
             (
                 "health endpoints contract",

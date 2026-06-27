@@ -33,8 +33,8 @@ pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
 }
 
 #[must_use]
-pub fn atlas_http_service_routes_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("service_routes.rs")
+pub fn atlas_http_route_support_source(repo_root: &Path) -> PathBuf {
+    atlas_server_http_src_root(repo_root).join("route_support.rs")
 }
 
 #[must_use]
@@ -94,7 +94,7 @@ mod tests {
         for path in [
             atlas_server_router_source(&root),
             atlas_http_request_policies_source(&root),
-            atlas_http_service_routes_source(&root),
+            atlas_http_route_support_source(&root),
             atlas_http_response_contract_source(&root),
             atlas_runtime_config_tests_source(&root),
             atlas_cli_binary_source(&root),
