@@ -10,3 +10,9 @@ Use this crate when you need:
 - stable key-based sorting primitives
 - `Hash256` and related checksum utilities
 - generated Atlas error-code definitions shared across crates
+
+Public references:
+
+- Project docs: <https://bijux.github.io/bijux-atlas/>
+- Rust API docs: <https://docs.rs/bijux-atlas-core/latest/bijux_atlas_core/>
+- Source repository: <https://github.com/bijux/bijux-atlas>

@@ -1,13 +1,19 @@
 # bijux-atlas-api
 
-Stable Atlas API contracts, OpenAPI metadata, and request or response normalization helpers.
+`bijux-atlas-api` owns the stable Atlas API boundary: request parameter
+parsing, response DTOs, compatibility aliases, and OpenAPI generation that
+runtime adapters expose but do not redefine.
 
-This crate owns:
+Use this crate when you need:
 
 - request parameter parsing and validation
 - response DTO and error envelope contracts
 - OpenAPI v1 document generation
 - compatibility redirects and stable API error-code aliases
+- crate-owned API contract tests and OpenAPI benchmark coverage
 
-It depends on `bijux-atlas-core` for canonical hashing and shared error codes, and on
-`bijux-atlas-model` for stable dataset and query value types.
+Public references:
+
+- Project docs: <https://bijux.github.io/bijux-atlas/>
+- Rust API docs: <https://docs.rs/bijux-atlas-api/latest/bijux_atlas_api/>
+- Source repository: <https://github.com/bijux/bijux-atlas>

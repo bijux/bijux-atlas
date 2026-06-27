@@ -11,3 +11,9 @@ Use this crate when you need:
 - manifest lock creation and checksum verification
 - local filesystem, HTTP readonly, or S3-like artifact backends
 - owned storage benches and infrastructure tests
+
+Public references:
+
+- Project docs: <https://bijux.github.io/bijux-atlas/>
+- Rust API docs: <https://docs.rs/bijux-atlas-store/latest/bijux_atlas_store/>
+- Source repository: <https://github.com/bijux/bijux-atlas>

@@ -22,6 +22,10 @@ serde_json.workspace = true
 [dev-dependencies]
 criterion = "0.8"
 
+[[test]]
+name = "contracts"
+path = "tests/contracts.rs"
+
 [[bench]]
 name = "openapi_generation"
 path = "benches/openapi_generation.rs"
