@@ -10,8 +10,8 @@ use std::io::Write;
 use std::path::Path;
 use std::time::Instant;
 
-mod validation;
 mod cluster_safety;
+mod validation;
 
 pub(super) use self::cluster_safety::{
     ensure_k8s_safety, ensure_namespace_exists, is_context_allowed,

@@ -29,7 +29,7 @@ pub fn atlas_server_router_source(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("request_policies.rs")
+    atlas_server_http_src_root(repo_root).join("request_policies/mod.rs")
 }
 
 #[must_use]
