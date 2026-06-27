@@ -10,6 +10,10 @@ use bijux_atlas_ops::kubernetes::conformance_report::{
     build_conformance_report, write_conformance_report,
 };
 use bijux_atlas_ops::kubernetes::service_inventory::service_port_rows;
+use bijux_atlas_ops::kubernetes::workload_wait::{
+    readiness_wait_commands, readiness_wait_failure_row, readiness_wait_payload,
+    readiness_wait_success_row,
+};
 use serde_json::Value;
 use std::fs;
 use std::time::Instant;
@@ -309,50 +313,22 @@ pub(crate) fn run_ops_k8s_wait(args: &crate::cli::OpsK8sWaitArgs) -> Result<(Str
         "bijux-atlas",
     )?;
     let start = Instant::now();
-    let timeout = format!("{}s", args.timeout_seconds);
-    let checks = vec![
-        vec![
-            "wait".to_string(),
-            "deployment".to_string(),
-            "--all".to_string(),
-            "-n".to_string(),
-            "bijux-atlas".to_string(),
-            "--for=condition=Available".to_string(),
-            format!("--timeout={timeout}"),
-        ],
-        vec![
-            "wait".to_string(),
-            "pod".to_string(),
-            "--all".to_string(),
-            "-n".to_string(),
-            "bijux-atlas".to_string(),
-            "--for=condition=Ready".to_string(),
-            format!("--timeout={timeout}"),
-        ],
-    ];
+    let checks = readiness_wait_commands("bijux-atlas", args.timeout_seconds);
     let mut rows = Vec::new();
     let mut errors = Vec::new();
     for argv in checks {
         match process.run_subprocess("kubectl", &argv, &repo_root) {
-            Ok((stdout, event)) => rows
-                .push(serde_json::json!({"argv":argv,"stdout":stdout,"event":event,"status":"ok"})),
+            Ok((stdout, event)) => rows.push(readiness_wait_success_row(&argv, &stdout, event)),
             Err(err) => {
                 errors.push(err.to_stable_message());
-                rows.push(serde_json::json!({"argv":argv,"status":"failed"}));
+                rows.push(readiness_wait_failure_row(&argv));
                 if common.fail_fast {
                     break;
                 }
             }
         }
     }
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text": if errors.is_empty() {"k8s wait passed"} else {"k8s wait failed"},
-        "rows": rows,
-        "errors": errors,
-        "summary":{"total":1,"errors": errors.len(),"warnings":0},
-        "elapsed_ms": start.elapsed().as_millis()
-    });
+    let payload = readiness_wait_payload(rows, &errors, start.elapsed().as_millis());
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((
         rendered,

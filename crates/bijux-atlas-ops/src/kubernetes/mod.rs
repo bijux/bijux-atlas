@@ -11,3 +11,4 @@ pub mod render_policy;
 pub mod safety_policy;
 pub mod schema_validation;
 pub mod service_inventory;
+pub mod workload_wait;
