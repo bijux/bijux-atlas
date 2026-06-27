@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::extract::ExtractResult;
+use super::annotation::ExtractResult;
 use super::IngestError;
 use crate::domain::sha256_hex;
 use crate::model::dataset::{

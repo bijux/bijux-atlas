@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use super::super::IngestError;
 use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
-use super::IngestError;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::fs;

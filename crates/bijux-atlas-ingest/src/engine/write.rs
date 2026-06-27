@@ -9,13 +9,13 @@ use crate::model::dataset::{
 };
 use serde_json::json;
 
+use super::annotation::{replay_counts_from_normalized, write_normalized_jsonl_zst};
 use super::diff_index::build_and_write_release_gene_index;
 use super::hashing::compute_input_hashes;
 use super::job::IngestJob;
 use super::manifest::{
     build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
 };
-use super::normalized::{replay_counts_from_normalized, write_normalized_jsonl_zst};
 use super::sources::DecodedIngest;
 use super::sqlite::{write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput};
 use super::{IngestError, IngestResult};

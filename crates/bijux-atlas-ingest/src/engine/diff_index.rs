@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::extract::GeneRecord;
+use super::annotation::GeneRecord;
 use super::IngestError;
 use crate::core::sha256_hex;
 use crate::model::dataset::DatasetId;

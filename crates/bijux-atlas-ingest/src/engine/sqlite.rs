@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::extract::{ExonRecord, GeneRecord, TranscriptRecord};
+use super::annotation::{ExonRecord, GeneRecord, TranscriptRecord};
 use super::sources::ContigStats;
 use super::IngestError;
 use crate::core::sha256_hex;

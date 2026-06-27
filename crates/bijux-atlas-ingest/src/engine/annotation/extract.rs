@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::sources::gff3::Gff3Record;
-use super::{IngestError, IngestOptions};
+use super::super::sources::gff3::Gff3Record;
+use super::super::{IngestError, IngestOptions};
 use crate::model::dataset::{IngestAnomalyReport, IngestRejection};
 use crate::model::policy::{GeneIdentifierPolicy, StrictnessMode};
 use crate::query::{

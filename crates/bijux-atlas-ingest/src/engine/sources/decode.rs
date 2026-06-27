@@ -3,8 +3,9 @@
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
-use super::super::canonical_model::{build_canonical_model, CanonicalModel};
-use super::super::extract::{extract_gene_rows, ExtractResult};
+use super::super::annotation::{
+    build_canonical_model, extract_gene_rows, CanonicalModel, ExtractResult,
+};
 use super::super::job::IngestJob;
 use super::super::{IngestError, IngestOptions};
 use super::fai::{self, ContigStats};

@@ -2,14 +2,12 @@
 
 #![forbid(unsafe_code)]
 
-mod canonical_model;
+mod annotation;
 mod diff_index;
-mod extract;
 mod hashing;
 mod job;
 mod logging;
 mod manifest;
-mod normalized;
 mod sources;
 mod sqlite;
 mod write;
@@ -32,10 +30,10 @@ use std::path::{Path, PathBuf};
 
 pub const CRATE_NAME: &str = crate::CRATE_NAME;
 
+pub use annotation::ReplayCounts;
 pub use hashing::{compute_input_hashes, hash_file, InputHashes};
 pub use job::{IngestInputs, IngestJob};
 pub use logging::{IngestEvent, IngestLog, IngestStage};
-pub use normalized::ReplayCounts;
 
 #[derive(Debug)]
 pub struct IngestError(pub String);
@@ -179,7 +177,7 @@ pub fn ingest_dataset_with_events(
             "dataset identity is required; implicit default dataset is forbidden".to_string(),
         ));
     }
-    let _effective_threads = extract::parallelism_policy(opts.max_threads)?;
+    let _effective_threads = annotation::parallelism_policy(opts.max_threads)?;
     if opts.prod_mode && opts.emit_normalized_debug {
         return Err(IngestError(
             "policy gate: normalized debug output is disabled in production mode".to_string(),
@@ -298,15 +296,15 @@ pub fn explain_region_query_plan(sqlite_path: &Path) -> Result<Vec<String>, Inge
     explain_plan_for_region_query(sqlite_path)
 }
 
-pub fn replay_normalized_counts(path: &Path) -> Result<normalized::ReplayCounts, IngestError> {
-    normalized::replay_counts_from_normalized(path)
+pub fn replay_normalized_counts(path: &Path) -> Result<annotation::ReplayCounts, IngestError> {
+    annotation::replay_counts_from_normalized(path)
 }
 
 pub fn diff_normalized_ids(
     base: &Path,
     target: &Path,
 ) -> Result<(Vec<String>, Vec<String>), IngestError> {
-    normalized::diff_normalized_record_ids(base, target)
+    annotation::diff_normalized_record_ids(base, target)
 }
 
 #[cfg(test)]
