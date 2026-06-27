@@ -8,7 +8,7 @@ use serde_json::Value;
 use tracing::info;
 
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
-    crate::adapters::outbound::telemetry::metrics_endpoint::metrics_handler(State(state)).await
+    crate::adapters::outbound::telemetry::metrics_surface::metrics_handler(State(state)).await
 }
 
 pub(crate) async fn release_dataset_handler(

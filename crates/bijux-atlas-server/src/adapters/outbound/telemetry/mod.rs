@@ -5,7 +5,7 @@ pub mod generated;
 pub mod logging;
 
 pub(crate) mod metrics;
-pub mod metrics_endpoint;
+pub mod metrics_surface;
 pub(crate) mod rate_limiter;
 
 pub mod tracing;
