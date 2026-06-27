@@ -1,83 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use std::path::{Path, PathBuf};
-
-fn atlas_src_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas-runtime/src")
-}
-
-fn atlas_server_http_src_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas-server/src/adapters/inbound/http")
-}
-
-fn atlas_cli_crate_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas-cli")
-}
-
-fn atlas_server_crate_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas-server")
-}
-
-fn dev_atlas_src_root(repo_root: &Path) -> PathBuf {
-    repo_root.join("crates/bijux-atlas-dev/src")
-}
-
-#[must_use]
-pub fn atlas_server_router_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("router.rs")
-}
-
-#[must_use]
-pub fn atlas_http_request_policies_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("request_policies/mod.rs")
-}
-
-#[must_use]
-pub fn atlas_http_route_support_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("route_support.rs")
-}
-
-#[must_use]
-pub fn atlas_http_response_contract_source(repo_root: &Path) -> PathBuf {
-    atlas_server_http_src_root(repo_root).join("response_contract.rs")
-}
-
-#[must_use]
-pub fn atlas_runtime_config_tests_source(repo_root: &Path) -> PathBuf {
-    atlas_src_root(repo_root).join("runtime/config/tests.rs")
-}
-
-#[must_use]
-pub fn atlas_cli_binary_source(repo_root: &Path) -> PathBuf {
-    atlas_cli_crate_root(repo_root).join("src/bin/bijux-atlas.rs")
-}
-
-#[must_use]
-pub fn atlas_server_binary_source(repo_root: &Path) -> PathBuf {
-    atlas_server_crate_root(repo_root).join("src/bin/bijux-atlas-server.rs")
-}
-
-#[must_use]
-pub fn dev_atlas_cli_dispatch_source(repo_root: &Path) -> PathBuf {
-    dev_atlas_src_root(repo_root).join("interfaces/cli/dispatch.rs")
-}
-
-#[must_use]
-pub fn dev_atlas_cli_mod_source(repo_root: &Path) -> PathBuf {
-    dev_atlas_src_root(repo_root).join("interfaces/cli/mod.rs")
-}
-
-#[must_use]
-pub fn atlas_runtime_generated_artifact(repo_root: &Path, file_name: &str) -> PathBuf {
-    repo_root
-        .join("configs")
-        .join("generated")
-        .join("runtime")
-        .join(file_name)
-}
+pub use bijux_atlas_ops::reference::workspace_surface_registry::{
+    atlas_cli_binary_source, atlas_http_request_policies_source,
+    atlas_http_response_contract_source, atlas_http_route_support_source,
+    atlas_runtime_config_tests_source, atlas_runtime_generated_artifact,
+    atlas_server_binary_source, atlas_server_router_source, dev_atlas_cli_dispatch_source,
+    dev_atlas_cli_mod_source,
+};
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use super::*;
 
     fn repo_root() -> PathBuf {
@@ -89,7 +23,7 @@ mod tests {
     }
 
     #[test]
-    fn canonical_workspace_paths_exist() {
+    fn delegated_workspace_surfaces_exist() {
         let root = repo_root();
         for path in [
             atlas_server_router_source(&root),
@@ -104,7 +38,7 @@ mod tests {
         ] {
             assert!(
                 path.exists(),
-                "missing canonical workspace path: {}",
+                "missing delegated workspace surface: {}",
                 path.display()
             );
         }

@@ -289,6 +289,7 @@ version = "0.2.1"
 dependencies = [
  "assert_cmd",
  "base64",
+ "bijux-atlas-ops",
  "bijux-atlas-runtime",
  "bijux-cli",
  "clap",
@@ -332,6 +333,14 @@ dependencies = [
  "bijux-atlas-core",
  "criterion",
  "proptest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bijux-atlas-ops"
+version = "0.2.1"
+dependencies = [
  "serde",
  "serde_json",
 ]
