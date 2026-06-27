@@ -300,7 +300,12 @@ dependencies = [
 name = "bijux-atlas-cli"
 version = "0.2.1"
 dependencies = [
+ "assert_cmd",
  "bijux-atlas",
+ "bijux-cli",
+ "rusqlite",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]

@@ -15,6 +15,13 @@ keywords = ["bioinformatics", "genomics", "atlas", "cli", "query"]
 [dependencies]
 bijux-atlas.workspace = true
 
+[dev-dependencies]
+assert_cmd = "2"
+bijux-cli.workspace = true
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde_json.workspace = true
+tempfile = "=3.27.0"
+
 [[bin]]
 name = "bijux-atlas"
 path = "src/bin/bijux-atlas.rs"

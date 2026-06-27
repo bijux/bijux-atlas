@@ -82,7 +82,7 @@ fn user_cli_commands_match_governance_surface_registry() {
 #[test]
 fn user_cli_cargo_manifest_must_not_depend_on_dev_atlas() {
     let root = repo_root();
-    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas/Cargo.toml"))
+    let cargo_toml = fs::read_to_string(root.join("crates/bijux-atlas-cli/Cargo.toml"))
         .expect("read user cli Cargo.toml");
     assert!(
         !cargo_toml.contains("bijux-dev-atlas"),

@@ -411,6 +411,39 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
 }
 
 #[test]
+fn atlas_cli_contract_tests_live_with_cli_owner_crate() {
+    let root = repo_root();
+
+    for required in [
+        "crates/bijux-atlas-cli/tests/cli_surface.rs",
+        "crates/bijux-atlas-cli/tests/help_surface.rs",
+        "crates/bijux-atlas-cli/tests/cli_runtime_parity.rs",
+        "crates/bijux-atlas-cli/tests/user_cli_surface.rs",
+        "crates/bijux-atlas-cli/tests/plugin_surface.rs",
+        "crates/bijux-atlas-cli/tests/snapshots/help.commands.txt",
+    ] {
+        assert!(
+            root.join(required).is_file(),
+            "cli owner crate must keep user-facing command-contract coverage: {required}"
+        );
+    }
+
+    for forbidden in [
+        "crates/bijux-atlas/tests/interfaces/cli_surface.rs",
+        "crates/bijux-atlas/tests/interfaces/help_surface.rs",
+        "crates/bijux-atlas/tests/interfaces/cli_runtime_parity.rs",
+        "crates/bijux-atlas/tests/interfaces/user_cli_surface.rs",
+        "crates/bijux-atlas/tests/interfaces/plugin_surface.rs",
+        "crates/bijux-atlas/tests/interfaces/snapshots/help.commands.txt",
+    ] {
+        assert!(
+            !root.join(forbidden).exists(),
+            "runtime crate must not retain cli-owned command-contract tests: {forbidden}"
+        );
+    }
+}
+
+#[test]
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =
