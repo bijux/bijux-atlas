@@ -6,6 +6,7 @@ use crate::resolve_repo_root;
 use bijux_atlas_ops::diagnostics::bundle_contracts::{
     build_diagnose_bundle, collect_scenario_files, write_diagnose_bundle,
 };
+use bijux_atlas_ops::diagnostics::bundle_payload::diagnose_bundle_payload;
 
 pub(crate) fn run_ops_diagnose_bundle(
     args: &crate::cli::OpsDiagnoseBundleArgs,
@@ -19,15 +20,17 @@ pub(crate) fn run_ops_diagnose_bundle(
     let bundle = build_diagnose_bundle(run_id.as_str(), args.scenario.as_deref(), files);
     let bundle_path = write_diagnose_bundle(&repo_root, run_id.as_str(), &bundle)?;
 
-    let payload = serde_json::json!({
-      "schema_version": 1,
-      "text": "ops diagnose bundle",
-      "rows": [{
-        "bundle": bundle_path.strip_prefix(&repo_root).unwrap_or(&bundle_path).display().to_string(),
-        "files": bundle.get("files").cloned().unwrap_or_else(|| serde_json::json!([]))
-      }],
-      "summary": {"total": 1, "errors": 0, "warnings": 0}
-    });
+    let payload = diagnose_bundle_payload(
+        &bundle_path
+            .strip_prefix(&repo_root)
+            .unwrap_or(&bundle_path)
+            .display()
+            .to_string(),
+        bundle
+            .get("files")
+            .cloned()
+            .unwrap_or_else(|| serde_json::json!([])),
+    );
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
