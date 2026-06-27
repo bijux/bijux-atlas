@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::serve_server_router_with_shutdown;
-use crate::adapters::outbound::store::{
-    FederatedBackend, LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
-};
 use crate::adapters::outbound::telemetry::logging::LoggingConfig;
 use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, TraceExporterKind};
 use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use crate::sha256_hex;
 use bijux_atlas_model::dataset::DatasetId;
+use bijux_atlas_runtime::adapters::outbound::store::{
+    FederatedBackend, LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
+};
 use bijux_atlas_runtime::app::ports::DatasetStoreBackend;
 use bijux_atlas_runtime::runtime::config::{
     effective_runtime_config_payload, load_runtime_config, runtime_governance_version,

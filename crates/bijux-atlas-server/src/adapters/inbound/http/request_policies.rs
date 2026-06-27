@@ -629,7 +629,7 @@ fn emit_audit_event(
         audit.sink,
         bijux_atlas_runtime::runtime::config::AuditSink::File
     ) {
-        let _ = crate::adapters::outbound::fs::write_audit_file_record(
+        let _ = bijux_atlas_runtime::adapters::outbound::fs::write_audit_file_record(
             &audit.file_path,
             audit.max_bytes,
             &payload,

@@ -79,8 +79,8 @@ fn is_trace_char(ch: u8) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::adapters::outbound::store::testing::FakeStore;
     use axum::http::{HeaderMap, HeaderValue};
+    use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
 
     #[test]
     fn extracts_request_trace_fields() {

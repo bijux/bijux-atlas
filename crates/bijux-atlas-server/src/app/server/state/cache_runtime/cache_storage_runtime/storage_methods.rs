@@ -174,7 +174,9 @@ impl DatasetCacheManager {
 
         let open = timeout(self.cfg.dataset_open_timeout, async move {
             tokio::task::spawn_blocking(move || {
-                crate::adapters::outbound::sqlite::open_readonly_no_mutex(&sqlite_path)
+                bijux_atlas_runtime::adapters::outbound::sqlite::open_readonly_no_mutex(
+                    &sqlite_path,
+                )
             })
             .await
             .map_err(|e| CacheError(e.to_string()))?
@@ -190,7 +192,7 @@ impl DatasetCacheManager {
             Ok(Ok(conn)) => {
                 conn.set_prepared_statement_cache_capacity(128);
                 prime_prepared_statements(&conn);
-                let _ = crate::adapters::outbound::sqlite::apply_readonly_pragmas(
+                let _ = bijux_atlas_runtime::adapters::outbound::sqlite::apply_readonly_pragmas(
                     &conn,
                     self.cfg.sqlite_pragma_cache_kib,
                     self.cfg.sqlite_pragma_mmap_bytes,

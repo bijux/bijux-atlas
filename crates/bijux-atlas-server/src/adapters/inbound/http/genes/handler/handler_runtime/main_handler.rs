@@ -557,12 +557,12 @@ pub(crate) async fn genes_handler(
                                     .record("shard_id", tracing::field::display(shard.display()));
                                 permits.push(state.cache.try_acquire_shard_permit()?);
                                 let conn =
-                                    crate::adapters::outbound::sqlite::open_readonly_no_mutex(
+                                    bijux_atlas_runtime::adapters::outbound::sqlite::open_readonly_no_mutex(
                                         &shard,
                                     )?;
                                 let (cache_kib, shard_mmap) =
                                     state.cache.sqlite_pragmas_for_shard_open();
-                                let _ = crate::adapters::outbound::sqlite::apply_readonly_pragmas(
+                                let _ = bijux_atlas_runtime::adapters::outbound::sqlite::apply_readonly_pragmas(
                                     &conn, cache_kib, shard_mmap,
                                 );
                                 shard_conns.push(conn);
