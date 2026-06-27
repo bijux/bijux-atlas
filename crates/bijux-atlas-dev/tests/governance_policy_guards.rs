@@ -171,7 +171,7 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod contracts;",
         "pub mod domain;",
         "pub mod runtime;",
-        "pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};",
+        "pub(crate) use crate::runtime::config::DatasetCacheConfig;",
         "pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};",
     ] {
         assert!(
@@ -198,6 +198,7 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod core;",
         "pub mod model;",
         "pub mod foundation;",
+        "pub(crate) use crate::app::server::{AppState, DatasetCacheManager};",
         "pub use crate::app::server::{",
         "pub use crate::adapters::inbound::cli;",
         "pub use crate::adapters::inbound::client;",
@@ -355,7 +356,7 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
     }
 
     for required in [
-        "crates/bijux-atlas-runtime/src/app/server/tests/mod.rs",
+        "crates/bijux-atlas-server/src/app/server/tests/mod.rs",
         "crates/bijux-atlas-api/src/client/mod.rs",
         "crates/bijux-atlas-ingest/src/engine/tests/mod.rs",
         "crates/bijux-atlas-query/src/engine/tests/mod.rs",
@@ -542,10 +543,10 @@ fn atlas_domain_barrel_stays_thin() {
 fn atlas_app_server_surface_stays_app_owned() {
     let root = repo_root();
     let app_server =
-        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/mod.rs"))
+        fs::read_to_string(root.join("crates/bijux-atlas-server/src/app/server/mod.rs"))
             .expect("app server");
     let app_state =
-        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/state/mod.rs"))
+        fs::read_to_string(root.join("crates/bijux-atlas-server/src/app/server/state/mod.rs"))
             .expect("app server state");
 
     for forbidden in [

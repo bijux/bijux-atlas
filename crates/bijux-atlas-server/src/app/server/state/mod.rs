@@ -2,9 +2,8 @@
 
 use crate::adapters::outbound::redis::RedisBackend;
 use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
-use crate::app::cache::{CacheError, RegistrySourceHealth};
-use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 use crate::app::server::cache;
+use crate::app::server::observability::{route_sli_class, unix_time_millis};
 use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::cluster::membership::MembershipPolicy;
 use crate::domain::cluster::membership::MembershipRegistry;
@@ -20,9 +19,10 @@ use crate::domain::cluster::sharding::ShardRegistry;
 use crate::domain::sha256_hex;
 use crate::runtime::config::{ApiConfig, DatasetCacheConfig};
 use crate::StatusCode;
-use crate::{route_sli_class, unix_time_millis};
 use bijux_atlas_model::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
 use bijux_atlas_query::QueryLimits;
+use bijux_atlas_runtime::app::cache::{CacheError, RegistrySourceHealth};
+use bijux_atlas_runtime::app::ports::{CatalogFetch, DatasetStoreBackend};
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
@@ -405,8 +405,8 @@ impl AppState {
             "api": api,
             "limits": limits
         });
-        match crate::compat::core::stable_json_bytes(&payload) {
-            Ok(bytes) => sha256_hex(&bytes),
+        match bijux_atlas_core::canonical::stable_json_bytes(&payload) {
+            Ok(bytes) => sha256_hex(bytes.as_slice()),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         }
     }

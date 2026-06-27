@@ -60,7 +60,7 @@ bijux_http_requests_total{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=
     }
     let req_lat = state.metrics.latency_ns.lock().await.clone();
     for (route, vals) in req_lat {
-        let class = crate::route_sli_class(&route);
+        let class = crate::app::server::observability::route_sli_class(&route);
         body.push_str(&format!(
             "bijux_http_request_latency_p95_seconds{{subsystem=\"{}\",version=\"{}\",dataset=\"{}\",route=\"{}\"}} {:.6}\n",
             METRIC_SUBSYSTEM,

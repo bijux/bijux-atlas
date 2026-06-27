@@ -413,6 +413,7 @@ dependencies = [
 name = "bijux-atlas-server"
 version = "0.2.1"
 dependencies = [
+ "async-trait",
  "axum",
  "base64",
  "bijux-atlas-api",

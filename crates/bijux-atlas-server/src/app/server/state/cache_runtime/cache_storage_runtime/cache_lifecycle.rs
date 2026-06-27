@@ -126,6 +126,9 @@ impl DatasetCacheManager {
                 info!("catalog epoch updated: {epoch_hash}");
                 Ok(())
             }
+            Ok(_) => Err(CacheError(
+                "catalog fetch returned unsupported non-exhaustive variant".to_string(),
+            )),
         };
 
         if let Err(err) = result {

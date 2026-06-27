@@ -43,6 +43,7 @@ version = "0.6"
 optional = true
 
 [dev-dependencies]
+async-trait = "0.1"
 axum = "0.8"
 bijux-atlas-model.workspace = true
 criterion = "0.8"

@@ -9,7 +9,6 @@ mod tests;
 
 pub use self::cache::DatasetCacheConfig;
 pub use self::paths::{resolve_bijux_cache_dir, resolve_bijux_config_path};
-pub(crate) use self::settings::resolve_runtime_path;
 pub use self::settings::{
     default_runtime_cache_root, default_runtime_pod_id, default_runtime_policy_mode,
     default_runtime_store_root, effective_config_payload, effective_runtime_config_payload,

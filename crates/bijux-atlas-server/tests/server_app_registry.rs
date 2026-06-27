@@ -7,8 +7,8 @@ use bijux_atlas_model::dataset::{
 use bijux_atlas_runtime::adapters::outbound::store::{FederatedBackend, RegistrySource};
 use bijux_atlas_runtime::app::cache::CacheError;
 use bijux_atlas_runtime::app::ports::{CatalogFetch, DatasetStoreBackend};
-use bijux_atlas_runtime::app::server::{DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas_runtime::domain::sha256_hex;
+use bijux_atlas_server::app::server::{DatasetCacheConfig, DatasetCacheManager};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;

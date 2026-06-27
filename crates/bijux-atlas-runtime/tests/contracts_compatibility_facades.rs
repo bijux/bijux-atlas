@@ -73,29 +73,12 @@ fn alias_leaf_forwarders_bind_directly_to_owning_crates() {
 
 #[test]
 fn runtime_compatibility_implementation_surface_stays_bounded() {
-    let root = crate_root();
-    let expected = [("src/compat", vec!["core.rs", "mod.rs"])];
-
-    for (relative, allowed) in expected {
-        let dir = root.join(relative);
-        let mut names = std::fs::read_dir(&dir)
-            .unwrap_or_else(|err| panic!("failed to read {}: {err}", dir.display()))
-            .map(|entry| {
-                entry
-                    .unwrap_or_else(|err| panic!("failed to read {} entry: {err}", dir.display()))
-                    .file_name()
-                    .into_string()
-                    .unwrap_or_else(|_| panic!("non-utf8 entry under {}", dir.display()))
-            })
-            .collect::<Vec<_>>();
-        names.sort();
-        let mut expected_names = allowed;
-        expected_names.sort();
-        assert_eq!(
-            names, expected_names,
-            "{relative} must stay a bounded compatibility implementation directory"
-        );
-    }
+    let compat_dir = crate_root().join("src/compat");
+    assert!(
+        !compat_dir.exists(),
+        "runtime must not retain a standalone compatibility implementation directory: {}",
+        compat_dir.display()
+    );
 }
 
 #[test]

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::AppState;
+use crate::app::server::AppState;
 use axum::http::HeaderValue;
 use axum::response::Response;
 use std::sync::atomic::Ordering;
