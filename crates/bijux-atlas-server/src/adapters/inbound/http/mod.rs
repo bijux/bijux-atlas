@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub(crate) mod cache_headers;
-pub(crate) mod catalog_routes;
+pub(crate) mod catalog;
 pub(crate) mod diagnostic_routes;
 pub(crate) mod diff;
 pub(crate) mod dto;

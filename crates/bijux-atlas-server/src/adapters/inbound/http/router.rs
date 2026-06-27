@@ -6,7 +6,7 @@ use crate::adapters::inbound::http::request_policies::{
     resilience_middleware, security_middleware,
 };
 use crate::adapters::inbound::http::{
-    catalog_routes, diagnostic_routes, gene_routes, service_routes, transcript_routes,
+    catalog, diagnostic_routes, gene_routes, service_routes, transcript_routes,
 };
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
@@ -26,17 +26,17 @@ pub fn build_router(state: AppState) -> Router {
         .route("/ready", get(service_routes::ready_handler))
         .route("/readyz", get(service_routes::readyz_handler))
         .route("/live", get(service_routes::live_handler))
-        .route("/metrics", get(catalog_routes::metrics_handler))
+        .route("/metrics", get(catalog::metrics_handler))
         .route("/v1/openapi.json", get(service_routes::openapi_handler))
         .route("/v1/version", get(service_routes::version_handler))
-        .route("/v1/datasets", get(catalog_routes::datasets_handler))
+        .route("/v1/datasets", get(catalog::datasets_handler))
         .route(
             "/v1/datasets/{release}/{species}/{assembly}",
-            get(catalog_routes::dataset_identity_handler),
+            get(catalog::dataset_identity_handler),
         )
         .route(
             "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
-            get(catalog_routes::release_dataset_handler),
+            get(catalog::release_dataset_handler),
         )
         .route("/v1/genes", get(gene_routes::genes_handler))
         .route(
