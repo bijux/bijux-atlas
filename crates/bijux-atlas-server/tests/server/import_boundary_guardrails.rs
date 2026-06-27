@@ -132,7 +132,7 @@ fn support_modules_remain_non_entrypoint() {
 #[test]
 fn http_genes_runtime_uses_app_query_boundary_not_domain_engine_symbols() {
     let root = server_crate_root();
-    let path = root.join("src/adapters/inbound/http/genes/handler/handler_runtime/main_handler.rs");
+    let path = root.join("src/adapters/inbound/http/genes/main_handler.rs");
     let text = std::fs::read_to_string(&path).expect("read genes runtime handler");
     let forbidden_tokens = [
         "bijux_atlas_runtime::query::",

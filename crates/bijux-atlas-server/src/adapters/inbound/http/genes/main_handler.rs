@@ -12,9 +12,7 @@ use bijux_atlas_model::dataset::ShardCatalog;
 use serde_json::json;
 use tracing::{info, info_span, warn};
 
-use super::genes_response_finalize::{
-    finalize_genes_success_response, GenesResponseFinalizeContext,
-};
+use super::response_finalize::{finalize_genes_success_response, GenesResponseFinalizeContext};
 
 pub(crate) async fn genes_handler(
     State(state): State<AppState>,
