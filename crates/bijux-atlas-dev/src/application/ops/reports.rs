@@ -2,8 +2,8 @@
 
 use bijux_atlas_dev::model::OpsRunReport;
 
-use super::manifests::{load_stack_pins, resolve_ops_root, run_id_or_default};
 use super::tools::validate_pins_completeness;
+use super::workspace_contracts::{load_stack_pins, resolve_ops_root, run_id_or_default};
 use crate::*;
 
 pub(crate) fn emit_payload(
