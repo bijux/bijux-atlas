@@ -6,27 +6,13 @@ use async_trait::async_trait;
 use bijux_atlas_model::dataset::{
     artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId,
 };
+use bijux_atlas_store::RetryPolicy;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use tracing::instrument;
-
-#[derive(Debug, Clone)]
-pub struct RetryPolicy {
-    pub max_attempts: usize,
-    pub base_backoff_ms: u64,
-}
-
-impl Default for RetryPolicy {
-    fn default() -> Self {
-        Self {
-            max_attempts: 4,
-            base_backoff_ms: 120,
-        }
-    }
-}
 
 pub struct LocalFsBackend {
     root: PathBuf,
