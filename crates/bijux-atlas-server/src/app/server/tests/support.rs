@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub(super) use super::*;
-pub(super) use crate::app::server::state::cache_runtime::cache_storage_runtime::{
+pub(super) use crate::app::server::state::cache_runtime::storage::{
     dataset_index_path, local_cache_paths,
 };
 pub(super) use bijux_atlas_core::sha256_hex;
