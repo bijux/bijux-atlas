@@ -5,7 +5,7 @@ use serde_json::{json, Value};
 
 use bijux_atlas_core::{sha256_hex, stable_json_bytes};
 
-pub use super::generated::error_codes::ApiErrorCode;
+pub use super::codes::ApiErrorCode;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

@@ -4,14 +4,13 @@ pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DAT
 pub mod compat;
 pub mod convert;
 pub mod dto;
-pub mod error_mapping;
 pub mod errors;
 pub mod openapi;
 pub mod params;
 pub mod responses;
 pub mod wire;
 pub use dto::DatasetKeyDto;
-pub use errors::{ApiError, ApiErrorCode};
+pub use errors::{fallback_request_id, map_error, ApiError, ApiErrorCode, ApiErrorMapping};
 pub use openapi::openapi_v1_spec;
 pub use params::{
 pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};

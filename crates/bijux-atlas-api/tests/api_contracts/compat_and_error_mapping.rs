@@ -3,7 +3,7 @@
 use bijux_atlas_api::compat::{
     compatibility_channel, legacy_dataset_path_redirect, ApiCompatibilityChannel,
 };
-use bijux_atlas_api::error_mapping::{map_error, API_ERROR_SCHEMA_REF};
+use bijux_atlas_api::errors::{map_error, API_ERROR_SCHEMA_REF};
 use bijux_atlas_api::{ApiError, ApiErrorCode, DatasetKeyDto};
 use serde_json::json;
 

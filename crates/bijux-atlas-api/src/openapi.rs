@@ -7,7 +7,7 @@ pub const OPENAPI_V1_PINNED_SHA256: &str =
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
-    let error_codes = super::generated::error_codes::API_ERROR_CODES;
+    let error_codes = super::errors::codes::API_ERROR_CODES;
     sort_json_keys(json!({
       "openapi": "3.0.3",
       "info": {

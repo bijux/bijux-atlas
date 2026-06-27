@@ -16,11 +16,8 @@ pub mod compat;
 pub mod convert;
 /// DTOs and stable API data contracts.
 pub mod dto;
-/// Mappings between runtime failures and API error envelopes.
-pub mod error_mapping;
 /// Stable API error codes and structures.
 pub mod errors;
-pub mod generated;
 /// OpenAPI document generation for v1.
 pub mod openapi;
 /// Query parameter parsing and normalization.
@@ -36,8 +33,7 @@ pub use client::{
     QueryProjection, QueryResult, RequestBuilder, StreamQuery, TraceContext,
 };
 pub use dto::DatasetKeyDto;
-pub use errors::fallback_request_id;
-pub use errors::{ApiError, ApiErrorCode};
+pub use errors::{fallback_request_id, map_error, ApiError, ApiErrorCode, ApiErrorMapping};
 pub use openapi::openapi_v1_spec;
 pub use params::{
     parse_list_genes_params, parse_list_genes_params_with_limit, parse_range_filter,
@@ -183,7 +179,7 @@ mod tests {
 
     #[test]
     fn error_codes_match_generated_contract() {
-        let generated = super::generated::error_codes::API_ERROR_CODES;
+        let generated = super::errors::codes::API_ERROR_CODES;
         let from_enum = [
             ApiErrorCode::AccessForbidden,
             ApiErrorCode::AuthenticationRequired,
@@ -222,7 +218,7 @@ mod tests {
 
     #[test]
     fn every_generated_error_code_is_parseable_and_stable() {
-        for code in super::generated::error_codes::API_ERROR_CODES {
+        for code in super::errors::codes::API_ERROR_CODES {
             let parsed = ApiErrorCode::parse(code).expect("generated error code parse");
             assert_eq!(parsed.as_str(), *code);
         }
