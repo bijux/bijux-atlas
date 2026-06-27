@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use bijux_atlas_ops::kubernetes::safety_policy::{
+    expected_kind_context as expected_kind_context_for_profile, ClusterSafetyPolicy,
+};
 
 pub(crate) fn expected_kind_context(profile: &StackProfile) -> String {
-    format!("kind-{}", profile.kind_profile)
+    expected_kind_context_for_profile(&profile.kind_profile)
 }
 
 pub(crate) fn ensure_kind_context(
@@ -14,18 +17,14 @@ pub(crate) fn ensure_kind_context(
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process.run_subprocess("kubectl", &args, Path::new("."))?;
     let current = stdout.trim();
-    let expected = expected_kind_context(profile);
-    if is_context_allowed(&expected, current, force) {
+    let policy = ClusterSafetyPolicy::for_kind_profile(&profile.kind_profile, "bijux-atlas");
+    if policy.allows_context(current, force) {
         Ok(())
     } else {
-        Err(OpsCommandError::Effect(format!(
-            "kubectl context guard failed: expected `{expected}` got `{current}`; pass --force to override"
-        )))
+        Err(OpsCommandError::Effect(
+            policy.context_guard_message(current),
+        ))
     }
-}
-
-pub(crate) fn is_context_allowed(expected: &str, current: &str, force: bool) -> bool {
-    current == expected || force
 }
 
 pub(crate) fn ensure_namespace_exists(
@@ -65,6 +64,7 @@ pub(crate) fn ensure_k8s_safety(
     force: bool,
     namespace: &str,
 ) -> Result<(), OpsCommandError> {
+    let policy = ClusterSafetyPolicy::for_kind_profile(&profile.kind_profile, namespace);
     ensure_kind_context(process, profile, force)?;
     let args = vec![
         "get".to_string(),
@@ -77,9 +77,6 @@ pub(crate) fn ensure_k8s_safety(
         .run_subprocess("kubectl", &args, repo_root)
         .map(|_| ())
         .map_err(|e| {
-            OpsCommandError::Effect(format!(
-                "namespace guard failed for `{namespace}`: {}",
-                e.to_stable_message()
-            ))
+            OpsCommandError::Effect(policy.namespace_guard_message(&e.to_stable_message()))
         })
 }

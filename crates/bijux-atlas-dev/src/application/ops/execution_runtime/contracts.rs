@@ -5,10 +5,10 @@
 mod tests {
     use crate::ops_execution_runtime::k8s::conformance_summary;
     use crate::ops_execution_runtime::load::{run_ops_load_plan, run_ops_load_report};
-    use crate::ops_execution_runtime::render::cluster_safety::is_context_allowed;
     use bijux_atlas_ops::kubernetes::render_policy::{
         scan_forbidden_kinds, scan_timestamps, scan_unpinned_images,
     };
+    use bijux_atlas_ops::kubernetes::safety_policy::is_context_allowed;
     use serde_json::Value;
 
     #[test]
