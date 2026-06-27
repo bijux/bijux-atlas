@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod access_guard;
+pub mod command_reports;
 pub mod conformance;
 pub mod conformance_report;
 pub mod execution;

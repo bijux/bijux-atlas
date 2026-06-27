@@ -5,6 +5,9 @@ use crate::ops_commands::{emit_payload, load_profiles, resolve_profile, run_id_o
 use crate::ops_support::resolve_ops_root;
 use crate::{resolve_repo_root, OpsProcess};
 use bijux_atlas_ops::kubernetes::access_guard::ensure_namespace_guard;
+use bijux_atlas_ops::kubernetes::command_reports::{
+    k8s_apply_payload, k8s_logs_payload, k8s_plan_payload,
+};
 use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
 use bijux_atlas_ops::kubernetes::conformance_report::{
     build_conformance_report, write_conformance_report,
@@ -37,18 +40,13 @@ pub(crate) fn run_ops_k8s_plan(common: &OpsCommonArgs) -> Result<(String, i32), 
             .map_err(|err| format!("failed to read {}: {err}", index_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", index_path.display()))?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "text": format!("k8s plan profile={} run_id={}", profile.name, run_id.as_str()),
-        "rows": [{
-            "profile": profile.name,
-            "run_id": run_id.as_str(),
-            "render_path": render_path.display().to_string(),
-            "render_index_path": index_path.display().to_string(),
-            "index": index_json
-        }],
-        "summary": {"total":1,"errors":0,"warnings":0}
-    });
+    let payload = k8s_plan_payload(
+        &profile.name,
+        run_id.as_str(),
+        &render_path.display().to_string(),
+        &index_path.display().to_string(),
+        index_json,
+    );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -100,19 +98,14 @@ pub(crate) fn run_ops_k8s_apply(
     let (stdout, event) = process
         .run_subprocess("kubectl", &apply_args, &repo_root)
         .map_err(|e| e.to_stable_message())?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "text": if dry_run {"k8s dry-run completed"} else {"k8s apply completed"},
-        "rows": [{
-            "profile": profile.name,
-            "run_id": run_id.as_str(),
-            "dry_run": dry_run,
-            "render_path": render_path.display().to_string(),
-            "stdout": stdout,
-            "subprocess_event": event
-        }],
-        "summary": {"total":1,"errors":0,"warnings":0}
-    });
+    let payload = k8s_apply_payload(
+        &profile.name,
+        run_id.as_str(),
+        dry_run,
+        &render_path.display().to_string(),
+        &stdout,
+        event,
+    );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -375,7 +368,7 @@ pub(crate) fn run_ops_k8s_logs(args: &crate::cli::OpsK8sLogsArgs) -> Result<(Str
     let (stdout, event) = process
         .run_subprocess("kubectl", &argv, &repo_root)
         .map_err(|e| e.to_stable_message())?;
-    let payload = serde_json::json!({"schema_version":1,"text":"k8s logs collected","rows":[{"stdout":stdout,"event":event}],"summary":{"total":1,"errors":0,"warnings":0}});
+    let payload = k8s_logs_payload(&stdout, event);
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
