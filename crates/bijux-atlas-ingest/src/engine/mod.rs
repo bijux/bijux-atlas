@@ -3,11 +3,10 @@
 #![forbid(unsafe_code)]
 
 mod annotation;
-mod diff_index;
+mod artifacts;
 mod manifest;
 mod pipeline;
 mod sources;
-mod sqlite;
 mod write;
 
 use crate::model::dataset::{
@@ -19,10 +18,10 @@ use crate::query::{
     GeneNamePolicy, SeqidNormalizationPolicy, TranscriptIdPolicy, TranscriptTypePolicy,
     UnknownFeaturePolicy,
 };
-use sources::decode_ingest_inputs;
-use sqlite::explain_plan_for_region_query;
+use artifacts::sqlite::explain_plan_for_region_query;
 #[cfg(test)]
-use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
+use artifacts::sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
+use sources::decode_ingest_inputs;
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
 

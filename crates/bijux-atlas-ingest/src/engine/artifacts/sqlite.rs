@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::annotation::{ExonRecord, GeneRecord, TranscriptRecord};
-use super::sources::ContigStats;
-use super::IngestError;
+use super::super::annotation::{ExonRecord, GeneRecord, TranscriptRecord};
+use super::super::sources::ContigStats;
+use super::super::IngestError;
 use crate::core::sha256_hex;
 use crate::model::dataset::manifest::ShardId;
 use crate::model::dataset::{DatasetId, ShardCatalog, ShardEntry, ShardingPlan};
@@ -13,7 +13,7 @@ use std::fs;
 use std::path::Path;
 
 pub const SQLITE_SCHEMA_VERSION: i64 = 4;
-pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../../sql/schema_v4.sql");
+pub const SQLITE_SCHEMA_SSOT: &str = include_str!("../../../sql/schema_v4.sql");
 #[allow(dead_code)] // ATLAS-EXC-0001
 pub const SQLITE_SCHEMA_SSOT_SHA256: &str =
     "a695a4e39b45e4fd87491dd9a55817142059100480d77b59168db0f5fe0a6901";
