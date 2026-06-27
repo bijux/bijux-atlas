@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-include!("render.rs");
+mod render;
+pub(crate) use self::render::*;
+
 include!("k8s.rs");
 include!("load.rs");
 include!("lifecycle/mod.rs");
