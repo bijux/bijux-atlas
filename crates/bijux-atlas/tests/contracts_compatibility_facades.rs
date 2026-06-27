@@ -16,12 +16,12 @@ fn read_source(relative: &str) -> String {
 fn runtime_wrapper_modules_stay_reexport_only() {
     let checks = [
         (
-            "src/api/mod.rs",
+            "src/api.rs",
             "pub use crate::compat::api::*;",
             "runtime api wrapper must forward to src/compat/api.rs",
         ),
         (
-            "src/core/mod.rs",
+            "src/core.rs",
             "pub use crate::compat::core::*;",
             "runtime core wrapper must forward to src/compat/core.rs",
         ),
@@ -36,12 +36,12 @@ fn runtime_wrapper_modules_stay_reexport_only() {
             "runtime policy wrapper must forward to src/compat/model/policy.rs",
         ),
         (
-            "src/query/mod.rs",
+            "src/query.rs",
             "pub use crate::compat::query::*;",
             "runtime query wrapper must forward to src/compat/query.rs",
         ),
         (
-            "src/domain/ingest/mod.rs",
+            "src/domain/ingest.rs",
             "pub use crate::compat::ingest::*;",
             "runtime ingest wrapper must forward to src/compat/ingest.rs",
         ),
