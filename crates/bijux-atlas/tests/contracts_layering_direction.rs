@@ -29,6 +29,10 @@ fn rust_files_under(root: &Path) -> Vec<PathBuf> {
     out
 }
 
+fn manifest_table<'a>(manifest: &'a toml::Value, key: &str) -> Option<&'a toml::value::Table> {
+    manifest.get(key).and_then(toml::Value::as_table)
+}
+
 #[test]
 fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
     let root = workspace_root();
@@ -92,22 +96,62 @@ fn model_crate_stays_transport_and_runtime_independent_by_dependency_contract() 
 }
 
 #[test]
-fn api_crate_stays_transport_and_runtime_independent_by_dependency_contract() {
+fn api_crate_production_dependencies_stay_runtime_independent_by_contract() {
     let root = workspace_root();
-    let cargo =
-        std::fs::read_to_string(root.join("crates/bijux-atlas-api/Cargo.toml")).expect("api cargo");
+    let manifest_path = root.join("crates/bijux-atlas-api/Cargo.toml");
+    let cargo = std::fs::read_to_string(&manifest_path).expect("api cargo");
+    let manifest: toml::Value = toml::from_str(&cargo)
+        .unwrap_or_else(|err| panic!("failed to parse {}: {err}", manifest_path.display()));
+    let dependencies = manifest_table(&manifest, "dependencies").expect("api dependencies");
 
     for forbidden in [
-        "bijux-atlas =",
-        "bijux-dev-atlas =",
-        "axum =",
-        "tokio =",
-        "rusqlite =",
-        "reqwest =",
+        "bijux-atlas",
+        "bijux-dev-atlas",
+        "axum",
+        "tokio",
+        "rusqlite",
     ] {
         assert!(
-            !cargo.contains(forbidden),
-            "api crate must not depend on runtime/dev surface `{forbidden}`"
+            !dependencies.contains_key(forbidden),
+            "api production dependencies must not include runtime/dev surface `{forbidden}`"
+        );
+    }
+
+    assert!(
+        dependencies.contains_key("reqwest"),
+        "api production dependencies must retain reqwest for the published Rust client surface"
+    );
+}
+
+#[test]
+fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
+    let root = workspace_root();
+    let manifest_path = root.join("crates/bijux-atlas-api/Cargo.toml");
+    let cargo = std::fs::read_to_string(&manifest_path).expect("api cargo");
+    let manifest: toml::Value = toml::from_str(&cargo)
+        .unwrap_or_else(|err| panic!("failed to parse {}: {err}", manifest_path.display()));
+    let dev_dependencies =
+        manifest_table(&manifest, "dev-dependencies").expect("api dev-dependencies");
+
+    let allowlist = [
+        "axum",
+        "bijux-atlas",
+        "criterion",
+        "hex",
+        "hmac",
+        "regex",
+        "rusqlite",
+        "sha2",
+        "tempfile",
+        "tokio",
+        "tracing",
+        "tracing-subscriber",
+    ];
+
+    for key in dev_dependencies.keys() {
+        assert!(
+            allowlist.contains(&key.as_str()),
+            "api dev-dependency `{key}` must be explicitly allowlisted as HTTP/client test harness surface"
         );
     }
 }
