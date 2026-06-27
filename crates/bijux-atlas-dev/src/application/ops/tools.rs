@@ -3,7 +3,7 @@
 use crate::*;
 use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 pub(crate) use bijux_atlas_ops::inventory::tooling_support::{
-    normalize_tool_version_with_regex, parse_tool_overrides, tool_definitions_sorted,
+    build_tool_probe_snapshot, normalize_tool_version_with_regex, parse_tool_overrides,
     tool_probe_skipped_snapshot, ToolMismatchCode,
 };
 
@@ -30,26 +30,7 @@ pub(crate) fn verify_tools_snapshot(
     if !allow_subprocess {
         return Ok(tool_probe_skipped_snapshot());
     }
-    let process = OpsProcess::new(true);
-    let mut rows = Vec::new();
-    let mut missing_required = Vec::new();
-    for (name, definition) in tool_definitions_sorted(inventory) {
-        let mut row = process
-            .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
-            .map_err(|e| e.to_stable_message())?;
-        row["required"] = serde_json::Value::Bool(definition.required);
-        if definition.required && row["installed"] != serde_json::Value::Bool(true) {
-            missing_required.push(name.clone());
-        }
-        rows.push(row);
-    }
-    rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
-    Ok(serde_json::json!({
-        "enabled": true,
-        "text": if missing_required.is_empty() { "all required tools available" } else { "missing required tools" },
-        "missing_required": missing_required,
-        "rows": rows
-    }))
+    build_tool_probe_snapshot(&OpsProcess::new(true), inventory)
 }
 
 #[cfg(test)]

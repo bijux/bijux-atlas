@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
+use bijux_atlas_ops::inventory::tooling_support::ToolProbeRunner;
 use bijux_atlas_ops::kubernetes::execution::{KubernetesCommandRunner, SubprocessCapture};
 
 pub(crate) use bijux_atlas_ops::inventory::toolchain::ToolchainInventory;
@@ -206,6 +207,18 @@ impl KubernetesCommandRunner for OpsProcess {
             .run_subprocess(binary, args, cwd)
             .map_err(|err| err.to_stable_message())?;
         Ok(SubprocessCapture { stdout, event })
+    }
+}
+
+impl ToolProbeRunner for OpsProcess {
+    fn probe_tool(
+        &self,
+        name: &str,
+        probe_argv: &[String],
+        version_regex: &str,
+    ) -> Result<serde_json::Value, String> {
+        OpsProcess::probe_tool(self, name, probe_argv, version_regex)
+            .map_err(|err| err.to_stable_message())
     }
 }
 

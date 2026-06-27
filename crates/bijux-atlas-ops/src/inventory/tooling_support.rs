@@ -67,9 +67,74 @@ pub fn tool_probe_skipped_snapshot() -> serde_json::Value {
     })
 }
 
+pub trait ToolProbeRunner {
+    fn probe_tool(
+        &self,
+        name: &str,
+        probe_argv: &[String],
+        version_regex: &str,
+    ) -> Result<serde_json::Value, String>;
+}
+
+pub fn build_tool_probe_snapshot<R: ToolProbeRunner>(
+    runner: &R,
+    inventory: &ToolchainInventory,
+) -> Result<serde_json::Value, String> {
+    let mut rows = Vec::new();
+    let mut missing_required = Vec::new();
+    for (name, definition) in tool_definitions_sorted(inventory) {
+        let mut row =
+            runner.probe_tool(&name, &definition.probe_argv, &definition.version_regex)?;
+        row["required"] = serde_json::Value::Bool(definition.required);
+        if definition.required && row["installed"] != serde_json::Value::Bool(true) {
+            missing_required.push(name.clone());
+        }
+        rows.push(row);
+    }
+    rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    Ok(serde_json::json!({
+        "enabled": true,
+        "text": if missing_required.is_empty() { "all required tools available" } else { "missing required tools" },
+        "missing_required": missing_required,
+        "rows": rows
+    }))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    struct ProbeRunnerStub;
+
+    impl ToolProbeRunner for ProbeRunnerStub {
+        fn probe_tool(
+            &self,
+            name: &str,
+            _probe_argv: &[String],
+            _version_regex: &str,
+        ) -> Result<serde_json::Value, String> {
+            Ok(match name {
+                "helm" => serde_json::json!({
+                    "name": "helm",
+                    "installed": true,
+                    "version_raw": "v3.18.4",
+                    "version": "3.18.4"
+                }),
+                "kubectl" => serde_json::json!({
+                    "name": "kubectl",
+                    "installed": false,
+                    "version_raw": serde_json::Value::Null,
+                    "version": serde_json::Value::Null
+                }),
+                other => serde_json::json!({
+                    "name": other,
+                    "installed": true,
+                    "version_raw": "v0.0.0",
+                    "version": "0.0.0"
+                }),
+            })
+        }
+    }
 
     #[test]
     fn normalize_tool_version_extracts_captured_semver() {
@@ -149,5 +214,42 @@ mod tests {
             )
         );
         assert_eq!(snapshot["rows"], serde_json::json!([]));
+    }
+
+    #[test]
+    fn tool_probe_snapshot_reports_missing_required_tools() {
+        let inventory = ToolchainInventory {
+            tools: BTreeMap::from([
+                (
+                    "kubectl".to_string(),
+                    ToolDefinition {
+                        required: true,
+                        version_regex: "(.*)".to_string(),
+                        probe_argv: vec!["version".to_string()],
+                    },
+                ),
+                (
+                    "helm".to_string(),
+                    ToolDefinition {
+                        required: false,
+                        version_regex: "(.*)".to_string(),
+                        probe_argv: vec!["version".to_string()],
+                    },
+                ),
+            ]),
+        };
+
+        let snapshot =
+            build_tool_probe_snapshot(&ProbeRunnerStub, &inventory).expect("build snapshot");
+
+        assert_eq!(snapshot["enabled"], serde_json::Value::Bool(true));
+        assert_eq!(snapshot["text"], "missing required tools");
+        assert_eq!(snapshot["missing_required"], serde_json::json!(["kubectl"]));
+        assert_eq!(snapshot["rows"][0]["name"], "helm");
+        assert_eq!(snapshot["rows"][1]["name"], "kubectl");
+        assert_eq!(
+            snapshot["rows"][1]["required"],
+            serde_json::Value::Bool(true)
+        );
     }
 }
