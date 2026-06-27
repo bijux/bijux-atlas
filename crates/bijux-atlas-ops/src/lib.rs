@@ -10,3 +10,4 @@ pub mod load;
 pub mod observe;
 pub mod reference;
 pub mod stack;
+pub mod workspace;

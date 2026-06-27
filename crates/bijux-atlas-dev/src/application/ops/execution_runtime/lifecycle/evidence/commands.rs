@@ -1368,23 +1368,8 @@ pub(crate) fn load_profile_registry(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<serde_json::Value>, String> {
-    let path = repo_root.join("ops/k8s/values/profiles.json");
-    if !path.exists() {
-        return Ok(None);
-    }
-    let value: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(&path)
-            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
-    Ok(value
-        .get("profiles")
-        .and_then(|rows| rows.as_array())
-        .and_then(|rows| {
-            rows.iter()
-                .find(|row| row.get("id").and_then(|v| v.as_str()) == Some(profile))
-                .cloned()
-        }))
+    bijux_atlas_ops::workspace::profiles::load_profile_values_entry(repo_root, profile)
+        .map_err(|err| err.detail())
 }
 
 pub(crate) fn record_kubeconform_result(

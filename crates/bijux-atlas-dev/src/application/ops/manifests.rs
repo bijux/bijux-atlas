@@ -11,20 +11,20 @@ pub(crate) fn resolve_ops_root(
     repo_root: &Path,
     ops_root: Option<PathBuf>,
 ) -> Result<PathBuf, OpsCommandError> {
-    bijux_atlas_ops::reference::ops_paths::resolve_ops_root(repo_root, ops_root)
+    bijux_atlas_ops::workspace::profiles::resolve_ops_root(repo_root, ops_root)
         .map_err(|err| OpsCommandError::Manifest(err.detail()))
 }
 
 pub(crate) fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> {
-    bijux_atlas_ops::stack::profile_catalog::load_profiles(ops_root)
-        .map_err(OpsCommandError::Profile)
+    bijux_atlas_ops::workspace::profiles::load_profiles(ops_root)
+        .map_err(|err| OpsCommandError::Profile(err.detail()))
 }
 
 pub(crate) fn load_profile_registry(
     ops_root: &Path,
 ) -> Result<OpsProfileRegistry, OpsCommandError> {
-    bijux_atlas_ops::stack::profile_catalog::load_profile_registry(ops_root)
-        .map_err(OpsCommandError::Profile)
+    bijux_atlas_ops::workspace::profiles::load_profile_registry(ops_root)
+        .map_err(|err| OpsCommandError::Profile(err.detail()))
 }
 
 fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {
@@ -110,8 +110,8 @@ pub(crate) fn resolve_profile(
     requested: Option<String>,
     profiles: &[StackProfile],
 ) -> Result<StackProfile, OpsCommandError> {
-    bijux_atlas_ops::stack::profile_catalog::resolve_profile(requested, profiles)
-        .map_err(OpsCommandError::Profile)
+    bijux_atlas_ops::workspace::profiles::resolve_profile(requested, profiles)
+        .map_err(|err| OpsCommandError::Profile(err.detail()))
 }
 
 pub(crate) fn run_id_or_default(raw: Option<String>) -> Result<RunId, String> {
