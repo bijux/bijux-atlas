@@ -92,8 +92,8 @@ name = "contracts_runtime_foundations"
 path = "tests/contracts_runtime_foundations.rs"
 
 [[test]]
-name = "contracts_plugin"
-path = "tests/contracts/plugin.rs"
+name = "interfaces_plugin_surface"
+path = "tests/interfaces/plugin_surface.rs"
 
 [[test]]
 name = "contracts_crate_boundary_contract"
@@ -156,8 +156,8 @@ name = "workflows_ingest"
 path = "tests/workflows/ingest.rs"
 
 [[bench]]
-name = "domain_security_data_protection"
-path = "benches/domain/security_data_protection.rs"
+name = "security_data_protection"
+path = "benches/security/data_protection.rs"
 harness = false
 
 [[bench]]

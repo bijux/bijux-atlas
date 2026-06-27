@@ -44,8 +44,9 @@ fn runtime_source_does_not_include_criterion_or_bench_harness_logic() {
 #[test]
 fn benches_directory_exists_as_benchmark_owner() {
     let benches = crate_root().join("benches");
+    assert!(benches.is_dir(), "runtime crate must keep benches/ as benchmark ownership root");
     assert!(
-        benches.is_dir(),
-        "runtime crate must keep benches/ as benchmark ownership root"
+        !benches.join("domain").exists(),
+        "runtime benches must use durable ownership buckets, not benches/domain"
     );
 }

@@ -26,10 +26,7 @@ fn plugin_metadata_handshake_has_required_fields() {
     ] {
         assert!(payload.get(key).is_some(), "missing required field {key}");
     }
-    assert_eq!(
-        payload.get("name").and_then(Value::as_str),
-        Some("bijux-atlas")
-    );
+    assert_eq!(payload.get("name").and_then(Value::as_str), Some("bijux-atlas"));
 }
 
 #[test]
@@ -59,20 +56,12 @@ fn umbrella_version_compatibility_is_enforced() {
 
 #[test]
 fn help_contains_standard_plugin_flags() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .arg("--help")
-        .output()
-        .expect("run help");
+    let output =
+        Command::new(env!("CARGO_BIN_EXE_bijux-atlas")).arg("--help").output().expect("run help");
     assert!(output.status.success());
 
     let text = String::from_utf8(output.stdout).expect("utf8 help");
-    for needle in [
-        "--json",
-        "--quiet",
-        "--verbose",
-        "--trace",
-        "--bijux-plugin-metadata",
-    ] {
+    for needle in ["--json", "--quiet", "--verbose", "--trace", "--bijux-plugin-metadata"] {
         assert!(text.contains(needle), "help missing {needle}");
     }
 }
@@ -166,11 +155,8 @@ fn atlas_validate_deep_requires_manifest_lock() {
     manifest.artifact_inventory_path = "derived/artifact.inventory.json".to_string();
     manifest.evidence_bundle_path = "derived/evidence.bundle.json".to_string();
     manifest.evidence_bundle_sha256 = "1".repeat(64);
-    fs::write(
-        &paths.manifest,
-        serde_json::to_vec(&manifest).expect("manifest json"),
-    )
-    .expect("write manifest");
+    fs::write(&paths.manifest, serde_json::to_vec(&manifest).expect("manifest json"))
+        .expect("write manifest");
 
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
         .args([
