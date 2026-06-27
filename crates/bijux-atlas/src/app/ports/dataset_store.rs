@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::app::cache::{CacheError, RegistrySourceHealth};
-use crate::model::dataset::{ArtifactManifest, Catalog, DatasetId};
 use async_trait::async_trait;
+use bijux_atlas_model::dataset::{ArtifactManifest, Catalog, DatasetId};
 
 /// Runtime read port used by the server cache and query-serving path.
 ///

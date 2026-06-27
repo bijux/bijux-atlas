@@ -898,7 +898,7 @@ pub(crate) async fn chaos_run_handler(
 pub(crate) async fn openapi_handler(State(state): State<AppState>) -> impl IntoResponse {
     let request_id = make_request_id(&state);
     let started = Instant::now();
-    let mut spec = crate::api::openapi_v1_spec();
+    let mut spec = bijux_atlas_api::openapi_v1_spec();
     if let Some(info) = spec
         .get_mut("info")
         .and_then(serde_json::Value::as_object_mut)

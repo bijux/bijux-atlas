@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::DatasetId;
 use crate::packaged::ENV_CONTRACT_SCHEMA_JSON;
+use bijux_atlas_model::dataset::DatasetId;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};

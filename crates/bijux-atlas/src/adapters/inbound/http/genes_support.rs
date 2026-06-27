@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::api::params::{IncludeField, SortKey};
-use crate::api::{ApiError, ApiErrorCode};
-use crate::core::sha256_hex;
-use crate::model::dataset::DatasetId;
-use crate::query::{
+use crate::AppState;
+use bijux_atlas_api::params::{IncludeField, SortKey};
+use bijux_atlas_api::{ApiError, ApiErrorCode};
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_model::dataset::DatasetId;
+use bijux_atlas_query::{
     GeneFields, GeneFilter, GeneQueryRequest, IntervalSemantics, QueryClass, QueryLimits,
     QuerySort, RegionFilter,
 };
-use crate::AppState;
 use serde_json::json;
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -176,7 +176,7 @@ pub(super) fn build_dataset_query(
     let parse_map: std::collections::BTreeMap<String, String> =
         params.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
     let parsed =
-        crate::api::params::parse_list_genes_params_with_limit(&parse_map, 100, max_limit)?;
+        bijux_atlas_api::params::parse_list_genes_params_with_limit(&parse_map, 100, max_limit)?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {
@@ -188,9 +188,9 @@ pub(super) fn build_dataset_query(
     }
     if matches!(
         parsed.strand,
-        Some(crate::api::params::StrandMode::Plus)
-            | Some(crate::api::params::StrandMode::Minus)
-            | Some(crate::api::params::StrandMode::Unknown)
+        Some(bijux_atlas_api::params::StrandMode::Plus)
+            | Some(bijux_atlas_api::params::StrandMode::Minus)
+            | Some(bijux_atlas_api::params::StrandMode::Unknown)
     ) {
         return Err(super::handlers::error_json(
             ApiErrorCode::InvalidQueryParameter,
@@ -214,19 +214,27 @@ pub(super) fn build_dataset_query(
                 None => QuerySort::Auto,
             },
             interval: match parsed.interval_mode {
-                Some(crate::api::params::IntervalMode::Containment) => {
+                Some(bijux_atlas_api::params::IntervalMode::Containment) => {
                     IntervalSemantics::Containment
                 }
-                Some(crate::api::params::IntervalMode::BoundaryTouch) => {
+                Some(bijux_atlas_api::params::IntervalMode::BoundaryTouch) => {
                     IntervalSemantics::BoundaryTouch
                 }
                 _ => IntervalSemantics::Overlap,
             },
             strand: match parsed.strand {
-                Some(crate::api::params::StrandMode::Any) | None => crate::query::StrandMode::Any,
-                Some(crate::api::params::StrandMode::Plus) => crate::query::StrandMode::Plus,
-                Some(crate::api::params::StrandMode::Minus) => crate::query::StrandMode::Minus,
-                Some(crate::api::params::StrandMode::Unknown) => crate::query::StrandMode::Unknown,
+                Some(bijux_atlas_api::params::StrandMode::Any) | None => {
+                    bijux_atlas_query::StrandMode::Any
+                }
+                Some(bijux_atlas_api::params::StrandMode::Plus) => {
+                    bijux_atlas_query::StrandMode::Plus
+                }
+                Some(bijux_atlas_api::params::StrandMode::Minus) => {
+                    bijux_atlas_query::StrandMode::Minus
+                }
+                Some(bijux_atlas_api::params::StrandMode::Unknown) => {
+                    bijux_atlas_query::StrandMode::Unknown
+                }
             },
         },
         limit: parsed.limit,

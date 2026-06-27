@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod api {
-    pub use crate::api::*;
+    pub use bijux_atlas_api::*;
 }
 
 pub mod config;

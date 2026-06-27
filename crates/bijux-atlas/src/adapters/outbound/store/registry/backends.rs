@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::domain::sha256_hex;
-use crate::model::dataset::{artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId};
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
+use bijux_atlas_model::dataset::{
+    artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId,
+};
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
 use std::fs;
 use std::net::IpAddr;

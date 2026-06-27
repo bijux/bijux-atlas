@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use crate::model::dataset::ShardingPlan;
+use bijux_atlas_model::dataset::ShardingPlan;
 use serde_json::json;
 use serde_json::Value;
 use tracing::info;
@@ -433,7 +433,7 @@ pub(crate) async fn dataset_identity_handler(
 }
 
 fn dataset_identity_header_value(
-    manifest: &crate::model::dataset::ArtifactManifest,
+    manifest: &bijux_atlas_model::dataset::ArtifactManifest,
 ) -> Option<HeaderValue> {
     HeaderValue::from_str(&manifest.identity.canonical_metadata_sha256).ok()
 }
@@ -441,7 +441,9 @@ fn dataset_identity_header_value(
 #[cfg(test)]
 mod tests {
     use super::dataset_identity_header_value;
-    use crate::model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
+    use bijux_atlas_model::dataset::{
+        ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats,
+    };
 
     #[test]
     fn dataset_identity_header_value_is_derived_from_manifest_identity() {

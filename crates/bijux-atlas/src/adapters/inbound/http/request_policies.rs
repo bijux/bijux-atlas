@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::api::{ApiError, ApiErrorCode};
 use crate::app::server::state::AppState;
 use crate::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
     PermissionEvaluator, RoleCatalog, RoleRegistry,
 };
 use crate::domain::security::data_protection::https_enforced;
-use crate::model::dataset::DatasetId;
 use crate::packaged::{AUTH_POLICY_YAML, PERMISSIONS_YAML, ROLES_YAML};
 use crate::sha256_hex;
 use axum::body::Body;
@@ -17,6 +15,8 @@ use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 use base64::Engine as _;
+use bijux_atlas_api::{ApiError, ApiErrorCode};
+use bijux_atlas_model::dataset::DatasetId;
 use hmac::{digest::KeyInit, Hmac, Mac};
 use sha2::Sha256;
 use std::sync::atomic::Ordering;

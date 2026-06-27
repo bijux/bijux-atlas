@@ -5,9 +5,6 @@
 
 extern crate self as bijux_atlas;
 
-pub(crate) use crate::api::{ApiError, ApiErrorCode};
-pub(crate) use crate::core::sha256_hex;
-pub(crate) use crate::model::dataset::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use axum::body::Body;
 pub(crate) use axum::extract::State;
 pub(crate) use axum::http::{HeaderMap, HeaderValue, StatusCode};
@@ -18,6 +15,9 @@ pub(crate) use bijux_atlas::query::{
     GeneFields, GeneQueryRequest, OrderMode, QueryClass, RegionFilter, TranscriptFilter,
     TranscriptQueryRequest,
 };
+pub(crate) use bijux_atlas_api::{ApiError, ApiErrorCode};
+pub(crate) use bijux_atlas_core::sha256_hex;
+pub(crate) use bijux_atlas_model::dataset::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use rusqlite::Connection;
 pub(crate) use std::collections::HashMap;
 pub(crate) use std::sync::atomic::{AtomicU64, Ordering};

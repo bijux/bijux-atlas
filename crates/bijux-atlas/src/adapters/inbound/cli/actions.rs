@@ -5,7 +5,7 @@ use super::operations;
 use super::*;
 use crate::adapters::inbound::cli::commands::ExportFormat;
 use crate::app::query::{IntervalSemantics, QuerySort, StrandMode};
-use crate::model::dataset::ArtifactManifest;
+use bijux_atlas_model::dataset::ArtifactManifest;
 
 use std::path::PathBuf;
 
@@ -58,7 +58,7 @@ pub(super) fn emit_config_paths(machine_json: bool) -> Result<(), String> {
         "cache_dir": resolve_bijux_cache_dir(),
     });
     if machine_json {
-        let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
@@ -74,7 +74,7 @@ pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     let payload = plugin_metadata_payload();
 
     if machine_json {
-        let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
         let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
@@ -159,18 +159,23 @@ pub(super) fn print_config(canonical_out: bool, output_mode: OutputMode) -> Resu
     });
     if output_mode.json {
         let text = if canonical_out {
-            String::from_utf8(crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
-                .map_err(|e| e.to_string())?
+            String::from_utf8(
+                crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?,
+            )
+            .map_err(|e| e.to_string())?
         } else {
-            let bytes = crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+            let bytes =
+                crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
             String::from_utf8(bytes).map_err(|e| e.to_string())?
         };
         println!("{text}");
         return Ok(());
     }
     let text = if canonical_out {
-        String::from_utf8(crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?
+        String::from_utf8(
+            crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| e.to_string())?
     } else {
         serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
     };
@@ -471,7 +476,7 @@ pub(super) fn inspect_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::dataset::artifact_paths(&root, &dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
         serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
@@ -501,7 +506,7 @@ pub(super) fn inspect_provenance(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::dataset::artifact_paths(&root, &dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
         serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
@@ -673,7 +678,7 @@ pub(super) fn smoke_dataset(
 ) -> Result<(), String> {
     let (release, species, assembly) = output::parse_dataset_id(dataset)?;
     let id = DatasetId::new(&release, &species, &assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::dataset::artifact_paths(&root, &id);
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &id);
     let conn = Connection::open(&paths.sqlite).map_err(|e| e.to_string())?;
 
     let count: i64 = conn

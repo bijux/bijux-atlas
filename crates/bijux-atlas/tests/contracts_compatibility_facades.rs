@@ -12,6 +12,25 @@ fn read_source(relative: &str) -> String {
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
+fn rust_files_under(root: &std::path::Path) -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(dir) = stack.pop() {
+        let Ok(entries) = std::fs::read_dir(&dir) else {
+            continue;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else if path.extension().and_then(|ext| ext.to_str()) == Some("rs") {
+                out.push(path);
+            }
+        }
+    }
+    out
+}
+
 #[test]
 fn runtime_wrapper_modules_stay_reexport_only() {
     let checks = [
@@ -99,5 +118,47 @@ fn compatibility_implementation_surface_stays_under_src_compat() {
             names, expected_names,
             "{relative} must stay a bounded compatibility implementation directory"
         );
+    }
+}
+
+#[test]
+fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
+    let root = crate_root().join("src");
+    let allowlist = [
+        "api.rs",
+        "core.rs",
+        "domain/ingest.rs",
+        "domain/mod.rs",
+        "model/dataset.rs",
+        "model/policy.rs",
+        "query.rs",
+    ];
+    let forbidden = [
+        "crate::api::",
+        "crate::core::",
+        "crate::domain::ingest::",
+        "crate::model::dataset::",
+        "crate::model::policy::",
+        "crate::query::",
+    ];
+
+    for path in rust_files_under(&root) {
+        let rel = path
+            .strip_prefix(&root)
+            .unwrap_or(&path)
+            .to_string_lossy()
+            .replace('\\', "/");
+        if allowlist.contains(&rel.as_str()) {
+            continue;
+        }
+        let text = std::fs::read_to_string(&path)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
+        for token in forbidden {
+            assert!(
+                !text.contains(token),
+                "runtime internal file must use owning crate paths instead of wrapper `{token}`: {}",
+                rel
+            );
+        }
     }
 }

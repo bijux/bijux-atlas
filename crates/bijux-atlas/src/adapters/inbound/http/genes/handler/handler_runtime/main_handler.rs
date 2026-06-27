@@ -6,9 +6,9 @@ use crate::adapters::inbound::http::genes::{
 use crate::adapters::inbound::http::{genes_support, handlers};
 use crate::app::query as app_query;
 use crate::domain::sha256_hex;
-use crate::model::dataset::artifact_paths;
-use crate::model::dataset::ShardCatalog;
 use crate::*;
+use bijux_atlas_model::dataset::artifact_paths;
+use bijux_atlas_model::dataset::ShardCatalog;
 use serde_json::json;
 use tracing::{info, info_span, warn};
 
@@ -489,8 +489,8 @@ pub(crate) async fn genes_handler(
                     {
                         let value: serde_json::Value = serde_json::from_slice(&bytes)
                             .map_err(|e| CacheError(e.to_string()))?;
-                        return Ok(crate::query::GeneQueryResponse {
-                            rows: vec![crate::query::GeneRow {
+                        return Ok(bijux_atlas_query::GeneQueryResponse {
+                            rows: vec![bijux_atlas_query::GeneRow {
                                 gene_id: value
                                     .get("gene_id")
                                     .and_then(serde_json::Value::as_str)
@@ -513,7 +513,7 @@ pub(crate) async fn genes_handler(
                 }
                 let row = app_query::query_gene_by_id(&c.conn, gene_id, &req.fields)
                     .map_err(CacheError)?;
-                return Ok(crate::query::GeneQueryResponse {
+                return Ok(bijux_atlas_query::GeneQueryResponse {
                     rows: row.into_iter().collect(),
                     next_cursor: None,
                 });

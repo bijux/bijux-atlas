@@ -2,8 +2,8 @@
 
 pub mod engine;
 pub mod model {
-    pub use crate::model::policy::*;
+    pub use bijux_atlas_model::policy::*;
 }
 
-pub use crate::model::policy::{GeneIdentifierPolicy, StrictnessMode};
+pub use bijux_atlas_model::policy::{GeneIdentifierPolicy, StrictnessMode};
 pub use engine::*;

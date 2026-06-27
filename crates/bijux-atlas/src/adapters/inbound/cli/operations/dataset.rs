@@ -11,7 +11,7 @@ pub(crate) fn validate_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::dataset::artifact_paths(&root, &dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
 
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
@@ -100,7 +100,7 @@ pub(crate) fn validate_dataset_evidence(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let paths = crate::model::dataset::artifact_paths(&root, &dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
     let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
         serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
@@ -147,7 +147,8 @@ pub(crate) fn validate_dataset_evidence(
         "release_id": manifest.identity.release_id,
         "files": verified
     });
-    let payload_bytes = crate::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+    let payload_bytes =
+        crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
     let computed_bundle_sha256 = sha256_hex(&payload_bytes);
     let declared_bundle_sha256 = bundle_json
         .get("bundle_sha256")
@@ -240,7 +241,7 @@ fn validate_canonical_evidence(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::dataset::{ArtifactChecksums, ManifestStats};
+    use bijux_atlas_model::dataset::{ArtifactChecksums, ManifestStats};
 
     #[test]
     fn validate_payload_exposes_manifest_identity_hash() {
@@ -266,7 +267,7 @@ fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<()
     let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
     let thresholds_path =
         workspace.join("configs/sources/operations/ops/dataset-qc-thresholds.v1.json");
-    let paths = crate::model::dataset::artifact_paths(root, dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(root, dataset);
     let qc_report = paths.derived_dir.join("qc.json");
     let qc_raw = fs::read_to_string(&qc_report)
         .map_err(|e| format!("dataset validate failed: {}: {e}", qc_report.display()))?;
@@ -374,7 +375,7 @@ fn compute_dataset_signature_from_sqlite(sqlite_path: &PathBuf) -> Result<String
         "gene_count": genes.len(),
         "transcript_count": txs.len(),
     });
-    let bytes = crate::core::stable_json_bytes(&root).map_err(|e| e.to_string())?;
+    let bytes = crate::compat::core::stable_json_bytes(&root).map_err(|e| e.to_string())?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -384,7 +385,7 @@ fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
     }
     let mut level: Vec<String> = rows
         .iter()
-        .map(|r| crate::core::stable_json_bytes(r).map(|b| sha256_hex(&b)))
+        .map(|r| crate::compat::core::stable_json_bytes(r).map(|b| sha256_hex(&b)))
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
     while level.len() > 1 {
@@ -419,7 +420,7 @@ pub(crate) fn publish_dataset(
     output_mode: OutputMode,
 ) -> Result<(), String> {
     let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
-    let source_paths = crate::model::dataset::artifact_paths(&source_root, &dataset);
+    let source_paths = bijux_atlas_model::dataset::artifact_paths(&source_root, &dataset);
     let manifest_bytes = fs::read(&source_paths.manifest).map_err(|e| e.to_string())?;
     let sqlite_bytes = fs::read(&source_paths.sqlite).map_err(|e| e.to_string())?;
     let manifest: ArtifactManifest =
@@ -429,7 +430,7 @@ pub(crate) fn publish_dataset(
     enforce_publish_gates(&source_root, &dataset, &manifest)?;
     let manifest_sha = sha256_hex(&manifest_bytes);
     let sqlite_sha = sha256_hex(&sqlite_bytes);
-    let target_paths = crate::model::dataset::artifact_paths(&store_root, &dataset);
+    let target_paths = bijux_atlas_model::dataset::artifact_paths(&store_root, &dataset);
 
     if dry_run || explain {
         return emit_ok_payload(
@@ -488,9 +489,9 @@ fn enforce_publish_gates(
             manifest.stats.gene_count, policy.publish_gates.min_gene_count
         ));
     }
-    let paths = crate::model::dataset::artifact_paths(source_root, dataset);
+    let paths = bijux_atlas_model::dataset::artifact_paths(source_root, dataset);
     let anomaly_raw = fs::read_to_string(paths.anomaly_report).map_err(|e| e.to_string())?;
-    let anomaly: crate::model::dataset::IngestAnomalyReport =
+    let anomaly: bijux_atlas_model::dataset::IngestAnomalyReport =
         serde_json::from_str(&anomaly_raw).map_err(|e| e.to_string())?;
     if (anomaly.missing_parents.len() as u64) > policy.publish_gates.max_missing_parents {
         return Err(format!(

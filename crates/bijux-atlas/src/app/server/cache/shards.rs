@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::{DatasetId, ShardCatalog};
 use crate::{CacheError, DatasetCacheManager};
+use bijux_atlas_model::dataset::{DatasetId, ShardCatalog};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use tokio::sync::OwnedSemaphorePermit;

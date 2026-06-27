@@ -7,11 +7,11 @@ use crate::adapters::inbound::http::handlers::{
     maybe_compress_response, normalize_query, put_cache_headers, serialize_payload_with_capacity,
     with_request_id, CachePolicy,
 };
-use crate::model::dataset::Catalog;
-use crate::query::{
+use crate::*;
+use bijux_atlas_model::dataset::Catalog;
+use bijux_atlas_query::{
     DiffPage, DiffRecord, DiffScope, DiffStatus, ReleaseGeneIndex, ReleaseGeneIndexEntry,
 };
-use crate::*;
 use serde_json::json;
 use std::collections::HashMap;
 use tracing::info;

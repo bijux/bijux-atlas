@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::http::{genes_support, handlers};
-use crate::api::{ApiError, ApiErrorCode};
-use crate::query::QueryClass;
 use crate::AppState;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
+use bijux_atlas_api::{ApiError, ApiErrorCode};
+use bijux_atlas_query::QueryClass;
 use serde_json::json;
 use std::time::Instant;
 

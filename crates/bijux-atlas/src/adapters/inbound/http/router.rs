@@ -40,7 +40,7 @@ impl AppState {
             "api": api,
             "limits": limits
         });
-        match crate::core::stable_json_bytes(&payload) {
+        match crate::compat::core::stable_json_bytes(&payload) {
             Ok(bytes) => sha256_hex(&bytes),
             Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
         }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::DatasetId;
 use crate::{CacheError, DatasetCacheManager};
+use bijux_atlas_model::dataset::DatasetId;
 use std::sync::atomic::Ordering;
 use std::time::Instant;
 

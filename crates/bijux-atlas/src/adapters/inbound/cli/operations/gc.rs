@@ -58,7 +58,7 @@ pub(crate) fn gc_apply(
         .map_err(|e| e.to_string())?
         .as_secs();
     let report_path = out_dir.join(format!("gc-report-{stamp}.json"));
-    let bytes = crate::core::stable_json_bytes(&report).map_err(|e| e.to_string())?;
+    let bytes = crate::compat::core::stable_json_bytes(&report).map_err(|e| e.to_string())?;
     fs::write(&report_path, bytes).map_err(|e| e.to_string())?;
     report.report_path = Some(report_path.display().to_string());
     emit_ok_payload(

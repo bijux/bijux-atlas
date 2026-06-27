@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::{ArtifactManifest, Catalog, DatasetId};
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
+use bijux_atlas_model::dataset::{ArtifactManifest, Catalog, DatasetId};
 use std::collections::HashMap;
 use std::time::Duration;
 use tokio::sync::Mutex;

@@ -5,11 +5,11 @@ use super::{
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
 use crate::domain::sha256_hex;
-use crate::model::dataset::{
+use bijux_atlas_model::dataset::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId,
     ManifestStats, ShardCatalog, ShardEntry, ShardId,
 };
-use crate::query::SeqId;
+use bijux_atlas_query::SeqId;
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -506,7 +506,7 @@ fn latest_alias_update_writes_traceable_record_after_promotion() {
     .expect("latest alias update");
 
     let alias_raw = fs::read_to_string(root.join("latest.alias.json")).expect("alias file");
-    let alias: crate::model::dataset::LatestAliasRecord =
+    let alias: bijux_atlas_model::dataset::LatestAliasRecord =
         serde_json::from_str(&alias_raw).expect("alias json");
     alias.validate().expect("alias validate");
     assert_eq!(alias.dataset, dataset);

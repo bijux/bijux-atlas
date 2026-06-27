@@ -1,6 +1,6 @@
 use super::*;
 use crate::adapters::inbound::http::genes;
-use crate::query::query_gene_count;
+use bijux_atlas_query::query_gene_count;
 use serde_json::json;
 
 pub(crate) async fn genes_handler(

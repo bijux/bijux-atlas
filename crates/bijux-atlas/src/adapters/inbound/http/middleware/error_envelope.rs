@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::inbound::http::handlers;
-use crate::api::ApiErrorCode;
 use crate::AppState;
 use axum::body::{to_bytes, Body};
 use axum::extract::State;
 use axum::http::{Request, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
+use bijux_atlas_api::ApiErrorCode;
 use serde_json::json;
 
 pub(crate) async fn error_envelope_middleware(
@@ -110,10 +110,10 @@ async fn normalize_json_error_envelope(response: Response, max_response_bytes: u
 #[cfg(test)]
 mod tests {
     use super::{normalize_error_response, normalize_json_error_envelope};
-    use crate::api::{ApiError, ApiErrorCode};
     use axum::body::to_bytes;
     use axum::http::StatusCode;
     use axum::response::IntoResponse;
+    use bijux_atlas_api::{ApiError, ApiErrorCode};
     use serde_json::json;
 
     #[tokio::test]

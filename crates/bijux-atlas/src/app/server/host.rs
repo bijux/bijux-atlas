@@ -9,11 +9,11 @@ use crate::adapters::outbound::telemetry::tracing::{init_tracing, TraceConfig, T
 use crate::app::ports::DatasetStoreBackend;
 use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use crate::domain::sha256_hex;
-use crate::model::dataset::DatasetId;
 use crate::runtime::config::{
     effective_runtime_config_payload, load_runtime_config, runtime_governance_version,
     runtime_release_id, StoreMode,
 };
+use bijux_atlas_model::dataset::DatasetId;
 use clap::Parser;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicU64;
