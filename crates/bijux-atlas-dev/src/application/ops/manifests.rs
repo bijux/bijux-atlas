@@ -74,12 +74,12 @@ pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml,
 }
 
 pub(crate) fn load_load_manifest(repo_root: &Path) -> Result<LoadToml, OpsCommandError> {
-    bijux_atlas_ops::load::manifest::load_load_manifest(repo_root).map_err(|err| match err {
-        bijux_atlas_ops::load::manifest::LoadManifestError::Read { .. } => {
-            OpsCommandError::Manifest(err.detail())
+    bijux_atlas_ops::workspace::load::load_load_manifest(repo_root).map_err(|err| match err {
+        bijux_atlas_ops::workspace::load::WorkspaceLoadError::Manifest(detail) => {
+            OpsCommandError::Manifest(detail)
         }
-        bijux_atlas_ops::load::manifest::LoadManifestError::Parse { .. } => {
-            OpsCommandError::Schema(err.detail())
+        bijux_atlas_ops::workspace::load::WorkspaceLoadError::Schema(detail) => {
+            OpsCommandError::Schema(detail)
         }
     })
 }
@@ -88,7 +88,7 @@ pub(crate) fn validate_load_manifest(
     repo_root: &Path,
     manifest: &LoadToml,
 ) -> Result<Vec<String>, OpsCommandError> {
-    Ok(bijux_atlas_ops::load::manifest::validate_load_manifest(
+    Ok(bijux_atlas_ops::workspace::load::validate_load_manifest(
         repo_root, manifest,
     ))
 }
