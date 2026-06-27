@@ -6,7 +6,7 @@ use crate::adapters::inbound::http::request_policies::{
     resilience_middleware, security_middleware,
 };
 use crate::adapters::inbound::http::{
-    catalog, diagnostic_routes, gene_routes, service_routes, transcripts,
+    catalog, diagnostics, gene_routes, service_routes, transcripts,
 };
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
@@ -41,7 +41,7 @@ pub fn build_router(state: AppState) -> Router {
         .route("/v1/genes", get(gene_routes::genes_handler))
         .route(
             "/v1/query/validate",
-            post(diagnostic_routes::query_validate_handler),
+            post(diagnostics::query_validate_handler),
         )
         .route("/v1/genes/count", get(gene_routes::genes_count_handler))
         .route("/v1/diff/genes", get(http::diff::diff_genes_handler))
@@ -64,53 +64,41 @@ pub fn build_router(state: AppState) -> Router {
         );
     if state.api.enable_admin_endpoints {
         router = router
-            .route(
-                "/debug/datasets",
-                get(diagnostic_routes::debug_datasets_handler),
-            )
+            .route("/debug/datasets", get(diagnostics::debug_datasets_handler))
             .route(
                 "/debug/dataset-health",
-                get(diagnostic_routes::dataset_health_handler),
+                get(diagnostics::dataset_health_handler),
             )
             .route(
                 "/debug/registry-health",
-                get(diagnostic_routes::registry_health_handler),
+                get(diagnostics::registry_health_handler),
             )
-            .route(
-                "/debug/diagnostics",
-                get(diagnostic_routes::diagnostics_handler),
-            )
+            .route("/debug/diagnostics", get(diagnostics::diagnostics_handler))
             .route(
                 "/debug/runtime-stats",
-                get(diagnostic_routes::runtime_stats_handler),
+                get(diagnostics::runtime_stats_handler),
             )
-            .route(
-                "/debug/system-info",
-                get(diagnostic_routes::system_info_handler),
-            )
+            .route("/debug/system-info", get(diagnostics::system_info_handler))
             .route(
                 "/debug/build-metadata",
-                get(diagnostic_routes::build_metadata_handler),
+                get(diagnostics::build_metadata_handler),
             )
             .route(
                 "/debug/runtime-config",
-                get(diagnostic_routes::runtime_config_dump_handler),
+                get(diagnostics::runtime_config_dump_handler),
             )
             .route(
                 "/debug/dataset-registry",
-                get(diagnostic_routes::dataset_registry_dump_handler),
+                get(diagnostics::dataset_registry_dump_handler),
             )
-            .route(
-                "/debug/shard-map",
-                get(diagnostic_routes::shard_map_dump_handler),
-            )
+            .route("/debug/shard-map", get(diagnostics::shard_map_dump_handler))
             .route(
                 "/debug/query-planner-stats",
-                get(diagnostic_routes::query_planner_stats_dump_handler),
+                get(diagnostics::query_planner_stats_dump_handler),
             )
             .route(
                 "/debug/cache-stats",
-                get(diagnostic_routes::cache_stats_dump_handler),
+                get(diagnostics::cache_stats_dump_handler),
             )
             .route(
                 "/debug/cluster/nodes",
@@ -161,10 +149,7 @@ pub fn build_router(state: AppState) -> Router {
                 post(service_routes::failure_injection_handler),
             )
             .route("/debug/chaos/run", post(service_routes::chaos_run_handler))
-            .route(
-                "/v1/_debug/echo",
-                get(diagnostic_routes::debug_echo_handler),
-            );
+            .route("/v1/_debug/echo", get(diagnostics::debug_echo_handler));
     }
     router
         .layer(from_fn_with_state(

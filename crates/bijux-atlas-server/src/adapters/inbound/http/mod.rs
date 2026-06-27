@@ -2,7 +2,7 @@
 
 pub(crate) mod cache_headers;
 pub(crate) mod catalog;
-pub(crate) mod diagnostic_routes;
+pub(crate) mod diagnostics;
 pub(crate) mod diff;
 pub(crate) mod dto;
 pub(crate) mod effects_adapters;
