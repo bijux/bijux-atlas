@@ -259,11 +259,7 @@ pub(crate) fn update_latest_alias(
     alias_record.validate().map_err(|e| e.to_string())?;
     let alias_path = store_root.join("latest.alias.json");
     let tmp = store_root.join("latest.alias.json.tmp");
-    fs::write(
-        &tmp,
-        crate::compat::core::stable_json_bytes(&alias_record).map_err(|e| e.to_string())?,
-    )
-    .map_err(|e| e.to_string())?;
+    fs::write(&tmp, super::canonical_json::bytes(&alias_record)?).map_err(|e| e.to_string())?;
     fs::rename(&tmp, &alias_path).map_err(|e| e.to_string())?;
     emit_ok_payload(
         output_mode,

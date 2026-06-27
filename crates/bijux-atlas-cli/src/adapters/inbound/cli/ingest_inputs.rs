@@ -166,11 +166,7 @@ pub(super) fn resolve_verify_and_lock_inputs(
         sources: lock_sources,
     };
     let lock_tmp = lockfile_path.with_extension("json.tmp");
-    fs::write(
-        &lock_tmp,
-        crate::compat::core::stable_json_bytes(&lock).map_err(|e| e.to_string())?,
-    )
-    .map_err(|e| e.to_string())?;
+    fs::write(&lock_tmp, super::canonical_json::bytes(&lock)?).map_err(|e| e.to_string())?;
     fs::rename(&lock_tmp, &lockfile_path).map_err(|e| e.to_string())?;
     Ok(VerifiedInputPaths {
         gff3_path: resolved_paths

@@ -147,8 +147,7 @@ pub(crate) fn validate_dataset_evidence(
         "release_id": manifest.identity.release_id,
         "files": verified
     });
-    let payload_bytes =
-        crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+    let payload_bytes = super::super::canonical_json::bytes(&payload)?;
     let computed_bundle_sha256 = sha256_hex(&payload_bytes);
     let declared_bundle_sha256 = bundle_json
         .get("bundle_sha256")
@@ -350,7 +349,7 @@ fn compute_dataset_signature_from_sqlite(sqlite_path: &PathBuf) -> Result<String
         "gene_count": genes.len(),
         "transcript_count": txs.len(),
     });
-    let bytes = crate::compat::core::stable_json_bytes(&root).map_err(|e| e.to_string())?;
+    let bytes = super::super::canonical_json::bytes(&root)?;
     Ok(sha256_hex(&bytes))
 }
 
@@ -360,7 +359,7 @@ fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
     }
     let mut level: Vec<String> = rows
         .iter()
-        .map(|r| crate::compat::core::stable_json_bytes(r).map(|b| sha256_hex(&b)))
+        .map(|r| super::super::canonical_json::bytes(r).map(|b| sha256_hex(&b)))
         .collect::<Result<Vec<_>, _>>()
         .map_err(|e| e.to_string())?;
     while level.len() > 1 {

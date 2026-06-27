@@ -2,6 +2,7 @@
 
 mod actions;
 mod args;
+mod canonical_json;
 mod commands;
 mod dispatch;
 mod ingest_inputs;

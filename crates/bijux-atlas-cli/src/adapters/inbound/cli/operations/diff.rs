@@ -169,9 +169,8 @@ pub(crate) fn build_release_diff(
 
     let diff_path = args.out_dir.join("diff.json");
     let summary_path = args.out_dir.join("diff.summary.json");
-    let diff_bytes = crate::compat::core::stable_json_bytes(&diff).map_err(|e| e.to_string())?;
-    let summary_bytes =
-        crate::compat::core::stable_json_bytes(&summary).map_err(|e| e.to_string())?;
+    let diff_bytes = super::super::canonical_json::bytes(&diff)?;
+    let summary_bytes = super::super::canonical_json::bytes(&summary)?;
     fs::write(&diff_path, &diff_bytes).map_err(|e| e.to_string())?;
     fs::write(&summary_path, &summary_bytes).map_err(|e| e.to_string())?;
     let diff_sha = sha256_hex(&diff_bytes);
@@ -266,7 +265,7 @@ fn chunk_or_inline(
                 .map(serde_json::Value::String)
                 .collect(),
         );
-        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let bytes = super::super::canonical_json::bytes(&payload)?;
         fs::write(&path, bytes).map_err(|e| e.to_string())?;
         chunk_manifest.push(json!({
             "field": name,

@@ -19,7 +19,7 @@ pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Res
         .map_err(|e| format!("failed to read {}: {e}", openapi_source.display()))?;
     let spec: Value =
         serde_json::from_slice(&raw).map_err(|e| format!("invalid OpenAPI JSON: {e}"))?;
-    let bytes = crate::compat::core::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+    let bytes = super::canonical_json::bytes(&spec)?;
     if let Some(parent) = out.parent() {
         std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
@@ -37,8 +37,7 @@ pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Res
 
 pub(crate) fn emit_ok(output_mode: OutputMode, payload: Value) -> Result<(), String> {
     if output_mode.json {
-        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
-        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        let text = super::canonical_json::text(&payload)?;
         println!("{text}");
     } else {
         println!(

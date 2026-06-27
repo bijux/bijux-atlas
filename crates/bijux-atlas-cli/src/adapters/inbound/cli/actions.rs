@@ -65,8 +65,7 @@ pub(super) fn emit_config_paths(machine_json: bool) -> Result<(), String> {
         "cache_dir": resolve_bijux_cache_dir(),
     });
     if machine_json {
-        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
-        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        let text = super::canonical_json::text(&payload)?;
         println!("{text}");
     } else {
         println!(
@@ -81,8 +80,7 @@ pub(super) fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     let payload = plugin_metadata_payload();
 
     if machine_json {
-        let bytes = crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
-        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        let text = super::canonical_json::text(&payload)?;
         println!("{text}");
     } else {
         println!(
@@ -165,24 +163,12 @@ pub(super) fn print_config(canonical_out: bool, output_mode: OutputMode) -> Resu
         }
     });
     if output_mode.json {
-        let text = if canonical_out {
-            String::from_utf8(
-                crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?,
-            )
-            .map_err(|e| e.to_string())?
-        } else {
-            let bytes =
-                crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
-            String::from_utf8(bytes).map_err(|e| e.to_string())?
-        };
+        let text = super::canonical_json::text(&payload)?;
         println!("{text}");
         return Ok(());
     }
     let text = if canonical_out {
-        String::from_utf8(
-            crate::compat::core::stable_json_bytes(&payload).map_err(|e| e.to_string())?,
-        )
-        .map_err(|e| e.to_string())?
+        super::canonical_json::text(&payload)?
     } else {
         serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
     };
