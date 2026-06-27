@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use super::manifest::LoadSuiteToml;
+use super::path_contracts::load_summary_path;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct LoadMetrics {
@@ -74,14 +75,6 @@ pub fn evaluate_load_report(
         thresholds,
         violations,
     })
-}
-
-#[must_use]
-pub fn load_summary_path(repo_root: &Path, run_id: &str, suite: &str) -> PathBuf {
-    repo_root
-        .join("artifacts/ops")
-        .join(run_id)
-        .join(format!("load/{suite}/k6-summary.json"))
 }
 
 fn load_json_value(path: &Path) -> Result<Value, LoadReportError> {

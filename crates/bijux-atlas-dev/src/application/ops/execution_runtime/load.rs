@@ -4,6 +4,7 @@ use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::{resolve_repo_root, OpsProcess, RunId};
+use bijux_atlas_ops::load::path_contracts::{load_report_path, load_run_root, load_summary_path};
 use bijux_atlas_ops::load::report_contract::evaluate_load_report;
 use serde_json::Value;
 use std::fs;
@@ -77,12 +78,9 @@ pub(crate) fn run_ops_load_run(
         ));
     }
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let out_dir = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join(format!("load/{suite}"));
+    let out_dir = load_run_root(&repo_root, run_id.as_str(), suite);
     fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
-    let summary_path = out_dir.join("k6-summary.json");
+    let summary_path = load_summary_path(&repo_root, run_id.as_str(), suite);
     let process = OpsProcess::new(true);
     let script_path = repo_root.join(&suite_cfg.script);
     let mut argv = vec![
@@ -144,10 +142,7 @@ pub(crate) fn run_ops_load_report(
             }
         },
     )?;
-    let report_path = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join(format!("load/{suite}/report.json"));
+    let report_path = load_report_path(&repo_root, run_id.as_str(), suite);
     if let Some(parent) = report_path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
