@@ -6,7 +6,8 @@ use std::env;
 use std::fs;
 use std::path::PathBuf;
 
-use bijux_atlas::api;
+use bijux_atlas_api::openapi_v1_spec;
+use bijux_atlas_core::stable_json_bytes;
 
 fn main() -> Result<(), String> {
     let mut out: Option<PathBuf> = None;
@@ -18,8 +19,8 @@ fn main() -> Result<(), String> {
     }
     let out = out.ok_or_else(|| "missing --out <path>".to_string())?;
 
-    let spec = api::openapi_v1_spec();
-    let bytes = bijux_atlas::core::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+    let spec = openapi_v1_spec();
+    let bytes = stable_json_bytes(&spec).map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }

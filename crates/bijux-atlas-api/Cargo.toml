@@ -34,6 +34,10 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["fmt", "json"] }
 
+[[bin]]
+name = "bijux-atlas-openapi"
+path = "src/bin/bijux-atlas-openapi.rs"
+
 [[test]]
 name = "api_contracts"
 path = "tests/api_contracts.rs"

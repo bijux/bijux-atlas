@@ -81,10 +81,6 @@ name = "bijux-atlas"
 path = "src/bin/bijux-atlas.rs"
 
 [[bin]]
-name = "bijux-atlas-openapi"
-path = "src/bin/bijux-atlas-openapi.rs"
-
-[[bin]]
 name = "bijux-atlas-server"
 path = "src/bin/bijux-atlas-server.rs"
 
