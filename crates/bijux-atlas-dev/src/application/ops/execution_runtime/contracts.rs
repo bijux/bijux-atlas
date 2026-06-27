@@ -3,8 +3,8 @@
 #[cfg(test)]
 #[allow(clippy::expect_used)]
 mod tests {
-    use crate::ops_execution_runtime::k8s::conformance_summary;
     use crate::ops_execution_runtime::load::{run_ops_load_plan, run_ops_load_report};
+    use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
     use bijux_atlas_ops::kubernetes::render_policy::{
         scan_forbidden_kinds, scan_timestamps, scan_unpinned_images,
     };

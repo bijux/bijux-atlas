@@ -4,6 +4,7 @@ use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, load_profiles, resolve_profile, run_id_or_default};
 use crate::ops_support::resolve_ops_root;
 use crate::{resolve_repo_root, OpsProcess};
+use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
 use serde_json::Value;
 use std::fs;
 use std::time::Instant;
@@ -100,53 +101,6 @@ pub(crate) fn run_ops_k8s_apply(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
-}
-
-pub(crate) fn conformance_summary(deployments: &Value, pods: &Value) -> (Vec<String>, Vec<Value>) {
-    let mut errors = Vec::new();
-    let mut rows = Vec::new();
-    if let Some(items) = deployments.get("items").and_then(Value::as_array) {
-        for item in items {
-            let name = item
-                .get("metadata")
-                .and_then(|v| v.get("name"))
-                .and_then(Value::as_str)
-                .unwrap_or("unknown");
-            let desired = item
-                .get("status")
-                .and_then(|v| v.get("replicas"))
-                .and_then(Value::as_u64)
-                .unwrap_or(0);
-            let ready = item
-                .get("status")
-                .and_then(|v| v.get("readyReplicas"))
-                .and_then(Value::as_u64)
-                .unwrap_or(0);
-            if ready < desired {
-                errors.push(format!("deployment `{name}` ready {ready}/{desired}"));
-            }
-            rows.push(serde_json::json!({"kind":"deployment","name":name,"desired":desired,"ready":ready}));
-        }
-    }
-    if let Some(items) = pods.get("items").and_then(Value::as_array) {
-        for item in items {
-            let name = item
-                .get("metadata")
-                .and_then(|v| v.get("name"))
-                .and_then(Value::as_str)
-                .unwrap_or("unknown");
-            let phase = item
-                .get("status")
-                .and_then(|v| v.get("phase"))
-                .and_then(Value::as_str)
-                .unwrap_or("Unknown");
-            if phase != "Running" && phase != "Succeeded" {
-                errors.push(format!("pod `{name}` phase={phase}"));
-            }
-            rows.push(serde_json::json!({"kind":"pod","name":name,"phase":phase}));
-        }
-    }
-    (errors, rows)
 }
 
 pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String, i32), String> {
