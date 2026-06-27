@@ -3,7 +3,7 @@
 use crate::*;
 use bijux_atlas_ops::kubernetes::execution::{KubernetesCommandRunner, SubprocessCapture};
 
-pub(crate) use bijux_atlas_ops::inventory::toolchain::{ToolDefinition, ToolchainInventory};
+pub(crate) use bijux_atlas_ops::inventory::toolchain::ToolchainInventory;
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
 pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
 

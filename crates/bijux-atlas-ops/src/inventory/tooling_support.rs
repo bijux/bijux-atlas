@@ -3,6 +3,8 @@
 use regex::Regex;
 use std::collections::BTreeMap;
 
+use super::toolchain::{ToolDefinition, ToolchainInventory};
+
 pub fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
     let re = Regex::new(pattern).ok()?;
     re.captures(raw)
@@ -46,6 +48,25 @@ pub fn parse_tool_overrides(values: &[String]) -> Result<BTreeMap<String, String
     Ok(out)
 }
 
+#[must_use]
+pub fn tool_definitions_sorted(inventory: &ToolchainInventory) -> Vec<(String, ToolDefinition)> {
+    inventory
+        .tools
+        .iter()
+        .map(|(name, definition)| (name.clone(), definition.clone()))
+        .collect()
+}
+
+#[must_use]
+pub fn tool_probe_skipped_snapshot() -> serde_json::Value {
+    serde_json::json!({
+        "enabled": false,
+        "text": "tool verification skipped (pass --allow-subprocess)",
+        "missing_required": [],
+        "rows": []
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -84,5 +105,49 @@ mod tests {
         .expect("parse overrides");
         assert_eq!(overrides["helm"], "/opt/bin/helm");
         assert_eq!(overrides["kubectl"], "/opt/bin/kubectl");
+    }
+
+    #[test]
+    fn tool_definition_sorting_preserves_inventory_members() {
+        let inventory = ToolchainInventory {
+            tools: BTreeMap::from([
+                (
+                    "kubectl".to_string(),
+                    ToolDefinition {
+                        required: true,
+                        version_regex: "(.*)".to_string(),
+                        probe_argv: vec!["version".to_string()],
+                    },
+                ),
+                (
+                    "helm".to_string(),
+                    ToolDefinition {
+                        required: false,
+                        version_regex: "(.*)".to_string(),
+                        probe_argv: vec!["version".to_string()],
+                    },
+                ),
+            ]),
+        };
+
+        let names = tool_definitions_sorted(&inventory)
+            .into_iter()
+            .map(|(name, _)| name)
+            .collect::<Vec<_>>();
+
+        assert_eq!(names, vec!["helm".to_string(), "kubectl".to_string()]);
+    }
+
+    #[test]
+    fn skipped_probe_snapshot_stays_stable() {
+        let snapshot = tool_probe_skipped_snapshot();
+        assert_eq!(snapshot["enabled"], serde_json::Value::Bool(false));
+        assert_eq!(
+            snapshot["text"],
+            serde_json::Value::String(
+                "tool verification skipped (pass --allow-subprocess)".to_string()
+            )
+        );
+        assert_eq!(snapshot["rows"], serde_json::json!([]));
     }
 }

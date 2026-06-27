@@ -3,7 +3,8 @@
 use crate::*;
 use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 pub(crate) use bijux_atlas_ops::inventory::tooling_support::{
-    normalize_tool_version_with_regex, parse_tool_overrides, ToolMismatchCode,
+    normalize_tool_version_with_regex, parse_tool_overrides, tool_definitions_sorted,
+    tool_probe_skipped_snapshot, ToolMismatchCode,
 };
 
 pub(crate) fn validate_pins_completeness(
@@ -22,27 +23,12 @@ pub(crate) fn validate_pins_completeness(
     )
 }
 
-pub(crate) fn tool_definitions_sorted(
-    inventory: &ToolchainInventory,
-) -> Vec<(String, ToolDefinition)> {
-    inventory
-        .tools
-        .iter()
-        .map(|(name, definition)| (name.clone(), definition.clone()))
-        .collect()
-}
-
 pub(crate) fn verify_tools_snapshot(
     allow_subprocess: bool,
     inventory: &ToolchainInventory,
 ) -> Result<serde_json::Value, String> {
     if !allow_subprocess {
-        return Ok(serde_json::json!({
-            "enabled": false,
-            "text": "tool verification skipped (pass --allow-subprocess)",
-            "missing_required": [],
-            "rows": []
-        }));
+        return Ok(tool_probe_skipped_snapshot());
     }
     let process = OpsProcess::new(true);
     let mut rows = Vec::new();
