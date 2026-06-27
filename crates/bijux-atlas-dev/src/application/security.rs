@@ -1540,8 +1540,8 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         fs::read_to_string(crate::reference::workspace_layout::atlas_server_binary_source(&root))
             .map_err(|err| format!("failed to read runtime main source: {err}"))?;
     let server_host_source =
-        fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/app/server/host.rs"))
-            .map_err(|err| format!("failed to read runtime server host source: {err}"))?;
+        fs::read_to_string(root.join("crates/bijux-atlas-server/src/app/server/host.rs"))
+            .map_err(|err| format!("failed to read server host source: {err}"))?;
     let runbook_text = fs::read_to_string(root.join(auth_docs_runbook))
         .map_err(|err| format!("failed to read {}: {err}", auth_docs_runbook))?;
     let auth_supports_disabled = auth_methods
