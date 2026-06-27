@@ -24,6 +24,46 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 version = "0.6"
 optional = true
 
+[dev-dependencies]
+axum = "0.8"
+criterion = "0.8"
+redis = { version = "1.2", features = ["tokio-comp"] }
+regex = "1.11"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde_json.workspace = true
+tempfile = "=3.27.0"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time", "signal"] }
+
 [[bin]]
 name = "bijux-atlas-server"
 path = "src/bin/bijux-atlas-server.rs"
+
+[[test]]
+name = "interfaces_server"
+path = "tests/interfaces_server.rs"
+
+[[bench]]
+name = "cache_manager"
+path = "benches/cache_manager.rs"
+harness = false
+
+[[bench]]
+name = "sequence_fetch"
+path = "benches/sequence_fetch.rs"
+harness = false
+
+[[bench]]
+name = "diff_merge"
+path = "benches/diff_merge.rs"
+harness = false
+
+[[bench]]
+name = "bulkhead_tuning"
+path = "benches/bulkhead_tuning.rs"
+harness = false
+
+[[bench]]
+name = "gene_lookup_p99"
+path = "benches/gene_lookup_p99.rs"
+harness = false

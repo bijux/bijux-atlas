@@ -444,6 +444,59 @@ fn atlas_cli_contract_tests_live_with_cli_owner_crate() {
 }
 
 #[test]
+fn atlas_server_contract_surfaces_live_with_server_owner_crate() {
+    let root = repo_root();
+
+    for required in [
+        "crates/bijux-atlas-server/tests/interfaces_server.rs",
+        "crates/bijux-atlas-server/tests/server/async_runtime_contract.rs",
+        "crates/bijux-atlas-server/tests/server/download_then_serve.rs",
+        "crates/bijux-atlas-server/tests/server/import_boundary_guardrails.rs",
+        "crates/bijux-atlas-server/tests/server/logging_contracts.rs",
+        "crates/bijux-atlas-server/tests/server/p99-regression.rs",
+        "crates/bijux-atlas-server/tests/server/redis_optional.rs",
+        "crates/bijux-atlas-server/tests/server/runtime_env_contract_startup.rs",
+        "crates/bijux-atlas-server/tests/server/s3_backend.rs",
+        "crates/bijux-atlas-server/tests/server/schema_evolution_regression.rs",
+        "crates/bijux-atlas-server/tests/server/snapshots/api-surface.responses.v1.json",
+        "crates/bijux-atlas-server/benches/cache_manager.rs",
+        "crates/bijux-atlas-server/benches/sequence_fetch.rs",
+        "crates/bijux-atlas-server/benches/diff_merge.rs",
+        "crates/bijux-atlas-server/benches/bulkhead_tuning.rs",
+        "crates/bijux-atlas-server/benches/gene_lookup_p99.rs",
+    ] {
+        assert!(
+            root.join(required).is_file(),
+            "server owner crate must keep server-facing contracts and benchmarks: {required}"
+        );
+    }
+
+    for forbidden in [
+        "crates/bijux-atlas/tests/interfaces/server.rs",
+        "crates/bijux-atlas/tests/interfaces/server/async_runtime_contract.rs",
+        "crates/bijux-atlas/tests/interfaces/server/download_then_serve.rs",
+        "crates/bijux-atlas/tests/interfaces/server/import_boundary_guardrails.rs",
+        "crates/bijux-atlas/tests/interfaces/server/logging_contracts.rs",
+        "crates/bijux-atlas/tests/interfaces/server/p99-regression.rs",
+        "crates/bijux-atlas/tests/interfaces/server/redis_optional.rs",
+        "crates/bijux-atlas/tests/interfaces/server/runtime_env_contract_startup.rs",
+        "crates/bijux-atlas/tests/interfaces/server/s3_backend.rs",
+        "crates/bijux-atlas/tests/interfaces/server/schema_evolution_regression.rs",
+        "crates/bijux-atlas/tests/interfaces/server/snapshots/api-surface.responses.v1.json",
+        "crates/bijux-atlas/benches/server/cache_manager.rs",
+        "crates/bijux-atlas/benches/server/sequence_fetch.rs",
+        "crates/bijux-atlas/benches/server/diff_merge.rs",
+        "crates/bijux-atlas/benches/server/bulkhead_tuning.rs",
+        "crates/bijux-atlas/benches/server/gene_lookup_p99.rs",
+    ] {
+        assert!(
+            !root.join(forbidden).exists(),
+            "runtime crate must not retain server-owned integration or benchmark surfaces: {forbidden}"
+        );
+    }
+}
+
+#[test]
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =

@@ -121,10 +121,6 @@ name = "interfaces_client_compatibility"
 path = "tests/interfaces/client_compatibility.rs"
 
 [[test]]
-name = "interfaces_server"
-path = "tests/interfaces/server.rs"
-
-[[test]]
 name = "workflows_end_to_end"
 path = "tests/workflows/end_to_end.rs"
 
@@ -141,31 +137,6 @@ harness = false
 [[bench]]
 name = "policy_validate"
 path = "benches/policy/validate.rs"
-harness = false
-
-[[bench]]
-name = "server_cache_manager"
-path = "benches/server/cache_manager.rs"
-harness = false
-
-[[bench]]
-name = "server_sequence_fetch"
-path = "benches/server/sequence_fetch.rs"
-harness = false
-
-[[bench]]
-name = "server_diff_merge"
-path = "benches/server/diff_merge.rs"
-harness = false
-
-[[bench]]
-name = "server_bulkhead_tuning"
-path = "benches/server/bulkhead_tuning.rs"
-harness = false
-
-[[bench]]
-name = "server_gene_lookup_p99"
-path = "benches/server/gene_lookup_p99.rs"
 harness = false
 
 [[example]]
