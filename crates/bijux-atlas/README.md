@@ -104,6 +104,7 @@ contracts.
   surfaces.
 - `--json` output is deterministic and intended for CI snapshots and automation.
 - API errors, status mappings, and OpenAPI output are governed by contract tests.
+- API-facing HTTP contract, response-shape, and observability suites are owned in `bijux-atlas-api`; runtime keeps only startup, cache, backend, and server-wiring tests.
 - Runtime configuration is owned by contracts and validators, not ad hoc scripts.
 - Compatibility tests, contract tests, and golden outputs are part of the supported maintenance
   model.
