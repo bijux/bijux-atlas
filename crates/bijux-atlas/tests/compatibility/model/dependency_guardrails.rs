@@ -29,6 +29,7 @@ fn canonical_model_types_stay_free_of_runtime_dependencies() {
         manifest_dir.join("src/diff.rs"),
         manifest_dir.join("src/gene.rs"),
         manifest_dir.join("src/policy.rs"),
+        manifest_dir.join("src/query.rs"),
     ] {
         let text = std::fs::read_to_string(&path).expect("read source");
         for forbidden in ["reqwest", "rusqlite", "tokio", "axum", "hyper"] {

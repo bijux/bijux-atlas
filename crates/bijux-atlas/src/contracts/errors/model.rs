@@ -3,8 +3,6 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-pub use super::error_codes::ErrorCode;
-
 pub type Result<T> = std::result::Result<T, Error>;
 
 #[repr(u8)]
@@ -28,12 +26,6 @@ impl ExitCode {
             Self::DependencyFailure => "dependency_failure",
             Self::Internal => "internal",
         }
-    }
-}
-
-impl fmt::Display for ErrorCode {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.as_str())
     }
 }
 

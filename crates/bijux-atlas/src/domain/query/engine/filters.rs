@@ -3,6 +3,8 @@
 use serde::{Deserialize, Serialize};
 use unicode_normalization::UnicodeNormalization;
 
+pub use bijux_atlas_model::query::{GeneQueryResponse, GeneRow, RegionFilter};
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct GeneFields {
     pub gene_id: bool,
@@ -24,13 +26,6 @@ impl Default for GeneFields {
             sequence_length: true,
         }
     }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct RegionFilter {
-    pub seqid: String,
-    pub start: u64,
-    pub end: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
@@ -84,24 +79,6 @@ pub struct GeneQueryRequest {
     pub cursor: Option<String>,
     pub dataset_key: Option<String>,
     pub allow_full_scan: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct GeneRow {
-    pub gene_id: String,
-    pub name: Option<String>,
-    pub seqid: Option<String>,
-    pub start: Option<u64>,
-    pub end: Option<u64>,
-    pub biotype: Option<String>,
-    pub transcript_count: Option<u64>,
-    pub sequence_length: Option<u64>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct GeneQueryResponse {
-    pub rows: Vec<GeneRow>,
-    pub next_cursor: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]

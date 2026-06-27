@@ -6,6 +6,7 @@ pub mod dataset;
 pub mod diff;
 pub mod gene;
 pub mod policy;
+pub mod query;
 pub mod serde_helpers {
     pub use crate::dataset::serde_helpers::*;
 }
@@ -33,5 +34,6 @@ pub use gene::{
     SEQID_MAX_LEN,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};
+pub use query::{GeneQueryResponse, GeneRow, RegionFilter};
 
 pub const CRATE_NAME: &str = "bijux-atlas-model";

@@ -42,7 +42,7 @@ fn error_code_enum_is_defined_only_in_core_generated_module() {
     {
         let path = entry.path();
         let path_str = path.to_string_lossy();
-        if !path_str.contains("/crates/bijux-atlas/") {
+        if !path_str.contains("/crates/bijux-atlas-core/") {
             continue;
         }
         if path.components().any(|c| c.as_os_str() == "tests") {
@@ -55,7 +55,7 @@ fn error_code_enum_is_defined_only_in_core_generated_module() {
     }
 
     let expected = root
-        .join("crates/bijux-atlas/src/contracts/errors/error_codes.rs")
+        .join("crates/bijux-atlas-core/src/error_codes.rs")
         .to_string_lossy()
         .to_string();
     assert_eq!(definitions, vec![expected]);
