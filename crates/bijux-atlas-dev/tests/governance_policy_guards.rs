@@ -262,13 +262,18 @@ fn atlas_contract_roots_stay_contract_owned() {
         fs::read_to_string(root.join("crates/bijux-atlas-runtime/src/contracts/config/mod.rs"))
             .expect("contracts config");
 
-    for expected in ["pub mod api;", "pub mod config;", "pub mod errors;"] {
+    for expected in ["pub mod config;", "pub mod errors;"] {
         assert!(
             contracts.contains(expected),
             "contracts root must expose only real contract owners"
         );
     }
-    for forbidden in ["pub mod generated;", "pub mod store;", "pub mod telemetry;"] {
+    for forbidden in [
+        "pub mod api;",
+        "pub mod generated;",
+        "pub mod store;",
+        "pub mod telemetry;",
+    ] {
         assert!(
             !contracts.contains(forbidden),
             "contracts root must not mirror adapter or generated roots"
@@ -290,9 +295,13 @@ fn atlas_runtime_test_surface_does_not_duplicate_api_client_suite() {
         "runtime test surface must not mirror the API-owned client suite"
     );
     assert!(
-        root.join("crates/bijux-atlas-runtime/tests/interfaces/client_compatibility.rs")
-            .is_file(),
-        "runtime must keep the narrow legacy client compatibility check"
+        !root.join("crates/bijux-atlas-runtime/tests/interfaces/client_compatibility.rs")
+            .exists(),
+        "runtime must not keep a legacy client compatibility shim test"
+    );
+    assert!(
+        root.join("crates/bijux-atlas/tests/runtime_alias.rs").is_file(),
+        "alias crate must keep the compatibility check for legacy client-facing imports"
     );
     assert!(
         root.join("crates/bijux-atlas-api/tests/client_contracts.rs")

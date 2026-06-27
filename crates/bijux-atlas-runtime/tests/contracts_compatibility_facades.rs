@@ -83,7 +83,13 @@ fn runtime_compatibility_implementation_surface_stays_bounded() {
 
 #[test]
 fn runtime_leaf_forwarders_do_not_reappear() {
-    for relative in ["src/api.rs", "src/query.rs", "src/domain/ingest.rs"] {
+    for relative in [
+        "src/api.rs",
+        "src/query.rs",
+        "src/domain/ingest.rs",
+        "src/contracts/api.rs",
+        "src/adapters/inbound/mod.rs",
+    ] {
         assert!(
             !crate_root().join(relative).exists(),
             "runtime must not own a compatibility wrapper at {relative}"
@@ -94,7 +100,13 @@ fn runtime_leaf_forwarders_do_not_reappear() {
 #[test]
 fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
     let root = crate_root().join("src");
-    let forbidden = ["crate::api::", "crate::domain::ingest::", "crate::query::"];
+    let forbidden = [
+        "crate::api::",
+        "crate::domain::ingest::",
+        "crate::query::",
+        "crate::contracts::api::",
+        "crate::adapters::inbound::client::",
+    ];
 
     for path in rust_files_under(&root) {
         let rel = path
