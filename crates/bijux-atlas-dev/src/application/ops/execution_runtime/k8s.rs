@@ -201,7 +201,11 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
         )
         .ok()
         .and_then(|(stdout, _)| serde_json::from_str::<Value>(&stdout).ok())
-        .and_then(|json| json.get("items").and_then(Value::as_array).map(|items| !items.is_empty()))
+        .and_then(|json| {
+            json.get("items")
+                .and_then(Value::as_array)
+                .map(|items| !items.is_empty())
+        })
         .unwrap_or(false);
     if hpa_enabled {
         match process.run_subprocess(
@@ -216,9 +220,14 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
         ) {
             Ok((stdout, _)) => {
                 let has_custom_metrics = stdout.lines().any(|line| !line.trim().is_empty());
-                rows.push(serde_json::json!({"kind":"hpa_metrics_api","enabled":has_custom_metrics}));
+                rows.push(
+                    serde_json::json!({"kind":"hpa_metrics_api","enabled":has_custom_metrics}),
+                );
                 if !has_custom_metrics {
-                    errors.push("hpa enabled but custom metrics API is not available (missing adapter)".to_string());
+                    errors.push(
+                        "hpa enabled but custom metrics API is not available (missing adapter)"
+                            .to_string(),
+                    );
                 }
             }
             Err(err) => {

@@ -42,7 +42,7 @@ mod migrations_commands;
 mod observe_commands;
 #[path = "application/ops.rs"]
 mod ops_commands;
-#[path = "application/ops/execution_runtime.rs"]
+#[path = "application/ops/execution_runtime/mod.rs"]
 mod ops_execution_runtime;
 #[path = "application/ops/support.rs"]
 mod ops_support;

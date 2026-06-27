@@ -3,7 +3,11 @@
 
 use super::*;
 
-pub(super) fn install_render_path(repo_root: &std::path::Path, run_id: &str, profile: &str) -> std::path::PathBuf {
+pub(super) fn install_render_path(
+    repo_root: &std::path::Path,
+    run_id: &str,
+    profile: &str,
+) -> std::path::PathBuf {
     repo_root
         .join("artifacts/ops")
         .join(run_id)
@@ -45,7 +49,10 @@ pub(super) fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Val
             namespaces.insert(namespace.clone());
         }
         *kinds.entry(kind.clone()).or_insert(0) += 1;
-        if matches!(kind.as_str(), "Role" | "RoleBinding" | "ClusterRole" | "ClusterRoleBinding" | "ServiceAccount") {
+        if matches!(
+            kind.as_str(),
+            "Role" | "RoleBinding" | "ClusterRole" | "ClusterRoleBinding" | "ServiceAccount"
+        ) {
             has_rbac = true;
         }
         if kind == "CustomResourceDefinition" {
@@ -163,7 +170,9 @@ pub(super) fn simulation_report_path(
     Ok(path)
 }
 
-pub(super) fn readiness_baseline_path(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
+pub(super) fn readiness_baseline_path(
+    repo_root: &std::path::Path,
+) -> Result<std::path::PathBuf, String> {
     let path = repo_root.join("artifacts/ops/history/readiness-baselines.json");
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)
@@ -187,7 +196,9 @@ pub(super) fn write_simulation_report(
     Ok(path)
 }
 
-pub(super) fn load_drill_registry(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn load_drill_registry(
+    repo_root: &std::path::Path,
+) -> Result<Vec<serde_json::Value>, String> {
     let path = repo_root.join("ops/observe/drills.json");
     let payload: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&path)
@@ -246,7 +257,10 @@ pub(super) fn update_drill_summary(
     Ok(summary_path)
 }
 
-pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec<(&'static str, std::path::PathBuf)> {
+pub(super) fn drill_check_paths(
+    repo_root: &std::path::Path,
+    drill: &str,
+) -> Vec<(&'static str, std::path::PathBuf)> {
     match drill {
         "warmup-pod-restart" => vec![
             (
@@ -277,8 +291,14 @@ pub(super) fn drill_check_paths(repo_root: &std::path::Path, drill: &str) -> Vec
             ),
         ],
         "offline-network-deny" | "offline-prewarm-serve" => vec![
-            ("offline profile", repo_root.join("ops/k8s/values/offline.yaml")),
-            ("network policy examples", repo_root.join("ops/k8s/values/networkpolicy-examples.yaml")),
+            (
+                "offline profile",
+                repo_root.join("ops/k8s/values/offline.yaml"),
+            ),
+            (
+                "network policy examples",
+                repo_root.join("ops/k8s/values/networkpolicy-examples.yaml"),
+            ),
             (
                 "health endpoints contract",
                 repo_root.join("docs/bijux-atlas/contracts/operational-contracts.md"),
@@ -492,11 +512,7 @@ pub(super) fn configmap_env_keys_from_manifest(manifest: &str) -> Vec<String> {
             Ok(value) => value,
             Err(_) => continue,
         };
-        if value
-            .get("kind")
-            .and_then(serde_yaml::Value::as_str)
-            != Some("ConfigMap")
-        {
+        if value.get("kind").and_then(serde_yaml::Value::as_str) != Some("ConfigMap") {
             continue;
         }
         let Some(data) = value.get("data").and_then(serde_yaml::Value::as_mapping) else {
@@ -545,7 +561,9 @@ pub(super) fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
                     .map(|mapping| {
                         let mut pairs = mapping
                             .iter()
-                            .filter_map(|(key, value)| Some((key.as_str()?.to_string(), value.as_str()?.to_string())))
+                            .filter_map(|(key, value)| {
+                                Some((key.as_str()?.to_string(), value.as_str()?.to_string()))
+                            })
                             .collect::<Vec<_>>();
                         pairs.sort();
                         pairs
@@ -606,7 +624,9 @@ pub(super) fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
                 let metric_target = |resource_name: &str| {
                     metrics.iter().find_map(|metric| {
                         let resource = metric.get("resource")?;
-                        if resource.get("name").and_then(serde_yaml::Value::as_str) == Some(resource_name) {
+                        if resource.get("name").and_then(serde_yaml::Value::as_str)
+                            == Some(resource_name)
+                        {
                             resource
                                 .get("target")
                                 .and_then(|target| target.get("averageUtilization"))
@@ -647,7 +667,10 @@ pub(super) fn manifest_contract_summary(manifest: &str) -> serde_json::Value {
     })
 }
 
-pub(super) fn lifecycle_compatibility_checks(before_manifest: &str, after_manifest: &str) -> serde_json::Value {
+pub(super) fn lifecycle_compatibility_checks(
+    before_manifest: &str,
+    after_manifest: &str,
+) -> serde_json::Value {
     let before = manifest_contract_summary(before_manifest);
     let after = manifest_contract_summary(after_manifest);
     let service_names_stable = before["services"]
@@ -663,16 +686,20 @@ pub(super) fn lifecycle_compatibility_checks(before_manifest: &str, after_manife
                     .collect::<Vec<_>>()
         })
         .unwrap_or(false);
-    let service_selector_stable = before["services"] == after["services"] || before["services"]
-        .as_array()
-        .zip(after["services"].as_array())
-        .map(|(left, right)| {
-            left.iter()
-                .map(|row| (&row["name"], &row["selector"]))
-                .collect::<Vec<_>>()
-                == right.iter().map(|row| (&row["name"], &row["selector"])).collect::<Vec<_>>()
-        })
-        .unwrap_or(false);
+    let service_selector_stable = before["services"] == after["services"]
+        || before["services"]
+            .as_array()
+            .zip(after["services"].as_array())
+            .map(|(left, right)| {
+                left.iter()
+                    .map(|row| (&row["name"], &row["selector"]))
+                    .collect::<Vec<_>>()
+                    == right
+                        .iter()
+                        .map(|row| (&row["name"], &row["selector"]))
+                        .collect::<Vec<_>>()
+            })
+            .unwrap_or(false);
     let service_ports_stable = before["services"]
         .as_array()
         .zip(after["services"].as_array())
@@ -680,15 +707,24 @@ pub(super) fn lifecycle_compatibility_checks(before_manifest: &str, after_manife
             left.iter()
                 .map(|row| (&row["name"], &row["ports"]))
                 .collect::<Vec<_>>()
-                == right.iter().map(|row| (&row["name"], &row["ports"])).collect::<Vec<_>>()
+                == right
+                    .iter()
+                    .map(|row| (&row["name"], &row["ports"]))
+                    .collect::<Vec<_>>()
         })
         .unwrap_or(false);
     let pvc_stable = before["persistent_volume_claims"] == after["persistent_volume_claims"];
     let ingress_host_shape_stable = before["ingresses"] == after["ingresses"];
     let network_policy_default_stable = before["network_policies"] == after["network_policies"];
     let hpa_defaults_stable = before["hpas"] == after["hpas"];
-    let before_env = before["configmap_env_keys"].as_array().cloned().unwrap_or_default();
-    let after_env = after["configmap_env_keys"].as_array().cloned().unwrap_or_default();
+    let before_env = before["configmap_env_keys"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let after_env = after["configmap_env_keys"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     let removed_required_env_keys = before_env
         .iter()
         .filter_map(serde_json::Value::as_str)
@@ -793,7 +829,11 @@ pub(super) fn pods_restart_count(
                         .cloned()
                         .unwrap_or_default()
                 })
-                .filter_map(|container| container.get("restartCount").and_then(serde_json::Value::as_u64))
+                .filter_map(|container| {
+                    container
+                        .get("restartCount")
+                        .and_then(serde_json::Value::as_u64)
+                })
                 .sum()
         })
         .unwrap_or(0)
@@ -960,7 +1000,11 @@ mod tests {
         let root = repo_root();
         for drill in ["catalog-unreachable", "invalid-config-rejected"] {
             for (_, path) in drill_check_paths(&root, drill) {
-                assert!(path.exists(), "missing drill source path: {}", path.display());
+                assert!(
+                    path.exists(),
+                    "missing drill source path: {}",
+                    path.display()
+                );
             }
         }
     }

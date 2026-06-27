@@ -57,8 +57,11 @@ mod tests {
             "schema_version = 1\n",
         )
         .expect("registry");
-        std::fs::write(root.path().join("ops/inventory/tools.toml"), "schema_version = 1\n")
-            .expect("tools");
+        std::fs::write(
+            root.path().join("ops/inventory/tools.toml"),
+            "schema_version = 1\n",
+        )
+        .expect("tools");
         std::fs::create_dir_all(root.path().join("artifacts/ops/ops_run/load/mixed"))
             .expect("mkdir artifacts");
         std::fs::write(
@@ -118,8 +121,11 @@ mod tests {
             "schema_version = 1\n",
         )
         .expect("registry");
-        std::fs::write(root.path().join("ops/inventory/tools.toml"), "schema_version = 1\n")
-            .expect("tools");
+        std::fs::write(
+            root.path().join("ops/inventory/tools.toml"),
+            "schema_version = 1\n",
+        )
+        .expect("tools");
         std::fs::write(
             root.path().join("ops/load/load.toml"),
             "[suites.mixed]\nscript=\"ops/load/k6/suites/mixed-80-20.js\"\ndataset=\"ops/load/queries/pinned-v1.json\"\nthresholds=\"ops/load/thresholds/mixed.thresholds.json\"\n[suites.mixed.env]\nZZZ=\"1\"\nAAA=\"2\"\n",

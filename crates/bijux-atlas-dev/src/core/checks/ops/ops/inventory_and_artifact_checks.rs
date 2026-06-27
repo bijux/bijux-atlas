@@ -205,7 +205,7 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
         ));
     }
     let runtime_source_roots = [
-        Path::new("crates/bijux-atlas-dev/src/application/ops/execution_runtime_mod"),
+        Path::new("crates/bijux-atlas-dev/src/application/ops/execution_runtime"),
     ];
     for root_rel in runtime_source_roots {
         let root = ctx.repo_root.join(root_rel);

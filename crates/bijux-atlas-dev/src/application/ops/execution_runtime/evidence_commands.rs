@@ -8,7 +8,8 @@ use std::time::Duration;
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
-        &std::fs::read_to_string(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+        &std::fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
@@ -34,11 +35,10 @@ fn write_evidence_artifact(
     }))
 }
 
-fn rendered_manifest_from_evidence(
-    repo_root: &std::path::Path,
-    run_id: &str,
-) -> Option<String> {
-    let render_evidence_path = repo_root.join(format!("artifacts/ops/evidence/{run_id}/render-evidence.json"));
+fn rendered_manifest_from_evidence(repo_root: &std::path::Path, run_id: &str) -> Option<String> {
+    let render_evidence_path = repo_root.join(format!(
+        "artifacts/ops/evidence/{run_id}/render-evidence.json"
+    ));
     let render_evidence = read_json_value(&render_evidence_path).ok()?;
     let render_rel = render_evidence
         .get("render_index_files")
@@ -46,10 +46,19 @@ fn rendered_manifest_from_evidence(
         .and_then(|rows| rows.first())
         .and_then(|row| row.get("path"))
         .and_then(serde_json::Value::as_str)?;
-    std::fs::read_to_string(repo_root.join("artifacts/ops").join(run_id).join(render_rel)).ok()
+    std::fs::read_to_string(
+        repo_root
+            .join("artifacts/ops")
+            .join(run_id)
+            .join(render_rel),
+    )
+    .ok()
 }
 
-pub(super) fn git_head_sha(process: &OpsProcess, repo_root: &std::path::Path) -> Result<String, String> {
+pub(super) fn git_head_sha(
+    process: &OpsProcess,
+    repo_root: &std::path::Path,
+) -> Result<String, String> {
     let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
     let (stdout, _) = process
         .run_subprocess("git", &argv, repo_root)
@@ -174,9 +183,7 @@ pub(super) fn run_governance_doctor_for_evidence(
     Ok(())
 }
 
-pub(crate) fn run_ops_evidence_collect(
-    common: &OpsCommonArgs,
-) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     if !common.allow_subprocess {
         return Err("evidence collect requires --allow-subprocess".to_string());
     }
@@ -210,19 +217,24 @@ pub(crate) fn run_ops_evidence_collect(
     )
     .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
     let docker_bases = repo_root.join("ops/docker/bases.lock");
-    let toolchain_inventory = repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
+    let toolchain_inventory =
+        repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
     let auth_model = repo_root.join("configs/sources/security/auth-model.yaml");
     let access_policy = repo_root.join("configs/sources/security/policy.yaml");
-    let audit_schema = repo_root.join("configs/sources/operations/observability/schemas/audit-log.schema.json");
-    let retention_policy = repo_root.join("configs/sources/operations/observability/retention.yaml");
+    let audit_schema =
+        repo_root.join("configs/sources/operations/observability/schemas/audit-log.schema.json");
+    let retention_policy =
+        repo_root.join("configs/sources/operations/observability/retention.yaml");
     let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
     let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
     let log_field_inventory = repo_root.join("artifacts/security/log-field-inventory.json");
     let runtime_env_allowlist = repo_root.join("configs/schemas/contracts/env.schema.json");
     let signing_policy = repo_root.join("ops/release/signing/policy.yaml");
     let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
-    let exceptions_registry = repo_root.join("configs/sources/governance/governance/exceptions.yaml");
-    let exceptions_archive = repo_root.join("configs/sources/governance/governance/exceptions-archive.yaml");
+    let exceptions_registry =
+        repo_root.join("configs/sources/governance/governance/exceptions.yaml");
+    let exceptions_archive =
+        repo_root.join("configs/sources/governance/governance/exceptions-archive.yaml");
     let exceptions_summary = repo_root.join("artifacts/governance/exceptions-summary.json");
     let exceptions_warning = repo_root.join("artifacts/governance/exceptions-expiry-warning.json");
     let exceptions_churn = repo_root.join("artifacts/governance/exceptions-churn.json");
@@ -254,9 +266,18 @@ pub(crate) fn run_ops_evidence_collect(
         serde_json::to_string_pretty(&provenance).map_err(|err| err.to_string())?,
     )
     .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
-    let install_evidence_path = format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str());
-    let render_evidence_path = format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str());
-    let validate_evidence_path = format!("artifacts/ops/evidence/{}/validate-evidence.json", run_id.as_str());
+    let install_evidence_path = format!(
+        "artifacts/ops/evidence/{}/install-evidence.json",
+        run_id.as_str()
+    );
+    let render_evidence_path = format!(
+        "artifacts/ops/evidence/{}/render-evidence.json",
+        run_id.as_str()
+    );
+    let validate_evidence_path = format!(
+        "artifacts/ops/evidence/{}/validate-evidence.json",
+        run_id.as_str()
+    );
     let _install_evidence = read_json_value(&repo_root.join(&install_evidence_path))?;
     let render_evidence = read_json_value(&repo_root.join(&render_evidence_path))?;
     let validate_evidence = read_json_value(&repo_root.join(&validate_evidence_path))?;
@@ -272,7 +293,10 @@ pub(crate) fn run_ops_evidence_collect(
         .unwrap_or_default();
     let install_matrix_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/install-matrix-report.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/install-matrix-report.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -282,7 +306,10 @@ pub(crate) fn run_ops_evidence_collect(
     )?;
     let render_matrix_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/render-matrix-report.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/render-matrix-report.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -293,7 +320,10 @@ pub(crate) fn run_ops_evidence_collect(
     )?;
     let schema_coverage_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/schema-coverage-report.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/schema-coverage-report.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -305,15 +335,24 @@ pub(crate) fn run_ops_evidence_collect(
             "values_schema_source": "ops/k8s/charts/bijux-atlas/values.schema.json"
         }),
     )?;
-    let rendered_manifest = rendered_manifest_from_evidence(&repo_root, run_id.as_str()).unwrap_or_default();
+    let rendered_manifest =
+        rendered_manifest_from_evidence(&repo_root, run_id.as_str()).unwrap_or_default();
     let network_policy_count = rendered_manifest.matches("kind: NetworkPolicy").count();
-    let rbac_count = ["kind: Role\n", "kind: ClusterRole\n", "kind: RoleBinding\n", "kind: ClusterRoleBinding\n"]
-        .iter()
-        .map(|needle| rendered_manifest.matches(needle).count())
-        .sum::<usize>();
+    let rbac_count = [
+        "kind: Role\n",
+        "kind: ClusterRole\n",
+        "kind: RoleBinding\n",
+        "kind: ClusterRoleBinding\n",
+    ]
+    .iter()
+    .map(|needle| rendered_manifest.matches(needle).count())
+    .sum::<usize>();
     let network_policy_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/network-policy-coverage-report.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/network-policy-coverage-report.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -323,7 +362,10 @@ pub(crate) fn run_ops_evidence_collect(
     )?;
     let rbac_coverage_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/rbac-coverage-report.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/rbac-coverage-report.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -333,7 +375,10 @@ pub(crate) fn run_ops_evidence_collect(
     )?;
     let inventory_snapshot_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/inventory-snapshot.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/inventory-snapshot.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -346,7 +391,10 @@ pub(crate) fn run_ops_evidence_collect(
     let toolchain_snapshot = read_json_value(&repo_root.join("ops/inventory/toolchain.json"))?;
     let tool_versions_artifact = write_evidence_artifact(
         &repo_root,
-        &format!("artifacts/ops/evidence/{}/tool-versions.json", run_id.as_str()),
+        &format!(
+            "artifacts/ops/evidence/{}/tool-versions.json",
+            run_id.as_str()
+        ),
         &serde_json::json!({
             "schema_version": 1,
             "run_id": run_id.as_str(),
@@ -605,11 +653,15 @@ pub(crate) fn run_ops_evidence_verify(
     {
         let path = repo_root.join(rel);
         if !path.exists() {
-            errors.push(format!("referenced supply-chain inventory does not exist: {rel}"));
+            errors.push(format!(
+                "referenced supply-chain inventory does not exist: {rel}"
+            ));
             continue;
         }
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
-            errors.push(format!("evidence tarball missing supply-chain inventory: {rel}"));
+            errors.push(format!(
+                "evidence tarball missing supply-chain inventory: {rel}"
+            ));
         }
     }
     if let Some(row) = manifest
@@ -627,12 +679,16 @@ pub(crate) fn run_ops_evidence_verify(
                 continue;
             }
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing audit asset for {name}: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing audit asset for {name}: {path}"
+                ));
             }
             if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
                 if actual != expected {
-                    errors.push(format!("audit asset checksum does not match manifest for {name}: {path}"));
+                    errors.push(format!(
+                        "audit asset checksum does not match manifest for {name}: {path}"
+                    ));
                 }
             }
         }
@@ -652,7 +708,9 @@ pub(crate) fn run_ops_evidence_verify(
             errors.push(format!("auth model snapshot does not exist: {path}"));
         } else {
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing auth model snapshot: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing auth model snapshot: {path}"
+                ));
             }
             if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
@@ -679,7 +737,9 @@ pub(crate) fn run_ops_evidence_verify(
             errors.push(format!("access policy snapshot does not exist: {path}"));
         } else {
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing access policy snapshot: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing access policy snapshot: {path}"
+                ));
             }
             if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
@@ -704,11 +764,15 @@ pub(crate) fn run_ops_evidence_verify(
                 .unwrap_or_default();
             let abs = repo_root.join(path);
             if path.is_empty() || !abs.exists() {
-                errors.push(format!("governance asset does not exist for {name}: {path}"));
+                errors.push(format!(
+                    "governance asset does not exist for {name}: {path}"
+                ));
                 continue;
             }
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing governance asset for {name}: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing governance asset for {name}: {path}"
+                ));
             }
             if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
@@ -735,12 +799,16 @@ pub(crate) fn run_ops_evidence_verify(
             errors.push(format!("action pins report does not exist: {path}"));
         } else {
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing action pins report: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing action pins report: {path}"
+                ));
             }
             if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
                 if actual != expected {
-                    errors.push(format!("action pins report checksum does not match manifest: {path}"));
+                    errors.push(format!(
+                        "action pins report checksum does not match manifest: {path}"
+                    ));
                 }
             }
         }
@@ -765,18 +833,24 @@ pub(crate) fn run_ops_evidence_verify(
                 continue;
             }
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
-                errors.push(format!("evidence tarball missing ops evidence artifact for {name}: {path}"));
+                errors.push(format!(
+                    "evidence tarball missing ops evidence artifact for {name}: {path}"
+                ));
             }
             if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
                 let actual = sha256_file(&abs)?;
                 if actual != expected {
-                    errors.push(format!("ops evidence artifact checksum mismatch for {name}: {path}"));
+                    errors.push(format!(
+                        "ops evidence artifact checksum mismatch for {name}: {path}"
+                    ));
                 }
             }
             let content = std::fs::read_to_string(&abs)
                 .map_err(|err| format!("failed to read {}: {err}", abs.display()))?;
             if contains_common_secret_pattern(&content) {
-                errors.push(format!("ops evidence artifact contains secret-like content for {name}: {path}"));
+                errors.push(format!(
+                    "ops evidence artifact contains secret-like content for {name}: {path}"
+                ));
             }
         }
     } else {
@@ -838,7 +912,9 @@ pub(crate) fn run_ops_evidence_verify(
         let content = std::fs::read_to_string(&path)
             .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
         if contains_common_secret_pattern(&content) {
-            errors.push(format!("redacted log still contains a common secret pattern: {rel}"));
+            errors.push(format!(
+                "redacted log still contains a common secret pattern: {rel}"
+            ));
         }
     }
     for rel in manifest
@@ -850,11 +926,15 @@ pub(crate) fn run_ops_evidence_verify(
     {
         let path = repo_root.join(rel);
         if !path.exists() {
-            errors.push(format!("referenced observability asset does not exist: {rel}"));
+            errors.push(format!(
+                "referenced observability asset does not exist: {rel}"
+            ));
             continue;
         }
         if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
-            errors.push(format!("evidence tarball missing observability asset: {rel}"));
+            errors.push(format!(
+                "evidence tarball missing observability asset: {rel}"
+            ));
         }
     }
     for rel in manifest
@@ -915,10 +995,10 @@ pub(crate) fn run_ops_evidence_verify(
         if !repo_root.join(required).exists() {
             errors.push(format!("required evidence path does not exist: {required}"));
         }
-        if tarball_path.exists()
-            && !tarball_contains_entry(&tarball_path, required)?
-        {
-            errors.push(format!("evidence tarball missing required path: {required}"));
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, required)? {
+            errors.push(format!(
+                "evidence tarball missing required path: {required}"
+            ));
         }
     }
     let prod_profiles = ["prod-minimal", "prod-ha", "prod-airgap"];
@@ -1016,12 +1096,16 @@ pub(crate) fn run_ops_evidence_verify(
             })
             .unwrap_or_default();
         if !accepted.is_empty() && !accepted.contains(format) {
-            errors.push(format!("scan report format is not accepted by policy: {format}"));
+            errors.push(format!(
+                "scan report format is not accepted by policy: {format}"
+            ));
         }
         if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
             let actual = sha256_file(&abs)?;
             if actual != expected {
-                errors.push(format!("scan report checksum does not match manifest: {path}"));
+                errors.push(format!(
+                    "scan report checksum does not match manifest: {path}"
+                ));
             }
         }
     }
@@ -1033,7 +1117,8 @@ pub(crate) fn run_ops_evidence_verify(
         let abs = repo_root.join(path);
         if path.is_empty() || !abs.exists() {
             errors.push(format!("index html does not exist: {path}"));
-        } else if let Some(expected) = index_html.get("sha256").and_then(serde_json::Value::as_str) {
+        } else if let Some(expected) = index_html.get("sha256").and_then(serde_json::Value::as_str)
+        {
             if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
                 errors.push(format!("evidence tarball missing index html: {path}"));
             }
@@ -1053,7 +1138,10 @@ pub(crate) fn run_ops_evidence_verify(
         let tar_abs = repo_root.join(tar_rel);
         if !tar_abs.exists() {
             errors.push(format!("evidence tarball does not exist: {tar_rel}"));
-        } else if let Some(expected) = evidence_tarball.get("sha256").and_then(serde_json::Value::as_str) {
+        } else if let Some(expected) = evidence_tarball
+            .get("sha256")
+            .and_then(serde_json::Value::as_str)
+        {
             let actual = sha256_file(&tar_abs)?;
             if actual != expected {
                 errors.push("evidence tarball checksum does not match manifest".to_string());
@@ -1185,8 +1273,8 @@ pub(super) fn prior_release_revision(
     let (stdout, _) = process
         .run_subprocess("helm", &argv, repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let rows: serde_json::Value =
-        serde_json::from_str(&stdout).map_err(|err| format!("failed to parse helm history: {err}"))?;
+    let rows: serde_json::Value = serde_json::from_str(&stdout)
+        .map_err(|err| format!("failed to parse helm history: {err}"))?;
     let history = rows
         .as_array()
         .ok_or_else(|| "helm history payload must be an array".to_string())?;
@@ -1221,7 +1309,9 @@ pub(super) fn resolve_profile_values_file(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<std::path::PathBuf, String> {
-    let path = repo_root.join("ops/k8s/values").join(format!("{profile}.yaml"));
+    let path = repo_root
+        .join("ops/k8s/values")
+        .join(format!("{profile}.yaml"));
     if path.exists() {
         Ok(path)
     } else {
@@ -1311,11 +1401,7 @@ pub(super) fn extract_configmap_env_keys(
             Ok(value) => value,
             Err(_) => continue,
         };
-        if value
-            .get("kind")
-            .and_then(serde_yaml::Value::as_str)
-            != Some("ConfigMap")
-        {
+        if value.get("kind").and_then(serde_yaml::Value::as_str) != Some("ConfigMap") {
             continue;
         }
         let data = match value.get("data").and_then(serde_yaml::Value::as_mapping) {
@@ -1341,10 +1427,7 @@ pub(super) fn record_kubeconform_result(
     profile: &str,
 ) -> serde_json::Value {
     let render_path = install_render_path(repo_root, run_id.as_str(), profile);
-    let args = vec![
-        "-summary".to_string(),
-        render_path.display().to_string(),
-    ];
+    let args = vec!["-summary".to_string(), render_path.display().to_string()];
     match process.run_subprocess("kubeconform", &args, repo_root) {
         Ok((stdout, event)) => serde_json::json!({
             "status": "ok",
@@ -1467,19 +1550,20 @@ pub(super) struct HttpCheckResponse {
     pub(super) body: String,
 }
 
-pub(super) fn perform_http_request(local_port: u16, path: &str) -> Result<HttpCheckResponse, String> {
+pub(super) fn perform_http_request(
+    local_port: u16,
+    path: &str,
+) -> Result<HttpCheckResponse, String> {
     let started = Instant::now();
-    let mut stream =
-        TcpStream::connect(("127.0.0.1", local_port)).map_err(|err| format!("connect failed: {err}"))?;
+    let mut stream = TcpStream::connect(("127.0.0.1", local_port))
+        .map_err(|err| format!("connect failed: {err}"))?;
     stream
         .set_read_timeout(Some(Duration::from_secs(5)))
         .map_err(|err| format!("set read timeout failed: {err}"))?;
     stream
         .set_write_timeout(Some(Duration::from_secs(5)))
         .map_err(|err| format!("set write timeout failed: {err}"))?;
-    let request = format!(
-        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n"
-    );
+    let request = format!("GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n");
     stream
         .write_all(request.as_bytes())
         .map_err(|err| format!("write failed: {err}"))?;

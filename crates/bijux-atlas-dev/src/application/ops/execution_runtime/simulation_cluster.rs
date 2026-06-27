@@ -10,7 +10,10 @@ fn write_observe_contract_report(
     file_name: &str,
     payload: &serde_json::Value,
 ) -> Result<String, String> {
-    let out_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+    let out_dir = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("observe");
     std::fs::create_dir_all(&out_dir)
         .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
     let out_path = out_dir.join(file_name);
@@ -109,7 +112,8 @@ pub(crate) fn run_ops_observe_slo_verify(common: &OpsCommonArgs) -> Result<(Stri
         "slos_total": slos.len(),
         "errors": errors,
     });
-    let report_rel = write_observe_contract_report(&repo_root, &run_id, "slo-contract-report.json", &report)?;
+    let report_rel =
+        write_observe_contract_report(&repo_root, &run_id, "slo-contract-report.json", &report)?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": report["status"].clone(),
@@ -121,7 +125,9 @@ pub(crate) fn run_ops_observe_slo_verify(common: &OpsCommonArgs) -> Result<(Stri
     Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
 }
 
-pub(crate) fn run_ops_observe_alerts_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_observe_alerts_verify(
+    common: &OpsCommonArgs,
+) -> Result<(String, i32), String> {
     if !common.allow_write {
         return Err("observe alerts verify requires --allow-write".to_string());
     }
@@ -176,7 +182,9 @@ pub(crate) fn run_ops_observe_alerts_verify(common: &OpsCommonArgs) -> Result<(S
                 for required_label in ["severity", "subsystem", "alert_contract_version"] {
                     let key = serde_yaml::Value::String(required_label.to_string());
                     if !labels.contains_key(&key) {
-                        errors.push(format!("alert missing label `{required_label}` in {alerts_file}"));
+                        errors.push(format!(
+                            "alert missing label `{required_label}` in {alerts_file}"
+                        ));
                     }
                 }
                 let runbook = rule
@@ -185,14 +193,18 @@ pub(crate) fn run_ops_observe_alerts_verify(common: &OpsCommonArgs) -> Result<(S
                     .and_then(serde_yaml::Value::as_str)
                     .unwrap_or_default();
                 if runbook.is_empty() {
-                    errors.push(format!("alert missing annotations.runbook in {alerts_file}"));
+                    errors.push(format!(
+                        "alert missing annotations.runbook in {alerts_file}"
+                    ));
                 }
             }
         }
     }
     for alert in required {
         if !observed.contains(&alert) {
-            errors.push(format!("required alert missing from alert rules: `{alert}`"));
+            errors.push(format!(
+                "required alert missing from alert rules: `{alert}`"
+            ));
         }
     }
     let report = serde_json::json!({
@@ -211,10 +223,19 @@ pub(crate) fn run_ops_observe_alerts_verify(common: &OpsCommonArgs) -> Result<(S
         "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, if report["errors"].as_array().is_some_and(|v| v.is_empty()) { 0 } else { 1 }))
+    Ok((
+        rendered,
+        if report["errors"].as_array().is_some_and(|v| v.is_empty()) {
+            0
+        } else {
+            1
+        },
+    ))
 }
 
-pub(crate) fn run_ops_observe_runbooks_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_observe_runbooks_verify(
+    common: &OpsCommonArgs,
+) -> Result<(String, i32), String> {
     if !common.allow_write {
         return Err("observe runbooks verify requires --allow-write".to_string());
     }
@@ -263,7 +284,9 @@ pub(crate) fn run_ops_observe_runbooks_verify(common: &OpsCommonArgs) -> Result<
                 let content = std::fs::read_to_string(&runbook_path)
                     .map_err(|err| format!("failed to read {}: {err}", runbook_path.display()))?;
                 if !content.to_ascii_lowercase().contains("evidence") {
-                    errors.push(format!("runbook does not describe required evidence bundle: {runbook}"));
+                    errors.push(format!(
+                        "runbook does not describe required evidence bundle: {runbook}"
+                    ));
                 }
             }
         }
@@ -288,7 +311,14 @@ pub(crate) fn run_ops_observe_runbooks_verify(common: &OpsCommonArgs) -> Result<
         "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, if report["errors"].as_array().is_some_and(|v| v.is_empty()) { 0 } else { 1 }))
+    Ok((
+        rendered,
+        if report["errors"].as_array().is_some_and(|v| v.is_empty()) {
+            0
+        } else {
+            1
+        },
+    ))
 }
 
 pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(String, i32), String> {
@@ -297,16 +327,21 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let base = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+    let base = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("observe");
     let read_report = |name: &str| -> serde_json::Value {
         let path = base.join(name);
         std::fs::read_to_string(&path)
             .ok()
             .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
-            .unwrap_or_else(|| serde_json::json!({
-                "status":"missing",
-                "errors":[format!("missing report {}", path.display())]
-            }))
+            .unwrap_or_else(|| {
+                serde_json::json!({
+                    "status":"missing",
+                    "errors":[format!("missing report {}", path.display())]
+                })
+            })
     };
     let slo = read_report("slo-contract-report.json");
     let alerts = read_report("alerts-contract-report.json");
@@ -317,9 +352,17 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
         .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("ok"))
         .count();
     let total = checks.len();
-    let completeness = if total == 0 { 0.0 } else { passed as f64 / total as f64 };
+    let completeness = if total == 0 {
+        0.0
+    } else {
+        passed as f64 / total as f64
+    };
     let threshold = 1.0f64;
-    let status = if completeness >= threshold { "ok" } else { "failed" };
+    let status = if completeness >= threshold {
+        "ok"
+    } else {
+        "failed"
+    };
     let report = serde_json::json!({
         "schema_version": 1,
         "status": status,
@@ -338,7 +381,10 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
         &report,
     )?;
     let human_rel = {
-        let out_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("observe");
+        let out_dir = repo_root
+            .join("artifacts/ops")
+            .join(run_id.as_str())
+            .join("observe");
         std::fs::create_dir_all(&out_dir)
             .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
         let out_path = out_dir.join("operational-readiness-report.md");
@@ -430,15 +476,42 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
             .unwrap_or_default();
         let status = metrics.status == 200
             && missing.is_empty()
-            && checks.get("warmup_lock_metrics_present").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("error_registry_aligned").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("startup_log_fields_present").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("redaction_contract_passed").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("dashboard_contract_valid").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("slo_contract_valid").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("alert_rules_contract_valid").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("alert_rules_reference_known_metrics").and_then(serde_json::Value::as_bool) == Some(true)
-            && checks.get("label_policy_passed").and_then(serde_json::Value::as_bool) == Some(true);
+            && checks
+                .get("warmup_lock_metrics_present")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("error_registry_aligned")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("startup_log_fields_present")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("redaction_contract_passed")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("dashboard_contract_valid")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("slo_contract_valid")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("alert_rules_contract_valid")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("alert_rules_reference_known_metrics")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            && checks
+                .get("label_policy_passed")
+                .and_then(serde_json::Value::as_bool)
+                == Some(true);
         Ok(serde_json::json!({
             "schema_version": 1,
             "status": if status { "ok" } else { "failed" },
@@ -466,7 +539,8 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
     let _ = child.kill();
     let _ = child.wait();
     let payload = result?;
-    let report_path = write_simulation_report(&repo_root, &run_id, "ops-obs-verify.json", &payload)?;
+    let report_path =
+        write_simulation_report(&repo_root, &run_id, "ops-obs-verify.json", &payload)?;
     let status = payload["status"].as_str().unwrap_or("failed");
     let rendered = emit_payload(
         common.format,
@@ -486,9 +560,7 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
 }
 
-pub(crate) fn run_ops_drill(
-    args: &crate::cli::OpsDrillRunArgs,
-) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     if !common.allow_write {
         return Err("drills run requires --allow-write".to_string());
@@ -523,7 +595,12 @@ pub(crate) fn run_ops_drill(
     };
     let evidence_paths = drill_check_paths(&repo_root, &args.name)
         .into_iter()
-        .map(|(_, path)| path.strip_prefix(&repo_root).unwrap_or(&path).display().to_string())
+        .map(|(_, path)| {
+            path.strip_prefix(&repo_root)
+                .unwrap_or(&path)
+                .display()
+                .to_string()
+        })
         .collect::<Vec<_>>();
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -585,7 +662,10 @@ pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), S
         Err(err) => {
             let stable = err.to_stable_message();
             if stable.contains("already exists") {
-                ("ok", serde_json::json!({"detail": "cluster already exists"}))
+                (
+                    "ok",
+                    serde_json::json!({"detail": "cluster already exists"}),
+                )
             } else {
                 ("failed", serde_json::json!({"error": stable}))
             }
@@ -640,7 +720,10 @@ pub(crate) fn run_ops_kind_down(common: &OpsCommonArgs) -> Result<(String, i32),
     let result = process.run_subprocess("kind", &args, &repo_root);
     let (status, detail) = match result {
         Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
-        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+        Err(err) => (
+            "failed",
+            serde_json::json!({"error": err.to_stable_message()}),
+        ),
     };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -714,7 +797,10 @@ pub(crate) fn run_ops_kind_status(common: &OpsCommonArgs) -> Result<(String, i32
                 .collect::<Vec<_>>();
             ("ok", serde_json::json!({"event": event, "nodes": rows}))
         }
-        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+        Err(err) => (
+            "failed",
+            serde_json::json!({"error": err.to_stable_message()}),
+        ),
     };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -764,7 +850,10 @@ pub(crate) fn run_ops_kind_preload(
     let result = process.run_subprocess("kind", &argv, &repo_root);
     let (status, details) = match result {
         Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
-        Err(err) => ("failed", serde_json::json!({"error": err.to_stable_message()})),
+        Err(err) => (
+            "failed",
+            serde_json::json!({"error": err.to_stable_message()}),
+        ),
     };
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -814,10 +903,7 @@ pub(crate) fn run_ops_helm_install(
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let values_file = resolve_profile_values_file(&repo_root, &profile)?;
     let chart_path = resolve_chart_source(&repo_root, args.chart_source)?;
@@ -835,8 +921,12 @@ pub(crate) fn run_ops_helm_install(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) =
-        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
+    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
+        &process,
+        &repo_root,
+        &namespace,
+        args.release.timeout_seconds,
+    );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -955,10 +1045,7 @@ pub(crate) fn run_ops_helm_uninstall(
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.namespace.as_deref());
     let helm_args = vec![
         "uninstall".to_string(),
@@ -1014,8 +1101,7 @@ pub(crate) fn run_ops_helm_uninstall(
             }
         }
     });
-    let report_path =
-        write_simulation_report(&repo_root, &run_id, "ops-uninstall.json", &payload)?;
+    let report_path = write_simulation_report(&repo_root, &run_id, "ops-uninstall.json", &payload)?;
     let summary_path = update_simulation_summary(
         &repo_root,
         &run_id,

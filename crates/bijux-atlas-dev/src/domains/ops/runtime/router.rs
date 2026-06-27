@@ -14,7 +14,7 @@ pub fn command_registry() -> Vec<OpsRuntimeRoute> {
         },
         OpsRuntimeRoute {
             command_name: "ops.execution",
-            entrypoint: "crate::application/ops/execution_runtime.rs",
+            entrypoint: "crate::application/ops/execution_runtime/mod.rs",
         },
         OpsRuntimeRoute {
             command_name: "ops.support",

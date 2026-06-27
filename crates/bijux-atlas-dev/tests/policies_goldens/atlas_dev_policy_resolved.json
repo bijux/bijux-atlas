@@ -35,7 +35,7 @@
       "crates/bijux-atlas-runtime/src/lib.rs",
       "crates/bijux-atlas-dev/src/main.rs",
       "crates/bijux-atlas-dev/src/application/ops/runtime.rs",
-      "crates/bijux-atlas-dev/src/application/ops/execution_runtime.rs"
+      "crates/bijux-atlas-dev/src/application/ops/execution_runtime/mod.rs"
     ],
     "max_depth_hard": 7,
     "max_loc_hard": 11000,

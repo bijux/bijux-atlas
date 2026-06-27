@@ -43,7 +43,9 @@ fn collect_scenario_files(repo_root: &std::path::Path, scenario: Option<&str>) -
     rows
 }
 
-pub(crate) fn run_ops_diagnose_bundle(args: &crate::cli::OpsDiagnoseBundleArgs) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_diagnose_bundle(
+    args: &crate::cli::OpsDiagnoseBundleArgs,
+) -> Result<(String, i32), String> {
     if !args.common.allow_write {
         return Err("diagnose bundle requires --allow-write".to_string());
     }
@@ -83,7 +85,9 @@ pub(crate) fn run_ops_diagnose_bundle(args: &crate::cli::OpsDiagnoseBundleArgs) 
     Ok((rendered, 0))
 }
 
-pub(crate) fn run_ops_diagnose_explain(args: &crate::cli::OpsDiagnoseExplainArgs) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_diagnose_explain(
+    args: &crate::cli::OpsDiagnoseExplainArgs,
+) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let bundle_path = if args.bundle.is_absolute() {
         args.bundle.clone()
@@ -115,7 +119,9 @@ pub(crate) fn run_ops_diagnose_explain(args: &crate::cli::OpsDiagnoseExplainArgs
     Ok((rendered, 0))
 }
 
-pub(crate) fn run_ops_diagnose_redact(args: &crate::cli::OpsDiagnoseRedactArgs) -> Result<(String, i32), String> {
+pub(crate) fn run_ops_diagnose_redact(
+    args: &crate::cli::OpsDiagnoseRedactArgs,
+) -> Result<(String, i32), String> {
     if !args.common.allow_write {
         return Err("diagnose redact requires --allow-write".to_string());
     }
@@ -139,7 +145,10 @@ pub(crate) fn run_ops_diagnose_redact(args: &crate::cli::OpsDiagnoseRedactArgs) 
                 redacted.push(key.to_string());
             }
         }
-        object.insert("redaction_policy".to_string(), serde_json::json!(redact_keys));
+        object.insert(
+            "redaction_policy".to_string(),
+            serde_json::json!(redact_keys),
+        );
         object.insert("redaction_applied".to_string(), serde_json::json!(true));
     }
 

@@ -23,10 +23,7 @@ pub(crate) fn run_ops_helm_upgrade(
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let values_file = resolve_profile_values_file(&repo_root, &profile)?;
     let chart_path = match args.to {
@@ -53,8 +50,12 @@ pub(crate) fn run_ops_helm_upgrade(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) =
-        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
+    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
+        &process,
+        &repo_root,
+        &namespace,
+        args.release.timeout_seconds,
+    );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -80,7 +81,10 @@ pub(crate) fn run_ops_helm_upgrade(
     let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
     let readiness_threshold_percent = 125u64;
     let regression_ok = baseline_elapsed_ms
-        .map(|baseline| wait_ms.saturating_mul(100) <= baseline.saturating_mul(u128::from(readiness_threshold_percent)))
+        .map(|baseline| {
+            wait_ms.saturating_mul(100)
+                <= baseline.saturating_mul(u128::from(readiness_threshold_percent))
+        })
         .unwrap_or(true);
     let errors = wait_errors
         .iter()
@@ -220,10 +224,7 @@ pub(crate) fn run_ops_helm_rollback(
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
     let before_revision = deployment_revision(&process, &repo_root, &namespace);
@@ -238,8 +239,12 @@ pub(crate) fn run_ops_helm_rollback(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) =
-        run_simulation_wait(&process, &repo_root, &namespace, args.release.timeout_seconds);
+    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
+        &process,
+        &repo_root,
+        &namespace,
+        args.release.timeout_seconds,
+    );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -265,7 +270,10 @@ pub(crate) fn run_ops_helm_rollback(
     let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
     let readiness_threshold_percent = 125u64;
     let regression_ok = baseline_elapsed_ms
-        .map(|baseline| wait_ms.saturating_mul(100) <= baseline.saturating_mul(u128::from(readiness_threshold_percent)))
+        .map(|baseline| {
+            wait_ms.saturating_mul(100)
+                <= baseline.saturating_mul(u128::from(readiness_threshold_percent))
+        })
         .unwrap_or(true);
     let errors = wait_errors
         .iter()
@@ -396,10 +404,7 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.namespace.as_deref());
     let checks = run_smoke_checks(&repo_root, &namespace, args.local_port)?;
     let errors = checks
@@ -459,10 +464,7 @@ fn run_collect_command(
     let process = OpsProcess::new(true);
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let profile = common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
+    let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.namespace.as_deref());
     let (stdout, event) = process
         .run_subprocess("kubectl", &argv, &repo_root)
@@ -704,7 +706,10 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
             )
             .to_stable_message());
         }
-        let evidence_rel = format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str());
+        let evidence_rel = format!(
+            "artifacts/ops/evidence/{}/install-evidence.json",
+            run_id.as_str()
+        );
         let evidence_path = repo_root.join(&evidence_rel);
         if let Some(parent) = evidence_path.parent() {
             fs::create_dir_all(parent).map_err(|err| {
@@ -729,8 +734,11 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
             serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
         )
         .map_err(|err| {
-            OpsCommandError::Manifest(format!("failed to write {}: {err}", evidence_path.display()))
-                .to_stable_message()
+            OpsCommandError::Manifest(format!(
+                "failed to write {}: {err}",
+                evidence_path.display()
+            ))
+            .to_stable_message()
         })?;
     }
     let text = if args.plan {

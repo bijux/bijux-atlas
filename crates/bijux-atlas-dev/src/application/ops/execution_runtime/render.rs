@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
+use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::*;
 use serde_json::Value;
 use std::io::Write;
@@ -78,7 +78,8 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
         }
     };
 
-    let mut validation_errors = validate_render_output(&rendered_manifest, args.target, &profile.name);
+    let mut validation_errors =
+        validate_render_output(&rendered_manifest, args.target, &profile.name);
     let mut kubeconform_result = None;
     if matches!(args.target, OpsRenderTarget::Helm) {
         validation_errors.extend(validate_helm_dependencies(&ops_root));
@@ -256,7 +257,10 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             )
             .to_stable_message());
         }
-        let evidence_rel = format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str());
+        let evidence_rel = format!(
+            "artifacts/ops/evidence/{}/render-evidence.json",
+            run_id.as_str()
+        );
         let evidence_path = repo_root.join(&evidence_rel);
         if let Some(parent) = evidence_path.parent() {
             fs::create_dir_all(parent).map_err(|err| {
@@ -280,8 +284,11 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
         )
         .map_err(|err| {
-            OpsCommandError::Manifest(format!("failed to write {}: {err}", evidence_path.display()))
-                .to_stable_message()
+            OpsCommandError::Manifest(format!(
+                "failed to write {}: {err}",
+                evidence_path.display()
+            ))
+            .to_stable_message()
         })?;
     }
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
@@ -289,7 +296,11 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
     Ok((rendered, exit))
 }
 
-fn validate_render_output(rendered: &str, target: OpsRenderTarget, profile_name: &str) -> Vec<String> {
+fn validate_render_output(
+    rendered: &str,
+    target: OpsRenderTarget,
+    profile_name: &str,
+) -> Vec<String> {
     let mut errors = Vec::new();
     let required_kinds = match target {
         OpsRenderTarget::Helm => ["Deployment", "Service"].to_vec(),
@@ -576,7 +587,10 @@ mod render_tests {
     fn rendered_image_reference_accepts_digest_form() {
         let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111";
         let errors = scan_unpinned_images(rendered, "prod");
-        assert!(errors.is_empty(), "expected digest pinned image, got {errors:?}");
+        assert!(
+            errors.is_empty(),
+            "expected digest pinned image, got {errors:?}"
+        );
     }
 
     #[test]
@@ -590,7 +604,9 @@ mod render_tests {
         "#;
         let errors = scan_alert_annotation_contract(rendered);
         assert!(
-            errors.iter().any(|e| e.contains("missing required label `owner`")),
+            errors
+                .iter()
+                .any(|e| e.contains("missing required label `owner`")),
             "expected owner contract violation, got {errors:?}"
         );
     }

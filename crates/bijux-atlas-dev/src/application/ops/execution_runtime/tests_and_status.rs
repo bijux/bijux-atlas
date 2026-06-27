@@ -47,10 +47,7 @@ metadata:
         assert!(payload["forbidden_objects"]
             .as_array()
             .is_some_and(|rows| rows.is_empty()));
-        assert_eq!(
-            payload["resource_kinds"]["Deployment"].as_u64(),
-            Some(1)
-        );
+        assert_eq!(payload["resource_kinds"]["Deployment"].as_u64(), Some(1));
     }
 
     #[test]
@@ -72,8 +69,12 @@ spec:
         let forbidden = payload["forbidden_objects"]
             .as_array()
             .unwrap_or_else(|| panic!("forbidden"));
-        assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("ClusterRole"))));
-        assert!(forbidden.iter().any(|row| row.as_str().is_some_and(|value| value.contains("NodePort"))));
+        assert!(forbidden.iter().any(|row| row
+            .as_str()
+            .is_some_and(|value| value.contains("ClusterRole"))));
+        assert!(forbidden
+            .iter()
+            .any(|row| row.as_str().is_some_and(|value| value.contains("NodePort"))));
         assert_eq!(payload["has_rbac"].as_bool(), Some(true));
         assert_eq!(payload["namespace_isolated"].as_bool(), Some(true));
     }
@@ -118,7 +119,9 @@ spec:
     #[test]
     fn contains_common_secret_pattern_detects_unredacted_markers() {
         assert!(contains_common_secret_pattern("api_key=abc"));
-        assert!(contains_common_secret_pattern("authorization: bearer secret"));
+        assert!(contains_common_secret_pattern(
+            "authorization: bearer secret"
+        ));
         assert!(!contains_common_secret_pattern("api_key=[REDACTED]"));
     }
 }

@@ -23,7 +23,8 @@ pub(super) fn build_lifecycle_evidence_bundle(
             let entries = std::fs::read_dir(&path)
                 .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
             for entry in entries {
-                let entry = entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
+                let entry =
+                    entry.map_err(|err| format!("failed to read directory entry: {err}"))?;
                 let entry_path = entry.path();
                 if entry_path.is_dir() {
                     stack.push(entry_path);
@@ -61,7 +62,11 @@ pub(super) fn build_lifecycle_evidence_bundle(
         ])
         .output()
         .map_err(|err| format!("failed to execute tar for lifecycle evidence bundle: {err}"))?;
-    let status = if output.status.success() { "ok" } else { "failed" };
+    let status = if output.status.success() {
+        "ok"
+    } else {
+        "failed"
+    };
     Ok(serde_json::json!({
         "status": status,
         "tar_path": tar_path.display().to_string(),
@@ -80,8 +85,8 @@ pub(super) fn evidence_root(repo_root: &std::path::Path) -> Result<std::path::Pa
 }
 
 pub(super) fn sha256_file(path: &std::path::Path) -> Result<String, String> {
-    let bytes = std::fs::read(path)
-        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let bytes =
+        std::fs::read(path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
     use sha2::{Digest, Sha256};
     Ok(hex::encode(Sha256::digest(bytes)))
 }
@@ -116,7 +121,9 @@ pub(super) fn package_chart_for_evidence(
         .ok_or_else(|| format!("no chart package produced in {}", package_dir.display()))
 }
 
-pub(super) fn collect_image_artifacts(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn collect_image_artifacts(
+    repo_root: &std::path::Path,
+) -> Result<Vec<serde_json::Value>, String> {
     let values_root = repo_root.join("ops/k8s/values");
     let mut rows = std::fs::read_dir(&values_root)
         .map_err(|err| format!("failed to read {}: {err}", values_root.display()))?
@@ -174,7 +181,8 @@ pub(super) fn reset_directory(path: &std::path::Path) -> Result<(), String> {
         std::fs::remove_dir_all(path)
             .map_err(|err| format!("failed to clear {}: {err}", path.display()))?;
     }
-    std::fs::create_dir_all(path).map_err(|err| format!("failed to create {}: {err}", path.display()))
+    std::fs::create_dir_all(path)
+        .map_err(|err| format!("failed to create {}: {err}", path.display()))
 }
 
 pub(super) fn image_ref_for_evidence(row: &serde_json::Value) -> Option<String> {
@@ -261,7 +269,9 @@ pub(super) fn collect_sboms(
     Ok(rows)
 }
 
-pub(super) fn collect_scan_reports(repo_root: &std::path::Path) -> Result<Vec<serde_json::Value>, String> {
+pub(super) fn collect_scan_reports(
+    repo_root: &std::path::Path,
+) -> Result<Vec<serde_json::Value>, String> {
     let scan_dir = evidence_root(repo_root)?.join("scans");
     if !scan_dir.exists() {
         return Ok(Vec::new());
@@ -329,7 +339,9 @@ pub(super) fn contains_common_secret_pattern(text: &str) -> bool {
                 return true;
             }
         }
-        if upper.contains("AUTHORIZATION: BEARER ") && !upper.contains("AUTHORIZATION: BEARER [REDACTED]") {
+        if upper.contains("AUTHORIZATION: BEARER ")
+            && !upper.contains("AUTHORIZATION: BEARER [REDACTED]")
+        {
             return true;
         }
     }
@@ -365,8 +377,9 @@ pub(super) fn collect_redacted_logs(repo_root: &std::path::Path) -> Result<Vec<S
             }
             let output_name = relative.replace('/', "__");
             let output_path = redacted_root.join(output_name);
-            let source = std::fs::read_to_string(&entry_path)
-                .unwrap_or_else(|_| String::from_utf8_lossy(&std::fs::read(&entry_path).unwrap_or_default()).to_string());
+            let source = std::fs::read_to_string(&entry_path).unwrap_or_else(|_| {
+                String::from_utf8_lossy(&std::fs::read(&entry_path).unwrap_or_default()).to_string()
+            });
             let redacted = redact_sensitive_text(&source);
             std::fs::write(&output_path, redacted)
                 .map_err(|err| format!("failed to write {}: {err}", output_path.display()))?;
@@ -424,7 +437,9 @@ pub(super) fn render_evidence_index_html(
     }))
 }
 
-pub(super) fn collect_observability_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_observability_assets(
+    repo_root: &std::path::Path,
+) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for rel in [
         "configs/schemas/contracts/observability/log.schema.json",
@@ -517,8 +532,11 @@ pub(super) fn collect_dataset_assets(repo_root: &std::path::Path) -> Result<Vec<
     Ok(paths)
 }
 
-pub(super) fn load_required_metric_names(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
-    let contract_path = repo_root.join("configs/schemas/contracts/observability/metrics.schema.json");
+pub(super) fn load_required_metric_names(
+    repo_root: &std::path::Path,
+) -> Result<Vec<String>, String> {
+    let contract_path =
+        repo_root.join("configs/schemas/contracts/observability/metrics.schema.json");
     let contract: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(&contract_path)
             .map_err(|err| format!("failed to read {}: {err}", contract_path.display()))?,
@@ -537,7 +555,9 @@ pub(super) fn load_required_metric_names(repo_root: &std::path::Path) -> Result<
     Ok(rows)
 }
 
-pub(super) fn collect_governance_assets(repo_root: &std::path::Path) -> Result<Vec<String>, String> {
+pub(super) fn collect_governance_assets(
+    repo_root: &std::path::Path,
+) -> Result<Vec<String>, String> {
     let paths = [
         "configs/sources/governance/governance/exceptions.yaml",
         "configs/sources/governance/governance/exceptions-archive.yaml",
@@ -608,9 +628,10 @@ pub(super) fn observability_contract_checks(
         repo_root.join("configs/sources/operations/observability/error-codes.json"),
     )
     .map_err(|err| format!("failed to read error registry: {err}"))?;
-    let openapi =
-        std::fs::read_to_string(repo_root.join("configs/generated/openapi/v1/openapi.snapshot.json"))
-        .map_err(|err| format!("failed to read openapi: {err}"))?;
+    let openapi = std::fs::read_to_string(
+        repo_root.join("configs/generated/openapi/v1/openapi.snapshot.json"),
+    )
+    .map_err(|err| format!("failed to read openapi: {err}"))?;
     let error_registry_aligned = error_registry.contains("NotReady")
         && error_registry.contains("RateLimited")
         && response_contract.contains("ApiErrorCode::NotReady")
@@ -626,8 +647,9 @@ pub(super) fn observability_contract_checks(
         && main_rs.contains("governance_version = %governance_version");
 
     let redacted = redact_sensitive_text("TOKEN=secret-value\nAuthorization: Bearer abc123\n");
-    let redaction_contract_passed =
-        !contains_common_secret_pattern(&redacted) && !redacted.contains("secret-value") && !redacted.contains("abc123");
+    let redaction_contract_passed = !contains_common_secret_pattern(&redacted)
+        && !redacted.contains("secret-value")
+        && !redacted.contains("abc123");
 
     let dashboard_schema: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(repo_root.join("ops/schema/observe/dashboard.schema.json"))
@@ -635,16 +657,18 @@ pub(super) fn observability_contract_checks(
     )
     .map_err(|err| format!("failed to parse dashboard schema: {err}"))?;
     let dashboard_contract: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/observe/contracts/dashboard-panels-contract.json"))
-            .map_err(|err| format!("failed to read dashboard contract: {err}"))?,
+        &std::fs::read_to_string(
+            repo_root.join("ops/observe/contracts/dashboard-panels-contract.json"),
+        )
+        .map_err(|err| format!("failed to read dashboard contract: {err}"))?,
     )
     .map_err(|err| format!("failed to parse dashboard contract: {err}"))?;
     let dashboard_text = std::fs::read_to_string(
         repo_root.join("ops/observe/dashboards/atlas-observability-dashboard.json"),
     )
     .map_err(|err| format!("failed to read dashboard: {err}"))?;
-    let dashboard: serde_json::Value =
-        serde_json::from_str(&dashboard_text).map_err(|err| format!("failed to parse dashboard: {err}"))?;
+    let dashboard: serde_json::Value = serde_json::from_str(&dashboard_text)
+        .map_err(|err| format!("failed to parse dashboard: {err}"))?;
     let panel_titles = dashboard
         .get("panels")
         .and_then(serde_json::Value::as_array)
@@ -666,11 +690,22 @@ pub(super) fn observability_contract_checks(
         .flatten()
         .filter_map(serde_json::Value::as_str)
         .collect::<Vec<_>>();
-    let dashboard_contract_valid = dashboard_schema.get("type") == Some(&serde_json::Value::String("object".to_string()))
-        && dashboard.get("uid").and_then(serde_json::Value::as_str).is_some()
-        && dashboard.get("schemaVersion").and_then(serde_json::Value::as_i64).is_some()
-        && !required_panels.iter().any(|name| !panel_titles.contains(name))
-        && !required_rows.iter().any(|name| !panel_titles.contains(name));
+    let dashboard_contract_valid = dashboard_schema.get("type")
+        == Some(&serde_json::Value::String("object".to_string()))
+        && dashboard
+            .get("uid")
+            .and_then(serde_json::Value::as_str)
+            .is_some()
+        && dashboard
+            .get("schemaVersion")
+            .and_then(serde_json::Value::as_i64)
+            .is_some()
+        && !required_panels
+            .iter()
+            .any(|name| !panel_titles.contains(name))
+        && !required_rows
+            .iter()
+            .any(|name| !panel_titles.contains(name));
 
     let slo_path = repo_root.join("ops/observe/slo-definitions.json");
     let slo_schema_path = repo_root.join("ops/schema/observe/slo-definitions.schema.json");
@@ -684,8 +719,12 @@ pub(super) fn observability_contract_checks(
             .map_err(|err| format!("failed to read {}: {err}", slo_schema_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", slo_schema_path.display()))?;
-    let slo_contract_valid = slo["schema_version"] == slo_schema["properties"]["schema_version"]["const"]
-        && slo.get("slos").and_then(serde_json::Value::as_array).is_some_and(|rows| !rows.is_empty());
+    let slo_contract_valid = slo["schema_version"]
+        == slo_schema["properties"]["schema_version"]["const"]
+        && slo
+            .get("slos")
+            .and_then(serde_json::Value::as_array)
+            .is_some_and(|rows| !rows.is_empty());
 
     let alert_schema: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(repo_root.join("ops/schema/observe/prometheus-rule.schema.json"))
@@ -727,7 +766,10 @@ pub(super) fn observability_contract_checks(
         .flatten()
         .filter_map(serde_json::Value::as_str)
         .collect::<Vec<_>>();
-    if !metric_required_labels.iter().all(|label| metrics_body.contains(&format!("{label}=\""))) {
+    if !metric_required_labels
+        .iter()
+        .all(|label| metrics_body.contains(&format!("{label}=\"")))
+    {
         label_policy_passed = false;
     }
     let required_alerts = alert_contract
@@ -760,9 +802,7 @@ pub(super) fn observability_contract_checks(
                 }
             }
             if let Some(expr) = rule.get("expr").and_then(serde_yaml::Value::as_str) {
-                let known_metric = required_metric_names
-                    .iter()
-                    .any(|name| expr.contains(name))
+                let known_metric = required_metric_names.iter().any(|name| expr.contains(name))
                     || [
                         "atlas_overload_active",
                         "bijux_store_download_failure_total",
@@ -787,12 +827,12 @@ pub(super) fn observability_contract_checks(
         .and_then(|row| row.get("kind"))
         .and_then(|row| row.get("const"))
         == Some(&serde_json::Value::String("PrometheusRule".to_string()))
-        && alert_rules
-            .get("kind")
-            .and_then(serde_yaml::Value::as_str)
-            == Some("PrometheusRule")
+        && alert_rules.get("kind").and_then(serde_yaml::Value::as_str) == Some("PrometheusRule")
         && !groups.is_empty();
-    if required_alerts.iter().any(|name| !observed_alerts.contains(*name)) {
+    if required_alerts
+        .iter()
+        .any(|name| !observed_alerts.contains(*name))
+    {
         return Ok(serde_json::json!({
             "required_metrics_present": required_metrics_present,
             "missing_metrics": missing_metrics,
@@ -823,11 +863,17 @@ pub(super) fn observability_contract_checks(
     }))
 }
 
-pub(super) fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) -> Result<Vec<String>, String> {
+pub(super) fn collect_report_paths(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+) -> Result<Vec<String>, String> {
     let mut paths = Vec::new();
     for dir in [
         repo_root.join("ops/report/generated"),
-        repo_root.join("artifacts/ops").join(run_id.as_str()).join("reports"),
+        repo_root
+            .join("artifacts/ops")
+            .join(run_id.as_str())
+            .join("reports"),
     ] {
         if !dir.exists() {
             continue;
@@ -840,7 +886,12 @@ pub(super) fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) 
             if path.extension().and_then(|v| v.to_str()) != Some("json") {
                 continue;
             }
-            paths.push(path.strip_prefix(repo_root).unwrap_or(&path).display().to_string());
+            paths.push(
+                path.strip_prefix(repo_root)
+                    .unwrap_or(&path)
+                    .display()
+                    .to_string(),
+            );
         }
     }
     paths.sort();
@@ -848,30 +899,50 @@ pub(super) fn collect_report_paths(repo_root: &std::path::Path, run_id: &RunId) 
     Ok(paths)
 }
 
-pub(super) fn collect_simulation_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
-    let reports_dir = repo_root.join("artifacts/ops").join(run_id.as_str()).join("reports");
+pub(super) fn collect_simulation_summary_paths(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+) -> Vec<String> {
+    let reports_dir = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join("reports");
     ["ops-simulation-summary.json", "ops-lifecycle-summary.json"]
         .into_iter()
         .map(|name| reports_dir.join(name))
         .filter(|path| path.exists())
-        .map(|path| path.strip_prefix(repo_root).unwrap_or(&path).display().to_string())
+        .map(|path| {
+            path.strip_prefix(repo_root)
+                .unwrap_or(&path)
+                .display()
+                .to_string()
+        })
         .collect::<Vec<_>>()
 }
 
-pub(super) fn collect_drill_summary_paths(repo_root: &std::path::Path, run_id: &RunId) -> Vec<String> {
+pub(super) fn collect_drill_summary_paths(
+    repo_root: &std::path::Path,
+    run_id: &RunId,
+) -> Vec<String> {
     let path = repo_root
         .join("artifacts/ops")
         .join(run_id.as_str())
         .join("reports")
         .join("ops-drills-summary.json");
     if path.exists() {
-        vec![path.strip_prefix(repo_root).unwrap_or(&path).display().to_string()]
+        vec![path
+            .strip_prefix(repo_root)
+            .unwrap_or(&path)
+            .display()
+            .to_string()]
     } else {
         Vec::new()
     }
 }
 
-pub(super) fn collect_docs_site_summary(repo_root: &std::path::Path) -> Result<serde_json::Value, String> {
+pub(super) fn collect_docs_site_summary(
+    repo_root: &std::path::Path,
+) -> Result<serde_json::Value, String> {
     let site_dir = repo_root.join("artifacts/docs/site");
     let mut file_count = 0usize;
     let mut stack = if site_dir.exists() {
@@ -917,7 +988,10 @@ pub(super) fn collect_supply_chain_inventory(
     for relative in paths {
         let path = repo_root.join(relative);
         if !path.exists() {
-            return Err(format!("missing supply-chain inventory file {}", path.display()));
+            return Err(format!(
+                "missing supply-chain inventory file {}",
+                path.display()
+            ));
         }
         rows.push(serde_json::json!({
             "path": relative,
@@ -1041,21 +1115,34 @@ pub(super) fn build_release_evidence_tarball(
     files.extend(collect_perf_assets(repo_root)?);
     files.extend(collect_dataset_assets(repo_root)?);
     files.extend(collect_governance_assets(repo_root)?);
-    if repo_root.join("artifacts/security/security-github-actions.json").exists() {
+    if repo_root
+        .join("artifacts/security/security-github-actions.json")
+        .exists()
+    {
         files.push("artifacts/security/security-github-actions.json".to_string());
     }
-    if repo_root.join("artifacts/security/audit-verify.json").exists() {
+    if repo_root
+        .join("artifacts/security/audit-verify.json")
+        .exists()
+    {
         files.push("artifacts/security/audit-verify.json".to_string());
     }
-    if repo_root.join("artifacts/security/audit-smoke.jsonl").exists() {
+    if repo_root
+        .join("artifacts/security/audit-smoke.jsonl")
+        .exists()
+    {
         files.push("artifacts/security/audit-smoke.jsonl".to_string());
     }
-    if repo_root.join("artifacts/security/log-field-inventory.json").exists() {
+    if repo_root
+        .join("artifacts/security/log-field-inventory.json")
+        .exists()
+    {
         files.push("artifacts/security/log-field-inventory.json".to_string());
     }
     files.push("configs/sources/security/auth-model.yaml".to_string());
     files.push("configs/sources/security/policy.yaml".to_string());
-    files.push("configs/sources/operations/observability/schemas/audit-log.schema.json".to_string());
+    files
+        .push("configs/sources/operations/observability/schemas/audit-log.schema.json".to_string());
     files.push("configs/sources/operations/observability/retention.yaml".to_string());
     files.push(".github/dependabot.yml".to_string());
     files.push("configs/sources/repository/docs/package-lock.json".to_string());
@@ -1160,8 +1247,12 @@ print(json.dumps(rows, sort_keys=True))
             }
         ));
     }
-    serde_json::from_slice(&output.stdout)
-        .map_err(|err| format!("failed to parse {} member checksums: {err}", tarball.display()))
+    serde_json::from_slice(&output.stdout).map_err(|err| {
+        format!(
+            "failed to parse {} member checksums: {err}",
+            tarball.display()
+        )
+    })
 }
 
 #[cfg(test)]
