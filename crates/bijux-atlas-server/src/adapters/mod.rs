@@ -3,5 +3,5 @@
 pub mod inbound;
 
 pub mod outbound {
-    pub use bijux_atlas_runtime::adapters::outbound::*;
+    pub use bijux_atlas_runtime::adapters::outbound::{fs, redis, sqlite, store, telemetry};
 }
