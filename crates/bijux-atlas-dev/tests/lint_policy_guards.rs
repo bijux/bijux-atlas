@@ -53,8 +53,8 @@ fn no_unwrap_or_expect_in_non_test_dev_atlas_sources() {
         "crates/bijux-atlas-dev/src/core/logging.rs",
         "crates/bijux-atlas-dev/src/core/ops_inventory/summary_and_fs_scan.rs",
         "crates/bijux-atlas-dev/src/model/mod.rs",
-        "crates/bijux-atlas-dev/src/application/ops/support/manifests.rs",
-        "crates/bijux-atlas-dev/src/application/ops/support/tools.rs",
+        "crates/bijux-atlas-dev/src/application/ops/manifests.rs",
+        "crates/bijux-atlas-dev/src/application/ops/tools.rs",
         "crates/bijux-atlas-dev/src/application/system.rs",
         "crates/bijux-atlas-dev/src/schema_support.rs",
     ]
