@@ -218,9 +218,71 @@ pub fn update_simulation_summary(
     Ok(summary_path)
 }
 
+pub fn load_drill_registry(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
+    let path = repo_root.join("ops/observe/drills.json");
+    let payload: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    Ok(payload
+        .get("drills")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .unwrap_or_default())
+}
+
+pub fn update_drill_summary(
+    repo_root: &Path,
+    run_id: &str,
+    drill: &str,
+    report_path: &Path,
+    status: &str,
+) -> Result<PathBuf, String> {
+    let summary_path = simulation_report_path(repo_root, run_id, "ops-drills-summary.json")?;
+    let mut payload = if summary_path.exists() {
+        serde_json::from_str::<serde_json::Value>(
+            &std::fs::read_to_string(&summary_path)
+                .map_err(|err| format!("failed to read {}: {err}", summary_path.display()))?,
+        )
+        .map_err(|err| format!("failed to parse {}: {err}", summary_path.display()))?
+    } else {
+        serde_json::json!({
+            "schema_version": 1,
+            "drills": []
+        })
+    };
+    if !payload["drills"].is_array() {
+        payload["drills"] = serde_json::json!([]);
+    }
+    let rows = payload["drills"]
+        .as_array_mut()
+        .ok_or_else(|| "drill summary rows must be an array".to_string())?;
+    rows.retain(|row| row.get("name").and_then(serde_json::Value::as_str) != Some(drill));
+    rows.push(serde_json::json!({
+        "name": drill,
+        "status": status,
+        "report_path": report_path.strip_prefix(repo_root).unwrap_or(report_path).display().to_string()
+    }));
+    rows.sort_by(|left, right| {
+        left.get("name")
+            .and_then(serde_json::Value::as_str)
+            .cmp(&right.get("name").and_then(serde_json::Value::as_str))
+    });
+    std::fs::write(
+        &summary_path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", summary_path.display()))?;
+    Ok(summary_path)
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{drill_check_paths, update_simulation_summary, SimulationSummaryUpdate};
+    use super::{
+        drill_check_paths, load_drill_registry, update_drill_summary, update_simulation_summary,
+        SimulationSummaryUpdate,
+    };
     use std::path::PathBuf;
 
     fn repo_root() -> PathBuf {
@@ -291,5 +353,48 @@ mod tests {
             .collect::<Vec<_>>();
 
         assert_eq!(profiles, vec!["alpha", "zeta"]);
+    }
+
+    #[test]
+    fn load_drill_registry_reads_catalog_entries() {
+        let root = repo_root();
+
+        let drills = load_drill_registry(&root).expect("load drill registry");
+
+        assert!(
+            drills
+                .iter()
+                .any(|row| row.get("name").and_then(serde_json::Value::as_str)
+                    == Some("catalog-unreachable")),
+            "expected catalog-unreachable drill entry"
+        );
+    }
+
+    #[test]
+    fn drill_summary_rows_remain_sorted_by_name() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let run_root = root.path().join("reports");
+        std::fs::create_dir_all(&run_root).expect("create report directory");
+        let zeta_report = run_root.join("zeta.json");
+        std::fs::write(&zeta_report, "{}").expect("write zeta report");
+        let alpha_report = run_root.join("alpha.json");
+        std::fs::write(&alpha_report, "{}").expect("write alpha report");
+
+        update_drill_summary(root.path(), "atlas-run", "zeta", &zeta_report, "pass")
+            .expect("write zeta drill summary");
+        let path = update_drill_summary(root.path(), "atlas-run", "alpha", &alpha_report, "pass")
+            .expect("write alpha drill summary");
+
+        let payload: serde_json::Value =
+            serde_json::from_str(&std::fs::read_to_string(&path).expect("read drill summary"))
+                .expect("parse drill summary");
+        let drills = payload["drills"]
+            .as_array()
+            .expect("drills array")
+            .iter()
+            .map(|row| row["name"].as_str().unwrap_or_default())
+            .collect::<Vec<_>>();
+
+        assert_eq!(drills, vec!["alpha", "zeta"]);
     }
 }
