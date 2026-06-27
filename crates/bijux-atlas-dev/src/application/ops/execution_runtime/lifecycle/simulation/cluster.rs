@@ -898,7 +898,18 @@ pub(crate) fn run_ops_helm_install(
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let values_file = resolve_profile_values_file(&repo_root, &profile)?;
-    let chart_path = resolve_chart_source(&repo_root, args.chart_source)?;
+    let chart_source = match args.chart_source {
+        crate::cli::OpsHelmChartSource::Current => {
+            bijux_atlas_ops::lifecycle::release_contracts::ReleaseChartSource::Current
+        }
+        crate::cli::OpsHelmChartSource::Previous => {
+            bijux_atlas_ops::lifecycle::release_contracts::ReleaseChartSource::Previous
+        }
+    };
+    let chart_path = bijux_atlas_ops::lifecycle::release_contracts::release_chart_source_path(
+        &repo_root,
+        chart_source,
+    )?;
     let helm_args = vec![
         "upgrade".to_string(),
         "--install".to_string(),

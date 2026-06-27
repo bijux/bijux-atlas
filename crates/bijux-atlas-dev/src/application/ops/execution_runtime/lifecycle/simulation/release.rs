@@ -45,7 +45,9 @@ pub(crate) fn run_ops_helm_upgrade(
         ));
     }
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
-    let before_revision = deployment_revision(&process, &repo_root, &namespace);
+    let before_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
+        &process, &repo_root, &namespace,
+    );
     let helm_args = vec![
         "upgrade".to_string(),
         "bijux-atlas".to_string(),
@@ -81,12 +83,26 @@ pub(crate) fn run_ops_helm_upgrade(
         })
         .collect::<Vec<_>>();
     let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
-    let after_revision = deployment_revision(&process, &repo_root, &namespace);
-    let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
-    let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
-    let rollout_history = rollout_history(&process, &repo_root, &namespace);
-    let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
-    let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
+    let after_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
+        &process, &repo_root, &namespace,
+    );
+    let diff_summary = bijux_atlas_ops::lifecycle::release_contracts::manifest_diff_summary(
+        &before_manifest,
+        &after_manifest,
+    );
+    let compatibility =
+        bijux_atlas_ops::lifecycle::release_contracts::lifecycle_compatibility_checks(
+            &before_manifest,
+            &after_manifest,
+        );
+    let rollout_history = bijux_atlas_ops::lifecycle::release_observation::rollout_history(
+        &process, &repo_root, &namespace,
+    );
+    let pods_restarted = bijux_atlas_ops::lifecycle::release_observation::pods_restart_count(
+        &process, &repo_root, &namespace,
+    );
+    let baseline_elapsed_ms =
+        bijux_atlas_ops::lifecycle::release_records::load_readiness_baseline(&repo_root, &profile)?;
     let readiness_threshold_percent = 125u64;
     let regression_ok = baseline_elapsed_ms
         .map(|baseline| {
@@ -180,22 +196,27 @@ pub(crate) fn run_ops_helm_upgrade(
         &payload,
     )?;
     let baseline_path = if errors.is_empty() {
-        Some(update_readiness_baseline(&repo_root, &profile, wait_ms)?)
+        Some(
+            bijux_atlas_ops::lifecycle::release_records::update_readiness_baseline(
+                &repo_root, &profile, wait_ms,
+            )?,
+        )
     } else {
         None
     };
-    let lifecycle_summary_path = update_lifecycle_summary(
-        &repo_root,
-        &run_id,
-        &profile,
-        &namespace,
-        LifecycleSummaryUpdate {
-            upgrade_report_path: Some(&report_path),
-            upgrade_status: Some(status),
-            rollback_report_path: None,
-            rollback_status: None,
-        },
-    )?;
+    let lifecycle_summary_path =
+        bijux_atlas_ops::lifecycle::release_records::update_lifecycle_summary(
+            &repo_root,
+            run_id.as_str(),
+            &profile,
+            &namespace,
+            bijux_atlas_ops::lifecycle::release_records::LifecycleSummaryUpdate {
+                upgrade_report_path: Some(&report_path),
+                upgrade_status: Some(status),
+                rollback_report_path: None,
+                rollback_status: None,
+            },
+        )?;
     let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, run_id.as_str())?;
     let envelope = serde_json::json!({
         "schema_version": 1,
@@ -244,7 +265,9 @@ pub(crate) fn run_ops_helm_rollback(
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
     let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
-    let before_revision = deployment_revision(&process, &repo_root, &namespace);
+    let before_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
+        &process, &repo_root, &namespace,
+    );
     let revision = prior_release_revision(&process, &repo_root, &namespace)?;
     let helm_args = vec![
         "rollback".to_string(),
@@ -279,12 +302,26 @@ pub(crate) fn run_ops_helm_rollback(
         })
         .collect::<Vec<_>>();
     let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
-    let after_revision = deployment_revision(&process, &repo_root, &namespace);
-    let diff_summary = manifest_diff_summary(&before_manifest, &after_manifest);
-    let compatibility = lifecycle_compatibility_checks(&before_manifest, &after_manifest);
-    let rollout_history = rollout_history(&process, &repo_root, &namespace);
-    let pods_restarted = pods_restart_count(&process, &repo_root, &namespace);
-    let baseline_elapsed_ms = load_readiness_baseline(&repo_root, &profile)?;
+    let after_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
+        &process, &repo_root, &namespace,
+    );
+    let diff_summary = bijux_atlas_ops::lifecycle::release_contracts::manifest_diff_summary(
+        &before_manifest,
+        &after_manifest,
+    );
+    let compatibility =
+        bijux_atlas_ops::lifecycle::release_contracts::lifecycle_compatibility_checks(
+            &before_manifest,
+            &after_manifest,
+        );
+    let rollout_history = bijux_atlas_ops::lifecycle::release_observation::rollout_history(
+        &process, &repo_root, &namespace,
+    );
+    let pods_restarted = bijux_atlas_ops::lifecycle::release_observation::pods_restart_count(
+        &process, &repo_root, &namespace,
+    );
+    let baseline_elapsed_ms =
+        bijux_atlas_ops::lifecycle::release_records::load_readiness_baseline(&repo_root, &profile)?;
     let readiness_threshold_percent = 125u64;
     let regression_ok = baseline_elapsed_ms
         .map(|baseline| {
@@ -373,20 +410,25 @@ pub(crate) fn run_ops_helm_rollback(
         "ops-rollback.json",
         &payload,
     )?;
-    let lifecycle_summary_path = update_lifecycle_summary(
-        &repo_root,
-        &run_id,
-        &profile,
-        &namespace,
-        LifecycleSummaryUpdate {
-            upgrade_report_path: None,
-            upgrade_status: None,
-            rollback_report_path: Some(&report_path),
-            rollback_status: Some(status),
-        },
-    )?;
+    let lifecycle_summary_path =
+        bijux_atlas_ops::lifecycle::release_records::update_lifecycle_summary(
+            &repo_root,
+            run_id.as_str(),
+            &profile,
+            &namespace,
+            bijux_atlas_ops::lifecycle::release_records::LifecycleSummaryUpdate {
+                upgrade_report_path: None,
+                upgrade_status: None,
+                rollback_report_path: Some(&report_path),
+                rollback_status: Some(status),
+            },
+        )?;
     let baseline_path = if errors.is_empty() {
-        Some(update_readiness_baseline(&repo_root, &profile, wait_ms)?)
+        Some(
+            bijux_atlas_ops::lifecycle::release_records::update_readiness_baseline(
+                &repo_root, &profile, wait_ms,
+            )?,
+        )
     } else {
         None
     };

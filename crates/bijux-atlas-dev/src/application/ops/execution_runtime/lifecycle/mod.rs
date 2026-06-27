@@ -2,15 +2,11 @@
 
 mod diagnose;
 mod evidence;
-mod release_contracts;
-mod release_records;
 mod simulation;
 mod status;
 
 pub(crate) use self::diagnose::*;
 pub(crate) use self::evidence::*;
-use self::release_contracts::*;
-use self::release_records::*;
 pub(crate) use self::simulation::*;
 pub(crate) use self::status::*;
 use bijux_atlas_ops::lifecycle::install_status::{
