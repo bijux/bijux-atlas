@@ -68,7 +68,7 @@ pub(super) fn render_helm_configmap_env_report(
     }
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
     let helm_binary =
-        bijux_atlas_dev::ops::helm_env::resolve_helm_binary_from_inventory(&repo_root)?;
+        bijux_atlas_ops::kubernetes::helm_env::resolve_helm_binary_from_inventory(&repo_root)?;
     let release_name = args.release_name.clone().unwrap_or_else(|| {
         args.chart
             .file_name()
@@ -76,13 +76,13 @@ pub(super) fn render_helm_configmap_env_report(
             .unwrap_or("bijux-atlas")
             .to_string()
     });
-    let render_result = bijux_atlas_dev::ops::helm_env::render_chart_with_options(
+    let render_result = bijux_atlas_ops::kubernetes::helm_env::render_chart_with_options(
         &repo_root,
         &helm_binary,
         &args.chart,
         &args.values_files,
         &release_name,
-        &bijux_atlas_dev::ops::helm_env::RenderChartOptions {
+        &bijux_atlas_ops::kubernetes::helm_env::RenderChartOptions {
             set_overrides: args.set_overrides.clone(),
             timeout_seconds: args.timeout_seconds,
             debug: args.verbose,
@@ -90,18 +90,18 @@ pub(super) fn render_helm_configmap_env_report(
     );
     let (config_maps, env_keys, helm_report, exit_code) = match render_result {
         Ok(rendered_chart) => {
-            let config_maps = bijux_atlas_dev::ops::helm_env::extract_configmap_rows(
+            let config_maps = bijux_atlas_ops::kubernetes::helm_env::extract_configmap_rows(
                 &rendered_chart.yaml_docs,
                 &release_name,
             );
-            let env_keys = bijux_atlas_dev::ops::helm_env::extract_configmap_env_keys(
+            let env_keys = bijux_atlas_ops::kubernetes::helm_env::extract_configmap_env_keys(
                 &rendered_chart.yaml_docs,
                 &release_name,
             );
             (
                 config_maps,
                 env_keys,
-                bijux_atlas_dev::ops::helm_env::HelmInvocationReport {
+                bijux_atlas_ops::kubernetes::helm_env::HelmInvocationReport {
                     status: "ok".to_string(),
                     debug_enabled: rendered_chart.debug_enabled,
                     timeout_seconds: rendered_chart.timeout_seconds,
@@ -113,7 +113,7 @@ pub(super) fn render_helm_configmap_env_report(
         Err(message) => (
             Vec::new(),
             std::collections::BTreeSet::new(),
-            bijux_atlas_dev::ops::helm_env::HelmInvocationReport {
+            bijux_atlas_ops::kubernetes::helm_env::HelmInvocationReport {
                 status: "error".to_string(),
                 debug_enabled: args.verbose,
                 timeout_seconds: args.timeout_seconds.max(1),
@@ -127,8 +127,8 @@ pub(super) fn render_helm_configmap_env_report(
             "no ATLAS_ or BIJUX_ ConfigMap data keys extracted for release `{release_name}`"
         ));
     }
-    let report = bijux_atlas_dev::ops::helm_env::build_report(
-        bijux_atlas_dev::ops::helm_env::build_inputs(
+    let report = bijux_atlas_ops::kubernetes::helm_env::build_report(
+        bijux_atlas_ops::kubernetes::helm_env::build_inputs(
             &args.chart,
             &args.values_files,
             &release_name,
@@ -141,7 +141,7 @@ pub(super) fn render_helm_configmap_env_report(
     );
     let payload = serde_json::to_value(&report).map_err(|err| err.to_string())?;
     let schema_path = repo_root.join("configs/schemas/contracts/reports/helm-env.schema.json");
-    bijux_atlas_dev::ops::helm_env::validate_report_value(&payload, &schema_path)?;
+    bijux_atlas_ops::kubernetes::helm_env::validate_report_value(&payload, &schema_path)?;
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, exit_code))
 }

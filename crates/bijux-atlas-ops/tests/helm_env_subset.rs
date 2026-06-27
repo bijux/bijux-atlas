@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
-use bijux_atlas_dev::ops::helm_env::{build_subset_report, HelmEnvInputs};
+use bijux_atlas_ops::kubernetes::helm_env::{build_subset_report, HelmEnvInputs};
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -39,7 +39,7 @@ fn mismatch_snapshot_matches_golden() {
     );
     assert_eq!(
         rendered,
-        read("crates/bijux-atlas-dev/tests/goldens/ops_helm_env_subset_fail.json")
+        read("crates/bijux-atlas-ops/tests/goldens/ops_helm_env_subset_fail.json")
     );
 }
 
@@ -54,6 +54,6 @@ fn success_snapshot_matches_golden() {
     );
     assert_eq!(
         rendered,
-        read("crates/bijux-atlas-dev/tests/goldens/ops_helm_env_subset_pass.json")
+        read("crates/bijux-atlas-ops/tests/goldens/ops_helm_env_subset_pass.json")
     );
 }

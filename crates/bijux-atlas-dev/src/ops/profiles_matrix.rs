@@ -8,7 +8,7 @@ use std::time::{Duration, Instant};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use crate::ops::helm_env;
+use bijux_atlas_ops::kubernetes::helm_env;
 
 #[path = "profiles_matrix/validation_support.rs"]
 mod validation_support;
