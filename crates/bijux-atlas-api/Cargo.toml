@@ -39,8 +39,8 @@ name = "api_contracts"
 path = "tests/api_contracts.rs"
 
 [[test]]
-name = "client"
-path = "tests/client.rs"
+name = "client_contracts"
+path = "tests/client_contracts.rs"
 
 [[test]]
 name = "http_contracts"
