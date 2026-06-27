@@ -236,7 +236,7 @@ dependencies = [
  "axum",
  "bijux-atlas-core",
  "bijux-atlas-model",
- "bijux-atlas-runtime",
+ "bijux-atlas-query",
  "bijux-atlas-server",
  "criterion",
  "hex",
