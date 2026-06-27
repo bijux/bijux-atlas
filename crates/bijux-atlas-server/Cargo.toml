@@ -1,0 +1,29 @@
+[package]
+name = "bijux-atlas-server"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Runtime server entrypoint for Atlas HTTP delivery and cache orchestration"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-server/latest/bijux_atlas_server/"
+readme = "README.md"
+categories = ["web-programming::http-server", "science::bioinformatics"]
+keywords = ["bioinformatics", "genomics", "atlas", "server", "http"]
+
+[features]
+default = []
+jemalloc = ["dep:tikv-jemallocator"]
+
+[dependencies]
+bijux-atlas.workspace = true
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[dependencies.tikv-jemallocator]
+version = "0.6"
+optional = true
+
+[[bin]]
+name = "bijux-atlas-server"
+path = "src/bin/bijux-atlas-server.rs"

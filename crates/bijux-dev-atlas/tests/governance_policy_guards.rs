@@ -361,8 +361,8 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
     let root = repo_root();
 
     for required in [
-        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-cli/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs",
         "crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs",
     ] {
         assert!(
@@ -372,6 +372,8 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
     }
 
     for forbidden in [
+        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
         "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
         "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
     ] {
@@ -386,8 +388,8 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
     )
     .expect("repo bin allowlist");
     for expected in [
-        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
-        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
+        "crates/bijux-atlas-cli/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs",
         "crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs",
     ] {
         assert!(
@@ -396,6 +398,8 @@ fn atlas_binary_ownership_matches_crate_boundaries() {
         );
     }
     for forbidden in [
+        "crates/bijux-atlas/src/bin/bijux-atlas.rs",
+        "crates/bijux-atlas/src/bin/bijux-atlas-server.rs",
         "crates/bijux-atlas/src/bin/bijux-atlas-openapi.rs",
         "crates/bijux-atlas/src/bin/bijux-atlas-client.rs",
     ] {

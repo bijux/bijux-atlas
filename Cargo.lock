@@ -297,6 +297,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "bijux-atlas-cli"
+version = "0.2.1"
+dependencies = [
+ "bijux-atlas",
+]
+
+[[package]]
 name = "bijux-atlas-core"
 version = "0.2.1"
 dependencies = [
@@ -355,6 +362,15 @@ dependencies = [
  "tempfile",
  "toml",
  "unicode-normalization",
+]
+
+[[package]]
+name = "bijux-atlas-server"
+version = "0.2.1"
+dependencies = [
+ "bijux-atlas",
+ "tikv-jemallocator",
+ "tokio",
 ]
 
 [[package]]

@@ -76,14 +76,6 @@ tempfile = "=3.27.0"
 tiny_http = "0.12"
 walkdir = "2"
 
-[[bin]]
-name = "bijux-atlas"
-path = "src/bin/bijux-atlas.rs"
-
-[[bin]]
-name = "bijux-atlas-server"
-path = "src/bin/bijux-atlas-server.rs"
-
 [[test]]
 name = "contracts_runtime_foundations"
 path = "tests/contracts_runtime_foundations.rs"
