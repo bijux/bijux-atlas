@@ -34,8 +34,8 @@ toml = "1.0"
 path = "src/lib.rs"
 
 [[test]]
-name = "workflows"
-path = "tests/workflows.rs"
+name = "ingest_workflows"
+path = "tests/ingest_workflows.rs"
 
 [[bench]]
 name = "ingest_db_size_growth"
