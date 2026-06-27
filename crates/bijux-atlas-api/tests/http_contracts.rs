@@ -2,11 +2,11 @@
 
 use std::sync::Arc;
 
-use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_server::adapters::inbound::build_server_router;
+use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas_runtime::domain::sha256_hex;
-use bijux_atlas_runtime::runtime::config::ApiConfig;
+use bijux_atlas_server::runtime::config::ApiConfig;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use hmac::{Hmac, Mac};
 use serde_json::Value;
@@ -50,7 +50,7 @@ async fn error_contract_and_etag_behaviors() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -271,7 +271,7 @@ async fn etag_stable_across_restart_for_same_artifact_and_request() {
             },
             store,
         );
-        let app = build_router(AppState::new(mgr));
+        let app = build_server_router(AppState::new(mgr));
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
             .await
             .expect("bind listener");
@@ -312,7 +312,7 @@ async fn etag_changes_when_artifact_hash_changes() {
             },
             store,
         );
-        let app = build_router(AppState::new(mgr));
+        let app = build_server_router(AppState::new(mgr));
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
             .await
             .expect("bind listener");
@@ -342,7 +342,7 @@ async fn etag_changes_when_filters_change() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -383,7 +383,7 @@ async fn etag_is_deterministic_for_identical_query_parameter_sets() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -441,7 +441,7 @@ async fn query_validate_endpoint_returns_classification() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -468,7 +468,7 @@ async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr.clone()));
+    let app = build_server_router(AppState::new(mgr.clone()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -486,7 +486,7 @@ async fn debug_echo_is_gated_and_echoes_query_when_enabled() {
         },
         Default::default(),
     );
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -509,7 +509,7 @@ async fn debug_routes_are_explicitly_no_store_and_noindex() {
     };
     let mgr = DatasetCacheManager::new(cfg, store.clone());
 
-    let app = build_router(AppState::new(mgr.clone()));
+    let app = build_server_router(AppState::new(mgr.clone()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -530,7 +530,7 @@ async fn debug_routes_are_explicitly_no_store_and_noindex() {
         },
         Default::default(),
     );
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -557,7 +557,7 @@ async fn readiness_metrics_and_debug_gate() {
         ..ApiConfig::default()
     };
     let state = AppState::with_config(mgr, api, Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -602,10 +602,10 @@ async fn overload_health_endpoint_reports_state() {
         shed_load_enabled: true,
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(
+    let app = build_server_router(AppState::with_config(
         cache,
         api,
-        bijux_atlas_runtime::query::QueryLimits::default(),
+        bijux_atlas_server::query::QueryLimits::default(),
     ));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
@@ -636,8 +636,8 @@ async fn health_readiness_liveness_contract_is_explicit_and_consistent() {
         readiness_requires_catalog: true,
         ..ApiConfig::default()
     };
-    let state = AppState::with_config(cache, api, bijux_atlas_runtime::query::QueryLimits::default());
-    let app = build_router(state);
+    let state = AppState::with_config(cache, api, bijux_atlas_server::query::QueryLimits::default());
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -675,7 +675,7 @@ async fn readiness_allows_cached_only_without_catalog() {
         ..ApiConfig::default()
     };
     let state = AppState::with_config(mgr, api, Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -704,7 +704,7 @@ async fn memory_pressure_guards_reject_large_response_without_cascading_failure(
         ..ApiConfig::default()
     };
     let state = AppState::with_config(mgr, api, Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -746,7 +746,7 @@ async fn catalog_endpoints_apply_response_size_guard_predictably() {
         ..ApiConfig::default()
     };
     let state = AppState::with_config(mgr, api, Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -781,7 +781,7 @@ async fn genes_count_applies_filters_consistently() {
     };
     let mgr = DatasetCacheManager::new(cfg, store);
     let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -818,7 +818,7 @@ async fn transport_not_found_and_method_not_allowed_use_error_envelope() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -868,7 +868,7 @@ async fn expensive_include_is_policy_gated_by_projection_limits() {
     };
     let mgr = DatasetCacheManager::new(cfg, store);
     let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -912,7 +912,7 @@ async fn sequence_endpoint_boundary_conditions_are_enforced() {
         sequence_api_key_required_bases: 6,
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(mgr, api, Default::default()));
+    let app = build_server_router(AppState::with_config(mgr, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");

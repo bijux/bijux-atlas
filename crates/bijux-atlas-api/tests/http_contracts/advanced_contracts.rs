@@ -80,7 +80,7 @@ async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() 
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::with_config(
+    let app = build_server_router(AppState::with_config(
         mgr,
         ApiConfig::default(),
         Default::default(),
@@ -147,7 +147,7 @@ async fn security_limits_api_key_hmac_and_cors_are_enforced() {
         cors_allowed_origins: vec!["https://atlas.example.org".to_string()],
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let app = build_server_router(AppState::with_config(cache, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -240,7 +240,7 @@ async fn rate_limit_bypass_prevention_uses_normalized_forwarded_ip() {
         },
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let app = build_server_router(AppState::with_config(cache, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -288,7 +288,7 @@ async fn request_length_limits_return_400_error_envelope() {
         max_query_params: 4,
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let app = build_server_router(AppState::with_config(cache, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -341,7 +341,7 @@ async fn query_budget_caps_return_expected_status_codes() {
         max_region_span: 10,
         ..Default::default()
     };
-    let app = build_router(AppState::with_config(cache, ApiConfig::default(), limits));
+    let app = build_server_router(AppState::with_config(cache, ApiConfig::default(), limits));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -391,7 +391,7 @@ async fn safety_valve_disables_heavy_endpoints_but_keeps_cheap_endpoints_availab
         disable_heavy_endpoints: true,
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let app = build_server_router(AppState::with_config(cache, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -438,7 +438,7 @@ async fn cheap_endpoint_remains_available_while_noncheap_is_shed() {
         memory_pressure_rss_bytes: 1,
         ..ApiConfig::default()
     };
-    let app = build_router(AppState::with_config(cache, api, Default::default()));
+    let app = build_server_router(AppState::with_config(cache, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind");
@@ -492,7 +492,7 @@ async fn canonical_dataset_endpoint_and_legacy_redirect_are_available() {
         },
         Default::default(),
     );
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -680,7 +680,7 @@ async fn datasets_endpoint_supports_dimension_filters_and_cursor_pagination() {
     };
     let mgr = DatasetCacheManager::new(cfg, store);
     let state = AppState::with_config(mgr, ApiConfig::default(), Default::default());
-    let app = build_router(state);
+    let app = build_server_router(state);
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");

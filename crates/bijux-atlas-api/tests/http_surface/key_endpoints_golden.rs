@@ -2,9 +2,9 @@
 
 use std::sync::Arc;
 
-use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_server::adapters::inbound::build_server_router;
+use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas_runtime::domain::sha256_hex;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
@@ -77,7 +77,7 @@ async fn golden_core_endpoints_return_stable_json_shape() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await

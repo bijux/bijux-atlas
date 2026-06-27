@@ -14,7 +14,7 @@ async fn spawn_with_store(
         },
         store,
     );
-    let app = build_router(AppState::with_config(mgr, api, Default::default()));
+    let app = build_server_router(AppState::with_config(mgr, api, Default::default()));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");

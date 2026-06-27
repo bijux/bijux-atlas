@@ -3,9 +3,9 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use bijux_atlas_runtime::adapters::inbound::http::router::build_router;
-use bijux_atlas_runtime::adapters::outbound::store::testing::FakeStore;
-use bijux_atlas_runtime::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas_server::adapters::inbound::build_server_router;
+use bijux_atlas_server::adapters::outbound::store::testing::FakeStore;
+use bijux_atlas_server::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas_runtime::domain::sha256_hex;
 use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
@@ -124,7 +124,7 @@ async fn metrics_endpoint_matches_metrics_contract() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
@@ -268,7 +268,7 @@ async fn request_id_header_is_present_across_core_api_routes() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -310,7 +310,7 @@ async fn request_tracing_preserves_explicit_request_id() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -347,7 +347,7 @@ async fn request_tracing_propagates_trace_and_origin_headers() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -463,7 +463,7 @@ async fn policy_rejection_and_overload_emit_contract_metrics() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -558,7 +558,7 @@ async fn slo_critical_metrics_present_after_smoke_query() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
@@ -605,7 +605,7 @@ async fn store_failures_emit_contract_metric_and_retryable_details() {
         },
         store,
     );
-    let app = build_router(AppState::new(mgr));
+    let app = build_server_router(AppState::new(mgr));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
         .await
         .expect("bind listener");
