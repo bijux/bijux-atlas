@@ -4,9 +4,10 @@ use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::{resolve_repo_root, OpsProcess, RunId};
-use bijux_atlas_ops::load::path_contracts::{load_report_path, load_run_root, load_summary_path};
+use bijux_atlas_ops::load::path_contracts::{load_run_root, load_summary_path};
 use bijux_atlas_ops::load::plan_payload::load_plan_payload;
 use bijux_atlas_ops::load::report_contract::evaluate_load_report;
+use bijux_atlas_ops::load::report_payload::{load_report_payload, write_load_report};
 use bijux_atlas_ops::load::run_payload::load_run_payload;
 use serde_json::Value;
 use std::fs;
@@ -129,21 +130,8 @@ pub(crate) fn run_ops_load_report(
             }
         },
     )?;
-    let report_path = load_report_path(&repo_root, run_id.as_str(), suite);
-    if let Some(parent) = report_path.parent() {
-        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
-    }
-    fs::write(
-        &report_path,
-        serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?,
-    )
-    .map_err(|e| e.to_string())?;
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text": format!("ops load report suite={suite}"),
-        "rows":[{"report_path":report_path.display().to_string(),"report":report}],
-        "summary":{"total":1,"errors": if report.violations.is_empty() {0} else {1},"warnings":0}
-    });
+    let report_path = write_load_report(&repo_root, run_id.as_str(), suite, &report)?;
+    let payload = load_report_payload(&report_path.display().to_string(), &report);
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((
         rendered,
