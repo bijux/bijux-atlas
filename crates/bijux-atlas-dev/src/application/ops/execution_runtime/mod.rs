@@ -4,7 +4,9 @@ mod render;
 pub(crate) use self::render::*;
 
 include!("k8s.rs");
-include!("load.rs");
+mod load;
+pub(crate) use self::load::*;
+
 include!("lifecycle/mod.rs");
 
 #[cfg(test)]
