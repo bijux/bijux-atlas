@@ -562,8 +562,8 @@ fn atlas_app_server_surface_stays_app_owned() {
         );
     }
     for forbidden in [
-        "pub use crate::adapters::outbound::store::registry::backends::{",
-        "pub use crate::adapters::outbound::store::registry::federated::{",
+        "pub use crate::adapters::outbound::store::backends::{",
+        "pub use crate::adapters::outbound::store::federated::{",
     ] {
         assert!(
             !app_state.contains(forbidden),

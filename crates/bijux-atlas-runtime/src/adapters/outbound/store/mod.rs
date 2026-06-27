@@ -2,8 +2,13 @@
 
 #![forbid(unsafe_code)]
 
-pub mod registry;
+mod backends;
+mod fake;
+mod federated;
 
+pub use self::backends::{LocalFsBackend, S3LikeBackend};
+pub use self::fake::FakeStore;
+pub use self::federated::{FederatedBackend, RegistrySource};
 pub use bijux_atlas_store::{
     canonical_catalog_json, dataset_artifact_paths, dataset_key_prefix, dataset_manifest_key,
     dataset_manifest_lock_key, dataset_sqlite_key, manifest_lock_path, merge_catalogs,
@@ -15,8 +20,5 @@ pub use bijux_atlas_store::{
 };
 #[cfg(feature = "backend-s3")]
 pub use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
-pub use registry::backends::{LocalFsBackend, S3LikeBackend};
-pub use registry::fake::FakeStore;
-pub use registry::federated::{FederatedBackend, RegistrySource};
 
 pub const CRATE_NAME: &str = "bijux-atlas-store";
