@@ -234,7 +234,7 @@ async fn rate_limit_bypass_prevention_uses_normalized_forwarded_ip() {
         store,
     );
     let api = ApiConfig {
-        rate_limit_per_ip: bijux_atlas_runtime::runtime::config::RateLimitConfig {
+        rate_limit_per_ip: bijux_atlas_server::runtime::config::RateLimitConfig {
             capacity: 1.0,
             refill_per_sec: 0.0,
         },
@@ -337,7 +337,7 @@ async fn query_budget_caps_return_expected_status_codes() {
         },
         store,
     );
-    let limits = bijux_atlas_runtime::query::QueryLimits {
+    let limits = bijux_atlas_server::query::QueryLimits {
         max_region_span: 10,
         ..Default::default()
     };

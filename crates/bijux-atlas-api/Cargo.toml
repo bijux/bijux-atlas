@@ -22,8 +22,9 @@ serde_json.workspace = true
 
 [dev-dependencies]
 axum = "0.8"
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-query.workspace = true
 bijux-atlas-server = { workspace = true }
-bijux-atlas-runtime = { workspace = true }
 criterion = "0.8"
 hex = "0.4"
 hmac = "0.13"
