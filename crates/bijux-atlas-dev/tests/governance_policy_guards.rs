@@ -173,11 +173,20 @@ fn atlas_lib_hides_legacy_ownership_roots() {
         "pub mod runtime;",
         "pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};",
         "pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};",
-        "pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};",
     ] {
         assert!(
             text.contains(expected),
             "atlas lib surface must prefer canonical architecture roots"
+        );
+    }
+    let runtime_config_import = text
+        .lines()
+        .find(|line| line.contains("pub(crate) use crate::runtime::config::{"))
+        .expect("runtime lib config re-export");
+    for required in ["RateLimitConfig", "runtime_build_hash"] {
+        assert!(
+            runtime_config_import.contains(required),
+            "atlas lib surface must expose runtime config helper `{required}` from the canonical runtime root"
         );
     }
 
