@@ -333,6 +333,7 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
         "crates/bijux-atlas/src/app/.DS_Store",
         "crates/bijux-atlas-api/src/client/client_tests.rs",
         "crates/bijux-atlas/src/app/server/dataset_cache_manager_tests.rs",
+        "crates/bijux-atlas/src/app/server/tests.rs",
         "crates/bijux-atlas-query/src/engine/query_tests/mod.rs",
     ] {
         assert!(
@@ -342,7 +343,7 @@ fn atlas_source_tree_avoids_os_junk_and_disposable_test_artifacts() {
     }
 
     for required in [
-        "crates/bijux-atlas/src/app/server/tests.rs",
+        "crates/bijux-atlas/src/app/server/tests/mod.rs",
         "crates/bijux-atlas-api/src/client/mod.rs",
         "crates/bijux-atlas-query/src/engine/tests/mod.rs",
     ] {
