@@ -134,12 +134,12 @@ fn atlas_domain_surface_does_not_reexport_runtime_config_helpers() {
 }
 
 #[test]
-fn atlas_server_handlers_utilities_delegates_named_http_helpers() {
+fn atlas_server_route_support_delegates_named_http_helpers() {
     let root = repo_root();
     let text = fs::read_to_string(
-        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/handlers_utilities.rs"),
+        root.join("crates/bijux-atlas-server/src/adapters/inbound/http/route_support.rs"),
     )
-    .expect("handlers utilities surface");
+    .expect("route support surface");
 
     for expected in [
         "pub(crate) use crate::adapters::inbound::http::cache_headers::*;",
@@ -150,12 +150,12 @@ fn atlas_server_handlers_utilities_delegates_named_http_helpers() {
     ] {
         assert!(
             text.contains(expected),
-            "server handlers utilities must delegate reusable concerns to named HTTP modules"
+            "server route support must delegate reusable concerns to named HTTP modules"
         );
     }
     assert!(
-        text.lines().count() <= 1100,
-        "server handlers utilities must stay below the utility-surface budget"
+        text.lines().count() <= 32,
+        "server route support must stay thin"
     );
 }
 

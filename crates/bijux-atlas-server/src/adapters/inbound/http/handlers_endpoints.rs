@@ -2,7 +2,7 @@
 
 use crate::*;
 
-pub(crate) use crate::adapters::inbound::http::handlers_utilities::*;
+pub(crate) use crate::adapters::inbound::http::route_support::*;
 
 mod catalog_and_identity;
 mod debug_and_validate;

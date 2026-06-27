@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::adapters::inbound::http::handlers_utilities::*;
+use crate::adapters::inbound::http::route_support::*;
 use crate::*;
 use serde_json::json;
 
