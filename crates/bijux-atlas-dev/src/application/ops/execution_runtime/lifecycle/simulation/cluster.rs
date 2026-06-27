@@ -4,33 +4,11 @@
 use super::*;
 use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
-use crate::{resolve_repo_root, OpsProcess, RunId};
+use crate::{resolve_repo_root, OpsProcess};
+use bijux_atlas_ops::observe::report_artifacts::{
+    observe_report_root, write_observe_contract_report, write_operational_readiness_markdown,
+};
 use std::time::Duration;
-
-fn write_observe_contract_report(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    file_name: &str,
-    payload: &serde_json::Value,
-) -> Result<String, String> {
-    let out_dir = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join("observe");
-    std::fs::create_dir_all(&out_dir)
-        .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
-    let out_path = out_dir.join(file_name);
-    std::fs::write(
-        &out_path,
-        serde_json::to_string_pretty(payload).map_err(|err| err.to_string())?,
-    )
-    .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
-    Ok(out_path
-        .strip_prefix(repo_root)
-        .unwrap_or(&out_path)
-        .display()
-        .to_string())
-}
 
 pub(crate) fn run_ops_observe_slo_list(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -115,8 +93,12 @@ pub(crate) fn run_ops_observe_slo_verify(common: &OpsCommonArgs) -> Result<(Stri
         "slos_total": slos.len(),
         "errors": errors,
     });
-    let report_rel =
-        write_observe_contract_report(&repo_root, &run_id, "slo-contract-report.json", &report)?;
+    let report_rel = write_observe_contract_report(
+        &repo_root,
+        run_id.as_str(),
+        "slo-contract-report.json",
+        &report,
+    )?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": report["status"].clone(),
@@ -216,8 +198,12 @@ pub(crate) fn run_ops_observe_alerts_verify(
         "alerts_total": observed.len(),
         "errors": errors
     });
-    let report_rel =
-        write_observe_contract_report(&repo_root, &run_id, "alerts-contract-report.json", &report)?;
+    let report_rel = write_observe_contract_report(
+        &repo_root,
+        run_id.as_str(),
+        "alerts-contract-report.json",
+        &report,
+    )?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": report["status"].clone(),
@@ -302,7 +288,7 @@ pub(crate) fn run_ops_observe_runbooks_verify(
     });
     let report_rel = write_observe_contract_report(
         &repo_root,
-        &run_id,
+        run_id.as_str(),
         "runbooks-contract-report.json",
         &report,
     )?;
@@ -330,10 +316,7 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let base = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join("observe");
+    let base = observe_report_root(&repo_root, run_id.as_str());
     let read_report = |name: &str| -> serde_json::Value {
         let path = base.join(name);
         std::fs::read_to_string(&path)
@@ -379,44 +362,17 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
     });
     let report_rel = write_observe_contract_report(
         &repo_root,
-        &run_id,
+        run_id.as_str(),
         "operational-readiness-report.json",
         &report,
     )?;
-    let human_rel = {
-        let out_dir = repo_root
-            .join("artifacts/ops")
-            .join(run_id.as_str())
-            .join("observe");
-        std::fs::create_dir_all(&out_dir)
-            .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
-        let out_path = out_dir.join("operational-readiness-report.md");
-        let lines = [
-            "# Operational Readiness Report".to_string(),
-            format!("- Status: {}", status),
-            format!("- Completeness: {:.2}", completeness),
-            format!("- Threshold: {:.2}", threshold),
-            format!(
-                "- SLO report: artifacts/ops/{}/observe/slo-contract-report.json",
-                run_id.as_str()
-            ),
-            format!(
-                "- Alerts report: artifacts/ops/{}/observe/alerts-contract-report.json",
-                run_id.as_str()
-            ),
-            format!(
-                "- Runbooks report: artifacts/ops/{}/observe/runbooks-contract-report.json",
-                run_id.as_str()
-            ),
-        ];
-        std::fs::write(&out_path, lines.join("\n") + "\n")
-            .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
-        out_path
-            .strip_prefix(&repo_root)
-            .unwrap_or(&out_path)
-            .display()
-            .to_string()
-    };
+    let human_rel = write_operational_readiness_markdown(
+        &repo_root,
+        run_id.as_str(),
+        status,
+        completeness,
+        threshold,
+    )?;
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": status,
