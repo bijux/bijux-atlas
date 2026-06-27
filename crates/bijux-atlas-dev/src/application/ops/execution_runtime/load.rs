@@ -5,6 +5,7 @@ use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::{resolve_repo_root, OpsProcess, RunId};
 use bijux_atlas_ops::load::path_contracts::{load_report_path, load_run_root, load_summary_path};
+use bijux_atlas_ops::load::plan_payload::load_plan_payload;
 use bijux_atlas_ops::load::report_contract::evaluate_load_report;
 use serde_json::Value;
 use std::fs;
@@ -21,25 +22,14 @@ pub(crate) fn run_ops_load_plan(
         .suites
         .get(suite)
         .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
-    let mut env_rows = suite_cfg
-        .env
-        .iter()
-        .map(|(k, v)| serde_json::json!({"name":k,"value":v}))
-        .collect::<Vec<_>>();
-    env_rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text": format!("ops load plan suite={suite}"),
-        "rows":[{
-            "suite":suite,
-            "script":suite_cfg.script,
-            "dataset":suite_cfg.dataset,
-            "thresholds":suite_cfg.thresholds,
-            "env":env_rows
-        }],
-        "errors":manifest_errors,
-        "summary":{"total":1,"errors":manifest_errors.len(),"warnings":0}
-    });
+    let payload = load_plan_payload(
+        suite,
+        &suite_cfg.script,
+        &suite_cfg.dataset,
+        &suite_cfg.thresholds,
+        &suite_cfg.env,
+        manifest_errors,
+    );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((
         rendered,

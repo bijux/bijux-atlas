@@ -2,4 +2,5 @@
 
 pub mod manifest;
 pub mod path_contracts;
+pub mod plan_payload;
 pub mod report_contract;
