@@ -174,7 +174,7 @@ fn validate_id_glob_pattern(pattern: &str) -> Result<(), String> {
     Ok(())
 }
 
-mod runtime_entry_checks_governance;
+mod repo_surface_checks;
 mod runtime_entry_contracts;
 pub(crate) use runtime_entry_contracts::*;
 pub(crate) fn run() -> i32 {
