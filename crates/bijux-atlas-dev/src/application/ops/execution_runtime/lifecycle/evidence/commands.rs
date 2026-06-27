@@ -1320,38 +1320,6 @@ pub(crate) fn simulation_namespace(profile: &str, override_namespace: Option<&st
     bijux_atlas_ops::workspace::profiles::simulation_namespace(profile, override_namespace)
 }
 
-pub(super) fn debug_artifact_path(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    namespace: &str,
-    file_name: &str,
-) -> Result<std::path::PathBuf, String> {
-    let path = repo_root
-        .join("artifacts/ops")
-        .join(run_id.as_str())
-        .join("debug")
-        .join(namespace)
-        .join(file_name);
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
-    }
-    Ok(path)
-}
-
-pub(crate) fn write_debug_artifact(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    namespace: &str,
-    file_name: &str,
-    content: &str,
-) -> Result<std::path::PathBuf, String> {
-    let path = debug_artifact_path(repo_root, run_id, namespace, file_name)?;
-    std::fs::write(&path, content)
-        .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
-    Ok(path)
-}
-
 pub(crate) fn load_profile_registry(
     repo_root: &std::path::Path,
     profile: &str,

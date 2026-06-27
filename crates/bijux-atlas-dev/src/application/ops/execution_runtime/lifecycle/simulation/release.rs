@@ -477,7 +477,8 @@ fn run_collect_command(
     let (stdout, event) = process
         .run_subprocess("kubectl", &argv, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let artifact_path = write_debug_artifact(&repo_root, &run_id, &namespace, file_name, &stdout)?;
+    let artifact_path =
+        write_debug_artifact(&repo_root, run_id.as_str(), &namespace, file_name, &stdout)?;
     let report_path = emit_debug_bundle_report(
         &repo_root,
         &run_id,

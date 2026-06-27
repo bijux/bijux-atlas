@@ -4,6 +4,38 @@ use super::evidence_support::{evidence_root, reset_directory, sha256_file};
 use std::io::Cursor;
 use std::path::Path;
 
+pub fn debug_artifact_path(
+    repo_root: &Path,
+    run_id: &str,
+    namespace: &str,
+    file_name: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = repo_root
+        .join("artifacts/ops")
+        .join(run_id)
+        .join("debug")
+        .join(namespace)
+        .join(file_name);
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    Ok(path)
+}
+
+pub fn write_debug_artifact(
+    repo_root: &Path,
+    run_id: &str,
+    namespace: &str,
+    file_name: &str,
+    content: &str,
+) -> Result<std::path::PathBuf, String> {
+    let path = debug_artifact_path(repo_root, run_id, namespace, file_name)?;
+    std::fs::write(&path, content)
+        .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(path)
+}
+
 pub fn build_lifecycle_evidence_bundle(
     repo_root: &Path,
     run_id: &str,
@@ -274,7 +306,8 @@ pub fn render_evidence_index_html(
 mod tests {
     use super::{
         build_lifecycle_evidence_bundle, collect_redacted_logs, collect_scan_reports,
-        contains_common_secret_pattern, redact_sensitive_text, render_evidence_index_html,
+        contains_common_secret_pattern, debug_artifact_path, redact_sensitive_text,
+        render_evidence_index_html, write_debug_artifact,
     };
     use crate::lifecycle::evidence_support::evidence_root;
 
@@ -358,5 +391,43 @@ mod tests {
             Some("ops/release/evidence/index.html")
         );
         assert!(root.path().join("ops/release/evidence/index.html").exists());
+    }
+
+    #[test]
+    fn debug_artifact_writer_materializes_namespace_scoped_outputs() {
+        let root = tempfile::tempdir().expect("tempdir");
+
+        let path = write_debug_artifact(
+            root.path(),
+            "ops_run",
+            "bijux-atlas-kind",
+            "pods.txt",
+            "pod/bijux-atlas-0",
+        )
+        .expect("write debug artifact");
+
+        assert_eq!(
+            path,
+            root.path()
+                .join("artifacts/ops/ops_run/debug/bijux-atlas-kind/pods.txt")
+        );
+        assert_eq!(
+            std::fs::read_to_string(&path).expect("read debug artifact"),
+            "pod/bijux-atlas-0"
+        );
+    }
+
+    #[test]
+    fn debug_artifact_path_creates_parent_directory_contract() {
+        let root = tempfile::tempdir().expect("tempdir");
+
+        let path = debug_artifact_path(root.path(), "ops_run", "bijux-atlas-kind", "events.json")
+            .expect("debug artifact path");
+
+        assert!(path
+            .parent()
+            .expect("debug parent")
+            .ends_with("artifacts/ops/ops_run/debug/bijux-atlas-kind"));
+        assert!(path.parent().expect("debug parent").exists());
     }
 }
