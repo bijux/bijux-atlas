@@ -5,14 +5,16 @@ pub(crate) use crate::adapters::inbound::http::dto::*;
 pub(crate) use crate::adapters::inbound::http::presenters::*;
 pub(crate) use crate::adapters::inbound::http::request_identity::*;
 pub(crate) use crate::adapters::inbound::http::response_encoding::*;
-use crate::domain::cluster::config::{load_cluster_config_from_path, load_node_config_from_path};
-use crate::domain::cluster::distributed::{
+use crate::*;
+use bijux_atlas_runtime::domain::cluster::config::{
+    load_cluster_config_from_path, load_node_config_from_path,
+};
+use bijux_atlas_runtime::domain::cluster::distributed::{
     NodeDescriptor, NodeIdentity, NodeRole, NodeState, ReadinessPolicy, ShutdownPolicy,
 };
-use crate::domain::cluster::membership::HeartbeatMessage;
-use crate::domain::cluster::resilience::FailureCategory;
-use crate::domain::cluster::state::{ClusterStateRegistry, NodeMetadata};
-use crate::*;
+use bijux_atlas_runtime::domain::cluster::membership::HeartbeatMessage;
+use bijux_atlas_runtime::domain::cluster::resilience::FailureCategory;
+use bijux_atlas_runtime::domain::cluster::state::{ClusterStateRegistry, NodeMetadata};
 use serde_json::json;
 use serde_json::Value;
 

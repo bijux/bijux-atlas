@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::sha256_hex;
+use crate::sha256_hex;
 
 #[derive(Debug, Clone)]
 pub struct LoggingConfig {

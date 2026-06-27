@@ -5,7 +5,7 @@ use crate::adapters::inbound::http::genes::{
 };
 use crate::adapters::inbound::http::{genes_support, handlers};
 use crate::app::query as app_query;
-use crate::domain::sha256_hex;
+use crate::sha256_hex;
 use crate::*;
 use bijux_atlas_model::dataset::artifact_paths;
 use bijux_atlas_model::dataset::ShardCatalog;

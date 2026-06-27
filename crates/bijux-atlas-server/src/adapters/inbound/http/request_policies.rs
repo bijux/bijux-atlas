@@ -2,11 +2,6 @@
 
 use crate::app::server::observability::unix_time_millis;
 use crate::app::server::state::AppState;
-use crate::domain::security::authorization::{
-    AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
-    PermissionEvaluator, RoleCatalog, RoleRegistry,
-};
-use crate::domain::security::data_protection::https_enforced;
 use crate::packaged::{AUTH_POLICY_YAML, PERMISSIONS_YAML, ROLES_YAML};
 use crate::sha256_hex;
 use axum::body::Body;
@@ -18,6 +13,11 @@ use axum::Json;
 use base64::Engine as _;
 use bijux_atlas_api::{ApiError, ApiErrorCode};
 use bijux_atlas_model::dataset::DatasetId;
+use bijux_atlas_runtime::domain::security::authorization::{
+    AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
+    PermissionEvaluator, RoleCatalog, RoleRegistry,
+};
+use bijux_atlas_runtime::domain::security::data_protection::https_enforced;
 use hmac::{digest::KeyInit, Hmac, Mac};
 use sha2::Sha256;
 use std::time::Instant;
