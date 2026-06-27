@@ -174,9 +174,9 @@ fn validate_id_glob_pattern(pattern: &str) -> Result<(), String> {
     Ok(())
 }
 
+mod contracts;
 mod repo_surface_checks;
-mod runtime_entry_contracts;
-pub(crate) use runtime_entry_contracts::*;
+pub(crate) use contracts::*;
 pub(crate) fn run() -> i32 {
     crate::cli::run()
 }
