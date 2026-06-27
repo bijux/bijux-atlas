@@ -30,8 +30,8 @@ tempfile = "=3.27.0"
 toml = "1.1"
 
 [[test]]
-name = "contracts"
-path = "tests/contracts.rs"
+name = "query_contracts"
+path = "tests/query_contracts.rs"
 
 [[bench]]
 name = "query_cache"
