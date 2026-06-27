@@ -29,6 +29,10 @@ criterion = "0.8"
 tempfile = "=3.27.0"
 toml = "1.1"
 
+[[test]]
+name = "contracts"
+path = "tests/contracts.rs"
+
 [[bench]]
 name = "query_cache"
 path = "benches/cache.rs"
