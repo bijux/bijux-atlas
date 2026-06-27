@@ -29,6 +29,7 @@ pub(crate) use tracing::Instrument;
 pub mod adapters;
 pub mod api;
 pub mod app;
+pub(crate) mod compat;
 pub mod contracts;
 pub mod core;
 pub mod domain;

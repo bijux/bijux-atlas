@@ -13,27 +13,37 @@ fn read_source(relative: &str) -> String {
 }
 
 #[test]
-fn runtime_model_query_and_ingest_facades_stay_reexport_only() {
+fn runtime_wrapper_modules_stay_reexport_only() {
     let checks = [
         (
+            "src/api/mod.rs",
+            "pub use crate::compat::api::*;",
+            "runtime api wrapper must forward to src/compat/api.rs",
+        ),
+        (
+            "src/core/mod.rs",
+            "pub use crate::compat::core::*;",
+            "runtime core wrapper must forward to src/compat/core.rs",
+        ),
+        (
             "src/model/dataset.rs",
-            "pub use bijux_atlas_model::dataset::{",
-            "runtime dataset facade must forward to bijux-atlas-model",
+            "pub use crate::compat::model::dataset::*;",
+            "runtime dataset wrapper must forward to src/compat/model/dataset.rs",
         ),
         (
             "src/model/policy.rs",
-            "pub use bijux_atlas_model::policy::*;",
-            "runtime policy facade must forward to bijux-atlas-model",
+            "pub use crate::compat::model::policy::*;",
+            "runtime policy wrapper must forward to src/compat/model/policy.rs",
         ),
         (
             "src/query/mod.rs",
-            "pub use bijux_atlas_query::*;",
-            "runtime query facade must forward to bijux-atlas-query",
+            "pub use crate::compat::query::*;",
+            "runtime query wrapper must forward to src/compat/query.rs",
         ),
         (
             "src/domain/ingest/mod.rs",
-            "pub use bijux_atlas_ingest::*;",
-            "runtime ingest facade must forward to bijux-atlas-ingest",
+            "pub use crate::compat::ingest::*;",
+            "runtime ingest wrapper must forward to src/compat/ingest.rs",
         ),
     ];
 
@@ -43,19 +53,31 @@ fn runtime_model_query_and_ingest_facades_stay_reexport_only() {
         for forbidden in ["pub struct ", "pub enum ", "pub trait ", "impl ", "pub fn "] {
             assert!(
                 !text.contains(forbidden),
-                "{relative} must stay a thin compatibility facade without `{forbidden}`"
+                "{relative} must stay a thin path-stable wrapper without `{forbidden}`"
             );
         }
     }
 }
 
 #[test]
-fn compatibility_facade_directories_do_not_regrow_hidden_impl_files() {
+fn compatibility_implementation_surface_stays_under_src_compat() {
     let root = crate_root();
     let expected = [
-        ("src/domain/ingest", vec!["mod.rs"]),
-        ("src/query", vec!["mod.rs"]),
-        ("src/model", vec!["dataset.rs", "mod.rs", "policy.rs"]),
+        (
+            "src/compat",
+            vec![
+                "api.rs",
+                "core.rs",
+                "ingest.rs",
+                "mod.rs",
+                "model",
+                "query.rs",
+            ],
+        ),
+        (
+            "src/compat/model",
+            vec!["dataset.rs", "mod.rs", "policy.rs"],
+        ),
     ];
 
     for (relative, allowed) in expected {
@@ -75,7 +97,7 @@ fn compatibility_facade_directories_do_not_regrow_hidden_impl_files() {
         expected_names.sort();
         assert_eq!(
             names, expected_names,
-            "{relative} must stay a bounded compatibility facade directory"
+            "{relative} must stay a bounded compatibility implementation directory"
         );
     }
 }
