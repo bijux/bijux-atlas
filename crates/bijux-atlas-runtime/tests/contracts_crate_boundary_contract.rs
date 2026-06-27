@@ -27,6 +27,7 @@ fn crate_boundary_contract_document_exists_with_required_sections() {
         "bijux-atlas-cli",
         "bijux-atlas-dev",
         "bijux-atlas-core",
+        "bijux-atlas-ops",
         "bijux-atlas-ingest",
         "bijux-atlas-model",
         "bijux-atlas-query",

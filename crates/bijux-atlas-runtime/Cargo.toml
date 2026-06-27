@@ -28,11 +28,8 @@ brotli = "8"
 hex = "0.4"
 hmac = "0.13"
 serde.workspace = true
-bijux-atlas-api = { workspace = true }
 bijux-atlas-core = { workspace = true }
-bijux-atlas-ingest = { workspace = true }
 bijux-atlas-model = { workspace = true }
-bijux-atlas-query = { workspace = true }
 bijux-atlas-store = { workspace = true, default-features = false }
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
@@ -102,10 +99,6 @@ path = "tests/contracts_layering_direction.rs"
 [[test]]
 name = "governance_no_network"
 path = "tests/governance/no_network.rs"
-
-[[test]]
-name = "interfaces_client_compatibility"
-path = "tests/interfaces/client_compatibility.rs"
 
 [[test]]
 name = "workflows_end_to_end"

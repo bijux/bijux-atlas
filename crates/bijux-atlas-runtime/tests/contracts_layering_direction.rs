@@ -41,6 +41,7 @@ fn workspace_declares_core_model_query_runtime_and_dev_crates_explicitly() {
         "crates/bijux-atlas",
         "crates/bijux-atlas-cli",
         "crates/bijux-atlas-core",
+        "crates/bijux-atlas-ops",
         "crates/bijux-atlas-ingest",
         "crates/bijux-atlas-model",
         "crates/bijux-atlas-query",
@@ -162,21 +163,9 @@ fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
         manifest_table(&manifest, "dev-dependencies").expect("api dev-dependencies");
 
     let allowlist = [
-        "axum",
         "bijux-atlas-core",
-        "bijux-atlas-query",
-        "bijux-atlas-runtime",
-        "bijux-atlas-server",
         "criterion",
-        "hex",
-        "hmac",
         "regex",
-        "rusqlite",
-        "sha2",
-        "tempfile",
-        "tokio",
-        "tracing",
-        "tracing-subscriber",
     ];
 
     for key in dev_dependencies.keys() {
@@ -253,11 +242,8 @@ fn runtime_crate_production_dependencies_stay_orchestration_scoped() {
     }
 
     for required in [
-        "bijux-atlas-api",
         "bijux-atlas-core",
-        "bijux-atlas-ingest",
         "bijux-atlas-model",
-        "bijux-atlas-query",
         "bijux-atlas-store",
     ] {
         assert!(
