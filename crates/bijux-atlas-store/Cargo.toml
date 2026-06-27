@@ -31,8 +31,8 @@ tiny_http = "0.12"
 toml = "1.0"
 
 [[test]]
-name = "infrastructure_store"
-path = "tests/infrastructure_store.rs"
+name = "store_backend_contracts"
+path = "tests/store_backend_contracts.rs"
 
 [[bench]]
 name = "store_catalog_merge"
