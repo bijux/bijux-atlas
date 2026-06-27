@@ -9,6 +9,7 @@ use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
 use bijux_atlas_ops::kubernetes::conformance_report::{
     build_conformance_report, write_conformance_report,
 };
+use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
 use bijux_atlas_ops::kubernetes::service_inventory::service_port_rows;
 use bijux_atlas_ops::kubernetes::workload_wait::{
     readiness_wait_commands, readiness_wait_failure_row, readiness_wait_payload,
@@ -404,17 +405,7 @@ pub(crate) fn run_ops_k8s_port_forward(
         common.force,
         "bijux-atlas",
     )?;
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text":"k8s port-forward command prepared",
-        "rows":[{
-            "resource": args.resource,
-            "local_port": args.local_port,
-            "remote_port": args.remote_port,
-            "argv": ["kubectl","port-forward","--address","127.0.0.1",&args.resource,&format!("{}:{}", args.local_port, args.remote_port)]
-        }],
-        "summary":{"total":1,"errors":0,"warnings":0}
-    });
+    let payload = port_forward_payload(&args.resource, args.local_port, args.remote_port);
     let _ = repo_root;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))

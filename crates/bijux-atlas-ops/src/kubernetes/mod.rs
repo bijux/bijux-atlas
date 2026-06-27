@@ -6,6 +6,7 @@ pub mod conformance_report;
 pub mod execution;
 pub mod helm_env;
 pub mod path_contracts;
+pub mod port_forward;
 pub mod profiles_matrix;
 pub mod render_policy;
 pub mod safety_policy;
