@@ -71,6 +71,31 @@ pub fn load_profile_values_entry(
         }))
 }
 
+pub fn resolve_profile_values_file(
+    repo_root: &Path,
+    profile: &str,
+) -> Result<PathBuf, WorkspaceProfilesError> {
+    let path = repo_root
+        .join("ops/k8s/values")
+        .join(format!("{profile}.yaml"));
+    if path.exists() {
+        Ok(path)
+    } else {
+        Err(WorkspaceProfilesError::Manifest(format!(
+            "missing values file {}; expected profile values at ops/k8s/values/{profile}.yaml",
+            path.display()
+        )))
+    }
+}
+
+#[must_use]
+pub fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
+    override_namespace
+        .filter(|value| !value.trim().is_empty())
+        .map(str::to_string)
+        .unwrap_or_else(|| format!("bijux-atlas-{profile}"))
+}
+
 fn map_ops_root_error(error: OpsRootError) -> WorkspaceProfilesError {
     WorkspaceProfilesError::Manifest(error.detail())
 }
@@ -115,5 +140,31 @@ mod tests {
             load_profile_values_entry(root.path(), "developer").expect("load profile values");
 
         assert!(entry.is_none());
+    }
+
+    #[test]
+    fn workspace_profiles_resolve_values_file_reports_owned_contract_path() {
+        let root = tempfile::tempdir().expect("tempdir");
+
+        let error =
+            resolve_profile_values_file(root.path(), "developer").expect_err("missing values file");
+
+        assert_eq!(
+            error.detail(),
+            format!(
+                "missing values file {}; expected profile values at ops/k8s/values/developer.yaml",
+                root.path().join("ops/k8s/values/developer.yaml").display()
+            )
+        );
+    }
+
+    #[test]
+    fn workspace_profiles_simulation_namespace_prefers_non_empty_override() {
+        assert_eq!(
+            simulation_namespace("perf", Some("custom-namespace")),
+            "custom-namespace"
+        );
+        assert_eq!(simulation_namespace("perf", Some("  ")), "bijux-atlas-perf");
+        assert_eq!(simulation_namespace("perf", None), "bijux-atlas-perf");
     }
 }

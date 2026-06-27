@@ -1312,24 +1312,12 @@ pub(crate) fn resolve_profile_values_file(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<std::path::PathBuf, String> {
-    let path = repo_root
-        .join("ops/k8s/values")
-        .join(format!("{profile}.yaml"));
-    if path.exists() {
-        Ok(path)
-    } else {
-        Err(format!(
-            "missing values file {}; expected profile values at ops/k8s/values/{profile}.yaml",
-            path.display()
-        ))
-    }
+    bijux_atlas_ops::workspace::profiles::resolve_profile_values_file(repo_root, profile)
+        .map_err(|err| err.detail())
 }
 
 pub(crate) fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
-    override_namespace
-        .filter(|value| !value.trim().is_empty())
-        .map(str::to_string)
-        .unwrap_or_else(|| format!("bijux-atlas-{profile}"))
+    bijux_atlas_ops::workspace::profiles::simulation_namespace(profile, override_namespace)
 }
 
 pub(super) fn debug_artifact_path(
