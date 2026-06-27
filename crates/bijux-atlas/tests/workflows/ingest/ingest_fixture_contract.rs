@@ -2,10 +2,10 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas::model::dataset::{ArtifactManifest, DatasetId};
 use bijux_atlas::domain::ingest::{ingest_dataset_with_events, IngestOptions, TimestampPolicy};
-use bijux_atlas::model::policy::StrictnessMode;
 use bijux_atlas::domain::sha256_hex;
+use bijux_atlas::model::dataset::{ArtifactManifest, DatasetId};
+use bijux_atlas::model::policy::StrictnessMode;
 use tempfile::tempdir;
 
 fn fixture(path: &str) -> PathBuf {

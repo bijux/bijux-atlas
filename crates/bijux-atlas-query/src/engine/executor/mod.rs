@@ -59,13 +59,18 @@ pub fn execute_gene_query(
     params.push(Value::Integer((req.limit as i64) + 1));
     assert_index_usage(conn, &sql, &params, req.allow_full_scan).map_err(ExecError::Policy)?;
 
-    let mut stmt = conn.prepare_cached(&sql).map_err(|e| ExecError::Sql(e.to_string()))?;
+    let mut stmt = conn
+        .prepare_cached(&sql)
+        .map_err(|e| ExecError::Sql(e.to_string()))?;
     let mapped = stmt
-        .query_map(params_from_iter(params.iter()), |row| parse_row_from_sql(row, &req.fields))
+        .query_map(params_from_iter(params.iter()), |row| {
+            parse_row_from_sql(row, &req.fields)
+        })
         .map_err(|e| ExecError::Sql(e.to_string()))?;
 
-    let mut rows: Vec<filters::GeneRow> =
-        mapped.collect::<Result<Vec<_>, _>>().map_err(|e| ExecError::Sql(e.to_string()))?;
+    let mut rows: Vec<filters::GeneRow> = mapped
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| ExecError::Sql(e.to_string()))?;
 
     let has_more = rows.len() > req.limit;
     if has_more {
@@ -73,7 +78,9 @@ pub fn execute_gene_query(
     }
 
     let next_cursor = if has_more {
-        let next_depth = decoded_cursor.as_ref().map_or(1_u32, |c| c.depth.saturating_add(1));
+        let next_depth = decoded_cursor
+            .as_ref()
+            .map_or(1_u32, |c| c.depth.saturating_add(1));
         let last = rows
             .last()
             .ok_or_else(|| ExecError::Sql("pagination invariant violated".to_string()))?;

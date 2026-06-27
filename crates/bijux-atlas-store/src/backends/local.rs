@@ -26,7 +26,10 @@ pub struct LocalFsStore {
 impl LocalFsStore {
     #[must_use]
     pub fn new(root: PathBuf) -> Self {
-        Self { root, instrumentation: Arc::new(NoopInstrumentation) }
+        Self {
+            root,
+            instrumentation: Arc::new(NoopInstrumentation),
+        }
     }
 
     #[must_use]
@@ -60,11 +63,15 @@ impl ArtifactStore for LocalFsStore {
             .map_err(|e| StoreError::new(StoreErrorCode::NotFound, e.to_string()))?;
 
         let lock_raw = fs::read_to_string(&lock_path).map_err(|e| {
-            StoreError::new(StoreErrorCode::Validation, format!("missing manifest.lock: {e}"))
+            StoreError::new(
+                StoreErrorCode::Validation,
+                format!("missing manifest.lock: {e}"),
+            )
         })?;
         let lock: ManifestLock = serde_json::from_str(&lock_raw)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
-        lock.validate(&raw, &sqlite).map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
+        lock.validate(&raw, &sqlite)
+            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
 
         let manifest: ArtifactManifest = serde_json::from_slice(&raw)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
@@ -115,8 +122,11 @@ impl ArtifactStore for LocalFsStore {
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         fs::rename(&sqlite_tmp, &paths.sqlite)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-        fs::rename(&lock_tmp, manifest_lock_path(Path::new(&self.root), dataset))
-            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+        fs::rename(
+            &lock_tmp,
+            manifest_lock_path(Path::new(&self.root), dataset),
+        )
+        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         let marker_path = immutability_marker_path(Path::new(&self.root), dataset);
         let marker_tmp = paths.derived_dir.join("immutable.release.json.tmp");
         let marker = serde_json::json!({
@@ -189,7 +199,11 @@ impl ArtifactStore for LocalFsStore {
         fs::create_dir_all(&paths.derived_dir)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         let lock_path = publish_lock_path(Path::new(&self.root), dataset);
-        match OpenOptions::new().create_new(true).write(true).open(&lock_path) {
+        match OpenOptions::new()
+            .create_new(true)
+            .write(true)
+            .open(&lock_path)
+        {
             Ok(_) => Ok(PublishLockGuard::new(lock_path)),
             Err(e) => Err(StoreError::new(
                 StoreErrorCode::Conflict,
@@ -224,8 +238,10 @@ fn enforce_dataset_immutability(root: &Path, dataset: &DatasetId) -> Result<(), 
 fn write_and_sync(path: &Path, bytes: &[u8]) -> Result<(), StoreError> {
     let mut file = std::fs::File::create(path)
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.write_all(bytes).map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.sync_all().map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.write_all(bytes)
+        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.sync_all()
+        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
     Ok(())
 }
 
@@ -234,6 +250,7 @@ fn sync_dir(dir: &Path) -> Result<(), StoreError> {
         .read(true)
         .open(dir)
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.sync_all().map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.sync_all()
+        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
     Ok(())
 }

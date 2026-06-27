@@ -20,7 +20,12 @@ fn manifest(dataset: DatasetId) -> ArtifactManifest {
         "1".to_string(),
         "1".to_string(),
         dataset,
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 1, 1),
     );
     m.db_hash = m.checksums.sqlite_sha256.clone();
@@ -100,12 +105,27 @@ fn http_backend_reads_from_hermetic_cached_objects() {
     let catalog_json = "{\"model_version\":\"v1\",\"datasets\":[{\"dataset\":{\"release\":\"110\",\"species\":\"homo_sapiens\",\"assembly\":\"GRCh38\"},\"manifest_path\":\"110/homo_sapiens/GRCh38/manifest.json\",\"sqlite_path\":\"110/homo_sapiens/GRCh38/gene_summary.sqlite\"}]}";
 
     std::fs::write(cache.path().join("catalog.json"), catalog_json).expect("catalog cache");
-    std::fs::write(cache.path().join("110__homo_sapiens__GRCh38__manifest.json"), &manifest_bytes)
-        .expect("manifest cache");
-    std::fs::write(cache.path().join("110__homo_sapiens__GRCh38__manifest.lock"), &lock_bytes)
-        .expect("lock cache");
-    std::fs::write(cache.path().join("110__homo_sapiens__GRCh38__gene_summary.sqlite"), b"sqlite")
-        .expect("sqlite cache");
+    std::fs::write(
+        cache
+            .path()
+            .join("110__homo_sapiens__GRCh38__manifest.json"),
+        &manifest_bytes,
+    )
+    .expect("manifest cache");
+    std::fs::write(
+        cache
+            .path()
+            .join("110__homo_sapiens__GRCh38__manifest.lock"),
+        &lock_bytes,
+    )
+    .expect("lock cache");
+    std::fs::write(
+        cache
+            .path()
+            .join("110__homo_sapiens__GRCh38__gene_summary.sqlite"),
+        b"sqlite",
+    )
+    .expect("sqlite cache");
 
     let store = HttpReadonlyStore::new("http://example.invalid".to_string())
         .with_cache(cache.path().to_path_buf(), true);

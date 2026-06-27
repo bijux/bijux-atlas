@@ -75,7 +75,11 @@ fn setup_db() -> Connection {
         } else {
             "GENE"
         };
-        let biotype = if i % 5 == 0 { "lncRNA" } else { "protein_coding" };
+        let biotype = if i % 5 == 0 {
+            "lncRNA"
+        } else {
+            "protein_coding"
+        };
         let start = i * 10;
         let end = start + 50;
         conn.execute(
@@ -153,7 +157,10 @@ fn maybe_enforce_baseline(conn: &Connection) {
         (
             "gene_id_exact",
             req(
-                GeneFilter { gene_id: Some("gene1234".to_string()), ..Default::default() },
+                GeneFilter {
+                    gene_id: Some("gene1234".to_string()),
+                    ..Default::default()
+                },
                 1,
                 GeneFields::default(),
             ),
@@ -162,7 +169,10 @@ fn maybe_enforce_baseline(conn: &Connection) {
         (
             "name_prefix",
             req(
-                GeneFilter { name_prefix: Some("BR".to_string()), ..Default::default() },
+                GeneFilter {
+                    name_prefix: Some("BR".to_string()),
+                    ..Default::default()
+                },
                 100,
                 GeneFields::default(),
             ),
@@ -190,7 +200,10 @@ fn maybe_enforce_baseline(conn: &Connection) {
         let started = Instant::now();
         run_pattern(conn, &request);
         let elapsed = started.elapsed();
-        assert!(elapsed <= max, "baseline regression for {name}: elapsed={elapsed:?}, max={max:?}");
+        assert!(
+            elapsed <= max,
+            "baseline regression for {name}: elapsed={elapsed:?}, max={max:?}"
+        );
     }
 }
 
@@ -200,7 +213,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_gene_id_exact", |b| {
         let request = req(
-            GeneFilter { gene_id: Some("gene1234".to_string()), ..Default::default() },
+            GeneFilter {
+                gene_id: Some("gene1234".to_string()),
+                ..Default::default()
+            },
             1,
             GeneFields::default(),
         );
@@ -209,7 +225,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("critical_query_cheap_point_lookup", |b| {
         let request = req(
-            GeneFilter { gene_id: Some("gene1234".to_string()), ..Default::default() },
+            GeneFilter {
+                gene_id: Some("gene1234".to_string()),
+                ..Default::default()
+            },
             1,
             GeneFields::default(),
         );
@@ -218,7 +237,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_name_exact", |b| {
         let request = req(
-            GeneFilter { name: Some("BRCA3000".to_string()), ..Default::default() },
+            GeneFilter {
+                name: Some("BRCA3000".to_string()),
+                ..Default::default()
+            },
             20,
             GeneFields::default(),
         );
@@ -227,7 +249,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_name_prefix_short", |b| {
         let request = req(
-            GeneFilter { name_prefix: Some("BR".to_string()), ..Default::default() },
+            GeneFilter {
+                name_prefix: Some("BR".to_string()),
+                ..Default::default()
+            },
             50,
             GeneFields::default(),
         );
@@ -236,7 +261,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_name_prefix_underscore", |b| {
         let request = req(
-            GeneFilter { name_prefix: Some("GENE_".to_string()), ..Default::default() },
+            GeneFilter {
+                name_prefix: Some("GENE_".to_string()),
+                ..Default::default()
+            },
             50,
             GeneFields::default(),
         );
@@ -245,7 +273,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_biotype", |b| {
         let request = req(
-            GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
             100,
             GeneFields::default(),
         );
@@ -286,7 +317,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("critical_query_medium_biotype_window", |b| {
         let request = req(
-            GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
             100,
             GeneFields::default(),
         );
@@ -351,7 +385,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_projection_minimal", |b| {
         let request = req(
-            GeneFilter { biotype: Some("lncRNA".to_string()), ..Default::default() },
+            GeneFilter {
+                biotype: Some("lncRNA".to_string()),
+                ..Default::default()
+            },
             100,
             GeneFields {
                 gene_id: true,
@@ -367,7 +404,10 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_projection_full", |b| {
         let request = req(
-            GeneFilter { biotype: Some("lncRNA".to_string()), ..Default::default() },
+            GeneFilter {
+                biotype: Some("lncRNA".to_string()),
+                ..Default::default()
+            },
             100,
             GeneFields::default(),
         );
@@ -376,13 +416,19 @@ fn bench_query_patterns(c: &mut Criterion) {
 
     c.bench_function("query_pagination_second_page", |b| {
         let first = req(
-            GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
+            GeneFilter {
+                biotype: Some("protein_coding".to_string()),
+                ..Default::default()
+            },
             25,
             GeneFields::default(),
         );
         let first_resp = query_genes(&conn, &first, &QueryLimits::default(), b"bench-secret")
             .expect("first page");
-        let second = GeneQueryRequest { cursor: first_resp.next_cursor, ..first };
+        let second = GeneQueryRequest {
+            cursor: first_resp.next_cursor,
+            ..first
+        };
         b.iter(|| run_pattern(&conn, &second));
     });
 
@@ -391,7 +437,11 @@ fn bench_query_patterns(c: &mut Criterion) {
             GeneFilter {
                 biotype: Some("protein_coding".to_string()),
                 name_prefix: Some("GENE".to_string()),
-                region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 4_000_000 }),
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 1,
+                    end: 4_000_000,
+                }),
                 ..Default::default()
             },
             200,

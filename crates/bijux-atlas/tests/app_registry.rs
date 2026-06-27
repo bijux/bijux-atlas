@@ -5,10 +5,10 @@ use bijux_atlas::adapters::outbound::store::{FederatedBackend, RegistrySource};
 use bijux_atlas::app::cache::CacheError;
 use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
 use bijux_atlas::app::server::{DatasetCacheConfig, DatasetCacheManager};
+use bijux_atlas::domain::sha256_hex;
 use bijux_atlas::model::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use bijux_atlas::domain::sha256_hex;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;

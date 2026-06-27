@@ -56,7 +56,11 @@ fn setup_db() -> Connection {
         };
         let start = i * 10;
         let end = start + 50;
-        let biotype = if i % 7 == 0 { "lncRNA" } else { "protein_coding" };
+        let biotype = if i % 7 == 0 {
+            "lncRNA"
+        } else {
+            "protein_coding"
+        };
         conn.execute(
             "INSERT INTO gene_summary(id,gene_id,name,name_normalized,biotype,seqid,start,end,transcript_count,sequence_length)
              VALUES(?1,?2,?3,?4,?5,?6,?7,?8,1,?9)",
@@ -160,7 +164,10 @@ fn setup_db_file() -> tempfile::NamedTempFile {
 fn gene_id_request(id: &str) -> GeneQueryRequest {
     GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { gene_id: Some(id.to_string()), ..Default::default() },
+        filter: GeneFilter {
+            gene_id: Some(id.to_string()),
+            ..Default::default()
+        },
         limit: 1,
         cursor: None,
         dataset_key: None,
@@ -172,7 +179,11 @@ fn region_request(start: u64, end: u64) -> GeneQueryRequest {
     GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start, end }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start,
+                end,
+            }),
             ..Default::default()
         },
         limit: 200,
@@ -239,7 +250,11 @@ fn bench_query_routing_and_index(c: &mut Criterion) {
             filter: GeneFilter {
                 biotype: Some("protein_coding".to_string()),
                 name_prefix: Some("GENE".to_string()),
-                region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 4_000_000 }),
+                region: Some(RegionFilter {
+                    seqid: "chr1".to_string(),
+                    start: 1,
+                    end: 4_000_000,
+                }),
                 ..Default::default()
             },
             limit: 200,
@@ -248,9 +263,13 @@ fn bench_query_routing_and_index(c: &mut Criterion) {
             allow_full_scan: false,
         };
         b.iter(|| {
-            let response =
-                query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench-secret")
-                    .expect("complex query");
+            let response = query_genes(
+                black_box(&conn),
+                black_box(&req),
+                black_box(&limits),
+                b"bench-secret",
+            )
+            .expect("complex query");
             black_box(response.rows.len());
         })
     });
@@ -258,9 +277,13 @@ fn bench_query_routing_and_index(c: &mut Criterion) {
     c.bench_function("query_index_performance", |b| {
         let req = gene_id_request("gene1234");
         b.iter(|| {
-            let response =
-                query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench-secret")
-                    .expect("indexed query");
+            let response = query_genes(
+                black_box(&conn),
+                black_box(&req),
+                black_box(&limits),
+                b"bench-secret",
+            )
+            .expect("indexed query");
             black_box(response.rows.len());
         })
     });
@@ -290,18 +313,28 @@ fn bench_query_routing_and_index(c: &mut Criterion) {
     c.bench_function("query_region_overlap", |b| {
         let req = region_request(10_000, 250_000);
         b.iter(|| {
-            let response =
-                query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench-secret")
-                    .expect("region overlap");
+            let response = query_genes(
+                black_box(&conn),
+                black_box(&req),
+                black_box(&limits),
+                b"bench-secret",
+            )
+            .expect("region overlap");
             black_box(response.rows.len());
         })
     });
 
     c.bench_function("query_cursor_pagination", |b| {
-        let first = GeneQueryRequest { limit: 25, ..region_request(1, 250_000) };
+        let first = GeneQueryRequest {
+            limit: 25,
+            ..region_request(1, 250_000)
+        };
         let first_page =
             query_genes(&conn, &first, &limits, b"bench-secret").expect("first page query");
-        let second = GeneQueryRequest { cursor: first_page.next_cursor, ..first };
+        let second = GeneQueryRequest {
+            cursor: first_page.next_cursor,
+            ..first
+        };
         b.iter(|| {
             let response = query_genes(
                 black_box(&conn),

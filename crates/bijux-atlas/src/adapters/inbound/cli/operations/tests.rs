@@ -4,12 +4,12 @@ use super::{
     build_release_diff, compute_gc_plan, gc_apply, promote_catalog, update_latest_alias,
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
+use crate::domain::sha256_hex;
 use crate::model::dataset::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId,
     ManifestStats, ShardCatalog, ShardEntry, ShardId,
 };
 use crate::query::SeqId;
-use crate::domain::sha256_hex;
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;

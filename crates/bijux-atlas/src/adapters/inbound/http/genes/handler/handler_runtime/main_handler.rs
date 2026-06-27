@@ -5,9 +5,9 @@ use crate::adapters::inbound::http::genes::{
 };
 use crate::adapters::inbound::http::{genes_support, handlers};
 use crate::app::query as app_query;
+use crate::domain::sha256_hex;
 use crate::model::dataset::artifact_paths;
 use crate::model::dataset::ShardCatalog;
-use crate::domain::sha256_hex;
 use crate::*;
 use serde_json::json;
 use tracing::{info, info_span, warn};

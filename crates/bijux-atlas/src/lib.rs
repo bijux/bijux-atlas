@@ -26,15 +26,15 @@ pub(crate) use std::time::{Duration, Instant};
 pub(crate) use tokio::time::timeout;
 pub(crate) use tracing::Instrument;
 
-pub mod api;
 pub mod adapters;
+pub mod api;
 pub mod app;
-pub mod core;
 pub mod contracts;
+pub mod core;
 pub mod domain;
 pub mod model;
-pub mod query;
 pub(crate) mod packaged;
+pub mod query;
 pub mod runtime;
 pub mod version;
 #[allow(dead_code)]

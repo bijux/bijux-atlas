@@ -223,7 +223,8 @@ pub fn build_canonical_model(
         sha256_hex(&bytes)
     };
     let lineage_sensitive_sha256 = {
-        let bytes = crate::core::stable_json_bytes(&genes).map_err(|e| IngestError(e.to_string()))?;
+        let bytes =
+            crate::core::stable_json_bytes(&genes).map_err(|e| IngestError(e.to_string()))?;
         sha256_hex(&bytes)
     };
     let model = CanonicalModel {

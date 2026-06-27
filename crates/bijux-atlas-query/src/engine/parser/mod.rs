@@ -9,7 +9,12 @@ pub enum Predicate {
     NameEquals(String),
     NamePrefix(String),
     Biotype(String),
-    Region { seqid: String, start: u64, end: u64, semantics: IntervalSemantics },
+    Region {
+        seqid: String,
+        start: u64,
+        end: u64,
+        semantics: IntervalSemantics,
+    },
     Strand(StrandMode),
 }
 

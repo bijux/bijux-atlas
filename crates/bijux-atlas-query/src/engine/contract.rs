@@ -36,9 +36,17 @@ pub fn freeze_query_model(
 ) -> Result<FrozenQueryModel, QueryError> {
     let ast = parse_gene_query(req)?;
     let plan = plan_query(&ast, limits)?;
-    let intent = if ast.predicates.iter().any(|p| matches!(p, Predicate::GeneId(_))) {
+    let intent = if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::GeneId(_)))
+    {
         QueryIntent::ExactIdLookup
-    } else if ast.predicates.iter().any(|p| matches!(p, Predicate::Region { .. })) {
+    } else if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::Region { .. }))
+    {
         QueryIntent::IntervalLookup
     } else {
         QueryIntent::FilteredDatasetScan
@@ -50,7 +58,11 @@ pub fn freeze_query_model(
         class: classify_ast(&ast),
         plan_node: plan.node,
         sort_key: ast.sort_key,
-        predicates: ast.predicates.iter().map(|p| predicate_label(p).to_string()).collect(),
+        predicates: ast
+            .predicates
+            .iter()
+            .map(|p| predicate_label(p).to_string())
+            .collect(),
         estimated_work_units: estimate_ast_cost(&ast).work_units,
         normalized_ast: plan.normalized.clone(),
         query_contract_sha256: String::new(),

@@ -14,7 +14,11 @@ fn sample_request() -> GeneQueryRequest {
         filter: GeneFilter {
             name_prefix: Some("BRCA".to_string()),
             biotype: Some("protein_coding".to_string()),
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 100_000 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 100_000,
+            }),
             ..Default::default()
         },
         limit: 50,
@@ -54,8 +58,11 @@ fn setup_db() -> Connection {
         [],
     )
     .expect("insert");
-    conn.execute("INSERT INTO gene_summary_rtree(gene_rowid,start,end) VALUES (1,100,200)", [])
-        .expect("rtree insert");
+    conn.execute(
+        "INSERT INTO gene_summary_rtree(gene_rowid,start,end) VALUES (1,100,200)",
+        [],
+    )
+    .expect("rtree insert");
     conn
 }
 
@@ -75,8 +82,13 @@ fn bench_parse_plan_execute(c: &mut Criterion) {
 
     c.bench_function("query_execute_stage", |b| {
         b.iter(|| {
-            query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench")
-                .expect("execute")
+            query_genes(
+                black_box(&conn),
+                black_box(&req),
+                black_box(&limits),
+                b"bench",
+            )
+            .expect("execute")
         })
     });
 }

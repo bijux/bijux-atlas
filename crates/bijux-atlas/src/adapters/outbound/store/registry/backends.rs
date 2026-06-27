@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::{artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId};
 use crate::domain::sha256_hex;
+use crate::model::dataset::{artifact_paths, ArtifactManifest, ArtifactPaths, Catalog, DatasetId};
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend};
 use async_trait::async_trait;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ETAG, IF_NONE_MATCH, RANGE};
@@ -19,7 +19,10 @@ pub struct RetryPolicy {
 
 impl Default for RetryPolicy {
     fn default() -> Self {
-        Self { max_attempts: 4, base_backoff_ms: 120 }
+        Self {
+            max_attempts: 4,
+            base_backoff_ms: 120,
+        }
     }
 }
 
@@ -39,7 +42,10 @@ impl LocalFsBackend {
     }
 
     fn read_safe(&self, path: &Path) -> Result<Vec<u8>, CacheError> {
-        let root = self.root.canonicalize().unwrap_or_else(|_| self.root.clone());
+        let root = self
+            .root
+            .canonicalize()
+            .unwrap_or_else(|_| self.root.clone());
         let parent = path
             .parent()
             .ok_or_else(|| CacheError("path traversal blocked: missing parent".to_string()))?;
@@ -92,8 +98,9 @@ impl DatasetStoreBackend for LocalFsBackend {
 
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
         let path = self.safe_dataset_paths(dataset)?.manifest;
-        let bytes =
-            self.read_safe(&path).map_err(|e| CacheError(format!("manifest read failed: {e}")))?;
+        let bytes = self
+            .read_safe(&path)
+            .map_err(|e| CacheError(format!("manifest read failed: {e}")))?;
         let manifest: ArtifactManifest = serde_json::from_slice(&bytes)
             .map_err(|e| CacheError(format!("manifest parse failed: {e}")))?;
         manifest
@@ -104,17 +111,20 @@ impl DatasetStoreBackend for LocalFsBackend {
 
     async fn fetch_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
         let path = self.safe_dataset_paths(dataset)?.sqlite;
-        self.read_safe(&path).map_err(|e| CacheError(format!("sqlite read failed: {e}")))
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("sqlite read failed: {e}")))
     }
 
     async fn fetch_fasta_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
         let path = self.safe_dataset_paths(dataset)?.fasta;
-        self.read_safe(&path).map_err(|e| CacheError(format!("fasta read failed: {e}")))
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("fasta read failed: {e}")))
     }
 
     async fn fetch_fai_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, CacheError> {
         let path = self.safe_dataset_paths(dataset)?.fai;
-        self.read_safe(&path).map_err(|e| CacheError(format!("fai read failed: {e}")))
+        self.read_safe(&path)
+            .map_err(|e| CacheError(format!("fai read failed: {e}")))
     }
 
     async fn fetch_release_gene_index_bytes(
@@ -473,7 +483,9 @@ impl S3LikeBackend {
                 }
                 Err(e) => {
                     if attempt >= self.retry.max_attempts {
-                        return Err(CacheError(format!("checksum download failed url={url}: {e}")));
+                        return Err(CacheError(format!(
+                            "checksum download failed url={url}: {e}"
+                        )));
                     }
                     tracing::warn!(
                         event_id = "store_checksum_retry",

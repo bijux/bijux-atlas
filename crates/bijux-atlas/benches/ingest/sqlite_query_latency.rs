@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
+use bijux_atlas::model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas::model::policy::{GeneIdentifierPolicy, StrictnessMode};
 use bijux_atlas::query::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,

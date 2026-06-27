@@ -18,7 +18,12 @@ fn manifest(dataset: DatasetId) -> ArtifactManifest {
         "1".to_string(),
         "1".to_string(),
         dataset,
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 1, 1),
     );
     m.db_hash = m.checksums.sqlite_sha256.clone();

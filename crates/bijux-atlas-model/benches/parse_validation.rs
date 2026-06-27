@@ -22,5 +22,10 @@ fn bench_region_parse(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, bench_gene_id_parse, bench_transcript_id_parse, bench_region_parse);
+criterion_group!(
+    benches,
+    bench_gene_id_parse,
+    bench_transcript_id_parse,
+    bench_region_parse
+);
 criterion_main!(benches);

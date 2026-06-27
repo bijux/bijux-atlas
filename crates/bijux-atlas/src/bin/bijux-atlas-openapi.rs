@@ -19,8 +19,7 @@ fn main() -> Result<(), String> {
     let out = out.ok_or_else(|| "missing --out <path>".to_string())?;
 
     let spec = api::openapi_v1_spec();
-    let bytes =
-        bijux_atlas::core::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+    let bytes = bijux_atlas::core::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }

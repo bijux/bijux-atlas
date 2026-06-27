@@ -119,10 +119,26 @@ pub struct TranscriptQueryResponse {
 #[must_use]
 pub fn compile_field_projection(fields: &GeneFields) -> Vec<String> {
     let mut select = vec!["g.gene_id".to_string()];
-    select.push(if fields.name { "g.name".to_string() } else { "NULL AS name".to_string() });
-    select.push(if fields.coords { "g.seqid".to_string() } else { "NULL AS seqid".to_string() });
-    select.push(if fields.coords { "g.start".to_string() } else { "NULL AS start".to_string() });
-    select.push(if fields.coords { "g.end".to_string() } else { "NULL AS end".to_string() });
+    select.push(if fields.name {
+        "g.name".to_string()
+    } else {
+        "NULL AS name".to_string()
+    });
+    select.push(if fields.coords {
+        "g.seqid".to_string()
+    } else {
+        "NULL AS seqid".to_string()
+    });
+    select.push(if fields.coords {
+        "g.start".to_string()
+    } else {
+        "NULL AS start".to_string()
+    });
+    select.push(if fields.coords {
+        "g.end".to_string()
+    } else {
+        "NULL AS end".to_string()
+    });
     select.push(if fields.biotype {
         "g.biotype".to_string()
     } else {

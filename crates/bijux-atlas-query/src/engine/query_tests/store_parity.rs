@@ -122,13 +122,19 @@ fn reference_gene_ids(req: &GeneQueryRequest) -> Vec<String> {
         }
         QuerySort::RegionAsc => {
             out.sort_by(|a, b| {
-                a.seqid.cmp(b.seqid).then(a.start.cmp(&b.start)).then(a.gene_id.cmp(b.gene_id))
+                a.seqid
+                    .cmp(b.seqid)
+                    .then(a.start.cmp(&b.start))
+                    .then(a.gene_id.cmp(b.gene_id))
             });
         }
         QuerySort::Auto => {
             if req.filter.region.is_some() {
                 out.sort_by(|a, b| {
-                    a.seqid.cmp(b.seqid).then(a.start.cmp(&b.start)).then(a.gene_id.cmp(b.gene_id))
+                    a.seqid
+                        .cmp(b.seqid)
+                        .then(a.start.cmp(&b.start))
+                        .then(a.gene_id.cmp(b.gene_id))
                 });
             } else {
                 out.sort_by(|a, b| a.gene_id.cmp(b.gene_id));
@@ -136,7 +142,10 @@ fn reference_gene_ids(req: &GeneQueryRequest) -> Vec<String> {
         }
     }
 
-    out.into_iter().take(req.limit).map(|r| r.gene_id.to_string()).collect()
+    out.into_iter()
+        .take(req.limit)
+        .map(|r| r.gene_id.to_string())
+        .collect()
 }
 
 #[test]
@@ -145,7 +154,10 @@ fn sqlite_results_match_store_neutral_reference_semantics() {
     let mut cases = vec![
         GeneQueryRequest {
             fields: GeneFields::default(),
-            filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
+            filter: GeneFilter {
+                gene_id: Some("gene1".to_string()),
+                ..Default::default()
+            },
             limit: 10,
             cursor: None,
             dataset_key: None,
@@ -153,7 +165,10 @@ fn sqlite_results_match_store_neutral_reference_semantics() {
         },
         GeneQueryRequest {
             fields: GeneFields::default(),
-            filter: GeneFilter { name_prefix: Some("BR".to_string()), ..Default::default() },
+            filter: GeneFilter {
+                name_prefix: Some("BR".to_string()),
+                ..Default::default()
+            },
             limit: 10,
             cursor: None,
             dataset_key: None,
@@ -175,7 +190,11 @@ fn sqlite_results_match_store_neutral_reference_semantics() {
     let mut region_overlap = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 40, end: 50 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 40,
+                end: 50,
+            }),
             ..Default::default()
         },
         limit: 10,

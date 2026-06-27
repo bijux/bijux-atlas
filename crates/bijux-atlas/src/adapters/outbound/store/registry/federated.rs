@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::model::dataset::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
 use crate::domain::sha256_hex;
+use crate::model::dataset::{ArtifactManifest, Catalog, CatalogEntry, DatasetId};
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend, RegistrySourceHealth};
 use async_trait::async_trait;
 use std::collections::HashMap;
@@ -25,7 +25,12 @@ impl RegistrySource {
         ttl: Duration,
         expected_catalog_signature: Option<String>,
     ) -> Self {
-        Self { name: name.into(), backend, ttl, expected_catalog_signature }
+        Self {
+            name: name.into(),
+            backend,
+            ttl,
+            expected_catalog_signature,
+        }
     }
 }
 
@@ -67,7 +72,10 @@ impl FederatedBackend {
         let by_source = sources.iter().map(|_| SourceState::new()).collect();
         Self {
             sources,
-            state: Mutex::new(FederatedState { by_source, ..FederatedState::default() }),
+            state: Mutex::new(FederatedState {
+                by_source,
+                ..FederatedState::default()
+            }),
         }
     }
 
@@ -128,8 +136,11 @@ impl FederatedBackend {
             .iter()
             .enumerate()
             .map(|(idx, src)| {
-                let source_state =
-                    state.by_source.get(idx).cloned().unwrap_or_else(SourceState::new);
+                let source_state = state
+                    .by_source
+                    .get(idx)
+                    .cloned()
+                    .unwrap_or_else(SourceState::new);
                 let healthy = source_state.last_error.is_none();
                 RegistrySourceHealth {
                     name: src.name.clone(),
@@ -154,7 +165,11 @@ impl FederatedBackend {
                 let cached_ok = source_state
                     .last_refresh
                     .is_some_and(|ts| now.duration_since(ts) <= source.ttl);
-                let catalog = if cached_ok { source_state.catalog.clone() } else { None };
+                let catalog = if cached_ok {
+                    source_state.catalog.clone()
+                } else {
+                    None
+                };
                 (catalog, source_state.etag.clone())
             };
 
@@ -214,7 +229,9 @@ impl FederatedBackend {
         }
 
         if out.is_empty() {
-            return Err(CacheError("all registries failed to return catalog".to_string()));
+            return Err(CacheError(
+                "all registries failed to return catalog".to_string(),
+            ));
         }
 
         let (merged, owner, shadowed) = self.merge_catalogs(&out);
@@ -229,7 +246,10 @@ impl FederatedBackend {
     }
 
     fn combined_fetch_errors(errors: Vec<String>) -> CacheError {
-        CacheError(format!("dataset fetch failed across registries: {}", errors.join(" | ")))
+        CacheError(format!(
+            "dataset fetch failed across registries: {}",
+            errors.join(" | ")
+        ))
     }
 }
 
@@ -247,7 +267,10 @@ impl DatasetStoreBackend for FederatedBackend {
         if if_none_match == Some(etag.as_str()) {
             Ok(CatalogFetch::NotModified)
         } else {
-            Ok(CatalogFetch::Updated { etag, catalog: merged })
+            Ok(CatalogFetch::Updated {
+                etag,
+                catalog: merged,
+            })
         }
     }
 
@@ -341,7 +364,10 @@ mod tests {
             &self,
             _if_none_match: Option<&str>,
         ) -> Result<CatalogFetch, CacheError> {
-            Ok(CatalogFetch::Updated { etag: "mock".to_string(), catalog: self.catalog.clone() })
+            Ok(CatalogFetch::Updated {
+                etag: "mock".to_string(),
+                catalog: self.catalog.clone(),
+            })
         }
 
         async fn fetch_manifest(
@@ -396,19 +422,25 @@ mod tests {
         let backends = vec![
             RegistrySource::new(
                 "a",
-                Arc::new(MockBackend { catalog: c1.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c1.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
             RegistrySource::new(
                 "b",
-                Arc::new(MockBackend { catalog: c2.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c2.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
             RegistrySource::new(
                 "c",
-                Arc::new(MockBackend { catalog: c3.clone() }),
+                Arc::new(MockBackend {
+                    catalog: c3.clone(),
+                }),
                 Duration::from_secs(0),
                 None,
             ),
@@ -423,10 +455,22 @@ mod tests {
             CatalogFetch::NotModified => panic!("unexpected not modified"),
         };
 
-        let k1 = merged1.datasets.iter().map(|x| x.dataset.canonical_string()).collect::<Vec<_>>();
-        let k2 = merged2.datasets.iter().map(|x| x.dataset.canonical_string()).collect::<Vec<_>>();
+        let k1 = merged1
+            .datasets
+            .iter()
+            .map(|x| x.dataset.canonical_string())
+            .collect::<Vec<_>>();
+        let k2 = merged2
+            .datasets
+            .iter()
+            .map(|x| x.dataset.canonical_string())
+            .collect::<Vec<_>>();
         assert_eq!(k1, k2, "merge ordering must be deterministic");
         let unique = k1.iter().cloned().collect::<BTreeSet<_>>();
-        assert_eq!(k1.len(), unique.len(), "merged catalog must dedupe datasets");
+        assert_eq!(
+            k1.len(),
+            unique.len(),
+            "merged catalog must dedupe datasets"
+        );
     }
 }

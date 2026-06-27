@@ -13,7 +13,10 @@ fn cursor_generation_is_concurrency_stable() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { biotype: Some("lncRNA".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            biotype: Some("lncRNA".to_string()),
+            ..Default::default()
+        },
         limit: 1,
         cursor: None,
         dataset_key: None,
@@ -41,7 +44,9 @@ fn fast_path_gene_lookup_returns_single_row_without_cursor() {
         transcript_count: false,
         sequence_length: false,
     };
-    let row = query_gene_by_id_fast(&conn, "gene1", &fields).expect("fast query").expect("row");
+    let row = query_gene_by_id_fast(&conn, "gene1", &fields)
+        .expect("fast query")
+        .expect("row");
     assert_eq!(row.gene_id, "gene1");
     assert_eq!(row.name.as_deref(), Some("BRCA1"));
     assert!(row.seqid.is_none());
@@ -50,8 +55,9 @@ fn fast_path_gene_lookup_returns_single_row_without_cursor() {
 #[test]
 fn minimal_gene_id_name_json_fast_path_returns_compact_payload() {
     let conn = setup_db();
-    let payload =
-        query_gene_id_name_json_minimal_fast(&conn, "gene1").expect("query").expect("row");
+    let payload = query_gene_id_name_json_minimal_fast(&conn, "gene1")
+        .expect("query")
+        .expect("row");
     let txt = String::from_utf8(payload).expect("utf8");
     assert!(txt.contains("\"gene_id\":\"gene1\""));
     assert!(txt.contains("\"name\":\"BRCA1\""));
@@ -63,7 +69,10 @@ fn pathological_prefix_is_rejected_by_cost_estimator() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { name_prefix: Some("AL".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            name_prefix: Some("AL".to_string()),
+            ..Default::default()
+        },
         limit: 500,
         cursor: None,
         dataset_key: None,
@@ -88,7 +97,10 @@ fn prefix_lower_bound_enforcement_rejects_single_char() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { name_prefix: Some("A".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            name_prefix: Some("A".to_string()),
+            ..Default::default()
+        },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -104,7 +116,10 @@ fn empty_result_pagination_returns_none_cursor() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { gene_id: Some("missing-gene".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            gene_id: Some("missing-gene".to_string()),
+            ..Default::default()
+        },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -120,7 +135,10 @@ fn no_table_scan_assertion_for_indexed_query_plan() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            biotype: Some("protein_coding".to_string()),
+            ..Default::default()
+        },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -130,7 +148,10 @@ fn no_table_scan_assertion_for_indexed_query_plan() {
         .expect("plan")
         .join("\n")
         .to_ascii_lowercase();
-    assert!(!plan.contains("scan gene_summary"), "unexpected table scan: {plan}");
+    assert!(
+        !plan.contains("scan gene_summary"),
+        "unexpected table scan: {plan}"
+    );
 }
 
 #[test]
@@ -139,7 +160,11 @@ fn region_overlap_edge_cases_are_correct() {
     let mk = |start: u64, end: u64| GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start, end }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start,
+                end,
+            }),
             ..Default::default()
         },
         limit: 50,
@@ -152,7 +177,11 @@ fn region_overlap_edge_cases_are_correct() {
     let outside = query_genes(&conn, &mk(5000, 6000), &limits(), b"s").expect("outside");
     assert!(outside.rows.is_empty());
     let overlap = query_genes(&conn, &mk(35, 55), &limits(), b"s").expect("overlap");
-    let ids = overlap.rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>();
+    let ids = overlap
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
     assert!(ids.contains(&"gene1"));
     assert!(ids.contains(&"gene2"));
     let exact = query_genes(&conn, &mk(50, 90), &limits(), b"s").expect("exact");
@@ -165,7 +194,11 @@ fn region_queries_use_stable_seqid_start_gene_id_ordering() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 200 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 200,
+            }),
             ..Default::default()
         },
         limit: 50,
@@ -187,7 +220,10 @@ fn region_queries_use_stable_seqid_start_gene_id_ordering() {
         .collect::<Vec<_>>();
     let mut expected = got.clone();
     expected.sort();
-    assert_eq!(got, expected, "region rows must be ordered by seqid, start, gene_id");
+    assert_eq!(
+        got, expected,
+        "region rows must be ordered by seqid, start, gene_id"
+    );
 }
 
 #[test]
@@ -195,7 +231,10 @@ fn json_serialization_ordering_is_stable() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { biotype: Some("lncRNA".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            biotype: Some("lncRNA".to_string()),
+            ..Default::default()
+        },
         limit: 10,
         cursor: None,
         dataset_key: None,
@@ -213,7 +252,11 @@ fn cost_estimator_and_limits_enforced() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 20_000_000 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 20_000_000,
+            }),
             ..Default::default()
         },
         limit: 200,
@@ -225,7 +268,10 @@ fn cost_estimator_and_limits_enforced() {
     assert!(estimate_work_units(&req) > 1_000);
     assert!(estimate_query_cost(&req).work_units > 1_000);
 
-    let strict = QueryLimits { max_work_units: 100, ..limits() };
+    let strict = QueryLimits {
+        max_work_units: 100,
+        ..limits()
+    };
     let err = query_genes(&conn, &req, &strict, b"s").expect_err("cost rejection");
     assert_eq!(err.code, QueryErrorCode::Validation);
 }
@@ -251,7 +297,11 @@ fn fast_fail_rejects_impossible_filters_from_dataset_stats() {
     let impossible_seqid = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chrMissing".to_string(), start: 1, end: 100 }),
+            region: Some(RegionFilter {
+                seqid: "chrMissing".to_string(),
+                start: 1,
+                end: 100,
+            }),
             ..Default::default()
         },
         limit: 10,
@@ -292,7 +342,11 @@ fn region_ordering_is_stable() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 200 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 200,
+            }),
             ..Default::default()
         },
         limit: 20,
@@ -300,7 +354,9 @@ fn region_ordering_is_stable() {
         dataset_key: None,
         allow_full_scan: false,
     };
-    let rows = query_genes(&conn, &req, &limits(), b"s").expect("region rows").rows;
+    let rows = query_genes(&conn, &req, &limits(), b"s")
+        .expect("region rows")
+        .rows;
     let ids = rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>();
     assert_eq!(ids, vec!["gene1", "gene2", "gene6", "gene7"]);
 }
@@ -311,7 +367,11 @@ fn interval_semantics_overlap_containment_and_boundary_touch_are_distinct() {
     let base = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 40, end: 50 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 40,
+                end: 50,
+            }),
             ..Default::default()
         },
         limit: 50,
@@ -323,19 +383,30 @@ fn interval_semantics_overlap_containment_and_boundary_touch_are_distinct() {
     let mut overlap_req = base.clone();
     overlap_req.filter.interval = IntervalSemantics::Overlap;
     let overlap = query_genes(&conn, &overlap_req, &limits(), b"s").expect("overlap");
-    let overlap_ids = overlap.rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>();
+    let overlap_ids = overlap
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
     assert!(overlap_ids.contains(&"gene1"));
     assert!(overlap_ids.contains(&"gene2"));
 
     let mut contained_req = base.clone();
     contained_req.filter.interval = IntervalSemantics::Containment;
     let contained = query_genes(&conn, &contained_req, &limits(), b"s").expect("containment");
-    assert!(contained.rows.is_empty(), "no chr1 gene fully inside 40..50");
+    assert!(
+        contained.rows.is_empty(),
+        "no chr1 gene fully inside 40..50"
+    );
 
     let mut touch_req = base;
     touch_req.filter.interval = IntervalSemantics::BoundaryTouch;
     let touch = query_genes(&conn, &touch_req, &limits(), b"s").expect("touch");
-    let touch_ids = touch.rows.iter().map(|r| r.gene_id.as_str()).collect::<Vec<_>>();
+    let touch_ids = touch
+        .rows
+        .iter()
+        .map(|r| r.gene_id.as_str())
+        .collect::<Vec<_>>();
     assert_eq!(touch_ids, vec!["gene1", "gene2"]);
 }
 
@@ -345,7 +416,11 @@ fn count_and_list_queries_share_identical_filter_semantics() {
     let mut req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 40, end: 50 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 40,
+                end: 50,
+            }),
             ..Default::default()
         },
         limit: 50,
@@ -374,7 +449,10 @@ fn cursor_error_maps_to_stable_code() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
         limit: 1,
         cursor: Some("broken.cursor".to_string()),
         dataset_key: None,
@@ -397,9 +475,12 @@ fn query_sources_do_not_reference_retired_split_crates() {
             dependency_keys.extend(table.keys().cloned());
         }
     }
-    for forbidden in
-        ["bijux-atlas-api", "bijux-atlas-client", "bijux-atlas-ingest", "bijux-atlas-server"]
-    {
+    for forbidden in [
+        "bijux-atlas-api",
+        "bijux-atlas-client",
+        "bijux-atlas-ingest",
+        "bijux-atlas-server",
+    ] {
         assert!(
             !dependency_keys.contains(forbidden),
             "retired split crate dependency found in atlas query crate: {forbidden}"
@@ -412,7 +493,10 @@ fn benchmark_threshold_sanity_non_regression() {
     let conn = setup_db();
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { biotype: Some("protein_coding".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            biotype: Some("protein_coding".to_string()),
+            ..Default::default()
+        },
         limit: 100,
         cursor: None,
         dataset_key: None,
@@ -450,7 +534,11 @@ fn shard_selection_targets_region_seqid_and_defaults_global() {
     let region = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr2".to_string(), start: 1, end: 10 }),
+            region: Some(RegionFilter {
+                seqid: "chr2".to_string(),
+                start: 1,
+                end: 10,
+            }),
             ..Default::default()
         },
         limit: 5,
@@ -465,7 +553,10 @@ fn shard_selection_targets_region_seqid_and_defaults_global() {
 
     let non_region = GeneQueryRequest {
         fields: GeneFields::default(),
-        filter: GeneFilter { gene_id: Some("gene1".to_string()), ..Default::default() },
+        filter: GeneFilter {
+            gene_id: Some("gene1".to_string()),
+            ..Default::default()
+        },
         limit: 1,
         cursor: None,
         dataset_key: None,
@@ -484,7 +575,11 @@ fn sharded_and_monolithic_responses_are_identical_for_region() {
     let req = GeneQueryRequest {
         fields: GeneFields::default(),
         filter: GeneFilter {
-            region: Some(RegionFilter { seqid: "chr1".to_string(), start: 1, end: 200 }),
+            region: Some(RegionFilter {
+                seqid: "chr1".to_string(),
+                start: 1,
+                end: 200,
+            }),
             ..Default::default()
         },
         limit: 50,

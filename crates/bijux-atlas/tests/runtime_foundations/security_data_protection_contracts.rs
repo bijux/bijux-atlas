@@ -15,12 +15,21 @@ fn tls_bundle_and_rotation_contract() {
     let cert = temp.path().join("tls.crt");
     let key = temp.path().join("tls.key");
     let ca = temp.path().join("ca.crt");
-    fs::write(&cert, "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n")
-        .expect("write cert");
-    fs::write(&key, "-----BEGIN PRIVATE KEY-----\nABC\n-----END PRIVATE KEY-----\n")
-        .expect("write key");
-    fs::write(&ca, "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n")
-        .expect("write ca");
+    fs::write(
+        &cert,
+        "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n",
+    )
+    .expect("write cert");
+    fs::write(
+        &key,
+        "-----BEGIN PRIVATE KEY-----\nABC\n-----END PRIVATE KEY-----\n",
+    )
+    .expect("write key");
+    fs::write(
+        &ca,
+        "-----BEGIN CERTIFICATE-----\nABC\n-----END CERTIFICATE-----\n",
+    )
+    .expect("write ca");
 
     let bundle = load_certificate_bundle(&TlsConfig {
         enabled: true,
@@ -34,9 +43,15 @@ fn tls_bundle_and_rotation_contract() {
 
     let mut rotation = CertificateRotationState::default();
     rotation.stage_next("sha256:next");
-    assert_eq!(rotation.next_cert_fingerprint.as_deref(), Some("sha256:next"));
+    assert_eq!(
+        rotation.next_cert_fingerprint.as_deref(),
+        Some("sha256:next")
+    );
     assert!(rotation.promote_next());
-    assert_eq!(rotation.active_cert_fingerprint.as_deref(), Some("sha256:next"));
+    assert_eq!(
+        rotation.active_cert_fingerprint.as_deref(),
+        Some("sha256:next")
+    );
 }
 
 #[test]
@@ -59,7 +74,11 @@ fn encryption_integrity_and_tamper_contract() {
         hasher.update(signature_input.as_bytes());
         hex::encode(hasher.finalize())
     };
-    assert!(verify_artifact_signature(&checksum, signing_key, &signature));
+    assert!(verify_artifact_signature(
+        &checksum,
+        signing_key,
+        &signature
+    ));
 
     assert!(detect_tampering(&checksum, "mismatch", None, None));
     assert!(!detect_tampering(&checksum, &checksum, None, None));

@@ -4,9 +4,7 @@ use super::extract::GeneRecord;
 use super::IngestError;
 use crate::core::sha256_hex;
 use crate::model::dataset::DatasetId;
-use crate::query::{
-    GeneId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId,
-};
+use crate::query::{GeneId, GeneSignatureInput, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId};
 use std::path::Path;
 
 fn signature_for_gene(row: &GeneRecord) -> Result<String, IngestError> {

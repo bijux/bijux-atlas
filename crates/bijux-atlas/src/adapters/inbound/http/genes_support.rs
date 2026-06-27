@@ -25,17 +25,26 @@ impl Drop for QueueGuard {
 }
 
 pub(super) fn try_enter_queue(state: &AppState) -> Result<QueueGuard, ApiError> {
-    let depth = state.queued_requests.fetch_add(1, Ordering::Relaxed).saturating_add(1);
+    let depth = state
+        .queued_requests
+        .fetch_add(1, Ordering::Relaxed)
+        .saturating_add(1);
     if depth as usize > state.api.max_request_queue_depth {
         state.queued_requests.fetch_sub(1, Ordering::Relaxed);
-        state.cache.metrics.policy_violations_total.fetch_add(1, Ordering::Relaxed);
+        state
+            .cache
+            .metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
         return Err(super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "request queue depth exceeded",
             json!({"depth": depth, "max": state.api.max_request_queue_depth}),
         ));
     }
-    Ok(QueueGuard { counter: Arc::clone(&state.queued_requests) })
+    Ok(QueueGuard {
+        counter: Arc::clone(&state.queued_requests),
+    })
 }
 
 pub(super) fn parse_include(include: Option<Vec<IncludeField>>) -> GeneFields {
@@ -99,7 +108,11 @@ pub(super) fn parse_region(raw: Option<String>) -> Result<Option<RegionFilter>, 
                 json!({"value": value}),
             )
         })?;
-        return Ok(Some(RegionFilter { seqid: seqid.to_string(), start, end }));
+        return Ok(Some(RegionFilter {
+            seqid: seqid.to_string(),
+            start,
+            end,
+        }));
     }
     Ok(None)
 }
@@ -115,7 +128,11 @@ pub(super) async fn acquire_class_permit(
         _ => state.class_heavy.clone(),
     };
     sem.try_acquire_owned().map_err(|_| {
-        state.cache.metrics.policy_violations_total.fetch_add(1, Ordering::Relaxed);
+        state
+            .cache
+            .metrics
+            .policy_violations_total
+            .fetch_add(1, Ordering::Relaxed);
         super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
             "concurrency limit reached",
@@ -139,7 +156,9 @@ pub(super) fn check_serialization_budget(
     .into_iter()
     .filter(|x| *x)
     .count();
-    let estimated_serialized = req.limit.saturating_mul(32 + selected_fields.saturating_mul(32));
+    let estimated_serialized = req
+        .limit
+        .saturating_mul(32 + selected_fields.saturating_mul(32));
     if estimated_serialized > limits.max_serialization_bytes {
         return Some(super::handlers::error_json(
             ApiErrorCode::QueryRejectedByPolicy,
@@ -156,9 +175,8 @@ pub(super) fn build_dataset_query(
 ) -> Result<(DatasetId, GeneQueryRequest), ApiError> {
     let parse_map: std::collections::BTreeMap<String, String> =
         params.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
-    let parsed = crate::api::params::parse_list_genes_params_with_limit(
-        &parse_map, 100, max_limit,
-    )?;
+    let parsed =
+        crate::api::params::parse_list_genes_params_with_limit(&parse_map, 100, max_limit)?;
     let dataset = DatasetId::new(&parsed.release, &parsed.species, &parsed.assembly)
         .map_err(|e| ApiError::invalid_param("dataset", &e.to_string()))?;
     if parsed.min_transcripts.is_some() || parsed.max_transcripts.is_some() {
@@ -205,18 +223,10 @@ pub(super) fn build_dataset_query(
                 _ => IntervalSemantics::Overlap,
             },
             strand: match parsed.strand {
-                Some(crate::api::params::StrandMode::Any) | None => {
-                    crate::query::StrandMode::Any
-                }
-                Some(crate::api::params::StrandMode::Plus) => {
-                    crate::query::StrandMode::Plus
-                }
-                Some(crate::api::params::StrandMode::Minus) => {
-                    crate::query::StrandMode::Minus
-                }
-                Some(crate::api::params::StrandMode::Unknown) => {
-                    crate::query::StrandMode::Unknown
-                }
+                Some(crate::api::params::StrandMode::Any) | None => crate::query::StrandMode::Any,
+                Some(crate::api::params::StrandMode::Plus) => crate::query::StrandMode::Plus,
+                Some(crate::api::params::StrandMode::Minus) => crate::query::StrandMode::Minus,
+                Some(crate::api::params::StrandMode::Unknown) => crate::query::StrandMode::Unknown,
             },
         },
         limit: parsed.limit,
@@ -234,7 +244,10 @@ pub(super) fn exact_lookup_cache_keys(
     let exact_gene_id = super::handlers::is_gene_id_exact_query(req).map(ToString::to_string);
     let redis_cache_key = exact_gene_id.as_ref().map(|gene_id| {
         let dataset_hash = sha256_hex(dataset.canonical_string().as_bytes());
-        format!("{dataset_hash}:{gene_id}:{}", super::handlers::gene_fields_key(&req.fields))
+        format!(
+            "{dataset_hash}:{gene_id}:{}",
+            super::handlers::gene_fields_key(&req.fields)
+        )
     });
     (exact_gene_id, redis_cache_key)
 }

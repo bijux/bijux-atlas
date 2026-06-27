@@ -117,11 +117,13 @@ impl HttpReadonlyStore {
             }
         }
 
-        let response =
-            req.send().map_err(|e| StoreError::new(StoreErrorCode::Network, e.to_string()))?;
+        let response = req
+            .send()
+            .map_err(|e| StoreError::new(StoreErrorCode::Network, e.to_string()))?;
 
         let bytes = handle_etag_response(response, key, &self.etags, &self.cache_root)?;
-        self.instrumentation.observe_download("http", bytes.len(), started.elapsed());
+        self.instrumentation
+            .observe_download("http", bytes.len(), started.elapsed());
         Ok(bytes)
     }
 
@@ -133,7 +135,10 @@ impl HttpReadonlyStore {
             .ok_or_else(|| StoreError::new(StoreErrorCode::Validation, "missing host"))?
             .to_ascii_lowercase();
         if host == "localhost" || host.ends_with(".localhost") {
-            return Err(StoreError::new(StoreErrorCode::Validation, "blocked localhost host"));
+            return Err(StoreError::new(
+                StoreErrorCode::Validation,
+                "blocked localhost host",
+            ));
         }
         if let Ok(ip) = host.parse::<IpAddr>() {
             let blocked = match ip {
@@ -143,7 +148,10 @@ impl HttpReadonlyStore {
                 IpAddr::V6(v6) => v6.is_loopback() || v6.is_unspecified() || v6.is_unique_local(),
             };
             if blocked {
-                return Err(StoreError::new(StoreErrorCode::Validation, "blocked private host"));
+                return Err(StoreError::new(
+                    StoreErrorCode::Validation,
+                    "blocked private host",
+                ));
             }
         }
         Ok(())
@@ -192,8 +200,9 @@ impl ArtifactStore for HttpReadonlyStore {
                 if let Ok(mut state) = self.catalog_state.lock() {
                     state.last_fetch = Some(Instant::now());
                     state.consecutive_errors = state.consecutive_errors.saturating_add(1);
-                    let backoff_ms =
-                        250_u64.saturating_mul(state.consecutive_errors as u64).min(5_000);
+                    let backoff_ms = 250_u64
+                        .saturating_mul(state.consecutive_errors as u64)
+                        .min(5_000);
                     state.backoff_until = Some(Instant::now() + Duration::from_millis(backoff_ms));
                 }
                 Err(err)
@@ -231,7 +240,10 @@ impl ArtifactStore for HttpReadonlyStore {
         _expected_manifest_sha256: &str,
         _expected_sqlite_sha256: &str,
     ) -> Result<(), StoreError> {
-        Err(StoreError::new(StoreErrorCode::Unsupported, "http readonly backend cannot publish"))
+        Err(StoreError::new(
+            StoreErrorCode::Unsupported,
+            "http readonly backend cannot publish",
+        ))
     }
 
     fn exists(&self, dataset: &DatasetId) -> Result<bool, StoreError> {
@@ -243,7 +255,10 @@ impl ArtifactStore for HttpReadonlyStore {
     }
 
     fn acquire_publish_lock(&self, _dataset: &DatasetId) -> Result<PublishLockGuard, StoreError> {
-        Err(StoreError::new(StoreErrorCode::Unsupported, "http readonly backend cannot lock"))
+        Err(StoreError::new(
+            StoreErrorCode::Unsupported,
+            "http readonly backend cannot lock",
+        ))
     }
 }
 
@@ -260,11 +275,17 @@ fn handle_etag_response(
             return fs::read(target)
                 .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()));
         }
-        return Err(StoreError::new(StoreErrorCode::Internal, "received 304 without cache root"));
+        return Err(StoreError::new(
+            StoreErrorCode::Internal,
+            "received 304 without cache root",
+        ));
     }
 
     if response.status().as_u16() == 404 {
-        return Err(StoreError::new(StoreErrorCode::NotFound, "resource not found"));
+        return Err(StoreError::new(
+            StoreErrorCode::NotFound,
+            "resource not found",
+        ));
     }
 
     if !response.status().is_success() {

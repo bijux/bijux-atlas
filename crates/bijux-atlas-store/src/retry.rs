@@ -14,7 +14,10 @@ pub trait BackoffPolicy {
 
 impl Default for RetryPolicy {
     fn default() -> Self {
-        Self { max_attempts: 4, base_backoff_ms: 120 }
+        Self {
+            max_attempts: 4,
+            base_backoff_ms: 120,
+        }
     }
 }
 

@@ -61,7 +61,10 @@ pub struct StoreError {
 impl StoreError {
     #[must_use]
     pub fn new(code: StoreErrorCode, message: impl Into<String>) -> Self {
-        Self { code, message: message.into() }
+        Self {
+            code,
+            message: message.into(),
+        }
     }
 }
 
@@ -125,7 +128,9 @@ impl StoreInstrumentation for StoreMetricsCollector {
     fn observe_error(&self, _backend: &str, code: StoreErrorCode) {
         if let Ok(mut m) = self.inner.lock() {
             m.request_count = m.request_count.saturating_add(1);
-            *m.failures_by_class.entry(code.as_str().to_string()).or_insert(0) += 1;
+            *m.failures_by_class
+                .entry(code.as_str().to_string())
+                .or_insert(0) += 1;
         }
     }
 }

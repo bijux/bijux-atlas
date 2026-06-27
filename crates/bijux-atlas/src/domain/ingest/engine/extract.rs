@@ -616,13 +616,16 @@ pub fn extract_gene_rows(
         }
     }
 
-    anomaly.missing_parents = crate::core::stable_sort_by_key(anomaly.missing_parents, |x| x.clone());
+    anomaly.missing_parents =
+        crate::core::stable_sort_by_key(anomaly.missing_parents, |x| x.clone());
     anomaly.missing_transcript_parents =
         crate::core::stable_sort_by_key(anomaly.missing_transcript_parents, |x| x.clone());
     anomaly.multiple_parent_transcripts =
         crate::core::stable_sort_by_key(anomaly.multiple_parent_transcripts, |x| x.clone());
-    anomaly.unknown_contigs = crate::core::stable_sort_by_key(anomaly.unknown_contigs, |x| x.clone());
-    anomaly.overlapping_ids = crate::core::stable_sort_by_key(anomaly.overlapping_ids, |x| x.clone());
+    anomaly.unknown_contigs =
+        crate::core::stable_sort_by_key(anomaly.unknown_contigs, |x| x.clone());
+    anomaly.overlapping_ids =
+        crate::core::stable_sort_by_key(anomaly.overlapping_ids, |x| x.clone());
     anomaly.duplicate_gene_ids =
         crate::core::stable_sort_by_key(anomaly.duplicate_gene_ids, |x| x.clone());
     anomaly.overlapping_gene_ids_across_contigs =

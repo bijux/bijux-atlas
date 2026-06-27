@@ -2,11 +2,11 @@
 
 use super::extract::ExtractResult;
 use super::IngestError;
+use crate::domain::sha256_hex;
 use crate::model::dataset::{
     ArtifactChecksums, ArtifactManifest, DatasetId, ManifestInputHashes, ManifestStats, QcSeverity,
     ShardingPlan, ValidationError,
 };
-use crate::domain::sha256_hex;
 use serde_json::json;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;

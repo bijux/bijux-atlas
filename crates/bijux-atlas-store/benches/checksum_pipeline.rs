@@ -17,7 +17,8 @@ fn bench_checksum_pipeline(c: &mut Criterion) {
             let expected_sqlite = sha256_hex(&sqlite_bytes);
             verify_expected_sha256(&manifest_bytes, &expected_manifest).expect("manifest hash");
             verify_expected_sha256(&sqlite_bytes, &expected_sqlite).expect("sqlite hash");
-            lock.validate(&manifest_bytes, &sqlite_bytes).expect("lock validate");
+            lock.validate(&manifest_bytes, &sqlite_bytes)
+                .expect("lock validate");
         })
     });
 }

@@ -2,8 +2,8 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas::model::dataset::DatasetId;
 use bijux_atlas::domain::ingest::{ingest_dataset, IngestOptions};
+use bijux_atlas::model::dataset::DatasetId;
 use bijux_atlas::model::policy::StrictnessMode;
 use tempfile::tempdir;
 

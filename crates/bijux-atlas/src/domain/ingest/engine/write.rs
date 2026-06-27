@@ -2,11 +2,11 @@
 
 use std::fs;
 
+use crate::domain::sha256_hex;
 use crate::model::dataset::{
     ArtifactChecksums, ArtifactManifest, IngestAnomalyReport, ManifestStats, ShardCatalog,
     ShardingPlan,
 };
-use crate::domain::sha256_hex;
 use serde_json::json;
 
 use super::decode::DecodedIngest;

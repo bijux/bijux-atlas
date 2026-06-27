@@ -22,7 +22,10 @@ pub struct QueryError {
 impl QueryError {
     #[must_use]
     pub fn new(code: QueryErrorCode, message: impl Into<String>) -> Self {
-        Self { code, message: message.into() }
+        Self {
+            code,
+            message: message.into(),
+        }
     }
 }
 

@@ -31,7 +31,12 @@ fn round_trip_public_manifest_and_catalog_types() {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 2, 3),
     );
 
@@ -78,7 +83,12 @@ fn strict_manifest_validation_requires_schema_consistency() {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 2, 3),
     );
     manifest.input_hashes.gff3_sha256 = "a".repeat(64);
@@ -98,7 +108,12 @@ fn strict_manifest_validation_rejects_identity_manifest_contradictions() {
         "1".to_string(),
         "1".to_string(),
         DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset"),
-        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
+        ArtifactChecksums::new(
+            "a".repeat(64),
+            "b".repeat(64),
+            "c".repeat(64),
+            "d".repeat(64),
+        ),
         ManifestStats::new(1, 2, 3),
     );
     manifest.input_hashes.gff3_sha256 = "a".repeat(64);
@@ -118,7 +133,9 @@ fn strict_manifest_validation_rejects_identity_manifest_contradictions() {
 
 #[test]
 fn policy_structs_reject_unknown_fields_and_optional_policy_is_enforced() {
-    assert!(serde_json::from_str::<GeneNamePolicy>(r#"{"attribute_keys":["Name"],"x":1}"#).is_err());
+    assert!(
+        serde_json::from_str::<GeneNamePolicy>(r#"{"attribute_keys":["Name"],"x":1}"#).is_err()
+    );
     assert!(serde_json::from_str::<BiotypePolicy>(
         r#"{"attribute_keys":["gene_biotype"],"unknown_value":"unknown","x":1}"#
     )
@@ -127,8 +144,10 @@ fn policy_structs_reject_unknown_fields_and_optional_policy_is_enforced() {
         r#"{"accepted_types":["transcript"],"x":1}"#
     )
     .is_err());
-    assert!(serde_json::from_str::<SeqidNormalizationPolicy>(r#"{"aliases":{"chr1":"1"},"x":1}"#)
-        .is_err());
+    assert!(
+        serde_json::from_str::<SeqidNormalizationPolicy>(r#"{"aliases":{"chr1":"1"},"x":1}"#)
+            .is_err()
+    );
 
     let mut map = serde_json::Map::new();
     OptionalFieldPolicy::NullWhenMissing.apply_to_json_map(&mut map, "name", None);

@@ -5,14 +5,14 @@ use crate::adapters::outbound::store::{
     canonical_catalog_json, sorted_catalog_entries, verify_expected_sha256, ArtifactStore,
     LocalFsStore, ManifestLock, StoreErrorCode,
 };
-use crate::model::dataset::{
-    parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
-};
 use crate::domain::policy::{
     canonical_config_json, load_policy_from_workspace, resolve_mode_profile, PolicyMode,
 };
-use crate::query::ReleaseGeneIndex;
 use crate::domain::sha256_hex;
+use crate::model::dataset::{
+    parse_dataset_key, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ShardCatalog,
+};
+use crate::query::ReleaseGeneIndex;
 use serde_json::json;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;

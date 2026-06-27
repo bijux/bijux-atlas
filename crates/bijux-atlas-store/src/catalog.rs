@@ -25,7 +25,9 @@ pub fn merge_catalogs(catalogs: &[Catalog]) -> Catalog {
     let mut merged = BTreeMap::new();
     for catalog in catalogs {
         for entry in &catalog.datasets {
-            merged.entry(entry.dataset.canonical_string()).or_insert_with(|| entry.clone());
+            merged
+                .entry(entry.dataset.canonical_string())
+                .or_insert_with(|| entry.clone());
         }
     }
     let mut datasets: Vec<CatalogEntry> = merged.into_values().collect();

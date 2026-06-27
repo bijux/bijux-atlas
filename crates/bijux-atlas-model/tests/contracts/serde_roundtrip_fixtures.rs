@@ -118,16 +118,18 @@ fn top_level_models_roundtrip_and_validate() {
 
 #[test]
 fn known_current_fixtures_parse() {
-    let _: ArtifactManifest =
-        serde_json::from_str(&fixture("tests/fixtures/model/current/artifact_manifest.json"))
-            .expect("manifest fixture");
+    let _: ArtifactManifest = serde_json::from_str(&fixture(
+        "tests/fixtures/model/current/artifact_manifest.json",
+    ))
+    .expect("manifest fixture");
     let _: Catalog = serde_json::from_str(&fixture("tests/fixtures/model/current/catalog.json"))
         .expect("catalog fixture");
     let _: DiffPage = serde_json::from_str(&fixture("tests/fixtures/model/current/diff_page.json"))
         .expect("diff fixture");
-    let _: ReleaseGeneIndex =
-        serde_json::from_str(&fixture("tests/fixtures/model/current/release_gene_index.json"))
-            .expect("index fixture");
+    let _: ReleaseGeneIndex = serde_json::from_str(&fixture(
+        "tests/fixtures/model/current/release_gene_index.json",
+    ))
+    .expect("index fixture");
 }
 
 #[test]
@@ -145,8 +147,9 @@ fn backward_compatibility_fixtures_from_v0_1_parse() {
         .expect("diff fixture");
     assert_eq!(diff.model_version, ModelVersion::V1);
 
-    let index: ReleaseGeneIndex =
-        serde_json::from_str(&fixture("tests/fixtures/model/v0_1/release_gene_index.json"))
-            .expect("index fixture");
+    let index: ReleaseGeneIndex = serde_json::from_str(&fixture(
+        "tests/fixtures/model/v0_1/release_gene_index.json",
+    ))
+    .expect("index fixture");
     assert_eq!(index.model_version, ModelVersion::V1);
 }
