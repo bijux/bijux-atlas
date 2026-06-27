@@ -4,10 +4,8 @@
 
 mod annotation;
 mod diff_index;
-mod hashing;
-mod job;
-mod logging;
 mod manifest;
+mod pipeline;
 mod sources;
 mod sqlite;
 mod write;
@@ -31,9 +29,10 @@ use std::path::{Path, PathBuf};
 pub const CRATE_NAME: &str = crate::CRATE_NAME;
 
 pub use annotation::ReplayCounts;
-pub use hashing::{compute_input_hashes, hash_file, InputHashes};
-pub use job::{IngestInputs, IngestJob};
-pub use logging::{IngestEvent, IngestLog, IngestStage};
+pub use pipeline::{
+    compute_input_hashes, hash_file, IngestEvent, IngestInputs, IngestJob, IngestLog, IngestStage,
+    InputHashes,
+};
 
 #[derive(Debug)]
 pub struct IngestError(pub String);
@@ -162,9 +161,9 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
 pub fn ingest_dataset_with_events(
     opts: &IngestOptions,
 ) -> Result<(IngestResult, Vec<IngestEvent>), IngestError> {
-    let mut log = logging::IngestLog::default();
+    let mut log = pipeline::IngestLog::default();
     log.emit(
-        logging::IngestStage::Prepare,
+        pipeline::IngestStage::Prepare,
         "ingest.start",
         std::collections::BTreeMap::new(),
     );
@@ -183,15 +182,15 @@ pub fn ingest_dataset_with_events(
             "policy gate: normalized debug output is disabled in production mode".to_string(),
         ));
     }
-    let job = job::IngestJob::from_options(opts);
+    let job = pipeline::IngestJob::from_options(opts);
     log.emit(
-        logging::IngestStage::Decode,
+        pipeline::IngestStage::Decode,
         "ingest.decode.begin",
         std::collections::BTreeMap::new(),
     );
     let decoded = decode_ingest_inputs(&job)?;
     log.emit(
-        logging::IngestStage::Decode,
+        pipeline::IngestStage::Decode,
         "ingest.decode.complete",
         std::collections::BTreeMap::new(),
     );
@@ -219,13 +218,13 @@ pub fn ingest_dataset_with_events(
         ));
     }
     log.emit(
-        logging::IngestStage::Persist,
+        pipeline::IngestStage::Persist,
         "ingest.persist.begin",
         std::collections::BTreeMap::new(),
     );
     let mut result = write::write_ingest_outputs(&job, decoded)?;
     log.emit(
-        logging::IngestStage::Finalize,
+        pipeline::IngestStage::Finalize,
         "ingest.persist.complete",
         std::collections::BTreeMap::new(),
     );

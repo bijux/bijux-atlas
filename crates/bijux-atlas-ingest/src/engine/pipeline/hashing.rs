@@ -5,7 +5,7 @@ use std::path::Path;
 
 use crate::domain::sha256_hex;
 
-use super::IngestError;
+use super::super::IngestError;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputHashes {

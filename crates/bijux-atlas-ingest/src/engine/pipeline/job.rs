@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use crate::model::dataset::{artifact_paths, ArtifactPaths, DatasetId};
 
-use super::IngestOptions;
+use super::super::IngestOptions;
 
 #[derive(Debug, Clone)]
 pub struct IngestInputs {

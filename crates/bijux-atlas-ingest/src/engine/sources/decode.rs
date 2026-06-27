@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use super::super::annotation::{
     build_canonical_model, extract_gene_rows, CanonicalModel, ExtractResult,
 };
-use super::super::job::IngestJob;
+use super::super::pipeline::IngestJob;
 use super::super::{IngestError, IngestOptions};
 use super::fai::{self, ContigStats};
 use super::gff3::{parse_gff3_records, parse_sequence_regions, validate_sequence_region_conflicts};
