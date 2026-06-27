@@ -1371,10 +1371,6 @@ pub(crate) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), St
     bijux_atlas_ops::kubernetes::service_probe::wait_for_local_port(port, timeout)
 }
 
-pub(super) fn perform_http_check(local_port: u16, path: &str) -> Result<serde_json::Value, String> {
-    bijux_atlas_ops::kubernetes::service_probe::perform_http_check(local_port, path, sha256_hex)
-}
-
 pub(crate) type HttpCheckResponse = bijux_atlas_ops::kubernetes::service_probe::HttpCheckResponse;
 
 pub(crate) fn perform_http_request(
@@ -1384,35 +1380,60 @@ pub(crate) fn perform_http_request(
     bijux_atlas_ops::kubernetes::service_probe::perform_http_request(local_port, path)
 }
 
+struct KubectlPortForwardSession {
+    child: std::process::Child,
+}
+
+impl bijux_atlas_ops::kubernetes::service_probe::PortForwardSession for KubectlPortForwardSession {
+    fn kill_and_wait(&mut self) {
+        let _ = self.child.kill();
+        let _ = self.child.wait();
+    }
+}
+
+struct KubectlPortForwardRunner;
+
+impl bijux_atlas_ops::kubernetes::service_probe::ServicePortForwardRunner
+    for KubectlPortForwardRunner
+{
+    type Session = KubectlPortForwardSession;
+
+    fn start_service_port_forward(
+        &self,
+        repo_root: &std::path::Path,
+        namespace: &str,
+        local_port: u16,
+        remote_port: u16,
+    ) -> Result<Self::Session, String> {
+        let child = std::process::Command::new("kubectl")
+            .args([
+                "port-forward",
+                "-n",
+                namespace,
+                "--address",
+                "127.0.0.1",
+                "service/bijux-atlas",
+                &format!("{local_port}:{remote_port}"),
+            ])
+            .current_dir(repo_root)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
+        Ok(KubectlPortForwardSession { child })
+    }
+}
+
 pub(crate) fn run_smoke_checks(
     repo_root: &std::path::Path,
     namespace: &str,
     local_port: u16,
 ) -> Result<Vec<serde_json::Value>, String> {
-    let mut child = std::process::Command::new("kubectl")
-        .args([
-            "port-forward",
-            "-n",
-            namespace,
-            "--address",
-            "127.0.0.1",
-            "service/bijux-atlas",
-            &format!("{local_port}:8080"),
-        ])
-        .current_dir(repo_root)
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .spawn()
-        .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
-    let checks = (|| -> Result<Vec<serde_json::Value>, String> {
-        wait_for_local_port(local_port, Duration::from_secs(10))?;
-        let mut rows = Vec::new();
-        for path in ["/healthz", "/readyz", "/v1/version"] {
-            rows.push(perform_http_check(local_port, path)?);
-        }
-        Ok(rows)
-    })();
-    let _ = child.kill();
-    let _ = child.wait();
-    checks
+    bijux_atlas_ops::kubernetes::service_probe::run_service_smoke_checks(
+        &KubectlPortForwardRunner,
+        repo_root,
+        namespace,
+        local_port,
+        sha256_hex,
+    )
 }
