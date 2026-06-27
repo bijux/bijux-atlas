@@ -16,8 +16,7 @@ use bijux_atlas_ingest::{
 use bijux_atlas_model::dataset::{DatasetId, ShardingPlan};
 use bijux_atlas_model::policy::{GeneIdentifierPolicy, StrictnessMode};
 use bijux_atlas_query::{
-    classify_query, explain_query_plan, BiotypePolicy, DuplicateGeneIdPolicy, GeneFields,
-    GeneFilter, GeneNamePolicy, GeneQueryRequest, RegionFilter, SeqidNormalizationPolicy,
+    BiotypePolicy, DuplicateGeneIdPolicy, GeneNamePolicy, SeqidNormalizationPolicy,
     TranscriptTypePolicy,
 };
 use bijux_atlas_runtime::contracts::errors::{ExitCode, MachineError};
@@ -28,7 +27,6 @@ use commands::{
 };
 use rusqlite::Connection;
 use serde_json::{json, Value};
-use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode as ProcessExitCode;
