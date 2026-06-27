@@ -57,6 +57,8 @@ This contract defines where Atlas code belongs and where it does not.
 Atlas enforces this contract through architecture tests in:
 
 - `crates/bijux-atlas/tests/contracts_crate_boundary_contract.rs`
+- `crates/bijux-atlas/tests/contracts_bench_ownership.rs`
+- `crates/bijux-atlas-ingest/tests/contracts_bench_ownership.rs`
 - `crates/bijux-dev-atlas/tests/architecture_runtime_ownership.rs`
 
 When those tests fail, boundary drift is treated as a product defect.

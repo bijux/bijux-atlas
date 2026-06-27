@@ -26,7 +26,7 @@ fn rust_files_under(root: &Path) -> Vec<PathBuf> {
 }
 
 #[test]
-fn runtime_source_does_not_include_criterion_or_bench_harness_logic() {
+fn ingest_source_does_not_embed_bench_harness_logic() {
     let src = crate_root().join("src");
     for file in rust_files_under(&src) {
         let text = std::fs::read_to_string(&file)
@@ -42,24 +42,16 @@ fn runtime_source_does_not_include_criterion_or_bench_harness_logic() {
 }
 
 #[test]
-fn benches_directory_exists_as_benchmark_owner() {
-    let benches = crate_root().join("benches");
+fn ingest_benches_live_under_ingest_bucket() {
+    let ingest_benches = crate_root().join("benches").join("ingest");
     assert!(
-        benches.is_dir(),
-        "runtime crate must keep benches/ as benchmark ownership root"
-    );
-    assert!(
-        !benches.join("domain").exists(),
-        "runtime benches must use durable ownership buckets, not benches/domain"
-    );
-    assert!(
-        !benches.join("ingest").exists(),
-        "runtime crate must not retain ingest-owned benchmark buckets"
+        ingest_benches.is_dir(),
+        "ingest crate must own benches/ingest as its benchmark root"
     );
 }
 
 #[test]
-fn cargo_manifest_bench_paths_match_runtime_bench_tree() {
+fn cargo_manifest_bench_paths_match_ingest_bench_tree() {
     let manifest_path = crate_root().join("Cargo.toml");
     let manifest_text = std::fs::read_to_string(&manifest_path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", manifest_path.display()));
@@ -76,16 +68,12 @@ fn cargo_manifest_bench_paths_match_runtime_bench_tree() {
             .and_then(toml::Value::as_str)
             .expect("bench path");
         assert!(
-            !path.starts_with("benches/api/"),
-            "runtime manifest must not claim api-owned benches: {path}"
-        );
-        assert!(
-            !path.starts_with("benches/ingest/"),
-            "runtime manifest must not claim ingest-owned benches: {path}"
+            path.starts_with("benches/ingest/"),
+            "ingest manifest must keep benchmarks in benches/ingest: {path}"
         );
         assert!(
             crate_root().join(path).is_file(),
-            "declared runtime bench path must exist: {path}"
+            "declared ingest bench path must exist: {path}"
         );
     }
 }
