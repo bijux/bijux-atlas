@@ -19,5 +19,5 @@ pub(crate) mod response_encoding;
 pub(crate) mod route_support;
 pub mod router;
 pub(crate) mod sequence;
-pub(crate) mod service_routes;
+pub(crate) mod service;
 pub(crate) mod transcripts;

@@ -5,9 +5,7 @@ use crate::adapters::inbound::http::request_policies::{
     cors_middleware, debug_route_hardening_middleware, provenance_headers_middleware,
     resilience_middleware, security_middleware,
 };
-use crate::adapters::inbound::http::{
-    catalog, diagnostics, gene_routes, service_routes, transcripts,
-};
+use crate::adapters::inbound::http::{catalog, diagnostics, gene_routes, service, transcripts};
 use crate::app::server::AppState;
 use axum::extract::DefaultBodyLimit;
 use axum::middleware::from_fn_with_state;
@@ -16,19 +14,16 @@ use axum::Router;
 
 pub fn build_router(state: AppState) -> Router {
     let mut router = Router::new()
-        .route("/", get(service_routes::landing_handler))
-        .route("/health", get(service_routes::health_handler))
-        .route("/healthz", get(service_routes::healthz_handler))
-        .route(
-            "/healthz/overload",
-            get(service_routes::overload_health_handler),
-        )
-        .route("/ready", get(service_routes::ready_handler))
-        .route("/readyz", get(service_routes::readyz_handler))
-        .route("/live", get(service_routes::live_handler))
+        .route("/", get(service::landing_handler))
+        .route("/health", get(service::health_handler))
+        .route("/healthz", get(service::healthz_handler))
+        .route("/healthz/overload", get(service::overload_health_handler))
+        .route("/ready", get(service::ready_handler))
+        .route("/readyz", get(service::readyz_handler))
+        .route("/live", get(service::live_handler))
         .route("/metrics", get(catalog::metrics_handler))
-        .route("/v1/openapi.json", get(service_routes::openapi_handler))
-        .route("/v1/version", get(service_routes::version_handler))
+        .route("/v1/openapi.json", get(service::openapi_handler))
+        .route("/v1/version", get(service::version_handler))
         .route("/v1/datasets", get(catalog::datasets_handler))
         .route(
             "/v1/datasets/{release}/{species}/{assembly}",
@@ -100,55 +95,49 @@ pub fn build_router(state: AppState) -> Router {
                 "/debug/cache-stats",
                 get(diagnostics::cache_stats_dump_handler),
             )
-            .route(
-                "/debug/cluster/nodes",
-                get(service_routes::cluster_nodes_handler),
-            )
+            .route("/debug/cluster/nodes", get(service::cluster_nodes_handler))
             .route(
                 "/debug/cluster-status",
-                get(service_routes::cluster_status_handler),
+                get(service::cluster_status_handler),
             )
             .route(
                 "/debug/cluster/register",
-                post(service_routes::cluster_register_handler),
+                post(service::cluster_register_handler),
             )
             .route(
                 "/debug/cluster/heartbeat",
-                post(service_routes::cluster_heartbeat_handler),
+                post(service::cluster_heartbeat_handler),
             )
-            .route(
-                "/debug/cluster/mode",
-                post(service_routes::cluster_mode_handler),
-            )
+            .route("/debug/cluster/mode", post(service::cluster_mode_handler))
             .route(
                 "/debug/cluster/replicas",
-                get(service_routes::cluster_replica_list_handler),
+                get(service::cluster_replica_list_handler),
             )
             .route(
                 "/debug/cluster/replicas/health",
-                get(service_routes::cluster_replica_health_handler),
+                get(service::cluster_replica_health_handler),
             )
             .route(
                 "/debug/cluster/replicas/failover",
-                post(service_routes::cluster_replica_failover_handler),
+                post(service::cluster_replica_failover_handler),
             )
             .route(
                 "/debug/cluster/replicas/diagnostics",
-                get(service_routes::cluster_replica_diagnostics_handler),
+                get(service::cluster_replica_diagnostics_handler),
             )
             .route(
                 "/debug/recovery/run",
-                post(service_routes::cluster_recovery_run_handler),
+                post(service::cluster_recovery_run_handler),
             )
             .route(
                 "/debug/recovery/diagnostics",
-                get(service_routes::recovery_diagnostics_handler),
+                get(service::recovery_diagnostics_handler),
             )
             .route(
                 "/debug/failure-injection",
-                post(service_routes::failure_injection_handler),
+                post(service::failure_injection_handler),
             )
-            .route("/debug/chaos/run", post(service_routes::chaos_run_handler))
+            .route("/debug/chaos/run", post(service::chaos_run_handler))
             .route("/v1/_debug/echo", get(diagnostics::debug_echo_handler));
     }
     router
