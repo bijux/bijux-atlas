@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_atlas_model::artifact_paths;
+use bijux_atlas_model::dataset::{
+    ArtifactChecksums, ArtifactManifest, DatasetId, IngestAnomalyReport, ManifestInputHashes,
+    ManifestStats,
+};
 use serde_json::Value;
 use std::fs;
 use std::path::Path;
@@ -115,9 +120,8 @@ fn json_error_contract_is_stable() {
 #[test]
 fn atlas_validate_deep_requires_manifest_lock() {
     let root = tempdir().expect("tempdir");
-    let dataset = bijux_atlas::model::dataset::DatasetId::new("110", "homo_sapiens", "GRCh38")
-        .expect("dataset");
-    let paths = bijux_atlas::model::dataset::artifact_paths(root.path(), &dataset);
+    let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let paths = artifact_paths(root.path(), &dataset);
     fs::create_dir_all(&paths.inputs_dir).expect("inputs dir");
     fs::create_dir_all(&paths.derived_dir).expect("derived dir");
 
@@ -127,26 +131,25 @@ fn atlas_validate_deep_requires_manifest_lock() {
     create_minimal_valid_sqlite(&paths.sqlite);
     fs::write(
         &paths.anomaly_report,
-        serde_json::to_vec(&bijux_atlas::model::dataset::IngestAnomalyReport::default())
-            .expect("anomaly json"),
+        serde_json::to_vec(&IngestAnomalyReport::default()).expect("anomaly json"),
     )
     .expect("write anomaly");
 
     let sqlite_bytes = fs::read(&paths.sqlite).expect("read sqlite");
-    let mut manifest = bijux_atlas::model::dataset::ArtifactManifest::new(
+    let mut manifest = ArtifactManifest::new(
         "1".to_string(),
         "1".to_string(),
         dataset,
-        bijux_atlas::model::dataset::ArtifactChecksums::new(
+        ArtifactChecksums::new(
             bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
             bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
             bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),
             bijux_atlas::domain::sha256_hex(&sqlite_bytes),
         ),
-        bijux_atlas::model::dataset::ManifestStats::new(1, 1, 1),
+        ManifestStats::new(1, 1, 1),
     );
     let sqlite_sha = bijux_atlas::domain::sha256_hex(&sqlite_bytes);
-    manifest.input_hashes = bijux_atlas::model::dataset::ManifestInputHashes::new(
+    manifest.input_hashes = ManifestInputHashes::new(
         bijux_atlas::domain::sha256_hex(b"##gff-version 3\n"),
         bijux_atlas::domain::sha256_hex(b">chr1\nACGT\n"),
         bijux_atlas::domain::sha256_hex(b"chr1\t4\t6\t4\t5\n"),

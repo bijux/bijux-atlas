@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod canonical {
-    pub use crate::core::*;
+    pub use bijux_atlas_core::*;
 }
 
 pub mod cluster;

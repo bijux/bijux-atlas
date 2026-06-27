@@ -1,3 +1,3 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub use crate::compat::core::*;
+pub use bijux_atlas_api::*;

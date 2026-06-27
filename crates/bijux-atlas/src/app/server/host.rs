@@ -583,7 +583,7 @@ pub async fn main_entry() -> Result<(), String> {
         "cache": &cache_cfg,
         "limits": &query_limits
     });
-    let runtime_policy_hash = match bijux_atlas::core::stable_json_bytes(&runtime_policy_payload) {
+    let runtime_policy_hash = match bijux_atlas_core::stable_json_bytes(&runtime_policy_payload) {
         Ok(bytes) => sha256_hex(&bytes),
         Err(_) => sha256_hex(b"runtime-policy-hash-fallback"),
     };

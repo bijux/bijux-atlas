@@ -40,16 +40,6 @@ fn runtime_wrapper_modules_stay_reexport_only() {
             "runtime api wrapper must forward to src/compat/api.rs",
         ),
         (
-            "src/core.rs",
-            "pub use crate::compat::core::*;",
-            "runtime core wrapper must forward to src/compat/core.rs",
-        ),
-        (
-            "src/model.rs",
-            "pub use crate::compat::model::{dataset, policy};",
-            "runtime model wrapper must forward dataset and policy to src/compat/model/",
-        ),
-        (
             "src/query.rs",
             "pub use crate::compat::query::*;",
             "runtime query wrapper must forward to src/compat/query.rs",
@@ -76,23 +66,10 @@ fn runtime_wrapper_modules_stay_reexport_only() {
 #[test]
 fn compatibility_implementation_surface_stays_under_src_compat() {
     let root = crate_root();
-    let expected = [
-        (
-            "src/compat",
-            vec![
-                "api.rs",
-                "core.rs",
-                "ingest.rs",
-                "mod.rs",
-                "model",
-                "query.rs",
-            ],
-        ),
-        (
-            "src/compat/model",
-            vec!["dataset.rs", "mod.rs", "policy.rs"],
-        ),
-    ];
+    let expected = [(
+        "src/compat",
+        vec!["api.rs", "core.rs", "ingest.rs", "mod.rs", "query.rs"],
+    )];
 
     for (relative, allowed) in expected {
         let dir = root.join(relative);
@@ -119,20 +96,8 @@ fn compatibility_implementation_surface_stays_under_src_compat() {
 #[test]
 fn runtime_internals_use_owning_crates_not_path_stable_wrappers() {
     let root = crate_root().join("src");
-    let allowlist = [
-        "api.rs",
-        "core.rs",
-        "domain/ingest.rs",
-        "domain/mod.rs",
-        "model.rs",
-        "query.rs",
-    ];
-    let forbidden = [
-        "crate::api::",
-        "crate::core::",
-        "crate::domain::ingest::",
-        "crate::query::",
-    ];
+    let allowlist = ["api.rs", "domain/ingest.rs", "query.rs"];
+    let forbidden = ["crate::api::", "crate::domain::ingest::", "crate::query::"];
 
     for path in rust_files_under(&root) {
         let rel = path

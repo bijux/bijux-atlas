@@ -6,7 +6,7 @@ use bijux_atlas::app::cache::CacheError;
 use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
 use bijux_atlas::app::server::{DatasetCacheConfig, DatasetCacheManager};
 use bijux_atlas::domain::sha256_hex;
-use bijux_atlas::model::dataset::{
+use bijux_atlas_model::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use std::sync::atomic::{AtomicUsize, Ordering};

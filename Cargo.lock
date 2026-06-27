@@ -302,6 +302,7 @@ version = "0.2.1"
 dependencies = [
  "assert_cmd",
  "bijux-atlas",
+ "bijux-atlas-model",
  "bijux-cli",
  "rusqlite",
  "serde_json",
@@ -398,6 +399,7 @@ version = "0.2.1"
 dependencies = [
  "axum",
  "bijux-atlas",
+ "bijux-atlas-model",
  "criterion",
  "redis",
  "regex",

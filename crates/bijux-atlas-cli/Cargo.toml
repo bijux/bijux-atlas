@@ -18,6 +18,7 @@ bijux-atlas.workspace = true
 [dev-dependencies]
 assert_cmd = "2"
 bijux-cli.workspace = true
+bijux-atlas-model.workspace = true
 rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
 serde_json.workspace = true
 tempfile = "=3.27.0"

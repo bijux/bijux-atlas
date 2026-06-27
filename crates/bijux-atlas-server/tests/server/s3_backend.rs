@@ -6,7 +6,8 @@ use std::sync::Arc;
 use bijux_atlas::adapters::outbound::store::{LocalFsBackend, RetryPolicy, S3LikeBackend};
 use bijux_atlas::app::ports::{CatalogFetch, DatasetStoreBackend};
 use bijux_atlas::domain::sha256_hex;
-use bijux_atlas::model::dataset::{
+use bijux_atlas_model::artifact_paths;
+use bijux_atlas_model::dataset::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -291,7 +292,7 @@ async fn local_fs_backend_blocks_symlink_path_traversal() {
     let ds = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
     let tmp = tempfile::tempdir().expect("tmp");
     let outside = tempfile::tempdir().expect("outside");
-    let paths = bijux_atlas::model::dataset::artifact_paths(tmp.path(), &ds);
+    let paths = artifact_paths(tmp.path(), &ds);
     std::fs::create_dir_all(paths.dataset_root.parent().expect("dataset parent"))
         .expect("create parent");
     symlink(outside.path(), &paths.dataset_root).expect("symlink dataset root");

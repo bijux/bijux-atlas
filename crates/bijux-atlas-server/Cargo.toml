@@ -26,6 +26,7 @@ optional = true
 
 [dev-dependencies]
 axum = "0.8"
+bijux-atlas-model.workspace = true
 criterion = "0.8"
 redis = { version = "1.2", features = ["tokio-comp"] }
 regex = "1.11"

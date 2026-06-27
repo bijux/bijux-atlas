@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas::domain::sha256_hex;
-use bijux_atlas::model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use bijux_atlas::query::{GeneId, ReleaseGeneIndex, ReleaseGeneIndexEntry, SeqId};
+use bijux_atlas_model::dataset::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use rusqlite::Connection;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 

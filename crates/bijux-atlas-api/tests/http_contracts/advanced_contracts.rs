@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use bijux_atlas::model::dataset::{Catalog, CatalogEntry};
+use bijux_atlas_model::dataset::{Catalog, CatalogEntry};
 use hmac::KeyInit;
 
 #[tokio::test]
