@@ -3,7 +3,9 @@
 mod render;
 pub(crate) use self::render::*;
 
-include!("k8s.rs");
+mod k8s;
+pub(crate) use self::k8s::*;
+
 mod load;
 pub(crate) use self::load::*;
 
