@@ -1,110 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::errors::ApiError;
+use super::regions::parse_range_filter;
+use super::types::{
+    IncludeField, IntervalMode, ListGenesParams, SortKey, StrandMode, ALLOWED_INCLUDE,
+    MAX_CURSOR_BYTES, MAX_FILTER_COUNT,
+};
+use crate::errors::ApiError;
 use bijux_atlas_model::query::RegionFilter;
 use std::collections::{BTreeMap, BTreeSet};
-
-pub const ALLOWED_INCLUDE: [&str; 4] = ["coords", "biotype", "counts", "length"];
-pub const MAX_CURSOR_BYTES: usize = 4096;
-pub const MAX_FILTER_COUNT: usize = 6;
-pub const MAX_RANGE_SPAN: u64 = 5_000_000;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum IncludeField {
-    Coords,
-    Biotype,
-    Counts,
-    Length,
-}
-
-impl IncludeField {
-    fn parse(raw: &str) -> Option<Self> {
-        match raw {
-            "coords" => Some(Self::Coords),
-            "biotype" => Some(Self::Biotype),
-            "counts" => Some(Self::Counts),
-            "length" => Some(Self::Length),
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SortKey {
-    GeneIdAsc,
-    RegionAsc,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum IntervalMode {
-    Overlap,
-    Containment,
-    BoundaryTouch,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum StrandMode {
-    Any,
-    Plus,
-    Minus,
-    Unknown,
-}
-
-impl StrandMode {
-    fn parse(raw: &str) -> Option<Self> {
-        match raw {
-            "any" => Some(Self::Any),
-            "plus" => Some(Self::Plus),
-            "minus" => Some(Self::Minus),
-            "unknown" => Some(Self::Unknown),
-            _ => None,
-        }
-    }
-}
-
-impl IntervalMode {
-    fn parse(raw: &str) -> Option<Self> {
-        match raw {
-            "overlap" => Some(Self::Overlap),
-            "containment" => Some(Self::Containment),
-            "boundary_touch" => Some(Self::BoundaryTouch),
-            _ => None,
-        }
-    }
-}
-
-impl SortKey {
-    fn parse(raw: &str) -> Option<Self> {
-        match raw {
-            "gene_id:asc" => Some(Self::GeneIdAsc),
-            "region:asc" => Some(Self::RegionAsc),
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ListGenesParams {
-    pub dataset: Option<String>,
-    pub release: String,
-    pub species: String,
-    pub assembly: String,
-    pub limit: usize,
-    pub cursor: Option<String>,
-    pub gene_id: Option<String>,
-    pub name: Option<String>,
-    pub name_like: Option<String>,
-    pub biotype: Option<String>,
-    pub contig: Option<String>,
-    pub range: Option<String>,
-    pub min_transcripts: Option<u64>,
-    pub max_transcripts: Option<u64>,
-    pub sort: Option<SortKey>,
-    pub include: Option<Vec<IncludeField>>,
-    pub interval_mode: Option<IntervalMode>,
-    pub strand: Option<StrandMode>,
-    pub pretty: bool,
-}
 
 pub fn parse_list_genes_params(
     query: &BTreeMap<String, String>,
@@ -309,89 +212,6 @@ pub fn parse_list_genes_params_with_limit(
     })
 }
 
-pub fn parse_region_filter(raw: Option<String>) -> Result<Option<RegionFilter>, ApiError> {
-    let Some(value) = raw else {
-        return Ok(None);
-    };
-    let (seqid, coords) = value
-        .split_once(':')
-        .ok_or_else(|| ApiError::invalid_param("region", &value))?;
-    let (start, end) = coords
-        .split_once('-')
-        .ok_or_else(|| ApiError::invalid_param("region", &value))?;
-    let start = start
-        .parse::<u64>()
-        .map_err(|_| ApiError::invalid_param("region", &value))?;
-    let end = end
-        .parse::<u64>()
-        .map_err(|_| ApiError::invalid_param("region", &value))?;
-    if seqid.is_empty() {
-        return Err(ApiError::invalid_param("region", "contig is required"));
-    }
-    if start == 0 {
-        return Err(ApiError::invalid_param(
-            "region",
-            "start must be >= 1 (1-based closed coordinates)",
-        ));
-    }
-    if end < start {
-        return Err(ApiError::invalid_param(
-            "region",
-            "end must be >= start (1-based closed coordinates)",
-        ));
-    }
-    Ok(Some(RegionFilter {
-        seqid: seqid.to_string(),
-        start,
-        end,
-    }))
-}
-
-pub fn parse_range_filter(raw: Option<String>) -> Result<Option<RegionFilter>, ApiError> {
-    let Some(value) = raw else {
-        return Ok(None);
-    };
-    let (seqid, coords) = value
-        .split_once(':')
-        .ok_or_else(|| ApiError::invalid_param("range", "expected chr:start-end"))?;
-    let (start, end) = coords
-        .split_once('-')
-        .ok_or_else(|| ApiError::invalid_param("range", "expected chr:start-end"))?;
-    let start = start
-        .parse::<u64>()
-        .map_err(|_| ApiError::invalid_param("range", "start must be an integer"))?;
-    let end = end
-        .parse::<u64>()
-        .map_err(|_| ApiError::invalid_param("range", "end must be an integer"))?;
-    if seqid.is_empty() {
-        return Err(ApiError::invalid_param("range", "contig is required"));
-    }
-    if start == 0 {
-        return Err(ApiError::invalid_param(
-            "range",
-            "start must be >= 1 (1-based closed coordinates)",
-        ));
-    }
-    if end < start {
-        return Err(ApiError::invalid_param(
-            "range",
-            "end must be >= start (1-based closed coordinates)",
-        ));
-    }
-    let span = end - start + 1;
-    if span > MAX_RANGE_SPAN {
-        return Err(ApiError::invalid_param(
-            "range",
-            &format!("span exceeds {MAX_RANGE_SPAN} bases"),
-        ));
-    }
-    Ok(Some(RegionFilter {
-        seqid: seqid.to_string(),
-        start,
-        end,
-    }))
-}
-
 fn parse_include(raw_include: &str) -> Result<Vec<IncludeField>, ApiError> {
     let mut ordered_fields = Vec::new();
     let mut seen = BTreeSet::new();
@@ -449,7 +269,7 @@ fn validate_known_filters(query: &BTreeMap<String, String>) -> Result<(), ApiErr
     ];
     let mut unknown = query
         .keys()
-        .filter(|k| !ALLOWED_PARAMS.contains(&k.as_str()))
+        .filter(|key| !ALLOWED_PARAMS.contains(&key.as_str()))
         .cloned()
         .collect::<Vec<_>>();
     if unknown.is_empty() {
