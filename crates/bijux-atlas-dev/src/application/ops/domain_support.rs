@@ -3,31 +3,7 @@
 use crate::*;
 use std::collections::BTreeMap;
 
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct StackProfiles {
-    pub(crate) profiles: Vec<StackProfile>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct OpsProfileRegistry {
-    pub(crate) schema_version: u64,
-    pub(crate) profiles: Vec<OpsProfileSpec>,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub(crate) struct OpsProfileSpec {
-    pub(crate) id: String,
-    pub(crate) description: String,
-    #[serde(rename = "class")]
-    pub(crate) class_name: String,
-    pub(crate) safety_level: String,
-    pub(crate) required_tools: Vec<String>,
-    pub(crate) allowed_namespaces: Vec<String>,
-    pub(crate) required_services: Vec<String>,
-    pub(crate) optional_components: Vec<String>,
-    pub(crate) doc_link: String,
-    pub(crate) config_source_paths: Vec<String>,
-}
+pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
 
 #[derive(Debug, Deserialize, Clone)]
 pub(crate) struct StackManifestToml {
@@ -52,13 +28,6 @@ pub(crate) struct ToolDefinition {
     pub(crate) required: bool,
     pub(crate) version_regex: String,
     pub(crate) probe_argv: Vec<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub(crate) struct StackProfile {
-    pub(crate) name: String,
-    pub(crate) kind_profile: String,
-    pub(crate) cluster_config: String,
 }
 
 #[derive(Debug, Deserialize, Clone)]

@@ -43,8 +43,8 @@ pub(crate) use crate::ops_commands::{
     emit_payload, normalize_tool_version_with_regex, run_ops_command,
 };
 pub(crate) use crate::ops_support::{
-    OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
-    ToolDefinition, ToolchainInventory,
+    OpsCommandError, OpsFs, OpsProcess, StackProfile, SurfacesInventory, ToolDefinition,
+    ToolchainInventory,
 };
 pub(crate) use crate::perf_commands::run_perf_command;
 pub(crate) use crate::release_commands::run_release_command;

@@ -49,33 +49,15 @@ pub(crate) fn resolve_ops_root(
 }
 
 pub(crate) fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> {
-    let path = ops_root.join("stack/profiles.json");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    let payload: StackProfiles = serde_json::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
-    })?;
-    Ok(payload.profiles)
+    bijux_atlas_ops::stack::profile_catalog::load_profiles(ops_root)
+        .map_err(OpsCommandError::Profile)
 }
 
 pub(crate) fn load_profile_registry(
     ops_root: &Path,
 ) -> Result<OpsProfileRegistry, OpsCommandError> {
-    let path = ops_root.join("stack/profile-registry.json");
-    let text = std::fs::read_to_string(&path).map_err(|err| {
-        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-    })?;
-    let payload: OpsProfileRegistry = serde_json::from_str(&text).map_err(|err| {
-        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
-    })?;
-    if payload.schema_version == 0 {
-        return Err(OpsCommandError::Schema(format!(
-            "invalid {}: schema_version must be >=1",
-            path.display()
-        )));
-    }
-    Ok(payload)
+    bijux_atlas_ops::stack::profile_catalog::load_profile_registry(ops_root)
+        .map_err(OpsCommandError::Profile)
 }
 
 fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {
@@ -234,24 +216,8 @@ pub(crate) fn resolve_profile(
     requested: Option<String>,
     profiles: &[StackProfile],
 ) -> Result<StackProfile, OpsCommandError> {
-    if profiles.is_empty() {
-        return Err(OpsCommandError::Profile(
-            "no profiles declared in ops/stack/profiles.json".to_string(),
-        ));
-    }
-    if let Some(name) = requested {
-        return profiles
-            .iter()
-            .find(|p| p.name == name)
-            .cloned()
-            .ok_or_else(|| OpsCommandError::Profile(format!("unknown profile `{name}`")));
-    }
-    profiles
-        .iter()
-        .find(|p| p.name == "developer")
-        .cloned()
-        .or_else(|| profiles.first().cloned())
-        .ok_or_else(|| OpsCommandError::Profile("no default profile available".to_string()))
+    bijux_atlas_ops::stack::profile_catalog::resolve_profile(requested, profiles)
+        .map_err(OpsCommandError::Profile)
 }
 
 pub(crate) fn run_id_or_default(raw: Option<String>) -> Result<RunId, String> {

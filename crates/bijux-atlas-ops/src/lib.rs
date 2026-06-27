@@ -4,3 +4,4 @@
 
 pub mod kubernetes;
 pub mod reference;
+pub mod stack;
