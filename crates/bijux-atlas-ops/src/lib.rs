@@ -2,6 +2,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod diagnostics;
 pub mod inventory;
 pub mod kubernetes;
 pub mod lifecycle;
