@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::app::server::observability::unix_time_millis;
 use crate::app::server::state::AppState;
 use crate::domain::security::authorization::{
     AuthorizationDecision, AuthorizationEngine, AuthorizationPolicy, PermissionCatalog,
@@ -23,15 +24,8 @@ use std::sync::atomic::Ordering;
 use std::time::Instant;
 use tracing::{error, info, warn};
 
-pub fn chrono_like_unix_millis() -> u128 {
-    use std::time::{SystemTime, UNIX_EPOCH};
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_or(0, |d| d.as_millis())
-}
-
 fn chrono_like_unix_secs() -> u64 {
-    (chrono_like_unix_millis() / 1000) as u64
+    (unix_time_millis() / 1000) as u64
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -150,7 +144,7 @@ fn parse_api_key_record_line(input: &str) -> Option<ApiKeyRecord> {
 #[allow(dead_code)]
 fn generate_api_key(subject: &str) -> String {
     static COUNTER: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-    let now = chrono_like_unix_millis();
+    let now = unix_time_millis();
     let sequence = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
     let seed = format!("{subject}:{now}:{sequence}:{}", std::process::id());
     let material = sha256_hex(seed.as_bytes());
@@ -286,19 +280,6 @@ fn validate_signed_token(
         issuer: claims.iss,
         scopes,
     })
-}
-
-pub fn route_sli_class(route: &str) -> &'static str {
-    if matches!(
-        route,
-        "/health" | "/healthz" | "/ready" | "/readyz" | "/live" | "/metrics" | "/v1/version"
-    ) {
-        return "cheap";
-    }
-    if route.contains("/diff") || route.contains("/region") || route.contains("/sequence") {
-        return "heavy";
-    }
-    "standard"
 }
 
 fn route_auth_exempt(route: &str) -> bool {
@@ -976,11 +957,6 @@ async fn record_authorization_denial(
     );
 }
 
-pub async fn record_shed_reason(state: &AppState, reason: &str) {
-    let mut by = state.cache.metrics.shed_total_by_reason.lock().await;
-    *by.entry(reason.to_string()).or_insert(0) += 1;
-}
-
 #[allow(dead_code)] // ATLAS-EXC-0001
 pub(crate) async fn record_invariant_violation(state: &AppState, invariant: &str) {
     let mut by = state
@@ -1202,7 +1178,7 @@ pub(crate) async fn security_middleware(
             );
         }
         if let (Some(ts_value), Some(sig_value)) = (ts, sig) {
-            let now = chrono_like_unix_millis() / 1000;
+            let now = unix_time_millis() / 1000;
             let Some(parsed_ts) = ts_value.parse::<u128>().ok() else {
                 emit_auth_policy_decision(state.api.auth_mode, "user", &route, false);
                 record_auth_failure(&state, "hmac_invalid_timestamp", &route).await;

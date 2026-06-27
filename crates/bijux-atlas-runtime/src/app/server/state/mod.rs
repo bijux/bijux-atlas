@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::adapters::outbound::redis::RedisBackend;
+use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::app::cache::{CacheError, RegistrySourceHealth};
 use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
 use crate::app::server::cache;
-use crate::adapters::outbound::redis::RedisBackend;
-use crate::adapters::outbound::telemetry::rate_limiter::RateLimiter;
 use crate::domain::cluster::config::load_cluster_config_from_path;
 use crate::domain::cluster::membership::MembershipPolicy;
 use crate::domain::cluster::membership::MembershipRegistry;
@@ -20,9 +20,9 @@ use crate::domain::cluster::sharding::ShardRegistry;
 use crate::domain::sha256_hex;
 use crate::runtime::config::ApiConfig;
 use crate::StatusCode;
-use crate::{chrono_like_unix_millis, route_sli_class};
-use bijux_atlas_runtime::query::QueryLimits;
+use crate::{route_sli_class, unix_time_millis};
 use bijux_atlas_model::dataset::{artifact_paths, ArtifactManifest, Catalog, DatasetId};
+use bijux_atlas_runtime::query::QueryLimits;
 use rusqlite::Connection;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
@@ -241,7 +241,7 @@ impl RequestMetrics {
                     status.as_u16(),
                     class.to_string(),
                 ),
-                (id.to_string(), chrono_like_unix_millis()),
+                (id.to_string(), unix_time_millis()),
             );
         }
     }

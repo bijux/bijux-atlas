@@ -10,14 +10,14 @@ pub(crate) use axum::extract::State;
 pub(crate) use axum::http::{HeaderMap, HeaderValue, StatusCode};
 pub(crate) use axum::response::{IntoResponse, Response};
 pub(crate) use axum::Json;
+pub(crate) use bijux_atlas_api::{ApiError, ApiErrorCode};
+pub(crate) use bijux_atlas_core::sha256_hex;
+pub(crate) use bijux_atlas_model::dataset::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use bijux_atlas_runtime::query::{
     classify_query, decode_cursor, encode_cursor, estimate_query_cost, query_genes, CursorPayload,
     GeneFields, GeneQueryRequest, OrderMode, QueryClass, RegionFilter, TranscriptFilter,
     TranscriptQueryRequest,
 };
-pub(crate) use bijux_atlas_api::{ApiError, ApiErrorCode};
-pub(crate) use bijux_atlas_core::sha256_hex;
-pub(crate) use bijux_atlas_model::dataset::{ArtifactManifest, Catalog, DatasetId};
 pub(crate) use rusqlite::Connection;
 pub(crate) use std::collections::HashMap;
 pub(crate) use std::sync::atomic::{AtomicU64, Ordering};
@@ -39,11 +39,11 @@ pub mod version;
 #[allow(dead_code)]
 pub(crate) mod version_support;
 
-pub(crate) use crate::adapters::inbound::http::request_policies::{
-    chrono_like_unix_millis, record_shed_reason, route_sli_class,
-};
 pub(crate) use crate::app::cache::{CacheError, RegistrySourceHealth};
 pub(crate) use crate::app::ports::{CatalogFetch, DatasetStoreBackend};
+pub(crate) use crate::app::server::observability::{
+    chrono_like_unix_millis, record_shed_reason, route_sli_class, unix_time_millis,
+};
 pub(crate) use crate::app::server::{AppState, DatasetCacheConfig, DatasetCacheManager};
 #[rustfmt::skip]
 pub(crate) use crate::runtime::config::{RateLimitConfig, runtime_build_hash};
