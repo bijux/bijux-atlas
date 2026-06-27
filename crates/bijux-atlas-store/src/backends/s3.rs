@@ -12,12 +12,12 @@ use super::super::paths::{
 #[cfg(feature = "backend-s3")]
 use super::super::retry::{BackoffPolicy, RetryPolicy};
 #[cfg(feature = "backend-s3")]
-use crate::app::ports::store::{
+use crate::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
 };
 #[cfg(feature = "backend-s3")]
-use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
+use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
 #[cfg(feature = "backend-s3")]
 use reqwest::blocking::Client;
 #[cfg(feature = "backend-s3")]
@@ -69,9 +69,8 @@ impl S3LikeStore {
 
     #[must_use]
     pub fn with_presigned_endpoint(mut self, endpoint: Option<String>) -> Self {
-        self.presigned_endpoint = endpoint
-            .map(|x| x.trim_end_matches('/').to_string())
-            .filter(|x| !x.is_empty());
+        self.presigned_endpoint =
+            endpoint.map(|x| x.trim_end_matches('/').to_string()).filter(|x| !x.is_empty());
         self
     }
 
@@ -96,12 +95,7 @@ impl S3LikeStore {
 
     fn object_url(&self, key: &str) -> String {
         let base = self.presigned_endpoint.as_deref().unwrap_or(&self.endpoint);
-        format!(
-            "{}/{}/{}",
-            base.trim_end_matches('/'),
-            self.bucket,
-            key.trim_start_matches('/')
-        )
+        format!("{}/{}/{}", base.trim_end_matches('/'), self.bucket, key.trim_start_matches('/'))
     }
 
     fn get_with_retry(&self, key: &str) -> Result<Vec<u8>, StoreError> {
@@ -182,15 +176,11 @@ impl S3LikeStore {
                         return Ok(bytes);
                     }
                     if response.status().as_u16() == 404 {
-                        return Err(StoreError::new(
-                            StoreErrorCode::NotFound,
-                            "object not found",
-                        ));
+                        return Err(StoreError::new(StoreErrorCode::NotFound, "object not found"));
                     }
                 }
                 Err(err) => {
-                    self.instrumentation
-                        .observe_error("s3like", StoreErrorCode::Network);
+                    self.instrumentation.observe_error("s3like", StoreErrorCode::Network);
                     if attempt + 1 >= self.retry.max_attempts {
                         return Err(StoreError::new(StoreErrorCode::Network, err.to_string()));
                     }
@@ -207,17 +197,15 @@ impl S3LikeStore {
         if let Some(token) = &self.bearer_token {
             request = request.bearer_auth(token);
         }
-        let response = request
-            .send()
-            .map_err(|e| StoreError::new(StoreErrorCode::Network, e.to_string()))?;
+        let response =
+            request.send().map_err(|e| StoreError::new(StoreErrorCode::Network, e.to_string()))?;
         if !response.status().is_success() {
             return Err(StoreError::new(
                 StoreErrorCode::Network,
                 format!("s3-like put failed: {}", response.status()),
             ));
         }
-        self.instrumentation
-            .observe_upload("s3like", bytes.len(), started.elapsed());
+        self.instrumentation.observe_upload("s3like", bytes.len(), started.elapsed());
         Ok(())
     }
 }

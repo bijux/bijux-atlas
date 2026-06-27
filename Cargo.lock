@@ -234,6 +234,7 @@ dependencies = [
  "bijux-atlas-core",
  "bijux-atlas-model",
  "bijux-atlas-query",
+ "bijux-atlas-store",
  "bijux-cli",
  "brotli",
  "clap",
@@ -315,6 +316,21 @@ dependencies = [
  "tempfile",
  "toml",
  "unicode-normalization",
+]
+
+[[package]]
+name = "bijux-atlas-store"
+version = "0.2.1"
+dependencies = [
+ "bijux-atlas-core",
+ "bijux-atlas-model",
+ "criterion",
+ "reqwest 0.12.28",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tiny_http",
+ "toml",
 ]
 
 [[package]]

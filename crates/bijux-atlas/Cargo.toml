@@ -16,8 +16,8 @@ keywords = ["bioinformatics", "genomics", "gff3", "fasta", "gene-query"]
 [features]
 default = ["serde", "backend-local"]
 serde = []
-backend-local = ["serde"]
-backend-s3 = ["backend-local"]
+backend-local = ["serde", "bijux-atlas-store/backend-local"]
+backend-s3 = ["backend-local", "bijux-atlas-store/backend-s3"]
 bench-ingest-throughput = []
 jemalloc = ["dep:tikv-jemallocator"]
 
@@ -37,6 +37,7 @@ bijux-atlas-api = { workspace = true }
 bijux-atlas-core = { workspace = true }
 bijux-atlas-model = { workspace = true }
 bijux-atlas-query = { workspace = true }
+bijux-atlas-store = { workspace = true, default-features = false }
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 csv = "1.4"
@@ -125,10 +126,6 @@ path = "tests/contracts_layering_direction.rs"
 [[test]]
 name = "governance_no_network"
 path = "tests/governance/no_network.rs"
-
-[[test]]
-name = "infrastructure_store"
-path = "tests/infrastructure/store.rs"
 
 [[test]]
 name = "interfaces_client"
@@ -318,21 +315,6 @@ name = "ingest_transcript_extraction"
 path = "benches/ingest/transcript_extraction.rs"
 harness = false
 required-features = ["bench-ingest-throughput"]
-
-[[bench]]
-name = "store_catalog_merge"
-path = "benches/store/catalog_merge.rs"
-harness = false
-
-[[bench]]
-name = "store_checksum_pipeline"
-path = "benches/store/checksum_pipeline.rs"
-harness = false
-
-[[bench]]
-name = "store_hot_read"
-path = "benches/store/store_hot_read.rs"
-harness = false
 
 [[bench]]
 name = "api_openapi_generation"

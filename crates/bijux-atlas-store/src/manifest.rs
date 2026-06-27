@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::sha256_hex;
+use bijux_atlas_core::sha256_hex;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -43,9 +43,7 @@ impl ManifestLock {
 pub fn verify_expected_sha256(bytes: &[u8], expected: &str) -> Result<(), String> {
     let actual = sha256_hex(bytes);
     if actual != expected {
-        return Err(format!(
-            "sha256 mismatch expected={expected} actual={actual}"
-        ));
+        return Err(format!("sha256 mismatch expected={expected} actual={actual}"));
     }
     Ok(())
 }

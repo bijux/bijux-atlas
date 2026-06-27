@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::adapters::outbound::store::{canonical_catalog_json, ArtifactStore, LocalFsStore};
-use bijux_atlas::domain::dataset::{
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
-use bijux_atlas::domain::sha256_hex;
+use bijux_atlas_store::{canonical_catalog_json, ArtifactStore, LocalFsStore};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 use tempfile::tempdir;
@@ -18,12 +18,7 @@ fn manifest(dataset: DatasetId) -> ArtifactManifest {
         "1".to_string(),
         "1".to_string(),
         dataset,
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            "d".repeat(64),
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
         ManifestStats::new(1, 1, 1),
     );
     m.db_hash = m.checksums.sqlite_sha256.clone();

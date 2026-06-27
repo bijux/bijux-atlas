@@ -6,11 +6,12 @@ use super::super::paths::{
     dataset_artifact_paths, immutability_marker_path, lifecycle_state_path,
     lifecycle_transitions_path, manifest_lock_path, publish_lock_path, CATALOG_FILE,
 };
-use crate::app::ports::store::{
+use crate::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
 };
-use crate::domain::dataset::{ArtifactManifest, Catalog, DatasetId};
+use bijux_atlas_core::canonical;
+use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId, DatasetLifecycleTransition};
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -25,10 +26,7 @@ pub struct LocalFsStore {
 impl LocalFsStore {
     #[must_use]
     pub fn new(root: PathBuf) -> Self {
-        Self {
-            root,
-            instrumentation: Arc::new(NoopInstrumentation),
-        }
+        Self { root, instrumentation: Arc::new(NoopInstrumentation) }
     }
 
     #[must_use]
@@ -62,15 +60,11 @@ impl ArtifactStore for LocalFsStore {
             .map_err(|e| StoreError::new(StoreErrorCode::NotFound, e.to_string()))?;
 
         let lock_raw = fs::read_to_string(&lock_path).map_err(|e| {
-            StoreError::new(
-                StoreErrorCode::Validation,
-                format!("missing manifest.lock: {e}"),
-            )
+            StoreError::new(StoreErrorCode::Validation, format!("missing manifest.lock: {e}"))
         })?;
         let lock: ManifestLock = serde_json::from_str(&lock_raw)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
-        lock.validate(&raw, &sqlite)
-            .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
+        lock.validate(&raw, &sqlite).map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
 
         let manifest: ArtifactManifest = serde_json::from_slice(&raw)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
@@ -121,11 +115,8 @@ impl ArtifactStore for LocalFsStore {
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         fs::rename(&sqlite_tmp, &paths.sqlite)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-        fs::rename(
-            &lock_tmp,
-            manifest_lock_path(Path::new(&self.root), dataset),
-        )
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+        fs::rename(&lock_tmp, manifest_lock_path(Path::new(&self.root), dataset))
+            .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         let marker_path = immutability_marker_path(Path::new(&self.root), dataset);
         let marker_tmp = paths.derived_dir.join("immutable.release.json.tmp");
         let marker = serde_json::json!({
@@ -135,13 +126,13 @@ impl ArtifactStore for LocalFsStore {
             "manifest_sha256": expected_manifest_sha256,
             "sqlite_sha256": expected_sqlite_sha256
         });
-        let marker_bytes = crate::domain::canonical::stable_json_bytes(&marker)
+        let marker_bytes = canonical::stable_json_bytes(&marker)
             .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
         write_and_sync(&marker_tmp, &marker_bytes)?;
         fs::rename(&marker_tmp, marker_path)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
 
-        let transition = crate::domain::dataset::DatasetLifecycleTransition::publish(
+        let transition = DatasetLifecycleTransition::publish(
             dataset.clone(),
             unix_timestamp_seconds()?,
             "atlas-store".to_string(),
@@ -155,9 +146,8 @@ impl ArtifactStore for LocalFsStore {
         let transitions_path = lifecycle_transitions_path(Path::new(&self.root), dataset);
         let transitions_tmp = paths.derived_dir.join("lifecycle.transitions.json.tmp");
         let transitions_payload = vec![transition.clone()];
-        let transitions_bytes =
-            crate::domain::canonical::stable_json_bytes(&transitions_payload)
-                .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
+        let transitions_bytes = canonical::stable_json_bytes(&transitions_payload)
+            .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
         write_and_sync(&transitions_tmp, &transitions_bytes)?;
         fs::rename(&transitions_tmp, transitions_path)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
@@ -173,7 +163,7 @@ impl ArtifactStore for LocalFsStore {
             "reason": transition.reason,
             "transition_count": 1
         });
-        let state_bytes = crate::domain::canonical::stable_json_bytes(&state)
+        let state_bytes = canonical::stable_json_bytes(&state)
             .map_err(|e| StoreError::new(StoreErrorCode::Internal, e.to_string()))?;
         write_and_sync(&state_tmp, &state_bytes)?;
         fs::rename(&state_tmp, state_path)
@@ -199,11 +189,7 @@ impl ArtifactStore for LocalFsStore {
         fs::create_dir_all(&paths.derived_dir)
             .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
         let lock_path = publish_lock_path(Path::new(&self.root), dataset);
-        match OpenOptions::new()
-            .create_new(true)
-            .write(true)
-            .open(&lock_path)
-        {
+        match OpenOptions::new().create_new(true).write(true).open(&lock_path) {
             Ok(_) => Ok(PublishLockGuard::new(lock_path)),
             Err(e) => Err(StoreError::new(
                 StoreErrorCode::Conflict,
@@ -238,10 +224,8 @@ fn enforce_dataset_immutability(root: &Path, dataset: &DatasetId) -> Result<(), 
 fn write_and_sync(path: &Path, bytes: &[u8]) -> Result<(), StoreError> {
     let mut file = std::fs::File::create(path)
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.write_all(bytes)
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.sync_all()
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.write_all(bytes).map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.sync_all().map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
     Ok(())
 }
 
@@ -250,7 +234,6 @@ fn sync_dir(dir: &Path) -> Result<(), StoreError> {
         .read(true)
         .open(dir)
         .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.sync_all()
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
+    file.sync_all().map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
     Ok(())
 }

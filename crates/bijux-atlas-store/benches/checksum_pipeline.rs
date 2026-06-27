@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::adapters::outbound::store::{verify_expected_sha256, ManifestLock};
-use bijux_atlas::domain::sha256_hex;
+use bijux_atlas_core::sha256_hex;
+use bijux_atlas_store::{verify_expected_sha256, ManifestLock};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::hint::black_box;
 
@@ -17,8 +17,7 @@ fn bench_checksum_pipeline(c: &mut Criterion) {
             let expected_sqlite = sha256_hex(&sqlite_bytes);
             verify_expected_sha256(&manifest_bytes, &expected_manifest).expect("manifest hash");
             verify_expected_sha256(&sqlite_bytes, &expected_sqlite).expect("sqlite hash");
-            lock.validate(&manifest_bytes, &sqlite_bytes)
-                .expect("lock validate");
+            lock.validate(&manifest_bytes, &sqlite_bytes).expect("lock validate");
         })
     });
 }

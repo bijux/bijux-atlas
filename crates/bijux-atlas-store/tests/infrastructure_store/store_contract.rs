@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::adapters::outbound::store::{
+use bijux_atlas_core::{sha256_hex, ErrorCode};
+use bijux_atlas_model::{
+    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
+};
+use bijux_atlas_store::{
     dataset_artifact_paths, manifest_lock_path, merge_catalogs, validate_backend_compiled,
     ArtifactStore, BackendKind, LocalFsStore, StoreErrorCode, StoreMetricsCollector,
 };
 #[cfg(feature = "backend-s3")]
-use bijux_atlas::adapters::outbound::store::{HttpReadonlyStore, S3LikeStore};
-use bijux_atlas::domain::dataset::{
-    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
-};
-use bijux_atlas::domain::sha256_hex;
+use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
 use std::fs;
 #[cfg(feature = "backend-s3")]
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -29,12 +29,7 @@ fn mk_manifest(dataset: DatasetId) -> ArtifactManifest {
         "1".to_string(),
         "1".to_string(),
         dataset,
-        ArtifactChecksums::new(
-            "a".repeat(64),
-            "b".repeat(64),
-            "c".repeat(64),
-            "d".repeat(64),
-        ),
+        ArtifactChecksums::new("a".repeat(64), "b".repeat(64), "c".repeat(64), "d".repeat(64)),
         ManifestStats::new(1, 1, 1),
     );
     manifest.db_hash = manifest.checksums.sqlite_sha256.clone();
@@ -66,23 +61,14 @@ fn local_publish_is_atomic_and_writes_manifest_lock() {
     let expected_sqlite = sha256_hex(&sqlite_bytes);
 
     store
-        .put_dataset(
-            &dataset,
-            &manifest_bytes,
-            &sqlite_bytes,
-            &expected_manifest,
-            &expected_sqlite,
-        )
+        .put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, &expected_manifest, &expected_sqlite)
         .expect("publish dataset");
 
     let lock_path = manifest_lock_path(root.path(), &dataset);
     assert!(lock_path.exists(), "manifest.lock must exist");
 
     let loaded = store.get_manifest(&dataset).expect("read manifest");
-    assert_eq!(
-        loaded.dataset.canonical_string(),
-        dataset.canonical_string()
-    );
+    assert_eq!(loaded.dataset.canonical_string(), dataset.canonical_string());
 }
 
 #[test]
@@ -97,13 +83,7 @@ fn local_publish_rejects_overwrite_of_existing_dataset() {
     let expected_sqlite = sha256_hex(&sqlite_bytes);
 
     store
-        .put_dataset(
-            &dataset,
-            &manifest_bytes,
-            &sqlite_bytes,
-            &expected_manifest,
-            &expected_sqlite,
-        )
+        .put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, &expected_manifest, &expected_sqlite)
         .expect("initial publish");
 
     let err = store
@@ -133,13 +113,7 @@ fn local_publish_rejects_checksum_mismatch_without_finalizing() {
     let sqlite_bytes = b"sqlite-bytes".to_vec();
 
     let err = store
-        .put_dataset(
-            &dataset,
-            &manifest_bytes,
-            &sqlite_bytes,
-            "deadbeef",
-            "deadbeef",
-        )
+        .put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, "deadbeef", "deadbeef")
         .expect_err("checksum mismatch should fail");
     assert_eq!(err.code, StoreErrorCode::Validation);
 
@@ -154,9 +128,8 @@ fn cached_only_mode_never_touches_network() {
         .with_cache(root.path().to_path_buf(), true);
     let dataset = mk_dataset();
 
-    let err = store
-        .get_manifest(&dataset)
-        .expect_err("cached only with empty cache must fail fast");
+    let err =
+        store.get_manifest(&dataset).expect_err("cached only with empty cache must fail fast");
     assert_eq!(err.code, StoreErrorCode::CachedOnly);
 }
 
@@ -166,9 +139,7 @@ fn store_errors_have_stable_codes() {
     let store = LocalFsStore::new(root.path().to_path_buf());
     let dataset = mk_dataset();
 
-    let err = store
-        .get_manifest(&dataset)
-        .expect_err("missing manifest should map to not_found");
+    let err = store.get_manifest(&dataset).expect_err("missing manifest should map to not_found");
     assert_eq!(err.code, StoreErrorCode::NotFound);
     assert!(err.to_string().contains("not_found:"));
 }
@@ -184,12 +155,9 @@ fn store_sources_do_not_reference_retired_split_crates() {
             dependency_keys.extend(table.keys().cloned());
         }
     }
-    for forbidden in [
-        "bijux-atlas-api",
-        "bijux-atlas-client",
-        "bijux-atlas-ingest",
-        "bijux-atlas-server",
-    ] {
+    for forbidden in
+        ["bijux-atlas-api", "bijux-atlas-client", "bijux-atlas-ingest", "bijux-atlas-server"]
+    {
         assert!(
             !dependency_keys.contains(forbidden),
             "retired split crate dependency found in merged atlas crate: {forbidden}"
@@ -199,15 +167,8 @@ fn store_sources_do_not_reference_retired_split_crates() {
 
 #[test]
 fn store_error_code_maps_to_core_error_code() {
-    use bijux_atlas::contracts::errors::ErrorCode;
-    assert_eq!(
-        StoreErrorCode::CachedOnly.as_error_code(),
-        ErrorCode::NotReady
-    );
-    assert_eq!(
-        StoreErrorCode::Validation.as_error_code(),
-        ErrorCode::InvalidQueryParameter
-    );
+    assert_eq!(StoreErrorCode::CachedOnly.as_error_code(), ErrorCode::NotReady);
+    assert_eq!(StoreErrorCode::Validation.as_error_code(), ErrorCode::InvalidQueryParameter);
 }
 
 #[test]
@@ -238,21 +199,13 @@ fn verified_sqlite_read_rejects_checksum_mismatch() {
     let expected_manifest = sha256_hex(&manifest_bytes);
     let expected_sqlite = sha256_hex(&sqlite_bytes);
     store
-        .put_dataset(
-            &dataset,
-            &manifest_bytes,
-            &sqlite_bytes,
-            &expected_manifest,
-            &expected_sqlite,
-        )
+        .put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, &expected_manifest, &expected_sqlite)
         .expect("publish dataset");
 
     let sqlite_path = dataset_artifact_paths(root.path(), &dataset).sqlite;
     fs::write(sqlite_path, b"tampered").expect("tamper sqlite");
 
-    let err = store
-        .get_sqlite_bytes_verified(&dataset)
-        .expect_err("checksum mismatch must fail");
+    let err = store.get_sqlite_bytes_verified(&dataset).expect_err("checksum mismatch must fail");
     assert_eq!(err.code, StoreErrorCode::Validation);
 }
 
@@ -286,11 +239,8 @@ fn deterministic_catalog_merge_keeps_stable_ordering() {
         ),
     ]);
     let merged = merge_catalogs(&[c1, c2]);
-    let ids: Vec<String> = merged
-        .datasets
-        .iter()
-        .map(|entry| entry.dataset.canonical_string())
-        .collect();
+    let ids: Vec<String> =
+        merged.datasets.iter().map(|entry| entry.dataset.canonical_string()).collect();
     assert_eq!(
         ids,
         vec![
@@ -349,10 +299,7 @@ fn deterministic_catalog_merge_scales_with_stable_output() {
         "merged catalog must be strictly sorted by canonical dataset id"
     );
     assert!(
-        merged1
-            .datasets
-            .iter()
-            .all(|e| e.manifest_path.starts_with("release=")),
+        merged1.datasets.iter().all(|e| e.manifest_path.starts_with("release=")),
         "first catalog wins for duplicate dataset IDs"
     );
 }
@@ -508,24 +455,11 @@ fn fuzzish_checksum_failures_never_leave_partial_files() {
         seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
         let bad_manifest = (seed & 1) == 1;
         let bad_sqlite = (seed & 2) == 2;
-        let manifest_sha = if bad_manifest {
-            "00".repeat(32)
-        } else {
-            expected_manifest.clone()
-        };
-        let sqlite_sha = if bad_sqlite {
-            "ff".repeat(32)
-        } else {
-            expected_sqlite.clone()
-        };
+        let manifest_sha = if bad_manifest { "00".repeat(32) } else { expected_manifest.clone() };
+        let sqlite_sha = if bad_sqlite { "ff".repeat(32) } else { expected_sqlite.clone() };
 
-        let _ = store.put_dataset(
-            &dataset,
-            &manifest_bytes,
-            &sqlite_bytes,
-            &manifest_sha,
-            &sqlite_sha,
-        );
+        let _ =
+            store.put_dataset(&dataset, &manifest_bytes, &sqlite_bytes, &manifest_sha, &sqlite_sha);
 
         if manifest_sha != expected_manifest || sqlite_sha != expected_sqlite {
             assert!(
@@ -549,9 +483,7 @@ fn fuzzish_checksum_failures_never_leave_partial_files() {
 fn s3_cached_only_mode_is_conformance_compatible() {
     let store = S3LikeStore::new("http://127.0.0.1:9".to_string(), "atlas".to_string())
         .with_cache(tempdir().expect("cache").path().to_path_buf(), true);
-    let err = store
-        .get_manifest(&mk_dataset())
-        .expect_err("cached-only mode should fail");
+    let err = store.get_manifest(&mk_dataset()).expect_err("cached-only mode should fail");
     assert_eq!(err.code, StoreErrorCode::CachedOnly);
 }
 
@@ -559,8 +491,6 @@ fn s3_cached_only_mode_is_conformance_compatible() {
 #[cfg(feature = "backend-s3")]
 fn http_store_blocks_private_ssrf_targets() {
     let store = HttpReadonlyStore::new("http://127.0.0.1:8080".to_string());
-    let err = store
-        .list_datasets()
-        .expect_err("private host must be blocked");
+    let err = store.list_datasets().expect_err("private host must be blocked");
     assert_eq!(err.code, StoreErrorCode::Validation);
 }

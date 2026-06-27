@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::domain::dataset::{artifact_paths, ArtifactPaths, DatasetId};
+use bijux_atlas_model::{artifact_paths, ArtifactPaths, DatasetId};
 use std::path::{Path, PathBuf};
 
 pub const CATALOG_FILE: &str = "catalog.json";
@@ -39,35 +39,25 @@ pub fn dataset_manifest_lock_key(dataset: &DatasetId) -> String {
 
 #[must_use]
 pub fn manifest_lock_path(root: &Path, dataset: &DatasetId) -> PathBuf {
-    dataset_artifact_paths(root, dataset)
-        .derived_dir
-        .join(MANIFEST_LOCK_FILE)
+    dataset_artifact_paths(root, dataset).derived_dir.join(MANIFEST_LOCK_FILE)
 }
 
 #[must_use]
 pub fn publish_lock_path(root: &Path, dataset: &DatasetId) -> PathBuf {
-    dataset_artifact_paths(root, dataset)
-        .derived_dir
-        .join(PUBLISH_LOCK_FILE)
+    dataset_artifact_paths(root, dataset).derived_dir.join(PUBLISH_LOCK_FILE)
 }
 
 #[must_use]
 pub fn immutability_marker_path(root: &Path, dataset: &DatasetId) -> PathBuf {
-    dataset_artifact_paths(root, dataset)
-        .derived_dir
-        .join(IMMUTABILITY_MARKER_FILE)
+    dataset_artifact_paths(root, dataset).derived_dir.join(IMMUTABILITY_MARKER_FILE)
 }
 
 #[must_use]
 pub fn lifecycle_state_path(root: &Path, dataset: &DatasetId) -> PathBuf {
-    dataset_artifact_paths(root, dataset)
-        .derived_dir
-        .join(LIFECYCLE_STATE_FILE)
+    dataset_artifact_paths(root, dataset).derived_dir.join(LIFECYCLE_STATE_FILE)
 }
 
 #[must_use]
 pub fn lifecycle_transitions_path(root: &Path, dataset: &DatasetId) -> PathBuf {
-    dataset_artifact_paths(root, dataset)
-        .derived_dir
-        .join(LIFECYCLE_TRANSITIONS_FILE)
+    dataset_artifact_paths(root, dataset).derived_dir.join(LIFECYCLE_TRANSITIONS_FILE)
 }

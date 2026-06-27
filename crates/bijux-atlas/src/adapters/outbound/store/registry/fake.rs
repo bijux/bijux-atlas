@@ -48,15 +48,11 @@ impl DatasetStoreBackend for FakeStore {
         if if_none_match == Some(etag.as_str()) {
             return Ok(CatalogFetch::NotModified);
         }
-        Ok(CatalogFetch::Updated {
-            etag,
-            catalog: self.catalog.lock().await.clone(),
-        })
+        Ok(CatalogFetch::Updated { etag, catalog: self.catalog.lock().await.clone() })
     }
 
     async fn fetch_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, CacheError> {
-        self.fetch_calls
-            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        self.fetch_calls.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         if self.slow_read {
             let delay = if self.slow_read_delay.is_zero() {
                 Duration::from_millis(200)
