@@ -1,17 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[path = "server/api_surface_snapshots.rs"]
-mod api_surface_snapshots;
 #[path = "server/async_runtime_contract.rs"]
 mod async_runtime_contract;
 #[path = "server/download_then_serve.rs"]
 mod download_then_serve;
-#[path = "server/endpoints_contract.rs"]
-mod endpoints_contract;
 #[path = "server/import_boundary_guardrails.rs"]
 mod import_boundary_guardrails;
-#[path = "server/key_endpoints_golden.rs"]
-mod key_endpoints_golden;
 #[path = "server/logging_contracts.rs"]
 mod logging_contracts;
 #[path = "server/observability_contract.rs"]

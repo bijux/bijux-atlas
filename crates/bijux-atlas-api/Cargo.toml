@@ -26,6 +26,7 @@ bijux-atlas = { workspace = true }
 criterion = "0.8"
 hex = "0.4"
 hmac = "0.13"
+regex = "1.11"
 rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
 sha2 = "0.11"
 tempfile = "=3.27.0"
@@ -42,6 +43,10 @@ path = "tests/client.rs"
 [[test]]
 name = "http_contracts"
 path = "tests/http_contracts.rs"
+
+[[test]]
+name = "http_surface"
+path = "tests/http_surface.rs"
 
 [[bench]]
 name = "openapi_generation"
