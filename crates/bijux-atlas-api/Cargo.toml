@@ -27,6 +27,10 @@ criterion = "0.8"
 name = "contracts"
 path = "tests/contracts.rs"
 
+[[test]]
+name = "client"
+path = "tests/client.rs"
+
 [[bench]]
 name = "openapi_generation"
 path = "benches/openapi_generation.rs"

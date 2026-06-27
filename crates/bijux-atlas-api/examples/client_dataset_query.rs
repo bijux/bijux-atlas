@@ -1,4 +1,4 @@
-use bijux_atlas::adapters::inbound::client::{AtlasClient, ClientConfig, DatasetQuery};
+use bijux_atlas_api::client::{AtlasClient, ClientConfig, DatasetQuery};
 
 fn main() {
     let base_url =

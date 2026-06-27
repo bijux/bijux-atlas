@@ -1,6 +1,6 @@
-use bijux_atlas::adapters::inbound::client::AtlasClient;
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_atlas_api::client::AtlasClient;
 use reqwest as _;
 use serde as _;
 use serde_json as _;

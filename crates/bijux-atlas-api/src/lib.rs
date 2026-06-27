@@ -8,10 +8,10 @@ pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
 
-/// Compatibility policies shared with API consumers.
-pub mod compat;
 /// Rust client bindings for the stable Atlas API surface.
 pub mod client;
+/// Compatibility policies shared with API consumers.
+pub mod compat;
 /// Conversion helpers between wire and internal domain types.
 pub mod convert;
 /// DTOs and stable API data contracts.

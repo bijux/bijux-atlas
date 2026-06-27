@@ -124,10 +124,6 @@ name = "governance_no_network"
 path = "tests/governance/no_network.rs"
 
 [[test]]
-name = "interfaces_client"
-path = "tests/interfaces/client.rs"
-
-[[test]]
 name = "interfaces_cli_runtime"
 path = "tests/interfaces/cli_runtime_parity.rs"
 
@@ -138,6 +134,10 @@ path = "tests/interfaces/cli_surface.rs"
 [[test]]
 name = "interfaces_help_surface"
 path = "tests/interfaces/help_surface.rs"
+
+[[test]]
+name = "interfaces_client_compatibility"
+path = "tests/interfaces/client_compatibility.rs"
 
 [[test]]
 name = "interfaces_server"
@@ -326,10 +326,6 @@ harness = false
 name = "server_gene_lookup_p99"
 path = "benches/server/gene_lookup_p99.rs"
 harness = false
-
-[[example]]
-name = "client_dataset_query"
-path = "examples/client/dataset_query.rs"
 
 [[example]]
 name = "library_getting_started"
