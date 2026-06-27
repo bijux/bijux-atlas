@@ -269,6 +269,27 @@ fn atlas_contract_roots_stay_contract_owned() {
 }
 
 #[test]
+fn atlas_runtime_test_surface_does_not_duplicate_api_client_suite() {
+    let root = repo_root();
+    assert!(
+        !root
+            .join("crates/bijux-atlas/tests/interfaces/client.rs")
+            .exists(),
+        "runtime test surface must not mirror the API-owned client suite"
+    );
+    assert!(
+        root.join("crates/bijux-atlas/tests/interfaces/client_compatibility.rs")
+            .is_file(),
+        "runtime must keep the narrow legacy client compatibility check"
+    );
+    assert!(
+        root.join("crates/bijux-atlas-api/tests/client.rs")
+            .is_file(),
+        "api crate must own the full Rust client test suite"
+    );
+}
+
+#[test]
 fn atlas_domain_barrel_stays_thin() {
     let root = repo_root();
     let text =

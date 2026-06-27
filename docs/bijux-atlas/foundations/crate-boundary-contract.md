@@ -29,6 +29,7 @@ This contract defines where Atlas code belongs and where it does not.
 - `bijux-atlas-model` owns persisted dataset manifests, cross-crate gene or diff value objects, and policy enums. Runtime code may re-export those types but must not redefine them.
 - `bijux-atlas-query` owns query request or response semantics, pagination cursors, query budgeting, SQLite query execution, and query-focused benches or fixtures.
 - `bijux-atlas-api` owns API DTOs, error envelopes, OpenAPI definitions, Rust client compatibility, and API-facing HTTP contract or observability suites. Runtime code may route requests through that surface but must not duplicate or redefine it.
+- Full Rust client integration, retry, schema, and runtime-compatibility suites belong under `crates/bijux-atlas-api/tests/`. Runtime keeps only the narrow legacy import compatibility checks that prove its client facade still forwards to the API-owned surface.
 - `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
 - `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
 - Runtime `src/api`, `src/core`, `src/model`, and `src/query` are compatibility facades only; implementation ownership remains in the dedicated Atlas subcrates.
