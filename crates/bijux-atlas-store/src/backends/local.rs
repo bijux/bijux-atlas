@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::super::catalog::validate_catalog_strict;
-use super::super::manifest::ManifestLock;
-use super::super::paths::{
+use super::super::layout::{
     dataset_artifact_paths, immutability_marker_path, lifecycle_state_path,
     lifecycle_transitions_path, manifest_lock_path, publish_lock_path, CATALOG_FILE,
 };
+use super::super::manifest::ManifestLock;
 use crate::{
     ArtifactStore, NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation,
