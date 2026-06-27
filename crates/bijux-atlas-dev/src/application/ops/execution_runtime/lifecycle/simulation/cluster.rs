@@ -2,6 +2,9 @@
 //! Kind and simulation-cluster operations for install-status flows.
 
 use super::*;
+use crate::cli::OpsCommonArgs;
+use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
+use crate::{resolve_repo_root, OpsProcess, RunId};
 use std::time::Duration;
 
 fn write_observe_contract_report(

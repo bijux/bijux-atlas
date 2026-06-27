@@ -19,7 +19,9 @@ pub enum WorkspaceSurface {
 impl WorkspaceSurface {
     const fn relative_path(self) -> &'static str {
         match self {
-            Self::AtlasServerRouter => "crates/bijux-atlas-server/src/adapters/inbound/http/router.rs",
+            Self::AtlasServerRouter => {
+                "crates/bijux-atlas-server/src/adapters/inbound/http/router.rs"
+            }
             Self::AtlasHttpRequestPolicies => {
                 "crates/bijux-atlas-server/src/adapters/inbound/http/request_policies/mod.rs"
             }
@@ -93,7 +95,8 @@ pub fn dev_atlas_cli_mod_source(repo_root: &Path) -> PathBuf {
 
 #[must_use]
 pub fn atlas_runtime_generated_artifact(repo_root: &Path, file_name: &str) -> PathBuf {
-    resolve_workspace_surface(repo_root, WorkspaceSurface::AtlasRuntimeGeneratedRoot).join(file_name)
+    resolve_workspace_surface(repo_root, WorkspaceSurface::AtlasRuntimeGeneratedRoot)
+        .join(file_name)
 }
 
 #[cfg(test)]

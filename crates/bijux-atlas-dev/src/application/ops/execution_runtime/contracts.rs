@@ -3,7 +3,13 @@
 #[cfg(test)]
 #[allow(clippy::expect_used)]
 mod tests {
-    use super::*;
+    use crate::ops_execution_runtime::k8s::conformance_summary;
+    use crate::ops_execution_runtime::load::{run_ops_load_plan, run_ops_load_report};
+    use crate::ops_execution_runtime::render::cluster_safety::is_context_allowed;
+    use crate::ops_execution_runtime::render::validation::{
+        scan_forbidden_kinds, scan_timestamps, scan_unpinned_images,
+    };
+    use serde_json::Value;
 
     #[test]
     fn scanner_detects_timestamp_markers() {

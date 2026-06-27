@@ -2,11 +2,11 @@
 
 use super::*;
 
-fn expected_kind_context(profile: &StackProfile) -> String {
+pub(crate) fn expected_kind_context(profile: &StackProfile) -> String {
     format!("kind-{}", profile.kind_profile)
 }
 
-fn ensure_kind_context(
+pub(crate) fn ensure_kind_context(
     process: &OpsProcess,
     profile: &StackProfile,
     force: bool,
@@ -24,11 +24,11 @@ fn ensure_kind_context(
     }
 }
 
-pub(super) fn is_context_allowed(expected: &str, current: &str, force: bool) -> bool {
+pub(crate) fn is_context_allowed(expected: &str, current: &str, force: bool) -> bool {
     current == expected || force
 }
 
-pub(super) fn ensure_namespace_exists(
+pub(crate) fn ensure_namespace_exists(
     process: &OpsProcess,
     namespace: &str,
     dry_run: &str,
@@ -58,7 +58,7 @@ pub(super) fn ensure_namespace_exists(
     Ok(())
 }
 
-pub(super) fn ensure_k8s_safety(
+pub(crate) fn ensure_k8s_safety(
     process: &OpsProcess,
     repo_root: &Path,
     profile: &StackProfile,

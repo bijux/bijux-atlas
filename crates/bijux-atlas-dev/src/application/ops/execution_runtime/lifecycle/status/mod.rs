@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Status commands and local tests for install-status flows.
 
-use super::*;
+use crate::cli::{self, OpsStatusTarget};
+use crate::ops_commands::{emit_payload, load_profiles, resolve_ops_root, resolve_profile};
+use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
 
 #[cfg(test)]
 #[allow(clippy::items_after_test_module)]
 mod install_status_tests {
-    use super::{
-        contains_common_secret_pattern, install_plan_inventory, install_render_path,
-        load_profile_intent, redact_sensitive_text,
-    };
+    use super::super::evidence::{contains_common_secret_pattern, redact_sensitive_text};
+    use super::super::support::{install_plan_inventory, install_render_path, load_profile_intent};
 
     #[test]
     fn install_plan_inventory_summarizes_resources_deterministically() {

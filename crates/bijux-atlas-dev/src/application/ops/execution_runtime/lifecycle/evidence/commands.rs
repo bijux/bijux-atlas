@@ -2,9 +2,12 @@
 //! Evidence collection commands for install-status flows.
 
 use super::*;
-use std::io::Read;
+use crate::cli::OpsCommonArgs;
+use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
+use crate::{resolve_repo_root, OpsProcess, RunId};
+use std::io::{Read, Write};
 use std::net::{Shutdown, TcpStream};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
@@ -1239,7 +1242,7 @@ pub(crate) fn run_ops_evidence_diff(
     Ok((rendered, 0))
 }
 
-pub(super) fn helm_release_manifest(
+pub(crate) fn helm_release_manifest(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -1257,7 +1260,7 @@ pub(super) fn helm_release_manifest(
     Ok(stdout)
 }
 
-pub(super) fn prior_release_revision(
+pub(crate) fn prior_release_revision(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -1289,7 +1292,7 @@ pub(super) fn prior_release_revision(
         .ok_or_else(|| "helm history did not contain a usable previous revision".to_string())
 }
 
-pub(super) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
+pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process
         .run_subprocess("kubectl", &args, std::path::Path::new("."))
@@ -1305,7 +1308,7 @@ pub(super) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Re
     }
 }
 
-pub(super) fn resolve_profile_values_file(
+pub(crate) fn resolve_profile_values_file(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<std::path::PathBuf, String> {
@@ -1322,7 +1325,7 @@ pub(super) fn resolve_profile_values_file(
     }
 }
 
-pub(super) fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
+pub(crate) fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
     override_namespace
         .filter(|value| !value.trim().is_empty())
         .map(str::to_string)
@@ -1348,7 +1351,7 @@ pub(super) fn debug_artifact_path(
     Ok(path)
 }
 
-pub(super) fn write_debug_artifact(
+pub(crate) fn write_debug_artifact(
     repo_root: &std::path::Path,
     run_id: &RunId,
     namespace: &str,
@@ -1361,7 +1364,7 @@ pub(super) fn write_debug_artifact(
     Ok(path)
 }
 
-pub(super) fn load_profile_registry(
+pub(crate) fn load_profile_registry(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<serde_json::Value>, String> {
@@ -1384,7 +1387,7 @@ pub(super) fn load_profile_registry(
         }))
 }
 
-pub(super) fn extract_configmap_env_keys(
+pub(crate) fn extract_configmap_env_keys(
     repo_root: &std::path::Path,
     run_id: &RunId,
     profile: &str,
@@ -1420,7 +1423,7 @@ pub(super) fn extract_configmap_env_keys(
     Ok(keys.into_iter().collect())
 }
 
-pub(super) fn record_kubeconform_result(
+pub(crate) fn record_kubeconform_result(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -1443,7 +1446,7 @@ pub(super) fn record_kubeconform_result(
     }
 }
 
-pub(super) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
+pub(crate) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
     let path = repo_root.join("configs/schemas/contracts/env.schema.json");
     serde_json::json!({
         "status": if path.exists() { "ok" } else { "failed" },
@@ -1451,7 +1454,7 @@ pub(super) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_jso
     })
 }
 
-pub(super) fn emit_debug_bundle_report(
+pub(crate) fn emit_debug_bundle_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
     namespace: &str,
@@ -1474,7 +1477,7 @@ pub(super) fn emit_debug_bundle_report(
     )
 }
 
-pub(super) fn run_simulation_wait(
+pub(crate) fn run_simulation_wait(
     process: &OpsProcess,
     repo_root: &std::path::Path,
     namespace: &str,
@@ -1523,7 +1526,7 @@ pub(super) fn run_simulation_wait(
     (rows, errors, start.elapsed().as_millis())
 }
 
-pub(super) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
+pub(crate) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
     let start = Instant::now();
     while start.elapsed() < timeout {
         if TcpStream::connect(("127.0.0.1", port)).is_ok() {
@@ -1544,13 +1547,13 @@ pub(super) fn perform_http_check(local_port: u16, path: &str) -> Result<serde_js
     }))
 }
 
-pub(super) struct HttpCheckResponse {
-    pub(super) status: u16,
-    pub(super) latency_ms: u128,
-    pub(super) body: String,
+pub(crate) struct HttpCheckResponse {
+    pub(crate) status: u16,
+    pub(crate) latency_ms: u128,
+    pub(crate) body: String,
 }
 
-pub(super) fn perform_http_request(
+pub(crate) fn perform_http_request(
     local_port: u16,
     path: &str,
 ) -> Result<HttpCheckResponse, String> {
@@ -1592,7 +1595,7 @@ pub(super) fn perform_http_request(
     })
 }
 
-pub(super) fn run_smoke_checks(
+pub(crate) fn run_smoke_checks(
     repo_root: &std::path::Path,
     namespace: &str,
     local_port: u16,

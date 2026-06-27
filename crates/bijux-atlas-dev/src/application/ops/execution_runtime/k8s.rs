@@ -1,5 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::cli::OpsCommonArgs;
+use crate::ops_commands::{emit_payload, load_profiles, resolve_profile, run_id_or_default};
+use crate::ops_support::resolve_ops_root;
+use crate::{resolve_repo_root, OpsProcess};
+use serde_json::Value;
+use std::fs;
+use std::time::Instant;
+
+use super::render::cluster_safety::ensure_k8s_safety;
+use super::resolve_render_inputs;
+
 pub(crate) fn run_ops_k8s_plan(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let ops_root =
@@ -91,7 +102,7 @@ pub(crate) fn run_ops_k8s_apply(
     Ok((rendered, 0))
 }
 
-fn conformance_summary(deployments: &Value, pods: &Value) -> (Vec<String>, Vec<Value>) {
+pub(crate) fn conformance_summary(deployments: &Value, pods: &Value) -> (Vec<String>, Vec<Value>) {
     let mut errors = Vec::new();
     let mut rows = Vec::new();
     if let Some(items) = deployments.get("items").and_then(Value::as_array) {

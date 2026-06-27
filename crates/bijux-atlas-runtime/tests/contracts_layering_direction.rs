@@ -162,11 +162,7 @@ fn api_crate_dev_dependencies_are_scoped_to_surface_harnesses() {
     let dev_dependencies =
         manifest_table(&manifest, "dev-dependencies").expect("api dev-dependencies");
 
-    let allowlist = [
-        "bijux-atlas-core",
-        "criterion",
-        "regex",
-    ];
+    let allowlist = ["bijux-atlas-core", "criterion", "regex"];
 
     for key in dev_dependencies.keys() {
         assert!(
@@ -241,11 +237,7 @@ fn runtime_crate_production_dependencies_stay_orchestration_scoped() {
         );
     }
 
-    for required in [
-        "bijux-atlas-core",
-        "bijux-atlas-model",
-        "bijux-atlas-store",
-    ] {
+    for required in ["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-store"] {
         assert!(
             dependencies.contains_key(required),
             "runtime production dependencies must keep orchestration dependency `{required}`"

@@ -70,7 +70,7 @@ pub(super) fn run_kubeconform_validation(
     }
 }
 
-fn scan_timestamps(rendered: &str) -> Vec<String> {
+pub(crate) fn scan_timestamps(rendered: &str) -> Vec<String> {
     let mut errors = Vec::new();
     for marker in ["generatedAt:", "timestamp:", "creationTimestamp:"] {
         if rendered.contains(marker) {
@@ -89,7 +89,7 @@ fn profile_requires_digest_pins(profile_name: &str) -> bool {
     )
 }
 
-fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<String> {
+pub(crate) fn scan_unpinned_images(rendered: &str, profile_name: &str) -> Vec<String> {
     let mut errors = Vec::new();
     if !profile_requires_digest_pins(profile_name) {
         return errors;
@@ -227,7 +227,7 @@ fn scan_alert_annotation_contract(rendered: &str) -> Vec<String> {
     errors
 }
 
-fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
+pub(crate) fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
     let mut errors = Vec::new();
     if rendered.contains("kind: ClusterRole") {
         errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());

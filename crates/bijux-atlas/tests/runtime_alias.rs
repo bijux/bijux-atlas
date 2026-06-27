@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_atlas::domain::ingest::IngestOptions as AliasIngestOptions;
-use bijux_atlas::domain::sha256_hex as alias_sha256_hex;
 use bijux_atlas::api::client::{
     run_with_retry as alias_run_with_retry, AtlasClient as AliasAtlasClient,
     ClientConfig as AliasClientConfig,
 };
+use bijux_atlas::domain::ingest::IngestOptions as AliasIngestOptions;
+use bijux_atlas::domain::sha256_hex as alias_sha256_hex;
 use bijux_atlas::query::Region as AliasRegion;
 use bijux_atlas_api::client::{
     run_with_retry as canonical_run_with_retry, AtlasClient as CanonicalAtlasClient,
@@ -55,9 +55,8 @@ fn alias_api_client_surface_matches_canonical_api_client_surface() {
     let canonical_config = CanonicalClientConfig::default();
     assert_eq!(alias_config.base_url, canonical_config.base_url);
 
-    let alias_value =
-        alias_run_with_retry(1, 0, || Ok::<_, bijux_atlas_api::ClientError>(7))
-            .expect("alias retry helper");
+    let alias_value = alias_run_with_retry(1, 0, || Ok::<_, bijux_atlas_api::ClientError>(7))
+        .expect("alias retry helper");
     let canonical_value =
         canonical_run_with_retry(1, 0, || Ok::<_, bijux_atlas_api::ClientError>(7))
             .expect("canonical retry helper");

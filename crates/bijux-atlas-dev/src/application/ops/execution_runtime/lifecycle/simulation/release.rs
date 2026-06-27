@@ -2,6 +2,16 @@
 //! Release lifecycle simulation commands for install-status flows.
 
 use super::*;
+use crate::cli;
+use crate::ops_commands::{
+    emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default,
+};
+use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
+use std::fs;
+
+use crate::ops_execution_runtime::render::cluster_safety::{
+    ensure_kind_context, ensure_namespace_exists, expected_kind_context,
+};
 
 pub(crate) fn run_ops_helm_upgrade(
     args: &crate::cli::OpsHelmUpgradeArgs,

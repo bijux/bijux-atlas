@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Foundational helpers for install-status flows.
 
-use super::*;
+use crate::ops_commands::sha256_hex;
+use crate::{OpsProcess, RunId};
 
-pub(super) fn install_render_path(
+pub(crate) fn install_render_path(
     repo_root: &std::path::Path,
     run_id: &str,
     profile: &str,
@@ -14,7 +15,7 @@ pub(super) fn install_render_path(
         .join(format!("render/{profile}/helm/render.yaml"))
 }
 
-pub(super) fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
+pub(crate) fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Value {
     let mut resources = Vec::<serde_json::Value>::new();
     let mut namespaces = std::collections::BTreeSet::<String>::new();
     let mut kinds = std::collections::BTreeMap::<String, u64>::new();
@@ -110,7 +111,7 @@ pub(super) fn install_plan_inventory(rendered_manifest: &str) -> serde_json::Val
     })
 }
 
-pub(super) fn load_profile_intent(
+pub(crate) fn load_profile_intent(
     repo_root: &std::path::Path,
     profile: &str,
 ) -> Result<Option<serde_json::Value>, String> {

@@ -4,7 +4,7 @@ use crate::app::server::observability::unix_time_millis;
 use crate::app::server::state::AppState;
 use axum::body::Body;
 use axum::extract::State;
-use axum::http::{HeaderMap, Request, StatusCode};
+use axum::http::{Request, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use axum::Json;

@@ -2,8 +2,9 @@
 //! Shared evidence helpers for install-status flows.
 
 use super::*;
+use crate::{OpsProcess, RunId};
 
-pub(super) fn build_lifecycle_evidence_bundle(
+pub(crate) fn build_lifecycle_evidence_bundle(
     repo_root: &std::path::Path,
     run_id: &RunId,
 ) -> Result<serde_json::Value, String> {
@@ -304,7 +305,7 @@ pub(super) fn collect_scan_reports(
     Ok(rows)
 }
 
-pub(super) fn redact_sensitive_text(text: &str) -> String {
+pub(crate) fn redact_sensitive_text(text: &str) -> String {
     let mut lines = Vec::new();
     for line in text.lines() {
         let upper = line.to_ascii_uppercase();
@@ -328,7 +329,7 @@ pub(super) fn redact_sensitive_text(text: &str) -> String {
     }
 }
 
-pub(super) fn contains_common_secret_pattern(text: &str) -> bool {
+pub(crate) fn contains_common_secret_pattern(text: &str) -> bool {
     for line in text.lines() {
         let upper = line.to_ascii_uppercase();
         if let Some((prefix, value)) = line.split_once('=') {
@@ -597,7 +598,7 @@ pub(super) fn collect_governance_assets(
     Ok(rows)
 }
 
-pub(super) fn observability_contract_checks(
+pub(crate) fn observability_contract_checks(
     repo_root: &std::path::Path,
     metrics_body: &str,
 ) -> Result<serde_json::Value, String> {
@@ -751,7 +752,7 @@ pub(super) fn observability_contract_checks(
     let mut label_policy_passed = true;
     let mut alert_rules_reference_known_metrics = true;
     let label_policy: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../../../configs/sources/operations/observability/label-policy.json"
+        "../../../../../../../../configs/sources/operations/observability/label-policy.json"
     ))
     .map_err(|err| format!("failed to parse label policy: {err}"))?;
     let alert_required_labels = label_policy["alerts_required_labels"]

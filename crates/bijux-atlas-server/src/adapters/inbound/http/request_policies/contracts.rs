@@ -2,6 +2,7 @@
 
 use super::*;
 use crate::packaged::{AUTH_POLICY_YAML, PERMISSIONS_YAML, ROLES_YAML};
+use axum::http::HeaderMap;
 use axum::http::HeaderValue;
 use base64::Engine as _;
 use bijux_atlas_runtime::runtime::config::AuthMode;

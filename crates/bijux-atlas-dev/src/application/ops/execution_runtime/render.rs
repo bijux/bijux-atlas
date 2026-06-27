@@ -3,19 +3,15 @@
 use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
-use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::*;
 use serde_json::Value;
+use std::fs;
 use std::io::Write;
 use std::path::Path;
-use std::time::Instant;
 
-mod cluster_safety;
-mod validation;
+pub(crate) mod cluster_safety;
+pub(crate) mod validation;
 
-pub(super) use self::cluster_safety::{
-    ensure_k8s_safety, ensure_namespace_exists, is_context_allowed,
-};
 use self::validation::{
     run_kubeconform_validation, validate_helm_dependencies, validate_render_output,
 };
@@ -353,7 +349,7 @@ fn render_profile_artifact_base(profile: &str, target: OpsRenderTarget) -> Strin
     format!("render/{profile}/{target}")
 }
 
-fn resolve_render_inputs(
+pub(crate) fn resolve_render_inputs(
     repo_root: &Path,
     run_id: &RunId,
     profile: &str,

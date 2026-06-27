@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
+use crate::emit_payload;
+use crate::ops_commands::run_id_or_default;
+use crate::resolve_repo_root;
 
 fn diagnose_root(repo_root: &std::path::Path) -> Result<std::path::PathBuf, String> {
     let path = repo_root.join("artifacts/ops/diagnose");

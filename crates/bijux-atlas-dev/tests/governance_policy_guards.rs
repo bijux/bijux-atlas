@@ -295,12 +295,14 @@ fn atlas_runtime_test_surface_does_not_duplicate_api_client_suite() {
         "runtime test surface must not mirror the API-owned client suite"
     );
     assert!(
-        !root.join("crates/bijux-atlas-runtime/tests/interfaces/client_compatibility.rs")
+        !root
+            .join("crates/bijux-atlas-runtime/tests/interfaces/client_compatibility.rs")
             .exists(),
         "runtime must not keep a legacy client compatibility shim test"
     );
     assert!(
-        root.join("crates/bijux-atlas/tests/runtime_alias.rs").is_file(),
+        root.join("crates/bijux-atlas/tests/runtime_alias.rs")
+            .is_file(),
         "alias crate must keep the compatibility check for legacy client-facing imports"
     );
     assert!(
