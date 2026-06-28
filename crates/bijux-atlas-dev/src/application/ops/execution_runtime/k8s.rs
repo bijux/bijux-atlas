@@ -8,10 +8,7 @@ use bijux_atlas_ops::kubernetes::access_guard::ensure_namespace_guard;
 use bijux_atlas_ops::kubernetes::command_reports::{
     k8s_apply_payload, k8s_logs_payload, k8s_plan_payload,
 };
-use bijux_atlas_ops::kubernetes::conformance::conformance_summary;
-use bijux_atlas_ops::kubernetes::conformance_report::{
-    build_conformance_report, write_conformance_report,
-};
+use bijux_atlas_ops::kubernetes::conformance::run_conformance_payload;
 use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
 use bijux_atlas_ops::kubernetes::service_inventory::{
     read_service_port_rows, service_port_payload,
@@ -128,113 +125,15 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
         common.force,
         "bijux-atlas",
     )?;
-    let (dep_stdout, _) = process
-        .run_subprocess(
-            "kubectl",
-            &[
-                "get".to_string(),
-                "deployments".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ],
-            &repo_root,
-        )
-        .map_err(|e| e.to_stable_message())?;
-    let (pod_stdout, _) = process
-        .run_subprocess(
-            "kubectl",
-            &[
-                "get".to_string(),
-                "pods".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ],
-            &repo_root,
-        )
-        .map_err(|e| e.to_stable_message())?;
-    let deployments: Value = serde_json::from_str(&dep_stdout)
-        .map_err(|e| format!("failed parsing deployments json: {e}"))?;
-    let pods: Value =
-        serde_json::from_str(&pod_stdout).map_err(|e| format!("failed parsing pods json: {e}"))?;
-    let (mut errors, mut rows) = conformance_summary(&deployments, &pods);
-    let hpa_enabled = process
-        .run_subprocess(
-            "kubectl",
-            &[
-                "get".to_string(),
-                "hpa".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ],
-            &repo_root,
-        )
-        .ok()
-        .and_then(|(stdout, _)| serde_json::from_str::<Value>(&stdout).ok())
-        .and_then(|json| {
-            json.get("items")
-                .and_then(Value::as_array)
-                .map(|items| !items.is_empty())
-        })
-        .unwrap_or(false);
-    if hpa_enabled {
-        match process.run_subprocess(
-            "kubectl",
-            &[
-                "api-resources".to_string(),
-                "--api-group=custom.metrics.k8s.io".to_string(),
-                "-o".to_string(),
-                "name".to_string(),
-            ],
-            &repo_root,
-        ) {
-            Ok((stdout, _)) => {
-                let has_custom_metrics = stdout.lines().any(|line| !line.trim().is_empty());
-                rows.push(
-                    serde_json::json!({"kind":"hpa_metrics_api","enabled":has_custom_metrics}),
-                );
-                if !has_custom_metrics {
-                    errors.push(
-                        "hpa enabled but custom metrics API is not available (missing adapter)"
-                            .to_string(),
-                    );
-                }
-            }
-            Err(err) => {
-                rows.push(serde_json::json!({"kind":"hpa_metrics_api","enabled":false}));
-                errors.push(format!(
-                    "hpa enabled but custom metrics API probe failed: {}",
-                    err.to_stable_message()
-                ));
-            }
-        }
-    }
-    let error_count = errors.len();
-    let conformance_report = build_conformance_report(run_id.as_str(), &errors);
-    let mut report_path: Option<String> = None;
-    if common.allow_write {
-        report_path = Some(
-            write_conformance_report(&repo_root, &conformance_report)?
-                .display()
-                .to_string(),
-        );
-    }
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text": if errors.is_empty() {"k8s conformance passed"} else {"k8s conformance failed"},
-        "rows": rows,
-        "errors": errors,
-        "conformance_report": conformance_report,
-        "conformance_report_path": report_path,
-        "summary":{"total":1,"errors": error_count,"warnings":0}
-    });
+    let (payload, exit_code) = run_conformance_payload(
+        &process,
+        &repo_root,
+        "bijux-atlas",
+        run_id.as_str(),
+        common.allow_write,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, if error_count == 0 { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_k8s_ports(common: &OpsCommonArgs) -> Result<(String, i32), String> {
