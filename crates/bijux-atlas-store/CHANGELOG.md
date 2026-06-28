@@ -13,10 +13,3 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Fixed
 - Updated release-facing storage references to point at crate-owned layout and
   backend modules.
-
-## v0.2.1 – 2026-06-27
-
-### Added
-- Reintroduced a dedicated Atlas store crate for publish-time contracts,
-  artifact backends, manifest locks, owned storage benches, and infrastructure
-  tests.

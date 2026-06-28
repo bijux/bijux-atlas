@@ -13,9 +13,3 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Fixed
 - Updated release-facing documentation to point model readers at crate-owned
   source paths instead of historical runtime facades.
-
-## v0.2.1 – 2026-06-27
-
-### Added
-- Reintroduced a dedicated Atlas model crate for persisted data types, serde
-  contracts, release diff payloads, and policy boundary values.

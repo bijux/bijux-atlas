@@ -13,9 +13,3 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Fixed
 - Removed release-doc drift that still described query ownership through the
   old pre-split runtime tree.
-
-## v0.2.1 – 2026-06-27
-
-### Added
-- Reintroduced a dedicated Atlas query crate for parsing, planning, SQLite
-  execution, cursoring, owned fixture contracts, and query-local benchmarks.

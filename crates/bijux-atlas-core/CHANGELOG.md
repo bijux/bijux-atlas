@@ -14,11 +14,3 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Fixed
 - Removed stale release documentation assumptions that still treated
   compatibility layers as core-surface owners.
-
-## v0.2.1 – 2026-06-27
-
-### Added
-- Reintroduced a dedicated Atlas core crate for canonical hashing, stable JSON,
-  sorting primitives, and shared error-code definitions.
-- Added canonical cursor-payload encoding and decoding helpers so runtime
-  compatibility layers no longer own core serialization behavior.
