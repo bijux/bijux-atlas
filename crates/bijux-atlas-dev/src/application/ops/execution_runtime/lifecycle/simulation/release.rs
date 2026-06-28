@@ -3,13 +3,8 @@
 
 use super::*;
 use crate::cli;
-use crate::ops_commands::{
-    emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default,
-};
+use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
-use bijux_atlas_ops::kubernetes::access_guard::{ensure_kind_context, ensure_namespace_exists};
-use bijux_atlas_ops::kubernetes::safety_policy::expected_kind_context;
-use std::fs;
 
 pub(crate) fn run_ops_helm_upgrade(
     args: &crate::cli::OpsHelmUpgradeArgs,
@@ -586,159 +581,28 @@ pub(crate) fn run_ops_resources_snapshot(
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
-    let ops_root =
-        resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
-    let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
-    profiles.sort_by(|a, b| a.name.cmp(&b.name));
-    let profile =
-        resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    if !args.plan && !common.allow_subprocess {
-        return Err(OpsCommandError::Effect(
-            "install execution requires --allow-subprocess".to_string(),
-        )
-        .to_stable_message());
-    }
-    if (args.apply || args.kind) && !common.allow_write {
-        return Err(OpsCommandError::Effect(
-            "install apply/kind requires --allow-write".to_string(),
-        )
-        .to_stable_message());
-    }
-    if (args.apply || args.kind) && !common.allow_network {
-        return Err(OpsCommandError::Effect(
-            "install apply/kind requires --allow-network".to_string(),
-        )
-        .to_stable_message());
-    }
-
-    let mut steps = Vec::new();
     let process = OpsProcess::new(common.allow_subprocess);
-    if args.kind {
-        steps.push("kind cluster ensure".to_string());
-        if !args.plan {
-            let kind_config = repo_root.join(&profile.cluster_config);
-            let kind_args = vec![
-                "create".to_string(),
-                "cluster".to_string(),
-                "--name".to_string(),
-                profile.kind_profile.clone(),
-                "--config".to_string(),
-                kind_config.display().to_string(),
-            ];
-            if let Err(err) = process.run_subprocess("kind", &kind_args, &repo_root) {
-                let stable = err.to_stable_message();
-                if !stable.contains("already exists") {
-                    return Err(stable);
-                }
-            }
-        }
-    }
-    if args.apply {
-        steps.push("kubectl apply".to_string());
-        if !args.plan {
-            ensure_kind_context(&process, &profile.kind_profile, common.force)?;
-            ensure_namespace_exists(&process, "bijux-atlas", &args.dry_run)?;
-            let render_path = repo_root
-                .join("artifacts/ops")
-                .join(run_id.as_str())
-                .join(format!("render/{}/helm/render.yaml", profile.name));
-            let mut apply_args = vec![
-                "apply".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-f".to_string(),
-                render_path.display().to_string(),
-            ];
-            if args.dry_run == "client" {
-                apply_args.push("--dry-run=client".to_string());
-            }
-            let _ = process
-                .run_subprocess("kubectl", &apply_args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
-        }
-    }
-    if !args.kind && !args.apply {
-        steps.push("validate-only".to_string());
-    }
-    let render_path = install_render_path(&repo_root, run_id.as_str(), &profile.name);
-    let render_inventory = if render_path.exists() {
-        let rendered_manifest = std::fs::read_to_string(&render_path)
-            .map_err(|err| format!("failed to read {}: {err}", render_path.display()))?;
-        install_plan_inventory(&rendered_manifest)
-    } else {
-        serde_json::json!({
-            "resources": [],
-            "resource_kinds": {},
-            "namespaces": [],
-            "namespace_isolated": true,
-            "has_crds": false,
-            "has_rbac": false,
-            "forbidden_objects": [],
-            "missing_render_path": render_path.display().to_string(),
-        })
-    };
-    let profile_intent = load_profile_intent(&repo_root, &profile.name)?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "profile": profile.name,
-        "run_id": run_id.as_str(),
-        "evidence_mode": common.evidence,
-        "plan_mode": args.plan,
-        "dry_run": args.dry_run,
-        "steps": steps,
-        "kind_context_expected": expected_kind_context(&profile.kind_profile),
-        "profile_intent": profile_intent,
-        "install_plan": render_inventory,
-    });
-    if common.evidence {
-        if !common.allow_write {
-            return Err(OpsCommandError::Effect(
-                "ops install --evidence requires --allow-write".to_string(),
-            )
-            .to_stable_message());
-        }
-        let evidence_rel = format!(
-            "artifacts/ops/evidence/{}/install-evidence.json",
-            run_id.as_str()
-        );
-        let evidence_path = repo_root.join(&evidence_rel);
-        if let Some(parent) = evidence_path.parent() {
-            fs::create_dir_all(parent).map_err(|err| {
-                OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))
-                    .to_stable_message()
-            })?;
-        }
-        let evidence_payload = serde_json::json!({
-            "schema_version": 1,
-            "kind": "ops_install_evidence",
-            "run_id": run_id.as_str(),
-            "profile": profile.name,
-            "dry_run": args.dry_run,
-            "plan_mode": args.plan,
-            "steps": payload["steps"],
-            "install_plan": payload["install_plan"],
-            "kind_context_expected": payload["kind_context_expected"],
-            "profile_intent": payload["profile_intent"],
-        });
-        fs::write(
-            &evidence_path,
-            serde_json::to_string_pretty(&evidence_payload).map_err(|e| e.to_string())?,
-        )
-        .map_err(|err| {
-            OpsCommandError::Manifest(format!(
-                "failed to write {}: {err}",
-                evidence_path.display()
-            ))
-            .to_stable_message()
-        })?;
-    }
-    let text = if args.plan {
-        format!("install plan generated for profile `{}`", profile.name)
-    } else {
-        format!("install completed for profile `{}`", profile.name)
-    };
-    let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::stack_install_payload(
+        &process,
+        &repo_root,
+        bijux_atlas_ops::lifecycle::simulation::StackInstallRequest {
+            ops_root: common.ops_root.clone(),
+            requested_profile: common.profile.clone(),
+            run_id: run_id.as_str(),
+            evidence_mode: common.evidence,
+            plan_mode: args.plan,
+            dry_run_mode: &args.dry_run,
+            enable_kind: args.kind,
+            enable_apply: args.apply,
+            allow_subprocess: common.allow_subprocess,
+            allow_write: common.allow_write,
+            allow_network: common.allow_network,
+            force: common.force,
+        },
+    )
+    .map_err(OpsCommandError::Effect)
+    .map_err(|err| err.to_stable_message())?;
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, 0))
+    Ok((rendered, exit_code))
 }

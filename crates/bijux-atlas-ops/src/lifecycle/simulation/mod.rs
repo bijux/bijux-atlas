@@ -10,6 +10,7 @@ pub mod records;
 mod scenario_evidence;
 mod smoke_checks;
 mod stack_cleanup;
+mod stack_install;
 mod stack_reset;
 mod stack_teardown;
 
@@ -29,5 +30,6 @@ pub use self::scenario_evidence::{
 };
 pub use self::smoke_checks::smoke_command_payload;
 pub use self::stack_cleanup::cleanup_stack_state_payload;
+pub use self::stack_install::{stack_install_payload, StackInstallRequest};
 pub use self::stack_reset::reset_stack_state_payload;
 pub use self::stack_teardown::stack_down_payload;
