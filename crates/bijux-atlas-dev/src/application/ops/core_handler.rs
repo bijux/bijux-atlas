@@ -18,28 +18,15 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 bijux_atlas_ops::inventory::surfaces_manifest::load_surfaces_inventory(&ops_root)
                     .map_err(OpsCommandError::Manifest)
                     .map_err(|e| e.to_stable_message())?;
-            let mut action_ids = actions
+            let action_ids = actions
                 .actions
                 .iter()
                 .map(|a| a.id.clone())
                 .collect::<Vec<_>>();
-            action_ids.sort();
-            let rows = vec![
-                serde_json::json!({"kind":"capability","name":"inventory","subprocess":false,"write":false}),
-                serde_json::json!({"kind":"capability","name":"validate","subprocess":false,"write":false}),
-                serde_json::json!({"kind":"capability","name":"render","subprocess":true,"write":"flag_gated"}),
-                serde_json::json!({"kind":"capability","name":"install","subprocess":true,"write":"flag_gated"}),
-                serde_json::json!({"kind":"capability","name":"status","subprocess":"target_gated","write":false}),
-                serde_json::json!({"kind":"capability","name":"cleanup","subprocess":"profile_dependent","write":false}),
-                serde_json::json!({"kind":"profiles","count": profiles.len()}),
-                serde_json::json!({"kind":"actions","count": action_ids.len(), "action_ids": action_ids}),
-            ];
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "text": "ops list capabilities and actions",
-                "rows": rows,
-                "summary": {"total": 8, "errors": 0, "warnings": 0}
-            });
+            let payload = bijux_atlas_ops::reference::command_reference::ops_list_payload(
+                profiles.len(),
+                action_ids,
+            );
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((rendered, ops_exit::PASS))
         }
