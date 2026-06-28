@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use bijux_atlas_ops::inventory::pins_index::build_pins_index_payload;
 use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
 };
@@ -834,27 +835,7 @@ pub(super) fn dispatch_execution(
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
                 let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
-                let pins_rel = "ops/inventory/pins.yaml";
-                let toolchain_rel = "ops/inventory/toolchain.json";
-                let stack_rel = "ops/stack/generated/version-manifest.json";
-                let pins_raw = fs::read_to_string(repo_root.join(pins_rel))
-                    .map_err(|err| format!("failed to read {pins_rel}: {err}"))?;
-                let toolchain_raw = fs::read_to_string(repo_root.join(toolchain_rel))
-                    .map_err(|err| format!("failed to read {toolchain_rel}: {err}"))?;
-                let stack_raw = fs::read_to_string(repo_root.join(stack_rel))
-                    .map_err(|err| format!("failed to read {stack_rel}: {err}"))?;
-                let mut files = vec![
-                    serde_json::json!({"path": pins_rel, "sha256": sha256_hex(&pins_raw), "bytes": pins_raw.len()}),
-                    serde_json::json!({"path": stack_rel, "sha256": sha256_hex(&stack_raw), "bytes": stack_raw.len()}),
-                    serde_json::json!({"path": toolchain_rel, "sha256": sha256_hex(&toolchain_raw), "bytes": toolchain_raw.len()}),
-                ];
-                files.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "run_id": run_id.as_str(),
-                    "generator": "ops generate pins-index",
-                    "files": files
-                });
+                let payload = build_pins_index_payload(&repo_root, run_id.as_str())?;
                 let rel = "generate/pins.index.json";
                 if check {
                     let expected_path = repo_root
