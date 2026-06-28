@@ -1,40 +1,73 @@
 # bijux-atlas-runtime
 
-`bijux-atlas-runtime` is the canonical Atlas runtime composition crate for
-genomics dataset delivery. It composes ingest, query, store, API, and runtime
-wiring so the direct CLI and server owner crates can expose stable Atlas
-product surfaces.
+[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas-runtime)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
+[![runtime](https://img.shields.io/crates/v/bijux-atlas-runtime?label=runtime&logo=rust)](https://crates.io/crates/bijux-atlas-runtime)
+[![ghcr-runtime](https://img.shields.io/badge/ghcr-runtime-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas-runtime)
+[![rust-docs](https://img.shields.io/badge/rust--docs-runtime-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/)
+[![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
+
+`bijux-atlas-runtime` is the canonical published orchestration library crate
+for Atlas. It pulls together ingest, query, store, API, cache, policy, and
+runtime configuration so the direct CLI and server crates can expose one
+coherent product.
 
 This crate is the right starting point if you are looking for:
 
 - GFF3 and FASTA ingest in Rust
 - immutable genome annotation dataset artifacts
 - gene and transcript query APIs
-- a Rust HTTP server plus OpenAPI export for genomic datasets
+- the composed runtime used by the Atlas server and OpenAPI export surfaces
 
-## What Ships
+## What This Crate Owns
+
+- runtime composition across ingest, query, store, API, and policy crates
+- application wiring, cache setup, runtime config, and orchestration
+- shared product-facing runtime modules consumed by CLI and server owners
+- feature-flagged backend selection for local and remote storage integrations
+
+## Choose This Crate When
+
+- you need the composed Atlas runtime as a Rust dependency
+- you are changing cross-crate orchestration rather than one leaf boundary
+- you want the central runtime view without going through the compatibility
+  alias crate
+
+## Related Shipped Surfaces
 
 - `bijux-atlas-cli`: end-user CLI owner for dataset, catalog, ingest, diff, garbage-collection,
   config, and OpenAPI workflows
 - `bijux-atlas-server`: runtime HTTP server owner for Atlas APIs
 - `bijux-atlas-api`: OpenAPI export owner for `bijux-atlas-openapi`
-- Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and `runtime`
+- `bijux-atlas`: compatibility alias crate for the historical `bijux_atlas`
+  import path
+- Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and
+  `runtime`
 
 ## How It Fits With `bijux-cli`
 
-Atlas owns the genomic dataset runtime itself.
-The sibling `bijux-cli` repository owns the umbrella command runtime that can route Atlas under
-`bijux atlas ...` and `bijux dev atlas ...`.
+Atlas owns the genomic dataset runtime itself. The sibling `bijux-cli`
+repository owns the umbrella command runtime that can route Atlas under
+`bijux atlas ...` and `bijux dev atlas ...` when that command surface is
+already installed in an environment.
 
 Use this crate when you want the canonical Atlas runtime and libraries
-directly.
-Use `bijux-cli` when you want a shared command root that can host Atlas alongside other Bijux tools.
+directly. Use `bijux-cli` when you want a shared command root that can host
+Atlas alongside other Bijux tools.
+
+## What It Does Not Own
+
+`bijux-atlas-runtime` is not the direct owner of the installed CLI binary, the
+installed server binary, the OpenAPI binary, or maintainer governance
+automation. Those surfaces belong to `bijux-atlas-cli`,
+`bijux-atlas-server`, `bijux-atlas-api`, and `bijux-atlas-dev`.
 
 ## Install and Verify
 
 Choose one install route at a time.
 
-Install the published crate directly when you want the Atlas binaries or crate APIs without the
+Install the published binaries directly when you want Atlas without the
 umbrella runtime:
 
 ```bash
@@ -62,7 +95,7 @@ cargo run -p bijux-atlas-api --bin bijux-atlas-openapi -- --out ./openapi.json
 
 ## Documentation
 
-- Product documentation: <https://bijux.github.io/bijux-atlas/>
+- Product documentation: <https://bijux.io/bijux-atlas/>
 - Rust API documentation:
   <https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/>
 - Source repository: <https://github.com/bijux/bijux-atlas>
@@ -132,13 +165,18 @@ The following are not stable API promises:
 
 ## Source Layout
 
-- `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis,
-  telemetry, and filesystem code
-- `src/app`: use-case orchestration, ingest/query boundary facades, ports, cache services, and server application state
-- `src/contracts`: external schemas, runtime config contracts, and stable error definitions
-- `src/domain`: business rules for cluster, policy, security, and compatibility facades for owned Atlas subcrates
+- `src/adapters`: runtime-owned outbound integrations such as filesystem and
+  store-facing adapters
+- `src/app`: orchestration, ports, cache coordination, and process-facing
+  runtime services
+- `src/contracts`: runtime config contracts and stable error definitions
+- `src/domain`: cluster, policy, security, and other runtime-owned domain
+  behavior
 - `src/runtime`: runtime configuration and process-level setup
-- `src/api`, `src/core`, `src/model`, `src/query`, `src/domain/ingest`: compatibility facades that point callers to the owning Atlas subcrates
+
+CLI entrypoints live in `bijux-atlas-cli`, HTTP entrypoints live in
+`bijux-atlas-server`, OpenAPI export lives in `bijux-atlas-api`, and the
+historical Rust import path lives in the `bijux-atlas` compatibility crate.
 
 If a change affects transport or persistence details, it usually belongs in `adapters`. If it
 changes business behavior, it usually belongs in `domain`. If it changes an external schema or

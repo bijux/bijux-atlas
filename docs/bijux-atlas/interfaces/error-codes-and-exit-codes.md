@@ -41,12 +41,12 @@ memorizing each one in isolation.
 
 ## Common API Error Classes
 
-- authentication and access errors
-- invalid query or missing dataset dimension errors
-- dataset or gene not found errors
-- policy rejection and cost rejection errors
-- readiness, timeout, and upstream availability errors
-- artifact corruption or quarantine errors
+- authentication and access errors.
+- invalid query or missing dataset dimension errors.
+- dataset or gene not found errors.
+- policy rejection and cost rejection errors.
+- readiness, timeout, and upstream availability errors.
+- artifact corruption or quarantine errors.
 
 ## Important Point
 

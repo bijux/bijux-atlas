@@ -7,6 +7,41 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
+## v0.2.2 – 2026-06-28
+
+### Changed
+- Expanded the Atlas `0.2.2` crates.io surface to the split eleven-crate set:
+  `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`, `bijux-atlas-core`,
+  `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-ops`,
+  `bijux-atlas-query`, `bijux-atlas-runtime`, `bijux-atlas-server`, and
+  `bijux-atlas-store`, while `bijux-atlas-dev` stays repository-only.
+- Reworked the release-facing README, crate READMEs, and handbook entry pages
+  so Atlas now presents an artifact-first product story, direct Cargo binary
+  installation, and explicit split-crate ownership instead of a monolithic
+  runtime narrative.
+- Raised the Atlas telemetry stack to `opentelemetry` `0.32`,
+  `opentelemetry-otlp` `0.32`, `opentelemetry_sdk` `0.32.1`, and
+  `tracing-opentelemetry` `0.33` so release builds ship on the current
+  observability baseline.
+- Refreshed repository docs-tooling inputs, including `cspell`,
+  `mkdocs-git-revision-date-localized-plugin`, `js-yaml`, `linkify-it`, and
+  `markdown-it`, so docs builds stay on patched dependencies.
+- Updated the pinned GitHub Actions inventory and release workflow references,
+  including `actions/checkout` `v7.0.0`,
+  `actions/dependency-review-action` `v4.9.0`, and
+  `softprops/action-gh-release` `v3.0.1`.
+
+### Fixed
+- Realigned the checked-in toolchain inventory with the workflow pins actually
+  executed by CI so release, policy, and supply-chain checks validate the same
+  action set that GitHub runs.
+- Removed stale release documentation that still described `bijux-atlas-ops`
+  as repository-only, counted only ten publishable crates, or pointed readers
+  at the retired `bijux.github.io` docs hostname.
+- Removed installation and ownership drift that still implied wrapper-first
+  install flows or runtime-owned surfaces where a direct crate owner now
+  exists.
+
 ## v0.2.1 – 2026-04-22
 
 ### Changed

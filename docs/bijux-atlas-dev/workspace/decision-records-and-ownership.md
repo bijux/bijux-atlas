@@ -33,10 +33,10 @@ lore.
 
 The most reliable ownership signals in this repository are:
 
-- page-level `owner` metadata in canonical docs
-- registry or schema ownership fields in `configs/`
-- suite, report, and runnable ownership metadata emitted by `bijux-atlas-dev`
-- repository review boundaries in `.github/CODEOWNERS`
+- page-level `owner` metadata in canonical docs.
+- registry or schema ownership fields in `configs/`.
+- suite, report, and runnable ownership metadata emitted by `bijux-atlas-dev`.
+- repository review boundaries in `.github/CODEOWNERS`.
 
 If those signals disagree, resolve the ownership drift before merging the change.
 
@@ -47,9 +47,9 @@ undocumented handoffs.
 
 Atlas governance stays honest when one checked-in source owns each durable rule.
 
-- public behavior belongs in canonical docs and contracts, not in ad hoc notes
-- generated evidence must point back to the checked-in source that defines it
-- ownership changes should update the owning registry or metadata in the same
+- public behavior belongs in canonical docs and contracts, not in ad hoc notes.
+- generated evidence must point back to the checked-in source that defines it.
+- ownership changes should update the owning registry or metadata in the same.
   change
 
 ## ADR Template
@@ -72,10 +72,10 @@ Use this minimum structure when a decision needs durable recordkeeping:
 
 Capture a durable decision record when you:
 
-- change a contract, schema, or compatibility promise
-- move a boundary between crates, domains, docs, configs, or ops
-- introduce a new canonical automation surface or retire an old one
-- change a workflow that other contributors will need to repeat
+- change a contract, schema, or compatibility promise.
+- move a boundary between crates, domains, docs, configs, or ops.
+- introduce a new canonical automation surface or retire an old one.
+- change a workflow that other contributors will need to repeat.
 
 ## Practical Commands
 

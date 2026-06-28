@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Workflows
@@ -52,7 +52,8 @@ These pages describe how users and integrators move through the product-facing
 runtime path. They do not replace:
 
 - `bijux-atlas-ops` for deployment, rollout, observability, and load guidance
-- `bijux-atlas-dev` for repository validation, release automation, and repository-only checks
+- `bijux-atlas-dev` for repository validation, release automation, and
+  maintainer-only checks
 
 ## What This Section Is For
 

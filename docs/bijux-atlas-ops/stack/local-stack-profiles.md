@@ -30,18 +30,18 @@ goal am I trying to prove?”
 
 ## Source of Truth
 
-- `ops/stack/profile-intent.json`
-- `ops/stack/profiles.json`
-- `ops/stack/kind/`
+- `ops/stack/profile-intent.json`.
+- `ops/stack/profiles.json`.
+- `ops/stack/kind/`.
 
 ## Profile System
 
 The declared profile set currently includes:
 
-- `minimal` and `small` for restricted local validation
-- `ci` for deterministic CI validation
-- `kind`, `dev`, and `developer` for fuller local cluster work
-- `perf` for performance and autoscaling-oriented validation
+- `minimal` and `small` for restricted local validation.
+- `ci` for deterministic CI validation.
+- `kind`, `dev`, and `developer` for fuller local cluster work.
+- `perf` for performance and autoscaling-oriented validation.
 
 Each profile connects intent, allowed effects, required dependencies, cluster
 config, required tools, allowed namespaces, and required services.

@@ -32,16 +32,16 @@ failure isolation can or cannot exist.
 
 ## Source of Truth
 
-- `ops/stack/`
-- `ops/observe/`
-- `ops/k8s/`
+- `ops/stack/`.
+- `ops/observe/`.
+- `ops/k8s/`.
 
 ## Topology Rules
 
-- the runtime-to-store path is part of the durable serving path
-- the runtime-to-Redis path is performance-oriented, not the authoritative data
+- the runtime-to-store path is part of the durable serving path.
+- the runtime-to-Redis path is performance-oriented, not the authoritative data.
   path
-- Prometheus, Grafana, and OTEL enrich visibility but should not be mistaken
+- Prometheus, Grafana, and OTEL enrich visibility but should not be mistaken.
   for serving dependencies
-- Toxiproxy is a fault-injection surface and changes topology assumptions only
+- Toxiproxy is a fault-injection surface and changes topology assumptions only.
   during rehearsal or test scenarios

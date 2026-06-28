@@ -4,7 +4,7 @@ audience: mixed
 type: contract
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # API Compatibility
@@ -48,9 +48,9 @@ OpenAPI still matches the promised public surface.
 
 ## Compatibility Authority Chain
 
-- live route ownership is declared in [`src/adapters/inbound/http/router.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http/router.rs:1)
-- handler behavior lives under [`src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http)
-- response and error-shape promises live in [`response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http/response_contract.rs:1) and [`src/contracts/errors/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/contracts/errors)
+- live route ownership is declared in [`crates/bijux-atlas-server/src/adapters/inbound/http/router.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/router.rs:1)
+- handler behavior lives under [`crates/bijux-atlas-server/src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http)
+- response and error-shape promises live in [`crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs:1) and [`crates/bijux-atlas-runtime/src/contracts/errors/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/contracts/errors)
 - generated public API contract lives in [`configs/generated/openapi/v1/openapi.json`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi/v1/openapi.json:1)
 
 ## Change Classification

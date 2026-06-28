@@ -45,9 +45,9 @@ warmth.
 
 ## What Matters Most
 
-- published manifests and SQLite artifacts
-- catalog state that exposes those published datasets
-- the runtime configuration needed to serve them correctly
+- published manifests and SQLite artifacts.
+- catalog state that exposes those published datasets.
+- the runtime configuration needed to serve them correctly.
 
 ## Recovery Model
 
@@ -63,10 +63,10 @@ service until discoverability and readiness checks say so.
 
 ## Practical Advice
 
-- back up the serving store, not only a build root
-- treat catalog integrity as part of recoverability
-- keep recovery procedures separate from cache rewarming procedures
-- verify readiness after restore rather than assuming successful file copy equals successful service recovery
+- back up the serving store, not only a build root.
+- treat catalog integrity as part of recoverability.
+- keep recovery procedures separate from cache rewarming procedures.
+- verify readiness after restore rather than assuming successful file copy equals successful service recovery.
 
 ## What Recovery Is Not
 
@@ -84,38 +84,38 @@ This page explains the Atlas material for backup and recovery and points readers
 
 ## Source of Truth
 
-- `ops/release/evidence/manifest.json`
-- `ops/release/packet/packet.json`
-- `ops/release/provenance.json`
-- `ops/datasets/rollback-policy.json`
+- `ops/release/evidence/manifest.json`.
+- `ops/release/packet/packet.json`.
+- `ops/release/provenance.json`.
+- `ops/datasets/rollback-policy.json`.
 
 ## What Must Be Restorable
 
 To claim Atlas is recoverable, operators must be able to restore or reconstruct:
 
-- the serving dataset and manifest surface
-- the release metadata that proves what version is being restored
-- the evidence and provenance that let another operator trust the restored state
-- the runtime configuration needed to make the service discoverable and ready
+- the serving dataset and manifest surface.
+- the release metadata that proves what version is being restored.
+- the evidence and provenance that let another operator trust the restored state.
+- the runtime configuration needed to make the service discoverable and ready.
 
 ## Durable Versus Reconstructable
 
-- durable and worth backing up directly: dataset manifests, release manifests,
+- durable and worth backing up directly: dataset manifests, release manifests,.
   evidence identity, provenance, and package references
-- reconstructable but still review-relevant: generated summaries, dashboard
+- reconstructable but still review-relevant: generated summaries, dashboard.
   snapshots, and some validation outputs if the source evidence survives
-- disposable: caches and other acceleration surfaces that do not define durable
+- disposable: caches and other acceleration surfaces that do not define durable.
   serving truth
 
 ## Recovery Drill Success Criteria
 
 A recovery drill is successful only when it proves:
 
-- the restored service exposes the expected release identity
-- the dataset surface is discoverable and governed by the expected rollback
+- the restored service exposes the expected release identity.
+- the dataset surface is discoverable and governed by the expected rollback.
   policy
-- readiness and key query paths pass after restore
-- the recovered state can be explained from release evidence, not guesswork
+- readiness and key query paths pass after restore.
+- the recovered state can be explained from release evidence, not guesswork.
 
 ## Stability
 

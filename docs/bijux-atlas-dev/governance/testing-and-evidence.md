@@ -50,19 +50,19 @@ make test
 
 ## Evidence Quality Rules
 
-- state exactly what failed or changed
-- include one rerun command a reviewer can copy and paste
-- name the artifact or report path when output matters
-- prefer structured evidence when a lane already consumes JSON
+- state exactly what failed or changed.
+- include one rerun command a reviewer can copy and paste.
+- name the artifact or report path when output matters.
+- prefer structured evidence when a lane already consumes JSON.
 
 ## Performance and Benchmark Discipline
 
 Performance evidence is part of the quality story when a change touches expensive paths, control-plane throughput, or report-heavy flows.
 
-- keep benchmarks deterministic
-- keep benchmark artifacts under approved workspace roots
-- do not hide expensive validation behind fast local commands
-- use broader lanes for slow or environment-sensitive evidence
+- keep benchmarks deterministic.
+- keep benchmark artifacts under approved workspace roots.
+- do not hide expensive validation behind fast local commands.
+- use broader lanes for slow or environment-sensitive evidence.
 
 ## Cost Awareness
 

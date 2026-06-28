@@ -1,4 +1,4 @@
-# Dev Atlas Runtime Ownership Boundary
+# Runtime Ownership Boundary
 
 `bijux-atlas-dev` is a maintainer control plane. It must not own runtime product behavior.
 

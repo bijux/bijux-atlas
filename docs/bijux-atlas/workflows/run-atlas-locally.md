@@ -4,16 +4,16 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-06-28
 ---
 
 # Run Atlas Locally
 
 Running Atlas locally is easiest when you separate the workflow into three areas:
 
-- source fixtures
-- built artifacts
-- runtime processes
+- source fixtures.
+- built artifacts.
+- runtime processes.
 
 A good local run proves that your inputs, artifacts, store, and server wiring
 agree with each other. It does not prove that production infrastructure,
@@ -23,7 +23,7 @@ scaling, or operational policy are already correct.
 
 ```mermaid
 flowchart LR
-    Fixtures[crates/bijux-atlas/tests/fixtures] --> Build[Ingest and validation]
+    Fixtures[crates/bijux-atlas-ingest/tests/fixtures] --> Build[Ingest and validation]
     Build --> BuildRoot[artifacts/getting-started/tiny-build]
     BuildRoot --> Publish[dataset publish and catalog promote]
     Publish --> Store[artifacts/getting-started/tiny-store]
@@ -92,32 +92,32 @@ that makes local runtime behavior match the serving model.
 
 ## What This Local Loop Proves
 
-- ingest and validation accept the chosen fixture set
-- publication creates a serving-shaped store and catalog state
-- the runtime can boot from that store with explicit config
-- query behavior matches the release state you just built
+- ingest and validation accept the chosen fixture set.
+- publication creates a serving-shaped store and catalog state.
+- the runtime can boot from that store with explicit config.
+- query behavior matches the release state you just built.
 
 ## What This Local Loop Does Not Prove
 
-- that a shared or production deployment is sized, secured, or observed correctly
-- that local filesystem shortcuts are acceptable in managed environments
-- that skipping publication into a serving store is safe just because a local test happened to work
+- that a shared or production deployment is sized, secured, or observed correctly.
+- that local filesystem shortcuts are acceptable in managed environments.
+- that skipping publication into a serving store is safe just because a local test happened to work.
 
 ## Recommended Local Sequence
 
-- follow [Load a Sample Dataset](load-a-sample-dataset.md)
-- then follow [Start the Server](start-the-server.md)
-- then follow [Run Your First Queries](run-your-first-queries.md)
+- follow [Load a Sample Dataset](load-a-sample-dataset.md).
+- then follow [Start the Server](start-the-server.md).
+- then follow [Run Your First Queries](run-your-first-queries.md).
 
 ## Local Success Criteria
 
 You are running Atlas locally in the intended way when:
 
-- ingest outputs live under `artifacts/`
-- dataset validation succeeds on the build root
-- the serving store contains published artifacts plus catalog state
-- the server points at the serving store rather than raw fixtures or the ingest build root
-- queries return data for the release you just built
+- ingest outputs live under `artifacts/`.
+- dataset validation succeeds on the build root.
+- the serving store contains published artifacts plus catalog state.
+- the server points at the serving store rather than raw fixtures or the ingest build root.
+- queries return data for the release you just built.
 
 If any of those conditions are false, you may still have a working demo, but you do not yet have the Atlas workflow running in its intended shape.
 

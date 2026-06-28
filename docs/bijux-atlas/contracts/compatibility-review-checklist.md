@@ -27,18 +27,18 @@ memory or instinct.
 
 ## Review Questions
 
-- does the change affect a documented API, config, output, or artifact rule
-- is the behavior covered by compatibility or contract tests
-- does release evidence need to call out the change explicitly
-- are redirects, docs, and generated references still aligned
+- does the change affect a documented API, config, output, or artifact rule.
+- is the behavior covered by compatibility or contract tests.
+- does release evidence need to call out the change explicitly.
+- are redirects, docs, and generated references still aligned.
 
 ## Surface Checklist
 
-- API surface: review the router, response contracts, and generated OpenAPI
-- CLI surface: review the CLI adapter, the owned binary entrypoints, and any changed output contract
-- runtime config surface: review config parsing, generated runtime config docs, and compatibility expectations
-- schema or artifact surface: review the owning schema, snapshot, and any generated reference artifact
-- docs URL surface: review redirects, moved pages, and any generated reference or navigation impact
+- API surface: review the router, response contracts, and generated OpenAPI.
+- CLI surface: review the CLI adapter, the owned binary entrypoints, and any changed output contract.
+- runtime config surface: review config parsing, generated runtime config docs, and compatibility expectations.
+- schema or artifact surface: review the owning schema, snapshot, and any generated reference artifact.
+- docs URL surface: review redirects, moved pages, and any generated reference or navigation impact.
 
 ## Outcome
 

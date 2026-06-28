@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # What Atlas Is
@@ -141,15 +141,16 @@ Atlas is opinionated in ways that matter operationally:
 ## How The Repo Reflects This Product Shape
 
 - ingest and validation concerns live under
-  `crates/bijux-atlas/src/domain/ingest/` and
+  `crates/bijux-atlas-ingest/src/engine/` and
   `crates/bijux-atlas-model/src/dataset/`
 - query and runtime-serving concerns live under
   `crates/bijux-atlas-query/src/` and
-  `crates/bijux-atlas/src/runtime/`
+  `crates/bijux-atlas-runtime/src/` and
+  `crates/bijux-atlas-server/src/`
 - user-facing interfaces live under
-  `crates/bijux-atlas/src/adapters/inbound/`,
-  `crates/bijux-atlas-cli/src/bin/`, and
-  `crates/bijux-atlas-server/src/bin/`
+  `crates/bijux-atlas-cli/src/bin/`,
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`, and
+  `crates/bijux-atlas-api/src/bin/`
 
 ## Main Takeaway
 

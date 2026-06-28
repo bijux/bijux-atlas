@@ -44,10 +44,10 @@ easier to review.
 
 Runtime is where concrete choices belong:
 
-- addresses and bind settings
-- store and cache roots
-- concurrency and rate-limiting settings
-- telemetry backends
+- addresses and bind settings.
+- store and cache roots.
+- concurrency and rate-limiting settings.
+- telemetry backends.
 
 Those choices should not leak backward and become domain rules.
 

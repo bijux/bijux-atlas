@@ -31,21 +31,21 @@ release-blocking inconsistency.
 
 ## Source of Truth
 
-- `ops/drift/`
-- `ops/drift/scenarios/`
-- `ops/_generated/configs-drift-report.json`
-- `ops/_generated/control-plane-drift-report.json`
-- `ops/_generated/stack-drift-report.json`
+- `ops/drift/`.
+- `ops/drift/scenarios/`.
+- `ops/_generated/configs-drift-report.json`.
+- `ops/_generated/control-plane-drift-report.json`.
+- `ops/_generated/stack-drift-report.json`.
 
 ## Drift Classes
 
 Review drift in these buckets:
 
-- configuration drift between declared overlays, values, or runtime inputs
-- documentation drift between stated operator behavior and current repo assets
-- rendered output drift between authored sources and generated manifests
-- release metadata drift between manifests, packets, provenance, and evidence
-- dependency drift between pinned and actually used stack or toolchain inputs
+- configuration drift between declared overlays, values, or runtime inputs.
+- documentation drift between stated operator behavior and current repo assets.
+- rendered output drift between authored sources and generated manifests.
+- release metadata drift between manifests, packets, provenance, and evidence.
+- dependency drift between pinned and actually used stack or toolchain inputs.
 
 ## Release-Blocking Meaning
 

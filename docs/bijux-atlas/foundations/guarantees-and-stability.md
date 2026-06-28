@@ -32,9 +32,9 @@ of repository folklore.
 
 Atlas aims to make stability understandable by layer:
 
-- public commands and options are more stable than internal helper code
-- API schemas and structured output are more stable than ad hoc debug payloads
-- runtime config contracts are more stable than undocumented environment-dependent behavior
+- public commands and options are more stable than internal helper code.
+- API schemas and structured output are more stable than ad hoc debug payloads.
+- runtime config contracts are more stable than undocumented environment-dependent behavior.
 
 ## Guarantee Table
 
@@ -49,9 +49,9 @@ Atlas aims to make stability understandable by layer:
 
 Atlas should earn confidence from three places:
 
-- documented contracts
-- tests and validation that exercise those contracts
-- release or review evidence that shows the current implementation still matches them
+- documented contracts.
+- tests and validation that exercise those contracts.
+- release or review evidence that shows the current implementation still matches them.
 
 Intent by itself is not a guarantee.
 
@@ -70,17 +70,17 @@ promises clearly and credibly rather than implying stability everywhere.
 
 Atlas tries to provide:
 
-- deterministic machine-readable output where documented
-- explicit validation rather than silent coercion
-- stable contract-owned API and config surfaces
-- immutable artifact workflows for release state
+- deterministic machine-readable output where documented.
+- explicit validation rather than silent coercion.
+- stable contract-owned API and config surfaces.
+- immutable artifact workflows for release state.
 
 ## What Atlas Does Not Guarantee
 
-- all internal Rust module paths remain unchanged
-- all debug-only behavior remains stable
-- all internal fixtures or benchmark helpers are public API
-- every implementation detail remains source-compatible across refactors
+- all internal Rust module paths remain unchanged.
+- all debug-only behavior remains stable.
+- all internal fixtures or benchmark helpers are public API.
+- every implementation detail remains source-compatible across refactors.
 
 ## Current Hard Limits
 
@@ -104,10 +104,10 @@ release or validation output.
 
 Atlas does not treat “we intended this to be stable” as enough. Stability is meaningful only when:
 
-- the surface is documented
-- ownership is clear
-- tests enforce it
-- releases validate it
+- the surface is documented.
+- ownership is clear.
+- tests enforce it.
+- releases validate it.
 
 ## How to Interpret Stability in Practice
 
@@ -120,27 +120,27 @@ When you need a stronger claim, ask:
 
 If you are a user:
 
-- trust documented commands, config contracts, and query behavior
+- trust documented commands, config contracts, and query behavior.
 
 If you are an operator:
 
-- trust documented runtime and operational contracts, not incidental local behavior
+- trust documented runtime and operational contracts, not incidental local behavior.
 
 If you are changing Atlas:
 
-- do not turn undocumented implementation details into accidental promises
+- do not turn undocumented implementation details into accidental promises.
 
 ## Stability Reading Shortcut
 
-- tutorial and example pages explain workflow and current practice
-- reference pages explain exact factual surfaces
-- contract pages describe the strongest intentional promises
+- tutorial and example pages explain workflow and current practice.
+- reference pages explain exact factual surfaces.
+- contract pages describe the strongest intentional promises.
 
 ## Next Pages
 
-- [Runtime Surfaces](runtime-surfaces.md)
-- [Release Model](release-model.md)
-- [Documentation Map](documentation-map.md)
+- [Runtime Surfaces](runtime-surfaces.md).
+- [Release Model](release-model.md).
+- [Documentation Map](documentation-map.md).
 
 ## Main Takeaway
 

@@ -4,7 +4,7 @@ audience: maintainers
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Workspace
@@ -41,6 +41,7 @@ and what repository laws protect long-term clarity.
 
 - [Artifact Roots](artifact-roots.md)
 - [Contributor Workflow](contributor-workflow.md)
+- [Crate Boundary Status](crate-boundary-status.md)
 - [Decision Records and Ownership](decision-records-and-ownership.md)
 - [Generated Files](generated-files.md)
 - [Inventory Registry](inventory-registry.md)
@@ -48,4 +49,5 @@ and what repository laws protect long-term clarity.
 - [Maintainer Entrypoints](maintainer-entrypoints.md)
 - [Package Surface](package-surface.md)
 - [Repository Laws](repository-laws.md)
+- [Runtime Ownership Boundary](runtime-ownership-boundary.md)
 - [Workspace and Tooling](workspace-and-tooling.md)

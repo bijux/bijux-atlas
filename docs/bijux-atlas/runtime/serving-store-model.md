@@ -39,9 +39,9 @@ runtime convenience around it.
 
 - dataset identity and domain meaning live under [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
 - serving-store paths, manifest-lock rules, and backend implementations live under [`crates/bijux-atlas-store/src/`](../../../crates/bijux-atlas-store/src/)
-- manifest file naming is declared in [`crates/bijux-atlas-store/src/paths.rs`](../../../crates/bijux-atlas-store/src/paths.rs)
-- runtime store re-exports and registry-only adapters live under [`crates/bijux-atlas/src/adapters/outbound/store/`](../../../crates/bijux-atlas/src/adapters/outbound/store/)
-- runtime read ports for store-backed serving live in [`crates/bijux-atlas/src/app/ports/dataset_store.rs`](../../../crates/bijux-atlas/src/app/ports/dataset_store.rs)
+- manifest file naming is declared in [`crates/bijux-atlas-store/src/layout/file_names.rs`](../../../crates/bijux-atlas-store/src/layout/file_names.rs)
+- runtime store adapters and registry wiring live under [`crates/bijux-atlas-runtime/src/adapters/outbound/store/`](../../../crates/bijux-atlas-runtime/src/adapters/outbound/store/)
+- runtime read ports for store-backed serving live in [`crates/bijux-atlas-runtime/src/app/ports/dataset_store.rs`](../../../crates/bijux-atlas-runtime/src/app/ports/dataset_store.rs)
 - runtime store access is exercised through the server and runtime layers, not through ingest internals
 
 ## Stable Boundary Versus Internals

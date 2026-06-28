@@ -29,6 +29,7 @@ pub(crate) fn docs_validate_payload(
     common: &DocsCommonArgs,
 ) -> Result<serde_json::Value, String> {
     let yaml = parse_mkdocs_yaml(&ctx.repo_root)?;
+    let policy = load_quality_policy(&ctx.repo_root);
     let mut issues = DocsIssues::default();
     let mut nav_max_depth = 0usize;
     if let Some(nav) = yaml.get("nav") {
@@ -82,7 +83,6 @@ pub(crate) fn docs_validate_payload(
     }
     let allowed_docs_roots = BTreeSet::from([
         "assets".to_string(),
-        "badges.md".to_string(),
         "bijux-atlas".to_string(),
         "bijux-atlas-dev".to_string(),
         "bijux-atlas-ops".to_string(),
@@ -128,9 +128,14 @@ pub(crate) fn docs_validate_payload(
         ));
     }
     for (category, pages) in page_counts {
-        if pages > 40 {
+        let budget = policy
+            .area_budgets
+            .get(&category)
+            .copied()
+            .unwrap_or(policy.default_area_budget);
+        if pages > budget {
             issues.warnings.push(format!(
-                "DOCS_BUDGET_WARN: docs category `{category}` has {pages} pages (soft budget=40)"
+                "DOCS_BUDGET_WARN: docs category `{category}` has {pages} pages (soft budget={budget})"
             ));
         }
     }
@@ -219,6 +224,7 @@ pub(crate) fn docs_validate_payload(
         if !rel.starts_with("bijux-atlas/interfaces/")
             && !rel.starts_with("bijux-atlas/contracts/")
             && !rel.starts_with("bijux-atlas-dev/automation/")
+            && !rel.starts_with("bijux-atlas-dev/governance/")
             && !rel.starts_with("bijux-atlas-dev/delivery/")
             && !rel.starts_with("bijux-atlas-dev/workflow-ownership/")
             && !rel.starts_with("bijux-atlas-dev/workspace/")

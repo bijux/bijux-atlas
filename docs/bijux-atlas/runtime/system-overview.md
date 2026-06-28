@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # System Overview
@@ -45,8 +45,8 @@ and evidence instead of hidden cross-dependencies.
 
 Atlas is really two related systems:
 
-- the product system that validates, publishes, and serves dataset state
-- the repository control plane that validates repository rules, docs, contracts, and release evidence
+- the product system that validates, publishes, and serves dataset state.
+- the repository control plane that validates repository rules, docs, contracts, and release evidence.
 
 Those systems should meet at contracts and artifacts, not leak into each other as hidden shared behavior.
 
@@ -69,26 +69,26 @@ in more detail.
 
 The architecture tries to keep these responsibilities separate:
 
-- domain defines business rules and data semantics
-- app orchestrates use cases and ports
-- adapters translate between the app and external systems
-- runtime composes the real process
-- contracts define the stable external shapes
+- domain defines business rules and data semantics.
+- app orchestrates use cases and ports.
+- adapters translate between the app and external systems.
+- runtime composes the real process.
+- contracts define the stable external shapes.
 
 The repository also keeps a separate governance path:
 
-- `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface
-- `bijux-atlas-dev` is the repository-facing control plane
-- the repository control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior
+- `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface.
+- `bijux-atlas-dev` is the repository-facing control plane.
+- the repository control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior.
 
 ## Why This Separation Matters
 
 Atlas becomes hard to maintain when:
 
-- runtime wiring leaks into domain logic
-- adapter concerns are treated as application truth
-- contracts are duplicated across multiple roots
-- repository diagnostics start distorting the user-facing runtime
+- runtime wiring leaks into domain logic.
+- adapter concerns are treated as application truth.
+- contracts are duplicated across multiple roots.
+- repository diagnostics start distorting the user-facing runtime.
 
 The architecture is designed to make those mistakes more visible and less normal.
 
@@ -103,18 +103,21 @@ The architecture is designed to make those mistakes more visible and less normal
 This page is intentionally high-level. It tells you which boundaries matter
 most. For crate layout and deeper runtime structure, keep reading:
 
-- [Source Layout and Ownership](source-layout-and-ownership.md)
-- [Runtime Composition](runtime-composition.md)
+- [Source Layout and Ownership](source-layout-and-ownership.md).
+- [Runtime Composition](runtime-composition.md).
 
 ## Where This Picture Lives In The Repo
 
-- ingest and build concerns: `crates/bijux-atlas/src/domain/ingest/`
-- dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and
+- ingest and build concerns: `crates/bijux-atlas-ingest/src/engine/`.
+- dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and.
   `crates/bijux-atlas-query/src/`
-- runtime assembly: `crates/bijux-atlas/src/runtime/` and `src/app/`
-- interfaces: `crates/bijux-atlas/src/adapters/inbound/`
+- runtime assembly: `crates/bijux-atlas-runtime/src/runtime/` and.
+  `crates/bijux-atlas-runtime/src/app/`
+- interfaces: `crates/bijux-atlas-cli/src/bin/` and.
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
 - contract and generated reference surfaces:
-  `crates/bijux-atlas/src/contracts/` and `configs/generated/`
+  `crates/bijux-atlas-runtime/src/contracts/`,
+  `crates/bijux-atlas-api/src/`, and `configs/generated/`
 
 ## Main Takeaway
 

@@ -29,19 +29,19 @@ does not pretend to own every upstream or infrastructure concern around them.
 
 Atlas owns:
 
-- validation and normalization of supported data inputs
-- artifact generation and release-shaped dataset workflows
-- catalog and serving integration over built artifacts
-- runtime and operational behavior of the Atlas server
-- documented contracts for stable surfaces
+- validation and normalization of supported data inputs.
+- artifact generation and release-shaped dataset workflows.
+- catalog and serving integration over built artifacts.
+- runtime and operational behavior of the Atlas server.
+- documented contracts for stable surfaces.
 
 Atlas does not own:
 
-- upstream data source correctness
-- external infrastructure guarantees outside documented operational assumptions
-- arbitrary ad hoc data transforms outside supported workflows
-- undocumented helper behavior as a public promise
-- repository-maintenance automation as part of the end-user runtime surface
+- upstream data source correctness.
+- external infrastructure guarantees outside documented operational assumptions.
+- arbitrary ad hoc data transforms outside supported workflows.
+- undocumented helper behavior as a public promise.
+- repository-maintenance automation as part of the end-user runtime surface.
 
 ## Public Boundary Model
 
@@ -62,20 +62,20 @@ during normal maintenance.
 
 The key distinction is between supported surfaces and implementation detail. Atlas tries to keep that distinction boring:
 
-- commands, endpoints, and contracts are public-facing
-- helpers, shims, and internal glue are not
-- maintainer control-plane workflows are real, but they are not the same product surface as runtime ingest and query behavior
+- commands, endpoints, and contracts are public-facing.
+- helpers, shims, and internal glue are not.
+- maintainer control-plane workflows are real, but they are not the same product surface as runtime ingest and query behavior.
 
 ## What Atlas Is Not Trying to Be
 
 Atlas is not:
 
-- a general ETL framework
-- a generic workflow runner
-- a mutable operational database where runtime writes redefine release state
-- a shell-script-first control plane
-- a compatibility promise for every internal Rust path
-- a claim that local shortcuts and production workflows are interchangeable
+- a general ETL framework.
+- a generic workflow runner.
+- a mutable operational database where runtime writes redefine release state.
+- a shell-script-first control plane.
+- a compatibility promise for every internal Rust path.
+- a claim that local shortcuts and production workflows are interchangeable.
 
 ## Why These Non-Goals Matter
 
@@ -93,9 +93,9 @@ behavior, and compatibility promises.
 
 When a system tries to be everything, documentation, code ownership, and contracts all blur together. Atlas does better when it stays narrow:
 
-- artifacts are durable truth
-- contracts are explicit truth
-- runtime code serves or validates that truth
+- artifacts are durable truth.
+- contracts are explicit truth.
+- runtime code serves or validates that truth.
 
 ## Boundary Questions to Ask During Changes
 
@@ -108,9 +108,9 @@ If the answer to the last question is yes, the change probably belongs in a cont
 
 ## Boundary Checks That Save Time
 
-- ask whether the change affects users, operators, or only maintainers
-- ask whether the change belongs to artifacts, runtime behavior, or repository automation
-- ask whether a future release would need to preserve the behavior intentionally
+- ask whether the change affects users, operators, or only maintainers.
+- ask whether the change belongs to artifacts, runtime behavior, or repository automation.
+- ask whether a future release would need to preserve the behavior intentionally.
 
 ## Reading Rule
 

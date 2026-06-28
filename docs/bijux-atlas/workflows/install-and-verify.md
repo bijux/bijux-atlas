@@ -4,7 +4,7 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-06-28
 ---
 
 # Install and Verify
@@ -45,18 +45,23 @@ time debugging later workflow steps.
 
 ## Install Paths
 
-Choose the install route that matches the workflow you want to verify:
+Choose the install route that matches the published runtime surface you want to verify:
 
 ```bash
-cargo install --locked bijux-atlas
+cargo install --locked bijux-atlas-cli --bin bijux-atlas
+cargo install --locked bijux-atlas-server
+cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 ```
 
-```bash
-bijux install bijux-atlas
-bijux install bijux-atlas-dev
-```
+`bijux-atlas-dev` is a repository control-plane crate and is not published to
+crates.io in the `0.2.2` release line. Run it from a repository checkout with
+`cargo run -p bijux-atlas-dev -- ...`.
 
-If you are working from a repository checkout, you can skip installation entirely and use `cargo run`.
+`bijux-atlas-ops` is part of the published crate set, but it is a library
+surface for operational contracts rather than an installed end-user binary.
+
+If you are working from a repository checkout, you can skip installation
+entirely and use `cargo run`.
 
 For a first pass from source, prefer `cargo run`. It removes uncertainty about
 whether the installed binary and the checked-out repository are on the same
@@ -93,14 +98,15 @@ They do not prove that your local store, dataset, or runtime configuration is va
 ## Step 3: Verify Repository Fixture Availability and Local Output Paths
 
 ```bash
-ls crates/bijux-atlas/tests/fixtures/tiny
-ls crates/bijux-atlas/tests/fixtures/realistic
+ls crates/bijux-atlas-ingest/tests/fixtures/tiny
+ls crates/bijux-atlas-ingest/tests/fixtures/realistic
 mkdir -p artifacts/getting-started/tiny-build
 mkdir -p artifacts/getting-started/tiny-store
 mkdir -p artifacts/getting-started/server-cache
 ```
 
-Atlas documentation uses committed fixtures under `crates/bijux-atlas/tests/fixtures/` for the getting-started path.
+Atlas documentation uses committed fixtures under
+`crates/bijux-atlas-ingest/tests/fixtures/` for the getting-started path.
 
 ```mermaid
 flowchart LR
@@ -148,7 +154,7 @@ At this point you should be able to:
 - run CLI help successfully
 - run server help successfully
 - run repository control-plane help successfully
-- see committed fixtures under `crates/bijux-atlas/tests/fixtures`
+- see committed fixtures under `crates/bijux-atlas-ingest/tests/fixtures`
 - create an `artifacts/getting-started` directory for local outputs
 
 If all of that works, you have a usable starting environment. You do not yet have proof that Atlas can ingest, publish, or serve real dataset state.

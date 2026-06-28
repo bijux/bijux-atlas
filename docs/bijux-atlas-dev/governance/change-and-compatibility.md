@@ -49,9 +49,9 @@ If users, operators, or CI would notice the change without reading source code, 
 
 ## A Useful Compatibility Habit
 
-- classify the surface before coding
-- say “internal,” “compatible,” or “breaking” explicitly in review language
-- update docs and evidence in the same change when the answer is not purely internal
+- classify the surface before coding.
+- say “internal,” “compatible,” or “breaking” explicitly in review language.
+- update docs and evidence in the same change when the answer is not purely internal.
 
 ## Purpose
 

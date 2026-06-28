@@ -38,31 +38,31 @@ details.
 
 ## Public Variables
 
-- `BIJUX_LOG_LEVEL`: log verbosity override
-- `BIJUX_CACHE_DIR`: shared cache directory override
+- `BIJUX_LOG_LEVEL`: log verbosity override.
+- `BIJUX_CACHE_DIR`: shared cache directory override.
 
 ## Runtime-Oriented Variables Seen in the Current Codebase
 
-- `ATLAS_BIND`
-- `ATLAS_STORE_ROOT`
-- `ATLAS_CACHE_ROOT`
-- `ATLAS_POLICY_MODE`
-- `ATLAS_REDIS_URL`
-- `ATLAS_LOG_LEVEL`
-- `ATLAS_TRACE_EXPORTER`
-- `ATLAS_CLUSTER_CONFIG_PATH`
+- `ATLAS_BIND`.
+- `ATLAS_STORE_ROOT`.
+- `ATLAS_CACHE_ROOT`.
+- `ATLAS_POLICY_MODE`.
+- `ATLAS_REDIS_URL`.
+- `ATLAS_LOG_LEVEL`.
+- `ATLAS_TRACE_EXPORTER`.
+- `ATLAS_CLUSTER_CONFIG_PATH`.
 
 ## Reference Guidance
 
 Use environment variables when:
 
-- the runtime specifically supports them
-- you need deployment-time overrides
+- the runtime specifically supports them.
+- you need deployment-time overrides.
 
 Prefer explicit documented configuration when:
 
-- the value is operationally important
-- you need repeatable reviewable deployment behavior
+- the value is operationally important.
+- you need repeatable reviewable deployment behavior.
 
 ## Reading Rule
 

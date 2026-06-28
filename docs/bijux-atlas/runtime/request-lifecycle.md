@@ -55,16 +55,16 @@ The router should remain declarative. Request shaping, policy enforcement, execu
 
 ## Why Operators and Maintainers Care
 
-- request policy explains many 4xx responses
-- dataset resolution explains many serving misses
-- presentation explains why structured output looks the way it does
-- metrics and tracing explain what happened after the fact
+- request policy explains many 4xx responses.
+- dataset resolution explains many serving misses.
+- presentation explains why structured output looks the way it does.
+- metrics and tracing explain what happened after the fact.
 
 ## A Healthy Request Boundary
 
-- routers stay declarative
-- policy explains many rejections before execution begins
-- presentation shapes the response without redefining domain meaning
+- routers stay declarative.
+- policy explains many rejections before execution begins.
+- presentation shapes the response without redefining domain meaning.
 
 ## Reading Rule
 

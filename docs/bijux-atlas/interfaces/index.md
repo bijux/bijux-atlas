@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Interfaces
@@ -38,11 +38,11 @@ Use this section when the question is exact rather than conceptual.
 
 ## User-Facing Surfaces In This Repository
 
-- CLI surface: `crates/bijux-atlas/src/adapters/inbound/cli/` and
-  `crates/bijux-atlas-cli/src/bin/`
+- CLI surface: `crates/bijux-atlas-cli/src/bin/`
 - HTTP and API surface:
-  `crates/bijux-atlas/src/adapters/inbound/http/`
-- runtime configuration surface: `crates/bijux-atlas/src/runtime/config/` and
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
+- runtime configuration surface:
+  `crates/bijux-atlas-runtime/src/runtime/config/` and
   `configs/generated/runtime/`
 - generated interface references: `configs/generated/openapi/` and
   `configs/generated/docs/`
@@ -85,6 +85,6 @@ changes shape:
 ## Source Anchors
 
 - `crates/bijux-atlas-cli/src/bin/`
-- `crates/bijux-atlas-server/src/bin/`
-- `crates/bijux-atlas/src/interfaces/`
+- `crates/bijux-atlas-server/src/adapters/inbound/http/`
+- `crates/bijux-atlas-runtime/src/runtime/config/`
 - `configs/generated/openapi/`

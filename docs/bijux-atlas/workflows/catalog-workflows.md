@@ -31,11 +31,11 @@ catalog never points the runtime at the dataset.
 
 ## Main Catalog Operations
 
-- `catalog validate`: validate a catalog document
-- `catalog publish`: write a catalog into a store root
-- `catalog promote`: add a published dataset to the catalog
-- `catalog rollback`: remove a dataset from the catalog
-- `catalog latest-alias-update`: update the latest alias after promotion
+- `catalog validate`: validate a catalog document.
+- `catalog publish`: write a catalog into a store root.
+- `catalog promote`: add a published dataset to the catalog.
+- `catalog rollback`: remove a dataset from the catalog.
+- `catalog latest-alias-update`: update the latest alias after promotion.
 
 ## Recommended Normal Flow
 
@@ -76,16 +76,16 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog rollback \
 
 ## What Can Go Wrong
 
-- the dataset was never published into the store
-- the catalog is missing or malformed
-- the latest alias is updated before promotion
-- the serving store is mistaken for the ingest build root
+- the dataset was never published into the store.
+- the catalog is missing or malformed.
+- the latest alias is updated before promotion.
+- the serving store is mistaken for the ingest build root.
 
 ## What This Page Helps You Confirm
 
-- whether a dataset is actually discoverable by the server
-- whether the catalog reflects the dataset state you think is published
-- whether alias changes happened in the right order
+- whether a dataset is actually discoverable by the server.
+- whether the catalog reflects the dataset state you think is published.
+- whether alias changes happened in the right order.
 
 ## Rule of Thumb
 

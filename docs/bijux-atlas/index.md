@@ -1,15 +1,15 @@
 ---
-title: bijux-atlas Home
+title: Atlas Product Overview
 audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # bijux-atlas
 
-`bijux-atlas` is the product documentation for Atlas itself.
+`bijux-atlas` is the product handbook for Atlas itself.
 
 ```mermaid
 flowchart TD
@@ -25,13 +25,13 @@ flowchart TD
     Contracts --> Truth
 ```
 
-These docs move from the product model to the exact workflow, interface,
-runtime, or contract a question needs next.
+These docs are for readers who need to understand what Atlas delivers, how the
+runtime behaves, and which contracts define that behavior.
 
 ## What This Documentation Covers
 
-Use these pages for product behavior, data workflows, runtime interfaces,
-architecture, and compatibility contracts.
+Use these pages for product meaning, runtime behavior, user-facing workflows,
+interfaces, and compatibility contracts.
 
 Atlas is the repository-owned product surface for:
 
@@ -40,6 +40,12 @@ Atlas is the repository-owned product surface for:
 - serving dataset identity, gene, transcript, sequence, and diff workflows
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
 
+The Atlas product surface is now carried by a split crate set rather than one
+monolithic runtime package. `bijux-atlas-runtime` owns orchestration,
+`bijux-atlas` preserves the historical import path, `bijux-atlas-cli`,
+`bijux-atlas-server`, and `bijux-atlas-api` own the direct binaries, and the
+leaf crates own ingest, query, model, core, store, and operations contracts.
+
 These docs are intentionally separate from:
 
 - `bijux-atlas-ops`, which explains how Atlas is deployed and operated
@@ -47,14 +53,21 @@ These docs are intentionally separate from:
 
 ## Where Product Truth Lives
 
-- product and domain meaning live primarily under `crates/bijux-atlas/src/domain/`
-- runtime assembly lives under `crates/bijux-atlas/src/runtime/` and
-  `crates/bijux-atlas/src/app/`
+- dataset identity, gene, transcript, and diff meaning live primarily under
+  `crates/bijux-atlas-model/src/`
+- ingest-time normalization and artifact construction live under
+  `crates/bijux-atlas-ingest/src/engine/`
+- query semantics live under `crates/bijux-atlas-query/src/engine/`
+- runtime assembly, store ports, policy, and configuration live under
+  `crates/bijux-atlas-runtime/src/app/`,
+  `crates/bijux-atlas-runtime/src/domain/`, and
+  `crates/bijux-atlas-runtime/src/runtime/`
 - HTTP and API surface lives under
-  `crates/bijux-atlas/src/adapters/inbound/http/`
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
 - CLI surface and user-facing command handling live under
-  `crates/bijux-atlas/src/adapters/inbound/cli/`, `crates/bijux-atlas-cli/src/bin/`, and
-  `crates/bijux-atlas-server/src/bin/`
+  `crates/bijux-atlas-cli/src/bin/`,
+  `crates/bijux-atlas-server/src/bin/`, and
+  `crates/bijux-atlas-api/src/bin/`
 - generated API and runtime references live under `configs/generated/openapi/`
   and `configs/generated/runtime/`
 - workflow examples and machine-checked contract shapes live under
@@ -91,7 +104,7 @@ repository-owned authorities that enforce shape or behavior. When a page
 describes a stable surface, readers should be able to confirm that claim in one
 of four places:
 
-- implementation code under `crates/bijux-atlas/src/`
+- implementation code under the owning split crates in `crates/`
 - generated references under `configs/generated/`
 - machine-checked contract schemas under `configs/schemas/contracts/`
 - example or workflow material under `configs/examples/`
@@ -106,6 +119,7 @@ of four places:
 
 ## Source Anchors
 
+- `crates/bijux-atlas-runtime/`
 - `crates/bijux-atlas/`
 - `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`
 - `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`

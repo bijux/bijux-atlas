@@ -7,8 +7,10 @@ rust-version.workspace = true
 description = "Operational surface registry and stack-facing contracts for bijux-atlas"
 repository.workspace = true
 homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/"
+readme = "README.md"
+categories = ["command-line-utilities", "science::bioinformatics"]
 keywords = ["bijux", "ops", "k8s", "load", "stack"]
-publish = false
 
 [dependencies]
 serde.workspace = true

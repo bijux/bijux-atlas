@@ -1,10 +1,10 @@
 ---
-title: bijux-atlas-dev Home
+title: Atlas Maintainer Overview
 audience: maintainers
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # bijux-atlas-dev
@@ -26,9 +26,9 @@ flowchart TD
 ```
 
 This handbook should let a maintainer move from a repository question to the
-right authority surface without guesswork. Its job is to explain how the repo is
-operated as a control plane: which tools initiate change, which rules govern
-it, which evidence proves it, and who owns the decision path.
+owning rule, command, or workflow without guesswork. Its job is to explain how
+the repository is governed as a control plane: which tools initiate change,
+which rules constrain it, which evidence closes it, and who owns the call.
 
 ## Scope
 
@@ -51,10 +51,10 @@ delivery lanes, and workflow ownership.
 
 ## Main Takeaway
 
-`bijux-atlas-dev` is not background reading. It is the documentation layer for
-the maintainer control plane. A good maintainer page should help answer four
-questions quickly: who owns this, what rule applies, what command or workflow
-starts it, and what evidence closes it.
+`bijux-atlas-dev` is not background reading. It is the maintained description
+of how Atlas is changed safely. A good maintainer page should answer four
+questions quickly: who owns this, what rule applies, what starts it, and what
+evidence closes it.
 
 ## Sections
 

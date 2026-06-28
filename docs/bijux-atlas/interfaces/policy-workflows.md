@@ -28,8 +28,8 @@ need to understand why a request was accepted or rejected.
 
 ## Main Policy Commands
 
-- `policy validate`
-- `policy explain`
+- `policy validate`.
+- `policy explain`.
 
 ## Why Users Should Care About Policy
 
@@ -66,22 +66,22 @@ If a query fails because it is too broad or too expensive, that is usually a pol
 
 Common policy-sensitive areas:
 
-- full-scan restrictions
-- page size limits
-- region span limits
-- serialization budget limits
+- full-scan restrictions.
+- page size limits.
+- region span limits.
+- serialization budget limits.
 
 ## Workflow Advice
 
-- use policy output to explain runtime behavior to clients
-- do not treat policy rejection as a server bug by default
-- change policy intentionally, not by relying on hidden defaults
+- use policy output to explain runtime behavior to clients.
+- do not treat policy rejection as a server bug by default.
+- change policy intentionally, not by relying on hidden defaults.
 
 ## When to Reach for Policy Commands
 
-- a query is rejected and you need the reason to be explicit
-- you are comparing expected versus active runtime policy behavior
-- you need to explain enforcement behavior to another team or client
+- a query is rejected and you need the reason to be explicit.
+- you are comparing expected versus active runtime policy behavior.
+- you need to explain enforcement behavior to another team or client.
 
 ## Reading Rule
 

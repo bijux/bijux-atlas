@@ -42,16 +42,16 @@ but they are not interchangeable.
 
 Atlas uses dataset commands both before and after publication:
 
-- before publication, they validate or verify build output
-- after publication, they help package or inspect durable dataset state
+- before publication, they validate or verify build output.
+- after publication, they help package or inspect durable dataset state.
 
 ## Most Common Dataset Commands
 
-- `dataset validate`
-- `dataset verify`
-- `dataset publish`
-- `dataset pack`
-- `dataset verify-pack`
+- `dataset validate`.
+- `dataset verify`.
+- `dataset publish`.
+- `dataset pack`.
+- `dataset verify-pack`.
 
 ## Example Workflow
 
@@ -89,15 +89,15 @@ Use `dataset pack` and `dataset verify-pack` when you need a portable dataset bu
 
 ## Workflow Advice
 
-- do not skip validation before publication
-- treat build roots and serving stores as different lifecycle stages
-- use pack verification when moving dataset bundles across trust boundaries
+- do not skip validation before publication.
+- treat build roots and serving stores as different lifecycle stages.
+- use pack verification when moving dataset bundles across trust boundaries.
 
 ## When This Page Is Enough
 
-- you are validating or publishing a dataset root
-- you are packaging a dataset bundle for transport or review
-- you need the dataset lifecycle without the deeper contract details
+- you are validating or publishing a dataset root.
+- you are packaging a dataset bundle for transport or review.
+- you need the dataset lifecycle without the deeper contract details.
 
 ## Reading Rule
 

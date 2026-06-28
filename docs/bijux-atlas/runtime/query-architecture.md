@@ -44,10 +44,10 @@ one indistinct layer.
 
 ## Architectural Priorities
 
-- explicit selectors beat implicit scans
-- policy should explain rejection clearly
-- response structure should remain deterministic
-- query logic should not leak transport concerns into domain rules
+- explicit selectors beat implicit scans.
+- policy should explain rejection clearly.
+- response structure should remain deterministic.
+- query logic should not leak transport concerns into domain rules.
 
 ## Why Query Validation Exists
 
@@ -57,9 +57,9 @@ execution only.
 
 ## Healthy Query Architecture Traits
 
-- explicit dataset identity remains part of the request contract
-- policy rejection is explainable before expensive execution starts
-- presentation does not smuggle transport concerns into core query rules
+- explicit dataset identity remains part of the request contract.
+- policy rejection is explainable before expensive execution starts.
+- presentation does not smuggle transport concerns into core query rules.
 
 ## Reading Rule
 

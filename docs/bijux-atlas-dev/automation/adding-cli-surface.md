@@ -39,10 +39,10 @@ adapters, while reusable logic should move deeper into app or domain layers.
 
 ## Rules
 
-- prefer extending the right command family over inventing a new miscellaneous root
-- keep CLI parsing in inbound CLI adapters
-- move reusable behavior into app or domain code when appropriate
-- document stable output behavior if users or automation will depend on it
+- prefer extending the right command family over inventing a new miscellaneous root.
+- keep CLI parsing in inbound CLI adapters.
+- move reusable behavior into app or domain code when appropriate.
+- document stable output behavior if users or automation will depend on it.
 
 ## CLI Surface Check Before Merge
 

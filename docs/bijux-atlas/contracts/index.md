@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Contracts
@@ -44,8 +44,9 @@ to keep stable for downstream users, operators, or automation consumers.
 - schemas under `configs/schemas/contracts/` define machine-checkable shape
 - generated artifacts under `configs/generated/` act as comparison points for
   drift and compatibility review
-- code under `crates/bijux-atlas/src/contracts/` and neighboring runtime or
-  adapter code is where the contract is implemented
+- code under `crates/bijux-atlas-runtime/src/contracts/`,
+  `crates/bijux-atlas-api/src/`, and neighboring server adapter code is where
+  the contract is implemented
 
 ## Reading Rule
 

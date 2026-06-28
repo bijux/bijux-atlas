@@ -4,6 +4,16 @@ versioning_model = "workspace-unified"
 [publish]
 allow = [
   "bijux-atlas",
+  "bijux-atlas-api",
+  "bijux-atlas-cli",
+  "bijux-atlas-core",
+  "bijux-atlas-ingest",
+  "bijux-atlas-model",
+  "bijux-atlas-ops",
+  "bijux-atlas-query",
+  "bijux-atlas-runtime",
+  "bijux-atlas-server",
+  "bijux-atlas-store",
 ]
 deny = [
   "bijux-atlas-dev",
@@ -12,6 +22,16 @@ deny = [
 [roles]
 "bijux-atlas-dev" = "developer-tool-private"
 "bijux-atlas" = "atlas-platform"
+"bijux-atlas-api" = "api-contract"
+"bijux-atlas-cli" = "binary-entrypoint"
+"bijux-atlas-core" = "runtime-foundation"
+"bijux-atlas-ingest" = "ingest-engine"
+"bijux-atlas-model" = "data-model"
+"bijux-atlas-ops" = "operations-contract"
+"bijux-atlas-query" = "query-engine"
+"bijux-atlas-runtime" = "runtime-orchestrator"
+"bijux-atlas-server" = "http-entrypoint"
+"bijux-atlas-store" = "artifact-store"
 
 [metadata_requirements]
 required_package_fields = [
