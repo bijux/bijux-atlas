@@ -121,63 +121,13 @@ pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), S
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let process = OpsProcess::new(true);
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let config_path = simulation_cluster_config(&repo_root);
-    let args = vec![
-        "create".to_string(),
-        "cluster".to_string(),
-        "--name".to_string(),
-        simulation_cluster_name().to_string(),
-        "--config".to_string(),
-        config_path.display().to_string(),
-    ];
-    let result = process.run_subprocess("kind", &args, &repo_root);
-    let (status, detail) = match result {
-        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
-        Err(err) => {
-            let stable = err.to_stable_message();
-            if stable.contains("already exists") {
-                (
-                    "ok",
-                    serde_json::json!({"detail": "cluster already exists"}),
-                )
-            } else {
-                ("failed", serde_json::json!({"error": stable}))
-            }
-        }
-    };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "action": "up",
-        "status": status,
-        "details": {
-            "cluster_name": simulation_cluster_name(),
-            "cluster_config": config_path.display().to_string(),
-            "context": simulation_cluster_context(),
-            "result": detail
-        }
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::kind_up_payload(
+        &process,
         &repo_root,
         run_id.as_str(),
-        "ops-kind.json",
-        &payload,
     )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "kind cluster ready" } else { "kind cluster failed" },
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "action": "up",
-            "status": status,
-            "report_path": report_path.display().to_string(),
-            "details": payload["details"].clone()
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-    });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_kind_down(common: &OpsCommonArgs) -> Result<(String, i32), String> {
@@ -190,51 +140,13 @@ pub(crate) fn run_ops_kind_down(common: &OpsCommonArgs) -> Result<(String, i32),
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let process = OpsProcess::new(true);
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let args = vec![
-        "delete".to_string(),
-        "cluster".to_string(),
-        "--name".to_string(),
-        simulation_cluster_name().to_string(),
-    ];
-    let result = process.run_subprocess("kind", &args, &repo_root);
-    let (status, detail) = match result {
-        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
-        Err(err) => (
-            "failed",
-            serde_json::json!({"error": err.to_stable_message()}),
-        ),
-    };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "action": "down",
-        "status": status,
-        "details": {
-            "cluster_name": simulation_cluster_name(),
-            "result": detail
-        }
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::kind_down_payload(
+        &process,
         &repo_root,
         run_id.as_str(),
-        "ops-kind.json",
-        &payload,
     )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "kind cluster deleted" } else { "kind cluster delete failed" },
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "action": "down",
-            "status": status,
-            "report_path": report_path.display().to_string(),
-            "details": payload["details"].clone()
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-    });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_kind_status(common: &OpsCommonArgs) -> Result<(String, i32), String> {
@@ -247,73 +159,13 @@ pub(crate) fn run_ops_kind_status(common: &OpsCommonArgs) -> Result<(String, i32
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let process = OpsProcess::new(true);
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let args = vec![
-        "--context".to_string(),
-        simulation_cluster_context(),
-        "get".to_string(),
-        "nodes".to_string(),
-        "-o".to_string(),
-        "json".to_string(),
-    ];
-    let result = process.run_subprocess("kubectl", &args, &repo_root);
-    let (status, details) = match result {
-        Ok((stdout, event)) => {
-            let json: serde_json::Value = serde_json::from_str(&stdout)
-                .map_err(|err| format!("failed to parse kubectl nodes json: {err}"))?;
-            let rows = json
-                .get("items")
-                .and_then(|value| value.as_array())
-                .cloned()
-                .unwrap_or_default()
-                .into_iter()
-                .map(|item| {
-                    let name = item["metadata"]["name"].as_str().unwrap_or("unknown");
-                    let ready = item["status"]["conditions"]
-                        .as_array()
-                        .is_some_and(|conditions| {
-                            conditions.iter().any(|condition| {
-                                condition["type"].as_str() == Some("Ready")
-                                    && condition["status"].as_str() == Some("True")
-                            })
-                        });
-                    serde_json::json!({"name": name, "ready": ready})
-                })
-                .collect::<Vec<_>>();
-            ("ok", serde_json::json!({"event": event, "nodes": rows}))
-        }
-        Err(err) => (
-            "failed",
-            serde_json::json!({"error": err.to_stable_message()}),
-        ),
-    };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "action": "status",
-        "status": status,
-        "details": details
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::kind_status_payload(
+        &process,
         &repo_root,
         run_id.as_str(),
-        "ops-kind.json",
-        &payload,
     )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "kind cluster status collected" } else { "kind cluster status failed" },
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "action": "status",
-            "status": status,
-            "report_path": report_path.display().to_string(),
-            "details": payload["details"].clone()
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-    });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_kind_preload(
@@ -329,52 +181,14 @@ pub(crate) fn run_ops_kind_preload(
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let process = OpsProcess::new(true);
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let argv = vec![
-        "load".to_string(),
-        "docker-image".to_string(),
-        args.image.clone(),
-        "--name".to_string(),
-        simulation_cluster_name().to_string(),
-    ];
-    let result = process.run_subprocess("kind", &argv, &repo_root);
-    let (status, details) = match result {
-        Ok((stdout, event)) => ("ok", serde_json::json!({"stdout": stdout, "event": event})),
-        Err(err) => (
-            "failed",
-            serde_json::json!({"error": err.to_stable_message()}),
-        ),
-    };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "action": "preload-image",
-        "status": status,
-        "details": {
-            "image": args.image,
-            "result": details
-        }
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::kind_preload_payload(
+        &process,
         &repo_root,
         run_id.as_str(),
-        "ops-kind.json",
-        &payload,
+        &args.image,
     )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "kind image preload complete" } else { "kind image preload failed" },
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "action": "preload-image",
-            "status": status,
-            "report_path": report_path.display().to_string(),
-            "details": payload["details"].clone()
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-    });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_helm_install(
