@@ -6,7 +6,7 @@ use crate::ops_support::resolve_ops_root;
 use crate::{resolve_repo_root, OpsProcess};
 use bijux_atlas_ops::kubernetes::access_guard::ensure_namespace_guard;
 use bijux_atlas_ops::kubernetes::command_reports::{
-    k8s_apply_payload, k8s_logs_payload, k8s_plan_payload,
+    k8s_plan_payload, run_k8s_apply_payload, run_k8s_logs_payload,
 };
 use bijux_atlas_ops::kubernetes::conformance::run_conformance_payload;
 use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
@@ -80,27 +80,15 @@ pub(crate) fn run_ops_k8s_apply(
             "bijux-atlas",
         )?;
     }
-    let mut apply_args = vec![
-        "apply".to_string(),
-        "-n".to_string(),
-        "bijux-atlas".to_string(),
-        "-f".to_string(),
-        render_path.display().to_string(),
-    ];
-    if dry_run {
-        apply_args.push("--dry-run=client".to_string());
-    }
-    let (stdout, event) = process
-        .run_subprocess("kubectl", &apply_args, &repo_root)
-        .map_err(|e| e.to_stable_message())?;
-    let payload = k8s_apply_payload(
+    let payload = run_k8s_apply_payload(
+        &process,
+        &repo_root,
         &profile.name,
         run_id.as_str(),
-        dry_run,
+        "bijux-atlas",
         &render_path.display().to_string(),
-        &stdout,
-        event,
-    );
+        dry_run,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -216,17 +204,7 @@ pub(crate) fn run_ops_k8s_logs(args: &crate::cli::OpsK8sLogsArgs) -> Result<(Str
         .pod
         .clone()
         .unwrap_or_else(|| "deployment/bijux-atlas".to_string());
-    let argv = vec![
-        "logs".to_string(),
-        "-n".to_string(),
-        "bijux-atlas".to_string(),
-        pod,
-        format!("--tail={}", args.tail),
-    ];
-    let (stdout, event) = process
-        .run_subprocess("kubectl", &argv, &repo_root)
-        .map_err(|e| e.to_stable_message())?;
-    let payload = k8s_logs_payload(&stdout, event);
+    let payload = run_k8s_logs_payload(&process, &repo_root, "bijux-atlas", &pod, args.tail)?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }

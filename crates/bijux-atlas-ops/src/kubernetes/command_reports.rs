@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::kubernetes::execution::KubernetesCommandRunner;
 use serde_json::{json, Value};
+use std::path::Path;
 
 pub fn k8s_plan_payload(
     profile: &str,
@@ -58,9 +60,80 @@ pub fn k8s_logs_payload(stdout: &str, subprocess_event: Value) -> Value {
     })
 }
 
+pub fn run_k8s_apply_payload(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    profile: &str,
+    run_id: &str,
+    namespace: &str,
+    render_path: &str,
+    dry_run: bool,
+) -> Result<Value, String> {
+    let mut args = vec![
+        "apply".to_string(),
+        "-n".to_string(),
+        namespace.to_string(),
+        "-f".to_string(),
+        render_path.to_string(),
+    ];
+    if dry_run {
+        args.push("--dry-run=client".to_string());
+    }
+    let capture = runner.run("kubectl", &args, repo_root)?;
+    Ok(k8s_apply_payload(
+        profile,
+        run_id,
+        dry_run,
+        render_path,
+        &capture.stdout,
+        capture.event,
+    ))
+}
+
+pub fn run_k8s_logs_payload(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    namespace: &str,
+    pod: &str,
+    tail: usize,
+) -> Result<Value, String> {
+    let args = vec![
+        "logs".to_string(),
+        "-n".to_string(),
+        namespace.to_string(),
+        pod.to_string(),
+        format!("--tail={tail}"),
+    ];
+    let capture = runner.run("kubectl", &args, repo_root)?;
+    Ok(k8s_logs_payload(&capture.stdout, capture.event))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::kubernetes::execution::SubprocessCapture;
+    use std::cell::RefCell;
+    use std::collections::VecDeque;
+    use std::path::Path;
+
+    struct MockRunner {
+        results: RefCell<VecDeque<Result<SubprocessCapture, String>>>,
+    }
+
+    impl KubernetesCommandRunner for MockRunner {
+        fn run(
+            &self,
+            binary: &str,
+            _args: &[String],
+            _cwd: &Path,
+        ) -> Result<SubprocessCapture, String> {
+            assert_eq!(binary, "kubectl");
+            self.results
+                .borrow_mut()
+                .pop_front()
+                .expect("mock result should exist")
+        }
+    }
 
     #[test]
     fn plan_payload_preserves_render_pointers() {
@@ -100,5 +173,51 @@ mod tests {
         assert_eq!(payload["text"], "k8s logs collected");
         assert_eq!(payload["rows"][0]["stdout"], "hello");
         assert_eq!(payload["rows"][0]["event"]["binary"], "kubectl");
+    }
+
+    #[test]
+    fn run_k8s_apply_payload_executes_owned_apply_contract() {
+        let runner = MockRunner {
+            results: RefCell::new(VecDeque::from([Ok(SubprocessCapture {
+                stdout: "configured".to_string(),
+                event: json!({"binary":"kubectl"}),
+            })])),
+        };
+
+        let payload = run_k8s_apply_payload(
+            &runner,
+            Path::new("/repo"),
+            "kind",
+            "atlas-run",
+            "bijux-atlas",
+            "render.yaml",
+            true,
+        )
+        .expect("apply payload should build");
+
+        assert_eq!(payload["text"], "k8s dry-run completed");
+        assert_eq!(payload["rows"][0]["render_path"], "render.yaml");
+    }
+
+    #[test]
+    fn run_k8s_logs_payload_executes_owned_logs_contract() {
+        let runner = MockRunner {
+            results: RefCell::new(VecDeque::from([Ok(SubprocessCapture {
+                stdout: "hello".to_string(),
+                event: json!({"binary":"kubectl"}),
+            })])),
+        };
+
+        let payload = run_k8s_logs_payload(
+            &runner,
+            Path::new("/repo"),
+            "bijux-atlas",
+            "deployment/bijux-atlas",
+            25,
+        )
+        .expect("logs payload should build");
+
+        assert_eq!(payload["text"], "k8s logs collected");
+        assert_eq!(payload["rows"][0]["stdout"], "hello");
     }
 }
