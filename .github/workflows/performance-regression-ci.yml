@@ -7,6 +7,7 @@ on:
       - "ops/load/**"
       - "ops/report/generated/**"
       - "docs/04-operations/performance-and-load.md"
+      - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
   push:
     branches: [main]
@@ -15,6 +16,7 @@ on:
       - "ops/load/**"
       - "ops/report/generated/**"
       - "docs/04-operations/performance-and-load.md"
+      - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
   schedule:
     - cron: "0 3 * * *"
@@ -59,7 +61,7 @@ jobs:
           jq . /tmp/performance-regression-report.json > /dev/null
 
       - name: Run performance regression asset tests
-        run: cargo test -p bijux-atlas-dev --test performance_regression_assets --locked -- --nocapture
+        run: cargo test -p bijux-atlas-ops --test performance_report_assets --locked -- --nocapture
 
       - name: Publish step summary
         run: |

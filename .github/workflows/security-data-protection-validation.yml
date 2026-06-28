@@ -18,7 +18,7 @@ jobs:
           toolchain: 1.86.0
 
       - name: run data protection contracts
-        run: cargo test --locked -p bijux-atlas --test compatibility_core security_data_protection_contracts -- --nocapture
+        run: cargo test --locked -p bijux-atlas-runtime --test contracts_runtime_foundations security_data_protection_contracts -- --nocapture
 
       - name: run governance contract
         run: cargo run --locked -q -p bijux-atlas-dev -- governance validate --format json
