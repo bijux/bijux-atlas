@@ -2821,9 +2821,7 @@ fn crate_manifest_table(
 fn run_release_crates_list(args: ReleaseCratesListArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_crates_release_spec(&root)?;
-    let (mut publishable, mut blocked) = release_spec_allow_deny(&spec);
-    publishable.sort();
-    blocked.sort();
+    let (publishable, blocked) = release_spec_allow_deny(&spec);
     let roles = spec
         .get("roles")
         .and_then(toml::Value::as_table)
@@ -3369,8 +3367,7 @@ fn run_release_msrv_verify(args: ReleaseMsrvVerifyArgs) -> Result<(String, i32),
 fn run_release_crates_publish_plan(args: ReleaseCratesListArgs) -> Result<(String, i32), String> {
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_crates_release_spec(&root)?;
-    let (mut publishable, _) = release_spec_allow_deny(&spec);
-    publishable.sort();
+    let (publishable, _) = release_spec_allow_deny(&spec);
     let payload = serde_json::json!({
         "schema_version": 1,
         "kind": "release_crates_publish_plan",
@@ -3395,8 +3392,7 @@ fn run_release_crates_dry_run(args: ReleaseCratesDryRunArgs) -> Result<(String, 
     let root = resolve_repo_root(args.repo_root.clone())?;
     let spec = read_crates_release_spec(&root)?;
     let policy = package_policy(&root)?;
-    let (mut publishable, _) = release_spec_allow_deny(&spec);
-    publishable.sort();
+    let (publishable, _) = release_spec_allow_deny(&spec);
     let deny_patterns = policy
         .get("deny_patterns")
         .and_then(serde_json::Value::as_array)
@@ -6422,5 +6418,78 @@ text [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/) end
                 "../bijux-atlas-dev/README.md"
             ]
         );
+    }
+
+    #[test]
+    fn release_crates_spec_publish_order_respects_workspace_dependencies() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .and_then(|path| path.parent())
+            .expect("workspace root")
+            .to_path_buf();
+        let spec = read_crates_release_spec(&root).expect("read crates release spec");
+        let (publishable, _) = release_spec_allow_deny(&spec);
+        let publishable_set = publishable.iter().cloned().collect::<BTreeSet<_>>();
+        let order_index = publishable
+            .iter()
+            .enumerate()
+            .map(|(idx, name)| (name.clone(), idx))
+            .collect::<BTreeMap<_, _>>();
+
+        let metadata = ProcessCommand::new("cargo")
+            .args(["metadata", "--format-version", "1", "--no-deps"])
+            .current_dir(&root)
+            .output()
+            .expect("run cargo metadata");
+        assert!(
+            metadata.status.success(),
+            "cargo metadata failed: {}",
+            String::from_utf8_lossy(&metadata.stderr)
+        );
+
+        let payload: serde_json::Value =
+            serde_json::from_slice(&metadata.stdout).expect("parse cargo metadata");
+        let packages = payload
+            .get("packages")
+            .and_then(serde_json::Value::as_array)
+            .expect("packages array");
+
+        for package in packages {
+            let package_name = package
+                .get("name")
+                .and_then(serde_json::Value::as_str)
+                .expect("package name");
+            if !publishable_set.contains(package_name) {
+                continue;
+            }
+            let package_index = *order_index
+                .get(package_name)
+                .expect("publishable package index present");
+            let dependencies = package
+                .get("dependencies")
+                .and_then(serde_json::Value::as_array)
+                .cloned()
+                .unwrap_or_default();
+            for dependency in dependencies {
+                let dependency_name = dependency
+                    .get("name")
+                    .and_then(serde_json::Value::as_str)
+                    .expect("dependency name");
+                let dependency_kind = dependency
+                    .get("kind")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or("normal");
+                if dependency_kind == "dev" || !publishable_set.contains(dependency_name) {
+                    continue;
+                }
+                let dependency_index = *order_index
+                    .get(dependency_name)
+                    .expect("publishable dependency index present");
+                assert!(
+                    dependency_index < package_index,
+                    "publish order must place `{dependency_name}` before `{package_name}`"
+                );
+            }
+        }
     }
 }

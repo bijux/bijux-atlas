@@ -10,6 +10,7 @@ homepage.workspace = true
 documentation = "https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/"
 readme = "README.md"
 categories = ["command-line-utilities", "science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
 keywords = ["bijux", "ops", "k8s", "load", "stack"]
 
 [dependencies]

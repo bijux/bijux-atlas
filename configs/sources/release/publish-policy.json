@@ -2,17 +2,17 @@
   "schema_version": 1,
   "versioning_strategy": "workspace-unified",
   "publishable_crates": [
-    "bijux-atlas",
-    "bijux-atlas-api",
-    "bijux-atlas-cli",
     "bijux-atlas-core",
-    "bijux-atlas-ingest",
     "bijux-atlas-model",
+    "bijux-atlas-api",
     "bijux-atlas-ops",
     "bijux-atlas-query",
+    "bijux-atlas-ingest",
+    "bijux-atlas-store",
     "bijux-atlas-runtime",
+    "bijux-atlas",
+    "bijux-atlas-cli",
     "bijux-atlas-server",
-    "bijux-atlas-store"
   ],
   "blocked_crates": [
     "bijux-atlas-dev"

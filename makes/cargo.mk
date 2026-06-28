@@ -18,6 +18,7 @@ NEXTEST_FAST_EXPR ?= $(shell "$(NEXTEST_EXPR_BIN)" fast)
 NEXTEST_SLOW_EXPR ?= $(shell "$(NEXTEST_EXPR_BIN)" slow)
 RUST_GATE_BIN ?= makes/bin/rust_gate.sh
 PINNED_REF_GATE_BIN ?= makes/bin/run_pinned_ref_gate.sh
+CRATES_IO_API_USER_AGENT ?= bijux-atlas-release-check/1
 RS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/rust
 RS_RUN_ID ?= $(RUN_ID)
 RS_TARGET_DIR ?= $(CARGO_TARGET_DIR)
@@ -112,7 +113,7 @@ publish-rs: ## Publish Rust crates and dry-run by default
 		if [ "$(RUST_PUBLISH_SKIP_EXISTING)" = "1" ] && [ "$(RUST_PUBLISH_DRY_RUN)" != "1" ]; then \
 			status=""; \
 			for attempt in 1 2 3 4 5; do \
-				status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+				status="$$(curl -A "$(CRATES_IO_API_USER_AGENT)" -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" 2>/dev/null || true)"; \
 				if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
 					break; \
 				fi; \
@@ -134,7 +135,7 @@ publish-rs: ## Publish Rust crates and dry-run by default
 				fi; \
 				status=""; \
 				for attempt in 1 2 3 4 5; do \
-					status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" || true)"; \
+					status="$$(curl -A "$(CRATES_IO_API_USER_AGENT)" -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$$pkg/$(RELEASE_VERSION)" 2>/dev/null || true)"; \
 					if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
 						break; \
 					fi; \
