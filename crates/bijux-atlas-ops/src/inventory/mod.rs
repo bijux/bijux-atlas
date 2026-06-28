@@ -4,6 +4,7 @@ pub mod path_contracts;
 pub mod pins_index;
 pub mod pins_manifest;
 pub mod pins_policy;
+pub mod runbook_index;
 pub mod scenario_catalog;
 pub mod toolchain;
 pub mod tooling_support;
