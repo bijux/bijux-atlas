@@ -3,7 +3,6 @@
 use super::domain_support::OpsProfileRegistry;
 use crate::ops_support::StackManifestToml;
 use crate::*;
-use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 use bijux_atlas_ops::inventory::tools_manifest::ToolsToml;
 use bijux_atlas_ops::load::manifest::LoadToml;
 
@@ -42,17 +41,6 @@ fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCo
 
 pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsCommandError> {
     bijux_atlas_ops::workspace::inventory::load_tools_manifest(repo_root).map_err(|err| match err {
-        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
-            OpsCommandError::Manifest(detail)
-        }
-        bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Schema(detail) => {
-            OpsCommandError::Schema(detail)
-        }
-    })
-}
-
-pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsCommandError> {
-    bijux_atlas_ops::workspace::inventory::load_stack_pins(repo_root).map_err(|err| match err {
         bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
             OpsCommandError::Manifest(detail)
         }

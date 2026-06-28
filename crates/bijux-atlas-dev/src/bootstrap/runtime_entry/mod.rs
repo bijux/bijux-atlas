@@ -65,9 +65,7 @@ pub(crate) use bijux_atlas_dev::model::{CheckMode, CheckSeverity};
 pub(crate) use bijux_atlas_dev::registry::{CheckCatalog, CheckCatalogEntry};
 pub(crate) use bijux_atlas_dev::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 pub(crate) use bijux_atlas_dev::ui::terminal::report::render_check_run_report;
-pub(crate) use bijux_atlas_ops::inventory::ops_inventory::{
-    ops_inventory_summary, validate_ops_inventory,
-};
+pub(crate) use bijux_atlas_ops::inventory::ops_inventory::validate_ops_inventory;
 pub(crate) use regex::Regex;
 pub(crate) use serde::{Deserialize, Serialize};
 pub(crate) use serde_yaml::Value as YamlValue;

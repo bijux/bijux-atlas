@@ -1,27 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
-use bijux_atlas_ops::inventory::pins_manifest::StackPinsToml;
 pub(crate) use bijux_atlas_ops::inventory::tooling_support::{
     build_tool_probe_snapshot, normalize_tool_version_with_regex, parse_tool_overrides,
     tool_probe_skipped_snapshot, ToolMismatchCode,
 };
-
-pub(crate) fn validate_pins_completeness(
-    repo_root: &Path,
-    pins: &StackPinsToml,
-) -> Result<Vec<String>, OpsCommandError> {
-    bijux_atlas_ops::workspace::inventory::validate_pins_completeness(repo_root, pins).map_err(
-        |err| match err {
-            bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Manifest(detail) => {
-                OpsCommandError::Manifest(detail)
-            }
-            bijux_atlas_ops::workspace::inventory::WorkspaceInventoryError::Schema(detail) => {
-                OpsCommandError::Schema(detail)
-            }
-        },
-    )
-}
 
 pub(crate) fn verify_tools_snapshot(
     allow_subprocess: bool,

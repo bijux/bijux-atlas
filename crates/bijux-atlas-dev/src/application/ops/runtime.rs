@@ -14,10 +14,10 @@ use crate::cli::{
     OpsToolsCommand,
 };
 use crate::ops_support::{
-    build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
-    load_toolchain_inventory_for_ops, load_tools_manifest, ops_exit, parse_tool_overrides,
-    render_ops_human, render_ops_validation_output, run_ops_checks, validate_load_manifest,
-    validate_pins_completeness, validate_stack_manifest, verify_tools_snapshot, ToolMismatchCode,
+    build_ops_run_report, load_stack_manifest, load_toolchain_inventory_for_ops,
+    load_tools_manifest, ops_exit, parse_tool_overrides, render_ops_human,
+    render_ops_validation_output, run_ops_checks, validate_stack_manifest, verify_tools_snapshot,
+    ToolMismatchCode,
 };
 use crate::ops_support::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,

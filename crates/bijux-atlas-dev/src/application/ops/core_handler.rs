@@ -200,30 +200,11 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let mut inventory_errors =
-                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
-                    &ops_root,
-                ) {
-                    Ok(_) => Vec::new(),
-                    Err(err) => vec![err],
-                };
-            if let Ok(pins) = load_stack_pins(&repo_root) {
-                if let Ok(pin_errors) = validate_pins_completeness(&repo_root, &pins) {
-                    inventory_errors.extend(pin_errors);
-                }
-            }
-            if let Ok(stack_manifest) = load_stack_manifest(&repo_root) {
-                if let Ok(stack_errors) = validate_stack_manifest(&repo_root, &stack_manifest) {
-                    inventory_errors.extend(stack_errors);
-                }
-            }
-            if let Ok(load_manifest) = load_load_manifest(&repo_root) {
-                if let Ok(load_errors) = validate_load_manifest(&repo_root, &load_manifest) {
-                    inventory_errors.extend(load_errors);
-                }
-            }
-            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
-                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
-            );
+                bijux_atlas_ops::workspace::validation::collect_advisory_inventory_errors(
+                    &repo_root, &ops_root,
+                );
+            let summary =
+                bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_fast", false, false)?;
             let toolchain =
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
@@ -252,32 +233,14 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
-            let mut inventory_errors =
-                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
-                    &ops_root,
-                ) {
-                    Ok(_) => Vec::new(),
-                    Err(err) => vec![err],
-                };
-            let pins = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
-            inventory_errors.extend(
-                validate_pins_completeness(&repo_root, &pins).map_err(|e| e.to_stable_message())?,
-            );
-            let stack_manifest =
-                load_stack_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
-            inventory_errors.extend(
-                validate_stack_manifest(&repo_root, &stack_manifest)
-                    .map_err(|e| e.to_stable_message())?,
-            );
-            let load_manifest =
-                load_load_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
-            inventory_errors.extend(
-                validate_load_manifest(&repo_root, &load_manifest)
-                    .map_err(|e| e.to_stable_message())?,
-            );
-            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
-                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
-            );
+            let inventory_errors =
+                bijux_atlas_ops::workspace::validation::collect_strict_inventory_errors(
+                    &repo_root, &ops_root,
+                )
+                .map_err(OpsCommandError::Manifest)
+                .map_err(|e| e.to_stable_message())?;
+            let summary =
+                bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_all", true, true)?;
             let (pipeline_payload, pipeline_exit) =
                 run_profile_validation_pipeline(&common, &repo_root, &ops_root)?;
@@ -436,15 +399,9 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let toolchain =
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let inventory_errors =
-                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
-                    &ops_root,
-                ) {
-                    Ok(_) => Vec::new(),
-                    Err(err) => vec![err],
-                };
-            let mut summary = ops_inventory_summary(&repo_root).unwrap_or_else(
-                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
-            );
+                bijux_atlas_ops::workspace::validation::inventory_contract_errors(&ops_root);
+            let mut summary =
+                bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
             let toolchain_images = summary
                 .get("toolchain_images")
                 .cloned()
@@ -557,12 +514,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let inventory_errors =
-                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
-                    &ops_root,
-                ) {
-                    Ok(_) => Vec::new(),
-                    Err(err) => vec![err],
-                };
+                bijux_atlas_ops::workspace::validation::inventory_contract_errors(&ops_root);
             let status_args = crate::cli::OpsStatusArgs {
                 common: common.clone(),
                 target: crate::cli::OpsStatusTarget::K8s,
@@ -603,16 +555,10 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let run_id = run_id_or_default(common.run_id.clone())?;
-            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
-                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
-            );
+            let summary =
+                bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
             let inventory_errors =
-                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
-                    &ops_root,
-                ) {
-                    Ok(_) => Vec::new(),
-                    Err(err) => vec![err],
-                };
+                bijux_atlas_ops::workspace::validation::inventory_contract_errors(&ops_root);
             let effective_config_snapshot =
                 repo_root.join("configs/generated/runtime/effective-config.snapshot.json");
             let effective_config_hash = std::fs::read(&effective_config_snapshot)
