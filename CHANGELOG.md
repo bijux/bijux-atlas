@@ -15,9 +15,10 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
   `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-ops`,
   `bijux-atlas-query`, `bijux-atlas-runtime`, `bijux-atlas-server`, and
   `bijux-atlas-store`, while `bijux-atlas-dev` stays repository-only.
-- Reworked the release-facing README, crate READMEs, and handbook landing pages
-  so Atlas now presents direct Cargo-installed binaries and crate ownership as
-  the primary public story for `0.2.2`.
+- Reworked the release-facing README, crate READMEs, and handbook entry pages
+  so Atlas now presents an artifact-first product story, direct Cargo binary
+  installation, and explicit split-crate ownership instead of a monolithic
+  runtime narrative.
 - Raised the Atlas telemetry stack to `opentelemetry` `0.32`,
   `opentelemetry-otlp` `0.32`, `opentelemetry_sdk` `0.32.1`, and
   `tracing-opentelemetry` `0.33` so release builds ship on the current
@@ -37,9 +38,9 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Removed stale release documentation that still described `bijux-atlas-ops`
   as repository-only, counted only ten publishable crates, or pointed readers
   at the retired `bijux.github.io` docs hostname.
-- Removed installation and ownership drift that still implied non-Cargo install
-  flows or runtime-owned surfaces where the split crate boundary now has a
-  direct published owner.
+- Removed installation and ownership drift that still implied wrapper-first
+  install flows or runtime-owned surfaces where a direct crate owner now
+  exists.
 
 ## v0.2.1 – 2026-04-22
 

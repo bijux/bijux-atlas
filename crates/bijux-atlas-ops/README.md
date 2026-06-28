@@ -7,14 +7,10 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-ops-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/)
 [![docs-operations](https://img.shields.io/badge/docs-operations-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-ops/)
 
-Operational contract and surface ownership crate for `bijux-atlas`.
-
-This crate is repository-owned support infrastructure. It exists to keep stack,
-Kubernetes, load, observability, release, and operational path contracts out of
-the maintainer control plane and out of product-facing runtime crates. It is
-published to crates.io in the `0.2.2` release line so operations-contract
-consumers can depend on the same owned path and stack surface registry that the
-Atlas workspace uses internally.
+`bijux-atlas-ops` is the published operations-contract crate for Atlas. It
+holds the durable references and owned metadata that operators, release tools,
+and maintainer automation need for stack, Kubernetes, load, observability, and
+release-support surfaces.
 
 ## What This Crate Owns
 
@@ -22,6 +18,13 @@ Atlas workspace uses internally.
 - Kubernetes and Helm ownership metadata
 - observability, load, and release-support contract fixtures
 - reusable repository-owned ops references consumed by higher-level tooling
+
+## Choose This Crate When
+
+- you need the owned Atlas operations surface in another Rust crate
+- you want operator-facing paths and references without hard-coding repository
+  topology
+- you are extending stack, load, release, or observability contracts
 
 ## What It Does Not Own
 

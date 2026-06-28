@@ -7,11 +7,11 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-core-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-core/latest/bijux_atlas_core/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-core` owns runtime-independent Atlas primitives: canonical JSON
-encoding, deterministic hashing, stable sorting helpers, and generated error
-codes that other Atlas crates consume without pulling in runtime adapters.
+`bijux-atlas-core` is the smallest reusable layer in the Atlas workspace. It
+holds deterministic primitives that should remain useful without bringing in
+runtime policy, adapters, or storage behavior.
 
-Use this crate when you need:
+## Choose This Crate When
 
 - deterministic JSON or hashing helpers
 - canonical cursor-payload encoding or decoding helpers

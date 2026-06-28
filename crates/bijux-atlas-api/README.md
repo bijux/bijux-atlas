@@ -7,18 +7,22 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-api-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-api/latest/bijux_atlas_api/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-api` owns the stable Atlas API boundary: request parameter
-parsing, response DTOs, compatibility aliases, and OpenAPI generation that
-runtime adapters expose but do not redefine.
+`bijux-atlas-api` is the contract crate for Atlas HTTP and OpenAPI consumers.
+It owns the request, response, error, and schema surfaces that the rest of the
+runtime is required to honor.
 
 ## What This Crate Owns
 
 - request parameter parsing and validation
-- response DTO and error envelope contracts
-- OpenAPI v1 document generation
-- compatibility redirects and stable API error-code aliases
-- crate-owned API contract, HTTP surface, and observability test coverage
-- OpenAPI benchmark coverage and compatibility guards
+- response DTOs and error-envelope contracts
+- OpenAPI document generation and compatibility aliases
+- API-facing tests and observability checks that keep the wire surface stable
+
+## Choose This Crate When
+
+- you need Atlas request or response types in another Rust crate
+- you want the owned OpenAPI export surface instead of scraping runtime routes
+- you need the strongest compatibility story for API envelopes and parameters
 
 ## What It Does Not Own
 

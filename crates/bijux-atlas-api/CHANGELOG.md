@@ -10,8 +10,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Clarified `bijux-atlas-api` as the owner of the `bijux-atlas-openapi`
   binary, API client, DTO, parameter, wire, and error-envelope contracts in
   the split Atlas workspace.
-- Expanded release-facing crate documentation so the API surface now describes
-  its own ownership boundary instead of reading like a runtime-adjacent helper.
+- Rewrote the crate-facing release notes and README so API consumers see this
+  package as the owned wire-contract surface, not a runtime-adjacent helper.
 
 ### Fixed
 - Removed release-doc drift that still pointed API readers at runtime-owned

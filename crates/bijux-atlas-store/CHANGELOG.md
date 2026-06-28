@@ -9,7 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Clarified `bijux-atlas-store` as the owner of artifact layout, publication,
   backend, and manifest-lock contracts in the Atlas `0.2.2` release line.
-- Expanded release-facing crate documentation so store now describes immutable
+- Rewrote crate-facing documentation so store now describes immutable
   publication semantics as its primary boundary.
 
 ### Fixed

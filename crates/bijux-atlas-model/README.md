@@ -7,11 +7,11 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-model-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-model/latest/bijux_atlas_model/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-model` owns the stable Atlas data model boundary: dataset identity
-and manifest types, query-facing value objects, diff payloads, and policy
-configuration values that need deterministic serde contracts.
+`bijux-atlas-model` is the durable type boundary for Atlas. It owns the value
+objects that should mean the same thing across ingest, query, storage, API, and
+compatibility surfaces.
 
-Use this crate when you need:
+## Choose This Crate When
 
 - dataset ids, catalogs, manifests, and shard catalogs
 - gene, transcript, seqid, and region model types

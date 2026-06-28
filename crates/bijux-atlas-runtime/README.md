@@ -7,11 +7,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-runtime-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-runtime` is the canonical Atlas runtime composition crate for
-genomics dataset delivery. It composes ingest, query, store, API, and runtime
-wiring so the direct CLI and server owner crates can expose stable Atlas
-product surfaces, while the shorter `bijux-atlas` package remains a
-compatibility alias for historical Rust imports.
+`bijux-atlas-runtime` is the canonical orchestration crate for Atlas. It pulls
+together ingest, query, store, API, cache, policy, and runtime configuration
+so the direct CLI and server crates can expose one coherent product.
 
 This crate is the right starting point if you are looking for:
 
@@ -26,6 +24,13 @@ This crate is the right starting point if you are looking for:
 - application wiring, cache setup, runtime config, and orchestration
 - shared product-facing runtime modules consumed by CLI and server owners
 - feature-flagged backend selection for local and remote storage integrations
+
+## Choose This Crate When
+
+- you need the composed Atlas runtime as a Rust dependency
+- you are changing cross-crate orchestration rather than one leaf boundary
+- you want the central runtime view without going through the compatibility
+  alias crate
 
 ## What Ships
 

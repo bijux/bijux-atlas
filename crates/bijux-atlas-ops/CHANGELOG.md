@@ -9,8 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Added
 - Established `bijux-atlas-ops` as the published Atlas operations-contract
   crate for release profiles, deployment assets, and ops-surface tests.
-- Added release-facing crate guidance that explains how operators and tooling
-  should consume owned stack, Kubernetes, and observability references.
+- Added release-facing crate guidance for consuming owned stack, Kubernetes,
+  observability, and release-support references.
 
 ### Changed
 - Clarified release documentation so `bijux-atlas-ops` is described as part of

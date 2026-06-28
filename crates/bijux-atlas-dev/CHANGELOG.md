@@ -9,7 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Refreshed the control-plane docs-tooling dependency set and synchronized the
   pinned GitHub Actions references used by reusable CI and release lanes.
-- Rewrote the maintainer crate README and handbook links so repository
+- Reworked the maintainer-facing README and handbook entry pages so repository
   governance, automation, and workflow ownership point at the live docs tree.
 
 ### Fixed

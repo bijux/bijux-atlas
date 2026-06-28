@@ -7,11 +7,11 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-ingest-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-ingest/latest/bijux_atlas_ingest/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-ingest` owns the Atlas ingest engine: GFF3 and FASTA decoding,
-normalization, anomaly evaluation, SQLite artifact materialization, and ingest
-focused benchmarks or fixtures.
+`bijux-atlas-ingest` owns the path from governed source files to build-ready
+Atlas artifacts. It is where raw GFF3 and FASTA inputs stop being source files
+and start becoming deterministic release material.
 
-Use this crate when you need:
+## Choose This Crate When
 
 - deterministic Atlas ingest execution
 - ingest artifact and anomaly report generation

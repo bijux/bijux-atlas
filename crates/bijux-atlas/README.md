@@ -48,6 +48,14 @@ belong to the owning Atlas crates:
 - `bijux-atlas-query`: canonical query types and planning surface
 - `bijux-atlas-ingest`: canonical ingest normalization and artifact building
 
+## Choose This Crate When
+
+- you are preserving an existing `bijux_atlas::...` import path
+- you want one short compatibility dependency while the implementation remains
+  split across owner crates
+- you need compatibility without pretending the runtime crate owns every leaf
+  surface
+
 ## Documentation
 
 - Atlas handbook: <https://bijux.io/bijux-atlas/>

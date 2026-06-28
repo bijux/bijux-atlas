@@ -11,8 +11,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
   with `bijux-atlas-runtime` kept as orchestration, `bijux-atlas` kept as the
   compatibility alias, and CLI, server, or API owners documented as separate
   crates.
-- Clarified direct Cargo-installed binary routes and the distinction between
-  runtime composition ownership and installed binary ownership.
+- Clarified direct Cargo binary routes and the difference between orchestration
+  ownership and installed binary ownership.
 
 ### Fixed
 - Removed stale package and source-layout references that still described the

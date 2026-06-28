@@ -7,14 +7,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-server-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-server/latest/bijux_atlas_server/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-server` owns the long-running `bijux-atlas-server` executable.
-
-This crate is the operator-facing binary-owner surface for Atlas HTTP serving,
-runtime configuration loading, telemetry startup, and cache warmup behavior.
-The reusable runtime implementation lives in the canonical
-`bijux-atlas-runtime` library crate, while `bijux-atlas` remains the
-compatibility alias for the historical import path. This package owns the
-deployed server process contract.
+`bijux-atlas-server` owns the long-running `bijux-atlas-server` executable. It
+is the direct binary surface for serving Atlas over HTTP with the expected
+runtime config, telemetry bootstrap, and startup behavior.
 
 ## What This Crate Owns
 
@@ -23,6 +18,12 @@ deployed server process contract.
 - runtime config loading for the HTTP process
 - telemetry bootstrap, route exposure, and cache warmup behavior
 - server-facing tests and benchmarks that validate the deployed process surface
+
+## Choose This Crate When
+
+- you need the installed Atlas server binary
+- you are changing HTTP process behavior rather than API contracts
+- you want the server surface that operators actually run in deployments
 
 ## Install and Verify
 

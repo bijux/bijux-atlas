@@ -10,8 +10,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Promoted `bijux-atlas-ingest` into the published `0.2.2` release line as
   the owning crate for GFF3 or FASTA normalization, anomaly handling, and
   SQLite artifact build execution.
-- Added release-facing crate guidance that explains where ingest stops and
-  runtime composition begins.
+- Added release-facing crate guidance that explains where ingest ends and
+  orchestration begins.
 
 ### Fixed
 - Removed release-note ambiguity by documenting ingest as a crate-owned Atlas

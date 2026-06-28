@@ -7,11 +7,11 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-query-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-query` owns Atlas query behavior: request normalization, parsing,
-planning, cursor encoding, SQLite execution, and the frozen query contract used
-by downstream runtime surfaces.
+`bijux-atlas-query` owns the Atlas query language and execution boundary. It is
+where requests become plans, cursors, and SQLite-backed result sets with stable
+semantics.
 
-Use this crate when you need:
+## Choose This Crate When
 
 - gene and transcript query request parsing
 - deterministic query-plan classification and budgeting

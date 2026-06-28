@@ -7,14 +7,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-cli-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-cli/latest/bijux_atlas_cli/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-cli` owns the end-user `bijux-atlas` executable.
-
-This crate is the binary-owner surface for Atlas command discovery, dataset
-inspection, ingest orchestration, validation, and export workflows. Runtime
-behavior lives in the canonical `bijux-atlas-runtime` library crate, while
-`bijux-atlas` remains the compatibility alias for the historical import path.
-This package owns the installed executable and the command-line contract around
-it.
+`bijux-atlas-cli` owns the installed `bijux-atlas` command. It is the direct
+user-facing entrypoint for browsing datasets, validating inputs, running
+ingest flows, exporting OpenAPI, and inspecting release state.
 
 ## What This Crate Owns
 
@@ -22,6 +17,12 @@ it.
 - CLI argument parsing and noun-first command dispatch
 - direct CLI tests that validate the published command contract
 - the boundary between end-user commands and runtime orchestration
+
+## Choose This Crate When
+
+- you want the Atlas command-line surface exactly as users install it
+- you are extending CLI nouns, flags, or structured output expectations
+- you need the direct Cargo-managed Atlas binary for local use or CI
 
 ## Install and Verify
 

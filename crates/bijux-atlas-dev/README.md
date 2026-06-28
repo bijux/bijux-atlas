@@ -6,14 +6,16 @@
 [![docs-maintainer](https://img.shields.io/badge/docs-maintainer-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-dev/)
 [![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
 
-`bijux-atlas-dev` is the repository control-plane crate for the Bijux workspace. It turns governance, documentation, policy, validation, reporting, and operational workflows into a Rust command surface instead of a shell-script control plane.
+`bijux-atlas-dev` is the repository control plane for Atlas. It turns
+governance, release planning, documentation checks, security validation,
+reporting, and maintainer workflows into owned Rust commands instead of
+disconnected shell glue.
 
-Use this crate when you need to:
+## Choose This Crate When
 
-- run workspace checks in CI
-- generate or validate governed reports and documentation
-- inspect or enforce repository policy
-- extend the workspace control plane in Rust instead of adding shell-script glue
+- you are changing repository law, docs, release metadata, or workflow policy
+- you need machine-readable evidence from Atlas maintainer commands
+- you want automation to live in Rust with explicit ownership and test coverage
 
 This crate is repository infrastructure. Its primary supported interfaces are the `bijux dev atlas ...` umbrella namespace and the direct `bijux-atlas-dev` CLI rather than an external Rust SDK.
 
@@ -33,7 +35,8 @@ This crate does not own the product-facing Atlas runtime. Dataset, server, API, 
 - report consumers should start from the documented report and registry contracts
 - contributors may use the Rust modules internally, but the stable operational surface is the CLI plus the documented contracts and registries
 
-Internal module paths are implementation detail unless they are explicitly documented as a contract surface.
+Internal module paths are implementation detail unless they are explicitly
+documented as a contract surface.
 
 ## Command Surface
 

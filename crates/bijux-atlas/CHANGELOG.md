@@ -12,8 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
   `tracing-opentelemetry` `0.33` so Atlas runtime builds and publish-time
   packaging resolve against the current observability baseline.
 - Reworked compatibility-crate release notes and README guidance so the alias
-  contract is described as a real Rust import surface rather than decorative
-  migration text.
+  contract reads as a real Rust import surface rather than decorative migration
+  text.
 
 ### Fixed
 - Refreshed the release lockfile inputs that back telemetry-related transitive
