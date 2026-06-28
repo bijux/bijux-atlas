@@ -453,41 +453,18 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
             let inventory_errors =
                 bijux_atlas_ops::workspace::validation::inventory_contract_errors(&ops_root);
-            let effective_config_snapshot =
-                repo_root.join("configs/generated/runtime/effective-config.snapshot.json");
-            let effective_config_hash = std::fs::read(&effective_config_snapshot)
-                .ok()
-                .map(|bytes| sha256_hex(&String::from_utf8_lossy(&bytes)));
-            let report = serde_json::json!({
-                "schema_version": 1,
-                "kind": "ops_report",
-                "run_id": run_id.as_str(),
-                "repo_root": repo_root.display().to_string(),
-                "inventory_summary": summary,
-                "inventory_errors": inventory_errors,
-                "effective_config_snapshot": effective_config_snapshot.display().to_string(),
-                "effective_config_hash": effective_config_hash,
-                "capabilities": {
-                    "fs_write": common.allow_write,
-                    "subprocess": common.allow_subprocess
-                }
-            });
-            let out_dir = repo_root.join("artifacts/reports/dev-atlas/ops");
-            std::fs::create_dir_all(&out_dir)
-                .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
-            let out_path = out_dir.join(format!("{}.json", run_id.as_str()));
-            std::fs::write(
-                &out_path,
-                serde_json::to_string_pretty(&report).map_err(|err| err.to_string())?,
-            )
-            .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "status": if report["inventory_errors"].as_array().is_some_and(|v| v.is_empty()) { "ok" } else { "failed" },
-                "text": format!("wrote ops report {}", out_path.display()),
-                "rows": [{"path": out_path.display().to_string()}],
-                "summary": {"total": 1, "errors": report["inventory_errors"].as_array().map_or(1, |v| v.len()), "warnings": 0}
-            });
+            let (report, out_path) =
+                bijux_atlas_ops::workspace::reporting::write_ops_report_artifact(
+                    &repo_root,
+                    run_id.as_str(),
+                    summary,
+                    &inventory_errors,
+                    common.allow_write,
+                    common.allow_subprocess,
+                )?;
+            let payload = bijux_atlas_ops::workspace::reporting::ops_report_command_payload(
+                &report, &out_path,
+            );
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             let code = if payload["status"] == serde_json::Value::String("ok".to_string()) {
                 0

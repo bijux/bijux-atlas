@@ -5,5 +5,6 @@ pub mod load;
 pub mod ops_artifacts;
 pub mod pins_sync;
 pub mod profiles;
+pub mod reporting;
 pub mod stack;
 pub mod validation;

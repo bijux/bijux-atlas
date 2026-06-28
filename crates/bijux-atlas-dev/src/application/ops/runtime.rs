@@ -20,7 +20,7 @@ use crate::ops_support::{
     ToolMismatchCode,
 };
 use crate::ops_support::{
-    emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
+    emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default,
 };
 use crate::*;
 use std::io::{self, Write};
