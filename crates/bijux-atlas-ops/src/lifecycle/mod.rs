@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod evidence_artifacts;
-pub mod evidence_support;
+pub mod evidence;
 pub mod install_status;
 pub mod release_bundle;
 pub mod release_commands;

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::evidence_support::evidence_root;
 use super::release_inventory::{
     collect_dataset_assets, collect_governance_assets, collect_observability_assets,
     collect_perf_assets,
 };
+use crate::lifecycle::evidence::support::evidence_root;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 

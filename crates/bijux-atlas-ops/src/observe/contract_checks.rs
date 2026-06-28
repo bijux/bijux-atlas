@@ -71,11 +71,11 @@ pub fn observability_contract_checks(
         && main_rs.contains("release_id = %release_id")
         && main_rs.contains("governance_version = %governance_version");
 
-    let redacted = crate::lifecycle::evidence_artifacts::redact_sensitive_text(
+    let redacted = crate::lifecycle::evidence::artifacts::redact_sensitive_text(
         "TOKEN=secret-value\nAuthorization: Bearer abc123\n",
     );
     let redaction_contract_passed =
-        !crate::lifecycle::evidence_artifacts::contains_common_secret_pattern(&redacted)
+        !crate::lifecycle::evidence::artifacts::contains_common_secret_pattern(&redacted)
             && !redacted.contains("secret-value")
             && !redacted.contains("abc123");
 

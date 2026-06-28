@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::evidence_support::sha256_file;
+use crate::lifecycle::evidence::support::sha256_file;
 use std::path::Path;
 
 pub fn collect_observability_assets(repo_root: &Path) -> Result<Vec<String>, String> {
