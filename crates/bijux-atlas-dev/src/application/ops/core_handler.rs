@@ -350,63 +350,15 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let inventory_errors =
                 bijux_atlas_ops::workspace::validation::inventory_contract_errors(&ops_root);
-            let mut summary =
+            let summary =
                 bijux_atlas_ops::workspace::validation::inventory_summary_or_error(&repo_root);
-            let toolchain_images = summary
-                .get("toolchain_images")
-                .cloned()
-                .unwrap_or(serde_json::json!(0));
-            if let Some(map) = summary.as_object_mut() {
-                map.insert(
-                    "inventory_errors".to_string(),
-                    serde_json::json!(inventory_errors.clone()),
-                );
-                map.insert("profiles".to_string(), serde_json::json!(profiles));
-                map.insert("components".to_string(), toolchain_images);
-                map.insert(
-                    "charts".to_string(),
-                    serde_json::json!(surfaces
-                        .actions
-                        .iter()
-                        .filter(|a| a.id.contains("render"))
-                        .count()),
-                );
-                map.insert(
-                    "tools".to_string(),
-                    serde_json::json!(toolchain.tools.keys().cloned().collect::<Vec<_>>()),
-                );
-                map.insert(
-                    "suites".to_string(),
-                    serde_json::json!(["load", "e2e", "k8s", "obs"]),
-                );
-                map.insert(
-                    "scenarios".to_string(),
-                    serde_json::json!(["load.run", "e2e.run", "obs.drill.run", "obs.verify"]),
-                );
-                map.insert(
-                    "schemas".to_string(),
-                    serde_json::json!([
-                        "ops/stack/stack.toml",
-                        "ops/stack/profiles.json",
-                        "ops/stack/generated/version-manifest.json",
-                        "ops/inventory/toolchain.json",
-                        "ops/inventory/surfaces.json",
-                        "ops/inventory/contracts.json"
-                    ]),
-                );
-            }
-            let status = if inventory_errors.is_empty() {
-                "ok"
-            } else {
-                "failed"
-            };
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "status": status,
-                "text": format!("ops inventory: status={status}"),
-                "rows": [summary],
-                "summary": {"total": 1, "errors": inventory_errors.len(), "warnings": 0}
-            });
+            let payload = bijux_atlas_ops::inventory::inventory_report::ops_inventory_payload(
+                summary,
+                &inventory_errors,
+                &profiles,
+                &surfaces,
+                &toolchain,
+            );
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((
                 rendered,

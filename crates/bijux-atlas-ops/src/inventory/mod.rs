@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+pub mod inventory_report;
 pub mod ops_inventory;
 pub mod path_contracts;
 pub mod pins_audit;
