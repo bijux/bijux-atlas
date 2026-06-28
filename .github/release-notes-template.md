@@ -7,7 +7,7 @@
 - Published crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`, `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-ops`, `bijux-atlas-query`, `bijux-atlas-runtime`, `bijux-atlas-server`, `bijux-atlas-store`
 - Repository-only crate: `bijux-atlas-dev`
 - Direct commands: `bijux-atlas`, `bijux-atlas-server`, `bijux-atlas-openapi`
-- Container image: `ghcr.io/bijux/bijux-atlas:{{tag}}`
+- Container image: `ghcr.io/bijux/bijux-atlas/atlas-runtime:{{tag}}`
 
 ### Highlights
 - 
@@ -39,5 +39,5 @@ bijux-atlas-openapi --help
 ```bash
 cosign verify \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  ghcr.io/bijux/bijux-atlas:{{tag}}
+  ghcr.io/bijux/bijux-atlas/atlas-runtime:{{tag}}
 ```

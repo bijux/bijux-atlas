@@ -1,7 +1,7 @@
 schema_version = 1
 
 [[images]]
-name = "ghcr.io/bijux/bijux-atlas-server"
+name = "ghcr.io/bijux/bijux-atlas/atlas-runtime"
 role = "runtime-server"
 version_binding = "workspace-version"
 tag_policy = ["vX.Y.Z", "sha-<short>"]

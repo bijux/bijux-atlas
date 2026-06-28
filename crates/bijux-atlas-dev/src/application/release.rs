@@ -1317,7 +1317,7 @@ fn run_release_images_integration_verify(
         .and_then(|rows| rows.first())
         .and_then(|row| row.get("name"))
         .and_then(toml::Value::as_str)
-        .unwrap_or("ghcr.io/bijux/bijux-atlas-server");
+        .unwrap_or("ghcr.io/bijux/bijux-atlas/atlas-runtime");
     let digests_path = root.join("artifacts/docker-publish/image-digests.json");
     let digest_payload = if digests_path.exists() {
         Some(read_json(&digests_path)?)

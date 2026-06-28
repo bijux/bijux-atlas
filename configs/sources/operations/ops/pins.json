@@ -31,7 +31,7 @@
     "atlas_app": {
       "owner": "atlas-server",
       "pinned_at": "2026-02-19",
-      "ref": "ghcr.io/bijux/bijux-atlas:0.1.0",
+      "ref": "ghcr.io/bijux/bijux-atlas/atlas-runtime:0.1.0",
       "source_url": "https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas"
     },
     "kind_node_image": {
