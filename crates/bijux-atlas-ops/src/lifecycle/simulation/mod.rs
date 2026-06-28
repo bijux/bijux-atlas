@@ -9,6 +9,7 @@ pub mod paths;
 pub mod records;
 mod scenario_evidence;
 mod smoke_checks;
+mod stack_reset;
 mod stack_teardown;
 
 pub use self::context::{ensure_owned_simulation_context, SimulationCommandRunner};
@@ -22,4 +23,5 @@ pub use self::scenario_evidence::{
     scenario_evidence_artifacts, write_deterministic_scenario_evidence, ScenarioEvidenceArtifacts,
 };
 pub use self::smoke_checks::smoke_command_payload;
+pub use self::stack_reset::reset_stack_state_payload;
 pub use self::stack_teardown::stack_down_payload;

@@ -19,6 +19,21 @@ pub fn ops_artifact_report_path(repo_root: &Path, run_id: &str, rel: &str) -> Pa
     ops_artifacts_root(repo_root).join(run_id).join(rel)
 }
 
+pub fn clean_ops_artifacts_payload(repo_root: &Path) -> Result<(serde_json::Value, i32), String> {
+    let path = ops_artifacts_root(repo_root);
+    if path.exists() {
+        std::fs::remove_dir_all(&path)
+            .map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "text": format!("cleaned {}", path.display()),
+        "rows": [],
+        "summary": {"total": 0, "errors": 0, "warnings": 0}
+    });
+    Ok((payload, 0))
+}
+
 pub fn build_cleanup_payload(
     down_detail: String,
     down_code: i32,
@@ -53,8 +68,8 @@ pub fn build_reset_payload(
 #[cfg(test)]
 mod tests {
     use super::{
-        build_cleanup_payload, build_reset_payload, ops_artifact_report_path,
-        ops_artifact_run_root, ops_artifacts_root,
+        build_cleanup_payload, build_reset_payload, clean_ops_artifacts_payload,
+        ops_artifact_report_path, ops_artifact_run_root, ops_artifacts_root,
     };
 
     #[test]
@@ -94,5 +109,19 @@ mod tests {
             .as_str()
             .expect("text")
             .contains("owned-run"));
+    }
+
+    #[test]
+    fn clean_payload_removes_owned_artifact_root() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let artifact_root = ops_artifacts_root(root.path());
+        std::fs::create_dir_all(&artifact_root).expect("create artifact root");
+        std::fs::write(artifact_root.join("marker.json"), "{}").expect("write marker");
+
+        let (payload, exit_code) = clean_ops_artifacts_payload(root.path()).expect("clean");
+
+        assert_eq!(exit_code, 0);
+        assert_eq!(payload["summary"]["errors"], 0);
+        assert!(!artifact_root.exists());
     }
 }

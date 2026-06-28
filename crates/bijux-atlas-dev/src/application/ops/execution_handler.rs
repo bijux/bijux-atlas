@@ -14,13 +14,11 @@ use bijux_atlas_ops::inventory::scenario_reporting::{
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
 use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::lifecycle::simulation::{
-    scenario_evidence_artifacts, stack_down_payload, write_deterministic_scenario_evidence,
+    reset_stack_state_payload, scenario_evidence_artifacts, stack_down_payload,
+    write_deterministic_scenario_evidence,
 };
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
-use bijux_atlas_ops::workspace::ops_artifacts::{
-    build_cleanup_payload, build_reset_payload, ops_artifact_report_path, ops_artifact_run_root,
-    ops_artifacts_root,
-};
+use bijux_atlas_ops::workspace::ops_artifacts::{build_cleanup_payload, ops_artifact_report_path};
 use bijux_atlas_ops::workspace::pins_sync::{
     build_pins_update_payload, sync_pins_from_generated_stack_manifest,
 };
@@ -170,18 +168,10 @@ pub(super) fn dispatch_execution(
         }
         OpsCommand::Clean(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let path = ops_artifacts_root(&repo_root);
-            if path.exists() {
-                std::fs::remove_dir_all(&path)
-                    .map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
-            }
-            let text = format!("cleaned {}", path.display());
-            let rendered = emit_payload(
-                common.format,
-                common.out.clone(),
-                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
-            )?;
-            Ok((rendered, 0))
+            let (payload, exit_code) =
+                bijux_atlas_ops::workspace::ops_artifacts::clean_ops_artifacts_payload(&repo_root)?;
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, exit_code))
         }
         OpsCommand::Cleanup(common) => {
             let cleanup_common = common.clone();
@@ -210,48 +200,26 @@ pub(super) fn dispatch_execution(
             let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let run_id = RunId::parse(&args.reset_id).map_err(|err| err.to_string())?;
-            let target = ops_artifact_run_root(&repo_root, run_id.as_str())?;
-            if target.exists() {
-                std::fs::remove_dir_all(&target)
-                    .map_err(|err| format!("failed to remove {}: {err}", target.display()))?;
-            }
-            let mut rows = vec![serde_json::json!({
-                "kind": "artifacts",
-                "status": "ok",
-                "path": target.display().to_string()
-            })];
-            if common.allow_subprocess {
-                let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
-                    .map_err(|e| e.to_stable_message())?;
-                let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
-                profiles.sort_by(|a, b| a.name.cmp(&b.name));
-                let profile = resolve_profile(common.profile.clone(), &profiles)
-                    .map_err(|e| e.to_stable_message())?;
-                let process = OpsProcess::new(true);
-                let namespace_delete_args = vec![
-                    "delete".to_string(),
-                    "namespace".to_string(),
-                    "bijux-atlas".to_string(),
-                    "--ignore-not-found=true".to_string(),
-                ];
-                let _ = process.run_subprocess("kubectl", &namespace_delete_args, &repo_root);
-                let kind_delete_args = vec![
-                    "delete".to_string(),
-                    "cluster".to_string(),
-                    "--name".to_string(),
-                    profile.kind_profile.clone(),
-                ];
-                let _ = process.run_subprocess("kind", &kind_delete_args, &repo_root);
-                rows.push(serde_json::json!({
-                    "kind": "known_resources",
-                    "status": "attempted",
-                    "namespace": "bijux-atlas",
-                    "kind_profile": profile.kind_profile
-                }));
-            }
-            let payload = build_reset_payload(run_id.as_str(), &target, rows);
+            let process = OpsProcess::new(common.allow_subprocess);
+            let (payload, exit_code) = if common.allow_subprocess {
+                reset_stack_state_payload(
+                    Some(&process),
+                    &repo_root,
+                    run_id.as_str(),
+                    common.ops_root.clone(),
+                    common.profile.as_deref(),
+                )?
+            } else {
+                reset_stack_state_payload::<OpsProcess>(
+                    None,
+                    &repo_root,
+                    run_id.as_str(),
+                    None,
+                    None,
+                )?
+            };
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, 0))
+            Ok((rendered, exit_code))
         }
         OpsCommand::Pins { command } => match command {
             OpsPinsCommand::Check(common) => {
