@@ -1,10 +1,10 @@
 ---
-title: bijux-atlas-ops Home
+title: Atlas Operations Overview
 audience: operators
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # bijux-atlas-ops

@@ -1,5 +1,5 @@
 ---
-title: bijux-atlas Home
+title: Atlas Product Overview
 audience: mixed
 type: index
 status: canonical
@@ -39,6 +39,12 @@ Atlas is the repository-owned product surface for:
 - publishing those artifacts into a serving store and catalog
 - serving dataset identity, gene, transcript, sequence, and diff workflows
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
+
+The Atlas product surface is now carried by a split crate set rather than one
+monolithic runtime package. `bijux-atlas-runtime` owns orchestration,
+`bijux-atlas` preserves the historical import path, `bijux-atlas-cli`,
+`bijux-atlas-server`, and `bijux-atlas-api` own the direct binaries, and the
+leaf crates own ingest, query, model, core, store, and operations contracts.
 
 These docs are intentionally separate from:
 

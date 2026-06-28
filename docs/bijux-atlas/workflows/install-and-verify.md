@@ -48,7 +48,7 @@ time debugging later workflow steps.
 Choose the install route that matches the published runtime surface you want to verify:
 
 ```bash
-cargo install --locked bijux-atlas
+cargo install --locked bijux-atlas-cli --bin bijux-atlas
 cargo install --locked bijux-atlas-server
 cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 ```
@@ -56,6 +56,9 @@ cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 `bijux-atlas-dev` is a repository control-plane crate and is not published to
 crates.io in the `0.2.2` release line. Run it from a repository checkout with
 `cargo run -p bijux-atlas-dev -- ...`.
+
+`bijux-atlas-ops` is part of the published crate set, but it is a library
+surface for operational contracts rather than an installed end-user binary.
 
 If you are working from a repository checkout, you can skip installation
 entirely and use `cargo run`.

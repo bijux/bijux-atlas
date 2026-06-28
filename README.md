@@ -4,15 +4,16 @@
 
 **Bijux Atlas is a Rust-owned genomics dataset delivery platform for GFF3/FASTA ingest, immutable gene-query artifacts, governed HTTP APIs, and reproducible operations evidence.**
 
-This repository currently ships three direct runtime binaries, ten published
-Rust crates, and two repo-only support crates:
+This repository currently ships three direct runtime binaries, eleven published
+Rust crates, and one repository-only maintainer crate:
 
 * `bijux-atlas`: the direct CLI binary, owned by `bijux-atlas-cli`,
 * `bijux-atlas-server`: the HTTP runtime server, owned by `bijux-atlas-server`,
 * `bijux-atlas-openapi`: the OpenAPI export surface, owned by `bijux-atlas-api`,
 * `bijux-atlas-runtime`: the canonical orchestration library crate,
 * `bijux-atlas`: the compatibility alias crate for the historical Rust import path,
-* `bijux-atlas-dev` and `bijux-atlas-ops`: maintainer and operational support crates that stay repository-owned instead of shipping to crates.io.
+* `bijux-atlas-ops`: the published operational contracts crate for stack, load, observability, and release-support surfaces,
+* `bijux-atlas-dev`: the maintainer control-plane crate that stays repository-owned instead of shipping to crates.io.
 
 The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
 Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: if you already have `bijux-cli` installed, Atlas can be routed through `bijux atlas ...` and `bijux dev atlas ...`; the primary release and installation story in this repository remains the standalone Rust binaries and crates.
@@ -26,7 +27,7 @@ Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-c
 [![GitHub Release](https://github.com/bijux/bijux-atlas/workflows/release-github/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
 [![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
 [![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
-[![Published packages](https://img.shields.io/badge/published%20packages-10-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
+[![Published packages](https://img.shields.io/badge/published%20packages-11-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 
 [![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas) [![bijux-atlas](https://img.shields.io/badge/bijux--atlas-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas)
 
@@ -104,8 +105,8 @@ The repository is strongest when it stays concrete about what is already real:
 * a runtime CLI named `bijux-atlas`,
 * a server binary named `bijux-atlas-server`,
 * an OpenAPI export binary named `bijux-atlas-openapi`,
-* ten published crates that separate runtime, API, query, ingest, model, core, store, server, CLI, and compatibility ownership,
-* two repository-owned crates, `bijux-atlas-dev` and `bijux-atlas-ops`, that govern maintainer and operational contracts,
+* eleven published crates that separate runtime, API, query, ingest, model, core, store, server, CLI, compatibility, and operations-contract ownership,
+* one repository-only crate, `bijux-atlas-dev`, that governs maintainer automation and release policy,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
 
@@ -311,7 +312,7 @@ release evidence out of the runtime binaries that end users depend on.
 Atlas carries more release-facing material in-repo than a typical single-crate project.
 That is intentional, but the boundaries stay explicit:
 
-* `crates/` owns published runtime crates plus repository-only maintainer and ops crates,
+* `crates/` owns the published Atlas crate set plus the repository-only maintainer control plane crate,
 * `configs/` owns policy, schema, registry, and repository inputs,
 * `ops/` owns deployment, observability, release, and scenario data,
 * `docs/` owns the package handbooks and contract references,
@@ -356,7 +357,7 @@ If a surface is planned, internal, or future-facing, it should be described as s
 | `crates/bijux-atlas/` | Compatibility alias crate for the historical `bijux_atlas` import path |
 | `crates/bijux-atlas-runtime/` | Canonical runtime orchestration crate |
 | `crates/bijux-atlas-dev/` | Repository-only maintainer control plane for docs, checks, governance, release, configs, and ops |
-| `crates/bijux-atlas-ops/` | Repository-only operational contract and stack-support crate |
+| `crates/bijux-atlas-ops/` | Published operational contract and stack-support crate |
 | `configs/` | Repository-owned policy, schemas, registries, and examples |
 | `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
 | `makes/` | Thin GNU Make wrapper surface |
@@ -370,11 +371,11 @@ If a surface is planned, internal, or future-facing, it should be described as s
 Published crates, GitHub releases, docs deployment, and `v*` git tags define
 the public release line.
 Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
-The currently published artifact surfaces are crates.io for the ten
+The currently published artifact surfaces are crates.io for the eleven
 publishable Atlas crates, GHCR for `bijux-atlas/bijux-atlas`, and GitHub
-Releases. `bijux-atlas-dev` and `bijux-atlas-ops` remain repository-only, and
-PyPI stays intentionally disabled in this repository until the planned Python
-bridge exists.
+Releases. `bijux-atlas-dev` remains repository-only, and PyPI stays
+intentionally disabled in this repository until the planned Python bridge
+exists.
 
 Release expectations live in [`docs/bijux-atlas-dev/delivery/release-and-versioning.md`](docs/bijux-atlas-dev/delivery/release-and-versioning.md).
 Compatibility and operational promises live under [`docs/bijux-atlas/contracts/index.md`](docs/bijux-atlas/contracts/index.md).

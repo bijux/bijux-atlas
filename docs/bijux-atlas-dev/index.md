@@ -1,10 +1,10 @@
 ---
-title: bijux-atlas-dev Home
+title: Atlas Maintainer Overview
 audience: maintainers
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # bijux-atlas-dev

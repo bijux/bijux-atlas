@@ -10,6 +10,11 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ## v0.2.2 – 2026-06-28
 
 ### Changed
+- Expanded the Atlas `0.2.2` crates.io surface to the split eleven-crate set:
+  `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`, `bijux-atlas-core`,
+  `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-ops`,
+  `bijux-atlas-query`, `bijux-atlas-runtime`, `bijux-atlas-server`, and
+  `bijux-atlas-store`, while `bijux-atlas-dev` stays repository-only.
 - Raised the Atlas telemetry stack to `opentelemetry` `0.32`,
   `opentelemetry-otlp` `0.32`, `opentelemetry_sdk` `0.32.1`, and
   `tracing-opentelemetry` `0.33` so release builds ship on the current
@@ -26,6 +31,9 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Realigned the checked-in toolchain inventory with the workflow pins actually
   executed by CI so release, policy, and supply-chain checks validate the same
   action set that GitHub runs.
+- Removed stale release documentation that still described `bijux-atlas-ops`
+  as repository-only, counted only ten publishable crates, or pointed readers
+  at the retired `bijux.github.io` docs hostname.
 
 ## v0.2.1 – 2026-04-22
 

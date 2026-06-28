@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Foundations
@@ -65,6 +65,7 @@ user-facing surface, move on.
 
 - [Boundaries and Non-Goals](boundaries-and-non-goals.md)
 - [Core Concepts](core-concepts.md)
+- [Crate Boundary Contract](crate-boundary-contract.md)
 - [Dataset Model](dataset-model.md)
 - [Documentation Map](documentation-map.md)
 - [Guarantees and Stability](guarantees-and-stability.md)
