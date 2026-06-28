@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
-use bijux_atlas_dev::core::ops_registry::builtin_ops_registry;
+use bijux_atlas_ops::inventory::surface_registry::builtin_ops_registry;
 
 fn workspace_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

@@ -24,7 +24,6 @@ pub use crate::model::governance as governance_objects;
 pub mod load_harness;
 pub mod logging;
 pub mod ops_inventory;
-pub mod ops_registry;
 mod registry;
 #[path = "report.rs"]
 mod report_rendering;

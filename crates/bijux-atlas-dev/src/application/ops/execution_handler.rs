@@ -8,6 +8,7 @@ use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
 };
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
+use bijux_atlas_ops::inventory::surface_registry::builtin_ops_registry;
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
 
 pub(super) fn dispatch_execution(
@@ -706,7 +707,7 @@ pub(super) fn dispatch_execution(
             } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
-                let ops_registry = bijux_atlas_dev::core::ops_registry::builtin_ops_registry();
+                let ops_registry = builtin_ops_registry();
                 let domains = {
                     let mut set = std::collections::BTreeSet::new();
                     for entry in &ops_registry {
