@@ -7,6 +7,7 @@ pub mod pins_policy;
 pub mod resilience_report;
 pub mod runbook_index;
 pub mod scenario_catalog;
+pub mod scenario_support;
 pub mod toolchain;
 pub mod tooling_support;
 pub mod tools_manifest;

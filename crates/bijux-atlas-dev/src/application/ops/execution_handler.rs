@@ -7,6 +7,7 @@ use bijux_atlas_ops::inventory::runbook_index::build_runbook_index_payload;
 use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
 };
+use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
 
 pub(super) fn dispatch_execution(
@@ -62,28 +63,7 @@ pub(super) fn dispatch_execution(
                             args.scenario
                         )
                     })?;
-                let compatibility_path =
-                    repo_root.join("ops/e2e/scenarios/version-compatibility.json");
-                if !compatibility_path.exists() {
-                    return Err(
-                        "missing prerequisite `ops/e2e/scenarios/version-compatibility.json` for scenario runner"
-                            .to_string(),
-                    );
-                }
-                let tools_path = repo_root.join("ops/e2e/scenarios/required-tools.json");
-                if !tools_path.exists() {
-                    return Err(
-                        "missing prerequisite `ops/e2e/scenarios/required-tools.json` for scenario runner"
-                            .to_string(),
-                    );
-                }
-                let result_schema_path = repo_root.join("ops/e2e/scenarios/result-schema.json");
-                if !result_schema_path.exists() {
-                    return Err(
-                        "missing prerequisite `ops/e2e/scenarios/result-schema.json` for scenario runner"
-                            .to_string(),
-                    );
-                }
+                validate_scenario_support_inputs(&repo_root)?;
                 let mode = if args.plan {
                     "plan"
                 } else if args.common.evidence {
