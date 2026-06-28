@@ -21,7 +21,8 @@ pub use self::debug_collection::{
 };
 pub use self::drill_contracts::drill_contract_payload;
 pub use self::helm_release::{
-    helm_install_payload, helm_uninstall_payload, helm_upgrade_payload, HelmUpgradeRequest,
+    helm_install_payload, helm_rollback_payload, helm_uninstall_payload, helm_upgrade_payload,
+    HelmRollbackRequest, HelmUpgradeRequest,
 };
 pub use self::kind_cluster::{
     kind_down_payload, kind_preload_payload, kind_status_payload, kind_up_payload,
