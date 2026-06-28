@@ -3,6 +3,7 @@ name = "bijux-atlas-ingest"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
+license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Atlas ingest engine contracts, normalization, and artifact build surfaces"
 repository.workspace = true

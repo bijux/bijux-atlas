@@ -3,6 +3,7 @@ name = "bijux-atlas"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
+license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Compatibility alias crate for the canonical bijux-atlas-runtime library surface"
 repository.workspace = true

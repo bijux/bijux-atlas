@@ -3,6 +3,7 @@ name = "bijux-atlas-api"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
+license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Stable Atlas API contracts, OpenAPI metadata, and request or response normalization"
 repository.workspace = true
