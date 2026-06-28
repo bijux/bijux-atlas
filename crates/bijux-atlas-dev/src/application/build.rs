@@ -325,22 +325,6 @@ fn build_binary_specs() -> [(&'static str, &'static str); 2] {
     ]
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn build_binary_specs_follow_binary_owners() {
-        assert_eq!(
-            build_binary_specs(),
-            [
-                ("bijux-atlas-cli", "bijux-atlas"),
-                ("bijux-atlas-dev", "bijux-atlas-dev"),
-            ]
-        );
-    }
-}
-
 fn run_build_plan(
     common: &BuildCommonArgs,
     started: std::time::Instant,
@@ -465,4 +449,20 @@ fn run_build_meta(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &response)?;
     Ok((rendered, 0))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn build_binary_specs_follow_binary_owners() {
+        assert_eq!(
+            build_binary_specs(),
+            [
+                ("bijux-atlas-cli", "bijux-atlas"),
+                ("bijux-atlas-dev", "bijux-atlas-dev"),
+            ]
+        );
+    }
 }
