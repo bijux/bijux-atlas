@@ -49,7 +49,9 @@ pub(crate) fn run_ops_helm_upgrade(
             chart_path.display()
         ));
     }
-    let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let before_manifest = bijux_atlas_ops::lifecycle::release_commands::helm_release_manifest(
+        &process, &repo_root, &namespace,
+    )?;
     let before_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
         &process, &repo_root, &namespace,
     );
@@ -88,7 +90,9 @@ pub(crate) fn run_ops_helm_upgrade(
             )
         })
         .collect::<Vec<_>>();
-    let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let after_manifest = bijux_atlas_ops::lifecycle::release_commands::helm_release_manifest(
+        &process, &repo_root, &namespace,
+    )?;
     let after_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
         &process, &repo_root, &namespace,
     );
@@ -273,11 +277,15 @@ pub(crate) fn run_ops_helm_rollback(
         &profile,
         args.release.namespace.as_deref(),
     );
-    let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let before_manifest = bijux_atlas_ops::lifecycle::release_commands::helm_release_manifest(
+        &process, &repo_root, &namespace,
+    )?;
     let before_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
         &process, &repo_root, &namespace,
     );
-    let revision = prior_release_revision(&process, &repo_root, &namespace)?;
+    let revision = bijux_atlas_ops::lifecycle::release_commands::prior_release_revision(
+        &process, &repo_root, &namespace,
+    )?;
     let helm_args = vec![
         "rollback".to_string(),
         "bijux-atlas".to_string(),
@@ -311,7 +319,9 @@ pub(crate) fn run_ops_helm_rollback(
             )
         })
         .collect::<Vec<_>>();
-    let after_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
+    let after_manifest = bijux_atlas_ops::lifecycle::release_commands::helm_release_manifest(
+        &process, &repo_root, &namespace,
+    )?;
     let after_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
         &process, &repo_root, &namespace,
     );

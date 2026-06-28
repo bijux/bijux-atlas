@@ -1239,56 +1239,6 @@ pub(crate) fn run_ops_evidence_diff(
     Ok((rendered, 0))
 }
 
-pub(crate) fn helm_release_manifest(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-    namespace: &str,
-) -> Result<String, String> {
-    let argv = vec![
-        "get".to_string(),
-        "manifest".to_string(),
-        "bijux-atlas".to_string(),
-        "--namespace".to_string(),
-        namespace.to_string(),
-    ];
-    let (stdout, _) = process
-        .run_subprocess("helm", &argv, repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    Ok(stdout)
-}
-
-pub(crate) fn prior_release_revision(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-    namespace: &str,
-) -> Result<String, String> {
-    let argv = vec![
-        "history".to_string(),
-        "bijux-atlas".to_string(),
-        "--namespace".to_string(),
-        namespace.to_string(),
-        "-o".to_string(),
-        "json".to_string(),
-    ];
-    let (stdout, _) = process
-        .run_subprocess("helm", &argv, repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let rows: serde_json::Value = serde_json::from_str(&stdout)
-        .map_err(|err| format!("failed to parse helm history: {err}"))?;
-    let history = rows
-        .as_array()
-        .ok_or_else(|| "helm history payload must be an array".to_string())?;
-    if history.len() < 2 {
-        return Err("rollback requires at least two release revisions".to_string());
-    }
-    history
-        .get(history.len() - 2)
-        .and_then(|row| row.get("revision"))
-        .and_then(serde_json::Value::as_i64)
-        .map(|revision| revision.to_string())
-        .ok_or_else(|| "helm history did not contain a usable previous revision".to_string())
-}
-
 pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process
