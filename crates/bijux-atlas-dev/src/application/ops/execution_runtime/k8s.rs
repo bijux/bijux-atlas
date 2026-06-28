@@ -14,13 +14,9 @@ use bijux_atlas_ops::kubernetes::conformance_report::{
 };
 use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
 use bijux_atlas_ops::kubernetes::service_inventory::service_port_rows;
-use bijux_atlas_ops::kubernetes::workload_wait::{
-    readiness_wait_commands, readiness_wait_failure_row, readiness_wait_payload,
-    readiness_wait_success_row,
-};
+use bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait_payload;
 use serde_json::Value;
 use std::fs;
-use std::time::Instant;
 
 use super::resolve_render_inputs;
 
@@ -306,32 +302,15 @@ pub(crate) fn run_ops_k8s_wait(args: &crate::cli::OpsK8sWaitArgs) -> Result<(Str
         common.force,
         "bijux-atlas",
     )?;
-    let start = Instant::now();
-    let checks = readiness_wait_commands("bijux-atlas", args.timeout_seconds);
-    let mut rows = Vec::new();
-    let mut errors = Vec::new();
-    for argv in checks {
-        match process.run_subprocess("kubectl", &argv, &repo_root) {
-            Ok((stdout, event)) => rows.push(readiness_wait_success_row(&argv, &stdout, event)),
-            Err(err) => {
-                errors.push(err.to_stable_message());
-                rows.push(readiness_wait_failure_row(&argv));
-                if common.fail_fast {
-                    break;
-                }
-            }
-        }
-    }
-    let payload = readiness_wait_payload(rows, &errors, start.elapsed().as_millis());
+    let (payload, exit_code) = run_readiness_wait_payload(
+        &process,
+        &repo_root,
+        "bijux-atlas",
+        args.timeout_seconds,
+        common.fail_fast,
+    );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((
-        rendered,
-        if payload["errors"].as_array().is_some_and(|v| v.is_empty()) {
-            0
-        } else {
-            1
-        },
-    ))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_k8s_logs(args: &crate::cli::OpsK8sLogsArgs) -> Result<(String, i32), String> {

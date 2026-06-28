@@ -62,6 +62,16 @@ pub fn run_readiness_wait(
     namespace: &str,
     timeout_seconds: u64,
 ) -> (Vec<Value>, Vec<String>, u128) {
+    run_readiness_wait_with_policy(runner, repo_root, namespace, timeout_seconds, false)
+}
+
+pub fn run_readiness_wait_with_policy(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    namespace: &str,
+    timeout_seconds: u64,
+    fail_fast: bool,
+) -> (Vec<Value>, Vec<String>, u128) {
     let start = Instant::now();
     let mut rows = Vec::new();
     let mut errors = Vec::new();
@@ -75,10 +85,27 @@ pub fn run_readiness_wait(
             Err(err) => {
                 errors.push(err);
                 rows.push(readiness_wait_failure_row(&argv));
+                if fail_fast {
+                    break;
+                }
             }
         }
     }
     (rows, errors, start.elapsed().as_millis())
+}
+
+pub fn run_readiness_wait_payload(
+    runner: &impl KubernetesCommandRunner,
+    repo_root: &Path,
+    namespace: &str,
+    timeout_seconds: u64,
+    fail_fast: bool,
+) -> (Value, i32) {
+    let (rows, errors, elapsed_ms) =
+        run_readiness_wait_with_policy(runner, repo_root, namespace, timeout_seconds, fail_fast);
+    let payload = readiness_wait_payload(rows, &errors, elapsed_ms);
+    let exit_code = if errors.is_empty() { 0 } else { 1 };
+    (payload, exit_code)
 }
 
 #[cfg(test)]
@@ -160,5 +187,44 @@ mod tests {
         assert_eq!(errors, vec!["pod wait failed".to_string()]);
         assert!(elapsed_ms < 5_000);
         assert_eq!(runner.calls.borrow().len(), 2);
+    }
+
+    #[test]
+    fn run_readiness_wait_with_policy_stops_after_first_failure() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let runner = MockRunner {
+            cwd: root.path().to_path_buf(),
+            calls: RefCell::new(Vec::new()),
+            results: RefCell::new(VecDeque::from([
+                Err("deployment wait failed".to_string()),
+                Ok(SubprocessCapture {
+                    stdout: "pod ready".to_string(),
+                    event: json!({"binary": "kubectl"}),
+                }),
+            ])),
+        };
+
+        let (rows, errors, _elapsed_ms) =
+            run_readiness_wait_with_policy(&runner, root.path(), "atlas-kind", 30, true);
+
+        assert_eq!(rows.len(), 1);
+        assert_eq!(errors, vec!["deployment wait failed".to_string()]);
+        assert_eq!(runner.calls.borrow().len(), 1);
+    }
+
+    #[test]
+    fn run_readiness_wait_payload_returns_failure_exit_code() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let runner = MockRunner {
+            cwd: root.path().to_path_buf(),
+            calls: RefCell::new(Vec::new()),
+            results: RefCell::new(VecDeque::from([Err("pod wait failed".to_string())])),
+        };
+
+        let (payload, exit_code) =
+            run_readiness_wait_payload(&runner, root.path(), "atlas-kind", 30, true);
+
+        assert_eq!(payload["text"], "k8s wait failed");
+        assert_eq!(exit_code, 1);
     }
 }
