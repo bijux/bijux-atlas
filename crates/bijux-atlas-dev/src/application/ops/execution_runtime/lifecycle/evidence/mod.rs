@@ -7,7 +7,7 @@ pub(crate) use self::commands::*;
 pub(crate) use bijux_atlas_ops::kubernetes::schema_validation::record_kubeconform_result;
 pub(crate) use bijux_atlas_ops::lifecycle::evidence::artifacts::{
     build_lifecycle_evidence_bundle, collect_redacted_logs, collect_scan_reports,
-    contains_common_secret_pattern, render_evidence_index_html, write_debug_artifact,
+    contains_common_secret_pattern, render_evidence_index_html,
 };
 pub(crate) use bijux_atlas_ops::lifecycle::evidence::support::{
     collect_image_artifacts, collect_sboms, evidence_root, sha256_file,

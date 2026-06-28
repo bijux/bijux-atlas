@@ -505,51 +505,15 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
         &profile,
         args.namespace.as_deref(),
     );
-    let checks = bijux_atlas_ops::kubernetes::service_probe::run_kubectl_service_smoke_checks(
-        &repo_root,
-        &namespace,
-        args.local_port,
-    )?;
-    let errors = checks
-        .iter()
-        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
-        .map(|row| {
-            format!(
-                "{} returned status {}",
-                row["path"].as_str().unwrap_or("unknown"),
-                row["status"].as_u64().unwrap_or(0)
-            )
-        })
-        .collect::<Vec<_>>();
-    let status = if errors.is_empty() { "ok" } else { "failed" };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "namespace": namespace,
-        "status": status,
-        "checks": checks
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
-        &repo_root,
-        run_id.as_str(),
-        "ops-smoke.json",
-        &payload,
-    )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "smoke checks passed" } else { "smoke checks failed" },
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "namespace": payload["namespace"].clone(),
-            "status": status,
-            "checks": payload["checks"].clone(),
-            "report_path": report_path.display().to_string()
-        }],
-        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
-    });
+    let (envelope, exit_code) =
+        bijux_atlas_ops::lifecycle::simulation::commands::smoke_command_payload(
+            &repo_root,
+            run_id.as_str(),
+            &namespace,
+            args.local_port,
+        )?;
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 fn run_collect_command(
@@ -577,33 +541,15 @@ fn run_collect_command(
         &profile,
         args.namespace.as_deref(),
     );
-    let (stdout, event) = process
-        .run_subprocess("kubectl", &argv, &repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let artifact_path =
-        write_debug_artifact(&repo_root, run_id.as_str(), &namespace, file_name, &stdout)?;
-    let report_path = emit_debug_bundle_report(
+    let envelope = bijux_atlas_ops::lifecycle::simulation::commands::debug_collect_payload(
+        &process,
         &repo_root,
-        &run_id,
+        run_id.as_str(),
         &namespace,
         category,
-        std::slice::from_ref(&artifact_path),
+        file_name,
+        argv,
     )?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": format!("{category} collected"),
-        "rows": [{
-            "schema_version": 1,
-            "cluster": "kind",
-            "namespace": namespace,
-            "category": category,
-            "status": "ok",
-            "files": [artifact_path.display().to_string()],
-            "report_path": report_path.display().to_string(),
-            "event": event
-        }],
-        "summary": {"total": 1, "errors": 0, "warnings": 0}
-    });
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, 0))
 }

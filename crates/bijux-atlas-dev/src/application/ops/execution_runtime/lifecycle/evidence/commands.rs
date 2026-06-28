@@ -4,7 +4,7 @@
 use super::*;
 use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default};
-use crate::{resolve_repo_root, OpsProcess, RunId};
+use crate::{resolve_repo_root, OpsProcess};
 use bijux_atlas_ops::lifecycle::evidence::commands::{
     git_head_sha, run_governance_doctor_for_evidence,
     run_governance_exceptions_validate_for_evidence, run_security_validate_for_evidence,
@@ -1118,28 +1118,7 @@ pub(crate) fn run_ops_evidence_diff(
 }
 
 pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
-    bijux_atlas_ops::kubernetes::access_guard::ensure_simulation_cluster_context(process, force)
-}
-
-pub(crate) fn emit_debug_bundle_report(
-    repo_root: &std::path::Path,
-    run_id: &RunId,
-    namespace: &str,
-    category: &str,
-    files: &[std::path::PathBuf],
-) -> Result<std::path::PathBuf, String> {
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "namespace": namespace,
-        "category": category,
-        "status": "ok",
-        "files": files.iter().map(|path| path.display().to_string()).collect::<Vec<_>>()
-    });
-    bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
-        repo_root,
-        run_id.as_str(),
-        &format!("ops-debug-bundle-{category}.json"),
-        &payload,
+    bijux_atlas_ops::lifecycle::simulation::commands::ensure_owned_simulation_context(
+        process, force,
     )
 }
