@@ -2,6 +2,11 @@
 
 Operational contract and surface ownership crate for `bijux-atlas`.
 
+This crate is repository-owned support infrastructure. It exists to keep stack,
+Kubernetes, load, observability, release, and operational path contracts out of
+the maintainer control plane and out of product-facing runtime crates. It is
+not published to crates.io in the `0.2.2` release line.
+
 This crate owns durable references to repository surfaces that belong to stack,
 ops, load, k8s, and generated operational assets. Higher-level tooling crates
 such as `bijux-atlas-dev` should consume these surfaces instead of hard-coding

@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
-## v0.2.2 – 2026-06-27
+## v0.2.2 – 2026-06-28
 
 ### Changed
 - Raised the Atlas telemetry stack to `opentelemetry` `0.32`,

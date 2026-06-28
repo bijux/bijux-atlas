@@ -3,7 +3,8 @@
 `bijux-atlas-runtime` is the canonical Atlas runtime composition crate for
 genomics dataset delivery. It composes ingest, query, store, API, and runtime
 wiring so the direct CLI and server owner crates can expose stable Atlas
-product surfaces.
+product surfaces, while the shorter `bijux-atlas` package remains a
+compatibility alias for historical Rust imports.
 
 This crate is the right starting point if you are looking for:
 
@@ -18,13 +19,17 @@ This crate is the right starting point if you are looking for:
   config, and OpenAPI workflows
 - `bijux-atlas-server`: runtime HTTP server owner for Atlas APIs
 - `bijux-atlas-api`: OpenAPI export owner for `bijux-atlas-openapi`
-- Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and `runtime`
+- `bijux-atlas`: compatibility alias crate for the historical `bijux_atlas`
+  import path
+- Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and
+  `runtime`
 
 ## How It Fits With `bijux-cli`
 
-Atlas owns the genomic dataset runtime itself.
-The sibling `bijux-cli` repository owns the umbrella command runtime that can route Atlas under
-`bijux atlas ...` and `bijux dev atlas ...`.
+Atlas owns the genomic dataset runtime itself. The sibling `bijux-cli`
+repository owns the umbrella command runtime that can route Atlas under
+`bijux atlas ...` and `bijux dev atlas ...` when that command surface is
+already installed in an environment.
 
 Use this crate when you want the canonical Atlas runtime and libraries
 directly.
@@ -34,7 +39,7 @@ Use `bijux-cli` when you want a shared command root that can host Atlas alongsid
 
 Choose one install route at a time.
 
-Install the published crate directly when you want the Atlas binaries or crate APIs without the
+Install the published binaries directly when you want Atlas without the
 umbrella runtime:
 
 ```bash
@@ -132,13 +137,18 @@ The following are not stable API promises:
 
 ## Source Layout
 
-- `src/adapters`: inbound and outbound integrations such as CLI, HTTP, store, sqlite, redis,
-  telemetry, and filesystem code
-- `src/app`: use-case orchestration, ingest/query boundary facades, ports, cache services, and server application state
-- `src/contracts`: external schemas, runtime config contracts, and stable error definitions
-- `src/domain`: business rules for cluster, policy, security, and compatibility facades for owned Atlas subcrates
+- `src/adapters`: runtime-owned outbound integrations such as filesystem and
+  store-facing adapters
+- `src/app`: orchestration, ports, cache coordination, and process-facing
+  runtime services
+- `src/contracts`: runtime config contracts and stable error definitions
+- `src/domain`: cluster, policy, security, and other runtime-owned domain
+  behavior
 - `src/runtime`: runtime configuration and process-level setup
-- `src/api`, `src/core`, `src/model`, `src/query`, `src/domain/ingest`: compatibility facades that point callers to the owning Atlas subcrates
+
+CLI entrypoints live in `bijux-atlas-cli`, HTTP entrypoints live in
+`bijux-atlas-server`, OpenAPI export lives in `bijux-atlas-api`, and the
+historical Rust import path lives in the `bijux-atlas` compatibility crate.
 
 If a change affects transport or persistence details, it usually belongs in `adapters`. If it
 changes business behavior, it usually belongs in `domain`. If it changes an external schema or

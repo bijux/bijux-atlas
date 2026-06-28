@@ -4,7 +4,7 @@ All notable changes to **bijux-atlas** are documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org) and the
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
-## v0.2.2 – 2026-06-27
+## v0.2.2 – 2026-06-28
 
 ### Changed
 - Updated the runtime telemetry stack to `opentelemetry` `0.32`,

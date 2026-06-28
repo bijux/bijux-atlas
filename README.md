@@ -4,15 +4,18 @@
 
 **Bijux Atlas is a Rust-owned genomics dataset delivery platform for GFF3/FASTA ingest, immutable gene-query artifacts, governed HTTP APIs, and reproducible operations evidence.**
 
-This repository currently ships four connected surfaces:
+This repository currently ships three direct runtime binaries, ten published
+Rust crates, and two repo-only support crates:
 
-* `bijux-atlas`: the end-user CLI for dataset and query workflows,
-* `bijux-atlas-server`: the HTTP runtime server,
-* `bijux-atlas-openapi`: the OpenAPI export surface,
-* `bijux-atlas-dev`: the maintainer control plane binary defined in this workspace.
+* `bijux-atlas`: the direct CLI binary, owned by `bijux-atlas-cli`,
+* `bijux-atlas-server`: the HTTP runtime server, owned by `bijux-atlas-server`,
+* `bijux-atlas-openapi`: the OpenAPI export surface, owned by `bijux-atlas-api`,
+* `bijux-atlas-runtime`: the canonical orchestration library crate,
+* `bijux-atlas`: the compatibility alias crate for the historical Rust import path,
+* `bijux-atlas-dev` and `bijux-atlas-ops`: maintainer and operational support crates that stay repository-owned instead of shipping to crates.io.
 
 The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
-Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: install Atlas through `bijux` when you want routed `bijux atlas ...` and `bijux dev atlas ...` commands, or install Atlas directly when you want the standalone binaries only.
+Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: if you already have `bijux-cli` installed, Atlas can be routed through `bijux atlas ...` and `bijux dev atlas ...`; the primary release and installation story in this repository remains the standalone Rust binaries and crates.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -23,7 +26,7 @@ Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-c
 [![GitHub Release](https://github.com/bijux/bijux-atlas/workflows/release-github/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
 [![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
 [![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
-[![Published packages](https://img.shields.io/badge/published%20packages-1-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
+[![Published packages](https://img.shields.io/badge/published%20packages-10-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 
 [![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas) [![bijux-atlas](https://img.shields.io/badge/bijux--atlas-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas)
 
@@ -101,7 +104,8 @@ The repository is strongest when it stays concrete about what is already real:
 * a runtime CLI named `bijux-atlas`,
 * a server binary named `bijux-atlas-server`,
 * an OpenAPI export binary named `bijux-atlas-openapi`,
-* the maintainer binary `bijux-atlas-dev`,
+* ten published crates that separate runtime, API, query, ingest, model, core, store, server, CLI, and compatibility ownership,
+* two repository-owned crates, `bijux-atlas-dev` and `bijux-atlas-ops`, that govern maintainer and operational contracts,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
 
@@ -127,7 +131,7 @@ runtime use and which are for repository maintenance.
 
 ## Crate Boundary Map
 
-Atlas currently enforces a ten-crate workspace boundary:
+Atlas currently enforces a twelve-crate workspace boundary:
 
 * `crates/bijux-atlas-core/`: runtime-independent primitives and invariants
 * `crates/bijux-atlas-model/`: stable dataset, gene, diff, and policy types
@@ -135,9 +139,11 @@ Atlas currently enforces a ten-crate workspace boundary:
 * `crates/bijux-atlas-ingest/`: ingest normalization, anomaly handling, and artifact build execution
 * `crates/bijux-atlas-store/`: immutable artifact publication and backend contracts
 * `crates/bijux-atlas-api/`: API DTOs, Rust client surface, OpenAPI generation, and the `bijux-atlas-openapi` binary
-* `crates/bijux-atlas/`: runtime composition crate with application orchestration, adapters, cache wiring, and startup flows
+* `crates/bijux-atlas-runtime/`: canonical runtime composition crate with orchestration, policies, runtime config, and cache wiring
+* `crates/bijux-atlas/`: compatibility alias crate for the historical `bijux_atlas` Rust import path
 * `crates/bijux-atlas-cli/`: direct `bijux-atlas` binary owner plus CLI contract tests
 * `crates/bijux-atlas-server/`: direct `bijux-atlas-server` binary owner plus server-facing integration tests and benchmarks
+* `crates/bijux-atlas-ops/`: repository-owned operational path, Kubernetes, load, and release-support contracts
 * `crates/bijux-atlas-dev/`: maintainer-only control plane for governance and repository operations
 
 The boundary contract for this map lives at
@@ -192,15 +198,8 @@ The release story includes checked manifests, compatibility tables, docs deploym
 
 Choose one install route at a time.
 
-If you already use the `bijux` umbrella CLI, prefer the routed Atlas install so the runtime stays reachable through the same command root as the rest of your Bijux toolchain:
-
-```bash
-bijux install bijux-atlas
-bijux atlas --help
-bijux atlas version
-```
-
-Use direct Cargo installation when you want Atlas by itself, or when CI and local Rust workflows call the binaries directly:
+Use direct Cargo installation when you want Atlas by itself, or when CI and
+local Rust workflows call the binaries directly:
 
 ```bash
 cargo install --locked bijux-atlas-cli --bin bijux-atlas
@@ -210,12 +209,10 @@ bijux-atlas --help
 bijux-atlas version
 ```
 
-For maintainer automation, the installed umbrella namespace is:
-
-```bash
-bijux install bijux-atlas-dev
-bijux dev atlas --help
-```
+If you already operate through the sibling `bijux-cli` umbrella runtime, the
+same Atlas surfaces can also be reached as `bijux atlas ...` and `bijux dev
+atlas ...`. This repository does not rely on a `bijux install ...` flow as the
+primary release story for `0.2.2`.
 
 Quick verification for the standalone binaries:
 
@@ -314,7 +311,7 @@ release evidence out of the runtime binaries that end users depend on.
 Atlas carries more release-facing material in-repo than a typical single-crate project.
 That is intentional, but the boundaries stay explicit:
 
-* `crates/` owns runtime and maintainer binaries,
+* `crates/` owns published runtime crates plus repository-only maintainer and ops crates,
 * `configs/` owns policy, schema, registry, and repository inputs,
 * `ops/` owns deployment, observability, release, and scenario data,
 * `docs/` owns the package handbooks and contract references,
@@ -356,8 +353,10 @@ If a surface is planned, internal, or future-facing, it should be described as s
 
 | Path | Purpose |
 | --- | --- |
-| `crates/bijux-atlas/` | Runtime crate and user-facing binaries |
-| `crates/bijux-atlas-dev/` | Maintainer control plane for docs, checks, governance, release, configs, and ops |
+| `crates/bijux-atlas/` | Compatibility alias crate for the historical `bijux_atlas` import path |
+| `crates/bijux-atlas-runtime/` | Canonical runtime orchestration crate |
+| `crates/bijux-atlas-dev/` | Repository-only maintainer control plane for docs, checks, governance, release, configs, and ops |
+| `crates/bijux-atlas-ops/` | Repository-only operational contract and stack-support crate |
 | `configs/` | Repository-owned policy, schemas, registries, and examples |
 | `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
 | `makes/` | Thin GNU Make wrapper surface |
@@ -368,11 +367,14 @@ If a surface is planned, internal, or future-facing, it should be described as s
 
 ## Release Line & Stability
 
-Published crates, GitHub releases, docs deployment, and `v*` git tags define the public release line.
+Published crates, GitHub releases, docs deployment, and `v*` git tags define
+the public release line.
 Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
-The currently published artifact surfaces are crates.io for `bijux-atlas`, GHCR for
-`bijux-atlas/bijux-atlas`, and GitHub Releases; PyPI remains intentionally disabled in
-this repository until the planned Python bridge exists.
+The currently published artifact surfaces are crates.io for the ten
+publishable Atlas crates, GHCR for `bijux-atlas/bijux-atlas`, and GitHub
+Releases. `bijux-atlas-dev` and `bijux-atlas-ops` remain repository-only, and
+PyPI stays intentionally disabled in this repository until the planned Python
+bridge exists.
 
 Release expectations live in [`docs/bijux-atlas-dev/delivery/release-and-versioning.md`](docs/bijux-atlas-dev/delivery/release-and-versioning.md).
 Compatibility and operational promises live under [`docs/bijux-atlas/contracts/index.md`](docs/bijux-atlas/contracts/index.md).
