@@ -21,6 +21,9 @@ use bijux_atlas_ops::workspace::ops_artifacts::{
     build_cleanup_payload, build_reset_payload, ops_artifact_report_path, ops_artifact_run_root,
     ops_artifacts_root,
 };
+use bijux_atlas_ops::workspace::pins_sync::{
+    build_pins_update_payload, sync_pins_from_generated_stack_manifest,
+};
 
 pub(super) fn dispatch_execution(
     command: OpsCommand,
@@ -298,70 +301,9 @@ pub(super) fn dispatch_execution(
                     )
                 } else {
                     let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                    let target = repo_root.join("ops/inventory/pins.yaml");
-                    let old = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
-                    let mut updated = old.clone();
-                    let stack_manifest: serde_json::Value = serde_json::from_str(
-                        &std::fs::read_to_string(
-                            repo_root.join("ops/stack/generated/version-manifest.json"),
-                        )
-                        .map_err(|err| format!("failed to read version manifest: {err}"))?,
-                    )
-                    .map_err(|err| format!("invalid version manifest json: {err}"))?;
-                    if let Some(obj) = stack_manifest.as_object() {
-                        for (k, v) in obj {
-                            if k == "schema_version" {
-                                continue;
-                            }
-                            if let Some(value) = v.as_str() {
-                                updated.images.insert(k.clone(), value.to_string());
-                            }
-                        }
-                    }
-                    let mut changed = Vec::new();
-                    for (k, v) in &updated.images {
-                        let old_v = old.images.get(k).cloned().unwrap_or_default();
-                        if &old_v != v {
-                            changed.push(serde_json::json!({
-                                "key": format!("images.{k}"),
-                                "old": old_v,
-                                "new": v,
-                                "reason": "sync_from_generated_stack_version_manifest"
-                            }));
-                        }
-                    }
-                    let mut pins_yaml = std::fs::read_to_string(&target)
-                        .map_err(|err| format!("failed to read {}: {err}", target.display()))?;
-                    for (key, value) in &updated.images {
-                        let needle = format!("{key}: ");
-                        let mut replaced = false;
-                        let mut lines = Vec::new();
-                        for line in pins_yaml.lines() {
-                            let trimmed = line.trim_start();
-                            if trimmed.starts_with(&needle) {
-                                lines.push(format!("  {key}: \"{value}\""));
-                                replaced = true;
-                            } else {
-                                lines.push(line.to_string());
-                            }
-                        }
-                        if !replaced {
-                            return Err(format!(
-                                "failed to sync image `{key}` into {}; missing key in pins.yaml",
-                                target.display()
-                            ));
-                        }
-                        pins_yaml = lines.join("\n");
-                        pins_yaml.push('\n');
-                    }
-                    std::fs::write(&target, pins_yaml)
-                        .map_err(|err| format!("failed to write {}: {err}", target.display()))?;
-                    let text = "ops pins updated from generated stack version manifest".to_string();
-                    let rendered = emit_payload(
-                        common.format,
-                        common.out.clone(),
-                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [{"target_path": target.display().to_string(),"changes":changed}], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
-                    )?;
+                    let result = sync_pins_from_generated_stack_manifest(&repo_root)?;
+                    let payload = build_pins_update_payload(&result);
+                    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                     Ok((rendered, ops_exit::PASS))
                 }
             }
