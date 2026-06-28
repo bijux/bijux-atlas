@@ -13,7 +13,9 @@ use bijux_atlas_ops::kubernetes::conformance_report::{
     build_conformance_report, write_conformance_report,
 };
 use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
-use bijux_atlas_ops::kubernetes::service_inventory::service_port_rows;
+use bijux_atlas_ops::kubernetes::service_inventory::{
+    read_service_port_rows, service_port_payload,
+};
 use bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait_payload;
 use serde_json::Value;
 use std::fs;
@@ -254,30 +256,8 @@ pub(crate) fn run_ops_k8s_ports(common: &OpsCommonArgs) -> Result<(String, i32),
         common.force,
         "bijux-atlas",
     )?;
-    let (svc_stdout, svc_event) = process
-        .run_subprocess(
-            "kubectl",
-            &[
-                "get".to_string(),
-                "service".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ],
-            &repo_root,
-        )
-        .map_err(|e| e.to_stable_message())?;
-    let services: Value = serde_json::from_str(&svc_stdout)
-        .map_err(|e| format!("failed parsing service json: {e}"))?;
-    let rows = service_port_rows(&services);
-    let payload = serde_json::json!({
-        "schema_version":1,
-        "text":"k8s ports discovery complete",
-        "rows": rows,
-        "subprocess_events":[svc_event],
-        "summary":{"total":1,"errors":0,"warnings":0}
-    });
+    let (rows, svc_event) = read_service_port_rows(&process, &repo_root, "bijux-atlas")?;
+    let payload = service_port_payload(rows, svc_event);
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
