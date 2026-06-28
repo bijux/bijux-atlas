@@ -3,7 +3,6 @@ name = "bijux-atlas-ops"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Operational surface registry and stack-facing contracts for bijux-atlas"
 repository.workspace = true

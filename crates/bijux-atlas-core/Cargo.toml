@@ -3,7 +3,6 @@ name = "bijux-atlas-core"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Runtime-independent Atlas core primitives and invariants"
 repository.workspace = true

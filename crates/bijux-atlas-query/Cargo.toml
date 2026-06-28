@@ -3,7 +3,6 @@ name = "bijux-atlas-query"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Atlas query parsing, planning, cursoring, and SQLite execution"
 repository.workspace = true

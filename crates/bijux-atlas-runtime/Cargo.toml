@@ -3,7 +3,6 @@ name = "bijux-atlas-runtime"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Genomics runtime for GFF3/FASTA ingest, immutable dataset artifacts, gene-query APIs, and OpenAPI export"
 repository.workspace = true

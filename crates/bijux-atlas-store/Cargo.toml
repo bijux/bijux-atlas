@@ -3,7 +3,6 @@ name = "bijux-atlas-store"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Atlas publish-time storage contracts, layout rules, and artifact backends"
 repository.workspace = true

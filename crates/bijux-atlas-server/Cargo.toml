@@ -3,7 +3,6 @@ name = "bijux-atlas-server"
 version.workspace = true
 edition.workspace = true
 license = "Apache-2.0"
-license-file = "../../LICENSE"
 rust-version.workspace = true
 description = "Runtime server entrypoint for Atlas HTTP delivery and cache orchestration"
 repository.workspace = true
