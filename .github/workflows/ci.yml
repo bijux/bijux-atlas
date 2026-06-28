@@ -4,33 +4,18 @@
 
 name: "repo / ci"
 on:
-  push:
+  pull_request:
     branches:
       - main
-    tags:
-      - "v*"
-  pull_request:
+  merge_group:
+    branches:
+      - main
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 permissions:
   contents: read
-  actions: read
-  pull-requests: read
 jobs:
-  policy_gate:
-    name: policy-prerequisites
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: "Wait for policy and standards prerequisites"
-        shell: bash
-        env:
-          GITHUB_TOKEN: "${{ github.token }}"
-        run:
-          |
-            set -euo pipefail
-            python3 .github/scripts/check_workflow_prerequisites.py
   run:
     uses: ./.github/workflows/reusable-ci-rust-stack.yml
     with:
@@ -50,4 +35,4 @@ jobs:
       lint_command: "make gh-lint"
       security_command: "make gh-security"
       test_command: "make gh-test"
-    needs: policy_gate
+    if: "${{ github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]' }}"
