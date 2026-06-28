@@ -271,21 +271,12 @@ pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(Str
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
-            let mut payload =
+            let payload =
                 bijux_atlas_ops::inventory::surfaces_manifest::load_surfaces_inventory(&ops_root)
                     .map_err(OpsCommandError::Manifest)
                     .map_err(|e| e.to_stable_message())?;
-            payload.actions.sort_by(|a, b| a.id.cmp(&b.id));
-            let rows = payload.actions.iter()
-                .map(|a| serde_json::json!({"id": a.id, "domain": a.domain, "command": a.command, "argv": a.argv}))
-                .collect::<Vec<_>>();
-            let text = payload
-                .actions
-                .iter()
-                .map(|a| a.id.clone())
-                .collect::<Vec<_>>()
-                .join("\n");
-            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": payload.actions.len(), "errors": 0, "warnings": 0}});
+            let envelope =
+                bijux_atlas_ops::inventory::surfaces_manifest::surfaces_listing_payload(payload);
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }

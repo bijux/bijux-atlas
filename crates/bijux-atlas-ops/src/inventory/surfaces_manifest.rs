@@ -23,6 +23,37 @@ pub fn load_surfaces_inventory(ops_root: &Path) -> Result<SurfacesInventory, Str
     serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
+pub fn surfaces_listing_payload(mut inventory: SurfacesInventory) -> serde_json::Value {
+    inventory
+        .actions
+        .sort_by(|left, right| left.id.cmp(&right.id));
+    let rows = inventory
+        .actions
+        .iter()
+        .map(|action| {
+            serde_json::json!({
+                "id": action.id,
+                "domain": action.domain,
+                "command": action.command,
+                "argv": action.argv
+            })
+        })
+        .collect::<Vec<_>>();
+    let text = inventory
+        .actions
+        .iter()
+        .map(|action| action.id.clone())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    serde_json::json!({
+        "schema_version": 1,
+        "text": text,
+        "rows": rows,
+        "summary": {"total": inventory.actions.len(), "errors": 0, "warnings": 0}
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -52,5 +83,29 @@ mod tests {
         assert_eq!(manifest.actions.len(), 1);
         assert_eq!(manifest.actions[0].id, "render");
         assert_eq!(manifest.actions[0].domain, "k8s");
+    }
+
+    #[test]
+    fn surfaces_listing_payload_sorts_actions_by_identifier() {
+        let payload = surfaces_listing_payload(SurfacesInventory {
+            actions: vec![
+                SurfaceAction {
+                    id: "stack-down".to_string(),
+                    domain: "stack".to_string(),
+                    command: vec!["ops".to_string(), "down".to_string()],
+                    argv: vec![],
+                },
+                SurfaceAction {
+                    id: "inventory".to_string(),
+                    domain: "inventory".to_string(),
+                    command: vec!["ops".to_string(), "inventory".to_string()],
+                    argv: vec!["--format".to_string(), "json".to_string()],
+                },
+            ],
+        });
+
+        assert_eq!(payload["summary"]["total"], 2);
+        assert_eq!(payload["rows"][0]["id"], "inventory");
+        assert_eq!(payload["rows"][1]["id"], "stack-down");
     }
 }
