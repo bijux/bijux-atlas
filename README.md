@@ -2,10 +2,12 @@
 
 <a id="top"></a>
 
-**Bijux Atlas is a Rust-owned genomics dataset delivery platform for GFF3/FASTA ingest, immutable gene-query artifacts, governed HTTP APIs, and reproducible operations evidence.**
+**Bijux Atlas is a release-shaped genomics delivery system for turning governed
+GFF3 and FASTA inputs into immutable query artifacts, stable APIs, and
+auditable operational evidence.**
 
-This repository currently ships three direct runtime binaries, eleven published
-Rust crates, and one repository-only maintainer crate:
+This repository ships three direct binaries, eleven published Rust crates, and
+one repository-only maintainer crate:
 
 * `bijux-atlas`: the direct CLI binary, owned by `bijux-atlas-cli`,
 * `bijux-atlas-server`: the HTTP runtime server, owned by `bijux-atlas-server`,
@@ -15,13 +17,10 @@ Rust crates, and one repository-only maintainer crate:
 * `bijux-atlas-ops`: the published operational contracts crate for stack, load, observability, and release-support surfaces,
 * `bijux-atlas-dev`: the maintainer control-plane crate that stays repository-owned instead of shipping to crates.io.
 
-The public promise today is a deterministic runtime, explicit repository
-governance, stable documented contracts, and release inputs that can be
-validated instead of hand-waved.
-Atlas also plugs into the sibling
-[`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime, but this
-repository treats standalone Rust binaries and crates as the primary install
-and release surface.
+Atlas is built around one public promise: the same release should describe what
+was ingested, what was published, what can be queried, and what evidence
+supports operating it. The repository exists to make those claims reviewable
+instead of implicit.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -61,7 +60,9 @@ Project docs: [bijux.io](https://bijux.io/bijux-atlas/)
 Source docs spine: [`docs/index.md`](docs/index.md)
 
 > **At a glance**
-> Immutable datasets · Runtime CLI and server · OpenAPI export · Repository control plane · Governed configs, ops, and release inputs
+> Immutable datasets · Queryable release artifacts · Direct Cargo binaries ·
+> Published split crates · Maintainer control plane · Governed docs, ops, and
+> release evidence
 > **Quality**
 > Quality status is checked from live maintainer commands and checked-in contracts.
 > `artifacts/` is disposable local output and is not part of the repository contract.
@@ -72,8 +73,9 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 
 ## Table of Contents
 
-* [Why Bijux Atlas?](#why-bijux-atlas)
-* [What Ships Today](#what-ships-today)
+* [Why Atlas Exists](#why-atlas-exists)
+* [What Ships in 0.2.2](#what-ships-in-022)
+* [Choose the Right Surface](#choose-the-right-surface)
 * [How Atlas Fits With Bijux CLI](#how-atlas-fits-with-bijux-cli)
 * [Key Features](#key-features)
 * [Installation](#installation)
@@ -90,9 +92,11 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 
 ---
 
-## Why Bijux Atlas?
+## Why Atlas Exists
 
-Bijux Atlas is for repository-managed dataset systems where:
+Atlas is for dataset systems where a release is more important than a
+long-running process and where the artifact boundary needs to stay visible.
+It is a fit when:
 
 * datasets must become immutable release artifacts,
 * runtime APIs need explicit contracts and provenance,
@@ -109,15 +113,16 @@ flowchart LR
     Serve --> Observe[Observe through metrics, logs, and contracts]
 ```
 
-This product map is the shortest accurate picture of Atlas. The repository does not revolve around
-mutable runtime state alone. It revolves around turning governed inputs into immutable artifacts and
-then exposing those artifacts through explicit surfaces.
+This is the center of gravity for the repository: Atlas does not primarily own
+mutable runtime state. It owns the path from governed inputs to immutable
+artifacts and then from immutable artifacts to stable delivery surfaces.
 
 ---
 
-## What Ships Today
+## What Ships in 0.2.2
 
-The repository is strongest when it stays concrete about what is already real:
+The release line is strongest when it stays concrete about what is already
+real:
 
 * a runtime CLI named `bijux-atlas`,
 * a server binary named `bijux-atlas-server`,
@@ -127,7 +132,8 @@ The repository is strongest when it stays concrete about what is already real:
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
 
-This README intentionally describes the shipped release surfaces and their contracts, not every internal experiment or implementation detail in the workspace.
+This README intentionally describes the released product and maintainer
+surfaces, not every internal implementation detail in the workspace.
 
 ```mermaid
 flowchart TD
@@ -146,6 +152,20 @@ flowchart TD
 This release-surface diagram is important because Atlas ships more than one binary and more than
 one kind of repository contract. Readers should be able to see immediately which surfaces are for
 runtime use and which are for repository maintenance.
+
+## Choose the Right Surface
+
+Start with the surface that matches the job in front of you:
+
+| If you need... | Start here | Why |
+| --- | --- | --- |
+| the end-user Atlas command | `bijux-atlas-cli` | owns the installed `bijux-atlas` binary |
+| the long-running HTTP process | `bijux-atlas-server` | owns server startup, telemetry bootstrap, and route exposure |
+| OpenAPI export and API wire contracts | `bijux-atlas-api` | owns DTOs, parameters, envelopes, and `bijux-atlas-openapi` |
+| the orchestration library | `bijux-atlas-runtime` | composes ingest, query, store, API, and runtime policy |
+| the historical Rust import path | `bijux-atlas` | preserves the `bijux_atlas` compatibility surface |
+| stack, load, and observability contracts | `bijux-atlas-ops` | owns operator-facing reference and release-support surfaces |
+| maintainer automation and repository law | `bijux-atlas-dev` | owns governance, docs validation, release planning, and reports |
 
 ### Release Surface Directory
 
@@ -183,15 +203,18 @@ The boundary contract for this map lives at
 
 ## How Atlas Fits With Bijux CLI
 
-Atlas owns the domain runtime for genomic dataset build, query, and serving workflows.
-`bijux-cli` owns the umbrella command runtime that can route Atlas alongside other Bijux tools.
+Atlas owns the genomic dataset runtime and release model.
+`bijux-cli` owns the umbrella command runtime that can host Atlas alongside
+other Bijux tools.
 
 Choose one command identity per environment:
 
 * use `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi` when you want the Atlas binaries directly
 * use `bijux atlas ...` and `bijux dev atlas ...` when you already standardize on the `bijux` umbrella runtime
 
-The routed and direct entrypoints should describe the same Atlas runtime surface. The difference is packaging and command routing, not a different product contract.
+The routed and direct entrypoints should describe the same Atlas runtime
+surface. The difference is packaging and command routing, not a different
+product contract.
 
 ---
 
@@ -201,7 +224,7 @@ The routed and direct entrypoints should describe the same Atlas runtime surface
 
 Atlas treats dataset builds as release artifacts with explicit manifests, provenance, and reproducible packaging inputs.
 
-### Runtime Surfaces With Clear Boundaries
+### Split Runtime Surfaces With Clear Ownership
 
 `bijux-atlas` is owned by `bijux-atlas-cli`.
 `bijux-atlas-server` is owned by `bijux-atlas-server`.
@@ -242,6 +265,9 @@ If you already operate through the sibling `bijux-cli` umbrella runtime, the
 same Atlas surfaces can also be reached as `bijux atlas ...` and `bijux dev
 atlas ...`. That routed command story is secondary to the direct Cargo-managed
 Atlas binaries documented here.
+
+Published crates are also intended to be consumed directly from Cargo. Atlas
+does not hide the release line behind a repository-only bootstrap wrapper.
 
 Quick verification for the standalone binaries:
 

@@ -9,18 +9,13 @@ last_reviewed: 2026-06-28
 
 # Bijux Atlas
 
-`bijux-atlas` is a governed release-backed data product for genomics datasets.
-It takes governed GFF3 and FASTA inputs through explicit validation and
-normalization, builds deterministic release artifacts, publishes those artifacts
-into serving state, and exposes them through stable CLI, HTTP, and operational
-surfaces.
+`bijux-atlas` is a release-shaped genomics delivery product. It validates raw
+domain inputs, builds immutable artifacts, publishes serving state, and then
+exposes that state through product, operations, and maintainer surfaces.
 
-Atlas exists to convert raw domain inputs into governed, release-backed,
-trustworthy serving state.
-
-The shortest useful way to read Atlas is this: validate inputs, build
-artifacts, publish serving state, and expose that state through commands,
-HTTP, and release evidence.
+The shortest accurate reading path is:
+validate inputs -> build artifacts -> publish serving state -> serve and
+operate with evidence.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -55,19 +50,11 @@ HTTP, and release evidence.
 
 ## What Atlas Actually Is
 
-Atlas is not only a server and not only a CLI. It is a full system for
-building, publishing, serving, operating, and evolving release-shaped data
-without hiding the artifact boundary behind mutable runtime behavior.
-
-The center of gravity is the release artifact, not the running process. That is
-why Atlas keeps ingest, build, publication, serving, and operational evidence
-as explicit surfaces instead of letting them blur together.
-
-Atlas combines four product responsibilities in one coherent path:
-- validate and normalize source inputs
-- build deterministic and immutable dataset artifacts
-- publish release-backed state to a serving store and catalog
-- serve that state through query, API, and operational runtime surfaces
+Atlas is not a single executable with some supporting docs around it. It is a
+product model with three linked handbooks:
+- product truth for datasets, contracts, and runtime behavior
+- operator truth for stack, rollout, observability, and release evidence
+- maintainer truth for governance, automation, and repository law
 
 ```mermaid
 flowchart LR
@@ -134,8 +121,8 @@ validation, publication, and release evidence.
 
 ## Atlas Has Four Linked Concerns
 
-Atlas is easier to understand when its main concerns are explicit instead of
-collapsed into one generic idea of "the runtime".
+Atlas is easier to trust when its major concerns stay explicit instead of
+being collapsed into one generic idea of "the runtime".
 
 ```mermaid
 flowchart TB
@@ -251,6 +238,10 @@ Use this split when deciding where to start:
 
 The three handbook surfaces are separated on purpose because they answer
 different classes of questions.
+
+If you want one rule for reading the docs: start from the handbook that owns
+the decision you need to make, not from the directory that happens to look
+closest.
 
 ### Repository
 

@@ -9,7 +9,7 @@ last_reviewed: 2026-06-28
 
 # bijux-atlas
 
-`bijux-atlas` is the product documentation for Atlas itself.
+`bijux-atlas` is the product handbook for Atlas itself.
 
 ```mermaid
 flowchart TD
@@ -25,13 +25,13 @@ flowchart TD
     Contracts --> Truth
 ```
 
-These docs move from the product model to the exact workflow, interface,
-runtime, or contract a question needs next.
+These docs are for readers who need to understand what Atlas delivers, how the
+runtime behaves, and which contracts define that behavior.
 
 ## What This Documentation Covers
 
-Use these pages for product behavior, data workflows, runtime interfaces,
-architecture, and compatibility contracts.
+Use these pages for product meaning, runtime behavior, user-facing workflows,
+interfaces, and compatibility contracts.
 
 Atlas is the repository-owned product surface for:
 

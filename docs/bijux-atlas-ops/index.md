@@ -9,16 +9,16 @@ last_reviewed: 2026-06-28
 
 # bijux-atlas-ops
 
-`bijux-atlas-ops` is the operator handbook for the Atlas control plane. It
-explains how runtime stack assets, Kubernetes delivery, observability signals,
-load evidence, and release controls fit together when operators need to decide
-whether a change is safe to install, promote, or roll back.
+`bijux-atlas-ops` is the operator handbook for Atlas. It explains how stack
+assets, Kubernetes delivery, observability signals, load evidence, and release
+controls fit together when operators need to decide whether a change is safe
+to install, promote, or roll back.
 
 ## Purpose
 
 Use this handbook to understand the Atlas operating model, choose the right
 validation path for a proposed change, and gather the evidence required for
-promotion or incident review.
+promotion, rollback, or incident review.
 
 ## Source of Truth
 
