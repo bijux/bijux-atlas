@@ -4,7 +4,7 @@ audience: maintainer
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-06-28
 ---
 
 # Badge Catalog
@@ -24,7 +24,7 @@ Atlas is Rust-first, so the catalog focuses on:
 
 - repository workflow badges
 - crates.io and docs.rs badges for the public runtime crate
-- GHCR package publication badges for released runtime surfaces
+- GHCR release-bundle badges for the published Atlas crate family
 - documentation badges for the canonical `bijux-atlas*` handbooks
 - maintainer summary badges for repository governance and docs delivery
 
@@ -39,7 +39,7 @@ Atlas is Rust-first, so the catalog focuses on:
 [![GHCR Publish](https://github.com/bijux/bijux-atlas/workflows/release-ghcr/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-ghcr.yml)
 [![GitHub Release](https://github.com/bijux/bijux-atlas/workflows/release-github/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/release-github.yml)
 [![Release](https://img.shields.io/github/v/release/bijux/bijux-atlas?display_name=tag&label=release)](https://github.com/bijux/bijux-atlas/releases)
-[![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
+[![GHCR release bundles](https://img.shields.io/badge/ghcr-release%20bundles-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
 [![Published packages](https://img.shields.io/badge/published%20packages-11-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 <!-- bijux-atlas-badges:repository-summary:end -->
 
@@ -74,6 +74,12 @@ Atlas is Rust-first, so the catalog focuses on:
 <!-- bijux-atlas-badges:family-rust-docs-badge:start -->
 [![{{ crate_name }} rust-docs](https://img.shields.io/badge/rust--docs-{{ crate_badge_label }}-DEA584?logo=rust&logoColor=white)]({{ crate_docs_url }})
 <!-- bijux-atlas-badges:family-rust-docs-badge:end -->
+
+## GHCR Release Bundle Badge
+
+<!-- bijux-atlas-badges:family-ghcr-badge:start -->
+[![ghcr-{{ crate_badge_label }}](https://img.shields.io/badge/ghcr-{{ crate_badge_label }}-181717?logo=github)]({{ crate_ghcr_url }})
+<!-- bijux-atlas-badges:family-ghcr-badge:end -->
 
 ## Handbook Docs Badge
 
