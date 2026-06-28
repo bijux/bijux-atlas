@@ -33,39 +33,39 @@ environment you are serving.
 
 Use this when:
 
-- validating local workflow changes
-- testing a built sample store
-- checking endpoint behavior quickly
+- validating local workflow changes.
+- testing a built sample store.
+- checking endpoint behavior quickly.
 
 Characteristics:
 
-- local bind address
-- local artifact store under `artifacts/`
-- minimal operational complexity
-- useful for validating workflow shape, not for proving production readiness
+- local bind address.
+- local artifact store under `artifacts/`.
+- minimal operational complexity.
+- useful for validating workflow shape, not for proving production readiness.
 
 ## Model 2: Shared Internal Service
 
 Use this when:
 
-- a team needs a stable shared query surface
-- artifact publication is handled by a controlled pipeline
-- health, readiness, and observability matter across users
+- a team needs a stable shared query surface.
+- artifact publication is handled by a controlled pipeline.
+- health, readiness, and observability matter across users.
 
 Characteristics:
 
-- stable network address
-- managed artifact store
-- runtime config treated as controlled deployment input
-- enough observability and rollback discipline that other people can depend on it
+- stable network address.
+- managed artifact store.
+- runtime config treated as controlled deployment input.
+- enough observability and rollback discipline that other people can depend on it.
 
 ## Model 3: Managed Production Service
 
 Use this when:
 
-- uptime, rollback, and incident response are formal concerns
-- capacity and security boundaries matter
-- releases and runtime configuration are governed operationally
+- uptime, rollback, and incident response are formal concerns.
+- capacity and security boundaries matter.
+- releases and runtime configuration are governed operationally.
 
 ```mermaid
 flowchart TD
@@ -84,30 +84,30 @@ networking, storage, or incident policy.
 
 ## What Does Not Change Across Models
 
-- the runtime serves from published artifacts, not ingest build roots
-- the catalog remains the discoverability boundary
-- health and readiness remain first-class concerns
-- runtime config should be explicit and reviewable
+- the runtime serves from published artifacts, not ingest build roots.
+- the catalog remains the discoverability boundary.
+- health and readiness remain first-class concerns.
+- runtime config should be explicit and reviewable.
 
 ## What These Models Are Not
 
-- a license to serve directly from ingest build roots
-- a promise that local filesystem habits scale unchanged into managed environments
-- a substitute for operator-owned capacity, security, backup, or compliance decisions
+- a license to serve directly from ingest build roots.
+- a promise that local filesystem habits scale unchanged into managed environments.
+- a substitute for operator-owned capacity, security, backup, or compliance decisions.
 
 ## Choosing a Model
 
 If you are unsure, start with the simplest model that still preserves:
 
-- explicit artifact ownership
-- observable health behavior
-- safe rollback of runtime or store state
+- explicit artifact ownership.
+- observable health behavior.
+- safe rollback of runtime or store state.
 
 ## What Operators Should Carry Across Models
 
-- serve from a store root, not directly from an ingest build root
-- keep catalog state explicit and reviewable
-- make runtime configuration understandable to another operator
+- serve from a store root, not directly from an ingest build root.
+- keep catalog state explicit and reviewable.
+- make runtime configuration understandable to another operator.
 
 ## Purpose
 
@@ -115,10 +115,10 @@ This page explains the Atlas material for deployment models and points readers t
 
 ## Source of Truth
 
-- `ops/stack/profiles.json`
-- `ops/stack/profile-intent.json`
-- `ops/stack/profile-registry.json`
-- `ops/stack/stack.toml`
+- `ops/stack/profiles.json`.
+- `ops/stack/profile-intent.json`.
+- `ops/stack/profile-registry.json`.
+- `ops/stack/stack.toml`.
 
 ## Supported Model Matrix
 

@@ -29,24 +29,24 @@ shape that maintainers can understand what it protects and how drift is supposed
 
 ## Source Anchor
 
-- [`configs/sources/repository/repo-laws.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/repository/repo-laws.json:1)
+- [`configs/sources/repository/repo-laws.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/repository/repo-laws.json:1).
 
 ## Current Laws In Plain Language
 
 The current registry declares laws that say:
 
-- runtime artifacts stay out of tracked source except for governed examples
-- repository automation orchestration stays owned by the Rust control plane
-- docs and configs stay navigable through index and ownership contracts
-- retired script and tool roots stay absent
-- the root `Makefile` stays a thin include entrypoint
-- root layout stays within the allowlisted repository surface
+- runtime artifacts stay out of tracked source except for governed examples.
+- repository automation orchestration stays owned by the Rust control plane.
+- docs and configs stay navigable through index and ownership contracts.
+- retired script and tool roots stay absent.
+- the root `Makefile` stays a thin include entrypoint.
+- root layout stays within the allowlisted repository surface.
 
 ## Why Maintainers Should Use These Laws
 
-- they turn broad repository discipline into named rules that can be referenced in review
-- they make structural regressions easier to explain than vague "please keep things tidy" comments
-- they keep core architectural promises durable even when individual implementations change
+- they turn broad repository discipline into named rules that can be referenced in review.
+- they make structural regressions easier to explain than vague "please keep things tidy" comments.
+- they keep core architectural promises durable even when individual implementations change.
 
 ## Main Takeaway
 

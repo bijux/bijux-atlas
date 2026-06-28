@@ -31,17 +31,17 @@ environment folklore around permissions, cluster profile, or network mode.
 
 ## Source of Truth
 
-- `ops/env/base/`
-- `ops/env/dev/`
-- `ops/env/ci/`
-- `ops/env/prod/`
-- `ops/env/overlays/`
+- `ops/env/base/`.
+- `ops/env/dev/`.
+- `ops/env/ci/`.
+- `ops/env/prod/`.
+- `ops/env/overlays/`.
 
 ## Overlay Semantics
 
-- `base` defines the shared defaults such as namespace, cluster profile, and
+- `base` defines the shared defaults such as namespace, cluster profile, and.
   restricted execution assumptions
-- `dev` relaxes write and subprocess permissions for local work
-- `ci` and `prod` preserve the more restricted execution model
-- overlays should change only what the environment legitimately owns, not the
+- `dev` relaxes write and subprocess permissions for local work.
+- `ci` and `prod` preserve the more restricted execution model.
+- overlays should change only what the environment legitimately owns, not the.
   underlying release or topology contract

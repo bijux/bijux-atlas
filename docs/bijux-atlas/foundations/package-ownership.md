@@ -37,10 +37,10 @@ without pretending the product itself is still monolithic.
 
 ## Ownership Rule
 
-- compatibility and orchestration questions belong here when they explain the
+- compatibility and orchestration questions belong here when they explain the.
   product-facing Atlas package set
-- repository-governance questions move to the maintainer docs
-- deployment, load, and release-ops questions move to the operations docs
+- repository-governance questions move to the maintainer docs.
+- deployment, load, and release-ops questions move to the operations docs.
 
 ## Why This Split Matters
 
@@ -51,25 +51,25 @@ or by a leaf package.
 
 ## Code Anchors
 
-- [`crates/bijux-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas)
-- [`crates/bijux-atlas-runtime/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime)
-- [`crates/bijux-atlas-cli/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli)
-- [`crates/bijux-atlas-server/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server)
-- [`crates/bijux-atlas-api/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-api)
-- [`crates/bijux-atlas-ops/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-ops)
-- [`crates/bijux-atlas-dev/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev)
-- [`ops/`](/Users/bijan/bijux/bijux-atlas/ops)
-- [`makes/`](/Users/bijan/bijux/bijux-atlas/makes)
+- [`crates/bijux-atlas/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas).
+- [`crates/bijux-atlas-runtime/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime).
+- [`crates/bijux-atlas-cli/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli).
+- [`crates/bijux-atlas-server/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server).
+- [`crates/bijux-atlas-api/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-api).
+- [`crates/bijux-atlas-ops/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-ops).
+- [`crates/bijux-atlas-dev/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev).
+- [`ops/`](/Users/bijan/bijux/bijux-atlas/ops).
+- [`makes/`](/Users/bijan/bijux/bijux-atlas/makes).
 
 ## Placement Guide
 
-- compatibility imports belong under `crates/bijux-atlas/`
-- runtime orchestration and shared policy belong under `crates/bijux-atlas-runtime/`
-- direct binaries and transport-facing surfaces belong under `crates/bijux-atlas-cli/`, `crates/bijux-atlas-server/`, and `crates/bijux-atlas-api/`
-- leaf ingest, query, model, core, store, and operations contracts belong under their owning split crates
-- repository governance, maintainer automation, and release-control work belong under `crates/bijux-atlas-dev/`
-- cluster, deployment, observability, and operational evidence belong under `ops/`
-- `makes/` may provide convenience entrypoints, but it should not silently redefine product or maintainer truth
+- compatibility imports belong under `crates/bijux-atlas/`.
+- runtime orchestration and shared policy belong under `crates/bijux-atlas-runtime/`.
+- direct binaries and transport-facing surfaces belong under `crates/bijux-atlas-cli/`, `crates/bijux-atlas-server/`, and `crates/bijux-atlas-api/`.
+- leaf ingest, query, model, core, store, and operations contracts belong under their owning split crates.
+- repository governance, maintainer automation, and release-control work belong under `crates/bijux-atlas-dev/`.
+- cluster, deployment, observability, and operational evidence belong under `ops/`.
+- `makes/` may provide convenience entrypoints, but it should not silently redefine product or maintainer truth.
 
 ## Main Takeaway
 

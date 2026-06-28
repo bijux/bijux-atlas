@@ -53,17 +53,17 @@ Those are related, but they are not the same thing.
 
 ## Typical Failure Modes
 
-- duplicated contract ownership
-- broad barrels hiding the real source of truth
-- runtime or adapter logic bleeding into domain surfaces
-- undocumented helper paths becoming accidental API
+- duplicated contract ownership.
+- broad barrels hiding the real source of truth.
+- runtime or adapter logic bleeding into domain surfaces.
+- undocumented helper paths becoming accidental API.
 
 ## Healthy Boundary Behavior
 
-- ownership is obvious from the tree
-- contracts have one owner path
-- compatibility is test-backed
-- internal refactors do not quietly redefine public promises
+- ownership is obvious from the tree.
+- contracts have one owner path.
+- compatibility is test-backed.
+- internal refactors do not quietly redefine public promises.
 
 ## Two Questions That Prevent Drift
 
@@ -76,22 +76,22 @@ Those questions sound similar, but Atlas treats them differently on purpose.
 
 ## Repository-Specific Boundary Failures
 
-- domain logic placed in `src/adapters/` instead of `src/domain/`
-- transport semantics from HTTP or CLI leaking into domain types
-- runtime startup behavior being documented as if it were a public contract by
+- domain logic placed in `src/adapters/` instead of `src/domain/`.
+- transport semantics from HTTP or CLI leaking into domain types.
+- runtime startup behavior being documented as if it were a public contract by.
   default
-- helper or generated artifact paths being treated as stable API without a
+- helper or generated artifact paths being treated as stable API without a.
   contract owner
 
 ## Enforcement Anchors
 
-- code placement boundaries: `crates/bijux-atlas-runtime/src/domain/`,
+- code placement boundaries: `crates/bijux-atlas-runtime/src/domain/`,.
   `crates/bijux-atlas-runtime/src/app/`,
   `crates/bijux-atlas-runtime/src/adapters/outbound/`,
   `crates/bijux-atlas-runtime/src/runtime/`, and
   `crates/bijux-atlas-server/src/adapters/inbound/http/`
-- stable contract implementation: `crates/bijux-atlas-runtime/src/contracts/`
-- machine-checked shape: `configs/schemas/contracts/` and `configs/generated/`
+- stable contract implementation: `crates/bijux-atlas-runtime/src/contracts/`.
+- machine-checked shape: `configs/schemas/contracts/` and `configs/generated/`.
 
 ## Main Takeaway
 

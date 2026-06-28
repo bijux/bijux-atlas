@@ -44,22 +44,22 @@ update that file in the same change.
 
 The current branch-protection gate for `main` includes:
 
-- `ci-pr / minimal-root-policies`
-- `ci-pr / validate-pr`
-- `ci-pr / supply-chain`
-- `ci-pr / workflow-policy`
-- `docs-only / docs`
-- `ops-validate / validate`
+- `ci-pr / minimal-root-policies`.
+- `ci-pr / validate-pr`.
+- `ci-pr / supply-chain`.
+- `ci-pr / workflow-policy`.
+- `docs-only / docs`.
+- `ops-validate / validate`.
 
 Optional and nightly lanes exist as supporting signals, but they are not the same thing as the
 required merge gate.
 
 ## Maintainer Rules
 
-- when a workflow name or job name changes, update the required-status document in the same change
-- do not infer branch protection from memory; use the checked-in file
-- treat required checks as repository policy, not as CI implementation trivia
-- keep optional or nightly lanes clearly labeled so reviewers do not confuse advisory coverage with merge requirements
+- when a workflow name or job name changes, update the required-status document in the same change.
+- do not infer branch protection from memory; use the checked-in file.
+- treat required checks as repository policy, not as CI implementation trivia.
+- keep optional or nightly lanes clearly labeled so reviewers do not confuse advisory coverage with merge requirements.
 
 ## Main Takeaway
 

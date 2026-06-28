@@ -13,8 +13,8 @@ Runtime configuration controls how Atlas serves, limits, caches, logs, and respo
 
 That separation matters because operators often have two different failure modes:
 
-- trying to fix data-shape problems with runtime flags
-- hiding runtime mistakes behind environment-specific defaults
+- trying to fix data-shape problems with runtime flags.
+- hiding runtime mistakes behind environment-specific defaults.
 
 ## Runtime Config Boundary
 
@@ -32,9 +32,9 @@ release content; runtime configuration defines how the server exposes and protec
 
 Do not mix runtime configuration with release content configuration.
 
-- published artifacts define what data exists
-- runtime config defines how the server behaves around that data
-- config should be explicit enough that another operator can explain the running behavior without guessing hidden environment state
+- published artifacts define what data exists.
+- runtime config defines how the server behaves around that data.
+- config should be explicit enough that another operator can explain the running behavior without guessing hidden environment state.
 
 ## Configuration Inputs
 
@@ -52,11 +52,11 @@ defaults.
 
 ## Operational Practices
 
-- validate config before rollout when possible
-- prefer explicit paths and values over environment-dependent assumptions
-- keep cache roots and artifact roots clearly separated
-- inspect effective config when behavior is surprising
-- treat changes to limits, readiness behavior, or cache policy as operational changes that deserve rollout discipline
+- validate config before rollout when possible.
+- prefer explicit paths and values over environment-dependent assumptions.
+- keep cache roots and artifact roots clearly separated.
+- inspect effective config when behavior is surprising.
+- treat changes to limits, readiness behavior, or cache policy as operational changes that deserve rollout discipline.
 
 ## Example Runtime Validation
 
@@ -77,9 +77,9 @@ cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
 
 ## What Runtime Config Cannot Fix
 
-- missing or unpublished dataset artifacts
-- incorrect upstream source data
-- compatibility changes that should have been handled in contracts or migration paths
+- missing or unpublished dataset artifacts.
+- incorrect upstream source data.
+- compatibility changes that should have been handled in contracts or migration paths.
 
 ## A Good Runtime-Config Check Before Rollout
 
@@ -93,11 +93,11 @@ This page explains the Atlas material for runtime configuration and points reade
 
 ## Source of Truth
 
-- `ops/k8s/charts/bijux-atlas/values.yaml`
-- `ops/k8s/charts/bijux-atlas/values.schema.json`
-- `ops/k8s/values/profiles.json`
-- `ops/k8s/values/documentation-map.json`
-- `ops/k8s/tests/manifest.json`
+- `ops/k8s/charts/bijux-atlas/values.yaml`.
+- `ops/k8s/charts/bijux-atlas/values.schema.json`.
+- `ops/k8s/values/profiles.json`.
+- `ops/k8s/values/documentation-map.json`.
+- `ops/k8s/tests/manifest.json`.
 
 ## Runtime Concern Map
 
@@ -113,23 +113,23 @@ This page explains the Atlas material for runtime configuration and points reade
 
 Examples of changes that should be rejected or escalated:
 
-- enabling `image.tag` based promotion in profiles that expect digest-based
+- enabling `image.tag` based promotion in profiles that expect digest-based.
   identity
-- changing `cache` behavior to cached-only without also satisfying the related
+- changing `cache` behavior to cached-only without also satisfying the related.
   readiness and warmup expectations
-- widening `networkPolicy` or `rbac` in a runtime-focused change that claims to
+- widening `networkPolicy` or `rbac` in a runtime-focused change that claims to.
   be unrelated to security
-- changing `probes` or `rollout` behavior without corresponding readiness and
+- changing `probes` or `rollout` behavior without corresponding readiness and.
   rollout evidence
 
 ## Environment Override Rules
 
-- keep shared defaults in `values.yaml`
-- put supported environment intent in the profile values files under
+- keep shared defaults in `values.yaml`.
+- put supported environment intent in the profile values files under.
   `ops/k8s/values/`
-- avoid silent host- or cluster-specific drift outside those governed values
+- avoid silent host- or cluster-specific drift outside those governed values.
   files
-- treat `ci`, `kind`, `offline`, `perf`, and `prod` as different runtime
+- treat `ci`, `kind`, `offline`, `perf`, and `prod` as different runtime.
   contracts, not cosmetic overlays
 
 ## Configuration Drift Validation

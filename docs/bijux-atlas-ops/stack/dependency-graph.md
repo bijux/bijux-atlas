@@ -29,14 +29,14 @@ operator assumptions change too.
 
 ## Source of Truth
 
-- `ops/stack/generated/dependency-graph.json`
-- `ops/stack/service-dependency-contract.json`
+- `ops/stack/generated/dependency-graph.json`.
+- `ops/stack/service-dependency-contract.json`.
 
 ## How to Read the Graph
 
-- node entries represent concrete stack components or profile-owned surfaces
-- critical dependencies are required for the profile to be viable
-- optional dependencies enrich observability or testing but do not define the
+- node entries represent concrete stack components or profile-owned surfaces.
+- critical dependencies are required for the profile to be viable.
+- optional dependencies enrich observability or testing but do not define the.
   minimum serving path
-- a graph change should trigger review when it widens the critical path or
+- a graph change should trigger review when it widens the critical path or.
   changes failure isolation

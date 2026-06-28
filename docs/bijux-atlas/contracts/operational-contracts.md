@@ -38,10 +38,10 @@ deployment and recovery.
 
 ## Main Promise Areas
 
-- health and readiness semantics
-- metrics and observability surfaces
-- runtime validation behavior
-- explicit operator-visible error conditions
+- health and readiness semantics.
+- metrics and observability surfaces.
+- runtime validation behavior.
+- explicit operator-visible error conditions.
 
 ## Reading Rule
 

@@ -38,16 +38,16 @@ artifacts make it easier to repeat a workflow and explain what happened.
 
 ## Safe Local Habits
 
-- keep local outputs in `artifacts/`
-- use committed fixtures for reproducible local experiments
-- validate the layer you changed instead of only running a giant command blindly
-- preserve the canonical module ownership model when moving code
+- keep local outputs in `artifacts/`.
+- use committed fixtures for reproducible local experiments.
+- validate the layer you changed instead of only running a giant command blindly.
+- preserve the canonical module ownership model when moving code.
 
 ## What Local Development Should Not Teach
 
-- hiding outputs in crate-local scratch paths
-- relying on undocumented environment quirks
-- skipping docs or compatibility review until the end
+- hiding outputs in crate-local scratch paths.
+- relying on undocumented environment quirks.
+- skipping docs or compatibility review until the end.
 
 ## Purpose
 

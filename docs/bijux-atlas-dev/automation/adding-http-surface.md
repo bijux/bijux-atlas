@@ -40,10 +40,10 @@ rules should not quietly become application truth.
 
 ## Rules
 
-- keep router declarations declarative
-- keep HTTP concerns in HTTP adapters
-- avoid letting HTTP types become application truth
-- update documentation and contracts when the surface is stable or public
+- keep router declarations declarative.
+- keep HTTP concerns in HTTP adapters.
+- avoid letting HTTP types become application truth.
+- update documentation and contracts when the surface is stable or public.
 
 ## HTTP Surface Check Before Merge
 

@@ -39,10 +39,10 @@ obvious owner path so refactors do not create duplicate sources of truth.
 
 ## Rules
 
-- give each contract one obvious owner path
-- document the promise and its intended audience
-- add tests that would fail if the promise drifts
-- do not hide contract truth behind convenience reexports
+- give each contract one obvious owner path.
+- document the promise and its intended audience.
+- add tests that would fail if the promise drifts.
+- do not hide contract truth behind convenience reexports.
 
 ## Contract Addition Check
 

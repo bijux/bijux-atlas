@@ -32,16 +32,16 @@ slice is where stability claims become explicit.
 
 ## Contract Authority Map
 
-- narrative contract meaning is explained in [`docs/bijux-atlas/contracts/`](/Users/bijan/bijux/bijux-atlas/docs/bijux-atlas/contracts)
-- code-facing contract implementation lives under [`crates/bijux-atlas-runtime/src/contracts/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/contracts)
-- machine-checked contract shape lives under [`configs/schemas/contracts/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts)
-- generated API and runtime contract artifacts live under [`configs/generated/openapi/`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi) and [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime)
+- narrative contract meaning is explained in [`docs/bijux-atlas/contracts/`](/Users/bijan/bijux/bijux-atlas/docs/bijux-atlas/contracts).
+- code-facing contract implementation lives under [`crates/bijux-atlas-runtime/src/contracts/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/contracts).
+- machine-checked contract shape lives under [`configs/schemas/contracts/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts).
+- generated API and runtime contract artifacts live under [`configs/generated/openapi/`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi) and [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime).
 
 ## Reading Rule
 
-- if downstream integrations rely on it, read the contract page
-- if the question is exact compatibility or versioning, stay here
-- if the question is how to use the product, move back to repository workflows
+- if downstream integrations rely on it, read the contract page.
+- if the question is exact compatibility or versioning, stay here.
+- if the question is how to use the product, move back to repository workflows.
 
 ## Main Takeaway
 

@@ -44,27 +44,27 @@ reviewable.
 
 Atlas deliberately avoids making ingest directly equal to serving state. That separation enables:
 
-- publication gates
-- deterministic validation and verification
-- explicit promotion into serving state
+- publication gates.
+- deterministic validation and verification.
+- explicit promotion into serving state.
 
 ## What the Ingest Layer Owns
 
-- input parsing and validation
-- normalization and anomaly reporting
-- derived artifacts such as manifests and SQLite summaries
+- input parsing and validation.
+- normalization and anomaly reporting.
+- derived artifacts such as manifests and SQLite summaries.
 
 It does not own:
 
-- catalog discoverability
-- runtime serving policy
-- long-lived cache behavior
+- catalog discoverability.
+- runtime serving policy.
+- long-lived cache behavior.
 
 ## Why This Boundary Saves Pain
 
-- ingest bugs stay distinguishable from serving-store bugs
-- publication remains an explicit gate instead of an implicit side effect
-- runtime behavior does not have to compensate for half-defined ingest output
+- ingest bugs stay distinguishable from serving-store bugs.
+- publication remains an explicit gate instead of an implicit side effect.
+- runtime behavior does not have to compensate for half-defined ingest output.
 
 ## Reading Rule
 

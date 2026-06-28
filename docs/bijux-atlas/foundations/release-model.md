@@ -30,28 +30,28 @@ This release diagram matters because Atlas separates "I built something" from
 
 ## Release Questions
 
-- what content belongs to this versioned state
-- which artifact set represents it
-- how clients request it
-- how operators compare or restore it
+- what content belongs to this versioned state.
+- which artifact set represents it.
+- how clients request it.
+- how operators compare or restore it.
 
 ## Repository Authority Map
 
-- release policy inputs live under [`configs/sources/release/`](/Users/bijan/bijux/bijux-atlas/configs/sources/release)
-- version and reproducibility policy are declared in [`version-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/version-policy.json:1) and [`reproducibility-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/reproducibility-policy.json:1)
-- release-facing schema contracts live under [`configs/schemas/contracts/release/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts/release)
-- generated runtime state and startup references live under [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime)
-- product binaries that expose released behavior live under
+- release policy inputs live under [`configs/sources/release/`](/Users/bijan/bijux/bijux-atlas/configs/sources/release).
+- version and reproducibility policy are declared in [`version-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/version-policy.json:1) and [`reproducibility-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/reproducibility-policy.json:1).
+- release-facing schema contracts live under [`configs/schemas/contracts/release/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts/release).
+- generated runtime state and startup references live under [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime).
+- product binaries that expose released behavior live under.
   [`crates/bijux-atlas-cli/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli/src/bin),
   [`crates/bijux-atlas-server/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin),
   and [`crates/bijux-atlas-api/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-api/src/bin)
 
 ## Stable Release Boundaries
 
-- a release is a named published state, not an arbitrary local workspace snapshot
-- release identity must connect policy, artifacts, and public-facing runtime behavior
-- comparison and rollback only make sense when the released state is durable and inspectable
-- release reasoning should stay separate from transient debug output or temporary build products
+- a release is a named published state, not an arbitrary local workspace snapshot.
+- release identity must connect policy, artifacts, and public-facing runtime behavior.
+- comparison and rollback only make sense when the released state is durable and inspectable.
+- release reasoning should stay separate from transient debug output or temporary build products.
 
 ## Practical Effect
 
