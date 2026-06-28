@@ -28,6 +28,27 @@ pub fn build_conformance_report(run_id: &str, errors: &[String]) -> Value {
     })
 }
 
+pub fn ops_conformance_payload(
+    inventory_errors: &[String],
+    status_code: i32,
+    status_rendered: &str,
+) -> Value {
+    let errors = inventory_errors.len() + usize::from(status_code != 0);
+    let status = if errors == 0 { "ok" } else { "failed" };
+
+    json!({
+        "schema_version": 1,
+        "status": status,
+        "text": format!("ops conformance: status={status}"),
+        "rows": [{
+            "inventory_errors": inventory_errors,
+            "status_exit": status_code,
+            "status_output": status_rendered
+        }],
+        "summary": {"total": 1, "errors": errors, "warnings": 0}
+    })
+}
+
 pub fn write_conformance_report(repo_root: &Path, report: &Value) -> Result<PathBuf, String> {
     let target = atlas_conformance_report(repo_root);
     if let Some(parent) = target.parent() {
@@ -78,5 +99,14 @@ mod tests {
         );
         let persisted = fs::read_to_string(&written).expect("report should be readable");
         assert!(persisted.contains("\"suite_id\": \"k8s_conformance\""));
+    }
+
+    #[test]
+    fn ops_conformance_payload_fails_when_inventory_or_status_fails() {
+        let payload = ops_conformance_payload(&["missing service".to_string()], 1, "status rows");
+
+        assert_eq!(payload["status"], "failed");
+        assert_eq!(payload["summary"]["errors"], 2);
+        assert_eq!(payload["rows"][0]["status_exit"], 1);
     }
 }

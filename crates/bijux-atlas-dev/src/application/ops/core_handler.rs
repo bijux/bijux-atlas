@@ -423,23 +423,15 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             };
             let (status_rendered, status_code) =
                 crate::ops_execution_runtime::run_ops_status(&status_args)?;
-            let errors = inventory_errors.len() + usize::from(status_code != 0);
-            let status = if errors == 0 { "ok" } else { "failed" };
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "status": status,
-                "text": format!("ops conformance: status={status}"),
-                "rows": [{
-                    "inventory_errors": inventory_errors,
-                    "status_exit": status_code,
-                    "status_output": status_rendered
-                }],
-                "summary": {"total": 1, "errors": errors, "warnings": 0}
-            });
+            let payload = bijux_atlas_ops::kubernetes::conformance_report::ops_conformance_payload(
+                &inventory_errors,
+                status_code,
+                &status_rendered,
+            );
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((
                 rendered,
-                if status == "ok" {
+                if payload["status"] == serde_json::Value::String("ok".to_string()) {
                     ops_exit::PASS
                 } else {
                     ops_exit::FAIL
