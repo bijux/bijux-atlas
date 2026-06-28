@@ -4,6 +4,10 @@
 use crate::cli::{self, OpsStatusTarget};
 use crate::ops_commands::{emit_payload, load_profiles, resolve_ops_root, resolve_profile};
 use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
+use bijux_atlas_ops::kubernetes::status_snapshot::{
+    cluster_status_row, endpoints_status_row, local_status_row, pods_status_row,
+    read_namespace_resource_json,
+};
 
 pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32), String> {
     let common = &args.common;
@@ -34,14 +38,12 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                     .to_stable_message()
                 })?;
             (
-                serde_json::json!({
-                    "schema_version": 1,
-                    "target": "local",
-                    "repo_root": repo_root.display().to_string(),
-                    "ops_root": ops_root.display().to_string(),
-                    "profile": profile,
-                    "toolchain": toolchain_json,
-                }),
+                local_status_row(
+                    &repo_root,
+                    &ops_root,
+                    serde_json::json!(profile),
+                    toolchain_json,
+                ),
                 format!(
                     "ops status local: profile={} repo_root={} ops_root={}",
                     profile.name,
@@ -57,28 +59,9 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let kubectl_args = vec![
-                "get".to_string(),
-                "all".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ];
-            let (stdout, _) = process
-                .run_subprocess("kubectl", &kubectl_args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
-            let value: serde_json::Value = serde_json::from_str(&stdout).map_err(|err| {
-                OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
-                    .to_stable_message()
-            })?;
+            let value = read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "all")?;
             (
-                serde_json::json!({
-                    "schema_version": 1,
-                    "target": "k8s",
-                    "profile": profile.name,
-                    "resources": value
-                }),
+                cluster_status_row(&profile.name, value),
                 "ops status k8s collected".to_string(),
             )
         }
@@ -89,43 +72,9 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let kubectl_args = vec![
-                "get".to_string(),
-                "pods".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ];
-            let (stdout, _) = process
-                .run_subprocess("kubectl", &kubectl_args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
-            let value: serde_json::Value = serde_json::from_str(&stdout).map_err(|err| {
-                OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
-                    .to_stable_message()
-            })?;
-            let mut pods = value
-                .get("items")
-                .and_then(|v| v.as_array())
-                .cloned()
-                .unwrap_or_default();
-            pods.sort_by(|a, b| {
-                a.get("metadata")
-                    .and_then(|m| m.get("name"))
-                    .and_then(|v| v.as_str())
-                    .cmp(
-                        &b.get("metadata")
-                            .and_then(|m| m.get("name"))
-                            .and_then(|v| v.as_str()),
-                    )
-            });
+            let value = read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "pods")?;
             (
-                serde_json::json!({
-                    "schema_version": 1,
-                    "target": "pods",
-                    "profile": profile.name,
-                    "pods": pods
-                }),
+                pods_status_row(&profile.name, value),
                 "ops status pods collected".to_string(),
             )
         }
@@ -136,28 +85,10 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let kubectl_args = vec![
-                "get".to_string(),
-                "endpoints".to_string(),
-                "-n".to_string(),
-                "bijux-atlas".to_string(),
-                "-o".to_string(),
-                "json".to_string(),
-            ];
-            let (stdout, _) = process
-                .run_subprocess("kubectl", &kubectl_args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
-            let value: serde_json::Value = serde_json::from_str(&stdout).map_err(|err| {
-                OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
-                    .to_stable_message()
-            })?;
+            let value =
+                read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "endpoints")?;
             (
-                serde_json::json!({
-                    "schema_version": 1,
-                    "target": "endpoints",
-                    "profile": profile.name,
-                    "resources": value
-                }),
+                endpoints_status_row(&profile.name, value),
                 "ops status endpoints collected".to_string(),
             )
         }
