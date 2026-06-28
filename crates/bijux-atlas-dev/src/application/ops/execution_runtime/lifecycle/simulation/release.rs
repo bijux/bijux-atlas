@@ -31,221 +31,27 @@ pub(crate) fn run_ops_helm_upgrade(
         &profile,
         args.release.namespace.as_deref(),
     );
-    let values_file =
-        bijux_atlas_ops::workspace::profiles::resolve_profile_values_file(&repo_root, &profile)
-            .map_err(|err| err.detail())?;
-    let chart_path = match args.to {
-        crate::cli::OpsHelmTarget::Current => simulation_current_chart_path(&repo_root),
-        crate::cli::OpsHelmTarget::Previous => simulation_previous_chart_path(&repo_root),
-    };
-    if !chart_path.exists() {
-        return Err(format!(
-            "missing upgrade target {}; current uses the working tree chart and previous uses artifacts/ops/chart-sources/previous/bijux-atlas.tgz",
-            chart_path.display()
-        ));
-    }
-    let before_manifest = bijux_atlas_ops::lifecycle::release::commands::helm_release_manifest(
-        &process, &repo_root, &namespace,
-    )?;
-    let before_revision = bijux_atlas_ops::lifecycle::release::observation::deployment_revision(
-        &process, &repo_root, &namespace,
-    );
-    let helm_args = vec![
-        "upgrade".to_string(),
-        "bijux-atlas".to_string(),
-        chart_path.display().to_string(),
-        "--namespace".to_string(),
-        namespace.clone(),
-        "--values".to_string(),
-        values_file.display().to_string(),
-    ];
-    let (helm_stdout, helm_event) = process
-        .run_subprocess("helm", &helm_args, &repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) =
-        bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
-            &process,
-            &repo_root,
-            &namespace,
-            args.release.timeout_seconds,
-        );
-    let smoke_rows = if wait_errors.is_empty() {
-        bijux_atlas_ops::kubernetes::service_probe::run_kubectl_service_smoke_checks(
-            &repo_root, &namespace, 18080,
-        )?
-    } else {
-        Vec::new()
-    };
-    let smoke_errors = smoke_rows
-        .iter()
-        .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)
-        .map(|row| {
-            format!(
-                "{} returned status {}",
-                row["path"].as_str().unwrap_or("unknown"),
-                row["status"].as_u64().unwrap_or(0)
-            )
-        })
-        .collect::<Vec<_>>();
-    let after_manifest = bijux_atlas_ops::lifecycle::release::commands::helm_release_manifest(
-        &process, &repo_root, &namespace,
-    )?;
-    let after_revision = bijux_atlas_ops::lifecycle::release::observation::deployment_revision(
-        &process, &repo_root, &namespace,
-    );
-    let diff_summary = bijux_atlas_ops::lifecycle::release::contracts::manifest_diff_summary(
-        &before_manifest,
-        &after_manifest,
-    );
-    let compatibility =
-        bijux_atlas_ops::lifecycle::release::contracts::lifecycle_compatibility_checks(
-            &before_manifest,
-            &after_manifest,
-        );
-    let rollout_history = bijux_atlas_ops::lifecycle::release::observation::rollout_history(
-        &process, &repo_root, &namespace,
-    );
-    let pods_restarted = bijux_atlas_ops::lifecycle::release::observation::pods_restart_count(
-        &process, &repo_root, &namespace,
-    );
-    let baseline_elapsed_ms =
-        bijux_atlas_ops::lifecycle::release::records::load_readiness_baseline(
-            &repo_root, &profile,
-        )?;
-    let readiness_threshold_percent = 125u64;
-    let regression_ok = baseline_elapsed_ms
-        .map(|baseline| {
-            wait_ms.saturating_mul(100)
-                <= baseline.saturating_mul(u128::from(readiness_threshold_percent))
-        })
-        .unwrap_or(true);
-    let errors = wait_errors
-        .iter()
-        .cloned()
-        .chain(smoke_errors.iter().cloned())
-        .chain(
-            compatibility["immutable_fields_safe"]
-                .as_bool()
-                .filter(|safe| !safe)
-                .map(|_| "immutable field compatibility check failed".to_string()),
-        )
-        .chain((!regression_ok).then_some(format!(
-            "readiness regression exceeded {}% of baseline",
-            readiness_threshold_percent
-        )))
-        .collect::<Vec<_>>();
-    let status = if errors.is_empty() { "ok" } else { "failed" };
-    let smoke_payload = serde_json::json!({
-        "schema_version": 1,
-        "cluster": "kind",
-        "namespace": namespace,
-        "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
-        "checks": smoke_rows
-    });
-    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
-        &repo_root,
-        run_id.as_str(),
-        "ops-smoke.json",
-        &smoke_payload,
-    )?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "profile": profile,
-        "cluster": "kind",
-        "namespace": namespace,
-        "status": status,
-        "details": {
-            "target": match args.to {
-                crate::cli::OpsHelmTarget::Current => "current",
-                crate::cli::OpsHelmTarget::Previous => "previous"
-            },
-            "helm": {
-                "stdout": helm_stdout,
-                "event": helm_event,
-                "values_file": values_file.display().to_string(),
-                "chart_path": chart_path.display().to_string(),
-                "upgrade_target": "current-working-tree-chart"
-            },
-            "diff_summary": diff_summary,
-            "compatibility_checks": compatibility,
-            "configmap_restart_verified": {
-                "before_revision": before_revision,
-                "after_revision": after_revision,
-                "status": if diff_summary["changed_lines"].as_u64().unwrap_or(0) == 0 {
-                    "not-needed"
-                } else if after_revision.unwrap_or_default() > before_revision.unwrap_or_default() {
-                    "ok"
-                } else {
-                    "failed"
-                }
-            },
-            "readiness_wait": {
-                "elapsed_ms": wait_ms,
-                "rows": wait_rows,
-                "errors": wait_errors
-            },
-            "readiness_regression": {
-                "threshold_percent": readiness_threshold_percent,
-                "baseline_elapsed_ms": baseline_elapsed_ms,
-                "current_elapsed_ms": wait_ms,
-                "status": if regression_ok { "ok" } else { "failed" }
-            },
-            "rollout_history": rollout_history,
-            "pods_restarted_count": pods_restarted,
-            "smoke": {
-                "report_path": smoke_report_path.display().to_string(),
-                "checks": smoke_payload["checks"].clone()
-            }
+    let target = match args.to {
+        crate::cli::OpsHelmTarget::Current => {
+            bijux_atlas_ops::lifecycle::release::contracts::ReleaseChartSource::Current
         }
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
-        &repo_root,
-        run_id.as_str(),
-        "ops-upgrade.json",
-        &payload,
-    )?;
-    let baseline_path = if errors.is_empty() {
-        Some(
-            bijux_atlas_ops::lifecycle::release::records::update_readiness_baseline(
-                &repo_root, &profile, wait_ms,
-            )?,
-        )
-    } else {
-        None
+        crate::cli::OpsHelmTarget::Previous => {
+            bijux_atlas_ops::lifecycle::release::contracts::ReleaseChartSource::Previous
+        }
     };
-    let lifecycle_summary_path =
-        bijux_atlas_ops::lifecycle::release::records::update_lifecycle_summary(
-            &repo_root,
-            run_id.as_str(),
-            &profile,
-            &namespace,
-            bijux_atlas_ops::lifecycle::release::records::LifecycleSummaryUpdate {
-                upgrade_report_path: Some(&report_path),
-                upgrade_status: Some(status),
-                rollback_report_path: None,
-                rollback_status: None,
-            },
-        )?;
-    let lifecycle_bundle = build_lifecycle_evidence_bundle(&repo_root, run_id.as_str())?;
-    let envelope = serde_json::json!({
-        "schema_version": 1,
-        "text": if status == "ok" { "helm upgrade completed" } else { "helm upgrade failed" },
-        "rows": [{
-            "schema_version": 1,
-            "profile": payload["profile"].clone(),
-            "cluster": "kind",
-            "namespace": payload["namespace"].clone(),
-            "status": status,
-            "report_path": report_path.display().to_string(),
-            "summary_report_path": lifecycle_summary_path.display().to_string(),
-            "baseline_history_path": baseline_path.map(|path| path.display().to_string()),
-            "evidence_bundle": lifecycle_bundle,
-            "details": payload["details"].clone()
-        }],
-        "summary": {"total": 1, "errors": errors.len(), "warnings": 0}
-    });
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::helm_upgrade_payload(
+        &process,
+        &repo_root,
+        bijux_atlas_ops::lifecycle::simulation::HelmUpgradeRequest {
+            run_id: run_id.as_str(),
+            profile: &profile,
+            namespace: &namespace,
+            target,
+            timeout_seconds: args.release.timeout_seconds,
+        },
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_helm_rollback(
