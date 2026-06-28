@@ -1242,19 +1242,7 @@ pub(crate) fn run_ops_evidence_diff(
 }
 
 pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
-    let args = vec!["config".to_string(), "current-context".to_string()];
-    let (stdout, _) = process
-        .run_subprocess("kubectl", &args, std::path::Path::new("."))
-        .map_err(|err| err.to_stable_message())?;
-    let current = stdout.trim();
-    let expected = simulation_cluster_context();
-    if current == expected || force {
-        Ok(())
-    } else {
-        Err(format!(
-            "kubectl context guard failed: expected `{expected}` got `{current}`; pass --force to override"
-        ))
-    }
+    bijux_atlas_ops::kubernetes::access_guard::ensure_simulation_cluster_context(process, force)
 }
 
 pub(crate) fn emit_debug_bundle_report(

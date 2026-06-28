@@ -2,6 +2,7 @@
 
 use super::execution::KubernetesCommandRunner;
 use super::safety_policy::{expected_kind_context, ClusterSafetyPolicy};
+use crate::lifecycle::simulation_paths::simulation_cluster_context;
 use std::path::Path;
 
 pub fn ensure_kind_context(
@@ -71,6 +72,23 @@ pub fn ensure_namespace_guard(
 
 pub fn expected_cluster_context(kind_profile: &str) -> String {
     expected_kind_context(kind_profile)
+}
+
+pub fn ensure_simulation_cluster_context(
+    runner: &impl KubernetesCommandRunner,
+    force: bool,
+) -> Result<(), String> {
+    let args = vec!["config".to_string(), "current-context".to_string()];
+    let current = runner.run("kubectl", &args, Path::new("."))?.stdout;
+    let current = current.trim();
+    let expected = simulation_cluster_context();
+    if current == expected || force {
+        Ok(())
+    } else {
+        Err(format!(
+            "kubectl context guard failed: expected `{expected}` got `{current}`; pass --force to override"
+        ))
+    }
 }
 
 #[cfg(test)]
@@ -174,5 +192,25 @@ mod tests {
         let calls = runner.calls.borrow();
         assert_eq!(calls.len(), 2);
         assert!(calls[1].args.contains(&"--dry-run=client".to_string()));
+    }
+
+    #[test]
+    fn simulation_context_guard_accepts_owned_simulation_cluster() {
+        let runner = MockRunner::with_results(vec![ok("kind-bijux-atlas-sim\n")]);
+
+        ensure_simulation_cluster_context(&runner, false).expect("simulation guard should pass");
+
+        assert_eq!(runner.calls.borrow().len(), 1);
+    }
+
+    #[test]
+    fn simulation_context_guard_reports_context_mismatch() {
+        let runner = MockRunner::with_results(vec![ok("kind-normal\n")]);
+
+        let error = ensure_simulation_cluster_context(&runner, false)
+            .expect_err("simulation guard should reject a mismatched context");
+
+        assert!(error.contains("kind-bijux-atlas-sim"));
+        assert!(error.contains("kind-normal"));
     }
 }
