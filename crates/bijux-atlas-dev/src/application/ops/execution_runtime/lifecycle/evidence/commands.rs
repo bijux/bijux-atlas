@@ -1118,7 +1118,5 @@ pub(crate) fn run_ops_evidence_diff(
 }
 
 pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
-    bijux_atlas_ops::lifecycle::simulation::commands::ensure_owned_simulation_context(
-        process, force,
-    )
+    bijux_atlas_ops::lifecycle::simulation::ensure_owned_simulation_context(process, force)
 }

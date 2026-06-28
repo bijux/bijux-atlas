@@ -505,13 +505,12 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
         &profile,
         args.namespace.as_deref(),
     );
-    let (envelope, exit_code) =
-        bijux_atlas_ops::lifecycle::simulation::commands::smoke_command_payload(
-            &repo_root,
-            run_id.as_str(),
-            &namespace,
-            args.local_port,
-        )?;
+    let (envelope, exit_code) = bijux_atlas_ops::lifecycle::simulation::smoke_command_payload(
+        &repo_root,
+        run_id.as_str(),
+        &namespace,
+        args.local_port,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, exit_code))
 }
@@ -541,7 +540,7 @@ fn run_collect_command(
         &profile,
         args.namespace.as_deref(),
     );
-    let envelope = bijux_atlas_ops::lifecycle::simulation::commands::debug_collect_payload(
+    let envelope = bijux_atlas_ops::lifecycle::simulation::debug_collect_payload(
         &process,
         &repo_root,
         run_id.as_str(),

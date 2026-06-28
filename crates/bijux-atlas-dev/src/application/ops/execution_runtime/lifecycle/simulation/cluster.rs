@@ -102,12 +102,11 @@ pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let (payload, exit_code) =
-        bijux_atlas_ops::lifecycle::simulation::commands::drill_contract_payload(
-            &repo_root,
-            run_id.as_str(),
-            &args.name,
-        )?;
+    let (payload, exit_code) = bijux_atlas_ops::lifecycle::simulation::drill_contract_payload(
+        &repo_root,
+        run_id.as_str(),
+        &args.name,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, exit_code))
 }
