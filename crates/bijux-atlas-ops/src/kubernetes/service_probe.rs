@@ -123,12 +123,11 @@ mod tests {
     };
 
     fn spawn_single_response_server(
-        port: u16,
+        listener: TcpListener,
         status_line: &'static str,
         body: &'static str,
     ) -> std::thread::JoinHandle<()> {
         std::thread::spawn(move || {
-            let listener = TcpListener::bind(("127.0.0.1", port)).expect("bind listener");
             if let Ok((mut stream, _)) = listener.accept() {
                 let mut buffer = [0_u8; 1024];
                 let _ = stream.read(&mut buffer);
@@ -157,8 +156,7 @@ mod tests {
     fn perform_http_request_captures_status_and_body() {
         let listener = TcpListener::bind(("127.0.0.1", 0)).expect("bind listener");
         let port = listener.local_addr().expect("listener addr").port();
-        drop(listener);
-        let server = spawn_single_response_server(port, "200 OK", "{\"ok\":true}");
+        let server = spawn_single_response_server(listener, "200 OK", "{\"ok\":true}");
 
         let response = perform_http_request(port, "/healthz").expect("http response");
 
