@@ -12,10 +12,10 @@ pub(crate) use bijux_atlas_ops::lifecycle::evidence::artifacts::{
 pub(crate) use bijux_atlas_ops::lifecycle::evidence::support::{
     collect_image_artifacts, collect_sboms, evidence_root, sha256_file,
 };
-pub(crate) use bijux_atlas_ops::lifecycle::release_bundle::{
+pub(crate) use bijux_atlas_ops::lifecycle::release::bundle::{
     build_release_evidence_tarball, tarball_contains_entry, tarball_member_checksums,
 };
-pub(crate) use bijux_atlas_ops::lifecycle::release_inventory::{
+pub(crate) use bijux_atlas_ops::lifecycle::release::inventory::{
     collect_dataset_assets, collect_docs_site_summary, collect_drill_summary_paths,
     collect_observability_assets, collect_perf_assets, collect_report_paths,
     collect_simulation_summary_paths, collect_supply_chain_inventory,

@@ -888,13 +888,13 @@ pub(crate) fn run_ops_helm_install(
             .map_err(|err| err.detail())?;
     let chart_source = match args.chart_source {
         crate::cli::OpsHelmChartSource::Current => {
-            bijux_atlas_ops::lifecycle::release_contracts::ReleaseChartSource::Current
+            bijux_atlas_ops::lifecycle::release::contracts::ReleaseChartSource::Current
         }
         crate::cli::OpsHelmChartSource::Previous => {
-            bijux_atlas_ops::lifecycle::release_contracts::ReleaseChartSource::Previous
+            bijux_atlas_ops::lifecycle::release::contracts::ReleaseChartSource::Previous
         }
     };
-    let chart_path = bijux_atlas_ops::lifecycle::release_contracts::release_chart_source_path(
+    let chart_path = bijux_atlas_ops::lifecycle::release::contracts::release_chart_source_path(
         &repo_root,
         chart_source,
     )?;

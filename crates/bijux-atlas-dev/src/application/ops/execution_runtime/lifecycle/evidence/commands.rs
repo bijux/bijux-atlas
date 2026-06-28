@@ -200,7 +200,7 @@ pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String
     run_security_validate_for_evidence(&process, &repo_root)?;
     run_governance_exceptions_validate_for_evidence(&process, &repo_root)?;
     run_governance_doctor_for_evidence(&process, &repo_root)?;
-    let chart_package = bijux_atlas_ops::lifecycle::release_commands::package_chart_for_evidence(
+    let chart_package = bijux_atlas_ops::lifecycle::release::commands::package_chart_for_evidence(
         &process, &repo_root,
     )?;
     let policy_path = repo_root.join("ops/release/evidence/policy.json");
@@ -412,7 +412,7 @@ pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String
             "path": provenance_path.strip_prefix(&repo_root).unwrap_or(&provenance_path).display().to_string(),
             "sha256": sha256_file(&provenance_path)?
         },
-        "chart_package": bijux_atlas_ops::lifecycle::release_commands::release_package_inventory(
+        "chart_package": bijux_atlas_ops::lifecycle::release::commands::release_package_inventory(
             &repo_root,
             &chart_package,
         )?,

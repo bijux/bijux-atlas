@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::release_inventory::{
+use super::inventory::{
     collect_dataset_assets, collect_governance_assets, collect_observability_assets,
     collect_perf_assets,
 };
