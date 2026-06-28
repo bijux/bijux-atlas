@@ -8,7 +8,7 @@ use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
 };
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
-use bijux_atlas_ops::inventory::surface_registry::builtin_ops_registry;
+use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
 
 pub(super) fn dispatch_execution(
@@ -707,35 +707,7 @@ pub(super) fn dispatch_execution(
             } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
-                let ops_registry = builtin_ops_registry();
-                let domains = {
-                    let mut set = std::collections::BTreeSet::new();
-                    for entry in &ops_registry {
-                        set.insert(entry.domain);
-                    }
-                    set.into_iter().collect::<Vec<_>>()
-                };
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "generated_by": "bijux dev atlas ops generate surface-list --write-example",
-                    "status": "pass",
-                    "surfaces": ["check", "configs", "docs", "ops"],
-                    "crate_alignment": {
-                        "source": "cargo metadata",
-                        "status": "pass"
-                    },
-                    "ops_taxonomy": {
-                        "domains": domains,
-                        "entries": ops_registry.into_iter().map(|entry| {
-                            serde_json::json!({
-                                "domain": entry.domain,
-                                "verb": entry.verb,
-                                "subverb": entry.subverb,
-                                "tags": entry.tags.iter().map(|tag| format!("{tag:?}").to_ascii_lowercase()).collect::<Vec<_>>()
-                            })
-                        }).collect::<Vec<_>>()
-                    }
-                });
+                let payload = build_surface_list_payload();
 
                 let expected =
                     repo_root.join("ops/_generated.example/control-plane-surface-list.json");

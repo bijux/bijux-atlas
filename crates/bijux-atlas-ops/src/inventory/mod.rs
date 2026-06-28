@@ -8,6 +8,7 @@ pub mod resilience_report;
 pub mod runbook_index;
 pub mod scenario_catalog;
 pub mod scenario_support;
+pub mod surface_list;
 pub mod surface_registry;
 pub mod toolchain;
 pub mod tooling_support;

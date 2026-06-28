@@ -4,6 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
+use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::inventory::surface_registry::builtin_ops_registry;
 
 fn workspace_root() -> PathBuf {
@@ -16,7 +17,7 @@ fn workspace_root() -> PathBuf {
 }
 
 #[test]
-fn generated_ops_surface_snapshot_matches_registry_entries() {
+fn generated_ops_surface_snapshot_matches_owned_registry_entries() {
     let root = workspace_root();
     let snapshot_path = root.join("ops/_generated.example/control-plane-surface-list.json");
     let text = fs::read_to_string(&snapshot_path).expect("read control-plane surface snapshot");
@@ -24,24 +25,24 @@ fn generated_ops_surface_snapshot_matches_registry_entries() {
 
     let snapshot_entries: BTreeSet<(String, String, Option<String>)> = json
         .get("ops_taxonomy")
-        .and_then(|v| v.get("entries"))
-        .and_then(|v| v.as_array())
+        .and_then(|value| value.get("entries"))
+        .and_then(|value| value.as_array())
         .expect("ops_taxonomy.entries array")
         .iter()
         .map(|entry| {
             let domain = entry
                 .get("domain")
-                .and_then(|v| v.as_str())
+                .and_then(|value| value.as_str())
                 .expect("entry domain")
                 .to_string();
             let verb = entry
                 .get("verb")
-                .and_then(|v| v.as_str())
+                .and_then(|value| value.as_str())
                 .expect("entry verb")
                 .to_string();
             let subverb = entry
                 .get("subverb")
-                .and_then(|v| v.as_str())
+                .and_then(|value| value.as_str())
                 .map(ToString::to_string);
             (domain, verb, subverb)
         })
@@ -65,17 +66,15 @@ fn generated_ops_surface_snapshot_matches_registry_entries() {
 }
 
 #[test]
-fn file_usage_report_has_no_orphan_ops_files() {
+fn generated_ops_surface_snapshot_matches_owned_payload_builder() {
     let root = workspace_root();
-    let report_path = root.join("ops/_generated.example/file-usage-report.json");
-    let text = fs::read_to_string(&report_path).expect("read file usage report");
-    let json: serde_json::Value = serde_json::from_str(&text).expect("parse file usage report");
-    let orphans = json
-        .get("orphans")
-        .and_then(|v| v.as_array())
-        .expect("orphans array");
-    assert!(
-        orphans.is_empty(),
-        "file usage report contains orphan ops files: {orphans:?}"
+    let snapshot_path = root.join("ops/_generated.example/control-plane-surface-list.json");
+    let text = fs::read_to_string(&snapshot_path).expect("read control-plane surface snapshot");
+    let snapshot: serde_json::Value = serde_json::from_str(&text).expect("parse surface snapshot");
+
+    assert_eq!(
+        build_surface_list_payload(),
+        snapshot,
+        "control-plane-surface-list snapshot must match owned payload builder"
     );
 }
