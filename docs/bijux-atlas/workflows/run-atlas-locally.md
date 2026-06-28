@@ -4,7 +4,7 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-06-28
 ---
 
 # Run Atlas Locally
@@ -23,7 +23,7 @@ scaling, or operational policy are already correct.
 
 ```mermaid
 flowchart LR
-    Fixtures[crates/bijux-atlas/tests/fixtures] --> Build[Ingest and validation]
+    Fixtures[crates/bijux-atlas-ingest/tests/fixtures] --> Build[Ingest and validation]
     Build --> BuildRoot[artifacts/getting-started/tiny-build]
     BuildRoot --> Publish[dataset publish and catalog promote]
     Publish --> Store[artifacts/getting-started/tiny-store]

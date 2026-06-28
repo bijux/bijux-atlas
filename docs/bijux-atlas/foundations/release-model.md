@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Release Model
@@ -41,7 +41,10 @@ This release diagram matters because Atlas separates "I built something" from
 - version and reproducibility policy are declared in [`version-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/version-policy.json:1) and [`reproducibility-policy.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/release/reproducibility-policy.json:1)
 - release-facing schema contracts live under [`configs/schemas/contracts/release/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts/release)
 - generated runtime state and startup references live under [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime)
-- product binaries that expose released behavior live under [`src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/bin)
+- product binaries that expose released behavior live under
+  [`crates/bijux-atlas-cli/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli/src/bin),
+  [`crates/bijux-atlas-server/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin),
+  and [`crates/bijux-atlas-api/src/bin/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-api/src/bin)
 
 ## Stable Release Boundaries
 

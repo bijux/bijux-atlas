@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Runtime Surfaces
@@ -37,11 +37,11 @@ structured output boundaries in one session.
 
 ## Repository Authority Map
 
-- CLI surface lives under [`src/adapters/inbound/cli/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/cli) and [`bijux-atlas-cli/src/bin/bijux-atlas.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli/src/bin/bijux-atlas.rs:1)
-- server process surface lives under [`src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http) and [`bijux-atlas-server/src/bin/bijux-atlas-server.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs:1)
+- CLI surface lives under [`crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-cli/src/bin/bijux-atlas.rs:1)
+- server process surface lives under [`crates/bijux-atlas-server/src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http) and [`crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs:1)
 - generated OpenAPI surface is produced by [`bijux-atlas-api/src/bin/bijux-atlas-openapi.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs:1) and published under [`configs/generated/openapi/v1/`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi/v1)
 - runtime config reference lives under [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime)
-- response and error-shape contracts live under [`src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http/response_contract.rs:1)
+- response and error-shape contracts live under [`crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs:1)
 
 ## Why Group Them
 

@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Core Concepts
@@ -151,7 +151,8 @@ When in doubt, ask three questions:
   `configs/schemas/contracts/release/` and
   `configs/schemas/contracts/datasets/`
 - runtime-facing config and output:
-  `crates/bijux-atlas/src/runtime/config/` and `configs/generated/runtime/`
+  `crates/bijux-atlas-runtime/src/runtime/config/` and
+  `configs/generated/runtime/`
 
 ## Main Takeaway
 

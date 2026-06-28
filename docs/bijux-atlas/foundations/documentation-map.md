@@ -4,7 +4,7 @@ audience: mixed
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Documentation Map
@@ -63,11 +63,11 @@ truth in the repo:
 
 | Docs slice | Main repository anchors |
 | --- | --- |
-| foundations | `crates/bijux-atlas/src/domain/` |
+| foundations | `crates/bijux-atlas-model/src/`, `crates/bijux-atlas-ingest/src/engine/`, and `crates/bijux-atlas-query/src/` |
 | workflows | `configs/examples/` plus runnable product entrypoints |
-| interfaces | `crates/bijux-atlas/src/adapters/inbound/` and `src/bin/` |
-| runtime | `crates/bijux-atlas/src/runtime/`, `src/app/`, and `src/adapters/` |
-| contracts | `crates/bijux-atlas/src/contracts/` and `configs/schemas/contracts/` |
+| interfaces | `crates/bijux-atlas-cli/src/bin/`, `crates/bijux-atlas-server/src/adapters/inbound/http/`, and `crates/bijux-atlas-runtime/src/runtime/config/` |
+| runtime | `crates/bijux-atlas-runtime/src/`, `crates/bijux-atlas-server/src/app/`, and `crates/bijux-atlas-server/src/adapters/inbound/http/` |
+| contracts | `crates/bijux-atlas-runtime/src/contracts/`, `crates/bijux-atlas-api/src/`, and `configs/schemas/contracts/` |
 
 ## Ownership Boundary
 

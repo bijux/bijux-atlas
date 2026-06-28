@@ -4,7 +4,7 @@ audience: mixed
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Command Surface
@@ -71,8 +71,8 @@ Use the automation reference when you are asking, "Which repository command chec
 
 ## Code Authority
 
-- command tree and argument structure:
-  `crates/bijux-atlas/src/adapters/inbound/cli/args.rs`
+- command tree and runtime-facing binary behavior:
+  `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`
 - runtime binaries:
   `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`,
   `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`, and

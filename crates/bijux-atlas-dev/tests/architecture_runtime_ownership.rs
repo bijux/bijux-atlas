@@ -6,6 +6,14 @@ fn crate_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
+fn workspace_root() -> PathBuf {
+    crate_root()
+        .parent()
+        .and_then(Path::parent)
+        .expect("workspace root")
+        .to_path_buf()
+}
+
 fn rust_files_under(root: &Path) -> Vec<PathBuf> {
     let mut out = Vec::new();
     let mut stack = vec![root.to_path_buf()];
@@ -27,7 +35,7 @@ fn rust_files_under(root: &Path) -> Vec<PathBuf> {
 
 #[test]
 fn runtime_ownership_boundary_document_exists() {
-    let path = crate_root().join("docs_runtime_ownership.md");
+    let path = workspace_root().join("docs/bijux-atlas-dev/workspace/runtime-ownership-boundary.md");
     let text = std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
     for required in [

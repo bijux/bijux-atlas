@@ -147,4 +147,4 @@ Contributor references:
 `bijux-atlas` is the product-facing Atlas crate. `bijux-atlas-dev` is the workspace-facing control-plane crate that validates, documents, audits, and governs the repository around it.
 
 Runtime ownership boundaries for this crate are defined in
-[`docs_runtime_ownership.md`](docs_runtime_ownership.md).
+[`runtime-ownership-boundary.md`](../../docs/bijux-atlas-dev/workspace/runtime-ownership-boundary.md).

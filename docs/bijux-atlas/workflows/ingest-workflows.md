@@ -4,7 +4,7 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-06-28
 ---
 
 # Ingest Workflows
@@ -63,9 +63,9 @@ That distinction is what allows Atlas to:
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
-  --gff3 crates/bijux-atlas/tests/fixtures/tiny/genes.gff3 \
-  --fasta crates/bijux-atlas/tests/fixtures/tiny/genome.fa \
-  --fai crates/bijux-atlas/tests/fixtures/tiny/genome.fa.fai \
+  --gff3 crates/bijux-atlas-ingest/tests/fixtures/tiny/genes.gff3 \
+  --fasta crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa \
+  --fai crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa.fai \
   --output-root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \

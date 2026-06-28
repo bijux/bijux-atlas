@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # System Overview
@@ -108,13 +108,16 @@ most. For crate layout and deeper runtime structure, keep reading:
 
 ## Where This Picture Lives In The Repo
 
-- ingest and build concerns: `crates/bijux-atlas/src/domain/ingest/`
+- ingest and build concerns: `crates/bijux-atlas-ingest/src/engine/`
 - dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and
   `crates/bijux-atlas-query/src/`
-- runtime assembly: `crates/bijux-atlas/src/runtime/` and `src/app/`
-- interfaces: `crates/bijux-atlas/src/adapters/inbound/`
+- runtime assembly: `crates/bijux-atlas-runtime/src/runtime/` and
+  `crates/bijux-atlas-runtime/src/app/`
+- interfaces: `crates/bijux-atlas-cli/src/bin/` and
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
 - contract and generated reference surfaces:
-  `crates/bijux-atlas/src/contracts/` and `configs/generated/`
+  `crates/bijux-atlas-runtime/src/contracts/`,
+  `crates/bijux-atlas-api/src/`, and `configs/generated/`
 
 ## Main Takeaway
 

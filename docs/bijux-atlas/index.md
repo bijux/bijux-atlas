@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # bijux-atlas
@@ -47,14 +47,21 @@ These docs are intentionally separate from:
 
 ## Where Product Truth Lives
 
-- product and domain meaning live primarily under `crates/bijux-atlas/src/domain/`
-- runtime assembly lives under `crates/bijux-atlas/src/runtime/` and
-  `crates/bijux-atlas/src/app/`
+- dataset identity, gene, transcript, and diff meaning live primarily under
+  `crates/bijux-atlas-model/src/`
+- ingest-time normalization and artifact construction live under
+  `crates/bijux-atlas-ingest/src/engine/`
+- query semantics live under `crates/bijux-atlas-query/src/engine/`
+- runtime assembly, store ports, policy, and configuration live under
+  `crates/bijux-atlas-runtime/src/app/`,
+  `crates/bijux-atlas-runtime/src/domain/`, and
+  `crates/bijux-atlas-runtime/src/runtime/`
 - HTTP and API surface lives under
-  `crates/bijux-atlas/src/adapters/inbound/http/`
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
 - CLI surface and user-facing command handling live under
-  `crates/bijux-atlas/src/adapters/inbound/cli/`, `crates/bijux-atlas-cli/src/bin/`, and
-  `crates/bijux-atlas-server/src/bin/`
+  `crates/bijux-atlas-cli/src/bin/`,
+  `crates/bijux-atlas-server/src/bin/`, and
+  `crates/bijux-atlas-api/src/bin/`
 - generated API and runtime references live under `configs/generated/openapi/`
   and `configs/generated/runtime/`
 - workflow examples and machine-checked contract shapes live under
@@ -91,7 +98,7 @@ repository-owned authorities that enforce shape or behavior. When a page
 describes a stable surface, readers should be able to confirm that claim in one
 of four places:
 
-- implementation code under `crates/bijux-atlas/src/`
+- implementation code under the owning split crates in `crates/`
 - generated references under `configs/generated/`
 - machine-checked contract schemas under `configs/schemas/contracts/`
 - example or workflow material under `configs/examples/`
@@ -106,6 +113,7 @@ of four places:
 
 ## Source Anchors
 
+- `crates/bijux-atlas-runtime/`
 - `crates/bijux-atlas/`
 - `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`
 - `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`

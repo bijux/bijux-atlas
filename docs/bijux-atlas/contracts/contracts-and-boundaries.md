@@ -4,7 +4,7 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Contracts and Boundaries
@@ -85,9 +85,12 @@ Those questions sound similar, but Atlas treats them differently on purpose.
 
 ## Enforcement Anchors
 
-- code placement boundaries: `crates/bijux-atlas/src/domain/`,
-  `src/app/`, `src/adapters/`, `src/runtime/`
-- stable contract implementation: `crates/bijux-atlas/src/contracts/`
+- code placement boundaries: `crates/bijux-atlas-runtime/src/domain/`,
+  `crates/bijux-atlas-runtime/src/app/`,
+  `crates/bijux-atlas-runtime/src/adapters/outbound/`,
+  `crates/bijux-atlas-runtime/src/runtime/`, and
+  `crates/bijux-atlas-server/src/adapters/inbound/http/`
+- stable contract implementation: `crates/bijux-atlas-runtime/src/contracts/`
 - machine-checked shape: `configs/schemas/contracts/` and `configs/generated/`
 
 ## Main Takeaway

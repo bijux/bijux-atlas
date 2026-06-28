@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-12
+last_reviewed: 2026-06-28
 ---
 
 # Dataset Model
@@ -49,7 +49,7 @@ operations honest about what is actually being changed.
 
 - dataset domain logic: `crates/bijux-atlas-model/src/dataset/`
 - ingest-time dataset construction:
-  `crates/bijux-atlas/src/domain/ingest/engine/`
+  `crates/bijux-atlas-ingest/src/engine/`
 - manifest and serving-shape contracts:
   `configs/schemas/contracts/datasets/manifest.schema.json` and
   `configs/sources/runtime/datasets/manifest.yaml`

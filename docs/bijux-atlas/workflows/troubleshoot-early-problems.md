@@ -4,7 +4,7 @@ audience: mixed
 type: troubleshooting
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-06-28
 ---
 
 # Troubleshoot Early Problems
@@ -43,9 +43,9 @@ Do not debug dataset paths or server flags before the binary can even start. Tha
 Check that these exist:
 
 ```bash
-ls crates/bijux-atlas/tests/fixtures/tiny/genes.gff3
-ls crates/bijux-atlas/tests/fixtures/tiny/genome.fa
-ls crates/bijux-atlas/tests/fixtures/tiny/genome.fa.fai
+ls crates/bijux-atlas-ingest/tests/fixtures/tiny/genes.gff3
+ls crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa
+ls crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa.fai
 ```
 
 If they do not, you are likely not at the workspace root or the worktree is incomplete.

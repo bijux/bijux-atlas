@@ -4,7 +4,7 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Runtime
@@ -46,10 +46,11 @@ lifecycle question.
 In this repo, runtime means the composition of domain logic, adapters, config,
 storage assumptions, request handling, and process startup across:
 
-- `crates/bijux-atlas/src/runtime/`
-- `crates/bijux-atlas/src/app/`
-- `crates/bijux-atlas/src/domain/`
-- `crates/bijux-atlas/src/adapters/`
+- `crates/bijux-atlas-runtime/src/runtime/`
+- `crates/bijux-atlas-runtime/src/app/`
+- `crates/bijux-atlas-runtime/src/domain/`
+- `crates/bijux-atlas-runtime/src/adapters/outbound/`
+- `crates/bijux-atlas-server/src/adapters/inbound/http/`
 
 ## Suggested Reading Order
 
@@ -88,10 +89,11 @@ keep stable?", move to the section that owns that answer.
 
 ## Source Anchors
 
-- `crates/bijux-atlas/src/domain/`
-- `crates/bijux-atlas/src/app/`
-- `crates/bijux-atlas/src/adapters/`
-- `crates/bijux-atlas/src/runtime/`
+- `crates/bijux-atlas-runtime/src/domain/`
+- `crates/bijux-atlas-runtime/src/app/`
+- `crates/bijux-atlas-runtime/src/adapters/outbound/`
+- `crates/bijux-atlas-runtime/src/runtime/`
+- `crates/bijux-atlas-server/src/adapters/inbound/http/`
 
 ## Main Takeaway
 

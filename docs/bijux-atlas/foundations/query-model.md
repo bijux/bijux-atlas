@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-06-28
 ---
 
 # Query Model
@@ -41,9 +41,9 @@ then turns into the response shape a client sees.
 
 - query semantics and domain rules live under [`crates/bijux-atlas-query/src/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-query/src)
 - query execution logic is organized under [`crates/bijux-atlas-query/src/engine/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-query/src/engine)
-- HTTP transport and endpoint routing live under [`src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http)
-- route ownership is declared in [`src/adapters/inbound/http/router.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http/router.rs:1)
-- response-shape promises are enforced in [`src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas/src/adapters/inbound/http/response_contract.rs:1)
+- HTTP transport and endpoint routing live under [`crates/bijux-atlas-server/src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http)
+- route ownership is declared in [`crates/bijux-atlas-server/src/adapters/inbound/http/router.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/router.rs:1)
+- response-shape promises are enforced in [`crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs:1)
 - generated public API shape is published in [`configs/generated/openapi/v1/openapi.json`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi/v1/openapi.json:1)
 
 ## What Belongs To Query Semantics
