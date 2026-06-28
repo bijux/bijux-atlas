@@ -14,7 +14,10 @@ mod stack_reset;
 mod stack_teardown;
 
 pub use self::context::{ensure_owned_simulation_context, SimulationCommandRunner};
-pub use self::debug_collection::{debug_collect_payload, emit_debug_bundle_report};
+pub use self::debug_collection::{
+    debug_collect_payload, describe_collect_payload, emit_debug_bundle_report,
+    events_collect_payload, logs_collect_payload, resources_snapshot_payload,
+};
 pub use self::drill_contracts::drill_contract_payload;
 pub use self::helm_release::{helm_install_payload, helm_uninstall_payload};
 pub use self::kind_cluster::{

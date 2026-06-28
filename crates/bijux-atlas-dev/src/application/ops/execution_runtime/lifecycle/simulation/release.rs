@@ -517,9 +517,7 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
 
 fn run_collect_command(
     args: &crate::cli::OpsCollectArgs,
-    category: &str,
-    file_name: &str,
-    argv: Vec<String>,
+    action: impl FnOnce(&OpsProcess, &std::path::Path, &str, &str) -> Result<serde_json::Value, String>,
 ) -> Result<(String, i32), String> {
     let common = &args.common;
     match args.cluster {
@@ -540,15 +538,7 @@ fn run_collect_command(
         &profile,
         args.namespace.as_deref(),
     );
-    let envelope = bijux_atlas_ops::lifecycle::simulation::debug_collect_payload(
-        &process,
-        &repo_root,
-        run_id.as_str(),
-        &namespace,
-        category,
-        file_name,
-        argv,
-    )?;
+    let envelope = action(&process, &repo_root, run_id.as_str(), &namespace)?;
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, 0))
 }
@@ -556,106 +546,41 @@ fn run_collect_command(
 pub(crate) fn run_ops_logs_collect(
     args: &crate::cli::OpsCollectArgs,
 ) -> Result<(String, i32), String> {
-    let profile = args
-        .common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
-    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
-        &profile,
-        args.namespace.as_deref(),
-    );
-    run_collect_command(
-        args,
-        "logs",
-        "pod-logs.txt",
-        vec![
-            "logs".to_string(),
-            "-n".to_string(),
-            namespace,
-            "deployment/bijux-atlas".to_string(),
-            "--tail=500".to_string(),
-        ],
-    )
+    run_collect_command(args, |process, repo_root, run_id, namespace| {
+        bijux_atlas_ops::lifecycle::simulation::logs_collect_payload(
+            process, repo_root, run_id, namespace,
+        )
+    })
 }
 
 pub(crate) fn run_ops_describe_collect(
     args: &crate::cli::OpsCollectArgs,
 ) -> Result<(String, i32), String> {
-    let profile = args
-        .common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
-    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
-        &profile,
-        args.namespace.as_deref(),
-    );
-    run_collect_command(
-        args,
-        "describe",
-        "describe.txt",
-        vec![
-            "describe".to_string(),
-            "-n".to_string(),
-            namespace,
-            "deployment/bijux-atlas".to_string(),
-            "service/bijux-atlas".to_string(),
-        ],
-    )
+    run_collect_command(args, |process, repo_root, run_id, namespace| {
+        bijux_atlas_ops::lifecycle::simulation::describe_collect_payload(
+            process, repo_root, run_id, namespace,
+        )
+    })
 }
 
 pub(crate) fn run_ops_events_collect(
     args: &crate::cli::OpsCollectArgs,
 ) -> Result<(String, i32), String> {
-    let profile = args
-        .common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
-    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
-        &profile,
-        args.namespace.as_deref(),
-    );
-    run_collect_command(
-        args,
-        "events",
-        "events.txt",
-        vec![
-            "get".to_string(),
-            "events".to_string(),
-            "-n".to_string(),
-            namespace,
-            "--sort-by=.metadata.creationTimestamp".to_string(),
-        ],
-    )
+    run_collect_command(args, |process, repo_root, run_id, namespace| {
+        bijux_atlas_ops::lifecycle::simulation::events_collect_payload(
+            process, repo_root, run_id, namespace,
+        )
+    })
 }
 
 pub(crate) fn run_ops_resources_snapshot(
     args: &crate::cli::OpsCollectArgs,
 ) -> Result<(String, i32), String> {
-    let profile = args
-        .common
-        .profile
-        .clone()
-        .unwrap_or_else(|| "kind".to_string());
-    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
-        &profile,
-        args.namespace.as_deref(),
-    );
-    run_collect_command(
-        args,
-        "resources",
-        "resources.yaml",
-        vec![
-            "get".to_string(),
-            "all".to_string(),
-            "-n".to_string(),
-            namespace,
-            "-o".to_string(),
-            "yaml".to_string(),
-        ],
-    )
+    run_collect_command(args, |process, repo_root, run_id, namespace| {
+        bijux_atlas_ops::lifecycle::simulation::resources_snapshot_payload(
+            process, repo_root, run_id, namespace,
+        )
+    })
 }
 
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
