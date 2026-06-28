@@ -1,5 +1,12 @@
 # bijux-atlas-query
 
+[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas-query)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
+[![query](https://img.shields.io/crates/v/bijux-atlas-query?label=query&logo=rust)](https://crates.io/crates/bijux-atlas-query)
+[![rust-docs](https://img.shields.io/badge/rust--docs-query-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/)
+[![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
+
 `bijux-atlas-query` owns Atlas query behavior: request normalization, parsing,
 planning, cursor encoding, SQLite execution, and the frozen query contract used
 by downstream runtime surfaces.
@@ -15,8 +22,13 @@ Use this crate when you need:
 It depends on `bijux-atlas-core` for canonical hashing and on
 `bijux-atlas-model` for shared dataset, diff, and gene value types.
 
-Public references:
+## What It Does Not Own
 
-- Project docs: <https://bijux.io/bijux-atlas/>
+`bijux-atlas-query` owns the query boundary itself, but not CLI presentation,
+HTTP lifecycle, ingest normalization, or artifact publication.
+
+## Documentation
+
+- Atlas handbook: <https://bijux.io/bijux-atlas/>
 - Rust API docs: <https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/>
 - Source repository: <https://github.com/bijux/bijux-atlas>

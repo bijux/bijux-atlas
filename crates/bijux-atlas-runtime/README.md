@@ -1,5 +1,12 @@
 # bijux-atlas-runtime
 
+[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas-runtime)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
+[![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
+[![runtime](https://img.shields.io/crates/v/bijux-atlas-runtime?label=runtime&logo=rust)](https://crates.io/crates/bijux-atlas-runtime)
+[![rust-docs](https://img.shields.io/badge/rust--docs-runtime-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/)
+[![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
+
 `bijux-atlas-runtime` is the canonical Atlas runtime composition crate for
 genomics dataset delivery. It composes ingest, query, store, API, and runtime
 wiring so the direct CLI and server owner crates can expose stable Atlas
@@ -12,6 +19,13 @@ This crate is the right starting point if you are looking for:
 - immutable genome annotation dataset artifacts
 - gene and transcript query APIs
 - a Rust HTTP server plus OpenAPI export for genomic datasets
+
+## What This Crate Owns
+
+- runtime composition across ingest, query, store, API, and policy crates
+- application wiring, cache setup, runtime config, and orchestration
+- shared product-facing runtime modules consumed by CLI and server owners
+- feature-flagged backend selection for local and remote storage integrations
 
 ## What Ships
 
@@ -34,6 +48,13 @@ already installed in an environment.
 Use this crate when you want the canonical Atlas runtime and libraries
 directly.
 Use `bijux-cli` when you want a shared command root that can host Atlas alongside other Bijux tools.
+
+## What It Does Not Own
+
+`bijux-atlas-runtime` is not the direct owner of the installed CLI binary, the
+installed server binary, the OpenAPI binary, or maintainer governance
+automation. Those surfaces belong to `bijux-atlas-cli`,
+`bijux-atlas-server`, `bijux-atlas-api`, and `bijux-atlas-dev`.
 
 ## Install and Verify
 

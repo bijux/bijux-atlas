@@ -15,8 +15,13 @@ Rust crates, and one repository-only maintainer crate:
 * `bijux-atlas-ops`: the published operational contracts crate for stack, load, observability, and release-support surfaces,
 * `bijux-atlas-dev`: the maintainer control-plane crate that stays repository-owned instead of shipping to crates.io.
 
-The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
-Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: if you already have `bijux-cli` installed, Atlas can be routed through `bijux atlas ...` and `bijux dev atlas ...`; the primary release and installation story in this repository remains the standalone Rust binaries and crates.
+The public promise today is a deterministic runtime, explicit repository
+governance, stable documented contracts, and release inputs that can be
+validated instead of hand-waved.
+Atlas also plugs into the sibling
+[`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime, but this
+repository treats standalone Rust binaries and crates as the primary install
+and release surface.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -29,7 +34,19 @@ Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-c
 [![GHCR packages](https://img.shields.io/badge/ghcr-1%20package-181717?logo=github)](https://github.com/bijux?tab=packages&repo_name=bijux-atlas)
 [![Published packages](https://img.shields.io/badge/published%20packages-11-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 
-[![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas) [![bijux-atlas](https://img.shields.io/badge/bijux--atlas-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas)
+[![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas)
+[![bijux-atlas-api](https://img.shields.io/crates/v/bijux-atlas-api?label=api&logo=rust)](https://crates.io/crates/bijux-atlas-api)
+[![bijux-atlas-cli](https://img.shields.io/crates/v/bijux-atlas-cli?label=cli&logo=rust)](https://crates.io/crates/bijux-atlas-cli)
+[![bijux-atlas-core](https://img.shields.io/crates/v/bijux-atlas-core?label=core&logo=rust)](https://crates.io/crates/bijux-atlas-core)
+[![bijux-atlas-ingest](https://img.shields.io/crates/v/bijux-atlas-ingest?label=ingest&logo=rust)](https://crates.io/crates/bijux-atlas-ingest)
+[![bijux-atlas-model](https://img.shields.io/crates/v/bijux-atlas-model?label=model&logo=rust)](https://crates.io/crates/bijux-atlas-model)
+[![bijux-atlas-ops](https://img.shields.io/crates/v/bijux-atlas-ops?label=ops&logo=rust)](https://crates.io/crates/bijux-atlas-ops)
+[![bijux-atlas-query](https://img.shields.io/crates/v/bijux-atlas-query?label=query&logo=rust)](https://crates.io/crates/bijux-atlas-query)
+[![bijux-atlas-runtime](https://img.shields.io/crates/v/bijux-atlas-runtime?label=runtime&logo=rust)](https://crates.io/crates/bijux-atlas-runtime)
+[![bijux-atlas-server](https://img.shields.io/crates/v/bijux-atlas-server?label=server&logo=rust)](https://crates.io/crates/bijux-atlas-server)
+[![bijux-atlas-store](https://img.shields.io/crates/v/bijux-atlas-store?label=store&logo=rust)](https://crates.io/crates/bijux-atlas-store)
+
+[![bijux-atlas](https://img.shields.io/badge/bijux--atlas-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas)
 
 [![Repository docs](https://img.shields.io/badge/docs-repository-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 [![bijux-atlas docs](https://img.shields.io/badge/docs-bijux--atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
@@ -130,6 +147,18 @@ This release-surface diagram is important because Atlas ships more than one bina
 one kind of repository contract. Readers should be able to see immediately which surfaces are for
 runtime use and which are for repository maintenance.
 
+### Release Surface Directory
+
+| Surface | Ownership | Release contract |
+| --- | --- | --- |
+| `bijux-atlas` | `bijux-atlas-cli` | direct end-user CLI binary |
+| `bijux-atlas-server` | `bijux-atlas-server` | direct HTTP runtime binary |
+| `bijux-atlas-openapi` | `bijux-atlas-api` | direct OpenAPI export binary |
+| `bijux-atlas-runtime` | `bijux-atlas-runtime` | canonical Rust orchestration crate |
+| `bijux-atlas` crate | `crates/bijux-atlas/` | compatibility alias for the historical Rust import path |
+| `bijux-atlas-ops` | `bijux-atlas-ops` | published operations-contract crate |
+| `bijux-atlas-dev` | `bijux-atlas-dev` | repository-only maintainer control plane |
+
 ## Crate Boundary Map
 
 Atlas currently enforces a twelve-crate workspace boundary:
@@ -197,10 +226,9 @@ The release story includes checked manifests, compatibility tables, docs deploym
 
 ## Installation
 
-Choose one install route at a time.
-
 Use direct Cargo installation when you want Atlas by itself, or when CI and
-local Rust workflows call the binaries directly:
+local Rust workflows call the binaries directly. This is the primary install
+story for Atlas `0.2.2`:
 
 ```bash
 cargo install --locked bijux-atlas-cli --bin bijux-atlas
@@ -212,8 +240,8 @@ bijux-atlas version
 
 If you already operate through the sibling `bijux-cli` umbrella runtime, the
 same Atlas surfaces can also be reached as `bijux atlas ...` and `bijux dev
-atlas ...`. This repository does not rely on a `bijux install ...` flow as the
-primary release story for `0.2.2`.
+atlas ...`. That routed command story is secondary to the direct Cargo-managed
+Atlas binaries documented here.
 
 Quick verification for the standalone binaries:
 

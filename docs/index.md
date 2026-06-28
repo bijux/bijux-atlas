@@ -34,6 +34,16 @@ HTTP, and release evidence.
 [![Published packages](https://img.shields.io/badge/published%20packages-11-2563EB)](https://github.com/bijux/bijux-atlas/tree/main/crates)
 
 [![bijux-atlas](https://img.shields.io/crates/v/bijux-atlas?label=bijux--atlas&logo=rust)](https://crates.io/crates/bijux-atlas)
+[![bijux-atlas-api](https://img.shields.io/crates/v/bijux-atlas-api?label=api&logo=rust)](https://crates.io/crates/bijux-atlas-api)
+[![bijux-atlas-cli](https://img.shields.io/crates/v/bijux-atlas-cli?label=cli&logo=rust)](https://crates.io/crates/bijux-atlas-cli)
+[![bijux-atlas-core](https://img.shields.io/crates/v/bijux-atlas-core?label=core&logo=rust)](https://crates.io/crates/bijux-atlas-core)
+[![bijux-atlas-ingest](https://img.shields.io/crates/v/bijux-atlas-ingest?label=ingest&logo=rust)](https://crates.io/crates/bijux-atlas-ingest)
+[![bijux-atlas-model](https://img.shields.io/crates/v/bijux-atlas-model?label=model&logo=rust)](https://crates.io/crates/bijux-atlas-model)
+[![bijux-atlas-ops](https://img.shields.io/crates/v/bijux-atlas-ops?label=ops&logo=rust)](https://crates.io/crates/bijux-atlas-ops)
+[![bijux-atlas-query](https://img.shields.io/crates/v/bijux-atlas-query?label=query&logo=rust)](https://crates.io/crates/bijux-atlas-query)
+[![bijux-atlas-runtime](https://img.shields.io/crates/v/bijux-atlas-runtime?label=runtime&logo=rust)](https://crates.io/crates/bijux-atlas-runtime)
+[![bijux-atlas-server](https://img.shields.io/crates/v/bijux-atlas-server?label=server&logo=rust)](https://crates.io/crates/bijux-atlas-server)
+[![bijux-atlas-store](https://img.shields.io/crates/v/bijux-atlas-store?label=store&logo=rust)](https://crates.io/crates/bijux-atlas-store)
 [![bijux-atlas](https://img.shields.io/badge/bijux--atlas-ghcr-181717?logo=github)](https://github.com/bijux/bijux-atlas/pkgs/container/bijux-atlas%2Fbijux-atlas)
 
 [![Repository docs](https://img.shields.io/badge/docs-repository-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
@@ -187,7 +197,6 @@ is the primary handbook.
 The same is true of trust. Security and release assurance are not side checks
 after the runtime is done. They are part of how Atlas proves what was built,
 what was promoted, and what should be rolled back.
-
 ## Release Confidence Signals
 
 Primary publication and confidence lanes:
@@ -201,7 +210,6 @@ Primary publication and confidence lanes:
 These lanes are represented in the badges above, but the important point is not
 the badges themselves. Atlas uses them to decide whether a release is ready to
 promote, hold, or roll back.
-
 ```mermaid
 flowchart TB
     source[Source changes] --> ci[repo and ci]
@@ -219,6 +227,25 @@ flowchart TB
 Atlas is not complete when it merely builds. It is complete when build, docs,
 contracts, publication channels, and operational evidence line up tightly
 enough that release decisions are reviewable instead of improvised.
+## Published and Repository-Only Crates
+
+Atlas `0.2.2` publishes eleven Rust crates and keeps one maintainer crate
+repository-only.
+
+Published crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
+`bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,
+`bijux-atlas-ops`, `bijux-atlas-query`, `bijux-atlas-runtime`,
+`bijux-atlas-server`, and `bijux-atlas-store`.
+
+Repository-only crate: `bijux-atlas-dev`.
+
+Use this split when deciding where to start:
+- product runtime and release behavior: `bijux-atlas`, `bijux-atlas-runtime`,
+  `bijux-atlas-cli`, `bijux-atlas-server`, `bijux-atlas-api`
+- leaf implementation contracts: `bijux-atlas-core`, `bijux-atlas-model`,
+  `bijux-atlas-query`, `bijux-atlas-ingest`, `bijux-atlas-store`
+- operational surfaces: `bijux-atlas-ops`
+- repository governance and maintainer workflows: `bijux-atlas-dev`
 
 ## Start From the Right Handbook
 

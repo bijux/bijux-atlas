@@ -1,5 +1,11 @@
 # bijux-atlas-dev
 
+[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://github.com/bijux/bijux-atlas)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
+[![CI](https://github.com/bijux/bijux-atlas/workflows/repo%20/%20ci/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml?query=branch%3Amain)
+[![docs-maintainer](https://img.shields.io/badge/docs-maintainer-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-dev/)
+[![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
+
 `bijux-atlas-dev` is the repository control-plane crate for the Bijux workspace. It turns governance, documentation, policy, validation, reporting, and operational workflows into a Rust command surface instead of a shell-script control plane.
 
 Use this crate when you need to:
@@ -118,20 +124,20 @@ The following are not stable promises:
 Repository docs in this worktree:
 
 - docs index: [../../docs/index.md](../../docs/index.md)
-- command surface: [../../docs/07-reference/automation-command-surface.md](../../docs/07-reference/automation-command-surface.md)
+- command surface: [../../docs/bijux-atlas-dev/automation/automation-command-surface.md](../../docs/bijux-atlas-dev/automation/automation-command-surface.md)
 - commands and usage: [../../docs/bijux-atlas-dev/automation/automation-control-plane.md](../../docs/bijux-atlas-dev/automation/automation-control-plane.md)
 
 Governance and contracts:
 
-- automation contracts: [../../docs/08-contracts/automation-contracts.md](../../docs/08-contracts/automation-contracts.md)
-- report reference: [../../docs/07-reference/automation-reports-reference.md](../../docs/07-reference/automation-reports-reference.md)
+- automation contracts: [../../docs/bijux-atlas-dev/governance/automation-contracts.md](../../docs/bijux-atlas-dev/governance/automation-contracts.md)
+- report reference: [../../docs/bijux-atlas-dev/automation/automation-reports-reference.md](../../docs/bijux-atlas-dev/automation/automation-reports-reference.md)
 - decision records and ownership: [../../docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md](../../docs/bijux-atlas-dev/workspace/decision-records-and-ownership.md)
-- errors and exit codes: [../../docs/07-reference/error-codes-and-exit-codes.md](../../docs/07-reference/error-codes-and-exit-codes.md)
+- errors and exit codes: [../../docs/bijux-atlas/interfaces/error-codes-and-exit-codes.md](../../docs/bijux-atlas/interfaces/error-codes-and-exit-codes.md)
 
 Contributor references:
 
-- architecture: [../../docs/05-architecture/automation-architecture.md](../../docs/05-architecture/automation-architecture.md)
-- testing and evidence: [../../docs/06-development/testing-and-evidence.md](../../docs/06-development/testing-and-evidence.md)
+- architecture: [../../docs/bijux-atlas-dev/governance/automation-architecture.md](../../docs/bijux-atlas-dev/governance/automation-architecture.md)
+- testing and evidence: [../../docs/bijux-atlas-dev/governance/testing-and-evidence.md](../../docs/bijux-atlas-dev/governance/testing-and-evidence.md)
 - contributor workflow: [../../docs/bijux-atlas-dev/workspace/contributor-workflow.md](../../docs/bijux-atlas-dev/workspace/contributor-workflow.md)
 
 ## Working on This Crate
