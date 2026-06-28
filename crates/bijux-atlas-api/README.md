@@ -15,6 +15,6 @@ Use this crate when you need:
 
 Public references:
 
-- Project docs: <https://bijux.github.io/bijux-atlas/>
+- Project docs: <https://bijux.io/bijux-atlas/>
 - Rust API docs: <https://docs.rs/bijux-atlas-api/latest/bijux_atlas_api/>
 - Source repository: <https://github.com/bijux/bijux-atlas>

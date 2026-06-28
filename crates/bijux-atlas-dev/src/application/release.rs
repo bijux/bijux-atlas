@@ -6353,7 +6353,7 @@ mod tests {
     #[test]
     fn publishable_package_surface_requires_readme_links_to_homepage_and_docs() {
         let package = toml::toml! {
-            homepage = "https://bijux.github.io/bijux-atlas/"
+            homepage = "https://bijux.io/bijux-atlas/"
             documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
             repository = "https://github.com/bijux/bijux-atlas.git"
         };
@@ -6371,12 +6371,12 @@ mod tests {
     #[test]
     fn publishable_package_surface_rejects_parent_relative_readme_links() {
         let package = toml::toml! {
-            homepage = "https://bijux.github.io/bijux-atlas/"
+            homepage = "https://bijux.io/bijux-atlas/"
             documentation = "https://docs.rs/bijux-atlas/latest/bijux_atlas/"
             repository = "https://github.com/bijux/bijux-atlas.git"
         };
         let readme = r#"
-[Docs](https://bijux.github.io/bijux-atlas/)
+[Docs](https://bijux.io/bijux-atlas/)
 [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
 [Control Plane](../bijux-atlas-dev/README.md)
 "#;
@@ -6407,7 +6407,7 @@ mod tests {
     #[test]
     fn markdown_link_targets_extracts_inline_links() {
         let markdown = r#"
-[Docs](https://bijux.github.io/bijux-atlas/)
+[Docs](https://bijux.io/bijux-atlas/)
 text [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/) end
 [Control Plane](../bijux-atlas-dev/README.md)
 "#;
@@ -6417,7 +6417,7 @@ text [API](https://docs.rs/bijux-atlas/latest/bijux_atlas/) end
         assert_eq!(
             targets,
             vec![
-                "https://bijux.github.io/bijux-atlas/",
+                "https://bijux.io/bijux-atlas/",
                 "https://docs.rs/bijux-atlas/latest/bijux_atlas/",
                 "../bijux-atlas-dev/README.md"
             ]

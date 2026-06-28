@@ -6,6 +6,12 @@ Use this crate when you want the durable `bijux_atlas` import path while the
 canonical implementation stays split across `bijux-atlas-runtime` and the leaf
 owner crates.
 
+Public references:
+
+- Project docs: <https://bijux.io/bijux-atlas/>
+- Rust API docs: <https://docs.rs/bijux-atlas/latest/bijux_atlas/>
+- Source repository: <https://github.com/bijux/bijux-atlas>
+
 ## What It Does
 
 - re-exports runtime-owned modules such as `bijux_atlas::adapters` and

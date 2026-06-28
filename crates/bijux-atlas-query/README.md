@@ -17,6 +17,6 @@ It depends on `bijux-atlas-core` for canonical hashing and on
 
 Public references:
 
-- Project docs: <https://bijux.github.io/bijux-atlas/>
+- Project docs: <https://bijux.io/bijux-atlas/>
 - Rust API docs: <https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/>
 - Source repository: <https://github.com/bijux/bijux-atlas>

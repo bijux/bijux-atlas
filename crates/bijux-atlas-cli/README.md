@@ -8,3 +8,9 @@ behavior lives in the canonical `bijux-atlas-runtime` library crate, while
 `bijux-atlas` remains the compatibility alias for the historical import path.
 This package owns the installed executable and the command-line contract around
 it.
+
+Public references:
+
+- Project docs: <https://bijux.io/bijux-atlas/>
+- Rust API docs: <https://docs.rs/bijux-atlas-cli/latest/bijux_atlas_cli/>
+- Source repository: <https://github.com/bijux/bijux-atlas>

@@ -67,7 +67,7 @@ cargo run -p bijux-atlas-api --bin bijux-atlas-openapi -- --out ./openapi.json
 
 ## Documentation
 
-- Product documentation: <https://bijux.github.io/bijux-atlas/>
+- Product documentation: <https://bijux.io/bijux-atlas/>
 - Rust API documentation:
   <https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/>
 - Source repository: <https://github.com/bijux/bijux-atlas>

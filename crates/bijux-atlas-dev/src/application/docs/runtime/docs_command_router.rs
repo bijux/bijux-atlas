@@ -2143,7 +2143,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let site_paths =
                     bijux_atlas_dev::docs::site_output::parse_mkdocs_site_paths(&ctx.repo_root)?;
                 let pages_url = std::env::var("BIJUX_DOCS_SITE_URL")
-                    .unwrap_or_else(|_| "https://bijux.github.io/bijux-atlas/".to_string());
+                    .unwrap_or_else(|_| "https://bijux.io/bijux-atlas/".to_string());
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "run_id": ctx.run_id.as_str(),
@@ -2169,7 +2169,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         "workflow": ".github/workflows/deploy-docs.yml",
                         "build_command": "bijux-atlas-dev docs build --allow-subprocess --allow-write --strict",
                         "site_dir": site_paths.site_dir.display().to_string(),
-                        "pages_url": std::env::var("BIJUX_DOCS_SITE_URL").unwrap_or_else(|_| "https://bijux.github.io/bijux-atlas/".to_string()),
+                        "pages_url": std::env::var("BIJUX_DOCS_SITE_URL").unwrap_or_else(|_| "https://bijux.io/bijux-atlas/".to_string()),
                         "trigger_push_main": true,
                         "trigger_tag": "v*",
                         "trigger_manual": true
@@ -2185,7 +2185,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let ctx = docs_context(&args.common)?;
                 let url = args.url.clone().unwrap_or_else(|| {
                     let base = std::env::var("BIJUX_DOCS_SITE_URL")
-                        .unwrap_or_else(|_| "https://bijux.github.io/bijux-atlas/".to_string());
+                        .unwrap_or_else(|_| "https://bijux.io/bijux-atlas/".to_string());
                     format!("{}/reference/build-info/", base.trim_end_matches('/'))
                 });
                 let response = reqwest::blocking::Client::builder()

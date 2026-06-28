@@ -16,11 +16,5 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Refreshed the release lockfile inputs that back telemetry-related transitive
   dependencies so the published crate builds with the hardened dependency set
   prepared in this release line.
-
-## v0.2.1 – 2026-06-27
-
-### Added
-- Reintroduced `bijux-atlas` as a real compatibility alias crate that
-  re-exports the canonical `bijux-atlas-runtime` library surface.
-- Added alias contract tests so the public `bijux_atlas` import path stays
-  equivalent to `bijux_atlas_runtime` for stable modules and functions.
+- Removed an unpublished `v0.2.1 – 2026-06-27` compatibility-crate entry so
+  the crate-local release history matches the actual published Atlas tags.
