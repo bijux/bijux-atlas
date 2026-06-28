@@ -246,7 +246,7 @@ pub(super) fn dispatch_execution(
             OpsGenerateCommand::PinsIndex { check, common } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
-                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let fs_adapter = OpsFs::new(repo_root.clone());
                 let payload = build_pins_index_payload(&repo_root, run_id.as_str())?;
                 let rel = "generate/pins.index.json";
                 if check {
@@ -360,7 +360,7 @@ pub(super) fn dispatch_execution(
                     })?;
                 }
 
-                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let fs_adapter = OpsFs::new(repo_root.clone());
                 let rel = "generate/control-plane-surface-list.json";
                 let out = fs_adapter
                     .write_artifact_json(&run_id, rel, &payload)
@@ -380,7 +380,7 @@ pub(super) fn dispatch_execution(
             OpsGenerateCommand::Runbook { check, common } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
-                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let fs_adapter = OpsFs::new(repo_root.clone());
                 let payload = build_runbook_index_payload(&repo_root, run_id.as_str())?;
                 if check {
                     let rendered = emit_payload(
@@ -424,7 +424,7 @@ pub(super) fn dispatch_execution(
                     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                     return Ok((rendered, exit));
                 }
-                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let fs_adapter = OpsFs::new(repo_root.clone());
                 let out = fs_adapter
                     .write_artifact_json(&run_id, "generate/chart-dependencies-sbom.json", &payload)
                     .map_err(|e| e.to_stable_message())?;
@@ -448,7 +448,7 @@ pub(super) fn dispatch_execution(
                     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                     return Ok((rendered, ops_exit::PASS));
                 }
-                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let fs_adapter = OpsFs::new(repo_root.clone());
                 let out = fs_adapter
                     .write_artifact_json(&run_id, "generate/resilience-report.json", &payload)
                     .map_err(|e| e.to_stable_message())?;

@@ -271,10 +271,10 @@ pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(Str
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
-            let fs_adapter = OpsFs::new(repo_root, ops_root);
-            let mut payload: SurfacesInventory = fs_adapter
-                .read_ops_json("inventory/surfaces.json")
-                .map_err(|e| e.to_stable_message())?;
+            let mut payload =
+                bijux_atlas_ops::inventory::surfaces_manifest::load_surfaces_inventory(&ops_root)
+                    .map_err(OpsCommandError::Manifest)
+                    .map_err(|e| e.to_stable_message())?;
             payload.actions.sort_by(|a, b| a.id.cmp(&b.id));
             let rows = payload.actions.iter()
                 .map(|a| serde_json::json!({"id": a.id, "domain": a.domain, "command": a.command, "argv": a.argv}))

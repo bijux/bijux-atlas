@@ -14,9 +14,10 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
-            let actions: SurfacesInventory = OpsFs::new(repo_root.clone(), ops_root.clone())
-                .read_ops_json("inventory/surfaces.json")
-                .map_err(|e| e.to_stable_message())?;
+            let actions =
+                bijux_atlas_ops::inventory::surfaces_manifest::load_surfaces_inventory(&ops_root)
+                    .map_err(OpsCommandError::Manifest)
+                    .map_err(|e| e.to_stable_message())?;
             let mut action_ids = actions
                 .actions
                 .iter()
@@ -393,9 +394,10 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
-            let surfaces: SurfacesInventory = OpsFs::new(repo_root.clone(), ops_root.clone())
-                .read_ops_json("inventory/surfaces.json")
-                .map_err(|e| e.to_stable_message())?;
+            let surfaces =
+                bijux_atlas_ops::inventory::surfaces_manifest::load_surfaces_inventory(&ops_root)
+                    .map_err(OpsCommandError::Manifest)
+                    .map_err(|e| e.to_stable_message())?;
             let toolchain =
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let inventory_errors =

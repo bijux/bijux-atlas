@@ -13,6 +13,7 @@ pub mod scenario_reporting;
 pub mod scenario_support;
 pub mod surface_list;
 pub mod surface_registry;
+pub mod surfaces_manifest;
 pub mod toolchain;
 pub mod tooling_support;
 pub mod tools_manifest;

@@ -12,19 +12,6 @@ pub(crate) use bijux_atlas_ops::inventory::toolchain::ToolchainInventory;
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
 pub(crate) use bijux_atlas_ops::stack::profile_catalog::{OpsProfileRegistry, StackProfile};
 
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct SurfacesInventory {
-    pub(crate) actions: Vec<SurfaceAction>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub(crate) struct SurfaceAction {
-    pub(crate) id: String,
-    pub(crate) domain: String,
-    pub(crate) command: Vec<String>,
-    pub(crate) argv: Vec<String>,
-}
-
 #[derive(Debug)]
 pub(crate) enum OpsCommandError {
     Manifest(String),
@@ -59,28 +46,11 @@ impl OpsCommandError {
 
 pub(crate) struct OpsFs {
     repo_root: PathBuf,
-    ops_root: PathBuf,
 }
 
 impl OpsFs {
-    pub(crate) fn new(repo_root: PathBuf, ops_root: PathBuf) -> Self {
-        Self {
-            repo_root,
-            ops_root,
-        }
-    }
-
-    pub(crate) fn read_ops_json<T: for<'de> Deserialize<'de>>(
-        &self,
-        rel: &str,
-    ) -> Result<T, OpsCommandError> {
-        let path = self.ops_root.join(rel);
-        let text = std::fs::read_to_string(&path).map_err(|err| {
-            OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
-        })?;
-        serde_json::from_str(&text).map_err(|err| {
-            OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
-        })
+    pub(crate) fn new(repo_root: PathBuf) -> Self {
+        Self { repo_root }
     }
 
     pub(crate) fn write_artifact_json(
