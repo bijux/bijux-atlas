@@ -5,8 +5,8 @@ mod commands;
 pub(crate) use self::commands::ensure_simulation_context;
 pub(crate) use self::commands::*;
 pub(crate) use bijux_atlas_ops::lifecycle::evidence::artifacts::{
-    build_lifecycle_evidence_bundle, collect_redacted_logs, collect_scan_reports,
-    contains_common_secret_pattern, render_evidence_index_html,
+    collect_redacted_logs, collect_scan_reports, contains_common_secret_pattern,
+    render_evidence_index_html,
 };
 pub(crate) use bijux_atlas_ops::lifecycle::evidence::support::{
     collect_image_artifacts, collect_sboms, evidence_root, sha256_file,
