@@ -8,9 +8,10 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-server-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-server/latest/bijux_atlas_server/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-server` owns the long-running `bijux-atlas-server` executable. It
-is the direct binary surface for serving Atlas over HTTP with the expected
-runtime config, telemetry bootstrap, and startup behavior.
+`bijux-atlas-server` is the published crate that owns the long-running
+`bijux-atlas-server` executable. It is the direct binary surface for serving
+Atlas over HTTP with the expected runtime config, telemetry bootstrap, and
+startup behavior.
 
 ## What This Crate Owns
 

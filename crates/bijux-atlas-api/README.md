@@ -8,9 +8,10 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-api-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-api/latest/bijux_atlas_api/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-api` is the contract crate for Atlas HTTP and OpenAPI consumers.
-It owns the request, response, error, and schema surfaces that the rest of the
-runtime is required to honor.
+`bijux-atlas-api` is the published contract crate for Atlas HTTP and OpenAPI
+consumers. It owns the request, response, error, and schema surfaces that the
+rest of the runtime is required to honor, and it also ships the
+`bijux-atlas-openapi` binary.
 
 ## What This Crate Owns
 

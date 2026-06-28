@@ -8,9 +8,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-model-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-model/latest/bijux_atlas_model/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-model` is the durable type boundary for Atlas. It owns the value
-objects that should mean the same thing across ingest, query, storage, API, and
-compatibility surfaces.
+`bijux-atlas-model` is the published durable type boundary for Atlas. It owns
+the value objects that should mean the same thing across ingest, query,
+storage, API, and compatibility surfaces.
 
 ## Choose This Crate When
 

@@ -6,16 +6,37 @@
 GFF3 and FASTA inputs into immutable query artifacts, stable APIs, and
 auditable operational evidence.**
 
-This repository ships three direct binaries, eleven published Rust crates, and
-one repository-only maintainer crate:
+This repository exposes three installed command surfaces, publishes eleven Rust
+crates to crates.io, and keeps one repository-only maintainer crate out of the
+public package registry.
 
-* `bijux-atlas`: the direct CLI binary, owned by `bijux-atlas-cli`,
-* `bijux-atlas-server`: the HTTP runtime server, owned by `bijux-atlas-server`,
-* `bijux-atlas-openapi`: the OpenAPI export surface, owned by `bijux-atlas-api`,
-* `bijux-atlas-runtime`: the canonical orchestration library crate,
-* `bijux-atlas`: the compatibility alias crate for the historical Rust import path,
-* `bijux-atlas-ops`: the published operational contracts crate for stack, load, observability, and release-support surfaces,
-* `bijux-atlas-dev`: the maintainer control-plane crate that stays repository-owned instead of shipping to crates.io.
+Installed commands:
+
+* `bijux-atlas`, owned by the published `bijux-atlas-cli` crate,
+* `bijux-atlas-server`, owned by the published `bijux-atlas-server` crate,
+* `bijux-atlas-openapi`, owned by the published `bijux-atlas-api` crate.
+
+Published crates:
+
+* `bijux-atlas-core`: runtime-independent primitives and invariants,
+* `bijux-atlas-model`: stable dataset and contract value types,
+* `bijux-atlas-query`: query parsing, planning, cursoring, and execution,
+* `bijux-atlas-ingest`: ingest normalization and artifact-build ownership,
+* `bijux-atlas-store`: immutable publication and storage-backend contracts,
+* `bijux-atlas-api`: API DTOs, OpenAPI ownership, and the `bijux-atlas-openapi` binary,
+* `bijux-atlas-runtime`: canonical orchestration library composition,
+* `bijux-atlas`: compatibility alias crate for the historical `bijux_atlas` Rust import path,
+* `bijux-atlas-cli`: direct owner of the installed `bijux-atlas` command,
+* `bijux-atlas-server`: direct owner of the installed `bijux-atlas-server` command,
+* `bijux-atlas-ops`: published operations-contract crate for stack, load, observability, and release support.
+
+Repository-only crate:
+
+* `bijux-atlas-dev`: maintainer control plane with `publish = false`.
+
+The repeated `bijux-atlas` name is intentional but easy to misread. The
+installed `bijux-atlas` command comes from `bijux-atlas-cli`, while the
+published `bijux-atlas` crate is a separate compatibility library alias.
 
 Atlas is built around one public promise: the same release should describe what
 was ingested, what was published, what can be queried, and what evidence
@@ -134,11 +155,11 @@ artifacts and then from immutable artifacts to stable delivery surfaces.
 The release line is strongest when it stays concrete about what is already
 real:
 
-* a runtime CLI named `bijux-atlas`,
-* a server binary named `bijux-atlas-server`,
-* an OpenAPI export binary named `bijux-atlas-openapi`,
-* eleven published crates that separate runtime, API, query, ingest, model, core, store, server, CLI, compatibility, and operations-contract ownership,
-* one repository-only crate, `bijux-atlas-dev`, that governs maintainer automation and release policy,
+* a runtime CLI named `bijux-atlas`, published through `bijux-atlas-cli`,
+* a server binary named `bijux-atlas-server`, published through `bijux-atlas-server`,
+* an OpenAPI export binary named `bijux-atlas-openapi`, published through `bijux-atlas-api`,
+* eleven published crates with explicit ownership split across core, model, query, ingest, store, API, runtime, compatibility, CLI, server, and operations contracts,
+* one repository-only crate, `bijux-atlas-dev`, with `publish = false` for maintainer automation and release policy,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
 
@@ -147,14 +168,16 @@ surfaces, not every internal implementation detail in the workspace.
 
 ```mermaid
 flowchart TD
-    Workspace[Repository workspace] --> Runtime[bijux-atlas crate]
+    Workspace[Repository workspace] --> Runtime[bijux-atlas-runtime crate]
     Workspace --> CLI[bijux-atlas-cli crate]
     Workspace --> ServerCrate[bijux-atlas-server crate]
     Workspace --> API[bijux-atlas-api crate]
+    Workspace --> Alias[bijux-atlas alias crate]
     Workspace --> ControlPlane[bijux-atlas-dev crate]
     CLI --> RuntimeCLI[bijux-atlas]
     ServerCrate --> Server[bijux-atlas-server]
     API --> OpenAPI[bijux-atlas-openapi]
+    Alias --> Compat[bijux_atlas import path]
     Workspace --> Docs[Numbered docs spine]
     Workspace --> Governance[configs and ops validation]
 ```
@@ -185,9 +208,9 @@ Start with the surface that matches the job in front of you:
 | `bijux-atlas-server` | `bijux-atlas-server` | direct HTTP runtime binary |
 | `bijux-atlas-openapi` | `bijux-atlas-api` | direct OpenAPI export binary |
 | `bijux-atlas-runtime` | `bijux-atlas-runtime` | canonical Rust orchestration crate |
-| `bijux-atlas` crate | `crates/bijux-atlas/` | compatibility alias for the historical Rust import path |
+| `bijux-atlas` crate | `crates/bijux-atlas/` | compatibility alias for the historical `bijux_atlas` Rust import path |
 | `bijux-atlas-ops` | `bijux-atlas-ops` | published operations-contract crate |
-| `bijux-atlas-dev` | `bijux-atlas-dev` | repository-only maintainer control plane |
+| `bijux-atlas-dev` | `bijux-atlas-dev` | repository-only maintainer control plane with `publish = false` |
 
 ## Crate Boundary Map
 

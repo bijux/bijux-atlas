@@ -11,6 +11,10 @@ governance, release planning, documentation checks, security validation,
 reporting, and maintainer workflows into owned Rust commands instead of
 disconnected shell glue.
 
+This crate is repository-only infrastructure. Its Cargo manifest sets
+`publish = false`, so it is not part of the crates.io release family even
+though it is central to how the repository is maintained.
+
 ## Choose This Crate When
 
 - you are changing repository law, docs, release metadata, or workflow policy

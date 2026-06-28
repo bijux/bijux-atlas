@@ -8,11 +8,15 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-bijux--atlas-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas` is the compatibility alias crate for the Atlas workspace.
+`bijux-atlas` is the published compatibility alias library crate for the Atlas
+workspace.
 
 Use this crate when you want the durable `bijux_atlas` import path while the
 canonical implementation stays split across `bijux-atlas-runtime` and the leaf
 owner crates.
+
+This crate does not install the `bijux-atlas` command. The installed command is
+owned by `bijux-atlas-cli`.
 
 ## What It Does
 

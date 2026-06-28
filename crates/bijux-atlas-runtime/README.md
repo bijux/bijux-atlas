@@ -8,16 +8,17 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-runtime-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-runtime/latest/bijux_atlas_runtime/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-runtime` is the canonical orchestration crate for Atlas. It pulls
-together ingest, query, store, API, cache, policy, and runtime configuration
-so the direct CLI and server crates can expose one coherent product.
+`bijux-atlas-runtime` is the canonical published orchestration library crate
+for Atlas. It pulls together ingest, query, store, API, cache, policy, and
+runtime configuration so the direct CLI and server crates can expose one
+coherent product.
 
 This crate is the right starting point if you are looking for:
 
 - GFF3 and FASTA ingest in Rust
 - immutable genome annotation dataset artifacts
 - gene and transcript query APIs
-- a Rust HTTP server plus OpenAPI export for genomic datasets
+- the composed runtime used by the Atlas server and OpenAPI export surfaces
 
 ## What This Crate Owns
 
@@ -33,7 +34,7 @@ This crate is the right starting point if you are looking for:
 - you want the central runtime view without going through the compatibility
   alias crate
 
-## What Ships
+## Related Shipped Surfaces
 
 - `bijux-atlas-cli`: end-user CLI owner for dataset, catalog, ingest, diff, garbage-collection,
   config, and OpenAPI workflows
@@ -52,8 +53,8 @@ repository owns the umbrella command runtime that can route Atlas under
 already installed in an environment.
 
 Use this crate when you want the canonical Atlas runtime and libraries
-directly.
-Use `bijux-cli` when you want a shared command root that can host Atlas alongside other Bijux tools.
+directly. Use `bijux-cli` when you want a shared command root that can host
+Atlas alongside other Bijux tools.
 
 ## What It Does Not Own
 

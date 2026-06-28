@@ -8,9 +8,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-query-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-query` owns the Atlas query language and execution boundary. It is
-where requests become plans, cursors, and SQLite-backed result sets with stable
-semantics.
+`bijux-atlas-query` is the published library crate that owns the Atlas query
+language and execution boundary. It is where requests become plans, cursors,
+and SQLite-backed result sets with stable semantics.
 
 ## Choose This Crate When
 

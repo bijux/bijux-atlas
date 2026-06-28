@@ -8,9 +8,14 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-cli-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-cli/latest/bijux_atlas_cli/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-cli` owns the installed `bijux-atlas` command. It is the direct
-user-facing entrypoint for browsing datasets, validating inputs, running
-ingest flows, exporting OpenAPI, and inspecting release state.
+`bijux-atlas-cli` is the published crate that owns the installed
+`bijux-atlas` command. It is the direct user-facing entrypoint for browsing
+datasets, validating inputs, running ingest flows, exporting OpenAPI, and
+inspecting release state.
+
+This is a different shipped surface from the published `bijux-atlas` crate.
+The command comes from `bijux-atlas-cli`; the `bijux-atlas` crate is the
+library compatibility alias.
 
 ## What This Crate Owns
 

@@ -8,10 +8,14 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-ops-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/)
 [![docs-operations](https://img.shields.io/badge/docs-operations-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-ops/)
 
-`bijux-atlas-ops` is the published operations-contract crate for Atlas. It
-holds the durable references and owned metadata that operators, release tools,
-and maintainer automation need for stack, Kubernetes, load, observability, and
-release-support surfaces.
+`bijux-atlas-ops` is the published operations-contract library crate for
+Atlas. It holds the durable references and owned metadata that operators,
+release tools, and maintainer automation need for stack, Kubernetes, load,
+observability, and release-support surfaces.
+
+It does not install an end-user command or a server process by itself. Its
+value is the contract surface that other Atlas crates and release workflows can
+consume without hard-coding repository topology.
 
 ## What This Crate Owns
 

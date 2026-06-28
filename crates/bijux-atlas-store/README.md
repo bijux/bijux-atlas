@@ -8,9 +8,9 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-store-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-store/latest/bijux_atlas_store/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas-store` owns Atlas publication and storage semantics. It defines
-how artifacts are laid out, locked, verified, and persisted across local and
-remote backends.
+`bijux-atlas-store` is the published library crate that owns Atlas publication
+and storage semantics. It defines how artifacts are laid out, locked,
+verified, and persisted across local and remote backends.
 
 ## Choose This Crate When
 
