@@ -446,13 +446,22 @@ pub fn verify_observability_runtime(
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use super::{build_operational_readiness_payload, render_slo_list_payload};
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("canonicalize repo root")
+    }
 
     #[test]
     fn render_slo_list_payload_reads_owned_contract_rows() {
-        let repo_root = std::path::Path::new("/Users/bijan/bijux/bijux-atlas");
+        let repo_root = repo_root();
 
-        let payload = render_slo_list_payload(repo_root).expect("slo list payload");
+        let payload = render_slo_list_payload(&repo_root).expect("slo list payload");
 
         assert_eq!(payload["text"], "observe slo list");
         assert!(payload["rows"]
