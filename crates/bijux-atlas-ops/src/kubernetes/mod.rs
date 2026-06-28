@@ -2,6 +2,7 @@
 
 pub mod access_guard;
 pub mod command_reports;
+pub mod commands;
 pub mod conformance;
 pub mod conformance_report;
 pub mod execution;

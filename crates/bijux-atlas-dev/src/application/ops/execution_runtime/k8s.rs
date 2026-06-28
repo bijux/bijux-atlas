@@ -4,16 +4,11 @@ use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, load_profiles, resolve_profile, run_id_or_default};
 use crate::ops_support::resolve_ops_root;
 use crate::{resolve_repo_root, OpsProcess};
-use bijux_atlas_ops::kubernetes::access_guard::ensure_namespace_guard;
-use bijux_atlas_ops::kubernetes::command_reports::{
-    k8s_plan_payload, run_k8s_apply_payload, run_k8s_logs_payload,
+use bijux_atlas_ops::kubernetes::commands::{
+    k8s_apply_command_payload, k8s_conformance_command_payload, k8s_logs_command_payload,
+    k8s_plan_command_payload, k8s_port_forward_command_payload, k8s_ports_command_payload,
+    k8s_wait_command_payload,
 };
-use bijux_atlas_ops::kubernetes::conformance::run_conformance_payload;
-use bijux_atlas_ops::kubernetes::port_forward::port_forward_payload;
-use bijux_atlas_ops::kubernetes::service_inventory::{
-    read_service_port_rows, service_port_payload,
-};
-use bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait_payload;
 use serde_json::Value;
 use std::fs;
 
@@ -35,11 +30,11 @@ pub(crate) fn run_ops_k8s_plan(common: &OpsCommonArgs) -> Result<(String, i32), 
             .map_err(|err| format!("failed to read {}: {err}", index_path.display()))?,
     )
     .map_err(|err| format!("failed to parse {}: {err}", index_path.display()))?;
-    let payload = k8s_plan_payload(
+    let payload = k8s_plan_command_payload(
         &profile.name,
         run_id.as_str(),
-        &render_path.display().to_string(),
-        &index_path.display().to_string(),
+        &render_path,
+        &index_path,
         index_json,
     );
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
@@ -71,23 +66,15 @@ pub(crate) fn run_ops_k8s_apply(
     let (render_path, _) = resolve_render_inputs(&repo_root, &run_id, &profile.name)
         .map_err(|e| e.to_stable_message())?;
     let process = OpsProcess::new(true);
-    if !dry_run {
-        ensure_namespace_guard(
-            &process,
-            &repo_root,
-            &profile.kind_profile,
-            common.force,
-            "bijux-atlas",
-        )?;
-    }
-    let payload = run_k8s_apply_payload(
+    let payload = k8s_apply_command_payload(
         &process,
         &repo_root,
         &profile.name,
+        &profile.kind_profile,
         run_id.as_str(),
-        "bijux-atlas",
-        &render_path.display().to_string(),
+        &render_path,
         dry_run,
+        common.force,
     )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
@@ -106,19 +93,13 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let process = OpsProcess::new(true);
-    ensure_namespace_guard(
+    let (payload, exit_code) = k8s_conformance_command_payload(
         &process,
         &repo_root,
         &profile.kind_profile,
-        common.force,
-        "bijux-atlas",
-    )?;
-    let (payload, exit_code) = run_conformance_payload(
-        &process,
-        &repo_root,
-        "bijux-atlas",
         run_id.as_str(),
         common.allow_write,
+        common.force,
     )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, exit_code))
@@ -136,15 +117,8 @@ pub(crate) fn run_ops_k8s_ports(common: &OpsCommonArgs) -> Result<(String, i32),
     let profile =
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let process = OpsProcess::new(true);
-    ensure_namespace_guard(
-        &process,
-        &repo_root,
-        &profile.kind_profile,
-        common.force,
-        "bijux-atlas",
-    )?;
-    let (rows, svc_event) = read_service_port_rows(&process, &repo_root, "bijux-atlas")?;
-    let payload = service_port_payload(rows, svc_event);
+    let payload =
+        k8s_ports_command_payload(&process, &repo_root, &profile.kind_profile, common.force)?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -162,20 +136,14 @@ pub(crate) fn run_ops_k8s_wait(args: &crate::cli::OpsK8sWaitArgs) -> Result<(Str
     let profile =
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let process = OpsProcess::new(true);
-    ensure_namespace_guard(
+    let (payload, exit_code) = k8s_wait_command_payload(
         &process,
         &repo_root,
         &profile.kind_profile,
-        common.force,
-        "bijux-atlas",
-    )?;
-    let (payload, exit_code) = run_readiness_wait_payload(
-        &process,
-        &repo_root,
-        "bijux-atlas",
         args.timeout_seconds,
         common.fail_fast,
-    );
+        common.force,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, exit_code))
 }
@@ -193,18 +161,18 @@ pub(crate) fn run_ops_k8s_logs(args: &crate::cli::OpsK8sLogsArgs) -> Result<(Str
     let profile =
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let process = OpsProcess::new(true);
-    ensure_namespace_guard(
-        &process,
-        &repo_root,
-        &profile.kind_profile,
-        common.force,
-        "bijux-atlas",
-    )?;
     let pod = args
         .pod
         .clone()
         .unwrap_or_else(|| "deployment/bijux-atlas".to_string());
-    let payload = run_k8s_logs_payload(&process, &repo_root, "bijux-atlas", &pod, args.tail)?;
+    let payload = k8s_logs_command_payload(
+        &process,
+        &repo_root,
+        &profile.kind_profile,
+        &pod,
+        args.tail,
+        common.force,
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -227,15 +195,15 @@ pub(crate) fn run_ops_k8s_port_forward(
     let profile =
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
     let process = OpsProcess::new(true);
-    ensure_namespace_guard(
+    let payload = k8s_port_forward_command_payload(
         &process,
         &repo_root,
         &profile.kind_profile,
+        &args.resource,
+        args.local_port,
+        args.remote_port,
         common.force,
-        "bijux-atlas",
     )?;
-    let payload = port_forward_payload(&args.resource, args.local_port, args.remote_port);
-    let _ = repo_root;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
