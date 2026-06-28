@@ -14,18 +14,18 @@ use bijux_atlas_ops::inventory::scenario_reporting::{
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
 use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::lifecycle::simulation::{
-    reset_stack_state_payload, scenario_evidence_artifacts, stack_down_payload,
-    write_deterministic_scenario_evidence,
+    cleanup_stack_state_payload, reset_stack_state_payload, scenario_evidence_artifacts,
+    stack_down_payload, write_deterministic_scenario_evidence,
 };
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
-use bijux_atlas_ops::workspace::ops_artifacts::{build_cleanup_payload, ops_artifact_report_path};
+use bijux_atlas_ops::workspace::ops_artifacts::ops_artifact_report_path;
 use bijux_atlas_ops::workspace::pins_sync::{
     build_pins_update_payload, sync_pins_from_generated_stack_manifest,
 };
 
 pub(super) fn dispatch_execution(
     command: OpsCommand,
-    debug: bool,
+    _debug: bool,
 ) -> Result<(String, i32), String> {
     match command {
         OpsCommand::Scenario { command } => match command {
@@ -174,27 +174,21 @@ pub(super) fn dispatch_execution(
             Ok((rendered, exit_code))
         }
         OpsCommand::Cleanup(common) => {
-            let cleanup_common = common.clone();
-            let (down_detail, down_code) = if cleanup_common.allow_subprocess {
-                let down_common = cleanup_common.clone();
-                match run_ops_command(true, debug, OpsCommand::Down(down_common)) {
-                    0 => ("down ok".to_string(), 0),
-                    code => (format!("down exit={code}"), code),
-                }
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let process = OpsProcess::new(common.allow_subprocess);
+            let (payload, exit_code) = if common.allow_subprocess {
+                cleanup_stack_state_payload(
+                    Some(&process),
+                    &repo_root,
+                    common.ops_root.clone(),
+                    common.profile.as_deref(),
+                    common.force,
+                )?
             } else {
-                ("down skipped (subprocess disabled)".to_string(), 0)
+                cleanup_stack_state_payload::<OpsProcess>(None, &repo_root, None, None, false)?
             };
-            let clean_code =
-                run_ops_command(true, debug, OpsCommand::Clean(cleanup_common.clone()));
-            let clean_detail = if clean_code == 0 {
-                "clean ok".to_string()
-            } else {
-                format!("clean exit={clean_code}")
-            };
-            let payload = build_cleanup_payload(down_detail, down_code, clean_detail, clean_code);
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            let errors = payload["summary"]["errors"].as_u64().unwrap_or(0);
-            Ok((rendered, if errors == 0 { 0 } else { 1 }))
+            Ok((rendered, exit_code))
         }
         OpsCommand::Reset(args) => {
             let common = &args.common;
