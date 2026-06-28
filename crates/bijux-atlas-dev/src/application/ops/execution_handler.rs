@@ -2,6 +2,7 @@
 
 use super::*;
 use bijux_atlas_ops::inventory::pins_index::build_pins_index_payload;
+use bijux_atlas_ops::inventory::resilience_report::build_resilience_report_payload;
 use bijux_atlas_ops::inventory::runbook_index::build_runbook_index_payload;
 use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
@@ -897,43 +898,7 @@ pub(super) fn dispatch_execution(
             OpsGenerateCommand::ResilienceReport { check, common } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
-                let scenarios_path = repo_root.join("ops/e2e/scenarios/scenarios.json");
-                let failure_catalog_path =
-                    repo_root.join("ops/e2e/scenarios/failure/injection-catalog.json");
-                let scenarios: serde_json::Value = serde_json::from_str(
-                    &std::fs::read_to_string(&scenarios_path).map_err(|err| {
-                        format!("failed to read {}: {err}", scenarios_path.display())
-                    })?,
-                )
-                .map_err(|err| format!("failed to parse {}: {err}", scenarios_path.display()))?;
-                let failure_catalog: serde_json::Value =
-                    serde_json::from_str(&std::fs::read_to_string(&failure_catalog_path).map_err(
-                        |err| format!("failed to read {}: {err}", failure_catalog_path.display()),
-                    )?)
-                    .map_err(|err| {
-                        format!("failed to parse {}: {err}", failure_catalog_path.display())
-                    })?;
-                let resilience_scenarios = scenarios
-                    .get("scenarios")
-                    .and_then(|v| v.as_array())
-                    .into_iter()
-                    .flatten()
-                    .filter(|v| v.get("intent").and_then(|i| i.as_str()) == Some("resilience"))
-                    .cloned()
-                    .collect::<Vec<_>>();
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "kind": "ops_resilience_report",
-                    "run_id": run_id.as_str(),
-                    "catalog_path": "ops/e2e/scenarios/failure/injection-catalog.json",
-                    "resilience_scenarios": resilience_scenarios,
-                    "failure_mechanism_count": failure_catalog.get("mechanisms").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
-                    "summary": {
-                        "total_resilience_scenarios": resilience_scenarios.len(),
-                        "errors": 0,
-                        "warnings": 0
-                    }
-                });
+                let payload = build_resilience_report_payload(&repo_root, run_id.as_str())?;
                 if check {
                     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                     return Ok((rendered, ops_exit::PASS));
