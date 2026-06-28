@@ -14,7 +14,7 @@ use bijux_atlas_ops::inventory::scenario_reporting::{
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
 use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::lifecycle::simulation::{
-    scenario_evidence_artifacts, write_deterministic_scenario_evidence,
+    scenario_evidence_artifacts, stack_down_payload, write_deterministic_scenario_evidence,
 };
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
 use bijux_atlas_ops::workspace::ops_artifacts::{
@@ -157,44 +157,16 @@ pub(super) fn dispatch_execution(
                 );
             }
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
-                .map_err(|e| e.to_stable_message())?;
-            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
-            profiles.sort_by(|a, b| a.name.cmp(&b.name));
-            let profile = resolve_profile(common.profile.clone(), &profiles)
-                .map_err(|e| e.to_stable_message())?;
             let process = OpsProcess::new(common.allow_subprocess);
-            let expected_context = format!("kind-{}", profile.kind_profile);
-            let current_context = process
-                .run_subprocess(
-                    "kubectl",
-                    &["config".to_string(), "current-context".to_string()],
-                    &repo_root,
-                )
-                .map(|(stdout, _)| stdout.trim().to_string())
-                .unwrap_or_default();
-            if current_context != expected_context && !common.force {
-                return Err(OpsCommandError::Effect(format!(
-                    "context guard failed: expected `{expected_context}` got `{current_context}`; pass --force to override"
-                ))
-                .to_stable_message());
-            }
-            let args = vec![
-                "delete".to_string(),
-                "cluster".to_string(),
-                "--name".to_string(),
-                profile.kind_profile.clone(),
-            ];
-            let _ = process
-                .run_subprocess("kind", &args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
-            let text = format!("ops down deleted kind cluster `{}`", profile.kind_profile);
-            let rendered = emit_payload(
-                common.format,
-                common.out.clone(),
-                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
+            let (payload, exit_code) = stack_down_payload(
+                &process,
+                &repo_root,
+                common.ops_root.clone(),
+                common.profile.as_deref(),
+                common.force,
             )?;
-            Ok((rendered, 0))
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, exit_code))
         }
         OpsCommand::Clean(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
