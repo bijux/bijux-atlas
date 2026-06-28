@@ -2,8 +2,8 @@
 
 mod commands;
 
+pub(crate) use self::commands::ensure_simulation_context;
 pub(crate) use self::commands::*;
-pub(crate) use self::commands::{ensure_simulation_context, run_smoke_checks};
 pub(crate) use bijux_atlas_ops::kubernetes::schema_validation::record_kubeconform_result;
 pub(crate) use bijux_atlas_ops::lifecycle::evidence_artifacts::{
     build_lifecycle_evidence_bundle, collect_redacted_logs, collect_scan_reports,

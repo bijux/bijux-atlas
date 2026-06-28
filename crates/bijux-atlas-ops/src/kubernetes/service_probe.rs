@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use std::io::{Read, Write};
 use std::net::{Shutdown, TcpStream};
 use std::path::Path;
@@ -93,6 +94,54 @@ pub trait ServicePortForwardRunner {
     ) -> Result<Self::Session, String>;
 }
 
+struct KubectlPortForwardSession {
+    child: std::process::Child,
+}
+
+impl PortForwardSession for KubectlPortForwardSession {
+    fn kill_and_wait(&mut self) {
+        let _ = self.child.kill();
+        let _ = self.child.wait();
+    }
+}
+
+struct KubectlServicePortForwardRunner;
+
+impl ServicePortForwardRunner for KubectlServicePortForwardRunner {
+    type Session = KubectlPortForwardSession;
+
+    fn start_service_port_forward(
+        &self,
+        repo_root: &Path,
+        namespace: &str,
+        local_port: u16,
+        remote_port: u16,
+    ) -> Result<Self::Session, String> {
+        let child = std::process::Command::new("kubectl")
+            .args([
+                "port-forward",
+                "-n",
+                namespace,
+                "--address",
+                "127.0.0.1",
+                "service/bijux-atlas",
+                &format!("{local_port}:{remote_port}"),
+            ])
+            .current_dir(repo_root)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
+        Ok(KubectlPortForwardSession { child })
+    }
+}
+
+fn body_sha256(body: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(body.as_bytes());
+    hex::encode(hasher.finalize())
+}
+
 pub fn run_service_smoke_checks(
     runner: &impl ServicePortForwardRunner,
     repo_root: &Path,
@@ -111,6 +160,20 @@ pub fn run_service_smoke_checks(
     })();
     session.kill_and_wait();
     checks
+}
+
+pub fn run_kubectl_service_smoke_checks(
+    repo_root: &Path,
+    namespace: &str,
+    local_port: u16,
+) -> Result<Vec<Value>, String> {
+    run_service_smoke_checks(
+        &KubectlServicePortForwardRunner,
+        repo_root,
+        namespace,
+        local_port,
+        body_sha256,
+    )
 }
 
 #[cfg(test)]
@@ -250,5 +313,15 @@ mod tests {
         assert_eq!(rows[1]["path"], "/readyz");
         assert_eq!(rows[2]["path"], "/v1/version");
         assert!(closed.load(Ordering::SeqCst));
+    }
+
+    #[test]
+    fn kubectl_body_sha256_matches_sha256_digest() {
+        let digest = body_sha256("atlas");
+
+        assert_eq!(
+            digest,
+            "7c82602500857aa6ed0cf38c4c3e4ec645bdcaa82c00b9155eb08be100c778a9"
+        );
     }
 }

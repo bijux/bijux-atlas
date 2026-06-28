@@ -75,7 +75,9 @@ pub(crate) fn run_ops_helm_upgrade(
             args.release.timeout_seconds,
         );
     let smoke_rows = if wait_errors.is_empty() {
-        run_smoke_checks(&repo_root, &namespace, 18080)?
+        bijux_atlas_ops::kubernetes::service_probe::run_kubectl_service_smoke_checks(
+            &repo_root, &namespace, 18080,
+        )?
     } else {
         Vec::new()
     };
@@ -304,7 +306,9 @@ pub(crate) fn run_ops_helm_rollback(
             args.release.timeout_seconds,
         );
     let smoke_rows = if wait_errors.is_empty() {
-        run_smoke_checks(&repo_root, &namespace, 18080)?
+        bijux_atlas_ops::kubernetes::service_probe::run_kubectl_service_smoke_checks(
+            &repo_root, &namespace, 18080,
+        )?
     } else {
         Vec::new()
     };
@@ -497,7 +501,11 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
         &profile,
         args.namespace.as_deref(),
     );
-    let checks = run_smoke_checks(&repo_root, &namespace, args.local_port)?;
+    let checks = bijux_atlas_ops::kubernetes::service_probe::run_kubectl_service_smoke_checks(
+        &repo_root,
+        &namespace,
+        args.local_port,
+    )?;
     let errors = checks
         .iter()
         .filter(|row| row["status"].as_u64().unwrap_or(0) != 200)

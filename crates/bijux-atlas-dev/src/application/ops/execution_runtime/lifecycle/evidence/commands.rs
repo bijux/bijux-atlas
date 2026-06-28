@@ -3,7 +3,7 @@
 
 use super::*;
 use crate::cli::OpsCommonArgs;
-use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
+use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::{resolve_repo_root, OpsProcess, RunId};
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
@@ -1265,63 +1265,5 @@ pub(crate) fn emit_debug_bundle_report(
         run_id.as_str(),
         &format!("ops-debug-bundle-{category}.json"),
         &payload,
-    )
-}
-
-struct KubectlPortForwardSession {
-    child: std::process::Child,
-}
-
-impl bijux_atlas_ops::kubernetes::service_probe::PortForwardSession for KubectlPortForwardSession {
-    fn kill_and_wait(&mut self) {
-        let _ = self.child.kill();
-        let _ = self.child.wait();
-    }
-}
-
-struct KubectlPortForwardRunner;
-
-impl bijux_atlas_ops::kubernetes::service_probe::ServicePortForwardRunner
-    for KubectlPortForwardRunner
-{
-    type Session = KubectlPortForwardSession;
-
-    fn start_service_port_forward(
-        &self,
-        repo_root: &std::path::Path,
-        namespace: &str,
-        local_port: u16,
-        remote_port: u16,
-    ) -> Result<Self::Session, String> {
-        let child = std::process::Command::new("kubectl")
-            .args([
-                "port-forward",
-                "-n",
-                namespace,
-                "--address",
-                "127.0.0.1",
-                "service/bijux-atlas",
-                &format!("{local_port}:{remote_port}"),
-            ])
-            .current_dir(repo_root)
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .spawn()
-            .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
-        Ok(KubectlPortForwardSession { child })
-    }
-}
-
-pub(crate) fn run_smoke_checks(
-    repo_root: &std::path::Path,
-    namespace: &str,
-    local_port: u16,
-) -> Result<Vec<serde_json::Value>, String> {
-    bijux_atlas_ops::kubernetes::service_probe::run_service_smoke_checks(
-        &KubectlPortForwardRunner,
-        repo_root,
-        namespace,
-        local_port,
-        sha256_hex,
     )
 }
