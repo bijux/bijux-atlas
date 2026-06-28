@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           mkdir -p artifacts/compatibility-matrix
           set +e
-          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json > artifacts/compatibility-matrix/docs-validate.json
+          cargo run --locked -q -p bijux-atlas-dev -- docs validate --format json > artifacts/compatibility-matrix/docs-validate.json
           docs_exit=$?
           set -e
           if [[ "${docs_exit}" -ne 0 ]]; then
@@ -47,7 +47,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- release ops compatibility-matrix --allow-write --format json > artifacts/compatibility-matrix/release-ops-compatibility-matrix.json
+          cargo run --locked -q -p bijux-atlas-dev -- release ops compatibility-matrix --allow-write --format json > artifacts/compatibility-matrix/release-ops-compatibility-matrix.json
       - name: Detect matrix diff
         id: matrix-diff
         shell: bash

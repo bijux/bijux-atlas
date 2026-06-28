@@ -67,6 +67,10 @@ recipes.
 These support targets are intentionally outside the curated public surface but still belong to this
 domain.
 
+- `fmt`, `lint`, `audit`, `test`, and `test-all`: cargo-native repository gates aligned with the
+  governed Rust toolchain and artifact contract.
+- `test-all-frozen`, `lint-frozen`, and `audit-frozen`: detached pinned-ref gate launchers that
+  materialize the exact source snapshot plus reports under `artifacts/<sha>/`.
 - `makes-target-list`: Regenerate `makes/target-list.json` for workflows, audits, and governance
   checks.
 - Internal `_internal-*` helpers in `makes/entrypoints.mk`: support CI drift detection and focused

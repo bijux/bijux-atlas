@@ -1,0 +1,78 @@
+[package]
+name = "bijux-atlas-dev"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Development control-plane binary for bijux-atlas"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["bijux", "control-plane", "cli", "devops", "policy"]
+publish = false
+
+[features]
+kind_integration = []
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml = "0.9"
+semver.workspace = true
+sha2 = "0.11"
+hex = "0.4"
+tar = "0.4"
+regex = "1"
+toml = "1.1"
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+bijux-atlas-ops = { workspace = true }
+bijux-atlas-runtime = { workspace = true }
+
+[build-dependencies]
+semver.workspace = true
+
+[dev-dependencies]
+assert_cmd = "2"
+bijux-cli = { workspace = true }
+tempfile = "=3.27.0"
+criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "bijux-atlas-dev"
+path = "src/main.rs"
+
+[[bench]]
+name = "inventory_scan"
+harness = false
+
+[[bench]]
+name = "report_codec"
+harness = false
+
+[[bench]]
+name = "policy_eval"
+harness = false
+
+[[bench]]
+name = "core_engine"
+harness = false
+
+[[bench]]
+name = "governance"
+harness = false
+
+[[bench]]
+name = "load"
+harness = false
+
+[[bench]]
+name = "authentication"
+harness = false
+
+[[bench]]
+name = "authorization"
+harness = false

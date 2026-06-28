@@ -9,7 +9,7 @@
     "mitigations": "ops/security/threat-model/mitigations.yaml"
   },
   "verification": {
-    "command": "bijux-dev-atlas security threats verify --format json",
+    "command": "bijux-atlas-dev security threats verify --format json",
     "coverage_report": "artifacts/security/security-threat-coverage-report.json",
     "status": "ok",
     "coverage_percent": 100.0

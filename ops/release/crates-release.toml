@@ -6,11 +6,11 @@ allow = [
   "bijux-atlas",
 ]
 deny = [
-  "bijux-dev-atlas",
+  "bijux-atlas-dev",
 ]
 
 [roles]
-"bijux-dev-atlas" = "developer-tool-private"
+"bijux-atlas-dev" = "developer-tool-private"
 "bijux-atlas" = "atlas-platform"
 
 [metadata_requirements]

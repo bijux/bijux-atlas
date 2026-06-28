@@ -14,12 +14,12 @@ around them. Its job is to help maintainers tell the difference between a suppor
 an internal orchestration detail, and a generated discovery surface.
 
 The installed maintainer namespace is `bijux dev atlas ...`.
-The direct binary remains `bijux-dev-atlas`.
+The direct binary remains `bijux-atlas-dev`.
 
 ## Primary Entrypoints
 
 - `bijux dev atlas`: the canonical installed repository automation namespace
-- `bijux-dev-atlas`: the direct repository automation binary
+- `bijux-atlas-dev`: the direct repository automation binary
 - `make ci-fast`: fast feedback lane wrapper
 - `make ci-pr`: pull-request lane wrapper
 - `make ci-nightly`: broader nightly lane wrapper
@@ -69,10 +69,10 @@ Use these commands when you need to inspect what the control plane knows before 
 ```bash
 bijux dev atlas list --format json
 bijux dev atlas check list
-cargo run -q -p bijux-dev-atlas -- list --format json
-cargo run -q -p bijux-dev-atlas -- describe --help
-cargo run -q -p bijux-dev-atlas -- check list
-cargo run -q -p bijux-dev-atlas -- suites list --format json
+cargo run -q -p bijux-atlas-dev -- list --format json
+cargo run -q -p bijux-atlas-dev -- describe --help
+cargo run -q -p bijux-atlas-dev -- check list
+cargo run -q -p bijux-atlas-dev -- suites list --format json
 ```
 
 ## Main Command Families
@@ -125,7 +125,7 @@ The current top-level `reports` catalog includes report families such as `closur
 
 When a maintainer-facing command family changes, update the command surface as a coordinated unit:
 
-- the clap surface in [`crates/bijux-dev-atlas/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/mod.rs:1)
+- the clap surface in [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1)
 - the governed registry in [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1)
 - the owning reference or guide page under [`docs/bijux-atlas-dev`](/Users/bijan/bijux/bijux-atlas/docs/bijux-atlas-dev)
 - any generated help, reports, or inventory artifacts that expose the changed family

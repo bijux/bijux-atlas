@@ -6,6 +6,6 @@
     "artifacts/security/security-vulnerability-scan.json",
     "artifacts/security/security-github-actions.json"
   ],
-  "command": "bijux-dev-atlas security dependency-audit --format json",
+  "command": "bijux-atlas-dev security dependency-audit --format json",
   "status": "ok"
 }

@@ -5,14 +5,16 @@ on:
     paths:
       - "ops/load/**"
       - "docs/04-operations/performance-and-load.md"
-      - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
+      - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
+      - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
       - ".github/workflows/load-system-ci.yml"
   push:
     branches: [main]
     paths:
       - "ops/load/**"
       - "docs/04-operations/performance-and-load.md"
-      - "crates/bijux-dev-atlas/tests/load_suite_coverage.rs"
+      - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
+      - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
       - ".github/workflows/load-system-ci.yml"
 
 jobs:
@@ -39,11 +41,11 @@ jobs:
 
       - name: Validate load comparison via control-plane command
         run: |
-          cargo run --locked -p bijux-dev-atlas -- perf diff ops/load/baselines/system-load-baseline.json ops/load/baselines/system-load-baseline.json --format json > /tmp/load-diff.json
+          cargo run --locked -p bijux-atlas-dev -- perf diff ops/load/baselines/system-load-baseline.json ops/load/baselines/system-load-baseline.json --format json > /tmp/load-diff.json
           jq . /tmp/load-diff.json > /dev/null
 
-      - name: Run load suite coverage regression test
-        run: cargo test -p bijux-dev-atlas --test load_suite_coverage --locked -- --nocapture
+      - name: Run load suite manifest regression test
+        run: cargo test -p bijux-atlas-ops --test load_suite_manifest --locked -- --nocapture
 
-      - name: Run load reproducibility regression test
-        run: cargo test -p bijux-dev-atlas --test load_reproducibility_regression --locked -- --nocapture
+      - name: Run load baseline reproducibility regression test
+        run: cargo test -p bijux-atlas-ops --test load_baseline_assets --locked -- --nocapture

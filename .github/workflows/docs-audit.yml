@@ -70,17 +70,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json
+          cargo run --locked -q -p bijux-atlas-dev -- docs lint --format json
       - name: Run docs external link check
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- docs external-links --allow-network --format json
+          cargo run --locked -q -p bijux-atlas-dev -- docs external-links --allow-network --format json
       - name: Check generated docs references
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- docs reference check --allow-subprocess --format json
+          cargo run --locked -q -p bijux-atlas-dev -- docs reference check --allow-subprocess --format json
       - name: Run docs strict build
         shell: bash
         run: |
@@ -88,7 +88,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-audit"
           mkdir -p "${report_root}" "${logs_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- ci verify docs-preview --allow-subprocess --allow-write --format json > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
           test -f "artifacts/docs/site/index.html"
           cp -R artifacts/docs/site "artifacts/${RUN_ID}/site-preview"
       - name: Run docs audit
@@ -98,7 +98,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-audit"
           mkdir -p "${report_root}" "${logs_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- docs validate --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
           printf '{"schema_version":1,"kind":"docs_audit_report_v1","status":"ok"}\n' > "${report_root}/docs-audit.json"
           cp docs/_internal/generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
           printf "- lane: docs-audit\n- report: %s\n- coverage: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \

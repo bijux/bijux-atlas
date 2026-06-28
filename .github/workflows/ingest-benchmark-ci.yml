@@ -3,10 +3,11 @@ name: ingest-benchmark-ci
 on:
   pull_request:
     paths:
-      - "crates/bijux-atlas/src/ingest/**"
-      - "crates/bijux-atlas/tests/workflows/ingest/**"
-      - "crates/bijux-atlas/tests/workflows/ingest.rs"
-      - "crates/bijux-atlas/benches/ingest/**"
+      - "crates/bijux-atlas-ingest/src/**"
+      - "crates/bijux-atlas-ingest/tests/**"
+      - "crates/bijux-atlas-ingest/benches/**"
+      - "crates/bijux-atlas-ingest/Cargo.toml"
+      - "crates/bijux-atlas-runtime/Cargo.toml"
       - ".github/workflows/ingest-benchmark-ci.yml"
   workflow_dispatch:
 
@@ -19,6 +20,6 @@ jobs:
         with:
           toolchain: 1.86.0
       - name: Build ingest benchmark executables
-        run: cargo bench -p bijux-atlas --bench ingest_throughput --features bench-ingest-throughput --no-run --locked
+        run: cargo bench -p bijux-atlas-ingest --bench ingest_throughput --no-run --locked
       - name: Run ingest benchmark regression fixture tests
-        run: cargo test -p bijux-atlas --test workflows_ingest ingest_benchmark_regression --locked -- --nocapture
+        run: cargo test -p bijux-atlas-ingest --test ingest_workflows ingest_benchmark_regression --locked -- --nocapture

@@ -1,0 +1,67 @@
+[package]
+name = "bijux-atlas-query"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Atlas query parsing, planning, cursoring, and SQLite execution"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-query/latest/bijux_atlas_query/"
+readme = "README.md"
+categories = ["database", "science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
+keywords = ["bioinformatics", "genomics", "query", "sqlite", "planner"]
+
+[dependencies]
+base64 = "0.22"
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-model = { workspace = true }
+hmac = "0.13"
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.11"
+unicode-normalization = "0.1"
+
+[dev-dependencies]
+criterion = "0.8"
+tempfile = "=3.27.0"
+toml = "1.1"
+
+[[test]]
+name = "query_contracts"
+path = "tests/query_contracts.rs"
+
+[[bench]]
+name = "query_cache"
+path = "benches/cache.rs"
+harness = false
+
+[[bench]]
+name = "query_concurrency"
+path = "benches/concurrency.rs"
+harness = false
+
+[[bench]]
+name = "query_patterns"
+path = "benches/patterns.rs"
+harness = false
+
+[[bench]]
+name = "query_planner_and_serialization"
+path = "benches/planner_and_serialization.rs"
+harness = false
+
+[[bench]]
+name = "query_routing_and_index"
+path = "benches/routing_and_index.rs"
+harness = false
+
+[[bench]]
+name = "query_stages"
+path = "benches/stages.rs"
+harness = false
+
+[lib]
+path = "src/lib.rs"

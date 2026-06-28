@@ -1,4 +1,4 @@
-# Scope: docs wrapper targets delegated to bijux-dev-atlas docs surfaces.
+# Scope: docs wrapper targets delegated to bijux-atlas-dev docs surfaces.
 # Public targets: docs, docs-doctor
 SHELL := /bin/sh
 BIJUX ?= bijux

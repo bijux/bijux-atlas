@@ -146,7 +146,7 @@
     "ops/schema/stack/service-dependency-contract.schema.json",
     "ops/schema/stack/version-manifest.schema.json"
   ],
-  "generated_by": "bijux-dev-atlas ops schema regen-index",
+  "generated_by": "bijux-atlas-dev ops schema regen-index",
   "schema_version": 1,
   "source": "ops/schema"
 }

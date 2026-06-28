@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "measurement_id": "governance-enforcement-performance",
-  "benchmark": "cargo bench -p bijux-dev-atlas --bench governance",
+  "benchmark": "cargo bench -p bijux-atlas-dev --bench governance",
   "target_metrics": [
     "governance_registry_load",
     "governance_registry_evaluate"

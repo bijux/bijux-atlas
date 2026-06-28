@@ -3,138 +3,6 @@
   "registry_id": "checks-registry",
   "checks": [
     {
-      "check_id": "CHECK-RUSTFMT-001",
-      "summary": "Verify Rust source formatting stays aligned with the pinned rustfmt policy.",
-      "owner": "team:atlas-platform",
-      "mode": "pure",
-      "inputs": [
-        "workspace source files",
-        "configs/sources/repository/rust-tooling/rustfmt.toml"
-      ],
-      "outputs": [
-        "format validation status",
-        "fmt stderr log"
-      ],
-      "commands": [
-        "make fmt"
-      ],
-      "report_ids": [
-        "check-rustfmt"
-      ],
-      "reports": [
-        "CHECK-RUSTFMT-001.check-rustfmt.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "blocker",
-      "stage": "local",
-      "runtime_cost": "low",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "format",
-        "rust"
-      ],
-      "group": "rust",
-      "overlaps_with": [],
-      "cpu_hint": "light",
-      "mem_hint": "low"
-    },
-    {
-      "check_id": "CHECK-RUST-CLIPPY-001",
-      "summary": "Verify workspace lint cleanliness with warnings denied under the governed clippy policy.",
-      "owner": "team:atlas-platform",
-      "mode": "effect",
-      "inputs": [
-        "workspace crates",
-        "configs/rust/clippy.toml"
-      ],
-      "outputs": [
-        "clippy diagnostics",
-        "lint report"
-      ],
-      "commands": [
-        "make lint"
-      ],
-      "report_ids": [
-        "check-clippy"
-      ],
-      "reports": [
-        "CHECK-RUST-CLIPPY-001.check-clippy.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "blocker",
-      "stage": "pr",
-      "runtime_cost": "medium",
-      "determinism": "bounded",
-      "since_version": "0.1.0",
-      "tags": [
-        "lint",
-        "rust"
-      ],
-      "group": "rust",
-      "overlaps_with": [],
-      "cpu_hint": "moderate",
-      "mem_hint": "medium"
-    },
-    {
-      "check_id": "CHECK-LINT-POLICY-001",
-      "summary": "Verify governed root-domain lint checks stay green through the control plane.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "ops/inventory/registry.toml",
-        "root policy surfaces"
-      ],
-      "outputs": [
-        "root lint check report"
-      ],
-      "commands": [
-        "make lint-policy-enforce"
-      ],
-      "report_ids": [
-        "check-config-format"
-      ],
-      "reports": [
-        "CHECK-LINT-POLICY-001.check-config-format.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "blocker",
-      "stage": "pr",
-      "runtime_cost": "low",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "governance",
-        "lint",
-        "policy"
-      ],
-      "group": "governance",
-      "overlaps_with": [],
-      "cpu_hint": "light",
-      "mem_hint": "low"
-    },
-    {
       "check_id": "CHECK-CONFIGS-LINT-001",
       "summary": "Verify configuration surfaces satisfy the fast config lint lane.",
       "owner": "team:atlas-governance",
@@ -177,6 +45,180 @@
       "overlaps_with": [],
       "cpu_hint": "light",
       "mem_hint": "low"
+    },
+    {
+      "check_id": "CHECK-CONTRACTS-CONFIGS-REQUIRED-001",
+      "summary": "Verify the required configuration contract-backed check suite remains green.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "inputs": [
+        "configs contracts",
+        "check registry"
+      ],
+      "outputs": [
+        "configs required suite report"
+      ],
+      "commands": [
+        "make contracts-configs-required"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-CONTRACTS-CONFIGS-REQUIRED-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "major",
+      "stage": "pr",
+      "runtime_cost": "medium",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "configs",
+        "contracts"
+      ],
+      "group": "configs",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
+    },
+    {
+      "check_id": "CHECK-CONTRACTS-DOCS-REQUIRED-001",
+      "summary": "Verify the required documentation contract-backed check suite remains green.",
+      "owner": "team:atlas-docs",
+      "mode": "pure",
+      "inputs": [
+        "docs contracts",
+        "check registry"
+      ],
+      "outputs": [
+        "docs required suite report"
+      ],
+      "commands": [
+        "make contracts-docs-required"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-CONTRACTS-DOCS-REQUIRED-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "major",
+      "stage": "pr",
+      "runtime_cost": "medium",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "contracts",
+        "docs"
+      ],
+      "group": "docs",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
+    },
+    {
+      "check_id": "CHECK-CONTRACTS-MAKE-REQUIRED-001",
+      "summary": "Verify the required Make contract-backed check suite remains green.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "inputs": [
+        "make contracts",
+        "check registry"
+      ],
+      "outputs": [
+        "make required suite report"
+      ],
+      "commands": [
+        "make contracts-make-required"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-CONTRACTS-MAKE-REQUIRED-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "major",
+      "stage": "pr",
+      "runtime_cost": "medium",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "contracts",
+        "governance",
+        "make"
+      ],
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
+    },
+    {
+      "check_id": "CHECK-CONTRACTS-REPO-REQUIRED-001",
+      "summary": "Verify the required repository contract-backed check suite remains green.",
+      "owner": "team:atlas-governance",
+      "mode": "effect",
+      "inputs": [
+        "repository policy surfaces",
+        "git metadata"
+      ],
+      "outputs": [
+        "repo required suite report"
+      ],
+      "commands": [
+        "bijux dev atlas check run --suite repo_required --include-internal --include-slow --allow-git --format json"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-CONTRACTS-REPO-REQUIRED-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "bijux-atlas-dev"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "blocker",
+      "stage": "pr",
+      "runtime_cost": "medium",
+      "determinism": "bounded",
+      "since_version": "0.1.0",
+      "tags": [
+        "contracts",
+        "governance",
+        "repo"
+      ],
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "heavy",
+      "mem_hint": "high"
     },
     {
       "check_id": "CHECK-DOCS-VALIDATE-001",
@@ -268,26 +310,25 @@
       "mem_hint": "high"
     },
     {
-      "check_id": "CHECK-SUPPLY-CHAIN-DENY-001",
-      "summary": "Verify cargo-deny policy compliance for dependency and license policy controls.",
-      "owner": "team:atlas-security",
-      "mode": "effect",
+      "check_id": "CHECK-LINT-POLICY-001",
+      "summary": "Verify governed root-domain lint checks stay green through the control plane.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
       "inputs": [
-        "Cargo.lock",
-        "configs/rust/deny.toml"
+        "ops/inventory/registry.toml",
+        "root policy surfaces"
       ],
       "outputs": [
-        "cargo deny output",
-        "supply chain report"
+        "root lint check report"
       ],
       "commands": [
-        "make audit"
+        "make lint-policy-enforce"
       ],
       "report_ids": [
-        "check-deps"
+        "check-config-format"
       ],
       "reports": [
-        "CHECK-SUPPLY-CHAIN-DENY-001.check-deps.json"
+        "CHECK-LINT-POLICY-001.check-config-format.json"
       ],
       "retries": 0,
       "requires_tools": [
@@ -298,15 +339,237 @@
         "checks"
       ],
       "severity": "blocker",
-      "stage": "merge",
+      "stage": "pr",
+      "runtime_cost": "low",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "governance",
+        "lint",
+        "policy"
+      ],
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
+    },
+    {
+      "check_id": "CHECK-RUST-CLIPPY-001",
+      "summary": "Verify workspace lint cleanliness with warnings denied under the governed clippy policy.",
+      "owner": "team:atlas-platform",
+      "mode": "effect",
+      "inputs": [
+        "workspace crates",
+        "configs/rust/clippy.toml"
+      ],
+      "outputs": [
+        "clippy diagnostics",
+        "lint report"
+      ],
+      "commands": [
+        "make lint"
+      ],
+      "report_ids": [
+        "check-clippy"
+      ],
+      "reports": [
+        "CHECK-RUST-CLIPPY-001.check-clippy.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "blocker",
+      "stage": "pr",
       "runtime_cost": "medium",
       "determinism": "bounded",
       "since_version": "0.1.0",
       "tags": [
-        "dependencies",
-        "security"
+        "lint",
+        "rust"
       ],
-      "group": "security",
+      "group": "rust",
+      "overlaps_with": [],
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
+    },
+    {
+      "check_id": "CHECK-RUSTFMT-001",
+      "summary": "Verify Rust source formatting stays aligned with the pinned rustfmt policy.",
+      "owner": "team:atlas-platform",
+      "mode": "pure",
+      "inputs": [
+        "workspace source files",
+        "configs/sources/repository/rust-tooling/rustfmt.toml"
+      ],
+      "outputs": [
+        "format validation status",
+        "fmt stderr log"
+      ],
+      "commands": [
+        "make fmt"
+      ],
+      "report_ids": [
+        "check-rustfmt"
+      ],
+      "reports": [
+        "CHECK-RUSTFMT-001.check-rustfmt.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "blocker",
+      "stage": "local",
+      "runtime_cost": "low",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "format",
+        "rust"
+      ],
+      "group": "rust",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
+    },
+    {
+      "check_id": "CHECK-SUITE-CI-FAST-001",
+      "summary": "Verify the fast public control-plane check suite stays green for short feedback loops.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "inputs": [
+        "ops/inventory/registry.toml",
+        "selected builtin checks"
+      ],
+      "outputs": [
+        "check suite report"
+      ],
+      "commands": [
+        "make ci-fast"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-SUITE-CI-FAST-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "major",
+      "stage": "local",
+      "runtime_cost": "low",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "control_plane",
+        "governance",
+        "suite"
+      ],
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "light",
+      "mem_hint": "low"
+    },
+    {
+      "check_id": "CHECK-SUITE-CI-NIGHTLY-001",
+      "summary": "Verify the nightly control-plane check suite remains green for broad regression coverage.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "inputs": [
+        "ops/inventory/registry.toml",
+        "selected builtin checks"
+      ],
+      "outputs": [
+        "check suite report"
+      ],
+      "commands": [
+        "make ci-nightly"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-SUITE-CI-NIGHTLY-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "major",
+      "stage": "merge",
+      "runtime_cost": "high",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "control_plane",
+        "governance",
+        "nightly",
+        "suite"
+      ],
+      "group": "governance",
+      "overlaps_with": [],
+      "cpu_hint": "heavy",
+      "mem_hint": "high"
+    },
+    {
+      "check_id": "CHECK-SUITE-CI-PR-001",
+      "summary": "Verify the pull-request control-plane check suite remains green for merge blocking validation.",
+      "owner": "team:atlas-governance",
+      "mode": "pure",
+      "inputs": [
+        "ops/inventory/registry.toml",
+        "selected builtin checks"
+      ],
+      "outputs": [
+        "check suite report"
+      ],
+      "commands": [
+        "make ci-pr"
+      ],
+      "report_ids": [
+        "check-suite-summary"
+      ],
+      "reports": [
+        "CHECK-SUITE-CI-PR-001.check-suite-summary.json"
+      ],
+      "retries": 0,
+      "requires_tools": [
+        "make"
+      ],
+      "missing_tools_policy": "fail",
+      "suite_membership": [
+        "checks"
+      ],
+      "severity": "blocker",
+      "stage": "pr",
+      "runtime_cost": "medium",
+      "determinism": "strict",
+      "since_version": "0.1.0",
+      "tags": [
+        "control_plane",
+        "governance",
+        "suite"
+      ],
+      "group": "governance",
       "overlaps_with": [],
       "cpu_hint": "moderate",
       "mem_hint": "medium"
@@ -356,311 +619,48 @@
       "mem_hint": "medium"
     },
     {
-      "check_id": "CHECK-SUITE-CI-FAST-001",
-      "summary": "Verify the fast public control-plane check suite stays green for short feedback loops.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "ops/inventory/registry.toml",
-        "selected builtin checks"
-      ],
-      "outputs": [
-        "check suite report"
-      ],
-      "commands": [
-        "make ci-fast"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-SUITE-CI-FAST-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "major",
-      "stage": "local",
-      "runtime_cost": "low",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "control_plane",
-        "governance",
-        "suite"
-      ],
-      "group": "governance",
-      "overlaps_with": [],
-      "cpu_hint": "light",
-      "mem_hint": "low"
-    },
-    {
-      "check_id": "CHECK-SUITE-CI-PR-001",
-      "summary": "Verify the pull-request control-plane check suite remains green for merge blocking validation.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "ops/inventory/registry.toml",
-        "selected builtin checks"
-      ],
-      "outputs": [
-        "check suite report"
-      ],
-      "commands": [
-        "make ci-pr"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-SUITE-CI-PR-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "blocker",
-      "stage": "pr",
-      "runtime_cost": "medium",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "control_plane",
-        "governance",
-        "suite"
-      ],
-      "group": "governance",
-      "overlaps_with": [],
-      "cpu_hint": "moderate",
-      "mem_hint": "medium"
-    },
-    {
-      "check_id": "CHECK-SUITE-CI-NIGHTLY-001",
-      "summary": "Verify the nightly control-plane check suite remains green for broad regression coverage.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "ops/inventory/registry.toml",
-        "selected builtin checks"
-      ],
-      "outputs": [
-        "check suite report"
-      ],
-      "commands": [
-        "make ci-nightly"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-SUITE-CI-NIGHTLY-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "major",
-      "stage": "merge",
-      "runtime_cost": "high",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "control_plane",
-        "governance",
-        "nightly",
-        "suite"
-      ],
-      "group": "governance",
-      "overlaps_with": [],
-      "cpu_hint": "heavy",
-      "mem_hint": "high"
-    },
-    {
-      "check_id": "CHECK-CONTRACTS-DOCS-REQUIRED-001",
-      "summary": "Verify the required documentation contract-backed check suite remains green.",
-      "owner": "team:atlas-docs",
-      "mode": "pure",
-      "inputs": [
-        "docs contracts",
-        "check registry"
-      ],
-      "outputs": [
-        "docs required suite report"
-      ],
-      "commands": [
-        "make contracts-docs-required"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-CONTRACTS-DOCS-REQUIRED-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "major",
-      "stage": "pr",
-      "runtime_cost": "medium",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "contracts",
-        "docs"
-      ],
-      "group": "docs",
-      "overlaps_with": [],
-      "cpu_hint": "moderate",
-      "mem_hint": "medium"
-    },
-    {
-      "check_id": "CHECK-CONTRACTS-CONFIGS-REQUIRED-001",
-      "summary": "Verify the required configuration contract-backed check suite remains green.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "configs contracts",
-        "check registry"
-      ],
-      "outputs": [
-        "configs required suite report"
-      ],
-      "commands": [
-        "make contracts-configs-required"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-CONTRACTS-CONFIGS-REQUIRED-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "major",
-      "stage": "pr",
-      "runtime_cost": "medium",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "configs",
-        "contracts"
-      ],
-      "group": "configs",
-      "overlaps_with": [],
-      "cpu_hint": "moderate",
-      "mem_hint": "medium"
-    },
-    {
-      "check_id": "CHECK-CONTRACTS-MAKE-REQUIRED-001",
-      "summary": "Verify the required Make contract-backed check suite remains green.",
-      "owner": "team:atlas-governance",
-      "mode": "pure",
-      "inputs": [
-        "make contracts",
-        "check registry"
-      ],
-      "outputs": [
-        "make required suite report"
-      ],
-      "commands": [
-        "make contracts-make-required"
-      ],
-      "report_ids": [
-        "check-suite-summary"
-      ],
-      "reports": [
-        "CHECK-CONTRACTS-MAKE-REQUIRED-001.check-suite-summary.json"
-      ],
-      "retries": 0,
-      "requires_tools": [
-        "make"
-      ],
-      "missing_tools_policy": "fail",
-      "suite_membership": [
-        "checks"
-      ],
-      "severity": "major",
-      "stage": "pr",
-      "runtime_cost": "medium",
-      "determinism": "strict",
-      "since_version": "0.1.0",
-      "tags": [
-        "contracts",
-        "governance",
-        "make"
-      ],
-      "group": "governance",
-      "overlaps_with": [],
-      "cpu_hint": "moderate",
-      "mem_hint": "medium"
-    },
-    {
-      "check_id": "CHECK-CONTRACTS-REPO-REQUIRED-001",
-      "summary": "Verify the required repository contract-backed check suite remains green.",
-      "owner": "team:atlas-governance",
+      "check_id": "CHECK-SUPPLY-CHAIN-DENY-001",
+      "summary": "Verify cargo-deny policy compliance for dependency and license policy controls.",
+      "owner": "team:atlas-security",
       "mode": "effect",
       "inputs": [
-        "repository policy surfaces",
-        "git metadata"
+        "Cargo.lock",
+        "configs/rust/deny.toml"
       ],
       "outputs": [
-        "repo required suite report"
+        "cargo deny output",
+        "supply chain report"
       ],
       "commands": [
-        "bijux dev atlas check run --suite repo_required --include-internal --include-slow --allow-git --format json"
+        "make audit"
       ],
       "report_ids": [
-        "check-suite-summary"
+        "check-deps"
       ],
       "reports": [
-        "CHECK-CONTRACTS-REPO-REQUIRED-001.check-suite-summary.json"
+        "CHECK-SUPPLY-CHAIN-DENY-001.check-deps.json"
       ],
       "retries": 0,
       "requires_tools": [
-        "bijux-dev-atlas"
+        "make"
       ],
       "missing_tools_policy": "fail",
       "suite_membership": [
         "checks"
       ],
       "severity": "blocker",
-      "stage": "pr",
+      "stage": "merge",
       "runtime_cost": "medium",
       "determinism": "bounded",
       "since_version": "0.1.0",
       "tags": [
-        "contracts",
-        "governance",
-        "repo"
+        "dependencies",
+        "security"
       ],
-      "group": "governance",
+      "group": "security",
       "overlaps_with": [],
-      "cpu_hint": "heavy",
-      "mem_hint": "high"
+      "cpu_hint": "moderate",
+      "mem_hint": "medium"
     }
   ]
 }

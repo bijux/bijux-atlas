@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # Command Routing
 
-`bijux-dev-atlas` routes commands by domain so docs, release, governance, and
+`bijux-atlas-dev` routes commands by domain so docs, release, governance, and
 ops surfaces stay explicit instead of collapsing into one command blob.
 
 ## Routing Model
@@ -33,7 +33,7 @@ explain it.
 
 ## Repository Anchors
 
-- [`crates/bijux-dev-atlas/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/mod.rs:1) defines the top-level command families
+- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the top-level command families
 - [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed command families
 
 ## Main Takeaway

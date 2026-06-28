@@ -40,7 +40,7 @@ delivery lanes, and workflow ownership.
 - workspace structure and contributor-facing repository law:
   `docs/bijux-atlas-dev/workspace/*`
 - automation behavior and direct control-plane implementation:
-  `crates/bijux-dev-atlas/` and `make` wrappers in `makes/`
+  `crates/bijux-atlas-dev/` and `make` wrappers in `makes/`
 - governance rules and policy sources:
   `configs/sources/governance/`
 - delivery behavior and publication lanes:

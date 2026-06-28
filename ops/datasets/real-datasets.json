@@ -25,7 +25,7 @@
       "source_ref": "110/homo_sapiens/GRCh38",
       "review_status": "reviewed-placeholder",
       "derived_from": "110/homo_sapiens/GRCh38",
-      "transform": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/datasets/fixtures/derive_release_111.py",
+      "transform": "crates/bijux-atlas-dev/src/bijux-atlas-dev/commands/ops/datasets/fixtures/derive_release_111.py",
       "files": {
         "gff3": "genes.gff3",
         "fasta": "genome.fa",

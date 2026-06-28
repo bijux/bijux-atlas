@@ -37,10 +37,10 @@ on next.
 Use the `reports` command family for catalog and validation tasks:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- reports list --format json
-cargo run -q -p bijux-dev-atlas -- reports index --format json
-cargo run -q -p bijux-dev-atlas -- reports progress --format json
-cargo run -q -p bijux-dev-atlas -- reports validate --dir artifacts
+cargo run -q -p bijux-atlas-dev -- reports list --format json
+cargo run -q -p bijux-atlas-dev -- reports index --format json
+cargo run -q -p bijux-atlas-dev -- reports progress --format json
+cargo run -q -p bijux-atlas-dev -- reports validate --dir artifacts
 ```
 
 These commands belong together because the reports surface is both discoverable and governed. Readers
@@ -49,10 +49,10 @@ documented command family.
 
 ## Repository Anchors
 
-- command dispatch for the `reports` family lives in [`src/interfaces/cli/dispatch.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/dispatch.rs:951)
+- command dispatch for the `reports` family lives in [`src/interfaces/cli/dispatch.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/dispatch.rs:951)
 - contract schemas for governed report families live under [`configs/schemas/contracts/reports/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts/reports)
-- docs-oriented report generation is implemented in [`src/docs/site_output.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/docs/site_output.rs:1)
-- ops-oriented report generation is implemented in [`src/ops/helm_env.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/ops/helm_env.rs:1) and [`src/ops/profiles_matrix.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/ops/profiles_matrix.rs:1)
+- docs-oriented report generation is implemented in [`src/docs/site_output.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/docs/site_output.rs:1)
+- ops-oriented report generation is implemented in [`src/ops/helm_env.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/ops/helm_env.rs:1) and [`src/ops/profiles_matrix.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/ops/profiles_matrix.rs:1)
 
 ## Shared Report Header
 

@@ -32,9 +32,9 @@ uses.
 ## Repository Anchors
 
 - governance sources live under [`configs/sources/governance/`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance)
-- governance state and exception loading are handled in [`src/application/governance.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/application/governance.rs:354)
-- control-plane policy rendering is wired in [`src/application/control_plane.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/application/control_plane.rs:82)
-- the dev-atlas policy loader and validator live in [`src/policies/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/policies)
+- governance state and exception loading are handled in [`src/application/governance.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/application/governance.rs:354)
+- control-plane policy rendering is wired in [`src/application/control_plane.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/application/control_plane.rs:82)
+- the dev-atlas policy loader and validator live in [`src/policies/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/policies)
 
 ## Main Takeaway
 

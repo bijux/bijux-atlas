@@ -34,7 +34,7 @@ flowchart LR
     Inputs[Source inputs] --> Product[Product workflow]
     Product --> Store[Published store and catalog]
     Store --> Runtime[Runtime server]
-    Maintainers[Maintainers] --> ControlPlane[bijux-dev-atlas]
+    Maintainers[Maintainers] --> ControlPlane[bijux-atlas-dev]
     ControlPlane --> Evidence[Checks reports and governance evidence]
     Evidence --> Release[Release or remediation decisions]
 ```
@@ -78,7 +78,7 @@ The architecture tries to keep these responsibilities separate:
 The repository also keeps a separate governance path:
 
 - `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface
-- `bijux-dev-atlas` is the repository-facing control plane
+- `bijux-atlas-dev` is the repository-facing control plane
 - the repository control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior
 
 ## Why This Separation Matters
@@ -109,8 +109,8 @@ most. For crate layout and deeper runtime structure, keep reading:
 ## Where This Picture Lives In The Repo
 
 - ingest and build concerns: `crates/bijux-atlas/src/domain/ingest/`
-- dataset and query semantics: `crates/bijux-atlas/src/domain/dataset/` and
-  `crates/bijux-atlas/src/domain/query/`
+- dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and
+  `crates/bijux-atlas-query/src/`
 - runtime assembly: `crates/bijux-atlas/src/runtime/` and `src/app/`
 - interfaces: `crates/bijux-atlas/src/adapters/inbound/`
 - contract and generated reference surfaces:

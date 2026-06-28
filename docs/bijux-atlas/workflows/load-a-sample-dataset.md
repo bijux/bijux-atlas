@@ -38,7 +38,7 @@ Run from the repository root:
 mkdir -p artifacts/getting-started/tiny-build
 mkdir -p artifacts/getting-started/tiny-store
 
-cargo run -p bijux-atlas --bin bijux-atlas -- ingest \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
   --gff3 crates/bijux-atlas/tests/fixtures/tiny/genes.gff3 \
   --fasta crates/bijux-atlas/tests/fixtures/tiny/genome.fa \
   --fai crates/bijux-atlas/tests/fixtures/tiny/genome.fa.fai \
@@ -67,7 +67,7 @@ behavior.
 ## Validate the Built Dataset Root
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset validate \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset validate \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
@@ -77,7 +77,7 @@ cargo run -p bijux-atlas --bin bijux-atlas -- dataset validate \
 For a deeper pass:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset verify \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
@@ -104,14 +104,14 @@ that boundary.
 The build root is validated dataset state. The server expects a serving store with published artifacts and catalog state.
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- dataset publish \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset publish \
   --source-root artifacts/getting-started/tiny-build \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \
   --assembly GRCh38
 
-cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog promote \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \

@@ -4,9 +4,9 @@ on:
   pull_request:
     paths:
       - "ops/security/threat-model/**"
-      - "crates/bijux-dev-atlas/src/application/security.rs"
-      - "crates/bijux-dev-atlas/src/domains/security/**"
-      - "crates/bijux-dev-atlas/src/interfaces/cli/mod.rs"
+      - "crates/bijux-atlas-dev/src/application/security.rs"
+      - "crates/bijux-atlas-dev/src/domains/security/**"
+      - "crates/bijux-atlas-dev/src/interfaces/cli/mod.rs"
       - "docs/04-operations/security-operations.md"
   workflow_dispatch:
 
@@ -21,7 +21,7 @@ jobs:
           toolchain: 1.86.0
       - name: Threat model command verification
         run: |
-          cargo run --locked -p bijux-dev-atlas -- security threats verify --format json
+          cargo run --locked -p bijux-atlas-dev -- security threats verify --format json
       - name: Threat model governance tests
         run: |
-          cargo test --locked -p bijux-dev-atlas threat_model_governance_contracts -- --nocapture
+          cargo test --locked -p bijux-atlas-dev threat_model_governance_contracts -- --nocapture

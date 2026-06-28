@@ -31,7 +31,7 @@ logic, to evidence output, to a blocking or advisory decision.
 ## Repository Anchors
 
 - enforcement rule sources live under [`configs/sources/governance/governance/enforcement/`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/enforcement)
-- the governance enforcement reference code lives in [`src/reference/governance_enforcement.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/reference/governance_enforcement.rs:1)
+- the governance enforcement reference code lives in [`src/reference/governance_enforcement.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/reference/governance_enforcement.rs:1)
 - governance and control-plane application logic consume those rule sets through the maintainer automation surface
 
 ## Main Takeaway

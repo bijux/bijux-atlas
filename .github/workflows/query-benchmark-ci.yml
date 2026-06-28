@@ -3,14 +3,16 @@ name: Query Benchmark CI
 on:
   pull_request:
     paths:
-      - "crates/bijux-atlas/src/domain/query/**"
-      - "crates/bijux-atlas/benches/query/**"
+      - "crates/bijux-atlas-query/src/**"
+      - "crates/bijux-atlas-query/benches/**"
+      - "crates/bijux-atlas-query/Cargo.toml"
       - ".github/workflows/query-benchmark-ci.yml"
   push:
     branches: [main]
     paths:
-      - "crates/bijux-atlas/src/domain/query/**"
-      - "crates/bijux-atlas/benches/query/**"
+      - "crates/bijux-atlas-query/src/**"
+      - "crates/bijux-atlas-query/benches/**"
+      - "crates/bijux-atlas-query/Cargo.toml"
       - ".github/workflows/query-benchmark-ci.yml"
 
 jobs:
@@ -24,6 +26,6 @@ jobs:
         with:
           toolchain: 1.86.0
       - name: Build query benchmark executables
-        run: cargo bench -p bijux-atlas --bench query_patterns --no-run --locked
+        run: cargo bench -p bijux-atlas-query --bench query_patterns --no-run --locked
       - name: Run query benchmark regression fixture tests
-        run: cargo test -p bijux-atlas --lib benchmark_threshold_sanity_non_regression --locked -- --nocapture
+        run: cargo test -p bijux-atlas-query --lib benchmark_threshold_sanity_non_regression --locked -- --nocapture

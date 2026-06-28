@@ -12,7 +12,7 @@ last_reviewed: 2026-03-15
 Atlas has two stable command identities:
 
 - runtime commands through `bijux atlas ...` or the direct `bijux-atlas` binary
-- repository-governance commands through `bijux dev atlas ...` or the direct `bijux-dev-atlas` binary
+- repository-governance commands through `bijux dev atlas ...` or the direct `bijux-atlas-dev` binary
 
 The fastest reliable way to start with Atlas is still to run it from the
 workspace with Cargo. That avoids installation drift while you are learning the
@@ -53,7 +53,7 @@ cargo install --locked bijux-atlas
 
 ```bash
 bijux install bijux-atlas
-bijux install bijux-dev-atlas
+bijux install bijux-atlas-dev
 ```
 
 If you are working from a repository checkout, you can skip installation entirely and use `cargo run`.
@@ -65,7 +65,7 @@ version.
 ## Step 1: Verify the Runtime CLI Entrypoint
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- --help
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
 bijux-atlas --help
 bijux atlas --help
 ```
@@ -79,9 +79,9 @@ getting-started flow.
 ## Step 2: Verify Runtime, Server, and Maintainer Surfaces
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- config --help
-cargo run -p bijux-atlas --bin bijux-atlas-server -- --help
-cargo run -p bijux-dev-atlas -- --help
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --help
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
+cargo run -p bijux-atlas-dev -- --help
 bijux dev atlas --help
 ```
 
@@ -115,8 +115,8 @@ docs assume one workspace root, committed fixtures, and disposable outputs under
 ## Step 4: Sanity-Check Structured Output
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- config --canonical --json
-cargo run -p bijux-dev-atlas -- list --format json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --canonical --json
+cargo run -p bijux-atlas-dev -- list --format json
 ```
 
 These are good first checks because they exercise structured-output paths

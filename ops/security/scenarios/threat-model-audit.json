@@ -4,15 +4,15 @@
   "steps": [
     {
       "name": "verify threat registry",
-      "command": "bijux-dev-atlas security threats verify --format json"
+      "command": "bijux-atlas-dev security threats verify --format json"
     },
     {
       "name": "list threat entries",
-      "command": "bijux-dev-atlas security threats list --format json"
+      "command": "bijux-atlas-dev security threats list --format json"
     },
     {
       "name": "inspect critical threat",
-      "command": "bijux-dev-atlas security threats explain SEC-THREAT-RUNTIME-SPOOF --format json"
+      "command": "bijux-atlas-dev security threats explain SEC-THREAT-RUNTIME-SPOOF --format json"
     }
   ],
   "evidence": [

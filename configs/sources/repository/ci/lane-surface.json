@@ -13,7 +13,7 @@
         {
           "id": "repo-required",
           "kind": "suite",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- check run --suite repo_required --include-internal --include-slow --allow-git --format json",
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- check run --suite repo_required --include-internal --include-slow --allow-git --format json",
           "suite": "repo_required"
         }
       ],
@@ -36,7 +36,7 @@
         {
           "id": "workflow-policy",
           "kind": "workflow-policy",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify workflow-policy --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- ci verify workflow-policy --format json"
         }
       ],
       "reports": [
@@ -52,17 +52,17 @@
         {
           "id": "docs-lint",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- docs lint --format json"
         },
         {
           "id": "docs-preview",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- ci verify docs-preview --allow-subprocess --allow-write --format json"
         },
         {
           "id": "docs-validate",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- docs validate --format json"
         }
       ],
       "reports": [
@@ -78,17 +78,17 @@
         {
           "id": "docs-lint",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs lint --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- docs lint --format json"
         },
         {
           "id": "docs-preview",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify docs-preview --allow-subprocess --allow-write --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- ci verify docs-preview --allow-subprocess --allow-write --format json"
         },
         {
           "id": "docs-validate",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- docs validate --format json"
         }
       ],
       "reports": [
@@ -120,12 +120,12 @@
         {
           "id": "release-candidate-preflight",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify release-candidate --allow-git --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- ci verify release-candidate --allow-git --format json"
         },
         {
           "id": "release-check",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- release check --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- release check --format json"
         }
       ],
       "reports": [
@@ -141,7 +141,7 @@
         {
           "id": "dependency-lock-verify",
           "kind": "command",
-          "command": "cargo run --locked -q -p bijux-dev-atlas -- ci verify dependency-lock --allow-git --format json"
+          "command": "cargo run --locked -q -p bijux-atlas-dev -- ci verify dependency-lock --allow-git --format json"
         }
       ],
       "reports": [

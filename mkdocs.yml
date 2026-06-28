@@ -28,7 +28,7 @@ plugins:
       enabled: !ENV [ENABLE_SOCIAL_CARDS, false]
       cache_dir: artifacts/docs/.cache/social
   - redirects:
-      # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-dev-atlas docs redirects sync --allow-write
+      # redirect_maps generated from configs/sources/repository/docs/redirects.json; run bijux-atlas-dev docs redirects sync --allow-write
       redirect_maps:
         01-introduction/boundaries-and-non-goals.md: bijux-atlas/foundations/boundaries-and-non-goals.md
         01-introduction/core-concepts.md: bijux-atlas/foundations/core-concepts.md
@@ -107,7 +107,7 @@ plugins:
         08-contracts/runtime-config-contracts.md: bijux-atlas/contracts/runtime-config-contracts.md
         08-contracts/structured-output-contracts.md: bijux-atlas/contracts/structured-output-contracts.md
         contracts/compatibility.md: bijux-atlas/contracts/ownership-and-versioning.md
-        maintainer/packages/bijux-dev-atlas/index.md: bijux-atlas-dev/index.md
+        maintainer/packages/bijux-atlas-dev/index.md: bijux-atlas-dev/index.md
         repository/packages/index.md: bijux-atlas/index.md
         root/compatibility-policy.md: bijux-atlas/contracts/ownership-and-versioning.md
         runtime/index.md: bijux-atlas/index.md

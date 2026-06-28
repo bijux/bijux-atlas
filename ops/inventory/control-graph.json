@@ -77,7 +77,7 @@
     {
       "id": "artifact.runtime.dev_atlas_cli",
       "type": "artifact",
-      "path": "crates/bijux-dev-atlas/src/lib.rs",
+      "path": "crates/bijux-atlas-dev/src/lib.rs",
       "consumer": "ops.checks.inventory_contract_integrity",
       "lifecycle": "authoritative"
     },

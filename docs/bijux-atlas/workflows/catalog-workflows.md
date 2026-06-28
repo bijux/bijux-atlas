@@ -57,7 +57,7 @@ For most users, `catalog promote` is the important day-to-day action after a dat
 Promote a published dataset into the catalog:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog promote \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \
@@ -67,7 +67,7 @@ cargo run -p bijux-atlas --bin bijux-atlas -- catalog promote \
 Remove it again if needed:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- catalog rollback \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog rollback \
   --store-root artifacts/getting-started/tiny-store \
   --release 110 \
   --species homo_sapiens \

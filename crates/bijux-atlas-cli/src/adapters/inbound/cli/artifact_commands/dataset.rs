@@ -1,0 +1,720 @@
+// SPDX-License-Identifier: Apache-2.0
+
+use super::*;
+use bijux_atlas_runtime::domain::policy::load_policy_from_workspace;
+
+pub(crate) fn validate_dataset(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    deep: bool,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
+
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    manifest.validate_strict().map_err(|e| e.to_string())?;
+
+    check_sha(&paths.gff3, &manifest.checksums.gff3_sha256)?;
+    check_sha(&paths.fasta, &manifest.checksums.fasta_sha256)?;
+    check_sha(&paths.fai, &manifest.checksums.fai_sha256)?;
+    check_sha(&paths.sqlite, &manifest.checksums.sqlite_sha256)?;
+
+    let sqlite_bytes = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
+    if !sqlite_bytes.starts_with(b"SQLite format 3\0") {
+        return Err("sqlite artifact does not start with SQLite header".to_string());
+    }
+
+    if manifest.stats.gene_count == 0 {
+        return Err("manifest gene_count must be > 0".to_string());
+    }
+    validate_canonical_evidence(&paths.derived_dir, &manifest)?;
+    validate_sqlite_contract(&paths.sqlite)?;
+    validate_shard_catalog_and_indexes(&paths.derived_dir)?;
+    if !deep {
+        validate_dataset_qc_thresholds(&root, &dataset)?;
+    }
+    if deep {
+        let lock_path = paths.derived_dir.join("manifest.lock");
+        let lock_raw = fs::read(&lock_path)
+            .map_err(|_| format!("manifest.lock missing: {}", lock_path.display()))?;
+        let lock: ManifestLock = serde_json::from_slice(&lock_raw).map_err(|e| e.to_string())?;
+        lock.validate(manifest_raw.as_bytes(), &sqlite_bytes)?;
+
+        let actual_signature = compute_dataset_signature_from_sqlite(&paths.sqlite)?;
+        if manifest.dataset_signature_sha256.is_empty() {
+            return Err(
+                "manifest dataset_signature_sha256 is empty; cannot deep-verify".to_string(),
+            );
+        }
+        if actual_signature != manifest.dataset_signature_sha256 {
+            return Err(format!(
+                "dataset signature mismatch: manifest={} actual={}",
+                manifest.dataset_signature_sha256, actual_signature
+            ));
+        }
+        if manifest.derived_column_origins.is_empty() {
+            return Err("manifest derived_column_origins must not be empty".to_string());
+        }
+        enforce_publish_gates(&root, &dataset, &manifest)?;
+    }
+
+    let command_name = if deep {
+        "atlas dataset verify"
+    } else {
+        "atlas dataset validate"
+    };
+    let payload = json!({
+        "command": command_name,
+        "status": "ok",
+        "deep": deep,
+        "identity": {
+            "release_id": manifest.identity.release_id,
+            "canonical_metadata_sha256": manifest.identity.canonical_metadata_sha256,
+            "canonical_query_semantic_sha256": manifest.canonical_query_semantic_sha256,
+            "canonical_lineage_sha256": manifest.canonical_lineage_sha256
+        }
+    });
+    if output_mode.json {
+        println!(
+            "{}",
+            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+        );
+    } else {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
+        );
+    }
+    Ok(())
+}
+
+pub(crate) fn validate_dataset_evidence(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
+    let manifest_raw = fs::read_to_string(&paths.manifest).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&manifest_raw).map_err(|e| e.to_string())?;
+    manifest.validate_strict().map_err(|e| e.to_string())?;
+
+    for path in [
+        &paths.anomaly_report,
+        &paths.anomaly_summary,
+        &paths.qc_report,
+        &paths.source_facts,
+        &paths.build_metadata,
+        &paths.dataset_stats,
+        &paths.scientific_profile,
+        &paths.artifact_inventory,
+        &paths.evidence_bundle,
+    ] {
+        if !path.exists() {
+            return Err(format!("evidence artifact missing: {}", path.display()));
+        }
+    }
+
+    let bundle_raw = fs::read_to_string(&paths.evidence_bundle).map_err(|e| e.to_string())?;
+    let bundle_json: serde_json::Value =
+        serde_json::from_str(&bundle_raw).map_err(|e| e.to_string())?;
+    let files = bundle_json
+        .get("files")
+        .and_then(serde_json::Value::as_object)
+        .ok_or_else(|| "evidence bundle is missing files map".to_string())?;
+
+    let mut verified = std::collections::BTreeMap::<String, String>::new();
+    for rel in files.keys() {
+        let absolute = paths.dataset_root.join(rel);
+        let raw = fs::read(&absolute).map_err(|e| {
+            format!(
+                "evidence bundle references missing artifact {}: {e}",
+                absolute.display()
+            )
+        })?;
+        verified.insert(rel.to_string(), sha256_hex(&raw));
+    }
+    let payload = json!({
+        "schema_version": 1,
+        "dataset": dataset,
+        "release_id": manifest.identity.release_id,
+        "files": verified
+    });
+    let payload_bytes = super::super::canonical_json::bytes(&payload)?;
+    let computed_bundle_sha256 = sha256_hex(&payload_bytes);
+    let declared_bundle_sha256 = bundle_json
+        .get("bundle_sha256")
+        .and_then(serde_json::Value::as_str)
+        .ok_or_else(|| "evidence bundle is missing bundle_sha256".to_string())?;
+    if manifest.evidence_bundle_sha256.trim().is_empty() {
+        return Err("manifest evidence_bundle_sha256 is empty".to_string());
+    }
+    if manifest.evidence_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "manifest evidence bundle hash mismatch: manifest={} bundle={}",
+            manifest.evidence_bundle_sha256, declared_bundle_sha256
+        ));
+    }
+    for (rel, declared_hash) in files {
+        let declared = declared_hash
+            .as_str()
+            .ok_or_else(|| format!("invalid declared hash for bundle artifact {rel}"))?;
+        let computed = verified
+            .get(rel)
+            .ok_or_else(|| format!("bundle artifact missing from verification map: {rel}"))?;
+        if declared != computed {
+            return Err(format!(
+                "artifact hash mismatch for {rel}: declared={} computed={}",
+                declared, computed
+            ));
+        }
+    }
+    if computed_bundle_sha256 != declared_bundle_sha256 {
+        return Err(format!(
+            "evidence bundle hash mismatch: declared={} computed={}",
+            declared_bundle_sha256, computed_bundle_sha256
+        ));
+    }
+
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas dataset evidence-verify",
+            "status":"ok",
+            "dataset": dataset.canonical_string(),
+            "files_verified": verified.len(),
+            "bundle_sha256": computed_bundle_sha256
+        }),
+    )
+}
+
+fn validate_canonical_evidence(
+    derived_dir: &Path,
+    manifest: &ArtifactManifest,
+) -> Result<(), String> {
+    if manifest.canonical_model_schema_version == 0 {
+        return Ok(());
+    }
+    let summary_path = derived_dir.join("canonical_summary.json");
+    let features_path = derived_dir.join("canonical_features.json");
+    let summary_raw = fs::read_to_string(&summary_path)
+        .map_err(|e| format!("missing canonical summary {}: {e}", summary_path.display()))?;
+    let summary: serde_json::Value = serde_json::from_str(&summary_raw)
+        .map_err(|e| format!("invalid canonical summary: {e}"))?;
+    let semantic = summary
+        .pointer("/hashes/query_semantic_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    let lineage = summary
+        .pointer("/hashes/lineage_sensitive_sha256")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    if semantic != manifest.canonical_query_semantic_sha256 {
+        return Err(format!(
+            "canonical query semantic hash mismatch: manifest={} summary={}",
+            manifest.canonical_query_semantic_sha256, semantic
+        ));
+    }
+    if lineage != manifest.canonical_lineage_sha256 {
+        return Err(format!(
+            "canonical lineage hash mismatch: manifest={} summary={}",
+            manifest.canonical_lineage_sha256, lineage
+        ));
+    }
+    if !features_path.exists() {
+        return Err(format!(
+            "missing canonical features artifact: {}",
+            features_path.display()
+        ));
+    }
+    Ok(())
+}
+
+fn validate_dataset_qc_thresholds(root: &Path, dataset: &DatasetId) -> Result<(), String> {
+    let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
+    let thresholds_path =
+        workspace.join("configs/sources/operations/ops/dataset-qc-thresholds.v1.json");
+    let paths = bijux_atlas_model::dataset::artifact_paths(root, dataset);
+    let qc_report = paths.derived_dir.join("qc.json");
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("dataset validate failed: {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds_path).map_err(|e| {
+        format!(
+            "dataset validate failed: {}: {e}",
+            thresholds_path.display()
+        )
+    })?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw)
+        .map_err(|e| format!("dataset validate failed: invalid qc json: {e}"))?;
+    let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw)
+        .map_err(|e| format!("dataset validate failed: invalid thresholds json: {e}"))?;
+    validate_qc_thresholds(&qc, &thresholds)
+        .map_err(|e| format!("dataset validate failed: qc gate failed: {e}"))
+}
+
+pub(crate) fn pack_dataset(
+    root: PathBuf,
+    release: &str,
+    species: &str,
+    assembly: &str,
+    out: PathBuf,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(release, species, assembly).map_err(|e| e.to_string())?;
+    let paths = bijux_atlas_model::dataset::artifact_paths(&root, &dataset);
+    let manifest = fs::read(&paths.manifest).map_err(|e| e.to_string())?;
+    let sqlite = fs::read(&paths.sqlite).map_err(|e| e.to_string())?;
+    let lock = ManifestLock::from_bytes(&manifest, &sqlite);
+    let lock_bytes = serde_json::to_vec(&lock).map_err(|e| e.to_string())?;
+
+    let file = fs::File::create(&out).map_err(|e| e.to_string())?;
+    let mut builder = Builder::new(file);
+    append_tar_file(&mut builder, "manifest.json", &manifest)?;
+    append_tar_file(&mut builder, "gene_summary.sqlite", &sqlite)?;
+    append_tar_file(&mut builder, "manifest.lock", &lock_bytes)?;
+    builder.finish().map_err(|e| e.to_string())?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset pack","status":"ok","out":out}),
+    )
+}
+
+pub(crate) fn verify_pack(pack: PathBuf, output_mode: OutputMode) -> Result<(), String> {
+    let file = fs::File::open(pack).map_err(|e| e.to_string())?;
+    let mut archive = Archive::new(file);
+    let mut manifest: Option<Vec<u8>> = None;
+    let mut sqlite: Option<Vec<u8>> = None;
+    let mut lock_raw: Option<Vec<u8>> = None;
+    for entry in archive.entries().map_err(|e| e.to_string())? {
+        let mut e = entry.map_err(|e| e.to_string())?;
+        let path = e
+            .path()
+            .map_err(|e| e.to_string())?
+            .to_string_lossy()
+            .to_string();
+        let mut bytes = Vec::new();
+        std::io::Read::read_to_end(&mut e, &mut bytes).map_err(|e| e.to_string())?;
+        match path.as_str() {
+            "manifest.json" => manifest = Some(bytes),
+            "gene_summary.sqlite" => sqlite = Some(bytes),
+            "manifest.lock" => lock_raw = Some(bytes),
+            _ => {}
+        }
+    }
+    let manifest = manifest.ok_or_else(|| "manifest.json missing in pack".to_string())?;
+    let sqlite = sqlite.ok_or_else(|| "gene_summary.sqlite missing in pack".to_string())?;
+    let lock_raw = lock_raw.ok_or_else(|| "manifest.lock missing in pack".to_string())?;
+    let lock: ManifestLock = serde_json::from_slice(&lock_raw).map_err(|e| e.to_string())?;
+    lock.validate(&manifest, &sqlite)?;
+    emit_ok_payload(
+        output_mode,
+        json!({"command":"atlas dataset verify-pack","status":"ok"}),
+    )
+}
+
+pub(crate) fn validate_ingest_qc(
+    qc_report: PathBuf,
+    thresholds: PathBuf,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("failed to read {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds)
+        .map_err(|e| format!("failed to read {}: {e}", thresholds.display()))?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw)
+        .map_err(|e| format!("invalid QC json {}: {e}", qc_report.display()))?;
+    let t: serde_json::Value = serde_json::from_str(&thresholds_raw)
+        .map_err(|e| format!("invalid thresholds json {}: {e}", thresholds.display()))?;
+    validate_qc_thresholds(&qc, &t)?;
+    emit_ok_payload(
+        output_mode,
+        json!({
+            "command":"atlas ingest-validate",
+            "status":"ok",
+            "qc_report": qc_report,
+            "thresholds": thresholds
+        }),
+    )
+}
+
+fn compute_dataset_signature_from_sqlite(sqlite_path: &PathBuf) -> Result<String, String> {
+    let conn = rusqlite::Connection::open(sqlite_path).map_err(|e| e.to_string())?;
+    let mut gene_stmt = conn
+        .prepare(
+            "SELECT gene_id, name, biotype, seqid, start, end, transcript_count, exon_count, total_exon_span, cds_present, sequence_length
+             FROM gene_summary ORDER BY seqid, start, end, gene_id",
+        )
+        .map_err(|e| e.to_string())?;
+    let genes = gene_stmt
+        .query_map([], |r| {
+            Ok(serde_json::json!({
+                "gene_id": r.get::<_, String>(0)?,
+                "gene_name": r.get::<_, String>(1)?,
+                "biotype": r.get::<_, String>(2)?,
+                "seqid": r.get::<_, String>(3)?,
+                "start": r.get::<_, i64>(4)?,
+                "end": r.get::<_, i64>(5)?,
+                "transcript_count": r.get::<_, i64>(6)?,
+                "exon_count": r.get::<_, i64>(7)?,
+                "total_exon_span": r.get::<_, i64>(8)?,
+                "cds_present": r.get::<_, i64>(9)? != 0,
+                "sequence_length": r.get::<_, i64>(10)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+
+    let mut tx_stmt = conn
+        .prepare(
+            "SELECT transcript_id, parent_gene_id, transcript_type, COALESCE(biotype,''), seqid, start, end, exon_count, total_exon_span, cds_present
+             FROM transcript_summary ORDER BY seqid, start, end, transcript_id",
+        )
+        .map_err(|e| e.to_string())?;
+    let txs = tx_stmt
+        .query_map([], |r| {
+            let raw_biotype: String = r.get(3)?;
+            let biotype = if raw_biotype.is_empty() {
+                serde_json::Value::Null
+            } else {
+                serde_json::Value::String(raw_biotype)
+            };
+            Ok(serde_json::json!({
+                "transcript_id": r.get::<_, String>(0)?,
+                "parent_gene_id": r.get::<_, String>(1)?,
+                "transcript_type": r.get::<_, String>(2)?,
+                "biotype": biotype,
+                "seqid": r.get::<_, String>(4)?,
+                "start": r.get::<_, i64>(5)?,
+                "end": r.get::<_, i64>(6)?,
+                "exon_count": r.get::<_, i64>(7)?,
+                "total_exon_span": r.get::<_, i64>(8)?,
+                "cds_present": r.get::<_, i64>(9)? != 0,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+
+    let root = serde_json::json!({
+        "gene_table_hash": merkle_from_json_rows(&genes)?,
+        "transcript_table_hash": merkle_from_json_rows(&txs)?,
+        "gene_count": genes.len(),
+        "transcript_count": txs.len(),
+    });
+    let bytes = super::super::canonical_json::bytes(&root)?;
+    Ok(sha256_hex(&bytes))
+}
+
+fn merkle_from_json_rows(rows: &[serde_json::Value]) -> Result<String, String> {
+    if rows.is_empty() {
+        return Ok(sha256_hex(b""));
+    }
+    let mut level: Vec<String> = rows
+        .iter()
+        .map(|r| super::super::canonical_json::bytes(r).map(|b| sha256_hex(&b)))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())?;
+    while level.len() > 1 {
+        let mut next = Vec::with_capacity(level.len().div_ceil(2));
+        let mut i = 0usize;
+        while i < level.len() {
+            let left = &level[i];
+            let right = if i + 1 < level.len() {
+                &level[i + 1]
+            } else {
+                left
+            };
+            let mut joined = String::with_capacity(left.len() + right.len());
+            joined.push_str(left);
+            joined.push_str(right);
+            next.push(sha256_hex(joined.as_bytes()));
+            i += 2;
+        }
+        level = next;
+    }
+    Ok(level[0].clone())
+}
+
+pub(crate) fn publish_dataset(
+    request: PublishDatasetRequest<'_>,
+    output_mode: OutputMode,
+) -> Result<(), String> {
+    let dataset = DatasetId::new(request.release, request.species, request.assembly)
+        .map_err(|e| e.to_string())?;
+    let source_paths = bijux_atlas_model::dataset::artifact_paths(&request.source_root, &dataset);
+    let manifest_bytes = fs::read(&source_paths.manifest).map_err(|e| e.to_string())?;
+    let sqlite_bytes = fs::read(&source_paths.sqlite).map_err(|e| e.to_string())?;
+    let manifest: ArtifactManifest =
+        serde_json::from_slice(&manifest_bytes).map_err(|e| e.to_string())?;
+    manifest.validate_strict().map_err(|e| e.to_string())?;
+    verify_expected_sha256(&sqlite_bytes, &manifest.checksums.sqlite_sha256)?;
+    enforce_publish_gates(&request.source_root, &dataset, &manifest)?;
+    let manifest_sha = sha256_hex(&manifest_bytes);
+    let sqlite_sha = sha256_hex(&sqlite_bytes);
+    let target_paths = bijux_atlas_model::dataset::artifact_paths(&request.store_root, &dataset);
+
+    if request.dry_run || request.explain {
+        return emit_ok_payload(
+            output_mode,
+            json!({
+                "command":"atlas dataset publish",
+                "mode": if request.explain { "explain" } else { "dry-run" },
+                "status":"ok",
+                "dataset": dataset.canonical_string(),
+                "source": {
+                    "manifest": source_paths.manifest,
+                    "sqlite": source_paths.sqlite
+                },
+                "target": {
+                    "manifest": target_paths.manifest,
+                    "sqlite": target_paths.sqlite
+                },
+                "checksums": {
+                    "manifest_sha256": manifest_sha,
+                    "sqlite_sha256": sqlite_sha
+                },
+                "writes_artifacts": false
+            }),
+        );
+    }
+
+    let store = LocalFsStore::new(request.store_root);
+    match store.put_dataset(
+        &dataset,
+        &manifest_bytes,
+        &sqlite_bytes,
+        &manifest_sha,
+        &sqlite_sha,
+    ) {
+        Ok(()) => emit_ok_payload(
+            output_mode,
+            json!({"command":"atlas dataset publish","status":"ok"}),
+        ),
+        Err(e) if e.code == StoreErrorCode::Conflict => {
+            Err(format!("immutability gate rejected publish: {}", e.message))
+        }
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+pub(crate) struct PublishDatasetRequest<'a> {
+    pub(crate) source_root: PathBuf,
+    pub(crate) store_root: PathBuf,
+    pub(crate) release: &'a str,
+    pub(crate) species: &'a str,
+    pub(crate) assembly: &'a str,
+    pub(crate) dry_run: bool,
+    pub(crate) explain: bool,
+}
+
+fn enforce_publish_gates(
+    source_root: &Path,
+    dataset: &DatasetId,
+    manifest: &ArtifactManifest,
+) -> Result<(), String> {
+    let workspace = std::env::current_dir().map_err(|e| e.to_string())?;
+    let policy = load_policy_from_workspace(&workspace).map_err(|e| e.to_string())?;
+    if manifest.stats.gene_count < policy.publish_gates.min_gene_count {
+        return Err(format!(
+            "publish gate failed: gene_count {} < min_gene_count {}",
+            manifest.stats.gene_count, policy.publish_gates.min_gene_count
+        ));
+    }
+    let paths = bijux_atlas_model::dataset::artifact_paths(source_root, dataset);
+    let anomaly_raw = fs::read_to_string(paths.anomaly_report).map_err(|e| e.to_string())?;
+    let anomaly: bijux_atlas_model::dataset::IngestAnomalyReport =
+        serde_json::from_str(&anomaly_raw).map_err(|e| e.to_string())?;
+    if (anomaly.missing_parents.len() as u64) > policy.publish_gates.max_missing_parents {
+        return Err(format!(
+            "publish gate failed: missing_parents {} > max_missing_parents {}",
+            anomaly.missing_parents.len(),
+            policy.publish_gates.max_missing_parents
+        ));
+    }
+    if !anomaly.scientific_ambiguities.is_empty() {
+        return Err(format!(
+            "publish gate failed: scientific ambiguities present ({})",
+            anomaly.scientific_ambiguities.len()
+        ));
+    }
+    if manifest.scientific_prerequisites_status != "complete" {
+        return Err(format!(
+            "publish gate failed: scientific prerequisites under-specified ({})",
+            manifest.scientific_prerequisites_status
+        ));
+    }
+    if manifest.contig_naming_style == "mixed_chr_and_plain" {
+        return Err(
+            "publish gate failed: mixed chr-prefixed and plain core contig naming".to_string(),
+        );
+    }
+    let conn = rusqlite::Connection::open(paths.sqlite).map_err(|e| e.to_string())?;
+    for idx in &policy.publish_gates.required_indexes {
+        let exists: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name=?1",
+                [idx],
+                |r| r.get(0),
+            )
+            .map_err(|e| e.to_string())?;
+        if exists == 0 {
+            return Err(format!(
+                "publish gate failed: required index missing: {idx}"
+            ));
+        }
+    }
+    let qc_report = paths.derived_dir.join("qc.json");
+    let thresholds_path =
+        workspace.join("configs/sources/operations/ops/dataset-qc-thresholds.v1.json");
+    let qc_raw = fs::read_to_string(&qc_report)
+        .map_err(|e| format!("publish gate failed: {}: {e}", qc_report.display()))?;
+    let thresholds_raw = fs::read_to_string(&thresholds_path)
+        .map_err(|e| format!("publish gate failed: {}: {e}", thresholds_path.display()))?;
+    let qc: serde_json::Value = serde_json::from_str(&qc_raw).map_err(|e| {
+        format!(
+            "publish gate failed: invalid qc json {}: {e}",
+            qc_report.display()
+        )
+    })?;
+    let thresholds: serde_json::Value = serde_json::from_str(&thresholds_raw).map_err(|e| {
+        format!(
+            "publish gate failed: invalid thresholds json {}: {e}",
+            thresholds_path.display()
+        )
+    })?;
+    validate_qc_thresholds(&qc, &thresholds).map_err(|e| format!("publish gate failed: {e}"))?;
+    Ok(())
+}
+
+pub(super) fn validate_qc_thresholds(
+    qc: &serde_json::Value,
+    thresholds: &serde_json::Value,
+) -> Result<(), String> {
+    let min_gene_count = thresholds
+        .get("min_gene_count")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "threshold missing min_gene_count".to_string())?;
+    let max_orphan_pct = thresholds
+        .get("max_orphan_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_orphan_percent".to_string())?;
+    let max_rejected_pct = thresholds
+        .get("max_rejected_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_rejected_percent".to_string())?;
+    let max_unknown_contig_pct = thresholds
+        .get("max_unknown_contig_feature_percent")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "threshold missing max_unknown_contig_feature_percent".to_string())?;
+    let max_duplicate_gene_id_events = thresholds
+        .get("max_duplicate_gene_id_events")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "threshold missing max_duplicate_gene_id_events".to_string())?;
+    let genes = qc
+        .pointer("/counts/genes")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing counts.genes".to_string())?;
+    let transcripts = qc
+        .pointer("/counts/transcripts")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing counts.transcripts".to_string())?;
+    let orphan_transcripts = qc
+        .pointer("/orphan_counts/transcripts")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing orphan_counts.transcripts".to_string())?;
+    let duplicate_gene_ids = qc
+        .pointer("/duplicate_id_events/duplicate_gene_ids")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing duplicate_id_events.duplicate_gene_ids".to_string())?;
+    let unknown_contig_ratio = qc
+        .pointer("/contig_stats/unknown_contig_feature_ratio")
+        .and_then(serde_json::Value::as_f64)
+        .ok_or_else(|| "qc missing contig_stats.unknown_contig_feature_ratio".to_string())?;
+    let rejected: u64 = qc
+        .get("rejected_record_count_by_reason")
+        .and_then(serde_json::Value::as_object)
+        .ok_or_else(|| "qc missing rejected_record_count_by_reason".to_string())?
+        .values()
+        .map(|v| v.as_u64().unwrap_or(0))
+        .sum();
+    if genes < min_gene_count {
+        return Err(format!(
+            "gene_count {} < min_gene_count {}",
+            genes, min_gene_count
+        ));
+    }
+    let orphan_pct = if transcripts == 0 {
+        0.0
+    } else {
+        (orphan_transcripts as f64) * 100.0 / (transcripts as f64)
+    };
+    if orphan_pct > max_orphan_pct {
+        return Err(format!(
+            "orphan_percent {:.4} > max_orphan_percent {}",
+            orphan_pct, max_orphan_pct
+        ));
+    }
+    let total_features = qc
+        .pointer("/contig_stats/total_features")
+        .and_then(serde_json::Value::as_u64)
+        .ok_or_else(|| "qc missing contig_stats.total_features".to_string())?;
+    let rejected_pct = if total_features == 0 {
+        0.0
+    } else {
+        (rejected as f64) * 100.0 / (total_features as f64)
+    };
+    if rejected_pct > max_rejected_pct {
+        return Err(format!(
+            "rejected_percent {:.4} > max_rejected_percent {}",
+            rejected_pct, max_rejected_pct
+        ));
+    }
+    if unknown_contig_ratio * 100.0 > max_unknown_contig_pct {
+        return Err(format!(
+            "unknown_contig_feature_percent {:.4} > max_unknown_contig_feature_percent {}",
+            unknown_contig_ratio * 100.0,
+            max_unknown_contig_pct
+        ));
+    }
+    if duplicate_gene_ids > max_duplicate_gene_id_events {
+        return Err(format!(
+            "duplicate_gene_id_events {} > max_duplicate_gene_id_events {}",
+            duplicate_gene_ids, max_duplicate_gene_id_events
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bijux_atlas_model::dataset::{ArtifactChecksums, ManifestStats};
+
+    #[test]
+    fn validate_payload_exposes_manifest_identity_hash() {
+        let dataset = DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+        let manifest = ArtifactManifest::new(
+            "1".to_string(),
+            "1".to_string(),
+            dataset,
+            ArtifactChecksums::new(
+                "a".repeat(64),
+                "b".repeat(64),
+                "c".repeat(64),
+                "d".repeat(64),
+            ),
+            ManifestStats::new(1, 1, 1),
+        );
+        assert_eq!(manifest.identity.release_id, "110/homo_sapiens/GRCh38");
+        assert_eq!(manifest.identity.canonical_metadata_sha256.len(), 64);
+    }
+}

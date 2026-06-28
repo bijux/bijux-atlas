@@ -1,4 +1,4 @@
-# Scope: docker wrapper target delegated to bijux-dev-atlas docker surfaces.
+# Scope: docker wrapper target delegated to bijux-atlas-dev docker surfaces.
 # Public targets: docker
 
 docker: ## Run canonical docker validation through dev-atlas

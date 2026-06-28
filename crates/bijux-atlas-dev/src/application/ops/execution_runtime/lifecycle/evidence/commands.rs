@@ -1,0 +1,1122 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Evidence collection commands for install-status flows.
+
+use super::*;
+use crate::cli::OpsCommonArgs;
+use crate::ops_commands::{emit_payload, run_id_or_default};
+use crate::{resolve_repo_root, OpsProcess};
+use bijux_atlas_ops::lifecycle::evidence::commands::{
+    git_head_sha, run_governance_doctor_for_evidence,
+    run_governance_exceptions_validate_for_evidence, run_security_validate_for_evidence,
+};
+
+fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
+    serde_json::from_str(
+        &std::fs::read_to_string(path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", path.display()))
+}
+
+fn write_evidence_artifact(
+    repo_root: &std::path::Path,
+    relative_path: &str,
+    value: &serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let path = repo_root.join(relative_path);
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("failed to create {}: {err}", parent.display()))?;
+    }
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(value).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", path.display()))?;
+    Ok(serde_json::json!({
+        "path": relative_path,
+        "sha256": sha256_file(&path)?
+    }))
+}
+
+fn rendered_manifest_from_evidence(repo_root: &std::path::Path, run_id: &str) -> Option<String> {
+    let render_evidence_path = repo_root.join(format!(
+        "artifacts/ops/evidence/{run_id}/render-evidence.json"
+    ));
+    let render_evidence = read_json_value(&render_evidence_path).ok()?;
+    let render_rel = render_evidence
+        .get("render_index_files")
+        .and_then(serde_json::Value::as_array)
+        .and_then(|rows| rows.first())
+        .and_then(|row| row.get("path"))
+        .and_then(serde_json::Value::as_str)?;
+    std::fs::read_to_string(
+        repo_root
+            .join("artifacts/ops")
+            .join(run_id)
+            .join(render_rel),
+    )
+    .ok()
+}
+
+pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("evidence collect requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("evidence collect requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let process = OpsProcess::new(true);
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let git_sha = git_head_sha(&process, &repo_root)?;
+    let release_id = format!("{}-{}", run_id.as_str(), &git_sha[..12]);
+    let governance_version = format!("main@{git_sha}");
+    let evidence_root = evidence_root(&repo_root)?;
+    run_security_validate_for_evidence(&process, &repo_root)?;
+    run_governance_exceptions_validate_for_evidence(&process, &repo_root)?;
+    run_governance_doctor_for_evidence(&process, &repo_root)?;
+    let chart_package = bijux_atlas_ops::lifecycle::release::commands::package_chart_for_evidence(
+        &process, &repo_root,
+    )?;
+    let policy_path = repo_root.join("ops/release/evidence/policy.json");
+    let identity_path = evidence_root.join("identity.json");
+    let manifest_path = evidence_root.join("manifest.json");
+    let provenance_path = repo_root.join("ops/release/provenance.json");
+    let identity = serde_json::json!({
+        "schema_version": 1,
+        "release_id": release_id,
+        "git_sha": git_sha,
+        "governance_version": governance_version
+    });
+    std::fs::write(
+        &identity_path,
+        serde_json::to_string_pretty(&identity).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", identity_path.display()))?;
+    let docker_bases = repo_root.join("ops/docker/bases.lock");
+    let toolchain_inventory =
+        repo_root.join("configs/sources/repository/rust-tooling/toolchain.json");
+    let auth_model = repo_root.join("configs/sources/security/auth-model.yaml");
+    let access_policy = repo_root.join("configs/sources/security/policy.yaml");
+    let audit_schema =
+        repo_root.join("configs/sources/operations/observability/schemas/audit-log.schema.json");
+    let retention_policy =
+        repo_root.join("configs/sources/operations/observability/retention.yaml");
+    let audit_sample_log = repo_root.join("artifacts/security/audit-smoke.jsonl");
+    let audit_verify_report = repo_root.join("artifacts/security/audit-verify.json");
+    let log_field_inventory = repo_root.join("artifacts/security/log-field-inventory.json");
+    let runtime_env_allowlist = repo_root.join("configs/schemas/contracts/env.schema.json");
+    let signing_policy = repo_root.join("ops/release/signing/policy.yaml");
+    let action_pins_report = repo_root.join("artifacts/security/security-github-actions.json");
+    let exceptions_registry =
+        repo_root.join("configs/sources/governance/governance/exceptions.yaml");
+    let exceptions_archive =
+        repo_root.join("configs/sources/governance/governance/exceptions-archive.yaml");
+    let exceptions_summary = repo_root.join("artifacts/governance/exceptions-summary.json");
+    let exceptions_warning = repo_root.join("artifacts/governance/exceptions-expiry-warning.json");
+    let exceptions_churn = repo_root.join("artifacts/governance/exceptions-churn.json");
+    let deprecations_summary = repo_root.join("artifacts/governance/deprecations-summary.json");
+    let compat_warnings = repo_root.join("artifacts/governance/compat-warnings.json");
+    let breaking_changes = repo_root.join("artifacts/governance/breaking-changes.json");
+    let governance_doctor = repo_root.join("artifacts/governance/governance-doctor.json");
+    let institutional_delta = repo_root.join("artifacts/governance/institutional-delta.md");
+    let institutional_delta_inputs =
+        repo_root.join("artifacts/governance/institutional-delta-inputs.json");
+    let docs_site_summary = collect_docs_site_summary(&repo_root)?;
+    let supply_chain_inventory = collect_supply_chain_inventory(&repo_root)?;
+    let image_artifacts = collect_image_artifacts(&repo_root)?;
+    let sboms = collect_sboms(&repo_root, &image_artifacts)?;
+    let scan_reports = collect_scan_reports(&repo_root)?;
+    let redacted_logs = collect_redacted_logs(&repo_root)?;
+    let provenance = serde_json::json!({
+        "schema_version": 1,
+        "generated_by": "bijux dev atlas ops evidence collect",
+        "release_id": identity["release_id"].clone(),
+        "git_sha": identity["git_sha"].clone(),
+        "governance_version": identity["governance_version"].clone(),
+        "toolchain_inventory": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
+        "signing_policy_path": signing_policy.strip_prefix(&repo_root).unwrap_or(&signing_policy).display().to_string(),
+        "evidence_manifest_path": manifest_path.strip_prefix(&repo_root).unwrap_or(&manifest_path).display().to_string()
+    });
+    std::fs::write(
+        &provenance_path,
+        serde_json::to_string_pretty(&provenance).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", provenance_path.display()))?;
+    let install_evidence_path = format!(
+        "artifacts/ops/evidence/{}/install-evidence.json",
+        run_id.as_str()
+    );
+    let render_evidence_path = format!(
+        "artifacts/ops/evidence/{}/render-evidence.json",
+        run_id.as_str()
+    );
+    let validate_evidence_path = format!(
+        "artifacts/ops/evidence/{}/validate-evidence.json",
+        run_id.as_str()
+    );
+    let _install_evidence = read_json_value(&repo_root.join(&install_evidence_path))?;
+    let render_evidence = read_json_value(&repo_root.join(&render_evidence_path))?;
+    let validate_evidence = read_json_value(&repo_root.join(&validate_evidence_path))?;
+    let install_matrix = read_json_value(&repo_root.join("ops/k8s/install-matrix.json"))?;
+    let validated_profiles = install_matrix
+        .get("profiles")
+        .and_then(serde_json::Value::as_array)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("name").and_then(serde_json::Value::as_str))
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let install_matrix_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/install-matrix-report.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "validated_profiles": validated_profiles,
+            "source_install_matrix": "ops/k8s/install-matrix.json"
+        }),
+    )?;
+    let render_matrix_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/render-matrix-report.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "target": render_evidence.get("target").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "profile": render_evidence.get("profile").and_then(serde_json::Value::as_str).unwrap_or("unknown"),
+            "render_index_files": render_evidence.get("render_index_files").cloned().unwrap_or_else(|| serde_json::json!([]))
+        }),
+    )?;
+    let schema_coverage_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/schema-coverage-report.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "ops_schema_validate": validate_evidence.pointer("/pipeline/rows")
+                .and_then(serde_json::Value::as_array)
+                .and_then(|rows| rows.iter().find(|row| row.get("name").and_then(serde_json::Value::as_str) == Some("ops_schema_validate")))
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({"status":"unknown"})),
+            "values_schema_source": "ops/k8s/charts/bijux-atlas/values.schema.json"
+        }),
+    )?;
+    let rendered_manifest =
+        rendered_manifest_from_evidence(&repo_root, run_id.as_str()).unwrap_or_default();
+    let network_policy_count = rendered_manifest.matches("kind: NetworkPolicy").count();
+    let rbac_count = [
+        "kind: Role\n",
+        "kind: ClusterRole\n",
+        "kind: RoleBinding\n",
+        "kind: ClusterRoleBinding\n",
+    ]
+    .iter()
+    .map(|needle| rendered_manifest.matches(needle).count())
+    .sum::<usize>();
+    let network_policy_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/network-policy-coverage-report.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "network_policy_resources": network_policy_count,
+            "render_source": render_evidence_path
+        }),
+    )?;
+    let rbac_coverage_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/rbac-coverage-report.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "rbac_resources": rbac_count,
+            "render_source": render_evidence_path
+        }),
+    )?;
+    let inventory_snapshot_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/inventory-snapshot.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "registry": "ops/inventory/registry.toml",
+            "profiles": validated_profiles,
+            "contracts": "ops/inventory/contracts.json",
+            "toolchain": "ops/inventory/toolchain.json"
+        }),
+    )?;
+    let toolchain_snapshot = read_json_value(&repo_root.join("ops/inventory/toolchain.json"))?;
+    let tool_versions_artifact = write_evidence_artifact(
+        &repo_root,
+        &format!(
+            "artifacts/ops/evidence/{}/tool-versions.json",
+            run_id.as_str()
+        ),
+        &serde_json::json!({
+            "schema_version": 1,
+            "run_id": run_id.as_str(),
+            "tools": toolchain_snapshot.get("tools").cloned().unwrap_or_else(|| serde_json::json!({}))
+        }),
+    )?;
+    let manifest = serde_json::json!({
+        "schema_version": 2,
+        "generated_by": "bijux dev atlas ops evidence collect",
+        "identity_path": identity_path.strip_prefix(&repo_root).unwrap_or(&identity_path).display().to_string(),
+        "policy_path": policy_path.strip_prefix(&repo_root).unwrap_or(&policy_path).display().to_string(),
+        "provenance": {
+            "path": provenance_path.strip_prefix(&repo_root).unwrap_or(&provenance_path).display().to_string(),
+            "sha256": sha256_file(&provenance_path)?
+        },
+        "chart_package": bijux_atlas_ops::lifecycle::release::commands::release_package_inventory(
+            &repo_root,
+            &chart_package,
+        )?,
+        "image_artifacts": image_artifacts,
+        "docker_bases_lock": {
+            "path": docker_bases.strip_prefix(&repo_root).unwrap_or(&docker_bases).display().to_string(),
+            "sha256": sha256_file(&docker_bases)?
+        },
+        "toolchain_inventory": {
+            "path": toolchain_inventory.strip_prefix(&repo_root).unwrap_or(&toolchain_inventory).display().to_string(),
+            "sha256": sha256_file(&toolchain_inventory)?
+        },
+        "auth_policy": {
+            "auth_model": {
+                "path": auth_model.strip_prefix(&repo_root).unwrap_or(&auth_model).display().to_string(),
+                "sha256": sha256_file(&auth_model)?
+            },
+            "access_policy": {
+                "path": access_policy.strip_prefix(&repo_root).unwrap_or(&access_policy).display().to_string(),
+                "sha256": sha256_file(&access_policy)?
+            }
+        },
+        "supply_chain": {
+            "action_pins_report": {
+                "path": action_pins_report.strip_prefix(&repo_root).unwrap_or(&action_pins_report).display().to_string(),
+                "sha256": sha256_file(&action_pins_report)?
+            },
+            "docs_toolchain_inventory": supply_chain_inventory
+        },
+        "docs_site_summary": docs_site_summary,
+        "runtime_env_allowlist": {
+            "path": runtime_env_allowlist.strip_prefix(&repo_root).unwrap_or(&runtime_env_allowlist).display().to_string(),
+            "sha256": sha256_file(&runtime_env_allowlist)?
+        },
+        "sboms": sboms,
+        "scan_reports": scan_reports,
+        "audit_assets": {
+            "schema": {
+                "path": audit_schema.strip_prefix(&repo_root).unwrap_or(&audit_schema).display().to_string(),
+                "sha256": sha256_file(&audit_schema)?
+            },
+            "retention_policy": {
+                "path": retention_policy.strip_prefix(&repo_root).unwrap_or(&retention_policy).display().to_string(),
+                "sha256": sha256_file(&retention_policy)?
+            },
+            "sample_log": {
+                "path": audit_sample_log.strip_prefix(&repo_root).unwrap_or(&audit_sample_log).display().to_string(),
+                "sha256": sha256_file(&audit_sample_log)?
+            },
+            "verification_report": {
+                "path": audit_verify_report.strip_prefix(&repo_root).unwrap_or(&audit_verify_report).display().to_string(),
+                "sha256": sha256_file(&audit_verify_report)?
+            },
+            "log_field_inventory": {
+                "path": log_field_inventory.strip_prefix(&repo_root).unwrap_or(&log_field_inventory).display().to_string(),
+                "sha256": sha256_file(&log_field_inventory)?
+            }
+        },
+        "governance_assets": {
+            "exceptions_registry": {
+                "path": exceptions_registry.strip_prefix(&repo_root).unwrap_or(&exceptions_registry).display().to_string(),
+                "sha256": sha256_file(&exceptions_registry)?
+            },
+            "exceptions_archive": {
+                "path": exceptions_archive.strip_prefix(&repo_root).unwrap_or(&exceptions_archive).display().to_string(),
+                "sha256": sha256_file(&exceptions_archive)?
+            },
+            "exceptions_summary": {
+                "path": exceptions_summary.strip_prefix(&repo_root).unwrap_or(&exceptions_summary).display().to_string(),
+                "sha256": sha256_file(&exceptions_summary)?
+            },
+            "exceptions_expiry_warning": {
+                "path": exceptions_warning.strip_prefix(&repo_root).unwrap_or(&exceptions_warning).display().to_string(),
+                "sha256": sha256_file(&exceptions_warning)?
+            },
+            "exceptions_churn": {
+                "path": exceptions_churn.strip_prefix(&repo_root).unwrap_or(&exceptions_churn).display().to_string(),
+                "sha256": sha256_file(&exceptions_churn)?
+            },
+            "deprecations_summary": {
+                "path": deprecations_summary.strip_prefix(&repo_root).unwrap_or(&deprecations_summary).display().to_string(),
+                "sha256": sha256_file(&deprecations_summary)?
+            },
+            "compat_warnings": {
+                "path": compat_warnings.strip_prefix(&repo_root).unwrap_or(&compat_warnings).display().to_string(),
+                "sha256": sha256_file(&compat_warnings)?
+            },
+            "breaking_changes": {
+                "path": breaking_changes.strip_prefix(&repo_root).unwrap_or(&breaking_changes).display().to_string(),
+                "sha256": sha256_file(&breaking_changes)?
+            },
+            "governance_doctor": {
+                "path": governance_doctor.strip_prefix(&repo_root).unwrap_or(&governance_doctor).display().to_string(),
+                "sha256": sha256_file(&governance_doctor)?
+            },
+            "institutional_delta": {
+                "path": institutional_delta.strip_prefix(&repo_root).unwrap_or(&institutional_delta).display().to_string(),
+                "sha256": sha256_file(&institutional_delta)?
+            },
+            "institutional_delta_inputs": {
+                "path": institutional_delta_inputs.strip_prefix(&repo_root).unwrap_or(&institutional_delta_inputs).display().to_string(),
+                "sha256": sha256_file(&institutional_delta_inputs)?
+            }
+        },
+        "reports": collect_report_paths(&repo_root, run_id.as_str())?,
+        "simulation_summaries": collect_simulation_summary_paths(&repo_root, run_id.as_str()),
+        "drill_summaries": collect_drill_summary_paths(&repo_root, run_id.as_str()),
+        "ops_evidence": {
+            "install_evidence": {
+                "path": install_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/install-evidence.json", run_id.as_str())))?
+            },
+            "render_evidence": {
+                "path": render_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/render-evidence.json", run_id.as_str())))?
+            },
+            "validate_evidence": {
+                "path": validate_evidence_path,
+                "sha256": sha256_file(&repo_root.join(format!("artifacts/ops/evidence/{}/validate-evidence.json", run_id.as_str())))?
+            },
+            "install_matrix_report": install_matrix_artifact,
+            "render_matrix_report": render_matrix_artifact,
+            "schema_coverage_report": schema_coverage_artifact,
+            "network_policy_coverage_report": network_policy_artifact,
+            "rbac_coverage_report": rbac_coverage_artifact,
+            "inventory_snapshot": inventory_snapshot_artifact,
+            "tool_versions": tool_versions_artifact,
+            "redaction_secret_keys": ["password", "secret", "token", "api_key"]
+        },
+        "redacted_logs": redacted_logs,
+        "observability_assets": collect_observability_assets(&repo_root)?,
+        "perf_assets": collect_perf_assets(&repo_root)?,
+        "dataset_assets": collect_dataset_assets(&repo_root)?
+    });
+    let index_html = render_evidence_index_html(&repo_root, &manifest)?;
+    std::fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
+    let tarball_path = build_release_evidence_tarball(&repo_root, &manifest)?;
+    let mut manifest_with_tarball = manifest;
+    manifest_with_tarball["index_html"] = index_html;
+    manifest_with_tarball["evidence_tarball"] = serde_json::json!({
+        "path": tarball_path.strip_prefix(&repo_root).unwrap_or(&tarball_path).display().to_string(),
+        "sha256": sha256_file(&tarball_path)?
+    });
+    std::fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest_with_tarball).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": format!("wrote release evidence {}", manifest_path.display()),
+        "rows": [{
+            "manifest_path": manifest_path.display().to_string(),
+            "identity_path": identity_path.display().to_string(),
+            "tarball_path": tarball_path.display().to_string()
+        }],
+        "summary": {"total": 1, "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_ops_evidence_summarize(
+    args: &crate::cli::OpsEvidenceSummarizeArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let manifest_path = args
+        .manifest
+        .clone()
+        .map(|path| {
+            if path.is_absolute() {
+                path
+            } else {
+                repo_root.join(path)
+            }
+        })
+        .unwrap_or_else(|| repo_root.join("ops/release/evidence/manifest.json"));
+    let raw = std::fs::read_to_string(&manifest_path)
+        .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?;
+    let manifest: serde_json::Value = serde_json::from_str(&raw)
+        .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+    let summary = serde_json::json!({
+        "schema_version": 1,
+        "text": "ops evidence summarize",
+        "rows": [{
+            "manifest": manifest_path.strip_prefix(&repo_root).unwrap_or(&manifest_path).display().to_string(),
+            "schema_version": manifest.get("schema_version").and_then(|v| v.as_i64()).unwrap_or_default(),
+            "image_artifact_count": manifest.get("image_artifacts").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "sbom_count": manifest.get("sboms").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "scan_report_count": manifest.get("scan_reports").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0),
+            "redacted_log_count": manifest.get("redacted_logs").and_then(|v| v.as_array()).map(|v| v.len()).unwrap_or(0)
+        }],
+        "summary": {"total": 1, "errors": 0, "warnings": 0}
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &summary)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_ops_evidence_verify(
+    args: &crate::cli::OpsEvidenceVerifyArgs,
+) -> Result<(String, i32), String> {
+    let common = &args.common;
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let evidence_root = evidence_root(&repo_root)?;
+    let manifest_path = evidence_root.join("manifest.json");
+    let identity_path = evidence_root.join("identity.json");
+    let manifest: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&manifest_path)
+            .map_err(|err| format!("failed to read {}: {err}", manifest_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", manifest_path.display()))?;
+    let identity: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&identity_path)
+            .map_err(|err| format!("failed to read {}: {err}", identity_path.display()))?,
+    )
+    .map_err(|err| format!("failed to parse {}: {err}", identity_path.display()))?;
+    let mut errors = Vec::new();
+    let tarball_path = args
+        .tarball
+        .clone()
+        .unwrap_or_else(|| evidence_root.join("bundle.tar"));
+    if manifest.get("schema_version").and_then(|v| v.as_i64()) != Some(2) {
+        errors.push("manifest schema_version must be 2".to_string());
+    }
+    if identity.get("schema_version").and_then(|v| v.as_i64()) != Some(1) {
+        errors.push("identity schema_version must be 1".to_string());
+    }
+    for rel in manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("docs_toolchain_inventory"))
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!(
+                "referenced supply-chain inventory does not exist: {rel}"
+            ));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!(
+                "evidence tarball missing supply-chain inventory: {rel}"
+            ));
+        }
+    }
+    if let Some(row) = manifest
+        .get("audit_assets")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!("audit asset does not exist for {name}: {path}"));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing audit asset for {name}: {path}"
+                ));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "audit asset checksum does not match manifest for {name}: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include audit_assets".to_string());
+    }
+    if let Some(row) = manifest
+        .get("auth_policy")
+        .and_then(|v| v.get("auth_model"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("auth model snapshot does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing auth model snapshot: {path}"
+                ));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "auth model snapshot checksum does not match manifest: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include auth_policy.auth_model".to_string());
+    }
+    if let Some(row) = manifest
+        .get("auth_policy")
+        .and_then(|v| v.get("access_policy"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("access policy snapshot does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing access policy snapshot: {path}"
+                ));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "access policy snapshot checksum does not match manifest: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include auth_policy.access_policy".to_string());
+    }
+    if let Some(row) = manifest
+        .get("governance_assets")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!(
+                    "governance asset does not exist for {name}: {path}"
+                ));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing governance asset for {name}: {path}"
+                ));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "governance asset checksum does not match manifest for {name}: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include governance_assets".to_string());
+    }
+    if let Some(row) = manifest
+        .get("supply_chain")
+        .and_then(|v| v.get("action_pins_report"))
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("action pins report does not exist: {path}"));
+        } else {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing action pins report: {path}"
+                ));
+            }
+            if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "action pins report checksum does not match manifest: {path}"
+                    ));
+                }
+            }
+        }
+    } else {
+        errors.push("manifest must include supply_chain.action_pins_report".to_string());
+    }
+    if let Some(row) = manifest
+        .get("ops_evidence")
+        .and_then(serde_json::Value::as_object)
+    {
+        for (name, item) in row {
+            if name == "redaction_secret_keys" {
+                continue;
+            }
+            let path = item
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_default();
+            let abs = repo_root.join(path);
+            if path.is_empty() || !abs.exists() {
+                errors.push(format!("ops evidence artifact missing for {name}: {path}"));
+                continue;
+            }
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!(
+                    "evidence tarball missing ops evidence artifact for {name}: {path}"
+                ));
+            }
+            if let Some(expected) = item.get("sha256").and_then(serde_json::Value::as_str) {
+                let actual = sha256_file(&abs)?;
+                if actual != expected {
+                    errors.push(format!(
+                        "ops evidence artifact checksum mismatch for {name}: {path}"
+                    ));
+                }
+            }
+            let content = std::fs::read_to_string(&abs)
+                .map_err(|err| format!("failed to read {}: {err}", abs.display()))?;
+            if contains_common_secret_pattern(&content) {
+                errors.push(format!(
+                    "ops evidence artifact contains secret-like content for {name}: {path}"
+                ));
+            }
+        }
+    } else {
+        errors.push("manifest must include ops_evidence".to_string());
+    }
+    if let Some(secret_keys) = manifest
+        .get("ops_evidence")
+        .and_then(|v| v.get("redaction_secret_keys"))
+        .and_then(serde_json::Value::as_array)
+    {
+        if secret_keys.is_empty() {
+            errors.push("ops evidence redaction secret keys must not be empty".to_string());
+        }
+    } else {
+        errors.push("manifest must include ops_evidence.redaction_secret_keys".to_string());
+    }
+    for rel in manifest
+        .get("reports")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+        .chain(
+            manifest
+                .get("simulation_summaries")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+        .chain(
+            manifest
+                .get("drill_summaries")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(serde_json::Value::as_str),
+        )
+    {
+        if !repo_root.join(rel).exists() {
+            errors.push(format!("referenced artifact does not exist: {rel}"));
+        }
+    }
+    for rel in manifest
+        .get("redacted_logs")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced redacted log does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing redacted log: {rel}"));
+        }
+        let content = std::fs::read_to_string(&path)
+            .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+        if contains_common_secret_pattern(&content) {
+            errors.push(format!(
+                "redacted log still contains a common secret pattern: {rel}"
+            ));
+        }
+    }
+    for rel in manifest
+        .get("observability_assets")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!(
+                "referenced observability asset does not exist: {rel}"
+            ));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!(
+                "evidence tarball missing observability asset: {rel}"
+            ));
+        }
+    }
+    for rel in manifest
+        .get("perf_assets")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced perf asset does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing perf asset: {rel}"));
+        }
+    }
+    for rel in manifest
+        .get("dataset_assets")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!("referenced dataset asset does not exist: {rel}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, rel)? {
+            errors.push(format!("evidence tarball missing dataset asset: {rel}"));
+        }
+    }
+    if let Some(path) = manifest
+        .get("chart_package")
+        .and_then(|v| v.get("path"))
+        .and_then(serde_json::Value::as_str)
+    {
+        if !repo_root.join(path).exists() {
+            errors.push(format!("chart package does not exist: {path}"));
+        }
+    } else {
+        errors.push("manifest chart_package.path must exist".to_string());
+    }
+    let policy: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("ops/release/evidence/policy.json"))
+            .map_err(|err| format!("failed to read ops/release/evidence/policy.json: {err}"))?,
+    )
+    .map_err(|err| format!("failed to parse ops/release/evidence/policy.json: {err}"))?;
+    for required in policy
+        .get("required_paths")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(serde_json::Value::as_str)
+    {
+        if !repo_root.join(required).exists() {
+            errors.push(format!("required evidence path does not exist: {required}"));
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, required)? {
+            errors.push(format!(
+                "evidence tarball missing required path: {required}"
+            ));
+        }
+    }
+    let prod_profiles = ["prod-minimal", "prod-ha", "prod-airgap"];
+    let prod_count = manifest
+        .get("image_artifacts")
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter(|row| {
+                    row.get("profile")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|profile| prod_profiles.contains(&profile))
+                })
+                .count()
+        })
+        .unwrap_or(0);
+    if policy
+        .get("require_prod_image_artifacts")
+        .and_then(serde_json::Value::as_bool)
+        == Some(true)
+        && prod_count == 0
+    {
+        errors.push("manifest must include prod profile image artifacts".to_string());
+    }
+    let accepted_sbom_formats = policy
+        .get("accepted_sbom_formats")
+        .and_then(serde_json::Value::as_array)
+        .map(|rows| {
+            rows.iter()
+                .filter_map(serde_json::Value::as_str)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for row in manifest
+        .get("sboms")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let format = row
+            .get("format")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("sbom path does not exist: {path}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+            errors.push(format!("evidence tarball missing sbom: {path}"));
+        }
+        if !accepted_sbom_formats.is_empty() && !accepted_sbom_formats.contains(format) {
+            errors.push(format!("sbom format is not accepted by policy: {format}"));
+        }
+        if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push(format!("sbom checksum does not match manifest: {path}"));
+            }
+        }
+    }
+    for row in manifest
+        .get("scan_reports")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let path = row
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let format = row
+            .get("format")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("scan report path does not exist: {path}"));
+            continue;
+        }
+        if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+            errors.push(format!("evidence tarball missing scan report: {path}"));
+        }
+        let accepted = policy
+            .get("accepted_scan_report_formats")
+            .and_then(serde_json::Value::as_array)
+            .map(|rows| {
+                rows.iter()
+                    .filter_map(serde_json::Value::as_str)
+                    .collect::<std::collections::BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        if !accepted.is_empty() && !accepted.contains(format) {
+            errors.push(format!(
+                "scan report format is not accepted by policy: {format}"
+            ));
+        }
+        if let Some(expected) = row.get("sha256").and_then(serde_json::Value::as_str) {
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push(format!(
+                    "scan report checksum does not match manifest: {path}"
+                ));
+            }
+        }
+    }
+    if let Some(index_html) = manifest.get("index_html") {
+        let path = index_html
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let abs = repo_root.join(path);
+        if path.is_empty() || !abs.exists() {
+            errors.push(format!("index html does not exist: {path}"));
+        } else if let Some(expected) = index_html.get("sha256").and_then(serde_json::Value::as_str)
+        {
+            if tarball_path.exists() && !tarball_contains_entry(&tarball_path, path)? {
+                errors.push(format!("evidence tarball missing index html: {path}"));
+            }
+            let actual = sha256_file(&abs)?;
+            if actual != expected {
+                errors.push("index html checksum does not match manifest".to_string());
+            }
+        }
+    } else {
+        errors.push("manifest must include index_html".to_string());
+    }
+    if let Some(evidence_tarball) = manifest.get("evidence_tarball") {
+        let tar_rel = evidence_tarball
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or_default();
+        let tar_abs = repo_root.join(tar_rel);
+        if !tar_abs.exists() {
+            errors.push(format!("evidence tarball does not exist: {tar_rel}"));
+        } else if let Some(expected) = evidence_tarball
+            .get("sha256")
+            .and_then(serde_json::Value::as_str)
+        {
+            let actual = sha256_file(&tar_abs)?;
+            if actual != expected {
+                errors.push("evidence tarball checksum does not match manifest".to_string());
+            }
+        }
+    } else {
+        errors.push("manifest must include evidence_tarball".to_string());
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "text": if status == "ok" { "release evidence verified" } else { "release evidence verification failed" },
+        "rows": [{
+            "manifest_path": manifest_path.display().to_string(),
+            "identity_path": identity_path.display().to_string(),
+            "tarball_path": tarball_path.display().to_string(),
+            "errors": errors
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
+pub(crate) fn run_ops_evidence_diff(
+    args: &crate::cli::OpsEvidenceDiffArgs,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let tarball_a = if args.tarball_a.is_absolute() {
+        args.tarball_a.clone()
+    } else {
+        repo_root.join(&args.tarball_a)
+    };
+    let tarball_b = if args.tarball_b.is_absolute() {
+        args.tarball_b.clone()
+    } else {
+        repo_root.join(&args.tarball_b)
+    };
+    let members_a = tarball_member_checksums(&tarball_a)?;
+    let members_b = tarball_member_checksums(&tarball_b)?;
+    let names = members_a
+        .keys()
+        .chain(members_b.keys())
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut added = Vec::new();
+    let mut removed = Vec::new();
+    let mut changed = Vec::new();
+    for name in names {
+        match (members_a.get(&name), members_b.get(&name)) {
+            (None, Some(_)) => added.push(name),
+            (Some(_), None) => removed.push(name),
+            (Some(left), Some(right)) if left != right => changed.push(serde_json::json!({
+                "path": name,
+                "sha256_a": left,
+                "sha256_b": right
+            })),
+            _ => {}
+        }
+    }
+    let differences = !added.is_empty() || !removed.is_empty() || !changed.is_empty();
+    let high_risk_changed = changed
+        .iter()
+        .filter_map(|row| row.get("path").and_then(serde_json::Value::as_str))
+        .filter(|path| {
+            path.contains("rbac")
+                || path.contains("network-policy")
+                || path.contains("NetworkPolicy")
+                || path.contains("service")
+                || path.contains("Service")
+        })
+        .map(ToString::to_string)
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "text": if differences { "release evidence bundles differ" } else { "release evidence bundles match" },
+        "rows": [{
+            "tarball_a": tarball_a.display().to_string(),
+            "tarball_b": tarball_b.display().to_string(),
+            "added": added,
+            "removed": removed,
+            "changed": changed,
+            "high_risk_changed_paths": high_risk_changed
+        }],
+        "summary": {
+            "total": 1,
+            "errors": 0,
+            "warnings": 0,
+            "differences": if differences { 1 } else { 0 }
+        }
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Result<(), String> {
+    bijux_atlas_ops::lifecycle::simulation::ensure_owned_simulation_context(process, force)
+}

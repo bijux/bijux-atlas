@@ -5,10 +5,10 @@
       "non-authoritative examples used by docs, tutorials, and validation fixtures"
     ],
     "generated": [
-      "bijux-dev-atlas generated config indexes and machine-written snapshots"
+      "bijux-atlas-dev generated config indexes and machine-written snapshots"
     ],
     "internal": [
-      "bijux-dev-atlas internal config support material"
+      "bijux-atlas-dev internal config support material"
     ],
     "registry": [
       "config ownership and consumer registries",

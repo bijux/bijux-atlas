@@ -5,7 +5,7 @@
     "bijux-atlas"
   ],
   "blocked_crates": [
-    "bijux-dev-atlas"
+    "bijux-atlas-dev"
   ],
   "crates_io_release": {
     "target": "v0.1",

@@ -9,7 +9,7 @@ last_reviewed: 2026-04-13
 
 # Maintainer Entrypoints
 
-Maintainers enter the control plane through `cargo run -p bijux-dev-atlas`,
+Maintainers enter the control plane through `cargo run -p bijux-atlas-dev`,
 `bijux dev atlas`, and curated `make` wrappers. This page exists to show which
 entrypoint is best for which kind of maintainer work.
 
@@ -37,7 +37,7 @@ shortcuts.
 ## Canonical Entrypoints
 
 - `bijux dev atlas ...` is the canonical installed namespace for maintainer automation
-- `cargo run -q -p bijux-dev-atlas -- ...` is the repo-local direct binary path for exact local parity
+- `cargo run -q -p bijux-atlas-dev -- ...` is the repo-local direct binary path for exact local parity
 - `make ci-fast`, `make ci-pr`, `make ci-nightly`, `make docs-build`, and other curated targets are the convenience layer for common workflows
 - GitHub workflows under [`.github/workflows`](/Users/bijan/bijux/bijux-atlas/.github/workflows) are the remote execution entrypoints once a change moves into CI or release automation
 
@@ -45,7 +45,7 @@ shortcuts.
 
 - use `make` when you want the standard maintainer lane with the least command memorization
 - use `bijux dev atlas` when you want a documented control-plane surface that maps cleanly to maintainer docs
-- use direct `cargo run -q -p bijux-dev-atlas -- ...` when you need an exact in-repo command, debug fidelity, or a command not exposed as a make wrapper
+- use direct `cargo run -q -p bijux-atlas-dev -- ...` when you need an exact in-repo command, debug fidelity, or a command not exposed as a make wrapper
 - use GitHub workflows when the question is about merge gates, release promotion, or environment-specific CI behavior rather than local iteration
 
 ## What Not To Use As An Entrypoint
@@ -56,7 +56,7 @@ shortcuts.
 
 ## Repository Anchors
 
-- [`crates/bijux-dev-atlas/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-dev-atlas/src/interfaces/cli/mod.rs:1) defines the direct command surface
+- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the direct command surface
 - [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed command families
 - [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) records the validation evidence maintainers should bring back from those entrypoints
 

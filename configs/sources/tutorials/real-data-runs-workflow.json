@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "name": "tutorials-real-data-examples",
-  "description": "Reproducible command sequence for real-data examples using bijux-dev-atlas only.",
+  "description": "Reproducible command sequence for real-data examples using bijux-atlas-dev only.",
   "commands": [
-    "cargo run -p bijux-dev-atlas -- tutorials real-data list --format json",
-    "cargo run -p bijux-dev-atlas -- tutorials real-data doctor --format json",
-    "cargo run -p bijux-dev-atlas -- tutorials real-data run-all --profile local --format json"
+    "cargo run -p bijux-atlas-dev -- tutorials real-data list --format json",
+    "cargo run -p bijux-atlas-dev -- tutorials real-data doctor --format json",
+    "cargo run -p bijux-atlas-dev -- tutorials real-data run-all --profile local --format json"
   ],
   "per_run_commands": [
-    "cargo run -p bijux-dev-atlas -- tutorials real-data fetch --run-id <run_id> --profile local --format json",
-    "cargo run -p bijux-dev-atlas -- tutorials real-data ingest --run-id <run_id> --profile local --no-fetch --format json",
-    "cargo run -p bijux-dev-atlas -- tutorials real-data query-pack --run-id <run_id> --profile local --no-fetch --format json",
-    "cargo run -p bijux-dev-atlas -- tutorials real-data export-evidence --run-id <run_id> --profile local --no-fetch --format json"
+    "cargo run -p bijux-atlas-dev -- tutorials real-data fetch --run-id <run_id> --profile local --format json",
+    "cargo run -p bijux-atlas-dev -- tutorials real-data ingest --run-id <run_id> --profile local --no-fetch --format json",
+    "cargo run -p bijux-atlas-dev -- tutorials real-data query-pack --run-id <run_id> --profile local --no-fetch --format json",
+    "cargo run -p bijux-atlas-dev -- tutorials real-data export-evidence --run-id <run_id> --profile local --no-fetch --format json"
   ],
   "artifacts": {
     "datasets_root": "artifacts/tutorials/datasets",

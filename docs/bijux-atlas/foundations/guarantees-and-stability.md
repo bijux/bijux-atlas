@@ -86,7 +86,7 @@ Atlas tries to provide:
 
 - Atlas validates supported inputs and runtime boundaries, but it does not make upstream data sources inherently correct.
 - Atlas prefers artifact-centric workflows, so shortcuts that skip publication into a serving store are outside the intended serving model.
-- Maintainer automation around `bijux-dev-atlas` is important and tested, but it is not the same stability layer as the user-facing runtime API and CLI.
+- Maintainer automation around `bijux-atlas-dev` is important and tested, but it is not the same stability layer as the user-facing runtime API and CLI.
 
 ## Why Stability Is Evidence-Based
 

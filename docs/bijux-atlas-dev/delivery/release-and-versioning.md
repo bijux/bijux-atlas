@@ -113,7 +113,7 @@ Review deprecation entries in `configs/sources/governance/governance/deprecation
 release preparation, and use this command to inspect the broader governance state:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- governance doctor --format json
+cargo run -q -p bijux-atlas-dev -- governance doctor --format json
 ```
 
 For release preparation, also confirm that the required branch-protection and promotion workflows

@@ -59,6 +59,28 @@ budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
+id = "checks_crates_bijux_atlas_dev_help_dispatch_present"
+domain = "crates"
+title = "bijux atlas routes dev control plane to bijux dev atlas help"
+docs = "docs/08-contracts/plugin-contracts.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
+
+[[checks]]
+id = "checks_crates_bijux_atlas_dev_not_umbrella_binary"
+domain = "crates"
+title = "dev atlas crate does not define umbrella binary name"
+docs = "docs/08-contracts/plugin-contracts.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
 domain = "crates"
 title = "bijux atlas help does not expose dev command surfaces"
@@ -84,28 +106,6 @@ visibility = "public"
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
-docs = "docs/08-contracts/plugin-contracts.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "internal"
-
-[[checks]]
-id = "checks_crates_bijux_dev_atlas_help_dispatch_present"
-domain = "crates"
-title = "bijux atlas routes dev control plane to bijux dev atlas help"
-docs = "docs/08-contracts/plugin-contracts.md"
-tags = ["fast"]
-suites = ["ci", "ci_fast", "local", "deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "public"
-
-[[checks]]
-id = "checks_crates_bijux_dev_atlas_not_umbrella_binary"
-domain = "crates"
-title = "dev atlas crate does not define umbrella binary name"
 docs = "docs/08-contracts/plugin-contracts.md"
 tags = ["internal", "slow"]
 suites = ["deep"]

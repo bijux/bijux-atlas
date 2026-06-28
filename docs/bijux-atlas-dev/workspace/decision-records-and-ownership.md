@@ -35,7 +35,7 @@ The most reliable ownership signals in this repository are:
 
 - page-level `owner` metadata in canonical docs
 - registry or schema ownership fields in `configs/`
-- suite, report, and runnable ownership metadata emitted by `bijux-dev-atlas`
+- suite, report, and runnable ownership metadata emitted by `bijux-atlas-dev`
 - repository review boundaries in `.github/CODEOWNERS`
 
 If those signals disagree, resolve the ownership drift before merging the change.
@@ -80,9 +80,9 @@ Capture a durable decision record when you:
 ## Practical Commands
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- governance adr index --format json
-cargo run -q -p bijux-dev-atlas -- governance list --format json
-cargo run -q -p bijux-dev-atlas -- governance doctor --format json
+cargo run -q -p bijux-atlas-dev -- governance adr index --format json
+cargo run -q -p bijux-atlas-dev -- governance list --format json
+cargo run -q -p bijux-atlas-dev -- governance doctor --format json
 ```
 
 Use these commands to inspect the current governance state before you add another layer of implied process.

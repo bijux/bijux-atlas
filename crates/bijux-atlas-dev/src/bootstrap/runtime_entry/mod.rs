@@ -1,0 +1,179 @@
+pub(crate) use std::fs;
+pub(crate) use std::io::{self, IsTerminal, Write};
+pub(crate) use std::path::{Path, PathBuf};
+pub(crate) use std::process::Command as ProcessCommand;
+
+pub(crate) use crate::api_commands::run_api_command;
+pub(crate) use crate::artifacts_commands::run_artifacts_command;
+pub(crate) use crate::audit_commands::run_audit_command;
+pub(crate) use crate::build_commands::run_build_command;
+#[cfg(test)]
+pub(crate) use crate::cli::Cli;
+pub(crate) use crate::cli::{
+    CheckModeArg, CheckSeverityArg, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs,
+    DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget,
+    OpsStatusTarget, WorkflowsCommand,
+};
+pub(crate) use crate::commands_data::run_data_command;
+#[cfg(test)]
+pub(crate) use crate::configs_commands::parse_config_file;
+pub(crate) use crate::configs_commands::{
+    configs_context, configs_diff_payload, configs_lint_payload, configs_validate_payload,
+    run_configs_command,
+};
+pub(crate) use crate::control_plane_commands::{
+    run_capabilities_command, run_docker_command, run_help_inventory_command, run_policies_command,
+    run_print_boundaries_command, run_print_policies, run_version_command,
+};
+#[cfg(test)]
+pub(crate) use crate::docs_commands::mkdocs_nav_refs;
+pub(crate) use crate::docs_commands::{
+    docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
+};
+pub(crate) use crate::docs_commands::{docs_lint_payload, run_docs_command};
+pub(crate) use crate::drift_commands::run_drift_command;
+pub(crate) use crate::governance_commands::run_governance_command;
+pub(crate) use crate::governance_commands::run_registry_command;
+pub(crate) use crate::invariants_commands::run_invariants_command;
+pub(crate) use crate::load_commands::run_load_command;
+pub(crate) use crate::makes_commands::run_makes_command;
+pub(crate) use crate::migrations_commands::run_migrations_command;
+pub(crate) use crate::observe_commands::run_observe_command;
+pub(crate) use crate::ops_commands::{
+    emit_payload, normalize_tool_version_with_regex, run_ops_command,
+};
+pub(crate) use crate::ops_support::{
+    OpsCommandError, OpsFs, OpsProcess, StackProfile, ToolchainInventory,
+};
+pub(crate) use crate::perf_commands::run_perf_command;
+pub(crate) use crate::release_commands::run_release_command;
+pub(crate) use crate::reproduce_commands::run_reproduce_command;
+pub(crate) use crate::runtime_commands::run_runtime_command;
+pub(crate) use crate::security_commands::run_security_command;
+pub(crate) use crate::suites_commands::{
+    run_registry_check_by_id, run_registry_contract_by_id, run_suites_command,
+};
+pub(crate) use crate::system_commands::run_system_command;
+pub(crate) use crate::tutorials_commands::run_tutorials_command;
+pub(crate) use bijux_atlas_dev::core::{
+    exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
+    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
+    Selectors,
+};
+pub(crate) use bijux_atlas_dev::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+pub(crate) use bijux_atlas_dev::model::{CheckMode, CheckSeverity};
+pub(crate) use bijux_atlas_dev::registry::{CheckCatalog, CheckCatalogEntry};
+pub(crate) use bijux_atlas_dev::runtime::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
+pub(crate) use bijux_atlas_dev::ui::terminal::report::render_check_run_report;
+pub(crate) use bijux_atlas_ops::inventory::ops_inventory::validate_ops_inventory;
+pub(crate) use regex::Regex;
+pub(crate) use serde::{Deserialize, Serialize};
+pub(crate) use serde_yaml::Value as YamlValue;
+pub(crate) use sha2::{Digest, Sha256};
+
+const UMBRELLA_MIN_VERSION: &str = "0.3.0";
+const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.4.0";
+
+impl From<DomainArg> for DomainId {
+    fn from(value: DomainArg) -> Self {
+        match value {
+            DomainArg::Root => Self::Root,
+            DomainArg::Workflows => Self::Workflows,
+            DomainArg::Configs => Self::Configs,
+            DomainArg::Docker => Self::Docker,
+            DomainArg::Crates => Self::Crates,
+            DomainArg::Ops => Self::Ops,
+            DomainArg::Repo => Self::Repo,
+            DomainArg::Docs => Self::Docs,
+            DomainArg::Make => Self::Make,
+        }
+    }
+}
+
+pub(crate) fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
+    WorkspaceRoot::from_cli_or_cwd(arg)
+        .map(WorkspaceRoot::into_inner)
+        .map_err(|err| err.to_string())
+}
+
+pub(crate) fn plugin_metadata_json() -> String {
+    serde_json::json!({
+        "schema_version": "v1",
+        "name": "bijux-atlas-dev",
+        "version": bijux_atlas_dev::version::runtime_semver(),
+        "version_display": bijux_atlas_dev::version::runtime_version(),
+        "build_hash": option_env!("BIJUX_GIT_HASH"),
+        "compatible_umbrella": format!(">={UMBRELLA_MIN_VERSION},<{UMBRELLA_MAX_EXCLUSIVE_VERSION}"),
+        "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
+        "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
+    })
+    .to_string()
+}
+
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn parse_selectors(
+    suite: Option<String>,
+    domain: Option<DomainArg>,
+    severity: Option<CheckSeverityArg>,
+    mode: Option<CheckModeArg>,
+    tag: Option<String>,
+    name: Option<String>,
+    id: Option<String>,
+    include_internal: bool,
+    include_slow: bool,
+) -> Result<Selectors, String> {
+    if let Some(pattern) = id.as_deref() {
+        validate_id_glob_pattern(pattern)?;
+    }
+    let normalized_suite = suite
+        .as_deref()
+        .map(normalize_suite_name)
+        .transpose()?
+        .map(std::string::ToString::to_string);
+    Ok(Selectors {
+        suite: normalized_suite
+            .as_ref()
+            .map(|v| SuiteId::parse(v))
+            .transpose()?,
+        domain: domain.map(Into::into),
+        severity: severity.map(|value| match value {
+            CheckSeverityArg::Blocker => CheckSeverity::Blocker,
+            CheckSeverityArg::High => CheckSeverity::High,
+            CheckSeverityArg::Medium => CheckSeverity::Medium,
+            CheckSeverityArg::Low => CheckSeverity::Low,
+            CheckSeverityArg::Info => CheckSeverity::Info,
+        }),
+        mode: mode.map(|value| match value {
+            CheckModeArg::Static => CheckMode::Static,
+            CheckModeArg::Effect => CheckMode::Effect,
+        }),
+        tag: tag.map(|v| Tag::parse(&v)).transpose()?,
+        title_substring: name,
+        id_glob: id,
+        include_internal,
+        include_slow,
+    })
+}
+
+fn validate_id_glob_pattern(pattern: &str) -> Result<(), String> {
+    let trimmed = pattern.trim();
+    if trimmed.is_empty() {
+        return Err("invalid wildcard pattern ``: pattern cannot be empty".to_string());
+    }
+    if let Some(ch) = trimmed
+        .chars()
+        .find(|ch| !(ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | ':' | '*' | '?')))
+    {
+        return Err(format!(
+            "invalid wildcard pattern `{trimmed}`: unsupported metacharacter `{ch}`; use `*` and `?` only"
+        ));
+    }
+    Ok(())
+}
+
+mod contracts;
+mod repo_surface_checks;
+pub(crate) use contracts::*;
+pub(crate) fn run() -> i32 {
+    crate::cli::run()
+}

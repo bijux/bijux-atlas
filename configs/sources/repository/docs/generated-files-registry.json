@@ -3,47 +3,47 @@
   "entries": [
     {
       "path": "artifacts/docs/generated/examples.md",
-      "generator": "bijux-dev-atlas docs generate examples --allow-write"
+      "generator": "bijux-atlas-dev docs generate examples --allow-write"
     },
     {
       "path": "artifacts/docs/generated/command-lists.md",
-      "generator": "bijux-dev-atlas docs generate command-lists --allow-write --allow-subprocess"
+      "generator": "bijux-atlas-dev docs generate command-lists --allow-write --allow-subprocess"
     },
     {
       "path": "artifacts/docs/generated/schema-snippets.md",
-      "generator": "bijux-dev-atlas docs generate schema-snippets --allow-write"
+      "generator": "bijux-atlas-dev docs generate schema-snippets --allow-write"
     },
     {
       "path": "artifacts/docs/generated/openapi-snippets.md",
-      "generator": "bijux-dev-atlas docs generate openapi-snippets --allow-write"
+      "generator": "bijux-atlas-dev docs generate openapi-snippets --allow-write"
     },
     {
       "path": "artifacts/docs/generated/ops-snippets.md",
-      "generator": "bijux-dev-atlas docs generate ops-snippets --allow-write"
+      "generator": "bijux-atlas-dev docs generate ops-snippets --allow-write"
     },
     {
       "path": "artifacts/docs/generated/real-data-runs-table.md",
-      "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
+      "generator": "bijux-atlas-dev docs generate real-data-pages --allow-write"
     },
     {
       "path": "artifacts/docs/generated/docs-artifact-link-inventory.md",
-      "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
+      "generator": "bijux-atlas-dev docs generate real-data-pages --allow-write"
     },
     {
       "path": "artifacts/docs/generated/real-data-runs-overview.md",
-      "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
+      "generator": "bijux-atlas-dev docs generate real-data-pages --allow-write"
     },
     {
       "path": "artifacts/docs/generated/real-data-runs-overview.json",
-      "generator": "bijux-dev-atlas docs generate real-data-pages --allow-write"
+      "generator": "bijux-atlas-dev docs generate real-data-pages --allow-write"
     },
     {
       "path": "artifacts/docs/generated/ops-compatibility-matrix.md",
-      "generator": "bijux-dev-atlas release ops compatibility-matrix --allow-write"
+      "generator": "bijux-atlas-dev release ops compatibility-matrix --allow-write"
     },
     {
       "path": "artifacts/docs/generated/ops-compatibility-matrix.json",
-      "generator": "bijux-dev-atlas release ops compatibility-matrix --allow-write"
+      "generator": "bijux-atlas-dev release ops compatibility-matrix --allow-write"
     }
   ]
 }

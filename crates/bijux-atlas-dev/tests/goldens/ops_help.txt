@@ -1,0 +1,75 @@
+Usage: bijux-atlas-dev ops [OPTIONS] <COMMAND>
+
+Commands:
+  logs              
+  describe          
+  events            
+  resources         
+  kind              
+  helm              
+  list              
+  explain           
+  stack             
+  k8s               
+  profiles          
+  profile           
+  load              
+  datasets          
+  e2e               
+  scenario          
+  obs               
+  schema            
+  inventory-domain  
+  report-domain     
+  evidence          
+  diagnose          
+  drills            
+  tools             
+  suite             
+  doctor            
+  validate          
+  graph             
+  inventory         
+  docs              
+  docs-verify       
+  conformance       
+  report            
+  helm-env          
+  readiness         
+  render            
+  install           
+  smoke             
+  status            
+  list-profiles     
+  explain-profile   
+  list-tools        
+  verify-tools      
+  list-actions      
+  plan              
+  package           
+  release-plan      
+  install-plan      
+  up                
+  down              
+  clean             
+  cleanup           
+  reset             
+  pins              
+  generate          
+
+Options:
+      --output-format <OUTPUT_FORMAT>  [possible values: human, json, both]
+      --no-deprecation-warn            
+  -h, --help                           Print help
+
+Ops Pillars And Docs Entrypoints:
+  inventory -> docs/bijux-atlas/interfaces/command-surface.md
+  schema -> docs/bijux-atlas/interfaces/index.md
+  datasets -> docs/bijux-atlas-ops/index.md
+  e2e -> docs/bijux-atlas-ops/load/performance-and-load.md
+  env -> docs/bijux-atlas-ops/kubernetes/runtime-configuration.md
+  stack -> docs/bijux-atlas-ops/stack/deployment-models.md
+  k8s -> docs/bijux-atlas-ops/stack/deployment-models.md
+  load -> docs/bijux-atlas-ops/load/performance-and-load.md
+  observe -> docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md
+  report -> docs/bijux-atlas-dev/automation/automation-reports-reference.md

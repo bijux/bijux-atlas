@@ -1,0 +1,27 @@
+[package]
+name = "bijux-atlas-ops"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Operational surface registry and stack-facing contracts for bijux-atlas"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["bijux", "ops", "k8s", "load", "stack"]
+publish = false
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml = "0.9"
+regex = "1"
+toml = "1.1"
+sha2 = "0.11"
+hex = "0.4"
+tar = "0.4"
+
+[dev-dependencies]
+tempfile = "=3.27.0"
+
+[lib]
+path = "src/lib.rs"

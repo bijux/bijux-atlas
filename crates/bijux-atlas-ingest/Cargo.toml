@@ -1,0 +1,148 @@
+[package]
+name = "bijux-atlas-ingest"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Atlas ingest engine contracts, normalization, and artifact build surfaces"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-ingest/latest/bijux_atlas_ingest/"
+readme = "README.md"
+categories = ["science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
+keywords = ["bioinformatics", "genomics", "ingest", "gff3", "fasta"]
+
+[dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-model = { workspace = true }
+bijux-atlas-query = { workspace = true }
+rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+serde.workspace = true
+serde_json.workspace = true
+unicode-normalization = "0.1"
+zstd = "0.13"
+
+[dev-dependencies]
+criterion = "0.8"
+hex = "0.4"
+proptest = "1"
+tempfile = "=3.27.0"
+toml = "1.0"
+
+[lib]
+path = "src/lib.rs"
+
+[[test]]
+name = "ingest_workflows"
+path = "tests/ingest_workflows.rs"
+
+[[bench]]
+name = "ingest_db_size_growth"
+path = "benches/ingest/db_size_growth.rs"
+harness = false
+
+[[bench]]
+name = "ingest_fai_validation_overhead"
+path = "benches/ingest/fai_validation_overhead.rs"
+harness = false
+
+[[bench]]
+name = "ingest_fasta_loading_throughput"
+path = "benches/ingest/fasta_loading_throughput.rs"
+harness = false
+
+[[bench]]
+name = "ingest_gff3_parsing_throughput"
+path = "benches/ingest/gff3_parsing_throughput.rs"
+harness = false
+
+[[bench]]
+name = "ingest_anomaly_overhead"
+path = "benches/ingest/ingest_anomaly_overhead.rs"
+harness = false
+
+[[bench]]
+name = "ingest_artifact_compression"
+path = "benches/ingest/ingest_artifact_compression.rs"
+harness = false
+
+[[bench]]
+name = "ingest_artifact_size"
+path = "benches/ingest/ingest_artifact_size.rs"
+harness = false
+
+[[bench]]
+name = "ingest_catalog_generation"
+path = "benches/ingest/ingest_catalog_generation.rs"
+harness = false
+
+[[bench]]
+name = "ingest_hashing_overhead"
+path = "benches/ingest/ingest_hashing_overhead.rs"
+harness = false
+
+[[bench]]
+name = "ingest_large_scenario"
+path = "benches/ingest/ingest_large_scenario.rs"
+harness = false
+
+[[bench]]
+name = "ingest_parallelism_scaling"
+path = "benches/ingest/ingest_parallelism_scaling.rs"
+harness = false
+
+[[bench]]
+name = "ingest_resource_tracking"
+path = "benches/ingest/ingest_resource_tracking.rs"
+harness = false
+
+[[bench]]
+name = "ingest_scenarios"
+path = "benches/ingest/ingest_scenarios.rs"
+harness = false
+
+[[bench]]
+name = "ingest_shard_distribution"
+path = "benches/ingest/ingest_shard_distribution.rs"
+harness = false
+
+[[bench]]
+name = "ingest_shard_generation_overhead"
+path = "benches/ingest/ingest_shard_generation_overhead.rs"
+harness = false
+
+[[bench]]
+name = "ingest_thread_pool_scaling"
+path = "benches/ingest/ingest_thread_pool_scaling.rs"
+harness = false
+
+[[bench]]
+name = "ingest_throughput"
+path = "benches/ingest/ingest_throughput.rs"
+harness = false
+
+[[bench]]
+name = "ingest_validation_overhead"
+path = "benches/ingest/ingest_validation_overhead.rs"
+harness = false
+
+[[bench]]
+name = "ingest_manifest_generation_latency"
+path = "benches/ingest/manifest_generation_latency.rs"
+harness = false
+
+[[bench]]
+name = "ingest_sqlite_query_latency"
+path = "benches/ingest/sqlite_query_latency.rs"
+harness = false
+
+[[bench]]
+name = "ingest_sqlite_write_performance"
+path = "benches/ingest/sqlite_write_performance.rs"
+harness = false
+
+[[bench]]
+name = "ingest_transcript_extraction"
+path = "benches/ingest/transcript_extraction.rs"
+harness = false

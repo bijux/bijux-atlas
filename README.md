@@ -9,7 +9,7 @@ This repository currently ships four connected surfaces:
 * `bijux-atlas`: the end-user CLI for dataset and query workflows,
 * `bijux-atlas-server`: the HTTP runtime server,
 * `bijux-atlas-openapi`: the OpenAPI export surface,
-* `bijux-dev-atlas`: the maintainer control plane binary defined in this workspace.
+* `bijux-atlas-dev`: the maintainer control plane binary defined in this workspace.
 
 The public promise today is a deterministic runtime, explicit repository governance, stable documented contracts, and release inputs that can be validated instead of hand-waved.
 Atlas also plugs into the sibling [`bijux-cli`](https://github.com/bijux/bijux-cli) umbrella runtime: install Atlas through `bijux` when you want routed `bijux atlas ...` and `bijux dev atlas ...` commands, or install Atlas directly when you want the standalone binaries only.
@@ -101,7 +101,7 @@ The repository is strongest when it stays concrete about what is already real:
 * a runtime CLI named `bijux-atlas`,
 * a server binary named `bijux-atlas-server`,
 * an OpenAPI export binary named `bijux-atlas-openapi`,
-* the maintainer binary `bijux-dev-atlas`,
+* the maintainer binary `bijux-atlas-dev`,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
 
@@ -109,10 +109,14 @@ This README intentionally describes the shipped release surfaces and their contr
 
 ```mermaid
 flowchart TD
-    Workspace[Repository workspace] --> RuntimeCLI[bijux-atlas]
-    Workspace --> Server[bijux-atlas-server]
-    Workspace --> OpenAPI[bijux-atlas-openapi]
-    Workspace --> ControlPlane[bijux-dev-atlas]
+    Workspace[Repository workspace] --> Runtime[bijux-atlas crate]
+    Workspace --> CLI[bijux-atlas-cli crate]
+    Workspace --> ServerCrate[bijux-atlas-server crate]
+    Workspace --> API[bijux-atlas-api crate]
+    Workspace --> ControlPlane[bijux-atlas-dev crate]
+    CLI --> RuntimeCLI[bijux-atlas]
+    ServerCrate --> Server[bijux-atlas-server]
+    API --> OpenAPI[bijux-atlas-openapi]
     Workspace --> Docs[Numbered docs spine]
     Workspace --> Governance[configs and ops validation]
 ```
@@ -123,11 +127,18 @@ runtime use and which are for repository maintenance.
 
 ## Crate Boundary Map
 
-Atlas currently enforces a three-crate architecture boundary:
+Atlas currently enforces a ten-crate workspace boundary:
 
-* `crates/bijux-atlas-core/`: runtime-independent core primitives and invariants
-* `crates/bijux-atlas/`: runtime product crate with domain, contracts, app orchestration, and adapters
-* `crates/bijux-dev-atlas/`: maintainer-only control plane for governance and repository operations
+* `crates/bijux-atlas-core/`: runtime-independent primitives and invariants
+* `crates/bijux-atlas-model/`: stable dataset, gene, diff, and policy types
+* `crates/bijux-atlas-query/`: query parsing, planning, cursoring, and SQLite execution
+* `crates/bijux-atlas-ingest/`: ingest normalization, anomaly handling, and artifact build execution
+* `crates/bijux-atlas-store/`: immutable artifact publication and backend contracts
+* `crates/bijux-atlas-api/`: API DTOs, Rust client surface, OpenAPI generation, and the `bijux-atlas-openapi` binary
+* `crates/bijux-atlas/`: runtime composition crate with application orchestration, adapters, cache wiring, and startup flows
+* `crates/bijux-atlas-cli/`: direct `bijux-atlas` binary owner plus CLI contract tests
+* `crates/bijux-atlas-server/`: direct `bijux-atlas-server` binary owner plus server-facing integration tests and benchmarks
+* `crates/bijux-atlas-dev/`: maintainer-only control plane for governance and repository operations
 
 The boundary contract for this map lives at
 [`docs/bijux-atlas/foundations/crate-boundary-contract.md`](docs/bijux-atlas/foundations/crate-boundary-contract.md).
@@ -156,9 +167,11 @@ Atlas treats dataset builds as release artifacts with explicit manifests, proven
 
 ### Runtime Surfaces With Clear Boundaries
 
-`bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi` are the user-facing runtime surfaces.
+`bijux-atlas` is owned by `bijux-atlas-cli`.
+`bijux-atlas-server` is owned by `bijux-atlas-server`.
+`bijux-atlas-openapi` remains a user-facing Atlas binary, but it is API-owned and built from `bijux-atlas-api`.
 The installed umbrella runtime namespace is `bijux atlas ...`.
-The maintainer namespace is `bijux dev atlas ...`, backed by the `bijux-dev-atlas` binary.
+The maintainer namespace is `bijux dev atlas ...`, backed by the `bijux-atlas-dev` binary.
 
 ### Governed Repository Inputs
 
@@ -190,7 +203,9 @@ bijux atlas version
 Use direct Cargo installation when you want Atlas by itself, or when CI and local Rust workflows call the binaries directly:
 
 ```bash
-cargo install --locked bijux-atlas
+cargo install --locked bijux-atlas-cli --bin bijux-atlas
+cargo install --locked bijux-atlas-server --bin bijux-atlas-server
+cargo install --locked bijux-atlas-api --bin bijux-atlas-openapi
 bijux-atlas --help
 bijux-atlas version
 ```
@@ -198,7 +213,7 @@ bijux-atlas version
 For maintainer automation, the installed umbrella namespace is:
 
 ```bash
-bijux install bijux-dev-atlas
+bijux install bijux-atlas-dev
 bijux dev atlas --help
 ```
 
@@ -214,8 +229,10 @@ bijux-atlas-openapi --help
 From a workspace checkout, run the current source tree directly with:
 
 ```bash
-cargo run -q -p bijux-atlas --bin bijux-atlas -- version
-cargo run -q -p bijux-dev-atlas -- --help
+cargo run -q -p bijux-atlas-cli --bin bijux-atlas -- version
+cargo run -q -p bijux-atlas-server --bin bijux-atlas-server -- --help
+cargo run -q -p bijux-atlas-api --bin bijux-atlas-openapi -- --help
+cargo run -q -p bijux-atlas-dev -- --help
 ```
 
 The runtime crate is published through Cargo. The maintainer crate is part of the repository contract and the `bijux dev atlas ...` umbrella surface, even when you run it directly from a checkout.
@@ -263,20 +280,20 @@ Atlas keeps repository automation explicit:
 
 ```bash
 bijux dev atlas --help
-cargo run -q -p bijux-dev-atlas -- --help
+cargo run -q -p bijux-atlas-dev -- --help
 make help
 ```
 
 Use `bijux dev atlas ...` as the canonical installed automation surface.
-Use `bijux-dev-atlas` or `cargo run -p bijux-dev-atlas -- ...` when you are working from a checkout.
+Use `bijux-atlas-dev` or `cargo run -p bijux-atlas-dev -- ...` when you are working from a checkout.
 Use `make` only through the curated wrappers exposed from [`makes/root.mk`](makes/root.mk).
 
 Helpful maintainer entrypoints:
 
 ```bash
-cargo run -q -p bijux-dev-atlas -- docs doctor --format json
-cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo run -q -p bijux-dev-atlas -- release validate --format json
+cargo run -q -p bijux-atlas-dev -- docs doctor --format json
+cargo run -q -p bijux-atlas-dev -- governance validate --format json
+cargo run -q -p bijux-atlas-dev -- release validate --format json
 make ci-fast
 ```
 
@@ -340,7 +357,7 @@ If a surface is planned, internal, or future-facing, it should be described as s
 | Path | Purpose |
 | --- | --- |
 | `crates/bijux-atlas/` | Runtime crate and user-facing binaries |
-| `crates/bijux-dev-atlas/` | Maintainer control plane for docs, checks, governance, release, configs, and ops |
+| `crates/bijux-atlas-dev/` | Maintainer control plane for docs, checks, governance, release, configs, and ops |
 | `configs/` | Repository-owned policy, schemas, registries, and examples |
 | `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
 | `makes/` | Thin GNU Make wrapper surface |

@@ -65,16 +65,16 @@
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
-      "ref": "v3.0.1",
-      "sha": "718ea10b132b3b2eba29c1007bb80653f286566b"
+      "ref": "v2.3.3",
+      "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
     },
     "actions/github-script": {
       "ref": "v9.0.0",
       "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
     },
     "astral-sh/setup-uv": {
-      "ref": "v8.1.0",
-      "sha": "08807647e7069bb48b6ef5acd8ec9567f424441b"
+      "ref": "v8.2.0",
+      "sha": "fac544c07dec837d0ccb6301d7b5580bf5edae39"
     },
     "actions/setup-java": {
       "ref": "v5",

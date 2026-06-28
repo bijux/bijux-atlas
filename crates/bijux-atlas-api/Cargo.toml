@@ -1,0 +1,43 @@
+[package]
+name = "bijux-atlas-api"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Stable Atlas API contracts, OpenAPI metadata, and request or response normalization"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-api/latest/bijux_atlas_api/"
+readme = "README.md"
+categories = ["api-bindings", "science::bioinformatics"]
+exclude = ["tests/fixtures/**"]
+keywords = ["bioinformatics", "genomics", "api", "openapi", "contracts"]
+
+[dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-model = { workspace = true }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+criterion = "0.8"
+regex = "1.11"
+
+[[bin]]
+name = "bijux-atlas-openapi"
+path = "src/bin/bijux-atlas-openapi.rs"
+
+[[test]]
+name = "api_contracts"
+path = "tests/api_contracts.rs"
+
+[[test]]
+name = "client_contracts"
+path = "tests/client_contracts.rs"
+
+[[bench]]
+name = "openapi_generation"
+path = "benches/openapi_generation.rs"
+harness = false

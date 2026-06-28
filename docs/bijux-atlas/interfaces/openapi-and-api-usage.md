@@ -35,7 +35,7 @@ server exists, and the other is useful when you need to confirm what a running e
 ## Generate OpenAPI Offline
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- openapi generate \
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- openapi generate \
   --out configs/generated/openapi/v1/openapi.json
 ```
 

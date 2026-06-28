@@ -1,0 +1,791 @@
+// SPDX-License-Identifier: Apache-2.0
+
+use crate::adapters::inbound::http::genes::{
+    admission as genes_admission, response as genes_response, support as genes_support,
+};
+use crate::adapters::inbound::http::handlers;
+use crate::app::query as app_query;
+use crate::sha256_hex;
+use crate::*;
+use bijux_atlas_model::dataset::artifact_paths;
+use bijux_atlas_model::dataset::ShardCatalog;
+use serde_json::json;
+use tracing::{info, info_span, warn};
+
+use super::response_finalize::{finalize_genes_success_response, GenesResponseFinalizeContext};
+
+pub(crate) async fn genes_handler(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
+) -> Response {
+    let started = Instant::now();
+    let request_id = handlers::propagated_request_id(&headers, &state);
+    if !state.accepting_requests.load(Ordering::Relaxed) {
+        crate::record_shed_reason(&state, "draining").await;
+        let resp = handlers::api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            handlers::error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server draining; refusing new requests",
+                json!({}),
+            ),
+        );
+        state
+            .metrics()
+            .observe_request(
+                "/v1/genes",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return handlers::with_request_id(resp, &request_id);
+    }
+    info!(request_id = %request_id, "request start");
+    let overloaded_early =
+        crate::adapters::inbound::http::middleware::shedding::overloaded(&state).await;
+    let adaptive_rl = genes_support::adaptive_rl_factor(&state, overloaded_early);
+    if let Some(resp) = async {
+        genes_admission::enforce_ip_rate_limit(&state, &headers, adaptive_rl, started, &request_id)
+            .await
+    }
+    .instrument(info_span!("admission_control", route = "/v1/genes"))
+    .await
+    {
+        crate::record_shed_reason(&state, "ip_rate_limited").await;
+        return resp;
+    }
+    if let Some(resp) = async {
+        genes_admission::enforce_api_key_rate_limit(
+            &state,
+            &headers,
+            adaptive_rl,
+            started,
+            &request_id,
+        )
+        .await
+    }
+    .instrument(info_span!("admission_control", route = "/v1/genes"))
+    .await
+    {
+        crate::record_shed_reason(&state, "api_key_rate_limited").await;
+        return resp;
+    }
+    let (dataset, mut req) =
+        match async { genes_support::build_dataset_query(&params, state.limits.max_limit) }
+            .instrument(info_span!("dataset_resolve", route = "/v1/genes"))
+            .await
+        {
+            Ok(v) => v,
+            Err(e) => {
+                let resp = handlers::api_error_response(StatusCode::BAD_REQUEST, e);
+                state
+                    .metrics()
+                    .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
+                    .await;
+                return handlers::with_request_id(resp, &request_id);
+            }
+        };
+    let class = classify_query(&req);
+    let estimated_cost = app_query::estimate_work_units(&req);
+    info!(
+        request_id = %request_id,
+        route = "/v1/genes",
+        query_class = ?class,
+        policy_mode = %state.runtime_policy_mode.as_str(),
+        max_page_size = state.limits.max_limit,
+        max_region_span = state.limits.max_region_span,
+        max_response_bytes = state.limits.max_serialization_bytes,
+        "policy_applied"
+    );
+    if estimated_cost >= 50 {
+        info!(
+            request_id = %request_id,
+            route = "/v1/genes",
+            dataset = %dataset.canonical_string(),
+            query_class = ?class,
+            query_cost = estimated_cost,
+            "query_cost_sample"
+        );
+    }
+    let overloaded = state
+        .metrics()
+        .should_shed_heavy(
+            state.api.shed_latency_min_samples,
+            state.api.shed_latency_p95_threshold_ms,
+        )
+        .await;
+    genes_support::record_overload_cheap(&state, class, overloaded);
+    if overloaded
+        && state.api.allow_min_viable_response
+        && handlers::wants_min_viable_response(&params)
+    {
+        req.fields = GeneFields {
+            gene_id: true,
+            name: true,
+            coords: false,
+            biotype: false,
+            transcript_count: false,
+            sequence_length: false,
+        };
+    }
+    if let Some(error) = genes_support::check_serialization_budget(&req, &state.limits) {
+        let resp = handlers::api_error_response(StatusCode::UNPROCESSABLE_ENTITY, error);
+        state
+            .metrics()
+            .observe_request(
+                "/v1/genes",
+                StatusCode::UNPROCESSABLE_ENTITY,
+                started.elapsed(),
+            )
+            .await;
+        return handlers::with_request_id(resp, &request_id);
+    }
+    if class == QueryClass::Heavy && req.limit > state.limits.heavy_projection_limit {
+        let resp = handlers::api_error_response(
+            StatusCode::UNPROCESSABLE_ENTITY,
+            handlers::error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "heavy projection limit exceeded",
+                json!({"limit": req.limit, "max": state.limits.heavy_projection_limit}),
+            ),
+        );
+        state
+            .metrics()
+            .observe_request(
+                "/v1/genes",
+                StatusCode::UNPROCESSABLE_ENTITY,
+                started.elapsed(),
+            )
+            .await;
+        return handlers::with_request_id(resp, &request_id);
+    }
+    genes_support::cap_heavy_limit(&mut req, &state, class, overloaded);
+    let (exact_gene_id, redis_cache_key) = genes_support::exact_lookup_cache_keys(&dataset, &req);
+    if (class == QueryClass::Heavy && state.api.shed_load_enabled && overloaded)
+        || crate::adapters::inbound::http::middleware::shedding::should_shed_noncheap(&state, class)
+            .await
+    {
+        crate::record_shed_reason(&state, "bulkhead_shed_heavy").await;
+        let backoff =
+            crate::adapters::inbound::http::middleware::shedding::heavy_backoff_ms(&state);
+        tokio::time::sleep(Duration::from_millis(backoff)).await;
+        let mut resp = handlers::api_error_response(
+            StatusCode::SERVICE_UNAVAILABLE,
+            handlers::error_json(
+                ApiErrorCode::QueryRejectedByPolicy,
+                "server is shedding heavy query load",
+                json!({"class":"heavy","retry_after_ms": backoff}),
+            ),
+        );
+        if let Ok(v) = HeaderValue::from_str(&(backoff / 1000).max(1).to_string()) {
+            resp.headers_mut().insert("retry-after", v);
+        }
+        state
+            .metrics()
+            .observe_request(
+                "/v1/genes",
+                StatusCode::SERVICE_UNAVAILABLE,
+                started.elapsed(),
+            )
+            .await;
+        return handlers::with_request_id(resp, &request_id);
+    }
+    let _queue_guard = match genes_admission::try_enter_request_queue(&state) {
+        Ok(g) => g,
+        Err(e) => {
+            crate::record_shed_reason(&state, "queue_depth_exceeded").await;
+            let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            state
+                .metrics()
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::TOO_MANY_REQUESTS,
+                    started.elapsed(),
+                )
+                .await;
+            return handlers::with_request_id(resp, &request_id);
+        }
+    };
+    let _class_permit = match genes_support::acquire_class_permit(&state, class).await {
+        Ok(v) => v,
+        Err(e) => {
+            crate::record_shed_reason(&state, "class_permit_saturated").await;
+            let resp = handlers::api_error_response(StatusCode::TOO_MANY_REQUESTS, e);
+            state
+                .metrics()
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::TOO_MANY_REQUESTS,
+                    started.elapsed(),
+                )
+                .await;
+            return handlers::with_request_id(resp, &request_id);
+        }
+    };
+    let _heavy_worker_permit =
+        match genes_admission::acquire_heavy_worker_permit(&state, class, started, &request_id)
+            .await
+        {
+            Ok(permit) => permit,
+            Err(resp) => {
+                crate::record_shed_reason(&state, "heavy_worker_saturated").await;
+                return resp;
+            }
+        };
+    let normalized = handlers::normalize_query(&params);
+    let query_id = {
+        let fingerprint = format!("{}|{}", request_id, normalized);
+        let digest = sha256_hex(fingerprint.as_bytes());
+        format!("qry-{}", &digest[..12])
+    };
+    let manifest_summary = state.cache.fetch_manifest_summary(&dataset).await.ok();
+    let artifact_hash = handlers::dataset_artifact_hash(manifest_summary.as_ref(), &dataset);
+    let etag = handlers::dataset_etag(&artifact_hash, "/v1/genes", &params);
+    let cache_key_debug = format!("/v1/genes?{normalized}");
+    state
+        .metrics()
+        .observe_request_size("/v1/genes", cache_key_debug.len())
+        .await;
+    let explain_mode = handlers::bool_query_flag(&params, "explain");
+    let mut redis_fill_guard = None;
+    if state.api.enable_redis_response_cache {
+        if let Some(cache_key) = &redis_cache_key {
+            match state.redis_gene_cache_get(cache_key).await {
+                Ok(Some(cached_bytes)) => {
+                    if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
+                        let mut resp = StatusCode::NOT_MODIFIED.into_response();
+                        handlers::put_cache_headers(
+                            resp.headers_mut(),
+                            state.api.immutable_gene_ttl,
+                            &etag,
+                            handlers::CachePolicy::ImmutableDataset,
+                        );
+                        resp = handlers::with_query_class(resp, class);
+                        state
+                            .metrics()
+                            .observe_request(
+                                "/v1/genes",
+                                StatusCode::NOT_MODIFIED,
+                                started.elapsed(),
+                            )
+                            .await;
+                        return handlers::with_request_id(resp, &request_id);
+                    }
+                    let mut resp = Response::builder()
+                        .status(StatusCode::OK)
+                        .body(Body::from(cached_bytes))
+                        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+                    resp.headers_mut()
+                        .insert("content-type", HeaderValue::from_static("application/json"));
+                    handlers::put_cache_headers(
+                        resp.headers_mut(),
+                        state.api.immutable_gene_ttl,
+                        &etag,
+                        handlers::CachePolicy::ImmutableDataset,
+                    );
+                    if let Ok(v) = HeaderValue::from_str("redis-hit") {
+                        resp.headers_mut().insert("x-atlas-cache", v);
+                    }
+                    resp = handlers::with_query_class(resp, class);
+                    state
+                        .metrics()
+                        .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                        .await;
+                    return handlers::with_request_id(resp, &request_id);
+                }
+                Ok(None) => {
+                    let guard = state.acquire_redis_fill_lock(cache_key).await;
+                    match state.redis_gene_cache_get(cache_key).await {
+                        Ok(Some(cached_bytes)) => {
+                            if handlers::if_none_match(&headers).as_deref() == Some(etag.as_str()) {
+                                let mut resp = StatusCode::NOT_MODIFIED.into_response();
+                                handlers::put_cache_headers(
+                                    resp.headers_mut(),
+                                    state.api.immutable_gene_ttl,
+                                    &etag,
+                                    handlers::CachePolicy::ImmutableDataset,
+                                );
+                                resp = handlers::with_query_class(resp, class);
+                                state
+                                    .metrics()
+                                    .observe_request(
+                                        "/v1/genes",
+                                        StatusCode::NOT_MODIFIED,
+                                        started.elapsed(),
+                                    )
+                                    .await;
+                                return handlers::with_request_id(resp, &request_id);
+                            }
+                            let mut resp = Response::builder()
+                                .status(StatusCode::OK)
+                                .body(Body::from(cached_bytes))
+                                .unwrap_or_else(|_| {
+                                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                                });
+                            resp.headers_mut().insert(
+                                "content-type",
+                                HeaderValue::from_static("application/json"),
+                            );
+                            handlers::put_cache_headers(
+                                resp.headers_mut(),
+                                state.api.immutable_gene_ttl,
+                                &etag,
+                                handlers::CachePolicy::ImmutableDataset,
+                            );
+                            if let Ok(v) = HeaderValue::from_str("redis-hit") {
+                                resp.headers_mut().insert("x-atlas-cache", v);
+                            }
+                            resp = handlers::with_query_class(resp, class);
+                            state
+                                .metrics()
+                                .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                                .await;
+                            return handlers::with_request_id(resp, &request_id);
+                        }
+                        Ok(None) => {
+                            redis_fill_guard = guard;
+                        }
+                        Err(e) => {
+                            warn!("redis cache read fallback after fill-lock: {e}");
+                            redis_fill_guard = guard;
+                        }
+                    }
+                }
+                Err(e) => warn!("redis cache read fallback: {e}"),
+            }
+        }
+    }
+    let coalesce_key = format!(
+        "{}|{}|{}|{}",
+        dataset.canonical_string(),
+        format!("{class:?}").to_lowercase(),
+        normalized,
+        handlers::wants_pretty(&params)
+    );
+    let dataset_key = {
+        let hash = sha256_hex(dataset.canonical_string().as_bytes());
+        format!("ds-{}", &hash[..12])
+    };
+    state.metrics().observe_dataset_query(&dataset_key).await;
+    if class == QueryClass::Heavy || class == QueryClass::Cheap {
+        if let Some(entry) = info_span!(
+            "cache_lookup_hot_query",
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes"
+        )
+        .in_scope(|| async { state.hot_query_get(&coalesce_key).await })
+        .await
+        {
+            info!(
+                event_id = "cache_hit_hot_query",
+                request_id = %request_id,
+                query_id = %query_id,
+                dataset_id = %dataset.canonical_string(),
+                query_type = "genes",
+                "hot query cache hit"
+            );
+            state.metrics().observe_query_cache_hit();
+            let mut resp = Response::builder()
+                .status(StatusCode::OK)
+                .body(Body::from(entry.body))
+                .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response());
+            resp.headers_mut()
+                .insert("content-type", HeaderValue::from_static("application/json"));
+            handlers::put_cache_headers(
+                resp.headers_mut(),
+                state.api.immutable_gene_ttl,
+                &entry.etag,
+                handlers::CachePolicy::ImmutableDataset,
+            );
+            resp = handlers::with_query_class(resp, class);
+            state
+                .metrics()
+                .observe_request("/v1/genes", StatusCode::OK, started.elapsed())
+                .await;
+            return handlers::with_request_id(resp, &request_id);
+        }
+        info!(
+            event_id = "cache_miss_hot_query",
+            request_id = %request_id,
+            query_id = %query_id,
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes",
+            "hot query cache miss"
+        );
+        state.metrics().observe_query_cache_miss();
+    }
+    let _coalesce_guard = if class == QueryClass::Heavy || class == QueryClass::Cheap {
+        Some(state.acquire_coalesced_query(&coalesce_key).await)
+    } else {
+        None
+    };
+    let stage_dataset_resolve_started = Instant::now();
+    let work = async {
+        info!(request_id = %request_id, dataset = ?dataset, "dataset resolve");
+        let c = state.cache.open_dataset_connection(&dataset).await?;
+        let _ = c
+            .conn
+            .prepare_cached(app_query::prepared_sql_for_class(class));
+        state
+            .metrics()
+            .observe_stage("dataset_open", stage_dataset_resolve_started.elapsed())
+            .await;
+        let deadline = Instant::now() + state.api.sql_timeout;
+        let _ = c
+            .conn
+            .progress_handler(1_000, Some(move || Instant::now() > deadline));
+        let query_plan_started = Instant::now();
+        let shard_candidates = info_span!(
+            "query_plan",
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes"
+        )
+        .in_scope(|| async {
+            if req.filter.region.is_some() {
+                Ok::<_, CacheError>(Some(
+                    state
+                        .cache
+                        .selected_shards_for_region(
+                            &dataset,
+                            req.filter.region.as_ref().map(|r| r.seqid.as_str()),
+                        )
+                        .await?,
+                ))
+            } else {
+                Ok::<_, CacheError>(None)
+            }
+        })
+        .await?;
+        state
+            .metrics()
+            .observe_stage("query_plan", query_plan_started.elapsed())
+            .await;
+        let query_started = Instant::now();
+        let query_span = info_span!(
+            "query_execution",
+            class = %format!("{class:?}").to_lowercase(),
+            dataset_id = %dataset.canonical_string(),
+            query_type = "genes",
+            request_origin = headers
+                .get("x-request-origin")
+                .and_then(|v| v.to_str().ok())
+                .unwrap_or("")
+        );
+        let result = query_span.in_scope(|| {
+            if let Some(gene_id) = exact_gene_id.as_ref() {
+                if req.fields.gene_id
+                    && req.fields.name
+                    && !req.fields.coords
+                    && !req.fields.biotype
+                    && !req.fields.transcript_count
+                    && !req.fields.sequence_length
+                {
+                    if let Some(bytes) =
+                        app_query::query_gene_id_name_json_minimal(&c.conn, gene_id)
+                            .map_err(CacheError)?
+                    {
+                        let value: serde_json::Value = serde_json::from_slice(&bytes)
+                            .map_err(|e| CacheError(e.to_string()))?;
+                        return Ok(bijux_atlas_query::GeneQueryResponse {
+                            rows: vec![bijux_atlas_query::GeneRow {
+                                gene_id: value
+                                    .get("gene_id")
+                                    .and_then(serde_json::Value::as_str)
+                                    .unwrap_or_default()
+                                    .to_string(),
+                                name: value
+                                    .get("name")
+                                    .and_then(serde_json::Value::as_str)
+                                    .map(ToString::to_string),
+                                seqid: None,
+                                start: None,
+                                end: None,
+                                biotype: None,
+                                transcript_count: None,
+                                sequence_length: None,
+                            }],
+                            next_cursor: None,
+                        });
+                    }
+                }
+                let row = app_query::query_gene_by_id(&c.conn, gene_id, &req.fields)
+                    .map_err(CacheError)?;
+                return Ok(bijux_atlas_query::GeneQueryResponse {
+                    rows: row.into_iter().collect(),
+                    next_cursor: None,
+                });
+            }
+            if req.filter.region.is_some() {
+                let _shard_routing_span = info_span!(
+                    "shard_routing",
+                    dataset_id = %dataset.canonical_string(),
+                    shard_id = tracing::field::Empty
+                )
+                .entered();
+                info!(
+                    event_id = "shard_routing_started",
+                    request_id = %request_id,
+                    query_id = %query_id,
+                    dataset_id = %dataset.canonical_string(),
+                    "shard routing started"
+                );
+                let catalog_path = artifact_paths(state.cache.disk_root(), &dataset)
+                    .derived_dir
+                    .join("catalog_shards.json");
+                if catalog_path.exists() {
+                    let raw = crate::adapters::inbound::http::effects_adapters::read_bytes(
+                        &catalog_path,
+                    )?;
+                    if let Ok(catalog) = serde_json::from_slice::<ShardCatalog>(&raw) {
+                        let selected_rel = app_query::select_shards(&req, &catalog);
+                        let selected_all = shard_candidates.clone().unwrap_or_default();
+                        let selected: Vec<std::path::PathBuf> = selected_all
+                            .into_iter()
+                            .filter(|p| selected_rel.iter().any(|r| p.ends_with(r)))
+                            .collect();
+                        if !selected.is_empty() {
+                            let mut shard_conns = Vec::new();
+                            let mut permits = Vec::new();
+                            for shard in selected
+                                .into_iter()
+                                .take(state.cache.max_open_shards_per_pod())
+                            {
+                                tracing::Span::current()
+                                    .record("shard_id", tracing::field::display(shard.display()));
+                                permits.push(state.cache.try_acquire_shard_permit()?);
+                                let conn =
+                                    bijux_atlas_runtime::adapters::outbound::sqlite::open_readonly_no_mutex(
+                                        &shard,
+                                    )?;
+                                let (cache_kib, shard_mmap) =
+                                    state.cache.sqlite_pragmas_for_shard_open();
+                                let _ = bijux_atlas_runtime::adapters::outbound::sqlite::apply_readonly_pragmas(
+                                    &conn, cache_kib, shard_mmap,
+                                );
+                                shard_conns.push(conn);
+                            }
+                            let refs: Vec<&Connection> = shard_conns.iter().collect();
+                            let response = app_query::query_genes_fanout_execute(
+                                &refs,
+                                &req,
+                                &state.limits,
+                                b"atlas-server-cursor-secret",
+                            )
+                            .map_err(CacheError)?;
+                            info!(
+                                event_id = "shard_routing_selected",
+                                request_id = %request_id,
+                                query_id = %query_id,
+                                dataset_id = %dataset.canonical_string(),
+                                selected_shard_count = refs.len(),
+                                "shard routing selected fanout plan"
+                            );
+                            drop(permits);
+                            return Ok(response);
+                        }
+                    }
+                }
+            }
+            query_genes(&c.conn, &req, &state.limits, b"atlas-server-cursor-secret")
+                .map_err(|e| CacheError(e.to_string()))
+        })?;
+        let query_elapsed = query_started.elapsed();
+        if query_elapsed > state.api.slow_query_threshold {
+            state.metrics().observe_slow_query();
+            warn!(
+                event_id = "slow_query_detected",
+                request_id = %request_id,
+                query_id = %query_id,
+                dataset = %format!("{}/{}/{}", dataset.release, dataset.species, dataset.assembly),
+                class = %format!("{class:?}").to_lowercase(),
+                normalized_query = %handlers::normalize_query(&params),
+                "slow query detected"
+            );
+        }
+        let _ = c.conn.progress_handler(1_000, None::<fn() -> bool>);
+        Ok::<_, CacheError>((result, query_elapsed))
+    };
+    let result = timeout(state.api.request_timeout, work).await;
+    let payload = match result {
+        Ok(Ok((resp, query_elapsed))) => {
+            state
+                .metrics()
+                .observe_sqlite_query(&format!("{class:?}").to_lowercase(), query_elapsed)
+                .await;
+            state.metrics().observe_stage("query", query_elapsed).await;
+            let provenance = handlers::dataset_provenance(&state, &dataset).await;
+            info_span!(
+                "cursor_generation",
+                dataset_id = %dataset.canonical_string(),
+                query_type = "genes"
+            )
+            .in_scope(|| {
+                genes_response::build_success_payload(
+                    &dataset,
+                    &req,
+                    class,
+                    resp,
+                    explain_mode,
+                    provenance,
+                )
+            })
+        }
+        Ok(Err(err)) => {
+            let msg = err.to_string();
+            warn!(
+                event_id = "query_error_classified",
+                request_id = %request_id,
+                query_id = %query_id,
+                route = "/v1/genes",
+                error_class = if msg.contains("limit")
+                    || msg.contains("span")
+                    || msg.contains("scan")
+                    || msg.contains("name_prefix")
+                {
+                    "policy"
+                } else if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
+                    "validation"
+                } else if req.cursor.is_some() {
+                    "cursor"
+                } else {
+                    "runtime"
+                },
+                "query error classified"
+            );
+            if msg.contains("limit")
+                || msg.contains("span")
+                || msg.contains("scan")
+                || msg.contains("name_prefix")
+            {
+                let (code, reason_code) = if msg.contains("region span exceeds") {
+                    (ApiErrorCode::RangeTooLarge, "RANGE_TOO_LARGE")
+                } else if msg.contains("estimated query cost") {
+                    (ApiErrorCode::QueryTooExpensive, "QUERY_TOO_EXPENSIVE")
+                } else {
+                    (ApiErrorCode::QueryRejectedByPolicy, "QUERY_REJECTED")
+                };
+                let status = if matches!(
+                    code,
+                    ApiErrorCode::RangeTooLarge | ApiErrorCode::QueryTooExpensive
+                ) {
+                    StatusCode::PAYLOAD_TOO_LARGE
+                } else {
+                    StatusCode::UNPROCESSABLE_ENTITY
+                };
+                let resp = handlers::api_error_response(
+                    status,
+                    handlers::error_json(
+                        code,
+                        "query rejected",
+                        json!({"message": msg, "reason_code": reason_code}),
+                    ),
+                );
+                state
+                    .metrics()
+                    .observe_request("/v1/genes", status, started.elapsed())
+                    .await;
+                return handlers::with_request_id(resp, &request_id);
+            }
+            if msg.contains("Validation:") || msg.contains("seqid does not exist in dataset") {
+                let resp = handlers::api_error_response(
+                    StatusCode::BAD_REQUEST,
+                    handlers::error_json(
+                        ApiErrorCode::InvalidQueryParameter,
+                        "invalid query parameter",
+                        json!({"message": msg}),
+                    ),
+                );
+                state
+                    .metrics()
+                    .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
+                    .await;
+                return handlers::with_request_id(resp, &request_id);
+            }
+            if req.cursor.is_some() {
+                let reason_code = if msg.contains("UnsupportedVersion") {
+                    "CURSOR_VERSION_UNSUPPORTED"
+                } else if msg.contains("DatasetMismatch") {
+                    "CURSOR_DATASET_MISMATCH"
+                } else {
+                    "CURSOR_INVALID"
+                };
+                let resp = handlers::api_error_response(
+                    StatusCode::BAD_REQUEST,
+                    handlers::error_json(
+                        ApiErrorCode::InvalidCursor,
+                        "invalid cursor",
+                        json!({"message": msg, "reason_code": reason_code}),
+                    ),
+                );
+                state
+                    .metrics()
+                    .observe_request("/v1/genes", StatusCode::BAD_REQUEST, started.elapsed())
+                    .await;
+                return handlers::with_request_id(resp, &request_id);
+            }
+            let resp = handlers::api_error_response(
+                StatusCode::SERVICE_UNAVAILABLE,
+                handlers::error_json(
+                    ApiErrorCode::Internal,
+                    "query failed",
+                    json!({"message": msg}),
+                ),
+            );
+            state
+                .metrics()
+                .observe_request(
+                    "/v1/genes",
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    started.elapsed(),
+                )
+                .await;
+            return handlers::with_request_id(resp, &request_id);
+        }
+        Err(_) => {
+            warn!(
+                event_id = "request_timeout",
+                request_id = %request_id,
+                query_id = %query_id,
+                route = "/v1/genes",
+                timeout_ms = state.api.request_timeout.as_millis(),
+                "request timed out"
+            );
+            if state.api.continue_download_on_request_timeout_for_warmup
+                && state.cache.is_pinned_dataset(&dataset)
+            {
+                let cache = state.cache.clone();
+                let ds = dataset.clone();
+                tokio::spawn(async move {
+                    let _ = cache.prefetch_dataset(ds).await;
+                });
+            }
+            let resp = handlers::api_error_response(
+                StatusCode::GATEWAY_TIMEOUT,
+                handlers::error_json(ApiErrorCode::Timeout, "request timed out", json!({})),
+            );
+            state
+                .metrics()
+                .observe_request("/v1/genes", StatusCode::GATEWAY_TIMEOUT, started.elapsed())
+                .await;
+            return handlers::with_request_id(resp, &request_id);
+        }
+    };
+    finalize_genes_success_response(GenesResponseFinalizeContext {
+        state: &state,
+        headers: &headers,
+        params: &params,
+        payload,
+        started,
+        etag: &etag,
+        class,
+        redis_cache_key: &redis_cache_key,
+        exact_gene_id: &exact_gene_id,
+        redis_fill_guard,
+        artifact_hash: &artifact_hash,
+        cache_key_debug: &cache_key_debug,
+        coalesce_key,
+        request_id: &request_id,
+    })
+    .await
+}

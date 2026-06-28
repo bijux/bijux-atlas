@@ -1,1 +1,1 @@
-# Tracked executable files outside crates/bijux-dev-atlas.
+# Tracked executable files outside crates/bijux-atlas-dev.

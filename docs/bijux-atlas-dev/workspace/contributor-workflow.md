@@ -31,9 +31,9 @@ Treat the workspace root as the only supported starting point.
 
 ```bash
 cargo fetch
-cargo test -p bijux-dev-atlas --no-run
-cargo run -q -p bijux-dev-atlas -- governance validate --format json
-cargo run -q -p bijux-dev-atlas -- docs doctor --format json
+cargo test -p bijux-atlas-dev --no-run
+cargo run -q -p bijux-atlas-dev -- governance validate --format json
+cargo run -q -p bijux-atlas-dev -- docs doctor --format json
 ```
 
 If those commands fail, fix the environment first instead of trying to work around the failure in later steps.
@@ -50,8 +50,8 @@ If those commands fail, fix the environment first instead of trying to work arou
 Every contributor should understand the repository governance baseline before
 submitting a cross-cutting change.
 
-- run `cargo run -q -p bijux-dev-atlas -- governance check --format json`
-- run `cargo run -q -p bijux-dev-atlas -- governance validate --format json`
+- run `cargo run -q -p bijux-atlas-dev -- governance check --format json`
+- run `cargo run -q -p bijux-atlas-dev -- governance validate --format json`
 - get maintainer signoff when the change affects contracts, ownership, or
   repository-wide automation behavior
 
@@ -83,7 +83,7 @@ branch is not ready yet.
 
 ## Common Local Problems
 
-If governance validation fails, re-run `cargo run -q -p bijux-dev-atlas -- governance check --format json` and fix the rule or file path named in the output.
+If governance validation fails, re-run `cargo run -q -p bijux-atlas-dev -- governance check --format json` and fix the rule or file path named in the output.
 
 If a control-plane command fails before doing useful work, inspect whether it needs explicit capability flags or an external tool that is only expected in broader lanes.
 

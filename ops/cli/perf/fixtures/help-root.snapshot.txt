@@ -1,4 +1,4 @@
-Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
+Usage: bijux-atlas-dev [OPTIONS] [COMMAND]
 
 Commands:
   api        API contract operations

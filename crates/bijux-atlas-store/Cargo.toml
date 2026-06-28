@@ -1,0 +1,53 @@
+[package]
+name = "bijux-atlas-store"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+rust-version.workspace = true
+description = "Atlas publish-time storage contracts, layout rules, and artifact backends"
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/bijux-atlas-store/latest/bijux_atlas_store/"
+readme = "README.md"
+categories = ["database", "science::bioinformatics"]
+keywords = ["bioinformatics", "genomics", "storage", "artifacts", "backend"]
+
+[features]
+default = ["backend-local"]
+backend-local = []
+backend-s3 = ["dep:reqwest", "backend-local"]
+
+[dependencies]
+bijux-atlas-core = { workspace = true, features = ["serde"] }
+bijux-atlas-model = { workspace = true }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2"], optional = true }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+criterion = "0.8"
+tempfile = "=3.27.0"
+tiny_http = "0.12"
+toml = "1.0"
+
+[[test]]
+name = "store_backend_contracts"
+path = "tests/store_backend_contracts.rs"
+
+[[bench]]
+name = "store_catalog_merge"
+path = "benches/catalog_merge.rs"
+harness = false
+
+[[bench]]
+name = "store_checksum_pipeline"
+path = "benches/checksum_pipeline.rs"
+harness = false
+
+[[bench]]
+name = "store_hot_read"
+path = "benches/store_hot_read.rs"
+harness = false
+
+[lib]
+path = "src/lib.rs"

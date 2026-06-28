@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- ci verify dependency-lock --allow-git --format json
+          cargo run --locked -q -p bijux-atlas-dev -- ci verify dependency-lock --allow-git --format json
       - name: Open lockfile PR
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:

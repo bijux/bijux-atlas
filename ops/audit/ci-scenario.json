@@ -3,9 +3,9 @@
   "scenario_id": "audit-ci",
   "description": "Runs audit verification and emits canonical audit artifacts.",
   "commands": [
-    "bijux-dev-atlas audit run --format json",
-    "bijux-dev-atlas audit report --format json",
-    "bijux-dev-atlas audit explain --format json"
+    "bijux-atlas-dev audit run --format json",
+    "bijux-atlas-dev audit report --format json",
+    "bijux-atlas-dev audit explain --format json"
   ],
   "expected_artifacts": [
     "artifacts/audit/run-report.json"

@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: Apache-2.0
+//! Docker domain command surface.
+
+pub mod commands;
+
+use crate::domains::Domain;
+use crate::model::{CommandRoute, RunnableEntry};
+use crate::model::{Effect, RunnableId, RunnableKind, RunnableMode, SuiteId, Tag};
+use crate::registry::RunnableRegistry;
+
+pub struct DockerDomain;
+
+pub fn plugin() -> DockerDomain {
+    DockerDomain
+}
+
+fn fallback_runnable(
+    owner: &str,
+    required_tools: &[&str],
+    route: CommandRoute,
+) -> Option<RunnableEntry> {
+    Some(RunnableEntry {
+        id: RunnableId::parse(route.id).ok()?,
+        suite: SuiteId::parse("checks").ok()?,
+        kind: RunnableKind::Check,
+        mode: RunnableMode::Pure,
+        summary: route.purpose.to_string(),
+        owner: owner.to_string(),
+        group: owner.to_string(),
+        tags: vec![Tag::parse("docker").ok()?],
+        commands: vec![route.name.to_string()],
+        report_ids: vec![],
+        reports: vec![],
+        required_tools: required_tools
+            .iter()
+            .map(|tool| (*tool).to_string())
+            .collect(),
+        missing_tools_policy: "warn".to_string(),
+        effects_required: vec![Effect::FsRead],
+    })
+}
+
+pub fn routes() -> Vec<CommandRoute> {
+    commands::routes()
+}
+
+impl Domain for DockerDomain {
+    fn name(&self) -> &'static str {
+        "docker"
+    }
+
+    fn docs_links(&self) -> &'static [&'static str] {
+        &["ops/README.md"]
+    }
+
+    fn required_tools(&self) -> &'static [&'static str] {
+        &["docker", "bijux-atlas-dev"]
+    }
+
+    fn load_runnables(&self, registry: &RunnableRegistry) -> Vec<RunnableEntry> {
+        let runnables = registry
+            .all()
+            .iter()
+            .filter(|entry| entry.group.contains("docker") || entry.id.as_str().contains("docker"))
+            .cloned()
+            .collect::<Vec<_>>();
+        if !runnables.is_empty() {
+            return runnables;
+        }
+
+        routes()
+            .into_iter()
+            .filter_map(|route| fallback_runnable(self.name(), self.required_tools(), route))
+            .collect()
+    }
+}

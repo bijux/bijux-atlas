@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- ci verify release-candidate --allow-git --format json
+          cargo run --locked -q -p bijux-atlas-dev -- ci verify release-candidate --allow-git --format json
       - name: Prepare run artifact directory
         shell: bash
         run: |
@@ -72,7 +72,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo run --locked -q -p bijux-dev-atlas -- check doctor --format json > /dev/null
+          cargo run --locked -q -p bijux-atlas-dev -- check doctor --format json > /dev/null
       - name: Run docs completeness gate
         shell: bash
         run: |
@@ -81,7 +81,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
           set +e
-          cargo run --locked -q -p bijux-dev-atlas -- docs validate --format json --out "${report_root}/docs-completeness.json" > /dev/null 2> "${logs_root}/docs-completeness.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- docs validate --format json --out "${report_root}/docs-completeness.json" > /dev/null 2> "${logs_root}/docs-completeness.stderr.log"
           docs_exit=$?
           set -e
           if [[ "${docs_exit}" -ne 0 ]]; then
@@ -97,7 +97,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
           set +e
-          cargo run --locked -q -p bijux-dev-atlas -- release reproducibility report --format json > "${report_root}/reproducibility-report.json" 2> "${logs_root}/reproducibility-report.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- release reproducibility report --format json > "${report_root}/reproducibility-report.json" 2> "${logs_root}/reproducibility-report.stderr.log"
           repro_exit=$?
           set -e
           if [[ "${repro_exit}" -ne 0 ]]; then
@@ -113,7 +113,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}"
           set +e
-          cargo run --locked -q -p bijux-dev-atlas -- release check --format json > "${report_root}/release-check.json" 2> "${logs_root}/release-check.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- release check --format json > "${report_root}/release-check.json" 2> "${logs_root}/release-check.stderr.log"
           release_check_exit=$?
           set -e
           if [[ "${release_check_exit}" -ne 0 ]]; then
@@ -137,7 +137,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
           set +e
-          cargo run --locked -q -p bijux-dev-atlas -- ops report --allow-write --format json > "${report_root}/ops-readiness.json" 2> "${logs_root}/ops-readiness.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- ops report --allow-write --format json > "${report_root}/ops-readiness.json" 2> "${logs_root}/ops-readiness.stderr.log"
           ops_exit=$?
           set -e
           if [[ "${ops_exit}" -ne 0 ]]; then
@@ -152,7 +152,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
-          cargo run --locked -q -p bijux-dev-atlas -- build dist --allow-subprocess --allow-write --format json > "${report_root}/release-candidate.json" 2> "${logs_root}/release-candidate.stderr.log"
+          cargo run --locked -q -p bijux-atlas-dev -- build dist --allow-subprocess --allow-write --format json > "${report_root}/release-candidate.json" 2> "${logs_root}/release-candidate.stderr.log"
           printf -- "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- release check: %s\n- release contracts: %s\n- ops readiness: %s\n- input version: %s\n" \
             "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${report_root}/release-check.json" "${report_root}/contracts-release.txt" "${report_root}/ops-readiness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"

@@ -3,7 +3,7 @@
     "REL-PACK-001": true
   },
   "evidence_root": "ops/release/evidence",
-  "generated_by": "bijux-dev-atlas release packet",
+  "generated_by": "bijux-atlas-dev release packet",
   "items": [
     {
       "path": "artifacts/datasets/datasets-manifest.json",

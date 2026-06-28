@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "surface_id": "cli-dev-command-surface",
-  "binary": "bijux-dev-atlas",
+  "binary": "bijux-atlas-dev",
   "top_level_commands": [
     "api",
     "audit",

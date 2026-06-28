@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-runtime
-last_reviewed: 2026-05-02
+last_reviewed: 2026-06-27
 ---
 
 # Crate Boundary Contract
@@ -13,31 +13,67 @@ This contract defines where Atlas code belongs and where it does not.
 
 ## Crate Map
 
-- `bijux-atlas`: runtime product crate that wires domain, contracts, adapters, and app orchestration.
-- `bijux-dev-atlas`: maintainer control-plane crate for repository governance and automation.
-- `bijux-atlas-core` (introduced in iteration 01): runtime-independent domain primitives and invariants.
+- `bijux-atlas-core`: runtime-independent primitives, canonical hashing, and invariants shared across Atlas crates.
+- `bijux-atlas-ingest`: ingest normalization, artifact build execution, anomaly evaluation, and ingest-focused benchmarks or fixtures.
+- `bijux-atlas-model`: persisted dataset, diff, gene, and policy types that must stay stable across runtime and tooling surfaces.
+- `bijux-atlas-query`: query request parsing, planning, cursoring, SQLite execution, and frozen query contracts.
+- `bijux-atlas-api`: stable API contracts, request parsing, response DTOs, Rust client compatibility surface, OpenAPI generation, and API contract suites that do not boot the server runtime.
+- `bijux-atlas-cli`: owned CLI entrypoint, CLI command dispatch, completion generation, and CLI-facing smoke or plugin tests.
+- `bijux-atlas-server`: owned HTTP or server entrypoint, startup orchestration, server-facing integration suites, and server-focused benchmarks.
+- `bijux-atlas-runtime`: runtime library composition, cache or policy orchestration, process configuration, shared runtime state, and domain coordination surfaces that serve CLI and server entrypoints.
+- `bijux-atlas-store`: publish-time store contracts, immutable artifact layout rules, and store backend implementations shared by runtime and tooling.
+- `bijux-atlas`: compatibility crate that preserves the historical library identity while re-exporting the runtime-owned surface.
+- `bijux-atlas-dev`: maintainer control-plane crate for repository governance and automation.
+- `bijux-atlas-ops`: workspace-level operational surface registry and owned path contracts for repository automation.
 
 ## Ownership Rules
 
 - `bijux-atlas-core` must stay free of runtime transport and storage dependencies such as `axum`, `tokio`, `reqwest`, and `rusqlite`.
-- `bijux-dev-atlas` must not become an owner of runtime ingest/query/server behavior.
+- `bijux-atlas-ingest` owns ingest normalization, anomaly thresholds, SQLite artifact generation, and ingest-focused tests or benches.
+- `bijux-atlas-model` owns persisted dataset manifests, cross-crate gene or diff value objects, and policy enums. Runtime code may re-export those types but must not redefine them.
+- `bijux-atlas-query` owns query request or response semantics, pagination cursors, query budgeting, SQLite query execution, and query-focused benches or fixtures.
+- `bijux-atlas-api` owns API DTOs, error envelopes, OpenAPI definitions, Rust client compatibility, and contract tests over API-owned seams. Runtime code may route requests through that surface but must not duplicate or redefine it.
+- `bijux-atlas-api` also owns the standalone `bijux-atlas-openapi` binary because OpenAPI export is an API-contract surface, not a runtime-wiring concern.
+- Full Rust client integration, retry, schema, and mock-server suites belong under `crates/bijux-atlas-api/tests/`.
+- `bijux-atlas-cli` owns the direct `bijux-atlas` executable and the CLI module tree under `crates/bijux-atlas-cli/src/`.
+- `bijux-atlas-server` owns the direct `bijux-atlas-server` executable, startup wiring under `crates/bijux-atlas-server/src/app/server/`, server integration suites, and server benchmarks.
+- `bijux-atlas-server` owns HTTP response-shape, router observability, and API-delivery suites that boot the real server surface.
+- `bijux-atlas-store` owns publish-time store paths, manifest-lock rules, immutable dataset publication semantics, and store-focused tests or benches.
+- `bijux-atlas-dev` must not become an owner of runtime ingest/query/server behavior.
+- `bijux-atlas-ops` owns durable repository path and operational surface registries consumed by maintainer automation.
+- Runtime must not act as a shared fixture warehouse. Ingest fixtures live under `crates/bijux-atlas-ingest/tests/fixtures/`, and CLI operation QC fixtures live beside their owning source tests under `crates/bijux-atlas-cli/src/adapters/inbound/cli/operations/testdata/`.
+- `crates/bijux-atlas-server/tests/` keeps startup, cache, backend, transport-wiring, API-delivery, response-shape, and observability coverage.
 - CLI and HTTP entrypoints must call application/domain services and must not embed parsing-normalization rules inline.
-- API DTO/wire shapes are owned under `src/contracts/api` and adapter HTTP DTOs, not in domain model modules.
+- API DTO/wire shapes are owned under `crates/bijux-atlas-api/src/` and adapter HTTP DTOs, not in domain model modules.
 - Bench-only logic is owned under `benches/` and test harnesses, not runtime `src/` modules.
 
 ## Dependency Direction
 
-- `domain` and `contracts` define stable truth.
+- `bijux-atlas-core` sits at the base of the Atlas crate graph.
+- `bijux-atlas-ingest` may depend on `bijux-atlas-core`, `bijux-atlas-model`, and `bijux-atlas-query`, but not on runtime HTTP, maintainer crates, or deployment wiring.
+- `bijux-atlas-model` may depend on `bijux-atlas-core`, but not on runtime, transport, storage, or maintainer crates.
+- `bijux-atlas-query` may depend on `bijux-atlas-core` and `bijux-atlas-model`, but not on runtime transport, HTTP adapters, or maintainer crates.
+- `bijux-atlas-api` may depend on `bijux-atlas-core`, `bijux-atlas-model`, and HTTP client libraries required for the published Rust client surface, but not on runtime or maintainer crates in production dependencies.
+- `bijux-atlas-store` may depend on `bijux-atlas-core` and `bijux-atlas-model`, plus backend transport libraries required to read or publish artifacts, but not on runtime or maintainer crates.
+- `bijux-atlas-cli` and `bijux-atlas-server` may depend on `bijux-atlas-runtime` for shared orchestration and compatibility surfaces, but they own their direct entrypoint trees and executable-facing tests.
+- `bijux-atlas-dev` may depend on `bijux-atlas-runtime` and `bijux-atlas-ops` for maintainer automation, but durable repository path contracts belong in `bijux-atlas-ops`.
+- `domain` and `contracts` define stable truth within `bijux-atlas`.
 - `app` orchestrates use-cases against domain and ports.
 - `adapters` own transport and storage integrations.
 - `runtime` owns process configuration and startup wiring.
 - `bin/` surfaces remain thin wrappers around owned modules.
+- `crates/bijux-atlas-cli/src/bin/` owns the direct `bijux-atlas` executable, `crates/bijux-atlas-server/src/bin/` owns `bijux-atlas-server`, and `crates/bijux-atlas-api/src/bin/` owns `bijux-atlas-openapi`. The runtime crate owns library composition, not direct binary entrypoint files.
 
 ## Enforcement
 
 Atlas enforces this contract through architecture tests in:
 
-- `crates/bijux-atlas/tests/contracts_architecture_iteration01.rs`
-- `crates/bijux-dev-atlas/tests/architecture_runtime_ownership.rs`
+- `crates/bijux-atlas-runtime/tests/contracts_crate_boundary_contract.rs`
+- `crates/bijux-atlas-runtime/tests/contracts_bench_ownership.rs`
+- `crates/bijux-atlas-runtime/tests/contracts_compatibility_facades.rs`
+- `crates/bijux-atlas-ingest/tests/contracts_bench_ownership.rs`
+- `crates/bijux-atlas-dev/tests/architecture_runtime_ownership.rs`
+- `crates/bijux-atlas-api/tests/api_contracts/dependency_guardrails.rs`
+- `crates/bijux-atlas-server/tests/server/import_boundary_guardrails.rs`
 
 When those tests fail, boundary drift is treated as a product defect.

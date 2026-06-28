@@ -14,7 +14,7 @@ This report tracks the first architecture-focused execution slice against the At
 ## Selected Goals
 
 1. Goal 1: clear crate map
-2. Goal 2: forbidden runtime ownership in `bijux-dev-atlas`
+2. Goal 2: forbidden runtime ownership in `bijux-atlas-dev`
 3. Goal 3: runtime-independent core crate extraction
 4. Goal 4: ingest boundary between entrypoints and ingest semantics
 5. Goal 5: wire DTO vs domain object separation
@@ -32,7 +32,7 @@ This report tracks the first architecture-focused execution slice against the At
 - query facade: `crates/bijux-atlas/src/app/query/mod.rs`
 - DTO/domain split enforcement: `crates/bijux-atlas/tests/contracts_wire_domain_separation.rs`
 - layering contract tests: `crates/bijux-atlas/tests/contracts_layering_direction.rs`
-- dev-atlas ownership checks: `crates/bijux-dev-atlas/tests/architecture_runtime_ownership.rs`
+- dev-atlas ownership checks: `crates/bijux-atlas-dev/tests/architecture_runtime_ownership.rs`
 
 ## Remaining Work
 

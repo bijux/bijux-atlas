@@ -51,13 +51,13 @@ Policy is what turns “the server happened to reject my request” into “the 
 Validate the active policy surface:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- policy validate --json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- policy validate --json
 ```
 
 Explain active policy deltas:
 
 ```bash
-cargo run -p bijux-atlas --bin bijux-atlas -- policy explain --json
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- policy explain --json
 ```
 
 ## How to Read Policy Effects

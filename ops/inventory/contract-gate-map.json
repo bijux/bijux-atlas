@@ -2,7 +2,7 @@
   "schema_version": 1,
   "mappings": [
     {
-      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops profiles validate --allow-subprocess --format json",
       "contract_id": "OPS-DATASET-001",
       "effects_required": [
         "subprocess"
@@ -20,7 +20,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-001",
       "effects_required": [],
       "gate_ids": [
@@ -29,7 +29,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-002",
       "effects_required": [],
       "gate_ids": [
@@ -38,7 +38,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-003",
       "effects_required": [],
       "gate_ids": [
@@ -47,7 +47,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-004",
       "effects_required": [],
       "gate_ids": [
@@ -56,7 +56,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-005",
       "effects_required": [],
       "gate_ids": [
@@ -65,7 +65,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-006",
       "effects_required": [],
       "gate_ids": [
@@ -74,7 +74,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-007",
       "effects_required": [],
       "gate_ids": [
@@ -83,7 +83,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-008",
       "effects_required": [],
       "gate_ids": [
@@ -92,7 +92,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-009",
       "effects_required": [],
       "gate_ids": [
@@ -101,7 +101,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-010",
       "effects_required": [],
       "gate_ids": [
@@ -110,7 +110,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-011",
       "effects_required": [],
       "gate_ids": [
@@ -119,7 +119,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-012",
       "effects_required": [],
       "gate_ids": [
@@ -128,7 +128,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-DATASETS-013",
       "effects_required": [],
       "gate_ids": [
@@ -137,7 +137,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-001",
       "effects_required": [],
       "gate_ids": [
@@ -146,7 +146,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-002",
       "effects_required": [],
       "gate_ids": [
@@ -155,7 +155,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-003",
       "effects_required": [],
       "gate_ids": [
@@ -164,7 +164,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-004",
       "effects_required": [],
       "gate_ids": [
@@ -173,7 +173,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-005",
       "effects_required": [],
       "gate_ids": [
@@ -182,7 +182,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-006",
       "effects_required": [],
       "gate_ids": [
@@ -191,7 +191,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-007",
       "effects_required": [],
       "gate_ids": [
@@ -200,7 +200,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-008",
       "effects_required": [],
       "gate_ids": [
@@ -209,7 +209,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-009",
       "effects_required": [],
       "gate_ids": [
@@ -218,7 +218,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-010",
       "effects_required": [],
       "gate_ids": [
@@ -227,7 +227,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-011",
       "effects_required": [],
       "gate_ids": [
@@ -236,7 +236,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-012",
       "effects_required": [],
       "gate_ids": [
@@ -245,7 +245,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-013",
       "effects_required": [],
       "gate_ids": [
@@ -254,7 +254,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-014",
       "effects_required": [],
       "gate_ids": [
@@ -263,7 +263,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-015",
       "effects_required": [],
       "gate_ids": [
@@ -272,7 +272,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-016",
       "effects_required": [],
       "gate_ids": [
@@ -281,7 +281,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-017",
       "effects_required": [],
       "gate_ids": [
@@ -290,7 +290,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-018",
       "effects_required": [],
       "gate_ids": [
@@ -299,7 +299,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-019",
       "effects_required": [],
       "gate_ids": [
@@ -308,7 +308,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-020",
       "effects_required": [],
       "gate_ids": [
@@ -317,7 +317,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-021",
       "effects_required": [],
       "gate_ids": [
@@ -326,7 +326,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-022",
       "effects_required": [],
       "gate_ids": [
@@ -335,7 +335,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-023",
       "effects_required": [],
       "gate_ids": [
@@ -344,7 +344,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-024",
       "effects_required": [],
       "gate_ids": [
@@ -353,7 +353,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-025",
       "effects_required": [],
       "gate_ids": [
@@ -362,7 +362,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-026",
       "effects_required": [],
       "gate_ids": [
@@ -371,7 +371,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-027",
       "effects_required": [],
       "gate_ids": [
@@ -380,7 +380,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-028",
       "effects_required": [],
       "gate_ids": [
@@ -389,7 +389,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-E2E-029",
       "effects_required": [],
       "gate_ids": [
@@ -398,7 +398,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-E2E-E-001",
       "effects_required": [
         "subprocess"
@@ -415,7 +415,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-E2E-E-002",
       "effects_required": [
         "subprocess"
@@ -432,7 +432,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-001",
       "effects_required": [],
       "gate_ids": [
@@ -441,7 +441,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-002",
       "effects_required": [],
       "gate_ids": [
@@ -450,7 +450,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-003",
       "effects_required": [],
       "gate_ids": [
@@ -459,7 +459,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-004",
       "effects_required": [],
       "gate_ids": [
@@ -468,7 +468,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-005",
       "effects_required": [],
       "gate_ids": [
@@ -477,7 +477,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-006",
       "effects_required": [],
       "gate_ids": [
@@ -486,7 +486,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-007",
       "effects_required": [],
       "gate_ids": [
@@ -495,7 +495,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-008",
       "effects_required": [],
       "gate_ids": [
@@ -504,7 +504,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ENV-009",
       "effects_required": [],
       "gate_ids": [
@@ -513,7 +513,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops helm-env --format json",
+      "command": "bijux-atlas-dev ops helm-env --format json",
       "contract_id": "OPS-HELM-ENV-001",
       "effects_required": [
         "subprocess"
@@ -531,7 +531,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-001",
       "effects_required": [],
       "gate_ids": [
@@ -540,7 +540,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-002",
       "effects_required": [],
       "gate_ids": [
@@ -549,7 +549,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-003",
       "effects_required": [],
       "gate_ids": [
@@ -558,7 +558,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-004",
       "effects_required": [],
       "gate_ids": [
@@ -567,7 +567,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-005",
       "effects_required": [],
       "gate_ids": [
@@ -576,7 +576,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-006",
       "effects_required": [],
       "gate_ids": [
@@ -585,7 +585,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-007",
       "effects_required": [],
       "gate_ids": [
@@ -632,7 +632,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-008",
       "effects_required": [],
       "gate_ids": [
@@ -641,7 +641,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-009",
       "effects_required": [],
       "gate_ids": [
@@ -650,7 +650,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-010",
       "effects_required": [],
       "gate_ids": [
@@ -659,7 +659,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-011",
       "effects_required": [],
       "gate_ids": [
@@ -668,7 +668,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-DEBT-001",
       "effects_required": [],
       "gate_ids": [
@@ -677,7 +677,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-001",
       "effects_required": [],
       "gate_ids": [
@@ -686,7 +686,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-002",
       "effects_required": [],
       "gate_ids": [
@@ -695,7 +695,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-003",
       "effects_required": [],
       "gate_ids": [
@@ -704,7 +704,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-004",
       "effects_required": [],
       "gate_ids": [
@@ -713,7 +713,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-005",
       "effects_required": [],
       "gate_ids": [
@@ -722,7 +722,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-006",
       "effects_required": [],
       "gate_ids": [
@@ -731,7 +731,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-007",
       "effects_required": [],
       "gate_ids": [
@@ -740,7 +740,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-008",
       "effects_required": [],
       "gate_ids": [
@@ -749,7 +749,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-009",
       "effects_required": [],
       "gate_ids": [
@@ -758,7 +758,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-010",
       "effects_required": [],
       "gate_ids": [
@@ -767,7 +767,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-MAP-011",
       "effects_required": [],
       "gate_ids": [
@@ -776,7 +776,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-PILLARS-001",
       "effects_required": [],
       "gate_ids": [
@@ -785,7 +785,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-PILLARS-002",
       "effects_required": [],
       "gate_ids": [
@@ -794,7 +794,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-INV-PILLARS-003",
       "effects_required": [],
       "gate_ids": [
@@ -803,7 +803,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-001",
       "effects_required": [],
       "gate_ids": [
@@ -812,7 +812,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-002",
       "effects_required": [],
       "gate_ids": [
@@ -821,7 +821,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-003",
       "effects_required": [],
       "gate_ids": [
@@ -830,7 +830,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-004",
       "effects_required": [],
       "gate_ids": [
@@ -839,7 +839,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-005",
       "effects_required": [],
       "gate_ids": [
@@ -848,7 +848,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-006",
       "effects_required": [],
       "gate_ids": [
@@ -857,7 +857,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-007",
       "effects_required": [],
       "gate_ids": [
@@ -866,7 +866,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-008",
       "effects_required": [],
       "gate_ids": [
@@ -875,7 +875,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-009",
       "effects_required": [],
       "gate_ids": [
@@ -884,7 +884,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-K8S-010",
       "effects_required": [],
       "gate_ids": [
@@ -893,7 +893,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-001",
       "effects_required": [
         "subprocess"
@@ -910,7 +910,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-002",
       "effects_required": [
         "subprocess"
@@ -927,7 +927,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-003",
       "effects_required": [
         "subprocess"
@@ -945,7 +945,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-004",
       "effects_required": [
         "subprocess"
@@ -962,7 +962,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-005",
       "effects_required": [
         "subprocess"
@@ -979,7 +979,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-K8S-E-006",
       "effects_required": [
         "subprocess"
@@ -997,7 +997,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-001",
       "effects_required": [],
       "gate_ids": [
@@ -1006,7 +1006,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-002",
       "effects_required": [],
       "gate_ids": [
@@ -1015,7 +1015,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-003",
       "effects_required": [],
       "gate_ids": [
@@ -1024,7 +1024,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-004",
       "effects_required": [],
       "gate_ids": [
@@ -1033,7 +1033,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-005",
       "effects_required": [],
       "gate_ids": [
@@ -1042,7 +1042,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-006",
       "effects_required": [],
       "gate_ids": [
@@ -1051,7 +1051,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-007",
       "effects_required": [],
       "gate_ids": [
@@ -1060,7 +1060,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-008",
       "effects_required": [],
       "gate_ids": [
@@ -1069,7 +1069,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-009",
       "effects_required": [],
       "gate_ids": [
@@ -1078,7 +1078,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-LOAD-010",
       "effects_required": [],
       "gate_ids": [
@@ -1087,7 +1087,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-LOAD-E-001",
       "effects_required": [
         "subprocess"
@@ -1104,7 +1104,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-LOAD-E-002",
       "effects_required": [
         "subprocess"
@@ -1121,7 +1121,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-LOAD-E-003",
       "effects_required": [
         "subprocess"
@@ -1138,7 +1138,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-META-001",
       "effects_required": [],
       "gate_ids": [
@@ -1147,7 +1147,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-META-002",
       "effects_required": [],
       "gate_ids": [
@@ -1156,7 +1156,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-001",
       "effects_required": [],
       "gate_ids": [
@@ -1165,7 +1165,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-002",
       "effects_required": [],
       "gate_ids": [
@@ -1174,7 +1174,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-003",
       "effects_required": [],
       "gate_ids": [
@@ -1183,7 +1183,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-004",
       "effects_required": [],
       "gate_ids": [
@@ -1192,7 +1192,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-005",
       "effects_required": [],
       "gate_ids": [
@@ -1201,7 +1201,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-006",
       "effects_required": [],
       "gate_ids": [
@@ -1210,7 +1210,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-007",
       "effects_required": [],
       "gate_ids": [
@@ -1219,7 +1219,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-008",
       "effects_required": [],
       "gate_ids": [
@@ -1228,7 +1228,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-009",
       "effects_required": [],
       "gate_ids": [
@@ -1237,7 +1237,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-OBS-010",
       "effects_required": [],
       "gate_ids": [
@@ -1246,7 +1246,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-network --format json",
+      "command": "bijux-atlas-dev ops validate --allow-network --format json",
       "contract_id": "OPS-OBS-E-001",
       "effects_required": [
         "network"
@@ -1263,7 +1263,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-network --format json",
+      "command": "bijux-atlas-dev ops validate --allow-network --format json",
       "contract_id": "OPS-OBS-E-002",
       "effects_required": [
         "network"
@@ -1280,7 +1280,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-network --format json",
+      "command": "bijux-atlas-dev ops validate --allow-network --format json",
       "contract_id": "OPS-OBS-E-003",
       "effects_required": [
         "network"
@@ -1297,7 +1297,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops profiles validate --allow-subprocess --format json",
       "contract_id": "OPS-PROFILES-001",
       "effects_required": [
         "subprocess"
@@ -1314,7 +1314,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops profiles validate --allow-subprocess --format json",
       "contract_id": "OPS-PROFILES-002",
       "effects_required": [
         "subprocess"
@@ -1331,7 +1331,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops profiles validate --allow-subprocess --format json",
       "contract_id": "OPS-PROFILES-003",
       "effects_required": [
         "subprocess"
@@ -1349,7 +1349,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops profiles validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops profiles validate --allow-subprocess --format json",
       "contract_id": "OPS-PROFILES-004",
       "effects_required": [
         "subprocess"
@@ -1367,7 +1367,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-001",
       "effects_required": [],
       "gate_ids": [
@@ -1376,7 +1376,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-002",
       "effects_required": [],
       "gate_ids": [
@@ -1385,7 +1385,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-003",
       "effects_required": [],
       "gate_ids": [
@@ -1394,7 +1394,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-004",
       "effects_required": [],
       "gate_ids": [
@@ -1403,7 +1403,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-005",
       "effects_required": [],
       "gate_ids": [
@@ -1412,7 +1412,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-006",
       "effects_required": [],
       "gate_ids": [
@@ -1421,7 +1421,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-007",
       "effects_required": [],
       "gate_ids": [
@@ -1430,7 +1430,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-008",
       "effects_required": [],
       "gate_ids": [
@@ -1439,7 +1439,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-009",
       "effects_required": [],
       "gate_ids": [
@@ -1448,7 +1448,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-010",
       "effects_required": [],
       "gate_ids": [
@@ -1457,7 +1457,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-REPORT-011",
       "effects_required": [],
       "gate_ids": [
@@ -1466,7 +1466,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-001",
       "effects_required": [],
       "gate_ids": [
@@ -1475,7 +1475,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-002",
       "effects_required": [],
       "gate_ids": [
@@ -1484,7 +1484,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-003",
       "effects_required": [],
       "gate_ids": [
@@ -1493,7 +1493,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-004",
       "effects_required": [],
       "gate_ids": [
@@ -1502,7 +1502,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-005",
       "effects_required": [],
       "gate_ids": [
@@ -1511,7 +1511,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-006",
       "effects_required": [],
       "gate_ids": [
@@ -1520,7 +1520,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-007",
       "effects_required": [],
       "gate_ids": [
@@ -1529,7 +1529,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-008",
       "effects_required": [],
       "gate_ids": [
@@ -1538,7 +1538,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-009",
       "effects_required": [],
       "gate_ids": [
@@ -1547,7 +1547,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-010",
       "effects_required": [],
       "gate_ids": [
@@ -1556,7 +1556,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-011",
       "effects_required": [],
       "gate_ids": [
@@ -1565,7 +1565,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-012",
       "effects_required": [],
       "gate_ids": [
@@ -1574,7 +1574,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-013",
       "effects_required": [],
       "gate_ids": [
@@ -1583,7 +1583,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-014",
       "effects_required": [],
       "gate_ids": [
@@ -1592,7 +1592,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-015",
       "effects_required": [],
       "gate_ids": [
@@ -1601,7 +1601,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-016",
       "effects_required": [],
       "gate_ids": [
@@ -1610,7 +1610,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-017",
       "effects_required": [],
       "gate_ids": [
@@ -1619,7 +1619,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-018",
       "effects_required": [],
       "gate_ids": [
@@ -1628,7 +1628,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-019",
       "effects_required": [],
       "gate_ids": [
@@ -1637,7 +1637,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-020",
       "effects_required": [],
       "gate_ids": [
@@ -1646,7 +1646,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-021",
       "effects_required": [],
       "gate_ids": [
@@ -1655,7 +1655,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-022",
       "effects_required": [],
       "gate_ids": [
@@ -1664,7 +1664,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-023",
       "effects_required": [],
       "gate_ids": [
@@ -1673,7 +1673,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-001",
       "effects_required": [],
       "gate_ids": [
@@ -1682,7 +1682,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-002",
       "effects_required": [],
       "gate_ids": [
@@ -1691,7 +1691,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-003",
       "effects_required": [],
       "gate_ids": [
@@ -1700,7 +1700,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-004",
       "effects_required": [],
       "gate_ids": [
@@ -1709,7 +1709,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-005",
       "effects_required": [],
       "gate_ids": [
@@ -1718,7 +1718,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-006",
       "effects_required": [],
       "gate_ids": [
@@ -1727,7 +1727,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-007",
       "effects_required": [],
       "gate_ids": [
@@ -1736,7 +1736,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-008",
       "effects_required": [],
       "gate_ids": [
@@ -1745,7 +1745,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-009",
       "effects_required": [],
       "gate_ids": [
@@ -1754,7 +1754,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-ROOT-SURFACE-010",
       "effects_required": [],
       "gate_ids": [
@@ -1763,7 +1763,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-001",
       "effects_required": [],
       "gate_ids": [
@@ -1772,7 +1772,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-002",
       "effects_required": [],
       "gate_ids": [
@@ -1781,7 +1781,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-003",
       "effects_required": [],
       "gate_ids": [
@@ -1790,7 +1790,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-004",
       "effects_required": [],
       "gate_ids": [
@@ -1799,7 +1799,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-005",
       "effects_required": [],
       "gate_ids": [
@@ -1808,7 +1808,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-006",
       "effects_required": [],
       "gate_ids": [
@@ -1817,7 +1817,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-007",
       "effects_required": [],
       "gate_ids": [
@@ -1826,7 +1826,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-008",
       "effects_required": [],
       "gate_ids": [
@@ -1835,7 +1835,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-009",
       "effects_required": [],
       "gate_ids": [
@@ -1844,7 +1844,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-SCHEMA-010",
       "effects_required": [],
       "gate_ids": [
@@ -1853,7 +1853,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-001",
       "effects_required": [],
       "gate_ids": [
@@ -1862,7 +1862,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-002",
       "effects_required": [],
       "gate_ids": [
@@ -1871,7 +1871,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-003",
       "effects_required": [],
       "gate_ids": [
@@ -1880,7 +1880,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-004",
       "effects_required": [],
       "gate_ids": [
@@ -1889,7 +1889,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-005",
       "effects_required": [],
       "gate_ids": [
@@ -1898,7 +1898,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-006",
       "effects_required": [],
       "gate_ids": [
@@ -1907,7 +1907,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-007",
       "effects_required": [],
       "gate_ids": [
@@ -1916,7 +1916,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-008",
       "effects_required": [],
       "gate_ids": [
@@ -1925,7 +1925,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-009",
       "effects_required": [],
       "gate_ids": [
@@ -1934,7 +1934,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --format json",
+      "command": "bijux-atlas-dev ops validate --format json",
       "contract_id": "OPS-STACK-010",
       "effects_required": [],
       "gate_ids": [
@@ -1943,7 +1943,7 @@
       "static_only": true
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-STACK-E-001",
       "effects_required": [
         "subprocess"
@@ -1960,7 +1960,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-STACK-E-002",
       "effects_required": [
         "subprocess"
@@ -1977,7 +1977,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-STACK-E-003",
       "effects_required": [
         "subprocess"
@@ -1994,7 +1994,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-STACK-E-004",
       "effects_required": [
         "subprocess"
@@ -2011,7 +2011,7 @@
       "static_only": false
     },
     {
-      "command": "bijux-dev-atlas ops validate --allow-subprocess --format json",
+      "command": "bijux-atlas-dev ops validate --allow-subprocess --format json",
       "contract_id": "OPS-STACK-E-005",
       "effects_required": [
         "subprocess"
