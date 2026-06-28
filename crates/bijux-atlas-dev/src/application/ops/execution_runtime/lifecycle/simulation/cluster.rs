@@ -8,7 +8,6 @@ use crate::{resolve_repo_root, OpsProcess};
 use bijux_atlas_ops::observe::report_artifacts::{
     observe_report_root, write_observe_contract_report, write_operational_readiness_markdown,
 };
-use std::time::Duration;
 
 pub(crate) fn run_ops_observe_slo_list(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -409,28 +408,10 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
         .clone()
         .unwrap_or_else(|| "profile-baseline".to_string());
     let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(&profile, None);
-    let mut child = std::process::Command::new("kubectl")
-        .args([
-            "port-forward",
-            "-n",
-            &namespace,
-            "--address",
-            "127.0.0.1",
-            "service/bijux-atlas",
-            "18081:8080",
-        ])
-        .current_dir(&repo_root)
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .spawn()
-        .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
     let result = (|| -> Result<serde_json::Value, String> {
-        bijux_atlas_ops::kubernetes::service_probe::wait_for_local_port(
-            18081,
-            Duration::from_secs(10),
+        let metrics = bijux_atlas_ops::kubernetes::service_probe::probe_kubectl_service_http_path(
+            &repo_root, &namespace, 18081, 8080, "/metrics",
         )?;
-        let metrics =
-            bijux_atlas_ops::kubernetes::service_probe::perform_http_request(18081, "/metrics")?;
         let checks = observability_contract_checks(&repo_root, &metrics.body)?;
         let missing = checks
             .get("missing_metrics")
@@ -499,8 +480,6 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
             }
         }))
     })();
-    let _ = child.kill();
-    let _ = child.wait();
     let payload = result?;
     let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
         &repo_root,

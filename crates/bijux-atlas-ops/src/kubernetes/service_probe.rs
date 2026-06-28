@@ -162,6 +162,24 @@ pub fn run_service_smoke_checks(
     checks
 }
 
+fn probe_service_http_path(
+    runner: &impl ServicePortForwardRunner,
+    repo_root: &Path,
+    namespace: &str,
+    local_port: u16,
+    remote_port: u16,
+    path: &str,
+) -> Result<HttpCheckResponse, String> {
+    let mut session =
+        runner.start_service_port_forward(repo_root, namespace, local_port, remote_port)?;
+    let result = (|| -> Result<HttpCheckResponse, String> {
+        wait_for_local_port(local_port, Duration::from_secs(10))?;
+        perform_http_request(local_port, path)
+    })();
+    session.kill_and_wait();
+    result
+}
+
 pub fn run_kubectl_service_smoke_checks(
     repo_root: &Path,
     namespace: &str,
@@ -173,6 +191,23 @@ pub fn run_kubectl_service_smoke_checks(
         namespace,
         local_port,
         body_sha256,
+    )
+}
+
+pub fn probe_kubectl_service_http_path(
+    repo_root: &Path,
+    namespace: &str,
+    local_port: u16,
+    remote_port: u16,
+    path: &str,
+) -> Result<HttpCheckResponse, String> {
+    probe_service_http_path(
+        &KubectlServicePortForwardRunner,
+        repo_root,
+        namespace,
+        local_port,
+        remote_port,
+        path,
     )
 }
 
@@ -312,6 +347,25 @@ mod tests {
         assert_eq!(rows[0]["path"], "/healthz");
         assert_eq!(rows[1]["path"], "/readyz");
         assert_eq!(rows[2]["path"], "/v1/version");
+        assert!(closed.load(Ordering::SeqCst));
+    }
+
+    #[test]
+    fn probe_service_http_path_uses_port_forward_owner() {
+        let root = Path::new("/repo");
+        let closed = Arc::new(AtomicBool::new(false));
+        let runner = MockRunner {
+            closed: closed.clone(),
+        };
+        let listener = TcpListener::bind(("127.0.0.1", 0)).expect("bind port picker");
+        let port = listener.local_addr().expect("picker addr").port();
+        drop(listener);
+
+        let response = probe_service_http_path(&runner, root, "atlas-kind", port, 8080, "/metrics")
+            .expect("probe response");
+
+        assert_eq!(response.status, 200);
+        assert_eq!(response.body, "response:/metrics");
         assert!(closed.load(Ordering::SeqCst));
     }
 
