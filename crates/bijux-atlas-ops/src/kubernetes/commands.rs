@@ -14,6 +14,16 @@ use std::path::Path;
 
 const ATLAS_NAMESPACE: &str = "bijux-atlas";
 
+pub struct K8sApplyRequest<'a> {
+    pub repo_root: &'a Path,
+    pub profile_name: &'a str,
+    pub kind_profile: &'a str,
+    pub run_id: &'a str,
+    pub render_path: &'a Path,
+    pub dry_run: bool,
+    pub force: bool,
+}
+
 pub fn k8s_plan_command_payload(
     profile_name: &str,
     run_id: &str,
@@ -32,25 +42,25 @@ pub fn k8s_plan_command_payload(
 
 pub fn k8s_apply_command_payload(
     runner: &impl KubernetesCommandRunner,
-    repo_root: &Path,
-    profile_name: &str,
-    kind_profile: &str,
-    run_id: &str,
-    render_path: &Path,
-    dry_run: bool,
-    force: bool,
+    request: K8sApplyRequest<'_>,
 ) -> Result<Value, String> {
-    if !dry_run {
-        ensure_namespace_guard(runner, repo_root, kind_profile, force, ATLAS_NAMESPACE)?;
+    if !request.dry_run {
+        ensure_namespace_guard(
+            runner,
+            request.repo_root,
+            request.kind_profile,
+            request.force,
+            ATLAS_NAMESPACE,
+        )?;
     }
     run_k8s_apply_payload(
         runner,
-        repo_root,
-        profile_name,
-        run_id,
+        request.repo_root,
+        request.profile_name,
+        request.run_id,
         ATLAS_NAMESPACE,
-        &render_path.display().to_string(),
-        dry_run,
+        &request.render_path.display().to_string(),
+        request.dry_run,
     )
 }
 

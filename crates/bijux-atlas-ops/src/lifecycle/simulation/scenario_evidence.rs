@@ -12,6 +12,17 @@ pub struct ScenarioEvidenceArtifacts {
     pub failure_evidence_files: Vec<String>,
 }
 
+pub struct ScenarioEvidenceWriteRequest<'a> {
+    pub repo_root: &'a Path,
+    pub scenario_id: &'a str,
+    pub profile: Option<&'a str>,
+    pub mode: &'a str,
+    pub run_id: &'a str,
+    pub artifacts: &'a ScenarioEvidenceArtifacts,
+    pub upgrade_enabled: bool,
+    pub failure_spec: Option<&'a FailureScenarioSpec>,
+}
+
 pub fn scenario_evidence_artifacts(scenario_id: &str, run_id: &str) -> ScenarioEvidenceArtifacts {
     let evidence_dir_rel = format!("artifacts/ops/scenarios/{scenario_id}/{run_id}");
     ScenarioEvidenceArtifacts {
@@ -44,16 +55,9 @@ pub fn scenario_evidence_artifacts(scenario_id: &str, run_id: &str) -> ScenarioE
 }
 
 pub fn write_deterministic_scenario_evidence(
-    repo_root: &Path,
-    scenario_id: &str,
-    profile: Option<&str>,
-    mode: &str,
-    run_id: &str,
-    artifacts: &ScenarioEvidenceArtifacts,
-    upgrade_enabled: bool,
-    failure_spec: Option<&FailureScenarioSpec>,
+    request: ScenarioEvidenceWriteRequest<'_>,
 ) -> Result<(), String> {
-    let evidence_dir = repo_root.join(&artifacts.evidence_dir_rel);
+    let evidence_dir = request.repo_root.join(&request.artifacts.evidence_dir_rel);
     std::fs::create_dir_all(&evidence_dir).map_err(|err| {
         format!(
             "failed to create evidence directory {}: {err}",
@@ -66,17 +70,17 @@ pub fn write_deterministic_scenario_evidence(
         "schema_version": 1,
         "schema_ref": "ops/e2e/scenarios/result-schema.json",
         "runner_version": "1.0",
-        "scenario_id": scenario_id,
-        "run_id": run_id,
-        "mode": mode,
+        "scenario_id": request.scenario_id,
+        "run_id": request.run_id,
+        "mode": request.mode,
         "status": "pass",
         "started_at_utc": now,
         "completed_at_utc": now,
-        "summary": if failure_spec.is_some() { "failure scenario completed in deterministic evidence mode" } else { "scenario completed in deterministic evidence mode" },
+        "summary": if request.failure_spec.is_some() { "failure scenario completed in deterministic evidence mode" } else { "scenario completed in deterministic evidence mode" },
         "prerequisites": ["ops/e2e/scenarios/scenarios.json", "ops/e2e/scenarios/version-compatibility.json", "ops/e2e/scenarios/result-schema.json"],
         "metrics": {"duration_ms": 0, "checks_passed": 1, "checks_failed": 0},
-        "evidence": {"directory": artifacts.evidence_dir_rel, "files": artifacts.evidence_files},
-        "pointers": {"report_json": format!("{}/result.json", artifacts.evidence_dir_rel), "report_markdown": format!("{}/summary.md", artifacts.evidence_dir_rel)}
+        "evidence": {"directory": request.artifacts.evidence_dir_rel, "files": request.artifacts.evidence_files},
+        "pointers": {"report_json": format!("{}/result.json", request.artifacts.evidence_dir_rel), "report_markdown": format!("{}/summary.md", request.artifacts.evidence_dir_rel)}
     });
     let result_path = evidence_dir.join("result.json");
     let summary_path = evidence_dir.join("summary.md");
@@ -98,20 +102,21 @@ pub fn write_deterministic_scenario_evidence(
     std::fs::write(
         &summary_path,
         format!(
-            "# Scenario Evidence\n\n- scenario: `{scenario_id}`\n- run_id: `{run_id}`\n- mode: `{mode}`\n- status: `pass`\n"
+            "# Scenario Evidence\n\n- scenario: `{}`\n- run_id: `{}`\n- mode: `{}`\n- status: `pass`\n",
+            request.scenario_id, request.run_id, request.mode
         ),
     )
     .map_err(|err| format!("failed to write scenario summary {}: {err}", summary_path.display()))?;
 
-    if upgrade_enabled {
-        for rel in &artifacts.before_after_files {
-            let path = repo_root.join(rel);
+    if request.upgrade_enabled {
+        for rel in &request.artifacts.before_after_files {
+            let path = request.repo_root.join(rel);
             std::fs::write(
                 &path,
                 serde_json::to_string_pretty(&serde_json::json!({
                     "schema_version": 1,
-                    "scenario_id": scenario_id,
-                    "run_id": run_id,
+                    "scenario_id": request.scenario_id,
+                    "run_id": request.run_id,
                     "snapshot": rel,
                 }))
                 .map_err(|err| format!("failed to encode snapshot {}: {err}", path.display()))?,
@@ -120,17 +125,25 @@ pub fn write_deterministic_scenario_evidence(
         }
     }
 
-    if let Some(spec) = failure_spec {
-        let classification_path = repo_root.join(&artifacts.failure_evidence_files[0]);
-        let metrics_path = repo_root.join(&artifacts.failure_evidence_files[1]);
-        let config_path = repo_root.join(&artifacts.failure_evidence_files[2]);
-        let logs_path = repo_root.join(&artifacts.failure_evidence_files[3]);
+    if let Some(spec) = request.failure_spec {
+        let classification_path = request
+            .repo_root
+            .join(&request.artifacts.failure_evidence_files[0]);
+        let metrics_path = request
+            .repo_root
+            .join(&request.artifacts.failure_evidence_files[1]);
+        let config_path = request
+            .repo_root
+            .join(&request.artifacts.failure_evidence_files[2]);
+        let logs_path = request
+            .repo_root
+            .join(&request.artifacts.failure_evidence_files[3]);
         std::fs::write(
             &classification_path,
             serde_json::to_string_pretty(&serde_json::json!({
                 "schema_version": 1,
-                "scenario_id": scenario_id,
-                "run_id": run_id,
+                "scenario_id": request.scenario_id,
+                "run_id": request.run_id,
                 "failure_mode": spec.failure_mode,
                 "failure_expected": spec.failure_expected,
                 "expected_behavior": spec.expected_behavior,
@@ -144,8 +157,8 @@ pub fn write_deterministic_scenario_evidence(
             &metrics_path,
             serde_json::to_string_pretty(&serde_json::json!({
                 "schema_version": 1,
-                "scenario_id": scenario_id,
-                "run_id": run_id,
+                "scenario_id": request.scenario_id,
+                "run_id": request.run_id,
                 "metrics": {
                     "error_rate": if spec.failure_expected { 1.0 } else { 0.05 },
                     "warning_count": if spec.failure_expected { 1 } else { 3 },
@@ -159,10 +172,10 @@ pub fn write_deterministic_scenario_evidence(
             &config_path,
             serde_json::to_string_pretty(&serde_json::json!({
                 "schema_version": 1,
-                "scenario_id": scenario_id,
-                "run_id": run_id,
+                "scenario_id": request.scenario_id,
+                "run_id": request.run_id,
                 "snapshot": "deterministic",
-                "profile": profile
+                "profile": request.profile
             }))
             .map_err(|err| {
                 format!(
@@ -180,22 +193,27 @@ pub fn write_deterministic_scenario_evidence(
         std::fs::write(
             &logs_path,
             format!(
-                "level=ERROR scenario={scenario_id} run_id={run_id} failure_mode={} recommended_action=\"{}\"\n",
-                spec.failure_mode, spec.recommended_action
+                "level=ERROR scenario={} run_id={} failure_mode={} recommended_action=\"{}\"\n",
+                request.scenario_id, request.run_id, spec.failure_mode, spec.recommended_action
             ),
         )
-        .map_err(|err| format!("failed to write logs snapshot {}: {err}", logs_path.display()))?;
+        .map_err(|err| {
+            format!(
+                "failed to write logs snapshot {}: {err}",
+                logs_path.display()
+            )
+        })?;
     }
 
-    if scenario_id.starts_with("rollback-") {
-        for rel in &artifacts.rollback_files {
-            let path = repo_root.join(rel);
+    if request.scenario_id.starts_with("rollback-") {
+        for rel in &request.artifacts.rollback_files {
+            let path = request.repo_root.join(rel);
             std::fs::write(
                 &path,
                 serde_json::to_string_pretty(&serde_json::json!({
                     "schema_version": 1,
-                    "scenario_id": scenario_id,
-                    "run_id": run_id,
+                    "scenario_id": request.scenario_id,
+                    "run_id": request.run_id,
                     "status": "restored",
                     "report": rel,
                 }))
@@ -212,7 +230,10 @@ pub fn write_deterministic_scenario_evidence(
 
 #[cfg(test)]
 mod tests {
-    use super::{scenario_evidence_artifacts, write_deterministic_scenario_evidence};
+    use super::{
+        scenario_evidence_artifacts, write_deterministic_scenario_evidence,
+        ScenarioEvidenceWriteRequest,
+    };
     use crate::inventory::scenario_catalog::FailureScenarioSpec;
 
     #[test]
@@ -228,16 +249,16 @@ mod tests {
             recommended_action: "collect evidence".to_string(),
         };
 
-        write_deterministic_scenario_evidence(
-            root.path(),
-            "rollback-minor",
-            Some("kind"),
-            "evidence",
-            "owned-run",
-            &artifacts,
-            true,
-            Some(&failure_spec),
-        )
+        write_deterministic_scenario_evidence(ScenarioEvidenceWriteRequest {
+            repo_root: root.path(),
+            scenario_id: "rollback-minor",
+            profile: Some("kind"),
+            mode: "evidence",
+            run_id: "owned-run",
+            artifacts: &artifacts,
+            upgrade_enabled: true,
+            failure_spec: Some(&failure_spec),
+        })
         .expect("write evidence");
 
         assert!(root.path().join(&artifacts.evidence_files[0]).exists());

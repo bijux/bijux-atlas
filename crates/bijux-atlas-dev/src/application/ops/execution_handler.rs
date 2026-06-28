@@ -15,7 +15,7 @@ use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inpu
 use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::lifecycle::simulation::{
     cleanup_stack_state_payload, reset_stack_state_payload, scenario_evidence_artifacts,
-    stack_down_payload, write_deterministic_scenario_evidence,
+    stack_down_payload, write_deterministic_scenario_evidence, ScenarioEvidenceWriteRequest,
 };
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
 use bijux_atlas_ops::workspace::ops_artifacts::ops_artifact_report_path;
@@ -69,16 +69,16 @@ pub(super) fn dispatch_execution(
                         )
                         .to_stable_message());
                     }
-                    write_deterministic_scenario_evidence(
-                        &repo_root,
-                        &scenario.id,
-                        common.profile.as_deref(),
+                    write_deterministic_scenario_evidence(ScenarioEvidenceWriteRequest {
+                        repo_root: &repo_root,
+                        scenario_id: &scenario.id,
+                        profile: common.profile.as_deref(),
                         mode,
-                        &run_id,
-                        &evidence,
-                        upgrade_spec.is_some(),
-                        failure_spec.as_ref(),
-                    )
+                        run_id: &run_id,
+                        artifacts: &evidence,
+                        upgrade_enabled: upgrade_spec.is_some(),
+                        failure_spec: failure_spec.as_ref(),
+                    })
                     .map_err(|detail| OpsCommandError::Manifest(detail).to_stable_message())?;
                 }
                 let payload = build_scenario_run_payload(

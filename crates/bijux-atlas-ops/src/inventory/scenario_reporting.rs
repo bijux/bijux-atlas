@@ -155,12 +155,9 @@ mod tests {
         let row = &payload["rows"][0];
         assert_eq!(row["scenario_id"], "rollback-minor");
         assert!(row["rollback_step"].as_bool().expect("rollback step"));
-        assert!(
-            row["failure_evidence_files"]
-                .as_array()
-                .expect("failure files")
-                .len()
-                > 0
-        );
+        assert!(!row["failure_evidence_files"]
+            .as_array()
+            .expect("failure files")
+            .is_empty());
     }
 }

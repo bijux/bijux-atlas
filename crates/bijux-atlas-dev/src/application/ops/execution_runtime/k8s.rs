@@ -7,7 +7,7 @@ use crate::{resolve_repo_root, OpsProcess};
 use bijux_atlas_ops::kubernetes::commands::{
     k8s_apply_command_payload, k8s_conformance_command_payload, k8s_logs_command_payload,
     k8s_plan_command_payload, k8s_port_forward_command_payload, k8s_ports_command_payload,
-    k8s_wait_command_payload,
+    k8s_wait_command_payload, K8sApplyRequest,
 };
 use serde_json::Value;
 use std::fs;
@@ -68,13 +68,15 @@ pub(crate) fn run_ops_k8s_apply(
     let process = OpsProcess::new(true);
     let payload = k8s_apply_command_payload(
         &process,
-        &repo_root,
-        &profile.name,
-        &profile.kind_profile,
-        run_id.as_str(),
-        &render_path,
-        dry_run,
-        common.force,
+        K8sApplyRequest {
+            repo_root: &repo_root,
+            profile_name: &profile.name,
+            kind_profile: &profile.kind_profile,
+            run_id: run_id.as_str(),
+            render_path: &render_path,
+            dry_run,
+            force: common.force,
+        },
     )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))

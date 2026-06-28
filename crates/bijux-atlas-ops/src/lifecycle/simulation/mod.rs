@@ -22,6 +22,7 @@ pub use self::kind_cluster::{
 };
 pub use self::scenario_evidence::{
     scenario_evidence_artifacts, write_deterministic_scenario_evidence, ScenarioEvidenceArtifacts,
+    ScenarioEvidenceWriteRequest,
 };
 pub use self::smoke_checks::smoke_command_payload;
 pub use self::stack_cleanup::cleanup_stack_state_payload;
