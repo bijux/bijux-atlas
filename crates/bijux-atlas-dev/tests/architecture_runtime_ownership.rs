@@ -35,7 +35,8 @@ fn rust_files_under(root: &Path) -> Vec<PathBuf> {
 
 #[test]
 fn runtime_ownership_boundary_document_exists() {
-    let path = workspace_root().join("docs/bijux-atlas-dev/workspace/runtime-ownership-boundary.md");
+    let path =
+        workspace_root().join("docs/bijux-atlas-dev/workspace/runtime-ownership-boundary.md");
     let text = std::fs::read_to_string(&path)
         .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
     for required in [
