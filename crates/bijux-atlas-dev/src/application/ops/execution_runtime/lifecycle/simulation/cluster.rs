@@ -408,7 +408,7 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
         .profile
         .clone()
         .unwrap_or_else(|| "profile-baseline".to_string());
-    let namespace = simulation_namespace(&profile, None);
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(&profile, None);
     let mut child = std::process::Command::new("kubectl")
         .args([
             "port-forward",
@@ -425,8 +425,12 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
         .spawn()
         .map_err(|err| format!("failed to start kubectl port-forward: {err}"))?;
     let result = (|| -> Result<serde_json::Value, String> {
-        wait_for_local_port(18081, Duration::from_secs(10))?;
-        let metrics = perform_http_request(18081, "/metrics")?;
+        bijux_atlas_ops::kubernetes::service_probe::wait_for_local_port(
+            18081,
+            Duration::from_secs(10),
+        )?;
+        let metrics =
+            bijux_atlas_ops::kubernetes::service_probe::perform_http_request(18081, "/metrics")?;
         let checks = observability_contract_checks(&repo_root, &metrics.body)?;
         let missing = checks
             .get("missing_metrics")
@@ -896,8 +900,13 @@ pub(crate) fn run_ops_helm_install(
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
-    let values_file = resolve_profile_values_file(&repo_root, &profile)?;
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.release.namespace.as_deref(),
+    );
+    let values_file =
+        bijux_atlas_ops::workspace::profiles::resolve_profile_values_file(&repo_root, &profile)
+            .map_err(|err| err.detail())?;
     let chart_source = match args.chart_source {
         crate::cli::OpsHelmChartSource::Current => {
             bijux_atlas_ops::lifecycle::release_contracts::ReleaseChartSource::Current
@@ -924,12 +933,13 @@ pub(crate) fn run_ops_helm_install(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
-        &process,
-        &repo_root,
-        &namespace,
-        args.release.timeout_seconds,
-    );
+    let (wait_rows, wait_errors, wait_ms) =
+        bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
+            &process,
+            &repo_root,
+            &namespace,
+            args.release.timeout_seconds,
+        );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -990,13 +1000,14 @@ pub(crate) fn run_ops_helm_install(
             },
             "kubeconform": record_kubeconform_result(&process, &repo_root, &render_path),
             "configmap_env_keys": extract_configmap_env_keys(&repo_root, run_id.as_str(), &profile)?,
-            "runtime_allowlist": runtime_allowlist_status(&repo_root),
+            "runtime_allowlist": bijux_atlas_ops::lifecycle::install_status::runtime_env_allowlist_status(&repo_root),
             "smoke": {
                 "report_path": smoke_report_path.display().to_string(),
                 "checks": smoke_payload["checks"].clone()
             },
             "profile_intent": load_profile_intent(&repo_root, &profile)?,
-            "profile_metadata": load_profile_registry(&repo_root, &profile)?
+            "profile_metadata": bijux_atlas_ops::workspace::profiles::load_profile_values_entry(&repo_root, &profile)
+                .map_err(|err| err.detail())?
         }
     });
     let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
@@ -1059,7 +1070,10 @@ pub(crate) fn run_ops_helm_uninstall(
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     let helm_args = vec![
         "uninstall".to_string(),
         "bijux-atlas".to_string(),

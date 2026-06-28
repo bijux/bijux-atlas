@@ -5,7 +5,6 @@ use super::*;
 use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
 use crate::{resolve_repo_root, OpsProcess, RunId};
-use std::time::Duration;
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
@@ -1306,30 +1305,6 @@ pub(crate) fn ensure_simulation_context(process: &OpsProcess, force: bool) -> Re
     }
 }
 
-pub(crate) fn resolve_profile_values_file(
-    repo_root: &std::path::Path,
-    profile: &str,
-) -> Result<std::path::PathBuf, String> {
-    bijux_atlas_ops::workspace::profiles::resolve_profile_values_file(repo_root, profile)
-        .map_err(|err| err.detail())
-}
-
-pub(crate) fn simulation_namespace(profile: &str, override_namespace: Option<&str>) -> String {
-    bijux_atlas_ops::workspace::profiles::simulation_namespace(profile, override_namespace)
-}
-
-pub(crate) fn load_profile_registry(
-    repo_root: &std::path::Path,
-    profile: &str,
-) -> Result<Option<serde_json::Value>, String> {
-    bijux_atlas_ops::workspace::profiles::load_profile_values_entry(repo_root, profile)
-        .map_err(|err| err.detail())
-}
-
-pub(crate) fn runtime_allowlist_status(repo_root: &std::path::Path) -> serde_json::Value {
-    bijux_atlas_ops::lifecycle::install_status::runtime_env_allowlist_status(repo_root)
-}
-
 pub(crate) fn emit_debug_bundle_report(
     repo_root: &std::path::Path,
     run_id: &RunId,
@@ -1351,33 +1326,6 @@ pub(crate) fn emit_debug_bundle_report(
         &format!("ops-debug-bundle-{category}.json"),
         &payload,
     )
-}
-
-pub(crate) fn run_simulation_wait(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-    namespace: &str,
-    timeout_seconds: u64,
-) -> (Vec<serde_json::Value>, Vec<String>, u128) {
-    bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
-        process,
-        repo_root,
-        namespace,
-        timeout_seconds,
-    )
-}
-
-pub(crate) fn wait_for_local_port(port: u16, timeout: Duration) -> Result<(), String> {
-    bijux_atlas_ops::kubernetes::service_probe::wait_for_local_port(port, timeout)
-}
-
-pub(crate) type HttpCheckResponse = bijux_atlas_ops::kubernetes::service_probe::HttpCheckResponse;
-
-pub(crate) fn perform_http_request(
-    local_port: u16,
-    path: &str,
-) -> Result<HttpCheckResponse, String> {
-    bijux_atlas_ops::kubernetes::service_probe::perform_http_request(local_port, path)
 }
 
 struct KubectlPortForwardSession {

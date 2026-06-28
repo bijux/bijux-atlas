@@ -32,8 +32,13 @@ pub(crate) fn run_ops_helm_upgrade(
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
-    let values_file = resolve_profile_values_file(&repo_root, &profile)?;
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.release.namespace.as_deref(),
+    );
+    let values_file =
+        bijux_atlas_ops::workspace::profiles::resolve_profile_values_file(&repo_root, &profile)
+            .map_err(|err| err.detail())?;
     let chart_path = match args.to {
         crate::cli::OpsHelmTarget::Current => simulation_current_chart_path(&repo_root),
         crate::cli::OpsHelmTarget::Previous => simulation_previous_chart_path(&repo_root),
@@ -60,12 +65,13 @@ pub(crate) fn run_ops_helm_upgrade(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
-        &process,
-        &repo_root,
-        &namespace,
-        args.release.timeout_seconds,
-    );
+    let (wait_rows, wait_errors, wait_ms) =
+        bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
+            &process,
+            &repo_root,
+            &namespace,
+            args.release.timeout_seconds,
+        );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -263,7 +269,10 @@ pub(crate) fn run_ops_helm_rollback(
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.release.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.release.namespace.as_deref(),
+    );
     let before_manifest = helm_release_manifest(&process, &repo_root, &namespace)?;
     let before_revision = bijux_atlas_ops::lifecycle::release_observation::deployment_revision(
         &process, &repo_root, &namespace,
@@ -279,12 +288,13 @@ pub(crate) fn run_ops_helm_rollback(
     let (helm_stdout, helm_event) = process
         .run_subprocess("helm", &helm_args, &repo_root)
         .map_err(|err| err.to_stable_message())?;
-    let (wait_rows, wait_errors, wait_ms) = run_simulation_wait(
-        &process,
-        &repo_root,
-        &namespace,
-        args.release.timeout_seconds,
-    );
+    let (wait_rows, wait_errors, wait_ms) =
+        bijux_atlas_ops::kubernetes::workload_wait::run_readiness_wait(
+            &process,
+            &repo_root,
+            &namespace,
+            args.release.timeout_seconds,
+        );
     let smoke_rows = if wait_errors.is_empty() {
         run_smoke_checks(&repo_root, &namespace, 18080)?
     } else {
@@ -473,7 +483,10 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     let checks = run_smoke_checks(&repo_root, &namespace, args.local_port)?;
     let errors = checks
         .iter()
@@ -538,7 +551,10 @@ fn run_collect_command(
     ensure_simulation_context(&process, common.force)?;
     let run_id = run_id_or_default(common.run_id.clone())?;
     let profile = common.profile.clone().unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     let (stdout, event) = process
         .run_subprocess("kubectl", &argv, &repo_root)
         .map_err(|err| err.to_stable_message())?;
@@ -578,7 +594,10 @@ pub(crate) fn run_ops_logs_collect(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     run_collect_command(
         args,
         "logs",
@@ -601,7 +620,10 @@ pub(crate) fn run_ops_describe_collect(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     run_collect_command(
         args,
         "describe",
@@ -624,7 +646,10 @@ pub(crate) fn run_ops_events_collect(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     run_collect_command(
         args,
         "events",
@@ -647,7 +672,10 @@ pub(crate) fn run_ops_resources_snapshot(
         .profile
         .clone()
         .unwrap_or_else(|| "kind".to_string());
-    let namespace = simulation_namespace(&profile, args.namespace.as_deref());
+    let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(
+        &profile,
+        args.namespace.as_deref(),
+    );
     run_collect_command(
         args,
         "resources",
