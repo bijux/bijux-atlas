@@ -200,7 +200,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let mut inventory_errors =
-                match bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(
+                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
@@ -253,7 +253,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let mut inventory_errors =
-                match bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(
+                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
@@ -436,7 +436,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let toolchain =
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let inventory_errors =
-                match bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(
+                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
@@ -557,7 +557,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
             let inventory_errors =
-                match bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(
+                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
@@ -607,7 +607,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
             let inventory_errors =
-                match bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(
+                match bijux_atlas_ops::inventory::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),

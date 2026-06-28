@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bijux_atlas_dev::adapters::AdapterError;
-use bijux_atlas_dev::core::ops_inventory::load_ops_inventory_cached;
 use bijux_atlas_dev::core::{
     run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,
 };
+use bijux_atlas_ops::inventory::ops_inventory::load_ops_inventory_cached;
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
