@@ -2,8 +2,7 @@
 
 use bijux_atlas_dev::model::OpsRunReport;
 
-use super::tools::validate_pins_completeness;
-use super::workspace_contracts::{load_stack_pins, resolve_ops_root, run_id_or_default};
+use super::workspace_contracts::run_id_or_default;
 use crate::*;
 
 pub(crate) fn emit_payload(
@@ -224,32 +223,4 @@ pub(crate) fn render_ops_validation_output(
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, exit))
-}
-
-pub(crate) fn ops_pins_check_payload(
-    common: &OpsCommonArgs,
-    repo_root: &Path,
-) -> Result<(serde_json::Value, i32), String> {
-    let ops_root =
-        resolve_ops_root(repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
-    let mut errors = Vec::new();
-    if let Err(err) =
-        bijux_atlas_dev::core::ops_inventory::OpsInventory::load_and_validate(&ops_root)
-    {
-        errors.push(err);
-    }
-    let pins = load_stack_pins(repo_root).map_err(|e| e.to_stable_message())?;
-    errors.extend(validate_pins_completeness(repo_root, &pins).map_err(|e| e.to_stable_message())?);
-    let status = if errors.is_empty() { "ok" } else { "failed" };
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": status,
-        "text": if errors.is_empty() { "ops pins check passed" } else { "ops pins check failed" },
-        "rows": [{
-            "pins_path": "ops/inventory/pins.yaml",
-            "errors": errors
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}
-    });
-    Ok((payload, if status == "ok" { 0 } else { 1 }))
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use bijux_atlas_ops::inventory::pins_audit::build_pins_check_payload;
 use bijux_atlas_ops::inventory::pins_index::build_pins_index_payload;
 use bijux_atlas_ops::inventory::resilience_report::build_resilience_report_payload;
 use bijux_atlas_ops::inventory::runbook_index::build_runbook_index_payload;
@@ -280,34 +281,9 @@ pub(super) fn dispatch_execution(
         OpsCommand::Pins { command } => match command {
             OpsPinsCommand::Check(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let mut errors = Vec::new();
-                let (payload_base, code_base) = ops_pins_check_payload(&common, &repo_root)?;
-                if code_base != 0 {
-                    errors.push("base pins validation failed".to_string());
-                }
-                let pins = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
-                errors.extend(
-                    validate_pins_completeness(&repo_root, &pins)
-                        .map_err(|e| e.to_stable_message())?,
-                );
-                let status = if errors.is_empty() { "ok" } else { "failed" };
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "status": status,
-                    "text": if errors.is_empty() { "ops pins check passed" } else { "ops pins check failed" },
-                    "rows": [payload_base],
-                    "errors": errors,
-                    "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}
-                });
+                let (payload, exit_code) = build_pins_check_payload(&repo_root)?;
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-                Ok((
-                    rendered,
-                    if errors.is_empty() {
-                        ops_exit::PASS
-                    } else {
-                        ops_exit::FAIL
-                    },
-                ))
+                Ok((rendered, exit_code))
             }
             OpsPinsCommand::Update {
                 i_know_what_im_doing,
