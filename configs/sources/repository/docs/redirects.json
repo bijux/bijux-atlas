@@ -1,4 +1,5 @@
 {
+  "docs/badges.md": "docs/bijux-atlas-dev/governance/badge-catalog.md",
   "docs/01-introduction/index.md": "docs/bijux-atlas/index.md",
   "docs/01-introduction/what-atlas-is.md": "docs/bijux-atlas/foundations/what-atlas-is.md",
   "docs/01-introduction/core-concepts.md": "docs/bijux-atlas/foundations/core-concepts.md",

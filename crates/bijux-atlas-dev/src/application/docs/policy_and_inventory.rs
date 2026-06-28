@@ -3,6 +3,10 @@
 pub(crate) struct DocsQualityPolicy {
     #[serde(default = "default_reference_date")]
     pub(crate) reference_date: String,
+    #[serde(default = "default_area_budget")]
+    pub(crate) default_area_budget: usize,
+    #[serde(default)]
+    pub(crate) area_budgets: BTreeMap<String, usize>,
     #[serde(default)]
     pub(crate) naming: NamingPolicy,
     #[serde(default)]
@@ -61,6 +65,10 @@ fn default_max_line_length() -> usize {
     180
 }
 
+fn default_area_budget() -> usize {
+    40
+}
+
 fn default_require_h1() -> bool {
     true
 }
@@ -69,6 +77,8 @@ impl Default for DocsQualityPolicy {
     fn default() -> Self {
         Self {
             reference_date: default_reference_date(),
+            default_area_budget: default_area_budget(),
+            area_budgets: BTreeMap::new(),
             naming: NamingPolicy::default(),
             terminology: TerminologyPolicy::default(),
             markdown: MarkdownPolicy::default(),

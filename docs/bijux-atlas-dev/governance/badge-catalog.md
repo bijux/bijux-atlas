@@ -9,7 +9,7 @@ last_reviewed: 2026-04-12
 
 # Badge Catalog
 
-`docs/badges.md` is the shared badge catalog for Atlas README and documentation
+`docs/bijux-atlas-dev/governance/badge-catalog.md` is the shared badge catalog for Atlas README and documentation
 surfaces.
 
 Use this page as the reference point when badge blocks change so the repository

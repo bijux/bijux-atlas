@@ -286,6 +286,6 @@ control plane.
 
 ## Reference Surfaces
 
-- [Badge Catalog](badges.md)
+- [Badge Catalog](bijux-atlas-dev/governance/badge-catalog.md)
 - [Shell JavaScript Ownership](assets/javascripts/shell/README.md)
 - [Shell CSS Ownership](assets/styles/README.md)

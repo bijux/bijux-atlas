@@ -130,6 +130,10 @@ fn docs_sync_redirects(repo_root: &std::path::Path) -> Result<serde_json::Value,
         .map_err(|e| format!("write {} failed: {e}", mkdocs_path.display()))?;
 
     let legacy_inventory = render_legacy_url_inventory_markdown(&filtered, &redirect_registry);
+    if let Some(parent) = legacy_inventory_path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+    }
     fs::write(&legacy_inventory_path, legacy_inventory)
         .map_err(|e| format!("write {} failed: {e}", legacy_inventory_path.display()))?;
 
