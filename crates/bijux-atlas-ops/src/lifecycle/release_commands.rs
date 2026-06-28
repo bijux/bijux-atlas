@@ -75,9 +75,12 @@ pub fn latest_packaged_chart(package_dir: &Path) -> Result<PathBuf, String> {
         .ok_or_else(|| format!("no chart package produced in {}", package_dir.display()))
 }
 
-pub fn release_package_inventory(path: &Path) -> Result<serde_json::Value, String> {
+pub fn release_package_inventory(
+    repo_root: &Path,
+    path: &Path,
+) -> Result<serde_json::Value, String> {
     Ok(serde_json::json!({
-        "path": path.display().to_string(),
+        "path": path.strip_prefix(repo_root).unwrap_or(path).display().to_string(),
         "sha256": sha256_file(path)?
     }))
 }
@@ -184,9 +187,9 @@ mod tests {
         let chart_path = root.path().join("bijux-atlas.tgz");
         std::fs::write(&chart_path, "chart").expect("write chart");
 
-        let payload = release_package_inventory(&chart_path).expect("inventory");
+        let payload = release_package_inventory(root.path(), &chart_path).expect("inventory");
 
-        assert_eq!(payload["path"], chart_path.display().to_string());
+        assert_eq!(payload["path"], "bijux-atlas.tgz");
         assert!(payload["sha256"].as_str().is_some());
     }
 }

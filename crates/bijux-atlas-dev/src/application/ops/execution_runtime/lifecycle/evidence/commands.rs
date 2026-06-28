@@ -200,7 +200,9 @@ pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String
     run_security_validate_for_evidence(&process, &repo_root)?;
     run_governance_exceptions_validate_for_evidence(&process, &repo_root)?;
     run_governance_doctor_for_evidence(&process, &repo_root)?;
-    let chart_package = package_chart_for_evidence(&process, &repo_root)?;
+    let chart_package = bijux_atlas_ops::lifecycle::release_commands::package_chart_for_evidence(
+        &process, &repo_root,
+    )?;
     let policy_path = repo_root.join("ops/release/evidence/policy.json");
     let identity_path = evidence_root.join("identity.json");
     let manifest_path = evidence_root.join("manifest.json");
@@ -410,10 +412,10 @@ pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String
             "path": provenance_path.strip_prefix(&repo_root).unwrap_or(&provenance_path).display().to_string(),
             "sha256": sha256_file(&provenance_path)?
         },
-        "chart_package": {
-            "path": chart_package.strip_prefix(&repo_root).unwrap_or(&chart_package).display().to_string(),
-            "sha256": sha256_file(&chart_package)?
-        },
+        "chart_package": bijux_atlas_ops::lifecycle::release_commands::release_package_inventory(
+            &repo_root,
+            &chart_package,
+        )?,
         "image_artifacts": image_artifacts,
         "docker_bases_lock": {
             "path": docker_bases.strip_prefix(&repo_root).unwrap_or(&docker_bases).display().to_string(),
