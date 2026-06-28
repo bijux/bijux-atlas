@@ -3,31 +3,12 @@
 
 use super::*;
 use crate::cli::OpsCommonArgs;
-use crate::ops_commands::{emit_payload, run_id_or_default, sha256_hex};
+use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::{resolve_repo_root, OpsProcess};
-use bijux_atlas_ops::observe::report_artifacts::{
-    observe_report_root, write_observe_contract_report, write_operational_readiness_markdown,
-};
 
 pub(crate) fn run_ops_observe_slo_list(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
-    let slo_path = repo_root.join("ops/observe/slo-definitions.json");
-    let slo: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(&slo_path)
-            .map_err(|err| format!("failed to read {}: {err}", slo_path.display()))?,
-    )
-    .map_err(|err| format!("failed to parse {}: {err}", slo_path.display()))?;
-    let rows = slo
-        .get("slos")
-        .and_then(serde_json::Value::as_array)
-        .cloned()
-        .unwrap_or_default();
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "text": "observe slo list",
-        "rows": rows,
-        "summary": {"total": rows.len(), "errors": 0, "warnings": 0}
-    });
+    let payload = bijux_atlas_ops::observe::commands::render_slo_list_payload(&repo_root)?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))
 }
@@ -38,75 +19,10 @@ pub(crate) fn run_ops_observe_slo_verify(common: &OpsCommonArgs) -> Result<(Stri
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let slo: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/observe/slo-definitions.json"))
-            .map_err(|err| format!("failed to read slo-definitions.json: {err}"))?,
-    )
-    .map_err(|err| format!("failed to parse slo-definitions.json: {err}"))?;
-    let measurement: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/observe/slo-measurement.json"))
-            .map_err(|err| format!("failed to read slo-measurement.json: {err}"))?,
-    )
-    .map_err(|err| format!("failed to parse slo-measurement.json: {err}"))?;
-    let metric_map: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/observe/slo-metric-map.json"))
-            .map_err(|err| format!("failed to read slo-metric-map.json: {err}"))?,
-    )
-    .map_err(|err| format!("failed to parse slo-metric-map.json: {err}"))?;
-    let mut errors = Vec::new();
-    let slos = slo
-        .get("slos")
-        .and_then(serde_json::Value::as_array)
-        .cloned()
-        .unwrap_or_default();
-    let measurement_obj = measurement
-        .get("measurement_method")
-        .and_then(serde_json::Value::as_object)
-        .cloned()
-        .unwrap_or_default();
-    let map_rows = metric_map
-        .get("slo_metric_map")
-        .and_then(serde_json::Value::as_array)
-        .cloned()
-        .unwrap_or_default();
-    for slo_row in &slos {
-        let Some(id) = slo_row.get("id").and_then(serde_json::Value::as_str) else {
-            errors.push("slo missing id".to_string());
-            continue;
-        };
-        if !measurement_obj.contains_key(id) {
-            errors.push(format!("measurement method missing for slo `{id}`"));
-        }
-        let map_exists = map_rows.iter().any(|row| {
-            row.get("slo_id")
-                .and_then(serde_json::Value::as_str)
-                .is_some_and(|value| value == id)
-        });
-        if !map_exists {
-            errors.push(format!("metric map missing for slo `{id}`"));
-        }
-    }
-    let report = serde_json::json!({
-        "schema_version": 1,
-        "status": if errors.is_empty() { "ok" } else { "failed" },
-        "slos_total": slos.len(),
-        "errors": errors,
-    });
-    let report_rel = write_observe_contract_report(
-        &repo_root,
-        run_id.as_str(),
-        "slo-contract-report.json",
-        &report,
-    )?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": report["status"].clone(),
-        "text": "observe slo verify",
-        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
-        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
-    });
+    let (payload, exit_code) =
+        bijux_atlas_ops::observe::commands::verify_slo_contract(&repo_root, run_id.as_str())?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, if errors.is_empty() { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_observe_alerts_verify(
@@ -117,108 +33,10 @@ pub(crate) fn run_ops_observe_alerts_verify(
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let contract: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/observe/contracts/alerts-contract.json"))
-            .map_err(|err| format!("failed to read alerts-contract.json: {err}"))?,
-    )
-    .map_err(|err| format!("failed to parse alerts-contract.json: {err}"))?;
-    let required = contract
-        .get("required_alerts")
-        .and_then(serde_json::Value::as_array)
-        .cloned()
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(|row| row.as_str().map(ToString::to_string))
-        .collect::<std::collections::BTreeSet<_>>();
-    let mut observed = std::collections::BTreeSet::new();
-    let mut errors = Vec::new();
-    for alerts_file in [
-        "ops/observe/alerts/atlas-alert-rules.yaml",
-        "ops/observe/alerts/slo-burn-rules.yaml",
-    ] {
-        let alerts_path = repo_root.join(alerts_file);
-        let alert_rules: serde_yaml::Value = serde_yaml::from_str(
-            &std::fs::read_to_string(&alerts_path)
-                .map_err(|err| format!("failed to read {}: {err}", alerts_path.display()))?,
-        )
-        .map_err(|err| format!("failed to parse {}: {err}", alerts_path.display()))?;
-        let groups = alert_rules
-            .get("spec")
-            .and_then(|row| row.get("groups"))
-            .and_then(serde_yaml::Value::as_sequence)
-            .cloned()
-            .unwrap_or_default();
-        for group in &groups {
-            let rules = group
-                .get("rules")
-                .and_then(serde_yaml::Value::as_sequence)
-                .cloned()
-                .unwrap_or_default();
-            for rule in rules {
-                if let Some(name) = rule.get("alert").and_then(serde_yaml::Value::as_str) {
-                    observed.insert(name.to_string());
-                }
-                let labels = rule
-                    .get("labels")
-                    .and_then(serde_yaml::Value::as_mapping)
-                    .cloned()
-                    .unwrap_or_default();
-                for required_label in ["severity", "subsystem", "alert_contract_version"] {
-                    let key = serde_yaml::Value::String(required_label.to_string());
-                    if !labels.contains_key(&key) {
-                        errors.push(format!(
-                            "alert missing label `{required_label}` in {alerts_file}"
-                        ));
-                    }
-                }
-                let runbook = rule
-                    .get("annotations")
-                    .and_then(|row| row.get("runbook"))
-                    .and_then(serde_yaml::Value::as_str)
-                    .unwrap_or_default();
-                if runbook.is_empty() {
-                    errors.push(format!(
-                        "alert missing annotations.runbook in {alerts_file}"
-                    ));
-                }
-            }
-        }
-    }
-    for alert in required {
-        if !observed.contains(&alert) {
-            errors.push(format!(
-                "required alert missing from alert rules: `{alert}`"
-            ));
-        }
-    }
-    let report = serde_json::json!({
-        "schema_version": 1,
-        "status": if errors.is_empty() { "ok" } else { "failed" },
-        "alerts_total": observed.len(),
-        "errors": errors
-    });
-    let report_rel = write_observe_contract_report(
-        &repo_root,
-        run_id.as_str(),
-        "alerts-contract-report.json",
-        &report,
-    )?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": report["status"].clone(),
-        "text": "observe alerts verify",
-        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
-        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
-    });
+    let (payload, exit_code) =
+        bijux_atlas_ops::observe::commands::verify_alert_contract(&repo_root, run_id.as_str())?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((
-        rendered,
-        if report["errors"].as_array().is_some_and(|v| v.is_empty()) {
-            0
-        } else {
-            1
-        },
-    ))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_observe_runbooks_verify(
@@ -229,84 +47,10 @@ pub(crate) fn run_ops_observe_runbooks_verify(
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let mut errors = Vec::new();
-    let mut checked = 0usize;
-    for alerts_file in [
-        "ops/observe/alerts/atlas-alert-rules.yaml",
-        "ops/observe/alerts/slo-burn-rules.yaml",
-    ] {
-        let alerts_path = repo_root.join(alerts_file);
-        let alert_rules: serde_yaml::Value = serde_yaml::from_str(
-            &std::fs::read_to_string(&alerts_path)
-                .map_err(|err| format!("failed to read {}: {err}", alerts_path.display()))?,
-        )
-        .map_err(|err| format!("failed to parse {}: {err}", alerts_path.display()))?;
-        let groups = alert_rules
-            .get("spec")
-            .and_then(|row| row.get("groups"))
-            .and_then(serde_yaml::Value::as_sequence)
-            .cloned()
-            .unwrap_or_default();
-        for group in &groups {
-            let rules = group
-                .get("rules")
-                .and_then(serde_yaml::Value::as_sequence)
-                .cloned()
-                .unwrap_or_default();
-            for rule in rules {
-                let runbook = rule
-                    .get("annotations")
-                    .and_then(|row| row.get("runbook"))
-                    .and_then(serde_yaml::Value::as_str)
-                    .unwrap_or_default();
-                if runbook.is_empty() {
-                    errors.push(format!("alert missing runbook path in {alerts_file}"));
-                    continue;
-                }
-                let runbook_path = repo_root.join(runbook);
-                checked += 1;
-                if !runbook_path.exists() {
-                    errors.push(format!("runbook file does not exist: {runbook}"));
-                    continue;
-                }
-                let content = std::fs::read_to_string(&runbook_path)
-                    .map_err(|err| format!("failed to read {}: {err}", runbook_path.display()))?;
-                if !content.to_ascii_lowercase().contains("evidence") {
-                    errors.push(format!(
-                        "runbook does not describe required evidence bundle: {runbook}"
-                    ));
-                }
-            }
-        }
-    }
-    let report = serde_json::json!({
-        "schema_version": 1,
-        "status": if errors.is_empty() { "ok" } else { "failed" },
-        "runbooks_checked": checked,
-        "errors": errors
-    });
-    let report_rel = write_observe_contract_report(
-        &repo_root,
-        run_id.as_str(),
-        "runbooks-contract-report.json",
-        &report,
-    )?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": report["status"].clone(),
-        "text": "observe runbooks verify",
-        "rows": [{"report_path": report_rel, "errors": report["errors"].clone()}],
-        "summary": {"total": 1, "errors": report["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": 0}
-    });
+    let (payload, exit_code) =
+        bijux_atlas_ops::observe::commands::verify_runbook_contract(&repo_root, run_id.as_str())?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((
-        rendered,
-        if report["errors"].as_array().is_some_and(|v| v.is_empty()) {
-            0
-        } else {
-            1
-        },
-    ))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(String, i32), String> {
@@ -315,80 +59,13 @@ pub(crate) fn run_ops_observe_readiness(common: &OpsCommonArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let base = observe_report_root(&repo_root, run_id.as_str());
-    let read_report = |name: &str| -> serde_json::Value {
-        let path = base.join(name);
-        std::fs::read_to_string(&path)
-            .ok()
-            .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
-            .unwrap_or_else(|| {
-                serde_json::json!({
-                    "status":"missing",
-                    "errors":[format!("missing report {}", path.display())]
-                })
-            })
-    };
-    let slo = read_report("slo-contract-report.json");
-    let alerts = read_report("alerts-contract-report.json");
-    let runbooks = read_report("runbooks-contract-report.json");
-    let checks = [slo.clone(), alerts.clone(), runbooks.clone()];
-    let passed = checks
-        .iter()
-        .filter(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("ok"))
-        .count();
-    let total = checks.len();
-    let completeness = if total == 0 {
-        0.0
-    } else {
-        passed as f64 / total as f64
-    };
-    let threshold = 1.0f64;
-    let status = if completeness >= threshold {
-        "ok"
-    } else {
-        "failed"
-    };
-    let report = serde_json::json!({
-        "schema_version": 1,
-        "status": status,
-        "completeness": completeness,
-        "threshold": threshold,
-        "reports": {
-            "slo": format!("artifacts/ops/{}/observe/slo-contract-report.json", run_id.as_str()),
-            "alerts": format!("artifacts/ops/{}/observe/alerts-contract-report.json", run_id.as_str()),
-            "runbooks": format!("artifacts/ops/{}/observe/runbooks-contract-report.json", run_id.as_str())
-        }
-    });
-    let report_rel = write_observe_contract_report(
-        &repo_root,
-        run_id.as_str(),
-        "operational-readiness-report.json",
-        &report,
-    )?;
-    let human_rel = write_operational_readiness_markdown(
-        &repo_root,
-        run_id.as_str(),
-        status,
-        completeness,
-        threshold,
-    )?;
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": status,
-        "text": "observe readiness report",
-        "rows": [{
-            "report_path": report_rel,
-            "human_report_path": human_rel,
-            "completeness": completeness,
-            "threshold": threshold,
-            "slo": slo,
-            "alerts": alerts,
-            "runbooks": runbooks
-        }],
-        "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-    });
+    let (payload, exit_code) =
+        bijux_atlas_ops::observe::commands::build_operational_readiness_payload(
+            &repo_root,
+            run_id.as_str(),
+        )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32), String> {
@@ -408,102 +85,14 @@ pub(crate) fn run_ops_obs_verify(common: &OpsCommonArgs) -> Result<(String, i32)
         .clone()
         .unwrap_or_else(|| "profile-baseline".to_string());
     let namespace = bijux_atlas_ops::workspace::profiles::simulation_namespace(&profile, None);
-    let result = (|| -> Result<serde_json::Value, String> {
-        let metrics = bijux_atlas_ops::kubernetes::service_probe::probe_kubectl_service_http_path(
-            &repo_root, &namespace, 18081, 8080, "/metrics",
-        )?;
-        let checks = observability_contract_checks(&repo_root, &metrics.body)?;
-        let missing = checks
-            .get("missing_metrics")
-            .and_then(serde_json::Value::as_array)
-            .cloned()
-            .unwrap_or_default();
-        let status = metrics.status == 200
-            && missing.is_empty()
-            && checks
-                .get("warmup_lock_metrics_present")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("error_registry_aligned")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("startup_log_fields_present")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("redaction_contract_passed")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("dashboard_contract_valid")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("slo_contract_valid")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("alert_rules_contract_valid")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("alert_rules_reference_known_metrics")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && checks
-                .get("label_policy_passed")
-                .and_then(serde_json::Value::as_bool)
-                == Some(true);
-        Ok(serde_json::json!({
-            "schema_version": 1,
-            "status": if status { "ok" } else { "failed" },
-            "checks": {
-                "metrics_endpoint": {
-                    "path": "/metrics",
-                    "status": metrics.status,
-                    "latency_ms": metrics.latency_ms,
-                    "body_sha256": sha256_hex(&metrics.body)
-                },
-                "required_metrics_present": checks["required_metrics_present"].clone(),
-                "missing_metrics": checks["missing_metrics"].clone(),
-                "warmup_lock_metrics_present": checks["warmup_lock_metrics_present"].clone(),
-                "error_registry_aligned": checks["error_registry_aligned"].clone(),
-                "startup_log_fields_present": checks["startup_log_fields_present"].clone(),
-                "redaction_contract_passed": checks["redaction_contract_passed"].clone(),
-                "dashboard_contract_valid": checks["dashboard_contract_valid"].clone(),
-                "slo_contract_valid": checks["slo_contract_valid"].clone(),
-                "alert_rules_contract_valid": checks["alert_rules_contract_valid"].clone(),
-                "alert_rules_reference_known_metrics": checks["alert_rules_reference_known_metrics"].clone(),
-                "label_policy_passed": checks["label_policy_passed"].clone()
-            }
-        }))
-    })();
-    let payload = result?;
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
+    let (payload, exit_code) = bijux_atlas_ops::observe::commands::verify_observability_runtime(
         &repo_root,
         run_id.as_str(),
-        "ops-obs-verify.json",
-        &payload,
+        &profile,
+        &namespace,
     )?;
-    let status = payload["status"].as_str().unwrap_or("failed");
-    let rendered = emit_payload(
-        common.format,
-        common.out.clone(),
-        &serde_json::json!({
-            "schema_version": 1,
-            "status": status,
-            "text": if status == "ok" { "observability checks passed" } else { "observability checks failed" },
-            "rows": [{
-                "report_path": report_path.display().to_string(),
-                "namespace": namespace,
-                "checks": payload["checks"].clone()
-            }],
-            "summary": {"total": 1, "errors": if status == "ok" { 0 } else { 1 }, "warnings": 0}
-        }),
-    )?;
-    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(String, i32), String> {

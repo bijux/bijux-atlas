@@ -20,4 +20,3 @@ pub(crate) use bijux_atlas_ops::lifecycle::release::inventory::{
     collect_observability_assets, collect_perf_assets, collect_report_paths,
     collect_simulation_summary_paths, collect_supply_chain_inventory,
 };
-pub(crate) use bijux_atlas_ops::observe::contract_checks::observability_contract_checks;
