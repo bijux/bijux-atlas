@@ -89,11 +89,11 @@ impl OpsFs {
         rel: &str,
         payload: &serde_json::Value,
     ) -> Result<PathBuf, OpsCommandError> {
-        let path = self
-            .repo_root
-            .join("artifacts/atlas-dev/ops")
-            .join(run_id.as_str())
-            .join(rel);
+        let path = bijux_atlas_ops::workspace::ops_artifacts::ops_artifact_report_path(
+            &self.repo_root,
+            run_id.as_str(),
+            rel,
+        );
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent).map_err(|err| {
                 OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))

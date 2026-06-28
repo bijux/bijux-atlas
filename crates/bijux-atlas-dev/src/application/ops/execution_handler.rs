@@ -16,6 +16,10 @@ use bijux_atlas_ops::lifecycle::simulation::{
     scenario_evidence_artifacts, write_deterministic_scenario_evidence,
 };
 use bijux_atlas_ops::stack::chart_dependency_sbom::build_chart_dependency_sbom_payload;
+use bijux_atlas_ops::workspace::ops_artifacts::{
+    build_cleanup_payload, build_reset_payload, ops_artifact_report_path, ops_artifact_run_root,
+    ops_artifacts_root,
+};
 
 pub(super) fn dispatch_execution(
     command: OpsCommand,
@@ -190,7 +194,7 @@ pub(super) fn dispatch_execution(
         }
         OpsCommand::Clean(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let path = repo_root.join("artifacts/atlas-dev/ops");
+            let path = ops_artifacts_root(&repo_root);
             if path.exists() {
                 std::fs::remove_dir_all(&path)
                     .map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
@@ -221,29 +225,16 @@ pub(super) fn dispatch_execution(
             } else {
                 format!("clean exit={clean_code}")
             };
-            let errors = usize::from(down_code != 0) + usize::from(clean_code != 0);
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "text": if errors == 0 { "ops cleanup passed" } else { "ops cleanup failed" },
-                "rows": [
-                    {"action":"down","status": if down_code == 0 { "ok" } else { "failed" }, "detail": down_detail},
-                    {"action":"clean","status": if clean_code == 0 { "ok" } else { "failed" }, "detail": clean_detail}
-                ],
-                "summary": {"total": 2, "errors": errors, "warnings": 0}
-            });
+            let payload = build_cleanup_payload(down_detail, down_code, clean_detail, clean_code);
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            let errors = payload["summary"]["errors"].as_u64().unwrap_or(0);
             Ok((rendered, if errors == 0 { 0 } else { 1 }))
         }
         OpsCommand::Reset(args) => {
             let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let run_id = RunId::parse(&args.reset_id).map_err(|err| err.to_string())?;
-            let target = repo_root
-                .join("artifacts/atlas-dev/ops")
-                .join(run_id.as_str());
-            if !target.starts_with(repo_root.join("artifacts/atlas-dev/ops")) {
-                return Err("reset path guard failed".to_string());
-            }
+            let target = ops_artifact_run_root(&repo_root, run_id.as_str())?;
             if target.exists() {
                 std::fs::remove_dir_all(&target)
                     .map_err(|err| format!("failed to remove {}: {err}", target.display()))?;
@@ -282,16 +273,8 @@ pub(super) fn dispatch_execution(
                     "kind_profile": profile.kind_profile
                 }));
             }
-            let text = format!(
-                "reset artifacts for run_id={} at {}",
-                run_id.as_str(),
-                target.display()
-            );
-            let rendered = emit_payload(
-                common.format,
-                common.out.clone(),
-                &serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": 1, "errors": 0, "warnings": 0}}),
-            )?;
+            let payload = build_reset_payload(run_id.as_str(), &target, rows);
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((rendered, 0))
         }
         OpsCommand::Pins { command } => match command {
@@ -415,10 +398,7 @@ pub(super) fn dispatch_execution(
                 let payload = build_pins_index_payload(&repo_root, run_id.as_str())?;
                 let rel = "generate/pins.index.json";
                 if check {
-                    let expected_path = repo_root
-                        .join("artifacts/atlas-dev/ops")
-                        .join(run_id.as_str())
-                        .join(rel);
+                    let expected_path = ops_artifact_report_path(&repo_root, run_id.as_str(), rel);
                     let existing = std::fs::read_to_string(&expected_path).map_err(|err| {
                         format!(
                             "pins-index check failed: missing {}: {err}",

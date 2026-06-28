@@ -2,5 +2,6 @@
 
 pub mod inventory;
 pub mod load;
+pub mod ops_artifacts;
 pub mod profiles;
 pub mod stack;
