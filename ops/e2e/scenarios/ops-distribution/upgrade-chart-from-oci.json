@@ -5,7 +5,7 @@
   "environment": "kind",
   "profile": "kind",
   "chart_source": "oci://ghcr.io/bijux/charts/bijux-atlas",
-  "image_source": "ghcr.io/bijux/bijux-atlas-server",
+  "image_source": "ghcr.io/bijux/bijux-atlas/atlas-runtime",
   "steps": [
     "helm install atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.0.9 -f ops/k8s/values/kind.yaml",
     "helm upgrade atlas oci://ghcr.io/bijux/charts/bijux-atlas --version v0.1.0 -f ops/k8s/values/kind.yaml",

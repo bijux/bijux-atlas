@@ -235,7 +235,7 @@ mod tests {
 
     #[test]
     fn rendered_image_reference_must_not_have_multiple_digest_separators() {
-        let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:abc@sha256:def";
+        let rendered = "image: ghcr.io/bijux/bijux-atlas/atlas-runtime@sha256:abc@sha256:def";
         let errors = scan_invalid_image_refs(rendered);
         assert!(
             errors
@@ -247,7 +247,7 @@ mod tests {
 
     #[test]
     fn rendered_image_reference_accepts_digest_form() {
-        let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111";
+        let rendered = "image: ghcr.io/bijux/bijux-atlas/atlas-runtime@sha256:1111111111111111111111111111111111111111111111111111111111111111";
         let errors = scan_unpinned_images(rendered, "prod");
         assert!(
             errors.is_empty(),
