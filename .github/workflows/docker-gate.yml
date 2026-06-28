@@ -42,6 +42,13 @@ jobs:
         with:
           path: .cache/cargo/target/docker-gate
           key: cargo-target-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
+      - name: Normalize temp roots to absolute workspace paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TMPDIR=${GITHUB_WORKSPACE}/${TMPDIR}" >> "${GITHUB_ENV}"
+          echo "TMP=${GITHUB_WORKSPACE}/${TMP}" >> "${GITHUB_ENV}"
+          echo "TEMP=${GITHUB_WORKSPACE}/${TEMP}" >> "${GITHUB_ENV}"
       - name: Run docker gate checks
         shell: bash
         run: |
