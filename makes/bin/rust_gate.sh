@@ -11,8 +11,20 @@ shift || true
 workspace_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${workspace_root}"
 
+resolve_workspace_path() {
+  local configured_path="$1"
+  case "${configured_path}" in
+    /*)
+      printf '%s\n' "${configured_path}"
+      ;;
+    *)
+      printf '%s/%s\n' "${workspace_root}" "${configured_path}"
+      ;;
+  esac
+}
+
 rs_artifact_root="${RS_ARTIFACT_ROOT:-artifacts/rust}"
-rs_artifact_root="$(cd "$(dirname "${rs_artifact_root}")" && pwd)/$(basename "${rs_artifact_root}")"
+rs_artifact_root="$(resolve_workspace_path "${rs_artifact_root}")"
 rs_run_id="${RS_RUN_ID:-local}"
 
 rs_target_dir="${RS_TARGET_DIR:-${CARGO_TARGET_DIR:-${rs_artifact_root}/target}}"
