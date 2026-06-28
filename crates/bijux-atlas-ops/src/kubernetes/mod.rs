@@ -14,5 +14,6 @@ pub mod safety_policy;
 pub mod schema_validation;
 pub mod service_inventory;
 pub mod service_probe;
+pub mod status_commands;
 pub mod status_snapshot;
 pub mod workload_wait;

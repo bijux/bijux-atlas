@@ -4,9 +4,8 @@
 use crate::cli::{self, OpsStatusTarget};
 use crate::ops_commands::{emit_payload, load_profiles, resolve_ops_root, resolve_profile};
 use crate::{resolve_repo_root, OpsCommandError, OpsProcess};
-use bijux_atlas_ops::kubernetes::status_snapshot::{
-    cluster_status_row, endpoints_status_row, local_status_row, pods_status_row,
-    read_namespace_resource_json,
+use bijux_atlas_ops::kubernetes::status_commands::{
+    cluster_status_payload, endpoints_status_payload, local_status_payload, pods_status_payload,
 };
 
 pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32), String> {
@@ -37,19 +36,11 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                     ))
                     .to_stable_message()
                 })?;
-            (
-                local_status_row(
-                    &repo_root,
-                    &ops_root,
-                    serde_json::json!(profile),
-                    toolchain_json,
-                ),
-                format!(
-                    "ops status local: profile={} repo_root={} ops_root={}",
-                    profile.name,
-                    repo_root.display(),
-                    ops_root.display(),
-                ),
+            local_status_payload(
+                &repo_root,
+                &ops_root,
+                serde_json::json!(profile),
+                toolchain_json,
             )
         }
         OpsStatusTarget::K8s => {
@@ -59,11 +50,7 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let value = read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "all")?;
-            (
-                cluster_status_row(&profile.name, value),
-                "ops status k8s collected".to_string(),
-            )
+            cluster_status_payload(&process, &repo_root, &profile.name)?
         }
         OpsStatusTarget::Pods => {
             if !common.allow_subprocess {
@@ -72,11 +59,7 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let value = read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "pods")?;
-            (
-                pods_status_row(&profile.name, value),
-                "ops status pods collected".to_string(),
-            )
+            pods_status_payload(&process, &repo_root, &profile.name)?
         }
         OpsStatusTarget::Endpoints => {
             if !common.allow_subprocess {
@@ -85,12 +68,7 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
                 )
                 .to_stable_message());
             }
-            let value =
-                read_namespace_resource_json(&process, &repo_root, "bijux-atlas", "endpoints")?;
-            (
-                endpoints_status_row(&profile.name, value),
-                "ops status endpoints collected".to_string(),
-            )
+            endpoints_status_payload(&process, &repo_root, &profile.name)?
         }
     };
     let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
