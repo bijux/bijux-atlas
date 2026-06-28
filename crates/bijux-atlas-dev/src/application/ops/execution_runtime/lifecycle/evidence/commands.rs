@@ -5,6 +5,10 @@ use super::*;
 use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::{resolve_repo_root, OpsProcess, RunId};
+use bijux_atlas_ops::lifecycle::evidence::commands::{
+    git_head_sha, run_governance_doctor_for_evidence,
+    run_governance_exceptions_validate_for_evidence, run_security_validate_for_evidence,
+};
 
 fn read_json_value(path: &std::path::Path) -> Result<serde_json::Value, String> {
     serde_json::from_str(
@@ -53,134 +57,6 @@ fn rendered_manifest_from_evidence(repo_root: &std::path::Path, run_id: &str) ->
             .join(render_rel),
     )
     .ok()
-}
-
-pub(super) fn git_head_sha(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-) -> Result<String, String> {
-    let argv = vec!["rev-parse".to_string(), "HEAD".to_string()];
-    let (stdout, _) = process
-        .run_subprocess("git", &argv, repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let sha = stdout.trim().to_string();
-    if sha.len() == 40 && sha.chars().all(|c| c.is_ascii_hexdigit()) {
-        Ok(sha)
-    } else {
-        Err(format!("unexpected git sha output `{sha}`"))
-    }
-}
-
-pub(super) fn run_security_validate_for_evidence(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-) -> Result<(), String> {
-    let argv = vec![
-        "run".to_string(),
-        "-q".to_string(),
-        "-p".to_string(),
-        "bijux-atlas-dev".to_string(),
-        "--".to_string(),
-        "security".to_string(),
-        "validate".to_string(),
-        "--format".to_string(),
-        "json".to_string(),
-    ];
-    let _ = process
-        .run_subprocess("cargo", &argv, repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let report_path = repo_root.join("artifacts/security/security-github-actions.json");
-    if !report_path.exists() {
-        return Err(format!(
-            "security validate completed without writing {}",
-            report_path.display()
-        ));
-    }
-    Ok(())
-}
-
-pub(super) fn run_governance_exceptions_validate_for_evidence(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-) -> Result<(), String> {
-    let argv = vec![
-        "run".to_string(),
-        "-q".to_string(),
-        "-p".to_string(),
-        "bijux-atlas-dev".to_string(),
-        "--".to_string(),
-        "governance".to_string(),
-        "exceptions".to_string(),
-        "validate".to_string(),
-        "--format".to_string(),
-        "json".to_string(),
-    ];
-    let _ = process
-        .run_subprocess("cargo", &argv, repo_root)
-        .map_err(|err| err.to_stable_message())?;
-    let report_path = repo_root.join("artifacts/governance/exceptions-summary.json");
-    if !report_path.exists() {
-        return Err(format!(
-            "governance exceptions validate completed without writing {}",
-            report_path.display()
-        ));
-    }
-    Ok(())
-}
-
-pub(super) fn run_governance_doctor_for_evidence(
-    process: &OpsProcess,
-    repo_root: &std::path::Path,
-) -> Result<(), String> {
-    for argv in [
-        vec![
-            "run".to_string(),
-            "-q".to_string(),
-            "-p".to_string(),
-            "bijux-atlas-dev".to_string(),
-            "--".to_string(),
-            "governance".to_string(),
-            "deprecations".to_string(),
-            "validate".to_string(),
-            "--format".to_string(),
-            "json".to_string(),
-        ],
-        vec![
-            "run".to_string(),
-            "-q".to_string(),
-            "-p".to_string(),
-            "bijux-atlas-dev".to_string(),
-            "--".to_string(),
-            "governance".to_string(),
-            "breaking".to_string(),
-            "validate".to_string(),
-            "--format".to_string(),
-            "json".to_string(),
-        ],
-        vec![
-            "run".to_string(),
-            "-q".to_string(),
-            "-p".to_string(),
-            "bijux-atlas-dev".to_string(),
-            "--".to_string(),
-            "governance".to_string(),
-            "doctor".to_string(),
-            "--format".to_string(),
-            "json".to_string(),
-        ],
-    ] {
-        let _ = process
-            .run_subprocess("cargo", &argv, repo_root)
-            .map_err(|err| err.to_stable_message())?;
-    }
-    let report_path = repo_root.join("artifacts/governance/governance-doctor.json");
-    if !report_path.exists() {
-        return Err(format!(
-            "governance doctor completed without writing {}",
-            report_path.display()
-        ));
-    }
-    Ok(())
 }
 
 pub(crate) fn run_ops_evidence_collect(common: &OpsCommonArgs) -> Result<(String, i32), String> {
