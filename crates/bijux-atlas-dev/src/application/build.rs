@@ -320,9 +320,25 @@ fn run_build_doctor(
 
 fn build_binary_specs() -> [(&'static str, &'static str); 2] {
     [
-        ("bijux-atlas", "bijux-atlas"),
+        ("bijux-atlas-cli", "bijux-atlas"),
         ("bijux-atlas-dev", "bijux-atlas-dev"),
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn build_binary_specs_follow_binary_owners() {
+        assert_eq!(
+            build_binary_specs(),
+            [
+                ("bijux-atlas-cli", "bijux-atlas"),
+                ("bijux-atlas-dev", "bijux-atlas-dev"),
+            ]
+        );
+    }
 }
 
 fn run_build_plan(
