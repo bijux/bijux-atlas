@@ -102,83 +102,14 @@ pub(crate) fn run_ops_drill(args: &crate::cli::OpsDrillRunArgs) -> Result<(Strin
     }
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let drills = bijux_atlas_ops::lifecycle::simulation::records::load_drill_registry(&repo_root)?;
-    let drill = drills
-        .iter()
-        .find(|row| row.get("name").and_then(serde_json::Value::as_str) == Some(args.name.as_str()))
-        .cloned()
-        .ok_or_else(|| format!("unknown drill `{}`", args.name))?;
-    let mut checks = Vec::new();
-    for (name, path) in
-        bijux_atlas_ops::lifecycle::simulation::records::drill_check_paths(&repo_root, &args.name)
-    {
-        checks.push(serde_json::json!({
-            "name": name,
-            "status": if path.exists() { "pass" } else { "fail" },
-            "detail": if path.exists() {
-                format!("verified {}", path.strip_prefix(&repo_root).unwrap_or(&path).display())
-            } else {
-                format!("missing {}", path.strip_prefix(&repo_root).unwrap_or(&path).display())
-            }
-        }));
-    }
-    let status = if checks
-        .iter()
-        .all(|row| row.get("status").and_then(serde_json::Value::as_str) == Some("pass"))
-    {
-        "pass"
-    } else {
-        "fail"
-    };
-    let evidence_paths =
-        bijux_atlas_ops::lifecycle::simulation::records::drill_check_paths(&repo_root, &args.name)
-            .into_iter()
-            .map(|(_, path)| {
-                path.strip_prefix(&repo_root)
-                    .unwrap_or(&path)
-                    .display()
-                    .to_string()
-            })
-            .collect::<Vec<_>>();
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "drill": args.name,
-        "status": status,
-        "execution_mode": "contract-verification",
-        "expected_outcome": drill.get("expected_outcome").cloned().unwrap_or(serde_json::Value::String(String::new())),
-        "checks": checks,
-        "evidence_paths": evidence_paths
-    });
-    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
-        &repo_root,
-        run_id.as_str(),
-        &format!("ops-drill-{}.json", args.name),
-        &payload,
-    )?;
-    let summary_path = bijux_atlas_ops::lifecycle::simulation::records::update_drill_summary(
-        &repo_root,
-        run_id.as_str(),
-        &args.name,
-        &report_path,
-        status,
-    )?;
-    let rendered = emit_payload(
-        common.format,
-        common.out.clone(),
-        &serde_json::json!({
-            "schema_version": 1,
-            "status": status,
-            "text": if status == "pass" { "drill checks passed" } else { "drill checks failed" },
-            "rows": [{
-                "drill": args.name,
-                "report_path": report_path.display().to_string(),
-                "summary_path": summary_path.display().to_string(),
-                "expected_outcome": drill.get("expected_outcome").cloned().unwrap_or(serde_json::Value::String(String::new()))
-            }],
-            "summary": {"total": 1, "errors": if status == "pass" { 0 } else { 1 }, "warnings": 0}
-        }),
-    )?;
-    Ok((rendered, if status == "pass" { 0 } else { 1 }))
+    let (payload, exit_code) =
+        bijux_atlas_ops::lifecycle::simulation::commands::drill_contract_payload(
+            &repo_root,
+            run_id.as_str(),
+            &args.name,
+        )?;
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, exit_code))
 }
 
 pub(crate) fn run_ops_kind_up(common: &OpsCommonArgs) -> Result<(String, i32), String> {
