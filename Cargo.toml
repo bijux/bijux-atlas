@@ -17,7 +17,7 @@ resolver = "2"
 
 [workspace.package]
 edition = "2021"
-version = "0.2.1"
+version = "0.2.2"
 license = "Apache-2.0"
 rust-version = "1.86.0"
 description = "Genomics dataset delivery platform for immutable artifacts, gene-query APIs, and Rust-owned repository automation"
@@ -42,17 +42,17 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-bijux-atlas = { version = "=0.2.1", path = "crates/bijux-atlas" }
-bijux-atlas-runtime = { version = "=0.2.1", path = "crates/bijux-atlas-runtime" }
-bijux-atlas-api = { version = "=0.2.1", path = "crates/bijux-atlas-api" }
-bijux-atlas-cli = { version = "=0.2.1", path = "crates/bijux-atlas-cli" }
-bijux-atlas-core = { version = "=0.2.1", path = "crates/bijux-atlas-core" }
-bijux-atlas-ingest = { version = "=0.2.1", path = "crates/bijux-atlas-ingest" }
-bijux-atlas-model = { version = "=0.2.1", path = "crates/bijux-atlas-model" }
-bijux-atlas-query = { version = "=0.2.1", path = "crates/bijux-atlas-query" }
-bijux-atlas-server = { version = "=0.2.1", path = "crates/bijux-atlas-server" }
-bijux-atlas-store = { version = "=0.2.1", path = "crates/bijux-atlas-store", default-features = false }
-bijux-atlas-dev = { version = "=0.2.1", path = "crates/bijux-atlas-dev" }
-bijux-atlas-ops = { version = "=0.2.1", path = "crates/bijux-atlas-ops" }
+bijux-atlas = { version = "=0.2.2", path = "crates/bijux-atlas" }
+bijux-atlas-runtime = { version = "=0.2.2", path = "crates/bijux-atlas-runtime" }
+bijux-atlas-api = { version = "=0.2.2", path = "crates/bijux-atlas-api" }
+bijux-atlas-cli = { version = "=0.2.2", path = "crates/bijux-atlas-cli" }
+bijux-atlas-core = { version = "=0.2.2", path = "crates/bijux-atlas-core" }
+bijux-atlas-ingest = { version = "=0.2.2", path = "crates/bijux-atlas-ingest" }
+bijux-atlas-model = { version = "=0.2.2", path = "crates/bijux-atlas-model" }
+bijux-atlas-query = { version = "=0.2.2", path = "crates/bijux-atlas-query" }
+bijux-atlas-server = { version = "=0.2.2", path = "crates/bijux-atlas-server" }
+bijux-atlas-store = { version = "=0.2.2", path = "crates/bijux-atlas-store", default-features = false }
+bijux-atlas-dev = { version = "=0.2.2", path = "crates/bijux-atlas-dev" }
+bijux-atlas-ops = { version = "=0.2.2", path = "crates/bijux-atlas-ops" }
 bijux-cli = "0.3.6"
 semver = "1"

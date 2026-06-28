@@ -370,6 +370,9 @@ If a surface is planned, internal, or future-facing, it should be described as s
 
 Published crates, GitHub releases, docs deployment, and `v*` git tags define the public release line.
 Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
+The currently published artifact surfaces are crates.io for `bijux-atlas`, GHCR for
+`bijux-atlas/bijux-atlas`, and GitHub Releases; PyPI remains intentionally disabled in
+this repository until the planned Python bridge exists.
 
 Release expectations live in [`docs/bijux-atlas-dev/delivery/release-and-versioning.md`](docs/bijux-atlas-dev/delivery/release-and-versioning.md).
 Compatibility and operational promises live under [`docs/bijux-atlas/contracts/index.md`](docs/bijux-atlas/contracts/index.md).

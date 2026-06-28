@@ -4,6 +4,19 @@ All notable changes to **bijux-atlas** are documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org) and the
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
+## v0.2.2 – 2026-06-27
+
+### Changed
+- Updated the runtime telemetry stack to `opentelemetry` `0.32`,
+  `opentelemetry-otlp` `0.32`, `opentelemetry_sdk` `0.32.1`, and
+  `tracing-opentelemetry` `0.33` so Atlas runtime builds and publish-time
+  packaging resolve against the current observability baseline.
+
+### Fixed
+- Refreshed the release lockfile inputs that back telemetry-related transitive
+  dependencies so the published crate builds with the hardened dependency set
+  prepared in this release line.
+
 ## v0.2.1 – 2026-06-27
 
 ### Added

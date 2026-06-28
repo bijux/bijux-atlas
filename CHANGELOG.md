@@ -7,6 +7,26 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
+## v0.2.2 – 2026-06-27
+
+### Changed
+- Raised the Atlas telemetry stack to `opentelemetry` `0.32`,
+  `opentelemetry-otlp` `0.32`, `opentelemetry_sdk` `0.32.1`, and
+  `tracing-opentelemetry` `0.33` so release builds ship on the current
+  observability baseline.
+- Refreshed repository docs-tooling inputs, including `cspell`,
+  `mkdocs-git-revision-date-localized-plugin`, `js-yaml`, `linkify-it`, and
+  `markdown-it`, so docs builds stay on patched dependencies.
+- Updated the pinned GitHub Actions inventory and release workflow references,
+  including `actions/checkout` `v7.0.0`,
+  `actions/dependency-review-action` `v4.9.0`, and
+  `softprops/action-gh-release` `v3.0.1`.
+
+### Fixed
+- Realigned the checked-in toolchain inventory with the workflow pins actually
+  executed by CI so release, policy, and supply-chain checks validate the same
+  action set that GitHub runs.
+
 ## v0.2.1 – 2026-04-22
 
 ### Changed
