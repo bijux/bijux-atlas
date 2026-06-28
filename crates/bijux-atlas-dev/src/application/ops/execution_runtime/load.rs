@@ -4,13 +4,10 @@ use crate::cli::OpsCommonArgs;
 use crate::ops_commands::{emit_payload, run_id_or_default};
 use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::{resolve_repo_root, OpsProcess, RunId};
-use bijux_atlas_ops::load::path_contracts::{load_run_root, load_summary_path};
-use bijux_atlas_ops::load::plan_payload::load_plan_payload;
-use bijux_atlas_ops::load::report_contract::evaluate_load_report;
-use bijux_atlas_ops::load::report_payload::{load_report_payload, write_load_report};
-use bijux_atlas_ops::load::run_payload::load_run_payload;
+use bijux_atlas_ops::load::commands::{
+    load_plan_command_payload, load_report_command_payload, load_run_command_payload,
+};
 use serde_json::Value;
-use std::fs;
 
 pub(crate) fn run_ops_load_plan(
     common: &OpsCommonArgs,
@@ -24,14 +21,7 @@ pub(crate) fn run_ops_load_plan(
         .suites
         .get(suite)
         .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
-    let payload = load_plan_payload(
-        suite,
-        &suite_cfg.script,
-        &suite_cfg.dataset,
-        &suite_cfg.thresholds,
-        &suite_cfg.env,
-        manifest_errors,
-    );
+    let payload = load_plan_command_payload(suite, suite_cfg, manifest_errors);
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((
         rendered,
@@ -62,44 +52,20 @@ pub(crate) fn run_ops_load_run(
         .suites
         .get(suite)
         .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
-    let dataset_path = repo_root.join(&suite_cfg.dataset);
-    if !dataset_path.exists() {
-        return Err(format!(
-            "OPS_MANIFEST_ERROR: dataset path missing `{}` and downloads are disabled by default",
-            suite_cfg.dataset
-        ));
-    }
     let run_id = run_id_or_default(common.run_id.clone())?;
-    let out_dir = load_run_root(&repo_root, run_id.as_str(), suite);
-    fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
-    let summary_path = load_summary_path(&repo_root, run_id.as_str(), suite);
     let process = OpsProcess::new(true);
-    let script_path = repo_root.join(&suite_cfg.script);
-    let mut argv = vec![
-        "run".to_string(),
-        script_path.display().to_string(),
-        "--summary-export".to_string(),
-        summary_path.display().to_string(),
-    ];
-    for (k, v) in &suite_cfg.env {
-        argv.push("-e".to_string());
-        argv.push(format!("{k}={v}"));
-    }
-    let (stdout, event) = process
-        .run_subprocess("k6", &argv, &repo_root)
-        .map_err(|e| e.to_stable_message())?;
     let (report_payload, report_code) = run_ops_load_report(common, suite, Some(run_id.clone()))?;
     let report_json: Value =
         serde_json::from_str(&report_payload).unwrap_or_else(|_| serde_json::json!({}));
-    let payload = load_run_payload(
+    let payload = load_run_command_payload(
+        &process,
+        &repo_root,
         suite,
+        suite_cfg,
         run_id.as_str(),
-        &stdout,
-        event,
-        &summary_path.display().to_string(),
         report_json,
         report_code,
-    );
+    )?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, if report_code == 0 { 0 } else { 1 }))
 }
@@ -120,25 +86,8 @@ pub(crate) fn run_ops_load_report(
     } else {
         run_id_or_default(common.run_id.clone())?
     };
-    let report = evaluate_load_report(&repo_root, suite, suite_cfg, run_id.as_str()).map_err(
-        |err| match err {
-            bijux_atlas_ops::load::report_contract::LoadReportError::Read { .. } => {
-                format!("OPS_MANIFEST_ERROR: {}", err.detail())
-            }
-            bijux_atlas_ops::load::report_contract::LoadReportError::Parse { .. } => {
-                format!("OPS_SCHEMA_ERROR: {}", err.detail())
-            }
-        },
-    )?;
-    let report_path = write_load_report(&repo_root, run_id.as_str(), suite, &report)?;
-    let payload = load_report_payload(&report_path.display().to_string(), &report);
+    let (payload, exit_code) =
+        load_report_command_payload(&repo_root, suite, suite_cfg, run_id.as_str())?;
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((
-        rendered,
-        if payload["summary"]["errors"] == serde_json::json!(0) {
-            0
-        } else {
-            1
-        },
-    ))
+    Ok((rendered, exit_code))
 }

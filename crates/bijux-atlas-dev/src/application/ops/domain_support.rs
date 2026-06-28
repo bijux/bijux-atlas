@@ -4,6 +4,7 @@ use crate::*;
 use bijux_atlas_ops::inventory::tooling_support::ToolProbeRunner;
 use bijux_atlas_ops::kubernetes::execution::{KubernetesCommandRunner, SubprocessCapture};
 use bijux_atlas_ops::lifecycle::release::commands::ReleaseCommandRunner;
+use bijux_atlas_ops::load::commands::LoadCommandRunner;
 
 pub(crate) use bijux_atlas_ops::inventory::toolchain::ToolchainInventory;
 pub(crate) use bijux_atlas_ops::stack::manifest::StackManifestToml;
@@ -217,6 +218,18 @@ impl ReleaseCommandRunner for OpsProcess {
             .run_subprocess(binary, args, cwd)
             .map_err(|err| err.to_stable_message())?;
         Ok(SubprocessCapture { stdout, event })
+    }
+}
+
+impl LoadCommandRunner for OpsProcess {
+    fn run(
+        &self,
+        binary: &str,
+        args: &[String],
+        cwd: &Path,
+    ) -> Result<(String, serde_json::Value), String> {
+        self.run_subprocess(binary, args, cwd)
+            .map_err(|err| err.to_stable_message())
     }
 }
 
