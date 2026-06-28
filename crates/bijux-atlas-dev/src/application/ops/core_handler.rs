@@ -31,47 +31,8 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             Ok((rendered, ops_exit::PASS))
         }
         OpsCommand::Explain { action, common } => {
-            let action_lc = action.trim().to_ascii_lowercase();
-            let row = match action_lc.as_str() {
-                "kind-up" => serde_json::json!({"action":"kind-up","purpose":"create the deterministic kind simulation cluster","effects_required":["subprocess","fs_write"]}),
-                "kind-down" => serde_json::json!({"action":"kind-down","purpose":"delete the deterministic kind simulation cluster","effects_required":["subprocess"]}),
-                "kind-status" => serde_json::json!({"action":"kind-status","purpose":"report whether the deterministic kind simulation cluster is reachable and ready","effects_required":["subprocess"]}),
-                "inventory" => serde_json::json!({"action":"inventory","purpose":"list ops manifests and inventory validity","effects_required":[]}),
-                "validate" => serde_json::json!({"action":"validate","purpose":"validate ops SSOT inputs and checks","effects_required":[]}),
-                "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write"]}),
-                "k8s-plan" => serde_json::json!({"action":"k8s-plan","purpose":"show what rendered resources would be applied","effects_required":[]}),
-                "stack-plan" => serde_json::json!({"action":"stack-plan","purpose":"resolve stack resources for a profile without executing subprocesses","effects_required":[]}),
-                "install" | "stack-up" => serde_json::json!({"action":"install","purpose":"plan/apply ops stack to local cluster","effects_required":["subprocess","fs_write","network"],"flags":["--allow-subprocess","--allow-write","--allow-network"]}),
-                "down" | "stack-down" => serde_json::json!({"action":"down","purpose":"teardown local ops stack resources","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
-                "status" | "stack-status" => serde_json::json!({"action":"status","purpose":"collect local/k8s status rows","effects_required":["subprocess (for k8s/pods/endpoints)"]}),
-                "stack-versions" => serde_json::json!({"action":"stack-versions","purpose":"emit deterministic stack component version inventory","effects_required":["fs_read"],"output":"versions.json"}),
-                "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
-                "k8s-smoke" => serde_json::json!({"action":"k8s-smoke","purpose":"run cluster smoke checks against health/query paths","effects_required":["subprocess","network"],"flags":["--allow-subprocess","--allow-network"]}),
-                "smoke" => serde_json::json!({"action":"smoke","purpose":"run simulation smoke checks against /healthz, /readyz, and /v1/version","effects_required":["subprocess","network"],"flags":["--allow-subprocess","--allow-network"]}),
-                "k8s-ports" => serde_json::json!({"action":"k8s-ports","purpose":"discover service and endpoint ports for evidence collection","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
-                "load-plan" => serde_json::json!({"action":"load-plan","purpose":"resolve load suite to script env and thresholds","effects_required":[]}),
-                "load-run" => serde_json::json!({"action":"load-run","purpose":"run k6 load suite and collect summary","effects_required":["subprocess","network","fs_write"]}),
-                "load-report" => serde_json::json!({"action":"load-report","purpose":"parse k6 summary into structured report","effects_required":[]}),
-                "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
-                "obs-drill-run" | "drills-run" => serde_json::json!({"action":"drills-run","purpose":"run a governed institutional drill and emit a drill report","effects_required":["fs_write"],"flags":["--allow-write","--name <drill>"]}),
-                "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify metrics endpoint reachability and required observability contracts","effects_required":["subprocess","network","fs_write"],"flags":["--allow-subprocess","--allow-network","--allow-write"]}),
-                "tools-doctor" => serde_json::json!({"action":"tools-doctor","purpose":"show required tools and missing requirements without subprocess by default","effects_required":[]}),
-                "suite-list" => serde_json::json!({"kind":"suite","action":"list","suites":["e2e","k8s","load","obs"]}),
-                value if value.starts_with("suite-run:") => serde_json::json!({"kind":"suite","action":"run","suite":value.trim_start_matches("suite-run:")}),
-                "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
-                _ => {
-                    return Err(format!(
-                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup|load-plan|load-run|load-report|e2e-run|obs-drill-run)",
-                        action
-                    ))
-                }
-            };
-            let payload = serde_json::json!({
-                "schema_version": 1,
-                "text": format!("ops explain {}", action_lc),
-                "rows": [row],
-                "summary": {"total": 1, "errors": 0, "warnings": 0}
-            });
+            let payload =
+                bijux_atlas_ops::reference::command_reference::ops_explain_payload(&action)?;
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
             Ok((rendered, ops_exit::PASS))
         }
