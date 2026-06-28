@@ -9,11 +9,14 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Refreshed the control-plane docs-tooling dependency set and synchronized the
   pinned GitHub Actions references used by reusable CI and release lanes.
+- Rewrote the maintainer crate README and handbook links so repository
+  governance, automation, and workflow ownership point at the live docs tree.
 
 ### Fixed
 - Realigned workflow inventory records with the action pins used in CI so
   governance, supply-chain, and release checks validate the live automation
   surface instead of stale inventory data.
+- Removed stale numbered handbook links from the crate README.
 
 ## v0.2.1 – 2026-04-22
 

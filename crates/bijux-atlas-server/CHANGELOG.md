@@ -10,7 +10,11 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Established `bijux-atlas-server` as the published owner of the direct
   `bijux-atlas-server` binary, HTTP adapters, server process wiring, and
   delivery-surface tests for Atlas runtime serving.
+- Added release-facing install and verification guidance for the direct server
+  binary path.
 
 ### Changed
 - Clarified release documentation so HTTP route, middleware, and observability
   ownership now point at the server crate's own sources.
+- Restated the deployed server boundary so it no longer blurs into CLI or
+  OpenAPI ownership.

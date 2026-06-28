@@ -10,7 +10,11 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 - Restated `bijux-atlas-core` as the runtime-independent owner for canonical
   JSON, hashing, stable sorting, and shared error-code helpers in the `0.2.2`
   release line.
+- Expanded crate-facing documentation so core now reads as a stable primitive
+  boundary rather than a shallow support package.
 
 ### Fixed
 - Removed stale release documentation assumptions that still treated
   compatibility layers as core-surface owners.
+- Removed ambiguity between core primitives and higher-level dataset or runtime
+  behavior.

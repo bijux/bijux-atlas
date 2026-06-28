@@ -9,7 +9,11 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Clarified `bijux-atlas-model` as the owner of persisted dataset identity,
   diff, gene, and policy value contracts in the split Atlas workspace.
+- Expanded release-facing crate documentation so model types are described as a
+  stable data boundary instead of incidental shared structs.
 
 ### Fixed
 - Updated release-facing documentation to point model readers at crate-owned
   source paths instead of historical runtime facades.
+- Removed ambiguity between persisted model contracts and runtime adapter
+  behavior.

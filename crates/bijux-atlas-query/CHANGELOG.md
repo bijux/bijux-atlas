@@ -9,7 +9,10 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 ### Changed
 - Clarified `bijux-atlas-query` as the owner of parsing, planning, cursor, and
   SQLite execution behavior exposed through Atlas runtime surfaces.
+- Expanded release-facing crate documentation so query now reads as a stable
+  product boundary with explicit non-ownership of CLI and server concerns.
 
 ### Fixed
 - Removed release-doc drift that still described query ownership through the
   old pre-split runtime tree.
+- Removed ambiguity between query ownership and higher-level binary ownership.
