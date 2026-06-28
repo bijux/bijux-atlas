@@ -3,13 +3,15 @@
 SHELL := /bin/bash
 
 GH_RELEASE_TAG_PATTERN ?= ^v[0-9]+\.[0-9]+\.[0-9]+$$
-GH_CRATES_RELEASE_PACKAGES ?= bijux-atlas
+GH_CRATES_RELEASE_PACKAGES ?=
+GH_CRATES_RELEASE_SPEC_PATH ?= ops/release/crates-release.toml
 GH_RELEASE_CI_WORKFLOW_FILE ?= ci.yml
 GH_RELEASE_CI_WAIT_TIMEOUT_SECONDS ?= 1800
 GH_RELEASE_CI_POLL_INTERVAL_SECONDS ?= 15
 GH_RELEASE_CI_LOOKBACK_SECONDS ?= 120
 GH_RELEASE_CI_APPEARANCE_GRACE_SECONDS ?= 20
 GH_TEST_CARGO_NEXTEST_VERSION ?= 0.9.100
+CRATES_IO_API_USER_AGENT ?= bijux-atlas-release-check/1
 
 .PHONY: gh-fmt gh-lint gh-security gh-test gh-test-install-rust-tools gh-docs-install \
 	gh-release-plan-github gh-release-plan-crates gh-release-require-cargo-token \
@@ -79,11 +81,20 @@ gh-release-plan-crates: ## Determine whether the tagged commit should publish wo
 	fi; \
 	tag="$$(printf '%s\n' "$${tags}" | head -n 1)"; \
 	version="$${tag#v}"; \
+	packages="$(GH_CRATES_RELEASE_PACKAGES)"; \
+	if [ -z "$${packages}" ]; then \
+		spec_path="$(GH_CRATES_RELEASE_SPEC_PATH)"; \
+		if [ ! -f "$${spec_path}" ]; then \
+			echo "missing crates release spec: $${spec_path}" >&2; \
+			exit 1; \
+		fi; \
+		packages="$$(python3 -c 'import pathlib, sys, tomllib; spec_path = pathlib.Path(sys.argv[1]); spec = tomllib.loads(spec_path.read_text()); packages = spec.get("publish", {}).get("allow", []); assert isinstance(packages, list) and all(isinstance(item, str) and item.strip() for item in packages), f"invalid publish.allow list in {spec_path}"; print(" ".join(packages))' "$${spec_path}")"; \
+	fi; \
 	unpublished=""; \
-	for package in $(GH_CRATES_RELEASE_PACKAGES); do \
+	for package in $${packages}; do \
 		status=""; \
 		for attempt in 1 2 3 4 5; do \
-			status="$$(curl -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$${package}/$${version}" || true)"; \
+			status="$$(curl -A "$(CRATES_IO_API_USER_AGENT)" -fsS -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/$${package}/$${version}" 2>/dev/null || true)"; \
 			if [ -n "$${status}" ] && [ "$${status}" != "000" ]; then \
 				break; \
 			fi; \

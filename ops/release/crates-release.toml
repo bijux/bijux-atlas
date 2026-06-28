@@ -3,17 +3,17 @@ versioning_model = "workspace-unified"
 
 [publish]
 allow = [
-  "bijux-atlas",
-  "bijux-atlas-api",
-  "bijux-atlas-cli",
   "bijux-atlas-core",
-  "bijux-atlas-ingest",
   "bijux-atlas-model",
+  "bijux-atlas-api",
   "bijux-atlas-ops",
   "bijux-atlas-query",
-  "bijux-atlas-runtime",
-  "bijux-atlas-server",
+  "bijux-atlas-ingest",
   "bijux-atlas-store",
+  "bijux-atlas-runtime",
+  "bijux-atlas",
+  "bijux-atlas-cli",
+  "bijux-atlas-server",
 ]
 deny = [
   "bijux-atlas-dev",
