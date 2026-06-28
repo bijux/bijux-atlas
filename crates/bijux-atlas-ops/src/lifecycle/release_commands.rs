@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::simulation_paths::simulation_current_chart_path;
 use crate::kubernetes::execution::SubprocessCapture;
 use crate::lifecycle::evidence::support::sha256_file;
+use crate::lifecycle::simulation::paths::simulation_current_chart_path;
 use std::path::{Path, PathBuf};
 
 pub trait ReleaseCommandRunner {

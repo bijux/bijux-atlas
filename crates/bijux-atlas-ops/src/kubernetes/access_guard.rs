@@ -2,7 +2,7 @@
 
 use super::execution::KubernetesCommandRunner;
 use super::safety_policy::{expected_kind_context, ClusterSafetyPolicy};
-use crate::lifecycle::simulation_paths::simulation_cluster_context;
+use crate::lifecycle::simulation::paths::simulation_cluster_context;
 use std::path::Path;
 
 pub fn ensure_kind_context(

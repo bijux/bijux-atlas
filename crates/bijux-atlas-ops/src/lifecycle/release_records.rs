@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use super::simulation_paths::simulation_report_path;
+use crate::lifecycle::simulation::paths::simulation_report_path;
 
 pub fn readiness_baseline_path(repo_root: &Path) -> Result<PathBuf, String> {
     let path = repo_root.join("artifacts/ops/history/readiness-baselines.json");

@@ -145,7 +145,7 @@ pub(crate) fn run_ops_helm_upgrade(
         "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
         "checks": smoke_rows
     });
-    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         &repo_root,
         run_id.as_str(),
         "ops-smoke.json",
@@ -201,7 +201,7 @@ pub(crate) fn run_ops_helm_upgrade(
             }
         }
     });
-    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         &repo_root,
         run_id.as_str(),
         "ops-upgrade.json",
@@ -376,7 +376,7 @@ pub(crate) fn run_ops_helm_rollback(
         "status": if wait_errors.is_empty() && smoke_errors.is_empty() { "ok" } else { "failed" },
         "checks": smoke_rows
     });
-    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    let smoke_report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         &repo_root,
         run_id.as_str(),
         "ops-smoke.json",
@@ -428,7 +428,7 @@ pub(crate) fn run_ops_helm_rollback(
             }
         }
     });
-    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         &repo_root,
         run_id.as_str(),
         "ops-rollback.json",
@@ -525,7 +525,7 @@ pub(crate) fn run_ops_smoke(args: &crate::cli::OpsSmokeArgs) -> Result<(String, 
         "status": status,
         "checks": checks
     });
-    let report_path = bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    let report_path = bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         &repo_root,
         run_id.as_str(),
         "ops-smoke.json",

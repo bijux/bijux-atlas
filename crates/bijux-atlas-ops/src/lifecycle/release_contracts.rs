@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use super::simulation_paths::{simulation_current_chart_path, simulation_previous_chart_path};
+use crate::lifecycle::simulation::paths::{
+    simulation_current_chart_path, simulation_previous_chart_path,
+};
 use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
 

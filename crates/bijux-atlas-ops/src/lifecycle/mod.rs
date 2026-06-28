@@ -8,5 +8,4 @@ pub mod release_contracts;
 pub mod release_inventory;
 pub mod release_observation;
 pub mod release_records;
-pub mod simulation_paths;
-pub mod simulation_records;
+pub mod simulation;

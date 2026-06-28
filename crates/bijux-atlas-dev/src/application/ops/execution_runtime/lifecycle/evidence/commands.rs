@@ -1260,7 +1260,7 @@ pub(crate) fn emit_debug_bundle_report(
         "status": "ok",
         "files": files.iter().map(|path| path.display().to_string()).collect::<Vec<_>>()
     });
-    bijux_atlas_ops::lifecycle::simulation_paths::write_simulation_report(
+    bijux_atlas_ops::lifecycle::simulation::paths::write_simulation_report(
         repo_root,
         run_id.as_str(),
         &format!("ops-debug-bundle-{category}.json"),
