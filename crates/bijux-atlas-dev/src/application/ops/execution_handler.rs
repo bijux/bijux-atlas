@@ -7,6 +7,9 @@ use bijux_atlas_ops::inventory::runbook_index::build_runbook_index_payload;
 use bijux_atlas_ops::inventory::scenario_catalog::{
     deterministic_scenario_run_id, load_failure_spec, load_scenario_manifest, load_upgrade_spec,
 };
+use bijux_atlas_ops::inventory::scenario_reporting::{
+    build_scenario_list_payload, build_scenario_run_payload,
+};
 use bijux_atlas_ops::inventory::scenario_support::validate_scenario_support_inputs;
 use bijux_atlas_ops::inventory::surface_list::build_surface_list_payload;
 use bijux_atlas_ops::lifecycle::simulation::{
@@ -23,33 +26,7 @@ pub(super) fn dispatch_execution(
             crate::cli::OpsScenarioCommand::List(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let manifest = load_scenario_manifest(&repo_root)?;
-                let mut rows = manifest
-                    .scenarios
-                    .into_iter()
-                    .map(|scenario| {
-                        serde_json::json!({
-                            "id": scenario.id,
-                            "description": scenario.description,
-                            "action_id": scenario.action_id,
-                            "entrypoint": scenario.entrypoint,
-                            "tags": [
-                                scenario.evidence_class.unwrap_or_else(|| "slow".to_string()),
-                                if scenario.compose.get("load").copied().unwrap_or(false) { "effect" } else { "offline" },
-                            ],
-                        })
-                    })
-                    .collect::<Vec<_>>();
-                rows.sort_by(|left, right| {
-                    left.get("id")
-                        .and_then(|v| v.as_str())
-                        .cmp(&right.get("id").and_then(|v| v.as_str()))
-                });
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": "ops scenario list",
-                    "rows": rows,
-                    "summary": {"total": rows.len(), "errors": 0, "warnings": 0}
-                });
+                let payload = build_scenario_list_payload(manifest.scenarios);
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                 Ok((rendered, ops_exit::PASS))
             }
@@ -98,39 +75,15 @@ pub(super) fn dispatch_execution(
                     )
                     .map_err(|detail| OpsCommandError::Manifest(detail).to_stable_message())?;
                 }
-                let versioned_install = upgrade_spec.as_ref().map(|spec| {
-                    serde_json::json!({
-                        "from_version": spec.from_version,
-                        "to_version": spec.to_version,
-                        "kind": spec.kind,
-                        "failure_expected": spec.failure_expected,
-                    })
-                });
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": format!("ops scenario run {}", args.scenario),
-                    "rows": [{
-                        "scenario_id": args.scenario,
-                        "action_id": scenario.action_id,
-                        "entrypoint": scenario.entrypoint,
-                        "mode": mode,
-                        "run_id": run_id,
-                        "compose": scenario.compose,
-                        "versioned_install": versioned_install,
-                        "failure_mode": failure_spec.as_ref().map(|spec| spec.failure_mode.clone()),
-                        "failure_expected": failure_spec.as_ref().map(|spec| spec.failure_expected),
-                        "recommended_action": failure_spec.as_ref().map(|spec| spec.recommended_action.clone()),
-                        "upgrade_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"upgrade".to_string())).unwrap_or(false),
-                        "rollback_step": upgrade_spec.as_ref().map(|spec| spec.steps.contains(&"rollback".to_string())).unwrap_or(false),
-                        "scenario_steps": upgrade_spec.as_ref().map(|spec| spec.steps.clone()).unwrap_or_default(),
-                        "evidence_directory": evidence.evidence_dir_rel,
-                        "required_evidence_files": evidence.evidence_files,
-                        "before_after_evidence_files": if upgrade_spec.is_some() { evidence.before_after_files } else { Vec::<String>::new() },
-                        "rollback_evidence_files": if scenario.id.starts_with("rollback-") { evidence.rollback_files } else { Vec::<String>::new() },
-                        "failure_evidence_files": if failure_spec.is_some() { evidence.failure_evidence_files } else { Vec::<String>::new() },
-                    }],
-                    "summary": {"total": 1, "errors": 0, "warnings": 0}
-                });
+                let payload = build_scenario_run_payload(
+                    &args.scenario,
+                    &scenario,
+                    mode,
+                    &run_id,
+                    upgrade_spec.as_ref(),
+                    failure_spec.as_ref(),
+                    &evidence,
+                );
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
                 Ok((rendered, ops_exit::PASS))
             }
