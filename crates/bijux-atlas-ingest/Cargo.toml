@@ -17,7 +17,7 @@ keywords = ["bioinformatics", "genomics", "ingest", "gff3", "fasta"]
 bijux-atlas-core = { workspace = true, features = ["serde"] }
 bijux-atlas-model = { workspace = true }
 bijux-atlas-query = { workspace = true }
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+rusqlite = { version = "0.40", features = ["bundled", "vtab", "hooks"] }
 serde.workspace = true
 serde_json.workspace = true
 unicode-normalization = "0.1"

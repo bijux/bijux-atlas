@@ -33,7 +33,7 @@ bijux-atlas-model = { workspace = true }
 bijux-atlas-store = { workspace = true, default-features = false }
 flate2 = "1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+rusqlite = { version = "0.40", features = ["bundled", "vtab", "hooks"] }
 serde_json.workspace = true
 serde_yaml = "0.9"
 semver.workspace = true
@@ -46,7 +46,7 @@ tracing = "0.1"
 semver.workspace = true
 
 [dependencies.tikv-jemallocator]
-version = "0.6"
+version = "0.7"
 optional = true
 
 [dev-dependencies]
