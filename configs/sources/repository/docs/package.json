@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "cspell": "10.0.1",
-    "markdownlint-cli2": "0.22.1",
+    "markdownlint-cli2": "0.23.0",
     "markdownlint-cli2-formatter-default": "0.0.6"
   },
   "overrides": {
