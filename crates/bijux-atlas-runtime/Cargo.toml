@@ -46,7 +46,7 @@ tracing = "0.1"
 semver.workspace = true
 
 [dependencies.tikv-jemallocator]
-version = "0.6"
+version = "0.7"
 optional = true
 
 [dev-dependencies]
