@@ -258,8 +258,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
           PACKAGES: ${{ steps.release.outputs.packages }}
           PUBLISH_SKIP_EXISTING: ${{ needs.resolve.outputs.publish_skip_existing == 'true' && '1' || '0' }}
-          RELEASE_PUBLISH_COMMAND: ${{ needs.resolve.outputs.publish_command }}
         shell: bash
         run: |
           set -euo pipefail
-          bash -lc "${RELEASE_PUBLISH_COMMAND}"
+          eval "${{ needs.resolve.outputs.publish_command }}"
