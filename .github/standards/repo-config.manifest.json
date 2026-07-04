@@ -220,7 +220,15 @@
                   "major"
                 ]
               }
-            }
+            },
+            "ignore": [
+              {
+                "dependency-name": "redis",
+                "versions": [
+                  ">=1.2.4"
+                ]
+              }
+            ]
           },
           {
             "package-ecosystem": "github-actions",
