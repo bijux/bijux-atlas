@@ -238,6 +238,8 @@ verify_homepage_sidebar_collapse_contract() {
 
 verify_workflow_run_shell_preambles() {
   local manifest_shell_breaks
+  local shared_workflow_rel
+  local shared_workflow_dir
   manifest_shell_breaks="$(grep -nE '"run": "set -euo pipefail [^;&"]' "${repo_root}/.github/standards/repo-config.manifest.json" || true)"
   if [[ -n "${manifest_shell_breaks}" ]]; then
     echo "ERROR: malformed workflow shell preamble in standards manifest" >&2
@@ -247,7 +249,9 @@ verify_workflow_run_shell_preambles() {
   fi
 
   local shared_workflow_breaks
-  shared_workflow_breaks="$(grep -RInE 'run: "?set -euo pipefail [^;&"]' "${repo_root}/shared/bijux-gh/workflows" || true)"
+  shared_workflow_rel="$(resolve_local_rel "shared/bijux-gh/workflows")"
+  shared_workflow_dir="${repo_root}/${shared_workflow_rel}"
+  shared_workflow_breaks="$(grep -RInE 'run: "?set -euo pipefail [^;&"]' "${shared_workflow_dir}" || true)"
   if [[ -n "${shared_workflow_breaks}" ]]; then
     echo "ERROR: malformed workflow shell preamble in shared GitHub workflow templates" >&2
     echo "${shared_workflow_breaks}" >&2
