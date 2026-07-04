@@ -102,6 +102,10 @@ extra:
 extra_css:
   - assets/styles/extra.css
 
+extra_javascript:
+  - assets/javascripts/vendor/mermaid-11.6.0.min.js
+  - assets/javascripts/mermaid-init.js
+
 hooks:
   - docs/hooks/publish_site_assets.py
 
