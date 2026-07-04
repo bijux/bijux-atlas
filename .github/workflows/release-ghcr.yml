@@ -239,13 +239,13 @@ jobs:
           build_matrix_json="$(filter_matrix "${build_matrix_json}" "${allowed_packages}")"
           package_matrix_json="$(filter_matrix "${package_matrix_json}" "${allowed_packages}")"
 
-          if [[ "${package_matrix_json}" == "[]" ]]; then
+          if [[ "${build_matrix_json}" == "[]" || "${package_matrix_json}" == "[]" ]]; then
             enabled="false"
           fi
 
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" && "${enabled}" != "true" ]]; then
             echo "Manual dispatch resolved to a no-op release-ghcr run." >&2
-            echo "Set enabled=true and ensure the package matrix resolves to at least one package." >&2
+            echo "Set enabled=true and ensure release matrices resolve to at least one package." >&2
             exit 1
           fi
 
@@ -267,9 +267,27 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
+  build:
+    name: build-${{ matrix.package_slug }}
+    needs: resolve
+    if: ${{ needs.resolve.outputs.enabled == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve.outputs.build_matrix_json) }}
+    uses: ./.github/workflows/release-artifacts.yml
+    with:
+      package_slug: ${{ matrix.package_slug }}
+      package_dir: ${{ matrix.package_dir }}
+      artifacts_dir: ${{ matrix.artifacts_dir }}
+      makefile_path: ${{ matrix.makefile_path || '' }}
+      build_targets: ${{ matrix.build_targets || 'build' }}
+      dist_subdir: ${{ matrix.dist_subdir || 'build' }}
   publish:
     name: publish-ghcr-${{ matrix.package_slug }}
-    needs: resolve
+    needs:
+      - resolve
+      - build
     if: ${{ needs.resolve.outputs.enabled == 'true' }}
     runs-on: ubuntu-24.04
     permissions:
@@ -281,37 +299,11 @@ jobs:
         include: ${{ fromJSON(needs.resolve.outputs.package_matrix_json) }}
 
     steps:
-      - name: Download published crate package
-        shell: bash
-        run: |
-          set -euo pipefail
-          release_tag='${{ needs.resolve.outputs.release_tag }}'
-          if [[ -z "${release_tag}" ]]; then
-            release_tag='${{ github.ref_name }}'
-          fi
-          release_version="${release_tag#v}"
-          crate_name='${{ matrix.crate_name || matrix.package_slug }}'
-          archive_dir=".github/tmp/${{ matrix.package_slug }}-crate"
-          archive_path="${archive_dir}/${crate_name}-${release_version}.crate"
-          crate_url="https://static.crates.io/crates/${crate_name}/${crate_name}-${release_version}.crate"
-          user_agent="bijux-atlas-ghcr-mirror/1"
-
-          mkdir -p "${archive_dir}"
-          status=""
-          for attempt in $(seq 1 60); do
-            status="$(curl -A "${user_agent}" -fsS -o /dev/null -w '%{http_code}' "${crate_url}" 2>/dev/null || true)"
-            if [[ "${status}" == "200" ]]; then
-              break
-            fi
-            sleep 15
-          done
-
-          if [[ "${status}" != "200" ]]; then
-            echo "crate archive not available from crates.io: ${crate_url}" >&2
-            exit 1
-          fi
-
-          curl -A "${user_agent}" -fL "${crate_url}" -o "${archive_path}"
+      - name: Download release artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ matrix.artifact_name || format('{0}{1}', matrix.package_slug, needs.resolve.outputs.artifact_suffix) }}
+          path: .github/tmp/${{ matrix.package_slug }}-release
 
       - name: Install ORAS
         shell: bash
@@ -330,7 +322,7 @@ jobs:
           set -euo pipefail
           echo "${{ github.token }}" | oras login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-      - name: Publish crate mirror to GHCR
+      - name: Publish release bundle to GHCR
         shell: bash
         run: |
           set -euo pipefail
@@ -338,24 +330,22 @@ jobs:
           if [[ -z "${release_tag}" ]]; then
             release_tag='${{ github.ref_name }}'
           fi
-          release_version="${release_tag#v}"
 
-          crate_name='${{ matrix.crate_name || matrix.package_slug }}'
-          archive_path=".github/tmp/${{ matrix.package_slug }}-crate/${crate_name}-${release_version}.crate"
+          stage_dir=".github/tmp/${{ matrix.package_slug }}-release"
+          archive_dir=".github/tmp/${{ matrix.package_slug }}-ghcr"
+          archive_path="${archive_dir}/${{ matrix.package_slug }}-${release_tag}.tar.gz"
           package_ref="${{ matrix.package_ref || format('{0}/{1}', needs.resolve.outputs.package_ref_prefix, matrix.package_slug) }}"
           artifact_type="${{ matrix.artifact_type || needs.resolve.outputs.artifact_type }}"
           archive_media_type="${{ matrix.archive_media_type || needs.resolve.outputs.archive_media_type }}"
-          crates_io_url="https://crates.io/crates/${crate_name}/${release_version}"
-          docs_rs_url="https://docs.rs/${crate_name}/latest/"
+
+          mkdir -p "${archive_dir}"
+          tar -C "${stage_dir}" -czf "${archive_path}" .
 
           oras push "${package_ref}:${release_tag}" \
             --artifact-type "${artifact_type}" \
-            --annotation "org.opencontainers.image.title=${crate_name}" \
-            --annotation "org.opencontainers.image.description=crates.io mirror artifact for ${crate_name}" \
+            --annotation "org.opencontainers.image.title=${{ matrix.package_slug }}" \
             --annotation "org.opencontainers.image.version=${release_tag}" \
             --annotation "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --annotation "org.opencontainers.image.url=${crates_io_url}" \
-            --annotation "org.opencontainers.image.documentation=${docs_rs_url}" \
             --annotation "org.opencontainers.image.revision=${{ github.sha }}" \
             "${archive_path}:${archive_media_type}"
 

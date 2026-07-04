@@ -157,8 +157,7 @@ jobs:
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             if [[ "${GITHUB_REF}" != "refs/heads/main" && "${GITHUB_REF}" != "refs/heads/master" && "${GITHUB_REF}" != refs/tags/v* ]]; then
               echo "Manual dispatch would only build docs but skip deploy from ${GITHUB_REF}." >&2
-              echo "Dispatch deploy-docs from main/master when deployment is required." >&2
-              echo "Tag dispatches are allowed for release-site validation, but Pages deployment is main-only." >&2
+              echo "Dispatch deploy-docs from main/master or a v* tag when deployment is required." >&2
               exit 1
             fi
           fi
@@ -180,7 +179,7 @@ jobs:
 
       - name: Setup Python
         if: ${{ steps.config.outputs.setup_python == 'true' }}
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.1.0
         with:
           python-version: ${{ steps.config.outputs.python_version }}
 
@@ -317,7 +316,7 @@ jobs:
   deploy:
     name: Deploy docs site
     needs: build
-    if: ${{ needs.build.outputs.site_available == 'true' && (github.event_name == 'workflow_call' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
+    if: ${{ needs.build.outputs.site_available == 'true' && (github.event_name == 'workflow_call' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')) }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
