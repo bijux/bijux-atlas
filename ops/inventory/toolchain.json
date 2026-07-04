@@ -65,8 +65,8 @@
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
-      "ref": "v3.0.1",
-      "sha": "718ea10b132b3b2eba29c1007bb80653f286566b"
+      "ref": "v2.3.3",
+      "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
     },
     "actions/github-script": {
       "ref": "v9.0.0",
