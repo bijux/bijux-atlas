@@ -18,7 +18,7 @@ base64 = "0.22"
 bijux-atlas-core = { workspace = true, features = ["serde"] }
 bijux-atlas-model = { workspace = true }
 hmac = "0.13"
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+rusqlite = { version = "0.40", features = ["bundled", "vtab", "hooks"] }
 serde.workspace = true
 serde_json.workspace = true
 sha2 = "0.11"
