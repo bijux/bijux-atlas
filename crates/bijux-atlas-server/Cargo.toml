@@ -32,8 +32,8 @@ hex = "0.4"
 opentelemetry = "0.32"
 opentelemetry-otlp = { version = "0.32", features = ["http-proto", "reqwest-client"] }
 opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"] }
-redis = { version = "1.2", features = ["tokio-comp"] }
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+redis.workspace = true
+rusqlite.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_yaml = "0.9"
@@ -54,10 +54,10 @@ bijux-atlas-model.workspace = true
 criterion = "0.8"
 hex = "0.4"
 hmac = "0.13"
-redis = { version = "1.2", features = ["tokio-comp"] }
+redis.workspace = true
 regex = "1.11"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
-rusqlite = { version = "0.39", features = ["bundled", "vtab", "hooks"] }
+rusqlite.workspace = true
 serde_json.workspace = true
 sha2 = "0.11"
 tempfile = "=3.27.0"
