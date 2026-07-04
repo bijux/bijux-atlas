@@ -48,7 +48,7 @@ evidence.
 
 ## Toolchain Baseline
 
-The current workspace MSRV and pinned Rust toolchain are both `1.85.0`.
+The current workspace MSRV and pinned Rust toolchain are both `1.86.0`.
 
 If `Cargo.toml`, `rust-toolchain.toml`, and release validation disagree about that version, treat it as a release blocker rather than a cosmetic drift.
 
