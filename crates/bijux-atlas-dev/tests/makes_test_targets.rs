@@ -13,37 +13,47 @@ fn workspace_root() -> PathBuf {
 }
 
 #[test]
-fn test_all_runs_nextest_once_without_retries() {
-    let cargo_mk =
-        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
-    let start = cargo_mk
-        .find("test-all-rs: ## Run all workspace tests including slow_ and ignored tests")
-        .expect("test-all-rs target");
-    let tail = &cargo_mk[start..];
-    let end = tail.find("\n\n").unwrap_or(tail.len());
-    let target_block = &tail[..end];
+fn shared_test_all_runs_ignored_tests_once_without_retries() {
+    let rust_gate = fs::read_to_string(
+        workspace_root().join(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"),
+    )
+    .expect("read shared Rust gate");
 
     assert!(
-        target_block.contains("\"$(RUST_GATE_BIN)\" test-all"),
-        "test-all should delegate through the standardized rust gate wrapper"
+        rust_gate.contains("args+=(--run-ignored all --retries 0)"),
+        "test-all must include ignored tests and disable retries"
     );
     assert!(
-        target_block.contains("NEXTEST_THREADS_ALL"),
-        "test-all must pass the governed full-suite concurrency setting"
+        rust_gate.contains("\"${NEXTEST_THREADS_ALL:-}\""),
+        "test-all must honor the governed full-suite concurrency setting"
     );
 }
 
 #[test]
 fn cargo_gate_module_declares_standardized_rust_gate_wiring() {
+    let root_mk =
+        fs::read_to_string(workspace_root().join("makes/root.mk")).expect("read makes/root.mk");
     let cargo_mk =
         fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
+
+    for expected in [
+        "bijux-makes/environment.mk",
+        "bijux-makes/guards.mk",
+        "bijux-makes-rs/bijux.mk",
+    ] {
+        assert!(
+            root_mk.contains(expected),
+            "root Make entrypoint must load `{expected}`"
+        );
+    }
 
     for expected in [
         "NEXTEST_PROFILE_FAST ?= fast-unit",
         "NEXTEST_PROFILE_SLOW ?= slow-integration",
         "NEXTEST_PROFILE_ALL ?= full",
-        "RUST_GATE_BIN ?= makes/bin/rust_gate.sh",
-        "NEXTEST_EXPR_BIN ?= makes/bin/nextest_expr.sh",
+        "NEXTEST_SLOW_NAME_EXPR ?= test(/::slow__/)",
+        "RUST_GATE_BIN ?= $(ATLAS_RUST_GATE_BIN)",
+        "RUST_AUDIT_PREREQUISITES += audit-policy-rs",
     ] {
         assert!(
             cargo_mk.contains(expected),
@@ -58,11 +68,12 @@ fn cargo_gate_aliases_delegate_to_rust_lanes() {
         fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
 
     for (target, delegate) in [
-        ("fmt:", "$(MAKE) fmt-rs"),
-        ("lint:", "$(MAKE) lint-rs"),
-        ("audit:", "$(MAKE) audit-rs"),
-        ("test:", "$(MAKE) test-rs"),
-        ("test-all:", "$(MAKE) test-all-rs"),
+        ("fmt:", "fmt-rs"),
+        ("lint:", "lint-rs"),
+        ("audit:", "audit-rs"),
+        ("test:", "test-rs"),
+        ("test-slow:", "test-slow-rs"),
+        ("test-all:", "test-all-rs"),
     ] {
         let start = cargo_mk.find(target).expect("alias target");
         let tail = &cargo_mk[start..];
@@ -77,25 +88,63 @@ fn cargo_gate_aliases_delegate_to_rust_lanes() {
 
 #[test]
 fn frozen_gate_targets_delegate_to_pinned_ref_launcher() {
-    let cargo_mk =
-        fs::read_to_string(workspace_root().join("makes/cargo.mk")).expect("read makes/cargo.mk");
+    let shared_cargo =
+        fs::read_to_string(workspace_root().join(".bijux/shared/bijux-makes-rs/cargo.mk"))
+            .expect("read shared Rust Make contract");
 
     for (target, gate_target) in [
-        ("test-all-frozen:", "PINNED_REF_GATE_TARGET=\"test-all\""),
-        ("lint-frozen:", "PINNED_REF_GATE_TARGET=\"lint\""),
-        ("audit-frozen:", "PINNED_REF_GATE_TARGET=\"audit\""),
+        ("test-all-frozen:", "PINNED_GATE_TARGET=test-all"),
+        ("lint-frozen:", "PINNED_GATE_TARGET=lint"),
+        ("audit-frozen:", "PINNED_GATE_TARGET=audit"),
     ] {
-        let start = cargo_mk.find(target).expect("frozen target");
-        let tail = &cargo_mk[start..];
-        let end = tail.find("\n\n").unwrap_or(tail.len());
-        let target_block = &tail[..end];
         assert!(
-            target_block.contains("$(PINNED_REF_GATE_BIN)"),
-            "{target} should use the pinned-ref launcher"
+            shared_cargo.contains(target) && shared_cargo.contains(gate_target),
+            "{target} must use the shared pinned gate with {gate_target}"
         );
+    }
+}
+
+#[test]
+fn slow_test_policy_uses_roster_and_double_underscore_namespace() {
+    let root = workspace_root();
+    let roster = fs::read_to_string(root.join("configs/rust/nextest-slow-roster.txt"))
+        .expect("read slow-test roster");
+    assert!(roster.contains("slow__"));
+
+    for relative_path in [
+        "crates/bijux-atlas-server/src/app/server/tests/cache_lifecycle.rs",
+        "crates/bijux-atlas-cli/tests/cli_runtime_parity.rs",
+        "crates/bijux-atlas-dev/tests/cli_smoke.rs",
+        "crates/bijux-atlas-dev/tests/support/core_engine_tests.rs",
+    ] {
+        let source = fs::read_to_string(root.join(relative_path)).expect("read slow-test source");
         assert!(
-            target_block.contains(gate_target),
-            "{target} should set {gate_target}"
+            !source.lines().any(|line| {
+                let line = line.trim_start();
+                line.starts_with("fn slow_") && !line.starts_with("fn slow__")
+                    || line.starts_with("async fn slow_") && !line.starts_with("async fn slow__")
+            }),
+            "{relative_path} contains a slow test outside the slow__ namespace"
+        );
+    }
+}
+
+#[test]
+fn repository_adapter_replaces_copied_gate_implementations() {
+    let root = workspace_root();
+    let adapter = fs::read_to_string(root.join("makes/bin/run_atlas_rust_gate.sh"))
+        .expect("read Atlas Rust gate adapter");
+    assert!(adapter.contains(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"));
+    assert!(adapter.contains("exec \"${shared_gate}\" \"$@\""));
+
+    for relative_path in [
+        "makes/bin/nextest_expr.sh",
+        "makes/bin/rust_gate.sh",
+        "makes/bin/run_pinned_ref_gate.sh",
+    ] {
+        assert!(
+            !root.join(relative_path).exists(),
+            "shared Make integration must not retain {relative_path}"
         );
     }
 }

@@ -14,7 +14,7 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
-fn slow_doctor_smoke() {
+fn slow__doctor_smoke() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas-dev"))
         .current_dir(repo_root())
         .args(["docs", "doctor", "--format", "json"])

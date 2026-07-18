@@ -8,6 +8,10 @@ ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 SUITE_FAIL_FAST_FLAG := $(if $(filter 1 true yes,$(FAIL_FAST)),--fail-fast,--no-fail-fast)
 
+BIJUX_MAKES_SHARED_ROOT := $(CURDIR)/.bijux/shared
+include $(BIJUX_MAKES_SHARED_ROOT)/bijux-makes/environment.mk
+include $(BIJUX_MAKES_SHARED_ROOT)/bijux-makes/guards.mk
+
 include makes/vars.mk
 include makes/paths.mk
 include makes/macros.mk
@@ -29,6 +33,7 @@ include makes/ops.mk
 include makes/policies.mk
 include makes/runenv.mk
 include makes/verification.mk
+include $(BIJUX_MAKES_SHARED_ROOT)/bijux-makes-rs/bijux.mk
 
 SHELL := /bin/bash
 

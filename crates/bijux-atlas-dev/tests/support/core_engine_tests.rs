@@ -314,7 +314,7 @@ fn run_checks_produces_summary() {
 }
 
 #[test]
-fn slow_runner_results_are_stably_ordered_and_repeatable() {
+fn slow__runner_results_are_stably_ordered_and_repeatable() {
     let req = RunRequest {
         repo_root: root(),
         domain: None,
@@ -485,7 +485,7 @@ fn fail_fast_stops_after_first_failure() {
 }
 
 #[test]
-fn slow_deterministic_json_output() {
+fn slow__deterministic_json_output() {
     let req = RunRequest {
         repo_root: root(),
         domain: None,

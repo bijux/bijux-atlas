@@ -142,7 +142,7 @@ async fn read_only_sqlite_pragma_profile_is_applied() {
 }
 
 #[tokio::test]
-async fn slow_store_timeout_returns_a_real_outcome() {
+async fn slow__store_timeout_returns_a_real_outcome() {
     let (ds, manifest, sqlite) = mk_dataset();
     let store = Arc::new(FakeStore {
         slow_read: true,
