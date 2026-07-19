@@ -77,6 +77,16 @@ mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
     use tempfile::{Builder, TempDir};
 
+    #[cfg(unix)]
+    fn system_temp_root() -> &'static Path {
+        Path::new("/tmp")
+    }
+
+    #[cfg(not(unix))]
+    fn system_temp_root() -> PathBuf {
+        std::env::temp_dir()
+    }
+
     fn temp_repo_root() -> TempDir {
         let suffix = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -84,7 +94,7 @@ mod tests {
             .as_nanos();
         Builder::new()
             .prefix(&format!("bijux-atlas-dev-adapter-io-{suffix}-"))
-            .tempdir()
+            .tempdir_in(system_temp_root())
             .unwrap_or_else(|err| panic!("create temp repo root failed: {err}"))
     }
 
