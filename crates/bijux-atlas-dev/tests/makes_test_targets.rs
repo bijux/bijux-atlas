@@ -84,7 +84,7 @@ fn cargo_gate_module_declares_standardized_rust_gate_wiring() {
         "NEXTEST_PROFILE_FAST ?= fast-unit",
         "NEXTEST_PROFILE_SLOW ?= slow-integration",
         "NEXTEST_PROFILE_ALL ?= full",
-        "NEXTEST_SLOW_NAME_EXPR ?= test(/::slow__/)",
+        "NEXTEST_SLOW_NAME_EXPR ?= test(/(^|::)slow__/)",
         "RUST_GATE_BIN ?= $(ATLAS_RUST_GATE_BIN)",
         "RUST_AUDIT_PREREQUISITES += audit-policy-rs",
     ] {
@@ -93,6 +93,20 @@ fn cargo_gate_module_declares_standardized_rust_gate_wiring() {
             "cargo gate wiring should declare `{expected}`"
         );
     }
+
+    let fast_profile = fs::read_to_string(workspace_root().join("configs/rust/nextest.toml"))
+        .expect("read nextest policy")
+        .split("[profile.fast-unit]")
+        .nth(1)
+        .expect("fast nextest profile")
+        .split("\n[")
+        .next()
+        .expect("fast nextest profile body")
+        .to_string();
+    assert!(
+        fast_profile.contains("fail-fast = false"),
+        "make test must finish the selected fast test lane after individual failures"
+    );
 }
 
 #[test]
