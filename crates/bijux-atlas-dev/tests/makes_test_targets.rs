@@ -176,6 +176,9 @@ fn slow_test_policy_uses_roster_and_double_underscore_namespace() {
     let roster = fs::read_to_string(root.join("configs/rust/nextest-slow-roster.txt"))
         .expect("read slow-test roster");
     assert!(roster.contains("slow__"));
+    assert!(roster
+        .lines()
+        .any(|line| line == "perf_diff_command_accepts_system_load_baselines"));
 
     for relative_path in [
         "crates/bijux-atlas-server/src/app/server/tests/cache_lifecycle.rs",

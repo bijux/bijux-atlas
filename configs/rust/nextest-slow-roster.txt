@@ -1,3 +1,5 @@
 # Measured tests outside the 10-second fast-lane budget.
 # Explicitly slow tests use the `slow__` namespace and are not duplicated here.
 # `make test` excludes roster entries; `make test-slow` and `make test-all` include them.
+
+perf_diff_command_accepts_system_load_baselines
