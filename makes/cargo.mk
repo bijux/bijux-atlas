@@ -10,7 +10,6 @@ NEXTEST_PROFILE_SLOW ?= slow-integration
 NEXTEST_PROFILE_CERT ?= certification
 NEXTEST_PROFILE_ALL ?= full
 CARGO_BUILD_JOBS ?= $(JOBS)
-NEXTEST_THREADS_ALL ?= $(if $(filter auto,$(CARGO_BUILD_JOBS)),num-cpus,$(if $(CARGO_BUILD_JOBS),$(CARGO_BUILD_JOBS),8))
 NEXTEST_CONFIG_FILE ?= $(CURDIR)/configs/rust/nextest.toml
 NEXTEST_SLOW_NAME_EXPR ?= test(/(^|::)slow__/)
 ATLAS_RUST_GATE_BIN ?= makes/bin/run_atlas_rust_gate.sh
