@@ -110,6 +110,7 @@ fn assert_same_output(left: &Output, right: &Output) {
 }
 
 #[test]
+#[allow(non_snake_case)]
 fn slow__atlas_namespace_stays_registered_with_bijux_cli() {
     let runtime_bin_dir = runtime_bin_dir();
     let bijux = bijux_cli_binary();
@@ -127,6 +128,7 @@ fn slow__atlas_namespace_stays_registered_with_bijux_cli() {
 }
 
 #[test]
+#[allow(non_snake_case)]
 fn slow__bijux_cli_dispatch_matches_bijux_atlas_runtime() {
     let runtime_bin_dir = runtime_bin_dir();
     let atlas = runtime_bin_dir.path().join("bijux-atlas");
