@@ -14,10 +14,12 @@ fn workspace_root() -> PathBuf {
 
 #[test]
 fn shared_test_all_runs_ignored_tests_once_without_retries() {
-    let rust_gate = fs::read_to_string(
-        workspace_root().join(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"),
-    )
-    .expect("read shared Rust gate");
+    let root = workspace_root();
+    let rust_gate =
+        fs::read_to_string(root.join(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"))
+            .expect("read shared Rust gate");
+    let nextest =
+        fs::read_to_string(root.join("configs/rust/nextest.toml")).expect("read nextest policy");
 
     assert!(
         rust_gate.contains("args+=(--run-ignored all --retries 0)"),
@@ -27,6 +29,37 @@ fn shared_test_all_runs_ignored_tests_once_without_retries() {
         rust_gate.contains("\"${NEXTEST_THREADS_ALL:-}\""),
         "test-all must honor the governed full-suite concurrency setting"
     );
+    let full_profile = nextest
+        .split("[profile.full]")
+        .nth(1)
+        .expect("full nextest profile")
+        .split("\n[")
+        .next()
+        .expect("full nextest profile body");
+    assert!(
+        full_profile.contains("fail-fast = false"),
+        "test-all must continue after individual test failures"
+    );
+}
+
+#[test]
+fn shared_test_gate_preserves_nextest_summary_and_exit_status() {
+    let rust_gate = fs::read_to_string(
+        workspace_root().join(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"),
+    )
+    .expect("read shared Rust gate");
+
+    for expected in [
+        "if run_logged \"${report_path}\" env \\",
+        "status=$?",
+        "\"nextest-summary:\"",
+        "return \"${status}\"",
+    ] {
+        assert!(
+            rust_gate.contains(expected),
+            "Rust gate must preserve `{expected}` after failed nextest runs"
+        );
+    }
 }
 
 #[test]
@@ -88,9 +121,12 @@ fn cargo_gate_aliases_delegate_to_rust_lanes() {
 
 #[test]
 fn frozen_gate_targets_delegate_to_pinned_ref_launcher() {
-    let shared_cargo =
-        fs::read_to_string(workspace_root().join(".bijux/shared/bijux-makes-rs/cargo.mk"))
-            .expect("read shared Rust Make contract");
+    let root = workspace_root();
+    let shared_cargo = fs::read_to_string(root.join(".bijux/shared/bijux-makes-rs/cargo.mk"))
+        .expect("read shared Rust Make contract");
+    let pinned_gate =
+        fs::read_to_string(root.join(".bijux/shared/bijux-makes/scripts/run_pinned_gate.sh"))
+            .expect("read shared pinned gate");
 
     for (target, gate_target) in [
         ("test-all-frozen:", "PINNED_GATE_TARGET=test-all"),
@@ -100,6 +136,22 @@ fn frozen_gate_targets_delegate_to_pinned_ref_launcher() {
         assert!(
             shared_cargo.contains(target) && shared_cargo.contains(gate_target),
             "{target} must use the shared pinned gate with {gate_target}"
+        );
+    }
+    for expected in [
+        "pinned_ref=\"${PINNED_REF:-${TEST_ALL_FROZEN_REF:-HEAD}}\"",
+        "unset \\",
+        "PROJECT_ROOT \\",
+        "export PROJECT_ROOT=\"${pinned_repo_dir}\"",
+        "artifact_execution_root=\"${pinned_repo_dir}/artifacts\"",
+        "export ARTIFACT_ROOT=\"${artifact_execution_root}\"",
+        "expected_target=\"frozen-repo/artifacts/",
+        "artifact publication conflict:",
+        "ln -s ",
+    ] {
+        assert!(
+            pinned_gate.contains(expected),
+            "frozen gate must preserve `{expected}`"
         );
     }
 }
