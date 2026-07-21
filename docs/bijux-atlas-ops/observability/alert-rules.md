@@ -4,55 +4,87 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Alert Rules
 
-Alerting rules and coverage gates live under `ops/observe/rules/` and
-`ops/observe/alerts/` so noise and signal can be reviewed together.
+An Atlas alert is actionable only when its expression, persistence window,
+severity tier, owner, runbook, drill, and protected invariant agree. The alert
+contract binds those fields for the governed runtime and SLO surface.
 
-## Purpose
+## Governed Inventory
 
-Use this page to understand which alert packs Atlas maintains, how alerts are
-classified, and what an operator is expected to do when one fires.
+`ops/observe/contracts/alerts-contract.json` requires 20 alerts. Each belongs to
+an operating family:
 
-## Source of Truth
+| Family | Representative alerts | Protected behavior |
+| --- | --- | --- |
+| API health | `BijuxAtlasHigh5xxRate`, `BijuxAtlasP95LatencyRegression` | Availability and request latency |
+| SLO burn | Cheap and standard fast, medium, and slow burn alerts | Class-specific success budgets |
+| Overload | `AtlasOverloadSustained`, `BijuxAtlasOverloadSurvivalViolated` | Deliberate shedding and cheap-path survival |
+| Store and cache | Download failures, backend error spike, cache thrash | Dependency reliability and cache stability |
+| Registry and datasets | Refresh stale, no datasets loaded | Discoverability and usable data presence |
+| Runtime integrity | Ingest failures, query errors, disk pressure, restart loop, shard violation | Correctness and recoverability |
 
-- `ops/observe/alerts/atlas-alert-rules.yaml`
-- `ops/observe/alerts/security-alert-rules.yaml`
-- `ops/observe/alerts/slo-burn-rules.yaml`
-- `ops/observe/alert-catalog.json`
-- `ops/observe/contracts/alerts-contract.json`
+Fast and medium SLO burns page; slow burns warn. Integrity violations, restart
+loops, ingest failure, query error spikes, overload-survival failure, high 5xx,
+and store error spikes are paging conditions. The contract—not the severity
+labels in a secondary inventory—is the routing authority.
 
-## Alert Inventory
+## Alert Flow
 
-`ops/observe/alert-catalog.json` currently records alert identities such as:
+```mermaid
+flowchart LR
+    E["Rule expression persists"] --> F["Alert fires"]
+    F --> O["Owner acknowledges"]
+    O --> R["Runbook bounds impact"]
+    R --> D["Linked drill and invariant"]
+    D --> V{"Evidence confirms breach?"}
+    V -->|yes| A["Protect service and recover"]
+    V -->|no| T["Classify telemetry or rule defect"]
+```
 
-- critical service alerts like `api.error-rate-high`,
-  `BijuxAtlasHigh5xxRate`, `BijuxAtlasStoreDownloadFailures`,
-  `BijuxAtlasOverloadSurvivalViolated`, and
-  `BijuxAtlasStoreBackendErrorSpike`
-- warning alerts like `api.latency-p95-high`,
-  `BijuxAtlasP95LatencyRegression`, `BijuxAtlasCacheThrash`,
-  `BijuxAtlasRegistryRefreshStale`, and the fast, medium, and slow SLO burn
-  alerts
+On receipt, preserve the alert identity, expression value, start time, labels,
+release, profile, and dataset context. Open the bound runbook, confirm the
+protected invariant with independent signals, and capture the evidence before
+mutating the system when safety permits.
 
-## Alert Classes
+## Catalog and Security Boundaries
 
-Use these operator classes when reviewing the rule packs:
+The alert catalog lists 22 entries: 20 governed rule identities plus
+`api.error-rate-high` and `api.latency-p95-high`. Those two inventory entries do
+not have specifications in the current alert contract and must not be presented
+as contract-bound pages.
 
-- runtime availability and latency alerts
-- store and registry dependency alerts
-- overload or degradation alerts
-- SLO burn alerts
-- security alerts
+The security rule pack declares four additional conditions for authentication
+failures, authorization denials, integrity violations, and tamper detection.
+They are operationally important, but they are not members of the 20-alert
+runtime contract or the 22-entry catalog. Validate their notification routing
+and runbook resolution separately before relying on them as governed coverage.
 
-## Expected Operator Action
+## Selected Trigger Semantics
 
-- critical alerts require immediate triage, dashboard review, and incident
-  evidence capture
-- warning alerts require trend review, contract verification, and a decision on
-  whether the issue is becoming release-blocking
-- SLO burn alerts should trigger service-behavior review even if the system is
-  still technically up
+- High 5xx pages when the ratio exceeds 0.5% for 10 minutes.
+- `/v1/genes` p95 latency pages above 800 ms for 15 minutes.
+- Cheap-path survival pages below 99.99% success while overload shedding is
+  active for five minutes.
+- Registry refresh warns when age exceeds 10 minutes for 15 minutes.
+- Store backend errors page above 2% of standard and heavy request volume for
+  10 minutes.
+- Any shard-integrity violation pages after the five-minute persistence window.
+
+Read the checked-in rule expression before acting; summaries are navigation,
+not substitutes for the executable rule.
+
+## Accepting Alert Readiness
+
+Alert files parsing successfully is necessary but insufficient. Readiness
+requires the rule to receive its expected metric, fire during the linked drill,
+reach the intended notification route, resolve when the condition clears, and
+produce an evidence record. A missing metric, stale rule version, unresolved
+runbook, or untested notification path is a monitoring failure even when the
+application is healthy.
+
+Continue to [Telemetry Drills](telemetry-drills.md) for firing evidence and
+[Incident Response](incident-response.md) for containment and recovery.
