@@ -14,8 +14,8 @@ number. A credible result identifies the dataset, query pack, cache state,
 deployment profile, concurrency, failure conditions, and acceptance budgets.
 
 The checked-in load system covers steady traffic, saturation, component failure,
-deployment churn, long-running stability, and deliberate abuse. Its purpose is to
-show both how quickly Atlas answers and how predictably it degrades.
+deployment churn, long-running stability, and deliberate abuse. It measures
+both how quickly Atlas answers and how predictably it degrades.
 
 ## The Measurement Contract
 
@@ -39,6 +39,26 @@ is `ops/load/queries/pinned-v1.json`.
 
 A run without these identities can still help exploration, but it is not
 comparable release evidence.
+
+## Measurement Phases
+
+```mermaid
+stateDiagram-v2
+    [*] --> Preflight
+    Preflight --> Warmup: environment and dataset verify
+    Warmup --> Measure: cache and traffic state reach scenario target
+    Measure --> Recovery: load or fault interval completes
+    Recovery --> Complete: dependencies and service return to expected state
+    Preflight --> Invalid: identity or health mismatch
+    Warmup --> Invalid: target state not reached
+    Measure --> Failed: budget or correctness violation
+    Recovery --> Failed: service does not recover
+```
+
+Exclude preflight and warmup from a steady-state window unless the scenario is
+explicitly measuring startup. Preserve them as separate evidence because a
+candidate that takes too long to become measurable may still violate an
+operational objective.
 
 ## Workload Families
 
@@ -90,6 +110,12 @@ Interpret latency together with throughput and failure rate. A lower percentile
 is not an improvement if the server completed less work or rejected a larger
 share of requests. Under overload, also verify that heavy work was shed as
 declared and cheap health and catalog routes remained available.
+
+One run can establish a deterministic threshold failure, but a close
+candidate-versus-baseline decision should include repeated comparable runs and
+the full distribution. Report run-to-run spread and outliers rather than
+selecting the most favorable sample. Operational budgets remain hard
+boundaries even when average behavior looks better.
 
 ## Choosing an Execution Scope
 

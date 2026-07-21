@@ -64,6 +64,21 @@ these limits:
 These percentages compare a candidate with an approved baseline. They are not
 the absolute scenario thresholds.
 
+## Interpreting Measurements
+
+| Measurement | Required context |
+| --- | --- |
+| percentile latency | completed sample count, duration, request class, and failure treatment |
+| throughput | offered rate, completed work, rejections, and concurrency |
+| failure rate | denominator, status/error classes, deliberate shedding, and time window |
+| CPU or memory | resource requests and limits, replicas, sampling method, and warmup state |
+| recovery time | fault confirmation, removal timestamp, restored invariant, and observation window |
+
+Percentiles are not comparable when request mix, sample population, or failure
+filtering differs. Throughput is not comparable when offered load or completed
+work semantics change. A threshold report must preserve these definitions with
+the result.
+
 ## Shared Scenario Budgets
 
 The shared K6 contract contains per-scenario p95, p99, and failure-rate limits.
@@ -103,6 +118,11 @@ A candidate does not have valid passing evidence when:
 The regression command sequence is `load baseline`, `load run`, then
 `load compare`, each with JSON output. Contract failure exits with code `2`, so
 automation can distinguish a rejected candidate from a successful comparison.
+
+When a value lands exactly on a boundary, apply the comparison operator from
+the owning machine-readable contract. Documentation summaries must not invent
+rounding or tolerance. Preserve raw precision so display formatting cannot
+change the verdict.
 
 ## Reviewing a Budget Change
 
