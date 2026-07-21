@@ -4,97 +4,115 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Performance and Load
 
-Atlas performance should be evaluated in terms of query shape, artifact layout, cache behavior, and runtime limits, not only raw request-per-second numbers.
+Atlas treats performance as a release property, not a single requests-per-second
+number. A credible result identifies the dataset, query pack, cache state,
+deployment profile, concurrency, failure conditions, and acceptance budgets.
 
-## Performance Model
+The checked-in load system covers steady traffic, saturation, component failure,
+deployment churn, long-running stability, and deliberate abuse. Its purpose is to
+show both how quickly Atlas answers and how predictably it degrades.
+
+## The Measurement Contract
 
 ```mermaid
 flowchart LR
-    QueryShape[Query shape] --> Cost[Work cost]
-    Cost --> Limits[Runtime limits]
-    Limits --> Latency[Latency and throughput]
-    Cache[Cache behavior] --> Latency
+    I["Pinned dataset and query pack"] --> S["Named scenario"]
+    S --> E["Declared environment and concurrency"]
+    E --> R["Measured result"]
+    R --> A["Absolute scenario budgets"]
+    R --> B["Approved baseline comparison"]
+    A --> D{"Release decision"}
+    B --> D
+    D -->|pass| P["Promotion evidence"]
+    D -->|fail| X["Investigation and rerun"]
 ```
 
-This performance model shows why Atlas performance cannot be summarized by one throughput number. The
-cost of work depends on query shape, limits, and cache behavior together.
+`ops/load/scenario-registry.json` owns scenario identity. The suite registry in
+`ops/load/suites/suites.json` binds each scenario to its purpose, runner,
+expected metrics, execution lanes, and pass budgets. The pinned request corpus
+is `ops/load/queries/pinned-v1.json`.
 
-## Load Model
+A run without these identities can still help exploration, but it is not
+comparable release evidence.
 
-```mermaid
-flowchart TD
-    Traffic[Traffic] --> Classes[Cheap, medium, heavy classes]
-    Classes --> Concurrency[Concurrency controls]
-    Concurrency --> Overload[Overload behavior]
-```
+## Workload Families
 
-This load model explains why Atlas talks about traffic classes instead of treating all requests as
-equal. Different classes stress the runtime differently and can trigger different guardrails.
+| Family | Representative scenarios | Question answered |
+| --- | --- | --- |
+| Fast confidence | `mixed`, `cheap-only-survival` | Are ordinary requests healthy, and do cheap routes survive overload? |
+| Cache and startup | `warm-steady-state-p99`, `cold-start-p99`, `stampede` | Are startup, warm-cache latency, and concurrent misses bounded? |
+| Resource pressure | `cpu-saturation`, `disk-io-saturation`, `thread-pool-exhaustion` | Does the runtime shed or queue work without uncontrolled collapse? |
+| Data shape | `sharded-fanout`, `shard-hot-spot`, `diff-heavy`, `mixed-gene-sequence` | How do shard locality and expensive query shapes affect service budgets? |
+| Dependency failure | `store-outage-under-spike`, `redis-optional` | Does the declared degradation policy hold when an optional or critical path fails? |
+| Delivery safety | `pod-churn`, `load-under-rollout`, `load-under-rollback`, `artifact-reload` | Can the service remain useful while its runtime or artifact set changes? |
+| Endurance | `long-running-stability`, `memory-leak-detection`, `soak-30m` | Do latency, errors, and memory remain bounded over time? |
+| Adversarial pressure | response abuse and the security suites | Do input and denial-of-service guardrails remain effective under traffic? |
 
-## What Usually Drives Performance
+The harness contract also names three workload kinds—query, ingest, and
+mixed—and three concurrency profiles: single client, multiple clients, and
+saturation. This prevents a result from hiding its traffic shape behind a
+generic benchmark label.
 
-- whether queries are explicit and selective
-- whether caches are warm
-- whether store access is healthy
-- whether runtime concurrency limits match actual traffic shape
+## What a Valid Run Records
 
-## Operator Advice
+A comparable run must preserve:
 
-- measure realistic request mixes, not only synthetic happy-path queries
-- observe overload and readiness under stress, not only average latency
-- correlate load results with request class and policy behavior
+- the Atlas revision and deployment profile;
+- dataset and release identity, including the pinned query set;
+- scenario name, duration, target rate, and concurrency profile;
+- cache state and the health of MinIO, Redis, and other active dependencies;
+- latency distributions, failure rate, throughput, and scenario-specific
+  signals;
+- the threshold set and approved baseline used for the decision;
+- logs, metrics, traces, and failure-injection timing when degradation is part
+  of the scenario.
 
-## What Good Performance Means
+Expected metrics are contractual. A run that omits a required signal is
+incomplete; the missing measurement must not be interpreted as a pass.
 
-Good performance is not just “fast.” It is:
+## Reading Results
 
-- predictable under expected traffic
-- explicit about overload behavior
-- observable during degradation
-- recoverable after stress
+Judge each candidate twice:
 
-## A Better Performance Question
+1. Compare it with the absolute budgets for its named scenario.
+2. Compare it with the approved baseline under the regression contract.
 
-Instead of asking only “how fast is Atlas,” ask “how predictable is Atlas under the traffic mix we
-actually expect to send?”
+A result passes only when both decisions pass. This catches a candidate that is
+inside a broad service limit but has regressed materially, and a candidate that
+matches a weak baseline while still violating the service budget.
 
-## Purpose
+Interpret latency together with throughput and failure rate. A lower percentile
+is not an improvement if the server completed less work or rejected a larger
+share of requests. Under overload, also verify that heavy work was shed as
+declared and cheap health and catalog routes remained available.
 
-This page explains the Atlas material for performance and load and points readers to the canonical checked-in workflow or boundary for this topic.
+## Choosing an Execution Scope
 
-## Source of Truth
+Use the smallest suite that answers the operational question:
 
-- `ops/load/suites/suites.json`
-- `ops/load/scenario-registry.json`
-- `ops/load/queries/pinned-v1.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
-- `ops/load/contracts/performance-regression-ci-contract.json`
-- `ops/load/contracts/performance-regression-thresholds.json`
-- `ops/load/baselines/`
+- `smoke` or `pr` for fast confidence in the mixed and cheap-survival paths;
+- `full` for scenario-specific capacity, resilience, or delivery decisions;
+- `nightly` and `load-nightly` for soak, memory growth, and broad stress
+  coverage.
 
-## How to Run a Meaningful Performance Review
+Do not use a smoke pass to support a production capacity claim. Conversely, a
+local documentation or configuration review does not need to repeat the whole
+load estate.
 
-1. choose the scenario family that matches the real workload under review
-2. use the pinned query pack in `ops/load/queries/pinned-v1.json` unless the
-   review explicitly requires another dataset or query shape
-3. confirm the suite thresholds and baseline before running the workload
-4. compare the candidate result against the approved baseline rather than
-   relying on one standalone run
-5. review observability and rollout evidence when the performance result will
-   influence promotion
+## Evidence Locations
 
-## Cross-Linked Control Surfaces
+- scenario registry: `ops/load/scenario-registry.json`
+- suite membership and expected metrics: `ops/load/suites/suites.json`
+- pinned requests: `ops/load/queries/pinned-v1.json`
+- absolute budgets: `ops/load/thresholds/` and
+  `ops/load/contracts/k6-thresholds.v1.json`
+- regression limits: `ops/load/contracts/performance-regression-thresholds.json`
+- approved references: `ops/load/baselines/`
 
-- thresholds and budgets decide whether the candidate behavior is acceptable
-- baselines decide what “better,” “worse,” or “unchanged” means for a review
-- the scenario registry keeps workload identity stable
-- the regression contracts decide when CI should fail
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+See [Thresholds and Budgets](thresholds-and-budgets.md) for the exact decision
+order and current global limits.
