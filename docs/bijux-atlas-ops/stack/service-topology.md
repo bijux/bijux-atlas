@@ -4,44 +4,95 @@ audience: operators
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Service Topology
 
-Atlas operations span the runtime service plus supporting dependencies such as
-Redis, MinIO, Prometheus, Grafana, OpenTelemetry, and Toxiproxy.
+Atlas serves immutable dataset releases through an HTTP runtime backed by
+published object state and local serving caches. Redis can accelerate selected
+responses. Prometheus, Grafana, and OpenTelemetry provide visibility. Fault
+injection components belong to governed test environments, not the production
+serving path.
+
+## Runtime and Evidence Paths
 
 ```mermaid
-flowchart TD
-    Client[Client] --> Runtime[Atlas runtime]
-    Runtime --> Redis[Redis]
-    Runtime --> Store[MinIO or store]
-    Runtime --> Prom[Prometheus scrape]
-    Runtime --> OTel[OTEL collector]
-    Prom --> Grafana[Grafana]
-    Faults[Toxiproxy] --> Runtime
-    Faults --> Redis
-    Faults --> Store
+flowchart LR
+    Client[Client] --> Service[Atlas service]
+    Service --> Pod[Atlas runtime pod]
+    Pod --> Catalog[Published catalog]
+    Catalog --> Objects[MinIO or compatible artifact store]
+    Pod --> Disk[Local artifact and SQLite cache]
+    Pod -. optional response cache .-> Redis[Redis]
+    Pod --> Metrics[Prometheus scrape]
+    Pod --> Traces[OpenTelemetry collector]
+    Metrics --> Grafana[Grafana dashboards]
+    Traces --> TraceBackend[Configured trace backend]
 ```
 
-Topology matters because operators do not troubleshoot components one by one in
-real incidents. They troubleshoot paths. This page should make it obvious which
-links are required, which ones are optional or observability-related, and where
-failure isolation can or cannot exist.
+Solid arrows are serving or evidence paths. The Redis path is optional and
+non-authoritative. Prometheus, Grafana, and the collector do not determine
+dataset truth, but losing them reduces the evidence available for promotion and
+incident decisions.
 
-## Source of Truth
+## Dependency Classes
 
-- `ops/stack/`.
-- `ops/observe/`.
-- `ops/k8s/`.
+| Component | Role | Authority | Failure consequence |
+| --- | --- | --- | --- |
+| Atlas chart and runtime | query, metadata, health, and telemetry surface | runtime behavior for the selected release | service unavailable or degraded |
+| catalog | discoverable dataset identities and artifact references | publication authority | new resolution can fail; cached-only behavior depends on configuration |
+| MinIO or compatible store | published manifests and immutable artifacts | durable release bytes | uncached artifacts and refreshes fail |
+| local cache | opened SQLite, sequence, index, and manifest material | acceleration derived from the store | misses require refetch; disk limits can shed work |
+| Redis | optional exact-gene response cache | no release authority | falls back to normal query execution when policy permits |
+| Prometheus | metric collection and rule evaluation | operational evidence | alert and capacity visibility degrades |
+| Grafana | operator visualization | no independent authority | investigation loses canonical views |
+| OpenTelemetry collector | trace export pipeline | operational evidence | distributed request linkage degrades |
+| Toxiproxy | controlled dependency failure injection | test-only scenario control | deliberately changes latency or availability during rehearsal |
 
-## Topology Rules
+## Profile Topologies
 
-- the runtime-to-store path is part of the durable serving path.
-- the runtime-to-Redis path is performance-oriented, not the authoritative data.
-  path
-- Prometheus, Grafana, and OTEL enrich visibility but should not be mistaken.
-  for serving dependencies
-- Toxiproxy is a fault-injection surface and changes topology assumptions only.
-  during rehearsal or test scenarios
+The committed stack manifest materializes three dependency shapes:
+
+```mermaid
+flowchart TB
+    subgraph Small[ci and local]
+        SmallChart[Atlas chart]
+        SmallNamespace[Operations namespace]
+        SmallStore[MinIO]
+        SmallRedis[Redis]
+    end
+    subgraph Full[kind]
+        FullChart[Atlas chart]
+        FullNamespace[Operations namespace]
+        FullStore[MinIO]
+        FullRedis[Redis]
+        FullProm[Prometheus]
+        FullGrafana[Grafana]
+        FullOtel[OpenTelemetry collector]
+    end
+```
+
+`ops/stack/service-dependency-contract.json` marks the chart, operations
+namespace, MinIO, and Redis components as critical for these committed stack
+profiles. The observability components are non-critical dependencies in the
+service contract, but they are required to claim full operational evidence for
+the `kind` profile.
+
+## Failure Isolation
+
+- A Redis outage is not a store outage. Response-cache failures should fall
+  back without changing dataset identity.
+- A catalog outage is not artifact corruption. Already cached data may remain
+  usable under cached-only policy, while ordinary readiness can require a live
+  catalog.
+- A telemetry outage is not proof of healthy serving. It reduces confidence and
+  can block promotion even if query traffic still succeeds.
+- A local disk-cache failure can exhaust or evict derived state without
+  changing the immutable source artifact.
+- Fault injection must be bounded by a named scenario and removed after the
+  evidence run.
+
+Continue with [Cache and Store Operations](cache-and-store-operations.md),
+[Dependency Graph](dependency-graph.md), and
+[Observability](../observability/index.md).
