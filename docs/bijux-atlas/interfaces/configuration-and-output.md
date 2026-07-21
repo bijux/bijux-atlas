@@ -4,129 +4,125 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Configuration and Output
 
-Atlas tries to make two things explicit:
+Atlas has two configuration contexts. Product CLI path discovery follows Bijux
+workspace and user conventions. Server startup resolves an explicit runtime
+configuration, then validates the complete environment contract before it
+opens a listener.
 
-- how behavior is configured.
-- how results are reported back to you.
+## Product CLI Paths
 
-That matters because Atlas is designed for automation and review, not only interactive use.
+Print the paths resolved by the product CLI:
 
-This page is about user-facing output and configuration habits. It is not a promise that every string printed by every command is stable forever.
-
-## Configuration Model
-
-```mermaid
-flowchart TD
-    Contracts[Config contracts] --> Runtime[Runtime behavior]
-    Flags[CLI flags] --> Runtime
-    Env[Environment variables] --> Runtime
-    Files[Config files] --> Runtime
+```bash
+bijux-atlas --print-config-paths --json
 ```
 
-This configuration model shows the supported inputs that shape runtime
-behavior. It also signals an important honesty rule: prefer documented flags,
-files, and environment variables over accidental local defaults.
+The result contains `workspace_config`, `user_config`, and `cache_dir`.
+Workspace configuration resolves to `.bijux/config.toml`. User configuration
+uses `$XDG_CONFIG_HOME/bijux/config.toml`, then `$HOME/.config/bijux/config.toml`,
+with `.bijux/config.toml` as the final fallback.
 
-In practice:
+Cache resolution uses the first non-empty value in this order:
 
-- CLI commands expose explicit flags.
-- server startup exposes runtime flags and optional config-file usage.
-- environment variables exist for a small number of stable cases such as logging and cache root behavior.
+1. `BIJUX_CACHE_DIR`;
+2. `$XDG_CACHE_HOME/bijux`;
+3. `$HOME/.cache/bijux`;
+4. `.bijux/cache`.
 
-## Output Model
+`bijux-atlas config --json` reports these paths and selected environment values.
+It does not print the effective `bijux-atlas-server` configuration.
+
+## Server Startup Precedence
+
+The server accepts `--config` in JSON, YAML, or TOML. Three startup fields can
+also be set by flags or environment variables.
 
 ```mermaid
 flowchart LR
-    Command[Atlas command] --> Human[Human-readable output]
-    Command --> Json[Structured JSON output]
-    Json --> CI[CI and automation]
-    Human --> Reader[Interactive use]
+    Defaults[Built-in defaults] --> File[Config file]
+    File --> Env[Environment]
+    Env --> CLI[CLI flags]
+    CLI --> Validate[Validate effective runtime]
+    Validate --> Start[Open listener]
 ```
 
-This output split is one of the most important practical boundaries in Atlas.
-Human-readable output helps people inspect behavior, while structured output is
-what automation should depend on.
+The value on the right overrides the value on its left.
 
-Atlas output is designed around two modes:
+| Field | CLI | Environment | File key | Default |
+| --- | --- | --- | --- | --- |
+| bind address | `--bind` | `ATLAS_BIND` | `bind_addr` | `0.0.0.0:8080`. |
+| published store | `--store-root` | `ATLAS_STORE_ROOT` | `store_root` | `artifacts/server-store`. |
+| runtime cache | `--cache-root` | `ATLAS_CACHE_ROOT` | `cache_root` | `artifacts/server-cache`. |
 
-- human-readable output for direct usage.
-- deterministic structured output for automation.
+All resolved values must be non-empty. Relative store and cache paths are
+resolved by the runtime path policy; production deployments should provide
+explicit absolute or mounted paths so process working directory cannot alter
+ownership.
 
-The important rule is:
+Validate without starting the service:
 
-- human output is for people first.
-- documented structured output is for automation first.
+```bash
+bijux-atlas-server \
+  --config deploy/atlas-runtime.toml \
+  --validate-config
+```
 
-## When to Use `--json`
+Inspect the effective configuration before rollout:
 
-Use `--json` when:
+```bash
+bijux-atlas-server \
+  --config deploy/atlas-runtime.toml \
+  --print-effective-config
+```
 
-- you want stable machine-readable output.
-- you are capturing results in CI.
-- you want to compare outputs across runs.
+Treat that output as sensitive. Runtime configuration can describe endpoints,
+authentication modes, and secret-bearing settings. Apply the redaction policy
+before retaining it as operational evidence.
 
-Prefer human-readable mode when:
+## Configuration Is Validated as a Whole
 
-- you are exploring commands interactively.
-- you are diagnosing failures in a terminal.
-
-Do not mix the two mental models. If a workflow might be automated later, start with `--json` early instead of reverse-engineering terminal text later.
-
-## Common Output Expectations
-
-- success and failure should be explicit.
-- output should not depend on hidden local state if the same inputs are provided.
-- structured output should be stable enough for governed automation.
-- undocumented debug prose should not be treated as a parser target.
+Startup-field precedence does not bypass runtime invariants. After resolution,
+the server validates the environment allowlist, value types, ranges, and
+cross-field rules. Examples include production restrictions on loopback binds,
+required Redis configuration, authentication prerequisites, and incompatible
+cache/readiness modes.
 
 ```mermaid
 flowchart TD
-    Inputs[Same inputs] --> Output[Same structured output class]
-    Output --> Review[Review and snapshot]
-    Review --> Confidence[Confidence in automation]
+    Resolve[Resolve flags, environment, file, defaults] --> Allowlist[Reject unknown governed prefixes]
+    Allowlist --> Types[Parse booleans, numbers, lists, and URLs]
+    Types --> Relations[Check cross-field invariants]
+    Relations --> Effective[Produce effective configuration]
 ```
 
-This determinism diagram explains why Atlas spends effort on structured output
-contracts. Automation becomes safer when the same inputs lead to the same
-output class and field shape.
+Do not validate a file in isolation and assume the deployment is valid. The
+environment and CLI flags may change the effective runtime.
 
-## Practical Commands
+## Output Channels
 
-Inspect canonical config:
+The product CLI emits indented JSON by default and canonical compact JSON with
+`--json`. Help text and diagnostics are human-facing. The server emits runtime
+logs and traces according to its observability configuration; those streams are
+not product command results.
 
-```bash
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --canonical --json
-```
+Use the following rules in automation:
 
-Inspect server runtime surface:
+- request `--json` explicitly;
+- capture standard output separately from diagnostics;
+- require the expected process exit code;
+- validate against the command- or report-specific schema;
+- retain producer version and dataset or release identity;
+- never parse help text, log messages, or indentation.
 
-```bash
-cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
-```
+Configuration identity and output identity belong together. A comparison is
+credible only when both runs record the relevant effective configuration and
+the exact Atlas, dataset, and contract versions.
 
-## Good Habits
-
-- keep artifact and cache roots under `artifacts/`.
-- prefer explicit paths over relying on the current directory.
-- use `--json` for anything you may later automate.
-- do not assume undocumented debug text is part of the stable contract.
-
-## Honest Boundary
-
-If you are depending on a field or response shape in automation, verify that it is documented in reference or contracts. Being visible in one command run is not enough by itself.
-
-## A Good User Habit
-
-- use human-readable output while learning a command.
-- switch to `--json` before you automate the workflow.
-- confirm the exact field contract in reference or contract pages.
-
-## Reading Rule
-
-Use this page when Atlas behavior is visible but it is still unclear which
-parts come from configuration and which parts are safe to depend on in output.
+See [Environment Variables](environment-variables.md) for the runtime
+allowlist and secret-handling boundaries, and [Structured Output
+Contracts](../contracts/structured-output-contracts.md) for machine parsing.
