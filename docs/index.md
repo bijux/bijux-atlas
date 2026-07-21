@@ -10,8 +10,8 @@ last_reviewed: 2026-07-22
 # Bijux Atlas
 
 Bijux Atlas turns governed GFF3 and FASTA inputs into immutable genomic dataset
-releases, publishes them to explicit serving stores, and exposes them through a
-Rust library, command-line workflows, and a versioned HTTP API. Deployment,
+releases, places them behind explicit serving stores, and exposes them through
+Rust libraries, command-line workflows, and a versioned HTTP API. Deployment,
 load, security, observability, rollback, and release evidence are governed parts
 of the same delivery system.
 
@@ -54,6 +54,20 @@ of the same delivery system.
 [![Operations docs](https://img.shields.io/badge/docs-operations-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-ops/)
 [![Maintainer docs](https://img.shields.io/badge/docs-maintainer-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-dev/)
 <!-- bijux-atlas-badges:generated:end -->
+
+## Choose by Outcome
+
+| Outcome | Start here | Decision owned there |
+| --- | --- | --- |
+| understand datasets, ingest, queries, and interfaces | [Product handbook](bijux-atlas/index.md) | product behavior and compatibility |
+| deploy or recover Atlas | [Operations handbook](bijux-atlas-ops/index.md) | topology, security, rollout, telemetry, load, and recovery |
+| change or release the repository | [Maintainer handbook](bijux-atlas-dev/index.md) | validation, governance, automation, and delivery |
+| assess whether a claim is proven | [Evidence and Trust](bijux-atlas-ops/release/release-evidence.md) | relationship among contracts, observations, and released artifacts |
+
+The product can be evaluated without learning repository automation. Operators
+can reason about deployment evidence without treating checked-in examples as
+live results. Maintainers can change the system without moving control-plane
+logic into user-facing binaries.
 
 ## From Source Data to Operational Evidence
 
@@ -168,30 +182,6 @@ flowchart TB
     trust --> trust_c[Release confidence and safe change]
 ```
 
-### Product
-
-The product surface owns datasets, releases, ingest, publication, queries,
-interfaces, and compatibility contracts.
-
-### Operations
-
-The operations surface owns deployment topology, Helm profiles, rollout
-safety, network policy, observability, load and failure scenarios, backup,
-rollback, signing, provenance, and release evidence.
-
-### Maintainer Control Plane
-
-The maintainer surface owns repository governance, automation, compatibility
-review, documentation validation, release planning, and machine-readable
-reports. It is intentionally repository-only and does not enter runtime
-dependency graphs.
-
-### Evidence and Trust
-
-Trust spans provenance, reproducibility, drift detection, controlled
-exceptions, security posture, operational drills, and verification of the
-release evidence bundle.
-
 ## Operations Are Part of the Release
 
 `bijux-atlas-ops` is where deployment, rollout safety, observability, load
@@ -244,9 +234,10 @@ enough that release decisions are reviewable instead of improvised.
 
 ## Published and Repository-Only Crates
 
-Atlas `0.2.2` publishes eleven Rust crates and keeps one maintainer crate repository-only.
+The workspace declares eleven publishable Rust crates and keeps one maintainer
+crate repository-only. Live registry badges report publication state.
 
-Published crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
+Publishable crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
 `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,
 `bijux-atlas-ops`, `bijux-atlas-query`, `bijux-atlas-runtime`,
 `bijux-atlas-server`, and `bijux-atlas-store`.
@@ -282,16 +273,6 @@ release operations.
 Use [Maintainer](bijux-atlas-dev/index.md) when the question is about how Atlas
 changes safely: ownership, automation, workflow control, delivery, and
 governance.
-
-### Common destinations
-
-- product model and core boundaries: [What Atlas Is](bijux-atlas/foundations/what-atlas-is.md)
-- runtime architecture, interfaces, workflows, and contracts:
-  [Repository](bijux-atlas/index.md)
-- deployment, rollout, observability, load, and release operations:
-  [Operations](bijux-atlas-ops/index.md)
-- governance, control-plane automation, and maintainer ownership:
-  [Maintainer](bijux-atlas-dev/index.md)
 
 ## Reference Surfaces
 
