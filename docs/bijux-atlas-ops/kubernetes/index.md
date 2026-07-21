@@ -32,6 +32,27 @@ input. Rendering exposes the actual objects. Conformance checks workload and
 service shape. Live probes show whether the installed release admits traffic
 and emits the required signals.
 
+## Rollout State Model
+
+```mermaid
+stateDiagram-v2
+    [*] --> Declared: release and profile selected
+    Declared --> Rendered: schema and render pass
+    Rendered --> Admitted: policy and conformance pass
+    Admitted --> Progressing: install or upgrade begins
+    Progressing --> Ready: readiness and traffic criteria pass
+    Progressing --> Held: timeout, error, or saturation trigger
+    Ready --> Promoted: observation window and evidence pass
+    Ready --> Held: regression trigger
+    Held --> RolledBack: recovery policy selects prior release
+    RolledBack --> Verified: service and data checks pass
+```
+
+`Rendered`, `Admitted`, `Ready`, and `Promoted` are distinct states. A render
+report proves resource shape. Admission proves selected policy. Readiness
+proves current traffic eligibility. Promotion additionally requires the named
+observation and evidence policy for the environment.
+
 ## Supported Deployment Paths
 
 The install matrix currently maps ten profiles to three evidence lanes:
@@ -60,6 +81,14 @@ profile has identical availability, security, or performance promises.
   availability must match the selected profile.
 - A successful template render is insufficient when conformance, probes, or
   security checks fail.
+
+## Promotion Record
+
+A Kubernetes promotion record should identify the chart and application
+versions, image digests, values profile and overrides, namespace, rendered
+inventory, policy and conformance results, rollout timestamps, probe history,
+relevant telemetry window, and rollback target. Without those identities, a
+green status cannot be reproduced or attributed to the release under review.
 
 ## Operator Route
 

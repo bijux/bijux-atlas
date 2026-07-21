@@ -48,6 +48,35 @@ observability services are noncritical and required only by the `kind`
 composition. Required here means required by the checked-in stack contract; it
 does not imply that every external Atlas deployment must use the same backend.
 
+## Failure Propagation
+
+```mermaid
+flowchart LR
+    Client[Client] --> Service[Atlas service]
+    Service --> Store[Object store]
+    Service --> Cache[Cache]
+    Service --> Telemetry[Telemetry pipeline]
+    Store -->|artifact unavailable| NotReady[Readiness or request failure]
+    Cache -->|unavailable| Degraded[Bypass or bounded degradation]
+    Telemetry -->|unavailable| Blind[Reduced diagnostic confidence]
+    NotReady --> Decision[Hold, drain, or recover]
+    Degraded --> Decision
+    Blind --> Decision
+```
+
+Dependency criticality and failure behavior are separate properties. A
+critical store failure can remove serving eligibility. Cache failure may be
+recoverable within explicit latency and load budgets. Telemetry failure may
+leave user traffic intact while making promotion unsafe because required
+signals cannot be observed.
+
+| Dependency condition | Runtime concern | Operator concern |
+| --- | --- | --- |
+| store unavailable or inconsistent | artifact resolution and query correctness | stop promotion; verify readiness, manifest identity, and recovery |
+| cache unavailable or saturated | latency, backend pressure, and overload | confirm bypass behavior and capacity before continuing |
+| telemetry pipeline unavailable | loss or delay of required signals | preserve local diagnostics and treat evidence gaps explicitly |
+| version or pin drift | unreviewed bytes in the composition | reconcile declared and observed identity before release use |
+
 ## Route by Operating Question
 
 | Question | Read |

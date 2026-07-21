@@ -71,6 +71,21 @@ Cross-cutting inventory, schema, policy, security, drift, dataset, and
 reproducibility contracts live under `ops/`. They connect these domains and
 prevent one domain from making an isolated promotion claim.
 
+## Operator Control Loops
+
+| Loop | Input | Decision | Evidence to retain |
+| --- | --- | --- | --- |
+| admission | release identity, profile, values, images, and policy | reject or permit render and install | resolved versions, values digest, policy result, render inventory |
+| rollout | desired replicas, probes, disruption rules, and traffic state | continue, hold, drain, or roll back | rollout events, readiness history, error and saturation signals |
+| capacity | scenario, concurrency, thresholds, and baseline | accept, tune, or reject operating envelope | scenario identity, measurements, threshold evaluation, comparison |
+| incident | symptoms, blast radius, recent changes, and dependencies | mitigate, isolate, recover, or escalate | timeline, queries, debug bundle, actions, recovery verification |
+| promotion | artifacts, conformance, telemetry, load, and recovery proof | promote or refuse release | verified evidence packet bound to artifact identities |
+
+The loops share release and environment identity but answer different
+questions. Admission cannot stand in for runtime observation. A load result
+cannot stand in for rollback proof. Incident evidence should preserve facts
+even when no release decision follows.
+
 ## Decision Boundaries
 
 ```mermaid
@@ -140,3 +155,11 @@ release-bound proof; local design review often needs only the owning contract.
   and [Thresholds and Budgets](load/thresholds-and-budgets.md)
 - verify distribution: [Signing and Provenance](release/signing-and-provenance.md)
   and [Release Evidence](release/release-evidence.md)
+
+## Current Proof Boundaries
+
+Checked-in policies, schemas, inventories, scenarios, and samples define the
+expected operational system. They do not claim that a cluster is running or
+that a scenario executed. Generated and captured reports become operational
+evidence only when they record the selected profile, environment, release,
+inputs, timestamps, result, and artifact binding required by their contract.
