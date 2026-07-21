@@ -48,6 +48,27 @@ independence:
 Higher levels do not make lower levels obsolete. A broad lane may report a
 failure without the detail supplied by the focused check. Preserve both.
 
+## Test Doubles and Fixtures
+
+Fixtures, goldens, mocks, and simulations can prove deterministic encoding,
+selection, error handling, and workflow shape. Their result must retain the
+test-double identity. They cannot establish live registry access, real cluster
+behavior, notification delivery, external identity enforcement, or production
+capacity.
+
+```mermaid
+flowchart LR
+    Fixture[Fixture or simulation] --> Shape[Shape and deterministic behavior]
+    Live[External or deployed execution] --> Integration[Integration behavior]
+    Shape --> Claim{Claim requires external reality?}
+    Integration --> Claim
+    Claim -->|yes| RequireLive[Require live evidence]
+    Claim -->|no| AcceptScoped[Accept scoped fixture evidence]
+```
+
+Replacing a live check with a fixture narrows the claim even when the same
+schema and status field are produced.
+
 ## Select Without Overspending
 
 Start with discovery:
@@ -107,6 +128,9 @@ A precise handoff says: “`docs validate` completed with zero errors and warnin
 on this revision; rendered-site build and broad test lanes were not run because
 the change touched reader prose only.” That statement is more useful than
 “tests pass” because it preserves both evidence and limits.
+
+Review statements should also disclose test doubles, retries, quarantines,
+capability refusals, and dirty-state context when they affect interpretation.
 
 See [Automation Reports Reference](../automation/automation-reports-reference.md)
 for report validation depth and [Contributor
