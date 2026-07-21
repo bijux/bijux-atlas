@@ -4,54 +4,82 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Load Suites
+# Load Suite Catalog
 
-Load suites under `ops/load/suites/` define the named workload families Atlas
-uses for operational verification.
+The load suite registry is the executable acceptance catalog for Atlas
+performance and resilience. It currently declares 40 scenarios. Thirty-nine are
+must-pass; `redis-optional` is comparative rather than release-blocking.
 
-## Purpose
+## Lane Coverage
 
-Use the load suites registry to understand which workload families are must-pass,
-which lanes they run in, and which metrics and thresholds govern the result.
+| Lane | Declared scenarios | Intended decision |
+| --- | ---: | --- |
+| `smoke` | 2 | Fast mixed-traffic and cheap-path survival confidence |
+| `pr` | 2 | Pull-request regression signal for the same focused surface |
+| `load-ci` | 2 | Dedicated CI execution of the focused load gate |
+| `full` | 32 | Broad capacity, pressure, resilience, and delivery review |
+| `hpa-validation` | 1 | Focused autoscaling behavior |
+| `nightly` | 40 | Complete scheduled load catalog |
+| `load-nightly` | 40 | Complete dedicated load lane |
 
-## Source of Truth
+Lane membership is declared per scenario in
+`ops/load/suites/suites.json`. Do not infer that a scenario ran because a lane
+name sounds broad; preserve the selected scenario list in the report.
 
-- `ops/load/suites/suites.json`
-- `ops/load/k6/suites/`
-- `ops/load/contracts/suite-schema.json`
-- `ops/load/generated/load-summary.json`
+## Suite Contract
 
-## Suite Taxonomy
+```mermaid
+flowchart LR
+    N["Name and purpose"] --> R["Scenario or specialized runner"]
+    R --> L["Execution lanes"]
+    L --> M["Required metrics"]
+    M --> T["Scenario thresholds"]
+    T --> V["Must-pass verdict"]
+```
 
-`ops/load/suites/suites.json` defines suite entries with:
+Each registry entry binds:
 
-- a `name`
-- a `purpose`
-- a `kind`, such as `k6` or a specialized script runner
-- a scenario or runner binding
-- `must_pass` status
-- the CI or review lanes in `run_in`
-- expected metrics and inline threshold expectations
+- a durable scenario name and operating question;
+- a K6 script or specialized runner;
+- the lanes in which it must execute;
+- metrics that must be present for evidence to be complete;
+- absolute latency, failure, startup, memory, or survival budgets;
+- whether failure blocks the suite.
 
-Representative suite families include:
+The registry uses the pinned request set at
+`ops/load/queries/pinned-v1.json`. A workload with different requests is a
+different experiment and cannot silently reuse the same baseline.
 
-- baseline confidence checks such as `mixed` and `cheap-only-survival`
-- latency and warmup checks such as `warm-steady-state-p99`,
-  `cold-start-p99`, and `cold-start-prefetch-5pods`
-- resilience checks such as `stampede`, `store-outage-under-spike`,
-  `noisy-neighbor-cpu-throttle`, and `pod-churn`
-- workload-specific families such as `mixed-workload`,
-  `ingest-query-workload`, `heavy-query-workload`, `read-heavy-workload`, and
-  `write-heavy-workload`
+## Scenario Families
 
-## Evidence Produced
+- Core service: `mixed`, `cheap-only-survival`, warm steady state, and cold
+  start.
+- Cache and store: stampede, cache thrashing, artifact reload, dataset churn,
+  Redis comparison, and store outage.
+- Query shape: sharded fanout, hot spots, diff-heavy, cursor stress, and mixed
+  gene/sequence traffic.
+- Capacity: read-heavy, write-heavy, ingest/query, CPU, disk I/O, and thread
+  exhaustion.
+- Delivery: pod churn, rollout, rollback, HPA validation, and multi-release
+  access.
+- Endurance: long-running stability, memory-leak detection, and soak.
+- Security: response abuse, denial-of-service resilience, malicious input,
+  injection, penetration simulation, and regression suites.
 
-Suite execution should produce:
+## Accepting a Suite Result
 
-- the selected suite list
-- scenario coverage against `ops/load/generated/load-summary.json`
-- the expected metrics for each suite
-- the pass or fail result relative to thresholds
+A suite result is valid only when the scenario identity, runner, query pack,
+profile, required metrics, and threshold version are recorded together. Missing
+metrics fail completeness even if the process exits successfully. Must-pass
+scenarios block the enclosing lane when their contract fails.
+
+`ops/load/generated/load-summary.json` currently reports complete scenario
+coverage and a deterministic seed of `11001`. That generated inventory proves
+registry coverage; it does not prove that a particular workload execution
+passed.
+
+Use [Thresholds and Budgets](thresholds-and-budgets.md) for pass semantics and
+[Baseline Management](baseline-management.md) for regression comparisons.

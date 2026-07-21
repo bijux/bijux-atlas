@@ -4,57 +4,75 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Concurrency Stress
+# Concurrency and Saturation
 
-Concurrency stress scenarios validate saturation behavior and the quality of
-Atlas limit enforcement under pressure.
+Concurrency testing asks how Atlas behaves as independent clients compete for
+CPU, store access, cache space, queues, and admission capacity. The goal is to
+locate controlled limits and prove service survival, not simply maximize
+parallel requests.
 
-## Purpose
+## Declared Stress Profiles
 
-Use these scenarios to distinguish normal concurrency scaling from saturation,
-queueing, or overload behavior that should block rollout or capacity claims.
+`ops/load/generated/concurrency-stress-scenarios.json` defines three workload
+shapes:
 
-## Source of Truth
+| Scenario | Workload | Concurrency profile | Role |
+| --- | --- | --- | --- |
+| `load-single-client-baseline` | query | `single_client` | Low-contention reference |
+| `load-multi-client-concurrency` | mixed | `multi_client` | Normal shared-resource contention |
+| `load-saturation-stress` | mixed | `saturation` | Pressure at or beyond intended limits |
 
-- `ops/load/generated/concurrency-stress-scenarios.json`
-- `ops/load/scenarios/`
-- `ops/load/contracts/k6-thresholds.v1.json`
+These entries name the shapes but do not include target rates or durations.
+Every executable run must supply the remaining harness fields:
+`duration_secs`, `target_rps`, `ingest_ops_per_sec`, and
+`query_mix_read_ratio`.
 
-## Scenario Taxonomy
+## Saturation Curve
 
-The generated concurrency registry currently defines three scenario shapes:
+```mermaid
+flowchart LR
+    B["Single-client baseline"] --> C["Increase clients and target rate"]
+    C --> K["Observe queue, cache, CPU, and store contention"]
+    K --> L{"Declared limit reached?"}
+    L -->|no| C
+    L -->|yes| S["Verify shedding and cheap-path survival"]
+    S --> R["Record sustainable and overload regions"]
+```
 
-- `load-single-client-baseline` for a low-contention reference point
-- `load-multi-client-concurrency` for realistic concurrent traffic
-- `load-saturation-stress` for pressure near or beyond the intended runtime
-  limit
+Increase one pressure dimension at a time before combining them. If client
+count, request mix, dataset, cache state, and resources all change together,
+the result cannot identify the controlling limit.
 
-## What These Scenarios Validate
+## Signals That Explain the Curve
 
-- whether concurrency limits are enforced rather than bypassed
-- whether saturation raises bounded latency instead of silent correctness drift
-- whether queueing, shedding, or overload signals appear when expected
-- whether cheap or protected traffic classes stay available under pressure
+Measure latency distributions, completed throughput, failure rate, in-flight
+work, queue depth, overload state, and response codes by request class. Correlate
+those with CPU throttling, memory and cache growth, store latency, connection
+pressure, and replica count.
 
-## Metrics That Matter
+For saturation scenarios, verify these behaviors explicitly:
 
-Track at least:
+- heavy requests are rejected with declared policy codes rather than hanging;
+- cheap health, readiness, version, and catalog paths remain within their
+  survival contract;
+- queue and overload metrics become visible before uncontrolled collapse;
+- response size and memory remain bounded;
+- the service returns to normal after pressure is removed.
 
-- request latency percentiles
-- request failure rate
-- throughput under concurrent pressure
-- overload or queue-depth signals when the scenario is intended to saturate the
-  system
+## Capacity Claims
 
-Healthy limit enforcement means Atlas makes the pressure visible and keeps
-responses within declared degradation policy. Saturation becomes a failure when
-latency, error rate, or overload behavior moves beyond the threshold contract.
+Report at least three regions: normal operation, the onset of contention, and
+controlled overload. State the lowest repeatable boundary, not the best single
+sample. A throughput claim without its latency, error, resource, and traffic
+mix constraints is incomplete.
 
-## Related Contracts and Assets
+Fail the review when correctness changes under concurrency, required signals
+are absent, protected paths collapse with heavy traffic, memory remains elevated
+after recovery, or repeated runs produce materially different boundaries.
 
-- `ops/load/generated/concurrency-stress-scenarios.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
-- `ops/load/scenarios/`
+Use [Baseline Management](baseline-management.md) for reference approval and
+[Failure Injection Load](failure-injection-load.md) when concurrency is combined
+with dependency or infrastructure faults.

@@ -4,74 +4,82 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Baseline Management
 
-Performance baselines are reviewed artifacts, not vague memories of how the
-system felt during a previous run.
+A performance baseline is an approved comparison point with a reproducible
+environment identity. It is not automatically a measured capacity claim, and
+it must not be refreshed merely to make a regression disappear.
 
-## Purpose
+## Current Baseline Status
 
-Use this page to understand when a baseline may be created or refreshed, who is
-allowed to change it, and how drift is evaluated before it becomes the new
-reference.
+Atlas contains three committed baseline files:
 
-## Source of Truth
+| Baseline | Coverage | Current provenance |
+| --- | --- | --- |
+| `ci-runner.json` | `mixed` and `cheap-only-survival` | `approved-threshold-bootstrap`, captured 2026-02-18 |
+| `local.json` | `mixed` and `cheap-only-survival` | `approved-threshold-bootstrap`, captured 2026-02-18 |
+| `system-load-baseline.json` | 15 system workload and pressure suites | Checked-in medium-tier reference without capture timestamp or tool inventory |
 
-- `ops/load/baselines/ci-runner.json`
-- `ops/load/baselines/local.json`
-- `ops/load/baselines/system-load-baseline.json`
-- `ops/load/contracts/load-summary.schema.json`
-- `ops/load/contracts/performance-regression-thresholds.json`
+The CI and local rows are bootstrap values aligned to the scenario thresholds.
+They are deterministic comparison fixtures, not observations from a documented
+benchmark run. The system baseline also mirrors declared scenario budgets and
+lacks the environment detail required for an empirical capacity claim.
 
-## Baseline Lifecycle
+The generated system summary reports `stable` with zero regressions while both
+its baseline and candidate profile are `system-load-baseline`. That proves the
+comparison machinery is deterministic; it does not prove a new candidate build
+has preserved performance.
 
-Atlas currently keeps baseline evidence for CI, local validation, and broader
-system-load review:
+## Approval Flow
 
-- `ci-runner.json` is the deterministic CI reference for fast regression checks
-- `local.json` is the local operator reference with the same smoke-aligned
-  suites
-- `system-load-baseline.json` covers the broader workload families used for
-  system-level performance review
+```mermaid
+flowchart LR
+    R["Reproducible measured run"] --> I["Verify environment identity"]
+    I --> C["Compare with approved baseline"]
+    C --> X{"Regression explained and acceptable?"}
+    X -->|no| F["Reject candidate"]
+    X -->|yes| A["Review baseline proposal"]
+    A --> B["Commit data and provenance together"]
+```
 
-Each baseline records metadata such as capture time, profile, and tool versions
-so operators can explain what environment produced the approved numbers.
+## Minimum Baseline Identity
 
-## Update Rules
+A measured baseline should record:
 
-Only update a baseline when:
+- source revision, Atlas release, image digest, and chart/profile identity;
+- dataset release, dataset tier, and pinned query pack;
+- scenario and suite registry versions;
+- node, CPU, memory, storage, and network characteristics;
+- Kubernetes and dependency topology;
+- cache state, warmup state, duration, target rate, and concurrency;
+- K6, Kind, kubectl, Helm, and relevant runtime tool versions;
+- raw result locations and the command that produced the summary;
+- capture time, reviewer, and approval rationale.
 
-- the run is reproducible in the intended profile
-- the changed scenario family still maps to the declared suites and thresholds
-- the comparison shows intentional movement rather than unexplained drift
-- the review includes evidence for why the new numbers are safer or more
-  accurate
+Without those fields, keep the artifact labeled as a fixture or qualified
+reference. Do not promote it to measured production evidence through prose.
 
-## Drift Review
+## When a Baseline May Change
 
-Review baseline drift in two buckets:
+Approve a new baseline only after a reproducible run shows an intentional
+change in the service or measurement environment. Compare the candidate against
+both absolute scenario budgets and the previous baseline. Explain latency,
+throughput, failure-rate, CPU, and memory movement independently.
 
-- acceptable drift: an explained change in workload behavior that stays within
-  the regression contract and is approved as the new normal
-- blocking drift: unexplained latency, throughput, or error movement that
-  exceeds the thresholds in
-  `ops/load/contracts/performance-regression-thresholds.json`
+Reject a baseline update when the only rationale is a failing regression gate,
+the workload identity changed without a new baseline name, raw results are
+missing, or the candidate has weaker behavior with no accepted user tradeoff.
 
-## Evidence Produced
+## Comparison Evidence
 
-Baseline updates should come with:
+Preserve the old baseline, candidate result, deterministic delta report,
+absolute threshold verdict, environment manifest, and approval record. The
+regression contract currently limits p99 latency growth to 15%, throughput loss
+to 10%, error-rate increase to 2%, CPU saturation to 90%, and memory growth to
+20%.
 
-- the committed baseline file update
-- the candidate run output used for comparison
-- the regression comparison summary
-- notes on profile, dataset tier, and tool version changes
-
-## Related Contracts and Assets
-
-- `ops/load/baselines/ci-runner.json`
-- `ops/load/baselines/local.json`
-- `ops/load/baselines/system-load-baseline.json`
-- `ops/load/contracts/performance-regression-thresholds.json`
+Use [Performance and Load](performance-and-load.md) for complete run identity
+and [Thresholds and Budgets](thresholds-and-budgets.md) for decision order.
