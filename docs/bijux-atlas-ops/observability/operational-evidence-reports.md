@@ -4,68 +4,77 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Operational Evidence Reports
 
-Generated reports under `ops/report/generated/` and related evidence outputs
-turn runtime and platform checks into reviewable artifacts.
+Operational evidence freezes the signals and identities behind an action. A
+second operator should be able to reproduce the decision after live telemetry
+has expired. Asset inventory, readiness declaration, runtime observation, and
+drill result are different evidence classes. They must not substitute for one
+another.
+
+## Evidence Chain
 
 ```mermaid
-flowchart TD
-    Candidate[Runtime or release candidate] --> Signals[Telemetry signals]
-    Signals --> Dashboards[Dashboard validation]
-    Signals --> Drills[Drill results]
-    Signals --> SLOs[SLO measurement]
-    Signals --> Ready[Readiness reports]
-    Dashboards --> Evidence[Observability evidence set]
-    Drills --> Evidence
-    SLOs --> Evidence
-    Ready --> Evidence
-    Evidence --> Review[Change or incident review]
+flowchart LR
+    C["Candidate or incident"] --> I["Release, profile, dataset, and config identity"]
+    I --> S["Metrics, logs, and traces"]
+    S --> A["Alerts and dashboard snapshots"]
+    A --> D["Drill or live event timeline"]
+    D --> R["Signed decision record"]
+    R --> P["Promote, hold, recover, or follow up"]
 ```
 
-This page is about turning observability from something an operator sees live
-into something a reviewer can inspect later. The evidence set needs to preserve
-not only that telemetry existed, but which alerts, dashboards, drill outputs,
-SLO measurements, and readiness checks supported the decision.
+## Evidence Classes
 
-## Purpose
+| Class | Establishes | Does not establish |
+| --- | --- | --- |
+| Telemetry index | Required observability assets are discoverable | A deployed signal path works |
+| Dashboard validation | JSON and panel contracts are structurally valid | Queries return current data |
+| Readiness declaration | Named observability prerequisites are present | Collectors, rules, and notifications were exercised |
+| SLO definition and measurement map | Objectives and PromQL are declared | The observation window met the objective |
+| Drill definition | Fault, expected signals, timeout, and cleanup are described | The drill ran or passed |
+| Drill result | One identified execution produced bounded evidence | All profiles or releases behave identically |
 
-Use this page when assembling observability evidence for a rollout review,
-release decision, or incident record.
+## Required Record
 
-## Source of Truth
+For a rollout or release decision, retain:
 
-- `ops/observe/generated/telemetry-index.json`
-- `ops/observe/dashboard-registry.json`
-- `ops/observe/drills/result.schema.json`
-- `ops/observe/slo-measurement.json`
-- `ops/observe/readiness.json`
+- source revision, release, image, chart, profile, values, and dataset identity;
+- observation start and end times with clock and time-zone context;
+- raw metric snapshots and evaluated SLO windows;
+- alert rule and dashboard versions plus rendered snapshots;
+- representative successful and failing trace IDs and correlated logs;
+- readiness, probe, dependency, and replica transitions;
+- drill result and injected-fault timestamps when a rehearsal supports the
+  claim; and
+- operator verdict, exceptions, rollback target, and unresolved risks.
 
-## Observability Evidence Set
+An incident record adds detection time, first user impact, containment actions,
+recovery time, and integrity assessment. It also preserves the evidence that
+ruled out competing causes.
 
-Operators should expect the observability evidence surface to include:
+## Current Evidence Boundary
 
-- the telemetry index, which enumerates the key observability assets
-- dashboard validation outputs and the registry of accepted dashboards
-- telemetry drill definitions and drill result artifacts
-- SLO measurement definitions and related alert surfaces
-- readiness reports that confirm the observability pack itself is ready
+The generated telemetry index inventories six artifact classes. The readiness
+file declares `ready` when SLO definitions, alert catalog, telemetry drills,
+and dashboard index exist. That is static asset readiness. It does not prove
+scrape freshness, trace retention, alert delivery, dashboard population, or
+drill execution.
 
-## Main Takeaway
+No schema-valid drill result is checked in under `ops/observe/`. Release
+evidence also carries empty drill and simulation summary collections. Until a
+run produces immutable snapshots and a result tied to a candidate, do not use
+the static readiness declaration as promotion evidence.
 
-The value of observability evidence is not volume. It is traceability. Another
-operator should be able to follow the evidence set and understand why a change
-was approved, why an incident was diagnosed the way it was, and which signal
-surfaces were trustworthy at the time.
+## Acceptance
 
-## How Operators Use the Reports
+Reject reports with missing time windows, mutable release references, absent
+raw signals, unresolved redaction, or a verdict disconnected from thresholds.
+Generated summaries must link to their inputs and schema. Preserve failed and
+partial runs; deleting them removes information needed to assess reliability.
 
-- during change review, confirm the required dashboards, alerts, and readiness
-  artifacts still exist
-- during incident review, attach drill results, readiness evidence, and signal
-  snapshots that explain what the operator saw
-- during release review, show that observability coverage still matches the
-  runtime and rollout surface
+Use [Telemetry Drills](telemetry-drills.md) for executable-coverage limits and
+[Release Evidence](../release/release-evidence.md) for packaging constraints.
