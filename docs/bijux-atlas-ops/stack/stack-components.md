@@ -4,54 +4,61 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Stack Components
 
-The core stack components are declared under `ops/stack/` and exercised through
-`make stack-up`, `make stack-down`, and related control-plane commands.
+Atlas stack components fall into three categories: serving dependencies,
+observability dependencies, and test-only fault infrastructure. The category
+determines whether absence blocks stack admission and what evidence must be
+preserved.
+
+## Component Catalog
+
+| Component | Role | Contract status | Health authority |
+| --- | --- | --- | --- |
+| Atlas Helm chart | Renders and deploys the runtime service | Critical in `ci`, `kind`, and `local` | Kubernetes install matrix |
+| Observability namespace | Owns monitoring resources and isolation | Critical in `ci`, `kind`, and `local` | `observe.namespace-ready` |
+| MinIO | Object-store dependency for governed stack compositions | Critical in `ci`, `kind`, and `local` | `stack.minio-ready` |
+| Redis | Cache dependency for governed stack compositions | Critical in `ci`, `kind`, and `local` | `stack.redis-ready` |
+| Prometheus | Metric collection and rule evaluation | Noncritical, included by `kind` | `observe.prometheus-ready` |
+| Grafana | Operator visualization | Noncritical, included by `kind` | `observe.grafana-ready` |
+| OpenTelemetry collector | Trace and telemetry intake | Noncritical, included by `kind` | `observe.otel-ready` |
+| Toxiproxy | Controlled dependency-failure injection | Not in the stack dependency contract | Scenario-specific evidence |
+
+The Kind node image is a substrate pin rather than a service node. Kubernetes
+resource templates are owned by the chart, while MinIO, Redis, Prometheus,
+Grafana, OpenTelemetry, and Toxiproxy configuration live under their respective
+`ops/stack/` directories.
+
+## Configuration Is Not Membership
+
+The presence of a YAML file does not place a component in a profile. Membership
+comes from `ops/stack/stack.toml` and the generated dependency graph.
+Criticality and health surfaces come from
+`ops/stack/service-dependency-contract.json`. Image identity comes from the
+generated version manifest sourced from the central pin inventory.
 
 ```mermaid
-flowchart TD
-    Stack[Stack components] --> Runtime[Atlas runtime]
-    Stack --> Redis[Redis]
-    Stack --> MinIO[MinIO]
-    Stack --> Prom[Prometheus]
-    Stack --> Grafana[Grafana]
-    Stack --> OTel[OTEL collector]
-    Stack --> Toxi[Toxiproxy]
-    Stack --> Kind[Kind substrate]
+flowchart LR
+    Y["Component YAML"] --> A{"Composition includes it?"}
+    A -->|no| U["Available but unassembled"]
+    A -->|yes| C{"Dependency contract entry?"}
+    C -->|yes| H["Apply criticality and health surface"]
+    C -->|no| S["Scenario-specific component"]
 ```
 
-The component catalog exists so operators can answer the same set of questions
-for every part of the stack: what it does, whether it is required, where it is
-declared, how it is checked, and what breaks if it fails. Without that, a stack
-page becomes a name list instead of a working system reference.
+## Component Acceptance
 
-## Main Components
+For every assembled component, retain its immutable image reference,
+configuration digest, profile membership, namespace, health result, and
+relevant credentials or network-policy identity. For a noncritical component,
+also state which operational claims become unavailable when it fails.
 
-- runtime service
-- Redis
-- MinIO
-- Prometheus
-- Grafana
-- OpenTelemetry collector
-- Toxiproxy
+Do not replace a failing dependency with a mock and retain the same evidence
+claim. A mock, local filesystem, external Redis, or different object-store
+backend defines a different composition and must be identified as such.
 
-## Responsibility Blocks
-
-- runtime service: required, serves the Atlas API and query path, validated via
-  stack, Kubernetes, load, and observability surfaces
-- Redis: critical cache component for declared profiles, configured in
-  `ops/stack/redis/redis.yaml`, health surface `stack.redis-ready`
-- MinIO: critical durable object-store component, configured in
-  `ops/stack/minio/minio.yaml`, health surface `stack.minio-ready`
-- Prometheus: optional observability component for richer profiles, configured
-  in `ops/stack/prometheus/prometheus.yaml`
-- Grafana: optional visualization component, configured in
-  `ops/stack/grafana/grafana.yaml`
-- OTEL collector: optional tracing and telemetry intake component, configured in
-  `ops/stack/otel/otel-collector.yaml`
-- Toxiproxy: optional failure-rehearsal component, configured in
-  `ops/stack/toxiproxy/toxiproxy.yaml`
+See [Dependency Graph](dependency-graph.md) for failure boundaries and
+[Toolchain Pins](toolchain-pins.md) for immutable external identities.

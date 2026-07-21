@@ -4,65 +4,69 @@ audience: operators
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Stack
+# Atlas Stack
 
-`bijux-atlas-ops/stack` explains the operational environment in which
-`bijux-atlas` runs, including the service itself, its supporting dependencies,
-profile shapes, cluster substrates, overlays, and pinned toolchain inputs.
+The Atlas stack is the declared environment around the serving runtime: cluster
+substrate, chart, object store, cache, observability services, profiles, and
+pinned container inputs. Each layer has a different authority. Keeping those
+authorities separate prevents a development convenience from becoming an
+accidental production dependency.
+
+## Stack Authority
 
 ```mermaid
-flowchart TD
-    Stack[Stack operations slice] --> Topology[Service topology]
-    Stack --> Components[Stack components]
-    Stack --> Profiles[Profiles and deployment shapes]
-    Stack --> Clusters[Kind clusters]
-    Stack --> Overlays[Environment overlays]
-    Stack --> Offline[Offline assets]
-    Stack --> Pins[Toolchain pins]
-    Topology --> Model[Whole operational system model]
-    Components --> Model
-    Profiles --> Model
-    Clusters --> Model
-    Overlays --> Model
-    Offline --> Model
-    Pins --> Model
+flowchart LR
+    I["Pinned images and tools"] --> C["Component configuration"]
+    C --> D["Service dependency contract"]
+    P["Profile registry and intent"] --> G["Generated composition graph"]
+    D --> G
+    G --> H["Health surfaces"]
+    H --> E["Stack evidence"]
+    E --> O{"Operate, hold, or recover"}
 ```
 
-This section is the operator’s system map. It explains what runs alongside the
-Atlas runtime, which profiles are supported, how different local or CI
-environments are assembled, and which dependencies are required to make the
-stack predictable and reviewable.
+The profile registry declares seven operating intentions: `ci`, `dev`,
+`developer`, `kind`, `minimal`, `perf`, and `small`. The generated composition
+graph is narrower and currently covers `ci`, `kind`, and `local`. `local` is a
+composition identity in `stack.toml`; it is not an entry in the seven-profile
+policy registry.
 
-## Purpose
+## Supported Composition Graphs
 
-Use this section when you need to reason about the complete runtime system
-rather than a single release, observability, or Kubernetes artifact.
+| Composition | Cluster shape | Required components | Optional components included |
+| --- | --- | --- | --- |
+| `ci` | small Kind cluster | chart, observability namespace, MinIO, Redis | none |
+| `local` | small Kind cluster | chart, observability namespace, MinIO, Redis | none |
+| `kind` | normal Kind cluster | chart, observability namespace, MinIO, Redis | Prometheus, Grafana, OpenTelemetry collector |
 
-## Source of Truth
+The service dependency contract marks the chart, observability namespace,
+MinIO, and Redis as critical for all three generated compositions. The
+observability services are noncritical and required only by the `kind`
+composition. Required here means required by the checked-in stack contract; it
+does not imply that every external Atlas deployment must use the same backend.
 
-- `ops/stack/*`
-- `ops/env/*`
-- `ops/docker/*`
-- `ops/inventory/toolchain.json`
+## Route by Operating Question
 
-## Main Takeaway
+| Question | Read |
+| --- | --- |
+| Which components are actually governed? | [Stack Components](stack-components.md) |
+| What fails when a dependency is unavailable? | [Dependency Graph](dependency-graph.md) |
+| How does a request cross runtime and dependencies? | [Service Topology](service-topology.md) |
+| Which deployment shape fits the environment? | [Deployment Models](deployment-models.md) |
+| What does each local profile permit and require? | [Local Stack Profiles](local-stack-profiles.md) |
+| Which Kind substrate is selected? | [Kind Clusters](kind-clusters.md) |
+| How do environment values alter the base? | [Environment Overlays](environment-overlays.md) |
+| How are cache and store failures handled? | [Cache and Store Operations](cache-and-store-operations.md) |
+| What is needed without network access? | [Offline Assets](offline-assets.md) |
+| Which external bytes are pinned? | [Toolchain Pins](toolchain-pins.md) |
 
-The stack is not a backdrop. It is part of the contract. Operators need to know
-which components are required, how profiles assemble them, how overlays and
-clusters change the shape, and how that whole system is validated.
+## Change Rule
 
-## Pages
-
-- [Cache and Store Operations](cache-and-store-operations.md)
-- [Dependency Graph](dependency-graph.md)
-- [Deployment Models](deployment-models.md)
-- [Environment Overlays](environment-overlays.md)
-- [Kind Clusters](kind-clusters.md)
-- [Local Stack Profiles](local-stack-profiles.md)
-- [Offline Assets](offline-assets.md)
-- [Service Topology](service-topology.md)
-- [Stack Components](stack-components.md)
-- [Toolchain Pins](toolchain-pins.md)
+A component, dependency edge, profile, or pin change is an operational contract
+change. Update the owning input, regenerate stack inventories and the dependency
+graph, review failure isolation and profile impact, then preserve the resulting
+evidence. A successful pod start does not prove that the intended composition
+was assembled.
