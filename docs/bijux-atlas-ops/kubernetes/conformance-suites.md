@@ -29,6 +29,22 @@ flowchart TD
 `ownership.json` routes failures. The conformance report schema defines the
 machine-readable result.
 
+## Evidence Identity
+
+A governed conformance result binds all of these identities:
+
+- suite and manifest revision;
+- selected check IDs and groups;
+- source revision, runtime, image, chart, and profile;
+- cluster, namespace, and relevant dependency versions;
+- start, end, timeout, retry, and quarantine state;
+- section results, raw output locations, and owning domain; and
+- final verdict plus any evidence gaps.
+
+Without the selected check inventory, a suite name cannot show what ran.
+Without release and environment identity, a passing report cannot support the
+deployment under review.
+
 ## Suite Catalog
 
 | Suite | Groups and operating question | Budget |
@@ -64,6 +80,22 @@ Before relying on a pass, confirm:
 - the report validates against
   `ops/schema/k8s/conformance-report.schema.json`;
 - required progress and timeout behavior was preserved.
+
+## Failure Taxonomy
+
+| Failure | Interpretation |
+| --- | --- |
+| assertion | observed behavior violated the selected contract |
+| timeout | the check did not establish a verdict inside its budget |
+| setup | the environment could not reach the intended starting state |
+| capability | a required executable, network, or cluster operation was unavailable |
+| telemetry | required evidence could not be captured or correlated |
+| quarantine-policy | the check disposition is expired, ownerless, or issue-less |
+| report | the result is absent, incomplete, or schema-invalid |
+
+Only an assertion failure directly establishes a behavior violation. The other
+classes still block the scoped conformance claim because the required evidence
+was not obtained.
 
 ## Current Quarantine Risk
 

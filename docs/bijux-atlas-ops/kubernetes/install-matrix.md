@@ -32,6 +32,24 @@ This table states the minimum named lane. A production decision can require
 additional security, load, observability, and recovery evidence even when the
 matrix row is satisfied.
 
+## Coverage Dimensions
+
+```mermaid
+flowchart TD
+    Profile[Values profile] --> Install[Clean install]
+    Profile --> Upgrade[Previous to candidate]
+    Profile --> Rollback[Candidate to previous]
+    Install --> Evidence[Named delivery lane and reports]
+    Upgrade --> Evidence
+    Rollback --> Evidence
+    Evidence --> Qualify[Security, telemetry, load, and recovery qualification]
+```
+
+Support is the intersection of profile, lifecycle transition, source release,
+target release, and evidence lane. A row that covers clean installation does
+not imply either direction of release transition. A lifecycle scenario that
+uses Kind does not automatically qualify the production profile.
+
 ## Lifecycle Coverage
 
 ```mermaid
@@ -64,6 +82,11 @@ transitions as proven by this contract.
    observability evidence it requires.
 6. Apply rollout and rollback decisions using the rollout-safety contract.
 
+Record environment facts that can change the result even when the matrix row
+does not: Kubernetes version, architecture, registry mode, network policy
+implementation, storage class, ingress controller, and dependency topology.
+These facts belong in evidence; they do not create undocumented matrix rows.
+
 ## Honest Claims
 
 A profile row proves that an evidence lane is defined. A passing install proves
@@ -75,6 +98,10 @@ evidence.
 When a real deployment path is missing from the matrix, add and validate the
 contract before calling the path supported. Do not borrow evidence from a
 different profile because its manifests appear similar.
+
+Missing coverage is an explicit delivery risk. It may justify holding a
+release, narrowing the supported claim, or adding the missing scenario. It must
+not be converted into an inferred pass.
 
 Continue with [Render and Validate](render-and-validate.md) for preflight proof
 and [Rollout Safety](rollout-safety.md) for live promotion decisions.

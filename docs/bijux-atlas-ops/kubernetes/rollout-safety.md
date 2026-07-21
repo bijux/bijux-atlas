@@ -49,6 +49,21 @@ Do not promote on pod phase alone. Promotion requires readiness to stabilize,
 traffic to reach the new release, expected telemetry to arrive, and the
 selected load or resilience evidence to remain inside budget.
 
+## Decision Gates
+
+| Gate | Required state | Failure action |
+| --- | --- | --- |
+| preflight | versions, digests, values, render, policy, and rollback target resolve | reject before mutation |
+| admission | workloads schedule with intended identity, security, and dependencies | hold or remove candidate |
+| readiness | candidate completes profile-specific startup and enters endpoints | roll back or diagnose readiness |
+| traffic | representative request classes reach the candidate | hold; do not infer behavior from idle pods |
+| observation | correctness, latency, errors, saturation, and telemetry remain acceptable | drain candidate and roll back |
+| recovery | previous release restores traffic and dataset behavior | escalate to incident response |
+
+Each gate has a different rollback cost. Rejecting at preflight avoids cluster
+mutation. Failing after traffic shift requires preserving candidate-scoped
+signals before draining it. Recovery failure ends the routine rollout path.
+
 ## Observe During Change
 
 Track at least:
@@ -75,6 +90,11 @@ unobservable candidate is not safe to promote.
 Stop automatic rollback and escalate to incident response when the previous
 release cannot recover, shared data or catalog state may be damaged, or the
 rollback would violate a known compatibility boundary.
+
+Rollback is not safe when the previous runtime cannot consume the current
+configuration, catalog, or dataset state. Resolve those compatibility
+directions during preflight. If shared state changed unexpectedly, freeze the
+state and investigate rather than cycling releases.
 
 ## Required Record
 
