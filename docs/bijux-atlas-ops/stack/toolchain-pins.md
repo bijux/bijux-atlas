@@ -4,45 +4,63 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Toolchain Pins
+# Toolchain and External Input Pins
 
-Operational reproducibility depends on declared tool pins for Helm,
-Kubeconform, and related surfaces.
+Atlas governs external inputs at different strengths. Container images and
+GitHub Actions have immutable identities. Local operational tools are discovered
+and version-checked, but most are not locked to an exact patch release by the
+current contracts.
+
+## Pin Strength
+
+| Surface | Current control | Guarantee |
+| --- | --- | --- |
+| Stack images | Repository, tag, and SHA-256 digest | Immutable image identity when the digest is used at execution time |
+| Docker bases | Named builder and runtime image digests | Immutable base input for governed builds |
+| GitHub Actions | Human-readable ref plus commit SHA | Workflow action bytes are commit-bound |
+| Docker, Syft, Trivy, Helm, Kubeconform, Kind | Allowed major-version policy | Compatibility range, not exact reproducibility |
+| Curl, Helm, Kind, kubectl | Required executable plus parsed version | Presence and reportability, not an exact version lock |
+| K6 and Kubeconform | Optional executable plus parsed version | Evidence can record use, but absence is permitted by this inventory |
+
+## Resolution Chain
 
 ```mermaid
-flowchart TD
-    Pins[Toolchain pins] --> Tools[CLI tools]
-    Pins --> Actions[GitHub Actions refs]
-    Pins --> Images[Stack images]
-    Tools --> Determinism[Deterministic ops execution]
-    Actions --> Determinism
-    Images --> Determinism
-    Determinism --> Evidence[Reproducible validation and release evidence]
+flowchart LR
+    P["Pin and version policies"] --> I["Tool and image inventory"]
+    I --> M["Generated stack version manifest"]
+    M --> R["Runtime or validation run"]
+    R --> E["Evidence records resolved versions and digests"]
+    E --> D{"Matches declared control?"}
 ```
 
-Pinning matters because operators do not just need successful runs. They need
-explainable runs. Toolchain pins make it possible to say which Helm, Kind,
-kubectl, kubeconform, image digests, and workflow actions were expected when the
-evidence was produced.
+The generated stack manifest currently pins the Kind node, MinIO server and
+client, Prometheus, OpenTelemetry collector, Redis, and Toxiproxy images. The
+stack evolution policy requires pin freeze, version-manifest consistency, and
+dependency-graph consistency.
 
-## Source of Truth
+## Reproducibility Rule
 
-- `ops/policy/effect-tool-version-policy.json`
-- `ops/inventory/toolchain.json`
-- `ops/schema/meta/pins.schema.json`
+A declared pin is useful only when the run proves that it consumed that pin.
+Record tool version output, action SHA, image digest observed by the runtime,
+generated manifest identity, and source pin inventory. A tag-only component
+manifest does not become immutable merely because a digest exists elsewhere.
 
-## Pinning Policy
+Do not call a major-version allowance an exact pin. Results produced by Helm
+3.14 and Helm 3.16 may both satisfy an `allowed_major: 3` policy while differing
+in rendering behavior. When byte-for-byte or semantic reproducibility matters,
+the release evidence must bind the exact tool versions used.
 
-- required CLI tools are declared in `ops/inventory/toolchain.json`
-- GitHub Actions refs and SHAs are pinned in the same inventory
-- stack image versions and digests are pinned alongside the tool inventory
-- drift in these pins should be reviewed as a reproducibility risk, not only as
-  a convenience update
+## Change Review
 
-## Evidence of Actual Use
+For an image or action update, inspect upstream provenance and behavior, change
+the authoritative inventory, regenerate dependent manifests, and review the
+resulting composition. For a tool compatibility change, review every command
+whose output or validation semantics can differ. Preserve old and new versions
+with the evidence so drift can be attributed rather than guessed.
 
-Pinning is only meaningful when release, stack, or validation evidence can be
-traced back to the declared toolchain inventory and version manifests.
+See [Reproducibility](../release/reproducibility.md) for repeat-build claims and
+[Stack Components](stack-components.md) for where pinned images enter a
+composition.
