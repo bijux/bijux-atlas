@@ -1,72 +1,102 @@
 ---
 title: Request Lifecycle
-audience: maintainer
+audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Request Lifecycle
 
-The request lifecycle explains how Atlas turns an incoming HTTP request into a
-validated, executed, and structured response.
+An Atlas HTTP request crosses several owned boundaries. They cover transport,
+security, resilience, normalization, dataset resolution, execution,
+presentation, and telemetry. Each boundary owns a distinct rejection class and
+retains context about where processing stopped.
 
-## Lifecycle Overview
+## Lifecycle
 
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Router
+    participant Middleware
     participant Policy
-    participant App
+    participant Handler
+    participant Catalog
     participant Store
-    Client->>Router: HTTP request
-    Router->>Policy: middleware and validation
-    Policy->>App: normalized request
-    App->>Store: resolve data
-    Store-->>App: data or miss
-    App-->>Client: structured response
+    participant Query
+    participant Telemetry
+    Client->>Middleware: HTTP request
+    Middleware->>Middleware: error envelope, body limit, debug hardening, provenance, resilience, security, CORS, tracing
+    Middleware->>Policy: authenticated request or exempt route
+    Policy->>Handler: authorized principal and normalized transport
+    Handler->>Catalog: resolve explicit or default dataset
+    Catalog->>Store: fetch manifest, index, sequence, or shard
+    Store-->>Handler: published artifact data or typed store failure
+    Handler->>Query: normalized query and limits
+    Query-->>Handler: ordered result or policy error
+    Handler-->>Telemetry: status, latency, class, dataset, request and trace identity
+    Handler-->>Client: structured response with provenance headers
 ```
 
-This lifecycle sequence keeps the request path concrete. Policy, normalization,
-dataset resolution, execution, and presentation are separate stages, not one
-opaque handler.
+Axum applies middleware around the router. Each handler retains ownership of
+domain-specific parsing and execution. Middleware can reject a request. It
+cannot make an invalid query valid or redefine dataset identity.
 
-## Main Request Stages
+## Boundary Map
+
+| Boundary | Representative checks | Observable outcome |
+| --- | --- | --- |
+| transport | body size, CORS, request ID, response hardening | HTTP rejection or normalized request context |
+| debug hardening | admin endpoint enablement and protected debug routes | unavailable or rejected administrative request |
+| security | authentication mode, principal, role, action, resource, route policy | stable authorization decision and audit event |
+| resilience | global breaker, overload state, cheap/heavy class, concurrency permit | admitted request or `RateLimited`, `QueryRejectedByPolicy`, or `NotReady` |
+| normalization | path, query, region, selector, cursor, limit, and output validation | typed request or stable client error |
+| dataset resolution | release, species, assembly, catalog presence, cached-only rules | selected immutable dataset or explicit miss |
+| execution | query planning, shard access, SQLite execution, sequence or diff work | ordered result or typed runtime/store error |
+| presentation | envelope, status, cache, ETag, provenance, pagination | versioned wire response |
+| telemetry | route, status, latency, request class, dataset, trace identity | metrics, structured logs, and trace events |
+
+## Route Classes
+
+Health, readiness, liveness, overload, metrics, version, and OpenAPI routes are
+authentication-exempt by contract. Dataset routes require dataset-read
+authority. Debug and cluster routes require operator authority and are only
+registered when administrative endpoints are enabled.
 
 ```mermaid
 flowchart TD
-    A[Route match] --> B[Request policy]
-    B --> C[Parameter normalization]
-    C --> D[Dataset resolution]
-    D --> E[Execution]
-    E --> F[Presentation]
-    F --> G[Metrics and trace emission]
+    Request[Matched route] --> Exempt{Operationally exempt?}
+    Exempt -->|yes| Service[Health, readiness, metrics, version, OpenAPI]
+    Exempt -->|no| Admin{Administrative route?}
+    Admin -->|yes| AdminPolicy[Require ops.admin authority]
+    Admin -->|no| DatasetPolicy[Require dataset.read authority]
+    Service --> Resilience[Apply runtime resilience]
+    AdminPolicy --> Resilience
+    DatasetPolicy --> Resilience
+    Resilience --> Handler[Execute owning handler]
 ```
 
-This stage map is useful because most request failures belong to one stage. If
-you can name the stage, you can usually find the owning code and test surface
-much faster.
+An exempt route is not an unrestricted data route. Its resource kind remains
+the service namespace, and deployment network policy still determines who can
+reach it.
 
-## Key Architectural Point
+## Dataset Resolution and Caching
 
-The router should remain declarative. Request shaping, policy enforcement, execution, and presentation each have different reasons to change.
+The catalog establishes discoverable dataset identity. Artifact caches and the
+optional Redis response cache accelerate access. They are not release
+authority. A Redis failure can fall back to the serving path. Catalog or
+artifact unavailability can fail a request or change readiness, depending on
+cached-only and readiness configuration.
 
-## Why Operators and Maintainers Care
+## Completion Semantics
 
-- request policy explains many 4xx responses.
-- dataset resolution explains many serving misses.
-- presentation explains why structured output looks the way it does.
-- metrics and tracing explain what happened after the fact.
+A successful response means middleware admitted the request and resolved the
+dataset. Execution completed under its limits, and presentation produced the
+versioned envelope. Success does not identify a particular cache layer. Policy
+rejection, dataset miss, overload refusal, and empty query result are distinct
+outcomes. Status, error code, and telemetry preserve that distinction.
 
-## A Healthy Request Boundary
-
-- routers stay declarative.
-- policy explains many rejections before execution begins.
-- presentation shapes the response without redefining domain meaning.
-
-## Reading Rule
-
-Use this page when a request reaches the server but the real question is where
-it was rejected, normalized, resolved, or reshaped.
+Continue with [Query Architecture](query-architecture.md),
+[Serving Store Model](serving-store-model.md), and
+[Error Codes and Exit Codes](../interfaces/error-codes-and-exit-codes.md).

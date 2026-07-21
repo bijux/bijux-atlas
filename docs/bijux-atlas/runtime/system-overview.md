@@ -4,124 +4,101 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # System Overview
 
-Atlas is a system for turning explicit source inputs into immutable release
-artifacts and then serving those artifacts through stable runtime surfaces.
+Atlas separates genomic semantics from artifact construction and storage.
+Runtime composition and delivery interfaces have their own owners. Repository
+automation remains outside the product runtime. Crate dependencies and exchanged
+artifacts make those boundaries visible.
 
-## End-to-End System View
-
-```mermaid
-flowchart LR
-    Inputs[Source inputs] --> Ingest[Validation and ingest]
-    Ingest --> Build[Build root]
-    Build --> Publish[Publish into store]
-    Publish --> Catalog[Catalog state]
-    Catalog --> Runtime[HTTP runtime]
-    Runtime --> Clients[Users and integrations]
-```
-
-This is the product path. It explains how data becomes serveable without
-reducing Atlas to "just the server."
-
-## The Two Systems Atlas Actually Has
+## End-to-End Architecture
 
 ```mermaid
 flowchart LR
-    Inputs[Source inputs] --> Product[Product workflow]
-    Product --> Store[Published store and catalog]
-    Store --> Runtime[Runtime server]
-    Maintainers[Maintainers] --> ControlPlane[bijux-atlas-dev]
-    ControlPlane --> Evidence[Checks reports and governance evidence]
-    Evidence --> Release[Release or remediation decisions]
+    subgraph Build[Release construction]
+        Source[GFF3 and FASTA] --> Ingest[bijux-atlas-ingest]
+        Model[bijux-atlas-model] --> Ingest
+        Ingest --> Artifacts[Database, sequence, indexes, manifest]
+    end
+    subgraph Publication[Publication]
+        Artifacts --> Store[bijux-atlas-store]
+        Store --> Catalog[Published catalog state]
+    end
+    subgraph Runtime[Serving]
+        Catalog --> Orchestrator[bijux-atlas-runtime]
+        Query[bijux-atlas-query] --> Orchestrator
+        Orchestrator --> CLI[bijux-atlas-cli]
+        Orchestrator --> Server[bijux-atlas-server]
+        API[bijux-atlas-api] --> Server
+    end
+    Server --> Clients[HTTP clients]
+    CLI --> Users[CLI users]
 ```
 
-Atlas has both a product runtime and a repository control plane. The
-architecture works best when those systems meet through artifacts, contracts,
-and evidence instead of hidden cross-dependencies.
+No delivery interface owns genomic truth. The model and leaf crates define
+domain behavior. The runtime composes them. The CLI and server translate user
+requests. The store and catalog establish which immutable release is serveable.
 
-Atlas is really two related systems:
+## Crate Ownership
 
-- the product system that validates, publishes, and serves dataset state.
-- the repository control plane that validates repository rules, docs, contracts, and release evidence.
+| Crate | Owns | Does not own |
+| --- | --- | --- |
+| `bijux-atlas-core` | runtime-independent primitives, canonicalization, hashes, and shared error codes | dataset workflows or delivery |
+| `bijux-atlas-model` | dataset, gene, transcript, diff, manifest, and policy value types | IO or orchestration |
+| `bijux-atlas-ingest` | normalization, anomaly policy, and artifact construction | serving or catalog publication policy |
+| `bijux-atlas-query` | parsing, planning, ordering, cursoring, and SQLite query execution | HTTP or process lifecycle |
+| `bijux-atlas-store` | artifact-store ports, backend capabilities, integrity, and publication contracts | query semantics |
+| `bijux-atlas-runtime` | application use cases, policy, cache, ports, and canonical composition | installed command or HTTP route ownership |
+| `bijux-atlas-api` | DTOs, API errors, client contracts, OpenAPI, and `bijux-atlas-openapi` | server process lifecycle |
+| `bijux-atlas-cli` | installed `bijux-atlas` command and presentation | reusable domain implementation |
+| `bijux-atlas-server` | HTTP router, middleware, runtime state, telemetry, and `bijux-atlas-server` | artifact construction |
+| `bijux-atlas` | compatibility re-exports for the historical `bijux_atlas` import path | canonical implementation ownership |
+| `bijux-atlas-ops` | published operational path and metadata contracts | deployment execution or repository governance |
+| `bijux-atlas-dev` | repository-only validation, generation, reporting, and release automation | product runtime behavior |
 
-Those systems should meet at contracts and artifacts, not leak into each other as hidden shared behavior.
-
-## Main Architectural Zones
+## Runtime Zones
 
 ```mermaid
-flowchart TD
-    Contracts[Contracts] --> Domain[Domain]
-    Domain --> App[App]
-    App --> Adapters[Adapters]
-    Runtime[Runtime] --> Adapters
-    Runtime --> App
+flowchart TB
+    Contracts[Contracts and configuration] --> App[Application use cases and ports]
+    Domain[Domain policy and cluster semantics] --> App
+    Adapters[Store and SQLite adapters] --> App
+    App --> Composition[Runtime composition]
+    Composition --> Delivery[CLI and server processes]
+    Delivery --> Telemetry[Structured output, metrics, logs, and traces]
 ```
 
-This zone diagram gives the mental map for the main source roots. It is
-intentionally simple because the deeper pages in this section explain each zone
-in more detail.
+- Contracts define stable configuration, errors, and boundary shapes.
+- Domain code owns policy, security, placement, routing, and topology semantics.
+- Application code coordinates ingest, query, caching, and outbound ports.
+- Adapters implement storage and database boundaries without redefining domain
+  meaning.
+- Runtime composition selects concrete implementations and process settings.
+- Delivery crates own parsing, middleware, presentation, and process lifecycle.
 
-## Design Intent
+## Data and Control Planes
 
-The architecture tries to keep these responsibilities separate:
+The data plane serves published catalog and artifact state. The operational
+control plane renders and validates deployment profiles. It observes the
+runtime, executes governed load and failure scenarios, and assembles release
+evidence. The repository control plane validates code-adjacent contracts and
+generates machine-readable reports. Neither control plane is a hidden dependency
+of normal query execution.
 
-- domain defines business rules and data semantics.
-- app orchestrates use cases and ports.
-- adapters translate between the app and external systems.
-- runtime composes the real process.
-- contracts define the stable external shapes.
+```mermaid
+flowchart LR
+    Repository[Source, configs, and contracts] --> Dev[bijux-atlas-dev]
+    Dev --> ReleaseEvidence[Validation and release evidence]
+    Ops[Stack, Kubernetes, observe, load, release] --> OpsEvidence[Operational evidence]
+    Published[Published dataset release] --> Runtime[Atlas runtime]
+    Runtime --> OpsEvidence
+    ReleaseEvidence --> Decision[Promotion decision]
+    OpsEvidence --> Decision
+```
 
-The repository also keeps a separate governance path:
-
-- `bijux-atlas` and `bijux-atlas-server` are the user and operator-facing runtime surface.
-- `bijux-atlas-dev` is the repository-facing control plane.
-- the repository control plane may depend on runtime contracts, but the runtime should not depend on repo-governance behavior.
-
-## Why This Separation Matters
-
-Atlas becomes hard to maintain when:
-
-- runtime wiring leaks into domain logic.
-- adapter concerns are treated as application truth.
-- contracts are duplicated across multiple roots.
-- repository diagnostics start distorting the user-facing runtime.
-
-The architecture is designed to make those mistakes more visible and less normal.
-
-## What This Overview Should Leave You With
-
-- Atlas turns source inputs into published serving state through explicit boundaries.
-- The runtime surface and the repository control plane are related but intentionally different.
-- Domain, app, adapters, runtime, and contracts each have a distinct reason to exist.
-
-## Honest Simplification
-
-This page is intentionally high-level. It tells you which boundaries matter
-most. For crate layout and deeper runtime structure, keep reading:
-
-- [Source Layout and Ownership](source-layout-and-ownership.md).
-- [Runtime Composition](runtime-composition.md).
-
-## Where This Picture Lives In The Repo
-
-- ingest and build concerns: `crates/bijux-atlas-ingest/src/engine/`.
-- dataset and query semantics: `crates/bijux-atlas-model/src/dataset/` and.
-  `crates/bijux-atlas-query/src/`
-- runtime assembly: `crates/bijux-atlas-runtime/src/runtime/` and.
-  `crates/bijux-atlas-runtime/src/app/`
-- interfaces: `crates/bijux-atlas-cli/src/bin/` and.
-  `crates/bijux-atlas-server/src/adapters/inbound/http/`
-- contract and generated reference surfaces:
-  `crates/bijux-atlas-runtime/src/contracts/`,
-  `crates/bijux-atlas-api/src/`, and `configs/generated/`
-
-## Main Takeaway
-
-Atlas is easiest to understand when the end-to-end picture is read as one
-explicit path: inputs become artifacts, artifacts become published store state,
-published state becomes runtime-serving truth, and user-facing interfaces sit on
-top of that serving truth rather than bypassing it.
+Continue with [Request Lifecycle](request-lifecycle.md),
+[Artifact Lifecycle](artifact-lifecycle.md), and
+[Runtime Composition](runtime-composition.md).

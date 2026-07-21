@@ -4,158 +4,99 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # What Atlas Is
 
-Atlas is a dataset delivery system built around a simple discipline: validate
-inputs explicitly, build immutable release artifacts deterministically, and
-expose those artifacts through well-defined query and operational surfaces.
+Atlas is an artifact-first genomics delivery system. It validates governed GFF3
+and FASTA sources and constructs immutable dataset releases. Publication moves
+a complete release into an explicit store and catalog. Rust, CLI, HTTP, and
+OpenAPI surfaces serve that published state.
 
-Atlas is not just a server and not just a CLI. It is one full path that begins
-with source inputs, passes through validation and artifact construction, and
-ends with stable ways to inspect or serve release data.
+The central rule is simple: a runtime may select and query a release, but it
+does not mutate release truth.
 
-## The Product in One Picture
-
-```mermaid
-flowchart LR
-    S[Source inputs] --> V[Validation]
-    V --> N[Normalization]
-    N --> A[Artifact build]
-    A --> C[Catalog and store]
-    C --> H[HTTP server]
-    C --> L[CLI workflows]
-```
-
-This diagram is the shortest useful description of the product. Atlas is a
-governed path from inputs to immutable artifacts and then to serving surfaces.
-
-Atlas treats the artifact boundary as the center of gravity. That means:
-
-- raw inputs are important, but they are not the serving surface
-- runtime services are important, but they are not the source of truth
-- stable artifacts and contracts are what tie the whole system together
-
-## The Three Main Faces of Atlas
-
-```mermaid
-flowchart TD
-    Atlas[Atlas] --> Data[Data workflows]
-    Atlas --> Runtime[Runtime server]
-    Atlas --> Contracts[Contracts and compatibility]
-    Data --> Ingest[Ingest and validation]
-    Runtime --> Query[HTTP query surface]
-    Contracts --> Stability[Stable outputs and schemas]
-```
-
-Many people arrive through only one face of Atlas. The product is easier to
-understand when data workflows, runtime behavior, and contracts reinforce each
-other instead of competing for ownership.
-
-1. Data workflow system
-   Atlas validates source inputs, creates artifacts, and tracks releases.
-
-2. Runtime system
-   Atlas serves those artifacts through a query-oriented HTTP surface and health or observability endpoints.
-
-3. Contract system
-   Atlas publishes stability expectations through config, API, error, and output contracts.
-
-## Who Atlas Serves
-
-Atlas serves three main groups:
+## The Product Boundary
 
 ```mermaid
 flowchart LR
-    U[User] --> Q[Run ingest, validate, query]
-    O[Operator] --> R[Run server, observe, recover]
-    M[Maintainer] --> D[Change code and contracts safely]
+    Sources[Governed GFF3 and FASTA] --> Admission[Validate identity, format, and policy]
+    Admission --> Normalize[Normalize genomic records]
+    Normalize --> Build[Build database, sequence, index, and manifest artifacts]
+    Build --> Verify[Verify hashes, statistics, and quality evidence]
+    Verify --> Publish[Publish immutable release]
+    Publish --> Catalog[Expose catalog identity]
+    Catalog --> Serve[Serve queries and metadata]
 ```
 
-Different entry points still lead into one coherent product surface.
+Build output and serving state are deliberately separate. Publication is the
+boundary that establishes a complete, discoverable release. Serving directly
+from an intermediate build root would bypass catalog identity, store integrity,
+and rollback semantics.
 
-- users who need deterministic dataset and catalog workflows
-- operators who need a predictable runtime and clear observability
-- maintainers who need a codebase with explicit ownership and compatibility boundaries
+## Durable Objects
 
-## Where Atlas Fits Well
+| Object | Meaning | Why it is durable |
+| --- | --- | --- |
+| dataset identity | release, species, and assembly coordinates for one dataset | prevents an implicit “current dataset” from becoming authority |
+| artifact manifest | file locations, checksums, statistics, input hashes, and sharding metadata | binds a release to the bytes that implement it |
+| catalog entry | published dataset identity and availability | separates discoverability from local build state |
+| query contract | normalized selectors, regions, limits, ordering, and cursor rules | makes equivalent requests behave consistently across interfaces |
+| structured result | typed data or a stable error envelope | lets clients branch on fields and codes rather than message text |
+| operational evidence | profile, conformance, telemetry, load, and release records | ties deployment decisions to named, reviewable inputs |
 
-Atlas is a strong fit when you need:
+## Three Interlocking Systems
 
-- explicit ingest validation before data becomes serveable
-- durable release artifacts that can be published, cataloged, and rolled back deliberately
-- query and operational surfaces that are easier to reason about than mutable runtime state
-- engineering workflows where documented contracts matter more than convenience shortcuts
+```mermaid
+flowchart TB
+    Product[Product system] --> Release[Immutable dataset release]
+    Operations[Operations system] --> Deployment[Governed deployment and runtime evidence]
+    Maintainer[Maintainer control plane] --> Change[Validated repository and release change]
+    Release --> Runtime[Atlas runtime]
+    Deployment --> Runtime
+    Change --> Release
+    Change --> Deployment
+    Runtime --> Evidence[Queries, health, metrics, logs, traces]
+    Evidence --> Operations
+```
 
-## Where Atlas Is a Weak Fit
-
-Atlas is a weak fit when you need:
-
-- a generic data transformation framework for arbitrary pipelines
-- live runtime writes to redefine release content on the fly
-- a minimal tool with almost no governance or compatibility surface
-- every internal helper, fixture, or crate path to be treated like public API
+The product system owns data meaning and runtime behavior. The operations
+system owns deployment, observation, stress testing, promotion, and rollback.
+The maintainer control plane governs changes to code, contracts, configuration,
+and release evidence. These systems meet through explicit artifacts. They do
+not share mutable authority.
 
 ## What Atlas Optimizes For
 
-- deterministic outputs over accidental convenience
-- explicit contracts over implied behavior
-- immutable artifacts over mutable serving state
-- evidence and validation over trust-by-convention
+- deterministic construction from governed inputs and pinned configuration
+- immutable release identity instead of mutable serving truth
+- narrow crate and interface ownership instead of a monolithic public surface
+- structured compatibility contracts instead of message-text conventions
+- observable overload and failure behavior instead of optimistic availability
+- promotion and rollback decisions backed by retained evidence
 
-## What Makes Atlas Different
+## Appropriate Uses
 
-Atlas is opinionated in ways that matter operationally:
+Atlas fits systems that publish versioned genomic reference data. It can show
+which source, build, release, dataset, and policy produced a result. Supported
+workflows cover genes, transcripts, sequences, regions, counts, and release
+comparisons over explicit dataset identity.
 
-- it resists hidden runtime mutation
-- it treats structured output as a product surface
-- it keeps artifact ownership separate from server request handling
-- it tries to make compatibility visible rather than accidental
+Atlas is not a generic transformation framework, a mutable transactional
+database, or an authority for the biological correctness of upstream data. It
+validates supported boundaries and preserves provenance; it cannot establish
+truth that was absent from the source.
 
-## What To Take Away
+## Stability Boundary
 
-- Atlas separates source inputs, artifact production, and runtime serving on purpose.
-- Atlas treats contracts as part of the product, not as documentation garnish.
-- Atlas is strongest when you want deterministic release-shaped data workflows.
+Published crate APIs and installed binaries carry explicit compatibility
+expectations. So do versioned HTTP and OpenAPI shapes, structured outputs,
+runtime configuration, artifact layouts, and named operational contracts.
+Internal Rust modules, local debug output, repository fixtures, and maintainer
+implementation details are not downstream promises unless a contract names
+them.
 
-## Misreadings To Avoid
-
-- Atlas is not a claim that every local shortcut is a supported production workflow.
-- Atlas is not a promise that every internal repository detail is stable.
-- Atlas is not a generic mutable database that rewrites release content at runtime.
-
-## Current Limits
-
-- Atlas does not claim ownership of upstream data correctness; it validates what crosses supported input boundaries.
-- Atlas does not treat ingest build output as the serving contract. Publication into a serving store is a separate step on purpose.
-- Atlas does not promise that internal Rust module layout, debug-only output, or maintainer-only automation surfaces are stable for downstream consumers.
-
-## Read Next
-
-- [Core Concepts](core-concepts.md)
-- [Boundaries and Non-Goals](boundaries-and-non-goals.md)
-- [Dataset Model](dataset-model.md)
-
-## How The Repo Reflects This Product Shape
-
-- ingest and validation concerns live under
-  `crates/bijux-atlas-ingest/src/engine/` and
-  `crates/bijux-atlas-model/src/dataset/`
-- query and runtime-serving concerns live under
-  `crates/bijux-atlas-query/src/` and
-  `crates/bijux-atlas-runtime/src/` and
-  `crates/bijux-atlas-server/src/`
-- user-facing interfaces live under
-  `crates/bijux-atlas-cli/src/bin/`,
-  `crates/bijux-atlas-server/src/adapters/inbound/http/`, and
-  `crates/bijux-atlas-api/src/bin/`
-
-## Main Takeaway
-
-Atlas is best understood as one coherent product with three linked faces:
-building governed dataset artifacts, publishing release-backed serving state,
-and exposing stable runtime surfaces over that published state. The repository
-is structured to make those faces visible rather than hiding them behind one
-binary or one command path.
+Continue with [Core Concepts](core-concepts.md) for terminology,
+[Dataset Model](dataset-model.md) for release identity, and
+[System Overview](../runtime/system-overview.md) for component ownership.
