@@ -4,50 +4,75 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Dashboards and Panels
 
-Grafana dashboards under `ops/observe/dashboards/` capture the curated
-operational views for Atlas runtime and supporting systems.
+Atlas dashboards are curated diagnostic views over governed metrics. They help
+operators ask consistent questions, but a valid dashboard JSON file does not
+prove that its datasource is populated, current, or complete.
 
-## Purpose
+## Dashboard Inventory
 
-Use this page to understand which dashboards are canonical, how dashboard
-acceptance is validated, and what panel classes operators should expect to find.
+The registry declares ten Prometheus-backed dashboards:
 
-## Source of Truth
+| Domain | Dashboards |
+| --- | --- |
+| Runtime | Runtime health, system resources |
+| Query | Query performance, latency distribution |
+| Ingest | Ingest pipeline |
+| Data and dependencies | Artifact registry, artifact-cache performance |
+| Assurance | SLO compliance, error classification, drift detection |
 
-- `ops/observe/dashboard-registry.json`
-- `ops/observe/dashboards/`
-- `ops/observe/contracts/dashboard-json-validation-contract.json`
-- `ops/observe/contracts/dashboard-panels-contract.json`
-- `ops/observe/dashboard-metadata.schema.json`
+The JSON validation contract governs the same ten files. The general
+observability dashboard and its golden form are separate validation assets, and
+the minimal dashboard is a fixture. Do not present fixtures or goldens as an
+operator view.
 
-## Dashboard Registry
+## Diagnostic Contract
 
-`ops/observe/dashboard-registry.json` currently defines canonical dashboards for
-runtime health, query performance, ingest pipeline, artifact registry, system
-resources, SLO compliance, error classification, latency distribution, artifact
-cache performance, and drift detection.
+```mermaid
+flowchart TD
+    Symptom["Operator symptom"] --> Row["Failure-domain row"]
+    Row --> Panel["Governed diagnostic panel"]
+    Panel --> Metric["Required metric and labels"]
+    Metric --> Correlate["Logs, traces, release, and dataset identity"]
+    Correlate --> Decision{"Action supported?"}
+```
 
-## Canonical Versus Fixture Dashboards
+The panel contract requires 19 named panels across eight rows. It covers store,
+cache, SQLite, admission and bulkhead pressure, Kubernetes resource pressure,
+traffic and SLOs, and drill views. Every panel binds a diagnostic question,
+failure signature, and required metric.
 
-- canonical dashboards live in the main dashboard files such as
-  `atlas-runtime-health-dashboard.json` and
-  `atlas-query-performance-dashboard.json`
-- fixture dashboards such as `fixtures/minimal-dashboard.json` exist to validate
-  contract handling and should not be treated as production operator views
-- `atlas-observability-dashboard.golden.json` acts as a golden validation target
-  rather than a casual edit surface
+Representative decision paths include:
 
-## Required Panel Classes
+- request rate and status to identify traffic or 5xx shifts;
+- route p95 and SQLite latency to separate API from query-engine regression;
+- store fetch, open, and download latency to isolate backend pressure;
+- cache hit ratio and cache size to identify thrash or disk pressure;
+- queue depth, bulkhead saturation, and shed reason to explain overload;
+- class-specific SLO health and burn to prioritize cheap-path survival; and
+- rollout and drill views to align faults with request quality.
 
-Operators should expect the accepted dashboards to cover panel classes for:
+## Reading a Dashboard Safely
 
-- runtime health and readiness
-- latency, error, and throughput
-- resource saturation
-- store, registry, and cache behavior
-- SLO or drift summary views where relevant
+Confirm datasource health, scrape freshness, release and profile filters,
+dataset identity, time zone, query interval, and missing-series behavior before
+acting. Compare candidate and previous release separately during a rollout.
+Averages can hide one failing replica or release cohort.
+
+A blank panel is ambiguous. It may mean zero events, a missing metric, a broken
+query, a label migration, a scrape outage, or a datasource failure. Resolve the
+ambiguity through raw queries, collector health, and correlated signals.
+
+## Change Acceptance
+
+Validate JSON schema, dashboard registry membership, required rows and panels,
+metric names and labels, query semantics, variables, and representative data.
+Then inject at least one bound failure signature and preserve a rendered
+snapshot with the source metric window.
+
+Use [Metrics Contracts](metrics-packages.md) for signal ownership and
+[Telemetry Drills](telemetry-drills.md) for fault-signature proof.
