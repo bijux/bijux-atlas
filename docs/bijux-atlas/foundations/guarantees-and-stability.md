@@ -4,153 +4,104 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Guarantees and Stability
 
-Atlas is opinionated about stability: it does not promise everything, but what
-it does promise should be explicit, test-backed, and documented.
+Atlas has several kinds of public surface, and they do not all carry the same
+compatibility promise. A command that works in one checkout is current
+behavior. A versioned schema, public command registry, or generated API
+contract is a stronger commitment because a specific artifact defines what
+consumers may rely on.
 
-The practical rule is simple: if a behavior is not documented as a
-contract-owned surface, treat it as current behavior only and confirm it before
-you build automation or operational process around it.
+## Stability Classes
 
-## The Stability Stack
+| Class | Examples | Safe dependency | Change signal |
+| --- | --- | --- | --- |
+| governed contract | versioned schemas, public command registry, OpenAPI, documented artifact layouts | fields, types, identifiers, and behavior named by the contract | schema or contract review, compatibility policy, and release notes. |
+| documented public behavior | workflows, command semantics, configuration precedence, error behavior | the documented outcome, within the named release line | documentation and implementation change together. |
+| generated observation | command help, generated references, compatibility reports, conformance results | the state of the exact build or release that produced it | regenerate and compare against the governing source. |
+| implementation detail | internal Rust paths, debug logging, test helpers, local fixtures | nothing outside the owning crate or repository workflow | may change without downstream compatibility treatment. |
+
+The narrowest applicable contract wins. A command-specific schema is more
+authoritative than a general statement about JSON, and an artifact manifest is
+more authoritative than a tutorial showing an example directory.
+
+## Where Guarantees Come From
+
+```mermaid
+flowchart LR
+    Authority[Named source of authority] --> Validation[Contract validation]
+    Validation --> Evidence[Retained result]
+    Evidence --> Decision[Consumer or release decision]
+```
+
+A strong Atlas guarantee has all three supporting parts:
+
+- a named authority, such as a schema, registry, manifest, or versioned API;
+- a check that compares implementation or data with that authority; and
+- evidence tied to the exact build, dataset, or release under evaluation.
+
+Documentation explains how to find and interpret those parts. Documentation
+alone does not prove that a particular release passed its checks.
+
+## Product Guarantees
+
+Atlas is designed around these durable boundaries:
+
+| Boundary | Promise | Authority to inspect |
+| --- | --- | --- |
+| dataset identity | queries and artifacts refer to an explicit release, species, and assembly identity | dataset and artifact schemas plus the published manifest. |
+| published release | serving state comes from a complete published release, not an intermediate build directory | catalog entry, store layout, and release manifest. |
+| public command surface | user commands are separated from maintainer-only commands | generated CLI reference and public command registry. |
+| HTTP interface | routes and payload shapes are described by the versioned API contract | generated OpenAPI document. |
+| runtime configuration | accepted keys, types, defaults, and precedence are explicit where governed | runtime configuration schema and generated reference. |
+| machine output | automation may depend on fields governed by the exact output schema | command- or report-specific JSON Schema. |
+
+These guarantees do not establish the biological correctness of an upstream
+source. They establish how Atlas admits, identifies, packages, publishes, and
+serves the source it was given.
+
+## Compatibility Does Not Mean Immutability
+
+A stable surface can evolve. Compatible additions may appear, deprecations may
+be announced, and a new major contract may deliberately replace an old one.
+Consumers should validate the contract version they support. They should reject
+unknown incompatible shapes instead of guessing.
 
 ```mermaid
 flowchart TD
-    Contracts[Contracts] --> Surfaces[CLI / API / Config / Errors]
-    Surfaces --> Tests[Compatibility and contract tests]
-    Tests --> Releases[Release confidence]
-    Releases --> Users[User and operator trust]
+    Input[Observed behavior] --> Named{Named by a public contract?}
+    Named -- no --> Incidental[Treat as incidental]
+    Named -- yes --> Version{Contract version supported?}
+    Version -- no --> Reject[Reject or migrate explicitly]
+    Version -- yes --> Validate[Validate fields and semantics]
+    Validate --> Consume[Depend on the governed subset]
 ```
 
-This stack shows the intended direction of proof. Atlas wants trust to come
-from documented surfaces, enforced tests, and checked release evidence instead
-of repository folklore.
+Repository compatibility policy defines the deprecation window for governed
+surfaces. It does not promote internal modules, fixtures, log lines, or
+maintainer implementation details into public API.
 
-Atlas aims to make stability understandable by layer:
+## Claims That Require Release Evidence
 
-- public commands and options are more stable than internal helper code.
-- API schemas and structured output are more stable than ad hoc debug payloads.
-- runtime config contracts are more stable than undocumented environment-dependent behavior.
+The existence of a contract is not proof that a release satisfies it. Before a
+promotion, audit, or operational claim, pair the contract with evidence from
+the exact candidate:
 
-## Guarantee Table
+| Claim | Required evidence |
+| --- | --- |
+| an artifact is reproducible | matching input identity, toolchain identity, build configuration, and artifact hashes from independent builds. |
+| a release is complete | manifest and catalog validation for every required artifact. |
+| an API is conformant | conformance results against the candidate's generated OpenAPI contract. |
+| a configuration is accepted | validation output from the candidate binary and the governed configuration schema. |
+| a deployment is safe to promote | named security, conformance, health, and load evidence for that release and profile. |
 
-| Claimed guarantee | Main enforcement point | Evidence source |
-| --- | --- | --- |
-| deterministic structured output where documented | response and output contracts in code and generated references | generated OpenAPI and runtime reference artifacts |
-| stable contract-owned APIs | HTTP router, response contracts, and contract docs | generated OpenAPI plus compatibility review |
-| explicit runtime validation | runtime config parsing and contract schemas | generated runtime config docs and validation behavior |
-| immutable artifact-oriented workflows | dataset, ingest, and store boundaries | workflow docs and artifact/state references |
+Examples, screenshots, successful process exit, and unversioned local output do
+not substitute for this evidence.
 
-## What We Can Honestly Claim
-
-Atlas should earn confidence from three places:
-
-- documented contracts.
-- tests and validation that exercise those contracts.
-- release or review evidence that shows the current implementation still matches them.
-
-Intent by itself is not a guarantee.
-
-## What Atlas Tries to Guarantee
-
-```mermaid
-flowchart LR
-    G[Guarantees] --> C1[Deterministic structured output]
-    G --> C2[Stable contract-owned APIs]
-    G --> C3[Explicit runtime validation]
-    G --> C4[Immutable artifact-oriented workflows]
-```
-
-This list of guarantees is deliberately narrow. Atlas is trying to make a few
-promises clearly and credibly rather than implying stability everywhere.
-
-Atlas tries to provide:
-
-- deterministic machine-readable output where documented.
-- explicit validation rather than silent coercion.
-- stable contract-owned API and config surfaces.
-- immutable artifact workflows for release state.
-
-## What Atlas Does Not Guarantee
-
-- all internal Rust module paths remain unchanged.
-- all debug-only behavior remains stable.
-- all internal fixtures or benchmark helpers are public API.
-- every implementation detail remains source-compatible across refactors.
-
-## Current Hard Limits
-
-- Atlas validates supported inputs and runtime boundaries, but it does not make upstream data sources inherently correct.
-- Atlas prefers artifact-centric workflows, so shortcuts that skip publication into a serving store are outside the intended serving model.
-- Maintainer automation around `bijux-atlas-dev` is important and tested, but it is not the same stability layer as the user-facing runtime API and CLI.
-
-## Why Stability Is Evidence-Based
-
-```mermaid
-flowchart LR
-    Docs[Documentation] --> Contracts[Contract definitions]
-    Contracts --> Tests[Test enforcement]
-    Tests --> Evidence[Build and release evidence]
-    Evidence --> Trust[Operational trust]
-```
-
-This evidence chain explains how to evaluate stability claims. A
-statement becomes stronger when it is documented, enforced, and visible in
-release or validation output.
-
-Atlas does not treat “we intended this to be stable” as enough. Stability is meaningful only when:
-
-- the surface is documented.
-- ownership is clear.
-- tests enforce it.
-- releases validate it.
-
-## How to Interpret Stability in Practice
-
-When you need a stronger claim, ask:
-
-1. Is the surface documented?
-2. Is it described in reference or contracts rather than only in examples?
-3. Do tests or checks enforce it?
-4. Would a future release be expected to preserve it intentionally?
-
-If you are a user:
-
-- trust documented commands, config contracts, and query behavior.
-
-If you are an operator:
-
-- trust documented runtime and operational contracts, not incidental local behavior.
-
-If you are changing Atlas:
-
-- do not turn undocumented implementation details into accidental promises.
-
-## Stability Reading Shortcut
-
-- tutorial and example pages explain workflow and current practice.
-- reference pages explain exact factual surfaces.
-- contract pages describe the strongest intentional promises.
-
-## Next Pages
-
-- [Runtime Surfaces](runtime-surfaces.md).
-- [Release Model](release-model.md).
-- [Documentation Map](documentation-map.md).
-
-## Main Takeaway
-
-Atlas should only sound stable where it can show its work. A guarantee becomes
-real when someone can point to the owning contract or code path, the test or
-validation layer behind it, and the artifact that proves the promise still
-holds today.
-
-## Reading Rule
-
-Use this page when the question is not whether Atlas works today, but whether a
-surface is strong enough to build automation, process, or release reasoning
-around it.
+Continue with [Runtime Surfaces](runtime-surfaces.md) for interface ownership,
+[Release Model](release-model.md) for immutable identity, and
+[Structured Output Contracts](../contracts/structured-output-contracts.md) for
+machine-consumption rules.

@@ -88,6 +88,42 @@ database, or an authority for the biological correctness of upstream data. It
 validates supported boundaries and preserves provenance; it cannot establish
 truth that was absent from the source.
 
+## What Atlas Refuses
+
+Several apparent shortcuts would weaken the identity of a result, so Atlas
+keeps them outside the product boundary:
+
+- serving an unpublished build directory as though it were a release
+- selecting a dataset through an unnamed, mutable notion of "current"
+- accepting malformed coordinates or incompatible identities through silent
+  coercion
+- treating runtime caches, logs, or local database state as release authority
+- presenting the existence of an artifact as proof that its contents passed
+  the required policy and integrity checks
+
+These refusals are part of the architecture. They keep a query result connected
+to a named dataset and keep operational recovery connected to immutable release
+artifacts.
+
+## Evaluate a Result
+
+A result is useful evidence only when its identity can be followed back to the
+published release that supplied it.
+
+```mermaid
+flowchart RL
+    Result[Query result] --> Dataset[Dataset identity]
+    Dataset --> Catalog[Catalog entry]
+    Catalog --> Manifest[Artifact manifest]
+    Manifest --> Inputs[Input hashes and provenance]
+    Manifest --> Checks[Integrity and quality evidence]
+```
+
+Use the returned dataset identity first. Resolve it through the catalog, then
+inspect the manifest for the exact artifact hashes, input provenance, and build
+statistics. A result without that chain may still be locally useful, but it is
+not sufficient evidence for release comparison, audit, or rollback decisions.
+
 ## Stability Boundary
 
 Published crate APIs and installed binaries carry explicit compatibility
