@@ -37,13 +37,35 @@ Release evidence binds the final decision to the exact artifacts and policy.
 
 ## Operational Domains
 
-| Domain | Governs | Primary evidence |
-| --- | --- | --- |
-| [Stack](stack/index.md) | component roles, dependencies, profiles, versions, local and Kind topology | stack index, dependency graph, version manifest |
-| [Kubernetes](kubernetes/index.md) | chart schema, values profiles, install/upgrade/rollback, network and workload security | rendered inventory, conformance report, rollout and debug artifacts |
-| [Observability](observability/index.md) | health, readiness, overload, alerts, dashboards, logs, metrics, traces, drills | telemetry index, rule validation, dashboard checks, drill results |
-| [Load](load/index.md) | scenario identity, query packs, thresholds, baselines, concurrency, churn, outages | load summary, threshold evaluation, baseline comparison |
-| [Release](release/index.md) | version manifests, distribution, checksums, provenance, evidence bundles, recovery | verification result, release packet, SBOMs, rollback evidence |
+### [Stack](stack/index.md)
+
+Owns component roles, dependencies, profiles, versions, and local and Kind
+topology. Its primary evidence is the stack index, dependency graph, and version
+manifest.
+
+### [Kubernetes](kubernetes/index.md)
+
+Owns chart schema, values profiles, installation, upgrade, rollback, network
+policy, and workload security. Rendered inventory, conformance reports, rollout
+records, and debug bundles provide the evidence.
+
+### [Observability](observability/index.md)
+
+Owns health, readiness, overload, alerts, dashboards, logs, metrics, traces, and
+drills. Evidence comes from the telemetry index, rule validation, dashboard
+checks, and drill results.
+
+### [Load](load/index.md)
+
+Owns scenario identity, query packs, thresholds, baselines, concurrency, churn,
+and outage workloads. Load summaries, threshold evaluations, and baseline
+comparisons record the decisions.
+
+### [Release](release/index.md)
+
+Owns version manifests, distribution, checksums, provenance, evidence bundles,
+and recovery. Verification results, release packets, SBOMs, and rollback
+evidence support promotion.
 
 Cross-cutting inventory, schema, policy, security, drift, dataset, and
 reproducibility contracts live under `ops/`. They connect these domains and

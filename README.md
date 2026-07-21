@@ -332,7 +332,9 @@ cargo run -q -p bijux-atlas-api --bin bijux-atlas-openapi -- --help
 cargo run -q -p bijux-atlas-dev -- --help
 ```
 
-The runtime crate is published through Cargo. The maintainer crate is part of the repository contract and the `bijux dev atlas ...` umbrella surface, even when you run it directly from a checkout.
+The runtime crate is published through Cargo. The maintainer crate is part of
+the repository contract and the `bijux dev atlas ...` umbrella surface, even
+when you run it directly from a checkout.
 
 Atlas does not publish a Python package yet. The planned Python bridge is a future release item, not a hidden install path today.
 
@@ -427,7 +429,7 @@ flowchart TD
     Repo --> Ops[ops]
     Repo --> Docs[docs]
     Repo --> Makes[makes]
-    Docs --> ReaderFace[Reader-facing product docs]
+    Docs --> Handbook[Product and operations handbook]
     Configs --> Policy[Policy and schema sources]
     Ops --> RuntimeOps[Operational inputs]
 ```
@@ -460,7 +462,7 @@ If a surface is planned, internal, or future-facing, it should be described as s
 | `configs/` | Repository-owned policy, schemas, registries, and examples |
 | `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
 | `makes/` | Thin GNU Make wrapper surface |
-| `docs/` | Canonical reader-facing documentation |
+| `docs/` | Product, operations, and maintainer handbook |
 | `artifacts/` | Generated local outputs and evidence |
 
 ---
@@ -469,7 +471,9 @@ If a surface is planned, internal, or future-facing, it should be described as s
 
 Published crates, GitHub releases, docs deployment, and `v*` git tags define
 the public release line.
-Untagged checkout builds derive their operator-facing version from the latest real tag, while workspace manifests and checked-in release inputs can move ahead for the next intended release.
+Untagged checkout builds derive their operator-facing version from the latest
+real tag. Workspace manifests and checked-in release inputs can move ahead for
+the next intended release.
 The currently published artifact surfaces are crates.io for the eleven
 publishable Atlas crates, GHCR for `bijux-atlas/bijux-atlas`, and GitHub
 Releases. `bijux-atlas-dev` remains repository-only, and PyPI stays

@@ -14,12 +14,27 @@ signals. They answer different questions and must drive different actions.
 
 ## Endpoint Semantics
 
-| Endpoint | Question | Success | Failure meaning |
-| --- | --- | --- | --- |
-| `/health` and `/healthz` | can the process answer a basic health request? | `200` with `ok` | no deeper dependency or traffic claim is made |
-| `/live` | is the process accepting requests rather than draining? | `200` with `live: true` | `503` with `draining: true` |
-| `/ready` and `/readyz` | should normal traffic reach this instance? | `200` when runtime state and required catalog state are ready | `503` while startup, catalog, or readiness policy is unsatisfied |
-| `/healthz/overload` | is overload shedding active, and what are live/ready/drain states? | `200` when not overloaded | `503` when overload is active |
+### `/health` and `/healthz`
+
+These endpoints answer whether the process can handle a basic health request.
+They return `200` with `ok`; they make no deeper dependency or traffic claim.
+
+### `/live`
+
+Liveness answers whether the process is accepting requests rather than
+draining. It returns `200` with `live: true`, or `503` with `draining: true`.
+
+### `/ready` and `/readyz`
+
+Readiness decides whether normal traffic should reach the instance. It returns
+`200` when runtime state and any required catalog state are ready. Startup, an
+unavailable required catalog, or an unsatisfied readiness policy returns `503`.
+
+### `/healthz/overload`
+
+The overload endpoint reports shedding together with live, ready, and drain
+state. It returns `200` when overload is inactive and `503` when overload is
+active.
 
 Readiness requires a catalog when `readiness_requires_catalog` is enabled and
 the runtime is not in cached-only mode. Cached-only mode can remain ready
