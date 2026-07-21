@@ -49,6 +49,42 @@ from current release files, and the evidence manifest includes placeholder
 profile image digests and empty drill, simulation, and scan-report collections.
 Generate and verify a new coherent release set before distribution.
 
+## Read Evidence by Strength
+
+Release directories contain several artifact classes. Their presence answers
+different questions:
+
+| Artifact class | What it proves | What it cannot prove |
+| --- | --- | --- |
+| policy, schema, or scenario specification | the expected structure, rule, or workflow is declared. | that any candidate executed or passed it. |
+| fixture or golden file | a parser, comparison, or test has a stable example. | that the bytes belong to a deployable release. |
+| generated inventory or index | a generator observed the recorded inputs. | freshness unless source revision and generation run are bound. |
+| simulated evidence | the simulation path emitted the expected class of result. | behavior of a real cluster, registry, dependency, or traffic path. |
+| executed candidate report | the named candidate ran the named check in the recorded environment. | checks not included in that run. |
+| verified release packet | the packet is internally coherent under the verifier and policy used. | safety in a different consumer environment without fresh verification. |
+
+Status labels such as `placeholder`, `simulated`, and `ok` must be interpreted
+with artifact class and candidate identity. An `ok` fixture is still a fixture.
+
+## Release Planes
+
+```mermaid
+flowchart TB
+    Software[Software plane: crates, binaries, images, API] --> Candidate[Release candidate]
+    Deployment[Deployment plane: chart, profiles, policy] --> Candidate
+    Data[Data plane: published immutable datasets and pointers] --> Runtime[Running service]
+    Candidate --> Runtime
+    Evidence[Evidence plane: manifests, SBOMs, signatures, tests, drills] --> Promotion{Promotion decision}
+    Runtime --> Evidence
+    Promotion -->|accept| Published[Published release]
+    Promotion -->|reject| Retain[Retain baseline and diagnose]
+```
+
+Software rollback, deployment rollback, dataset-pointer rollback, and durable
+data recovery are separate operations. A release packet must say which plane
+changed and which plane remained immutable. Otherwise “rollback succeeded” is
+too ambiguous for an operational decision.
+
 ## Route by Decision
 
 | Decision | Read | Required outcome |

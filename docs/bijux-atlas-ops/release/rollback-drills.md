@@ -9,61 +9,125 @@ last_reviewed: 2026-07-22
 
 # Rollback Drills
 
-A rollback drill proves that operators can reject a candidate, restore a
-supported previous release, and verify service and data identity under a bounded
-recovery window. A scenario definition or successful Helm command is not enough.
+A rollback drill proves that operators can detect a bad candidate, decide to
+revert, restore a supported previous release, and verify service and dataset
+identity inside a bounded recovery window. Scenario files, fixtures, and a
+successful Helm command are prerequisites or observations, not the whole proof.
 
-## Drill Sequence
+## Exercise Both Failure Modes
+
+| Drill | What it challenges |
+| --- | --- |
+| rollback after failed upgrade | startup failure containment, partial-resource cleanup, and restoration before promotion. |
+| rollback after successful upgrade | reversibility after traffic, caches, telemetry, and configuration have observed the candidate. |
+
+The second case is essential. It exposes irreversible configuration or shared
+state changes that a startup-failure rehearsal cannot reach.
+
+## Preconditions
+
+- The exact reverse transition is marked supported in the compatibility table.
+- Baseline and candidate chart, image, configuration, and source identities are
+  immutable and retained.
+- Baseline request, readiness, dataset, telemetry, and load evidence is healthy.
+- Previous artifacts remain reachable through the selected distribution path.
+- Dataset-pointer and durable-data recovery procedures are independently known.
+- Rollback triggers, decision authority, time budget, and escalation path are
+  agreed before the candidate is deployed.
+
+If any precondition is missing, record a blocked drill. Do not improvise a
+different target after the failure begins.
+
+## Drill Timeline
 
 ```mermaid
 sequenceDiagram
     participant Operator
-    participant Old as Baseline release
-    participant New as Candidate release
-    participant Evidence
-    Operator->>Old: Verify baseline and rollback target
-    Operator->>New: Upgrade and begin observation
-    New-->>Evidence: Readiness, traffic, telemetry, correctness
-    Operator->>Old: Trigger rollback
-    Old-->>Evidence: Restored identity and request behavior
-    Operator->>Evidence: Verify no partial candidate state
+    participant Baseline
+    participant Candidate
+    participant Observer
+    Operator->>Baseline: capture healthy identity and behavior
+    Operator->>Candidate: deploy exact candidate
+    Candidate->>Observer: readiness, traffic, queries, telemetry
+    Observer-->>Operator: trigger condition and detection time
+    Operator->>Baseline: execute supported rollback
+    Baseline->>Observer: restored identity, traffic, and behavior
+    Operator->>Observer: inspect candidate cleanup and retained state
+    Observer-->>Operator: recovery result and timing evidence
 ```
 
-Exercise two cases: rollback after an intentionally failed upgrade and rollback
-after a candidate first succeeds. The first proves failure containment; the
-second exposes irreversible migrations or state changes that only appear after
-promotion.
+Record at least these timestamps:
 
-## Preconditions
+- candidate deployment started;
+- first candidate readiness and first candidate traffic;
+- first violated invariant;
+- operator detection and rollback decision;
+- rollback command started and completed;
+- previous release became ready and received traffic;
+- correctness and dataset identity were restored;
+- candidate cleanup was confirmed.
 
-- The rollback target appears in the compatibility matrix.
-- Baseline chart, image, configuration, and dataset identities are immutable.
-- Previous artifacts remain available through the selected distribution path.
-- The operator has a separate durable-state recovery path.
-- Expected readiness, request, telemetry, and load evidence is declared.
-- Escalation criteria are defined for a rollback that cannot restore service.
+Derive detection, decision, execution, readiness, and total service-restoration
+durations from retained timestamps. Do not reconstruct them later from memory.
 
-## Current Drill Status
+## Evidence Package
 
-The two runtime rollback scenarios target `0.2.0` to `0.1.0`, while the
-compatibility matrix only declares `0.2.0` to `0.1.1` as supported. The OCI
-rollback evidence is simulated and carries placeholder digests. The
-`rollback-restores-baseline` record is a fixture that names an expected result;
-it is not an execution result.
+A credible drill record connects all of the following to one run ID:
 
-No current checked-in record demonstrates a completed rollback with request,
-readiness, release identity, and cleanup evidence. Treat the catalog as a drill
-specification until the target mismatch is corrected and a fresh run is
-retained.
+| Evidence | Required content |
+| --- | --- |
+| transition identity | baseline and candidate versions, source revisions, chart/image digests, profile, namespace, and compatibility row. |
+| trigger | violated invariant, threshold, first observation, and decision owner. |
+| execution | exact rollback command, Helm revision history, capability grants, exit status, and tool versions. |
+| runtime restoration | pod/release identity, readiness, governed traffic, request correctness, and selected dataset IDs. |
+| operational continuity | release-labeled metrics, logs, traces, error rate, latency, and load-under-rollback results. |
+| cleanup | absence of candidate-owned partial resources, configuration, jobs, and mutable pointers. |
+| timing | source timestamps and derived recovery durations. |
 
-## Success Criteria
+The current `ops-rollback` schema is a minimal command-result envelope. A
+schema-valid object with `status: ok` does not contain all drill evidence above.
+Package the command result with the additional observed artifacts and validate
+each against its owning contract.
 
-A drill passes only when the supported previous release becomes ready, receives
-governed traffic, restores query correctness and dataset access, preserves
-telemetry, stays inside rollback load budgets, and leaves no candidate-owned
-partial state. Record time to detect, decide, execute, become ready, and restore
-service.
+## Planning and Execution
 
-If rollback changes or damages shared durable data, stop cycling runtime
-releases and enter recovery. See [Backup and Recovery](backup-and-recovery.md)
-for that boundary.
+Inspect the scenario without effects:
+
+```bash
+bijux dev atlas ops scenario run \
+  --scenario rollback-after-failed-upgrade \
+  --plan \
+  --format json
+```
+
+The kind Helm rollback command is an execution surface for simulation and
+requires subprocess, write, and network grants. Give the rehearsal a unique run
+ID, preserve its artifact root, and capture observations before and after the
+command. A plan or system simulation does not replace this exercised path.
+
+## Abort and Escalate
+
+Stop the drill and enter incident handling when:
+
+- the supported previous release cannot become ready;
+- the restored release does not receive governed traffic;
+- query correctness or dataset identity remains wrong;
+- rollback mutates or damages shared durable data;
+- required artifacts are unavailable or fail integrity checks;
+- repeated rollback attempts exceed the agreed recovery budget.
+
+Do not cycle between releases to mask an unresolved state problem. Preserve the
+failed evidence and follow [Backup and Recovery](backup-and-recovery.md) when
+durable state is implicated.
+
+## Current Readiness
+
+Both checked-in rollback scenario files target unsupported `0.2.0` to `0.1.0`
+routing. The OCI record is simulated with placeholder-like digests, and the
+baseline-restoration record is a fixture. No checked-in package currently binds
+a supported transition to release identity, traffic, correctness, telemetry,
+timing, and cleanup evidence.
+
+The drill catalog is therefore a specification, not proof of operational
+readiness. Correct the transition targets and retain a fresh exercised record
+before depending on rollback for promotion.
