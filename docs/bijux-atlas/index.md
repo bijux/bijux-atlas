@@ -10,9 +10,8 @@ last_reviewed: 2026-07-22
 # bijux-atlas
 
 Atlas delivers immutable genomic dataset releases and stable query surfaces
-over published catalog state. This section follows the product boundary from
-source admission through artifact construction, publication, serving, and
-compatibility.
+over published catalog state. The product boundary runs from source admission
+through artifact construction, publication, serving, and compatibility.
 
 ```mermaid
 flowchart LR
@@ -32,11 +31,10 @@ Atlas is the repository-owned product surface for:
 - serving dataset identity, gene, transcript, sequence, and diff workflows
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
 
-The Atlas product surface is now carried by a split crate set rather than one
-monolithic runtime package. `bijux-atlas-runtime` owns orchestration,
-`bijux-atlas` preserves the historical import path, `bijux-atlas-cli`,
-`bijux-atlas-server`, and `bijux-atlas-api` own the direct binaries, and the
-leaf crates own ingest, query, model, core, store, and operations contracts.
+The Atlas product surface is carried by a split crate set.
+`bijux-atlas-runtime` owns orchestration. `bijux-atlas` preserves the historical
+import path. The CLI, server, and API crates own the direct binaries. Leaf
+crates own ingest, query, model, core, store, and operations contracts.
 
 | Capability | Product boundary |
 | --- | --- |
@@ -85,7 +83,24 @@ Ownership stays split so consumers can depend on the narrowest durable surface:
 - workflow examples and machine-checked contract shapes live under
   `configs/examples/` and `configs/schemas/contracts/`
 
-## Choose a Workflow
+## Follow a Result
+
+```mermaid
+flowchart TD
+    Result[Observed query result] --> Release[Resolved release identity]
+    Release --> Catalog[Catalog entry]
+    Catalog --> Manifest[Artifact manifest and hashes]
+    Manifest --> Inputs[Governed source identities]
+    Result --> Surface[CLI or HTTP contract]
+    Result --> Runtime[Runtime configuration and policy]
+```
+
+A reviewable result has two traceable paths. Its release identity leads through
+the catalog and artifact manifest to governed inputs. Its shape leads to the
+owning interface contract. Those paths are more useful than a generic statement
+that the runtime or dataset is current.
+
+## Choose a Product Surface
 
 Choose a path based on the question in front of you:
 
@@ -119,9 +134,9 @@ Stable claims are backed by four kinds of authority:
 - example or workflow material under `configs/examples/`
 
 Those authorities have different force. Implementation and schemas define
-behavior; generated references expose the resolved surface; examples teach a
-supported path but do not expand the contract. For a release-specific claim,
-pair the authority with evidence from the owning workflow.
+behavior. Generated references expose the resolved surface. Examples teach a
+supported path but do not expand the contract. A release-specific claim also
+needs evidence from the owning workflow.
 
 | Reader question | Product authority | Release-specific proof |
 | --- | --- | --- |

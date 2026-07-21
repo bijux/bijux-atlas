@@ -4,89 +4,59 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Workflows
 
-`bijux-atlas/workflows` is where Atlas becomes a sequence of concrete product
-tasks.
+Atlas workflows preserve the boundary between building a dataset and serving a
+published release. Each path ends with an observable checkpoint so completion
+does not depend on an operator interpreting silence as success.
 
 ```mermaid
-flowchart TD
-    Workflows[Workflows section] --> Install[Install and verify]
-    Workflows --> Build[Build or load dataset state]
-    Workflows --> Serve[Start the server]
-    Workflows --> Query[Run queries]
-    Workflows --> Troubleshoot[Troubleshoot early problems]
-    Install --> Path[Practical task path]
-    Build --> Path
-    Serve --> Path
-    Query --> Path
-    Troubleshoot --> Path
+flowchart LR
+    Install[Verify binaries] --> Ingest[Validate and ingest]
+    Ingest --> Artifact[Inspect artifact identity]
+    Artifact --> Publish[Publish store and catalog state]
+    Publish --> Serve[Start runtime]
+    Serve --> Query[Run structured queries]
+    Query --> Observe[Retain result and diagnostics]
 ```
 
-Workflows are where the product path becomes directly usable. These pages show
-the right order of actions, the checkpoints that prove a step worked, and the
-boundaries that keep build state, serving state, and runtime state from being
-mixed by accident.
+## Choose a Path
 
-Use this section when you need to do product work with Atlas rather than study
-its architecture.
+| Outcome | Workflow | Completion signal |
+| --- | --- | --- |
+| verify an installation | [Install and Verify](install-and-verify.md) | expected command identity and version output |
+| exercise the product locally | [Run Atlas Locally](run-atlas-locally.md) | runtime starts against explicit local state |
+| learn with governed sample data | [Load a Sample Dataset](load-a-sample-dataset.md) | artifact and dataset identities are inspectable |
+| build release-shaped data | [Ingest Workflows](ingest-workflows.md) | validation succeeds and a complete manifest exists |
+| inspect or select datasets | [Dataset Workflows](dataset-workflows.md) | requested dataset resolves unambiguously |
+| publish discoverable identity | [Catalog Workflows](catalog-workflows.md) | catalog and serving store agree on the release |
+| start HTTP serving | [Start the Server](start-the-server.md) | health and readiness report the intended state |
+| query published content | [Query Workflows](query-workflows.md) | structured output identifies the resolved release |
+| verify the first user path | [Run Your First Queries](run-your-first-queries.md) | representative lookup and sequence results succeed |
+| diagnose an early failure | [Troubleshoot Early Problems](troubleshoot-early-problems.md) | failed boundary and corrective action are identified |
 
-## Reader Paths
+## Checkpoints That Matter
 
-Choose the path that matches your goal:
+A workflow result should preserve enough identity to answer:
 
-- first local setup: [Install and Verify](install-and-verify.md) -> [Run Atlas Locally](run-atlas-locally.md) -> [Load a Sample Dataset](load-a-sample-dataset.md)
-- first serving flow: [Start the Server](start-the-server.md) -> [Run Your First Queries](run-your-first-queries.md)
-- ingest and catalog work: [Ingest Workflows](ingest-workflows.md) -> [Dataset Workflows](dataset-workflows.md) -> [Catalog Workflows](catalog-workflows.md)
-- debugging early failures: [Troubleshoot Early Problems](troubleshoot-early-problems.md)
+- which binary and configuration were used;
+- which source inputs and validation policy were admitted;
+- which artifact manifest and hashes were produced;
+- which catalog entry and store location were selected;
+- which release a query resolved; and
+- which output or diagnostic established the result.
 
-If you already know the task, go straight to that workflow page. This section
-mainly keeps the first Atlas steps in the right order.
+Success at one boundary does not imply success at the next. In particular, an
+ingest directory is not a serving store, an artifact manifest is not a catalog
+publication record, and process health is not query correctness.
 
-## Workflow Boundary
+## Exact Surfaces and Production Operations
 
-These pages describe how users and integrators move through the product-facing
-runtime path. They do not replace:
-
-- `bijux-atlas-ops` for deployment, rollout, observability, and load guidance
-- `bijux-atlas-dev` for repository validation, release automation, and
-  maintainer-only checks
-
-## What This Section Is For
-
-Use workflows when you need the product task path in order: install, verify,
-load data, start the server, run queries, and debug early mistakes. When the
-question becomes “what exact flag is this?” or “where does this logic live in
-code?”, move to interfaces or runtime instead of forcing workflow pages to do
-everything.
-
-## Lifecycle View
-
-Atlas workflow material follows the normal artifact-first lifecycle:
-
-1. install and verify the runtime surface
-2. build or load dataset state
-3. publish or point at a serving store
-4. start the server or use the CLI
-5. run queries and inspect outputs
-
-## Pages
-
-- [Catalog Workflows](catalog-workflows.md)
-- [Dataset Workflows](dataset-workflows.md)
-- [Ingest Workflows](ingest-workflows.md)
-- [Install and Verify](install-and-verify.md)
-- [Load a Sample Dataset](load-a-sample-dataset.md)
-- [Query Workflows](query-workflows.md)
-- [Run Atlas Locally](run-atlas-locally.md)
-- [Run Your First Queries](run-your-first-queries.md)
-- [Start the Server](start-the-server.md)
-- [Troubleshoot Early Problems](troubleshoot-early-problems.md)
-
-## Related Sections
-
-- move to [Interfaces](../interfaces/index.md) when you need exact flags, env vars, or endpoint details
-- move to [Runtime](../runtime/index.md) when a workflow question turns into an architecture question
+Flags, environment variables, endpoints, output shapes, and error behavior are
+defined under [Interfaces](../interfaces/index.md). Architecture and lifecycle
+ownership are under [Runtime](../runtime/index.md). Deployment, security,
+observability, load, rollback, and retained operational evidence are governed
+by the [Operations handbook](../../bijux-atlas-ops/index.md).
