@@ -4,102 +4,85 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Conformance Suites
+# Kubernetes Conformance Suites
 
-Kubernetes conformance is backed by declared suites and manifest-driven test
-ownership.
+Atlas conformance tests connect rendered resources to observable behavior. The
+test manifest currently contains 79 checks owned across chart, server, store,
+observability, and stack domains.
 
-## Purpose
+## Evidence Layers
 
-Use this page when you need to understand which Kubernetes checks Atlas runs,
-what each suite is meant to prove, and which outputs become release evidence.
+```mermaid
+flowchart TD
+    M["Test manifest: script, groups, owner, timeout, failure modes"] --> S["Selected conformance suite"]
+    S --> E["Execution with progress and time budget"]
+    E --> R["Schema-backed report"]
+    R --> D{"Release-blocking result"}
+    D -->|pass| P["Scoped claim accepted"]
+    D -->|fail or missing| X["Promotion blocked"]
+```
 
-## Source of Truth
+`manifest.json` owns individual checks. `suites.json` selects checks by group.
+`ownership.json` routes failures. The conformance report schema defines the
+machine-readable result.
 
-- `ops/k8s/tests/manifest.json`
-- `ops/k8s/tests/suites.json`
-- `ops/k8s/tests/ownership.json`
-- `ops/k8s/tests/goldens/k8s-conformance-report.sample.json`
-- `ops/schema/k8s/conformance-report.schema.json`
+## Suite Catalog
 
-## What Is Governed
+| Suite | Groups and operating question | Budget |
+| --- | --- | ---: |
+| `smoke` | install, readiness, sanity, autoscaling, PDB, and observability wiring | 10 min |
+| `resilience` | availability, autoscaling, PDB, rolling restart, and resilience | 20 min |
+| `graceful-degradation` | load, readiness, and resilience during cached-only or store failure | not declared |
+| `api-protection` | admission control, rate limiting, and Redis-backed protection | not declared |
+| `full` | every declared test group | 60 min |
 
-The Kubernetes conformance program has three governing layers:
+Smoke and resilience fail fast. Full requires progress logs. A missing budget
+does not grant unlimited execution; it means the suite registry currently does
+not declare one and the run record must state the applied outer limit.
 
-- `manifest.json` defines the test inventory, timeout budget, expected failure
-  modes, group membership, and quarantine rules
-- `suites.json` groups those tests into operator-facing validation lanes such as
-  `smoke`, `resilience`, `graceful-degradation`, `api-protection`, and `full`
-- `ownership.json` maps each script family to a responsible domain such as
-  `chart`, `server`, `store`, `observability`, or `stack`
+The `install-gate`, `k8s-suite`, and `nightly` names in the install matrix are
+broader delivery lanes. They are not entries in this five-suite conformance
+catalog. Record both the delivery lane and the conformance suite when both are
+part of the evidence.
 
-## Suite Taxonomy
+## What a Report Proves
 
-Atlas currently defines these suite classes:
+A conformance pass proves only the checks selected by that suite and manifest
+revision. The report must identify its run and suite, give a top-level status,
+list failed sections, and preserve section results for configuration, policy,
+probes, PDB, and observability or other selected groups.
 
-- `smoke` is the fast install and invariant gate for readiness, autoscaling,
-  observability wiring, PodDisruptionBudget coverage, and basic sanity
-- `resilience` focuses on availability, disruption tolerance, rolling restart
-  safety, and autoscaling behavior
-- `graceful-degradation` proves survival behaviors such as cached-only mode and
-  store outage handling
-- `api-protection` checks rate limiting, admission control, and overload
-  protection paths
-- `full` is the broad integration suite used when release confidence requires
-  the whole declared test surface
+Before relying on a pass, confirm:
 
-## Operator Workflow
+- the changed resource is covered by at least one selected test;
+- the manifest expected failure mode matches the risk under review;
+- the owner is still correct;
+- retries did not conceal a persistent failure;
+- the report validates against
+  `ops/schema/k8s/conformance-report.schema.json`;
+- required progress and timeout behavior was preserved.
 
-1. Start from `ops/k8s/install-matrix.json` to identify the suite expected for
-   the target profile.
-2. Use `ops/k8s/tests/manifest.json` to confirm which scripts cover the change
-   surface and what failure modes they are expected to catch.
-3. Use `ops/k8s/tests/ownership.json` to route failures to the correct owner.
-4. Record the resulting report in the schema-backed conformance format.
-5. Treat missing or failing release-gate suites as blockers for promotion.
+## Current Quarantine Risk
 
-## How to Read the Evidence
+The manifest's flake policy requires an issue and limits quarantine to 14 days.
+Four checks currently carry `quarantine_until: 2026-03-31` without an issue
+field: catalog refresh readiness, readiness semantics, JSON logging, and store
+reachability. As of this review, those entries are expired and do not satisfy
+the declared quarantine policy.
 
-The sample report in
-`ops/k8s/tests/goldens/k8s-conformance-report.sample.json` shows the canonical
-evidence shape:
+Do not count an expired quarantine as passing evidence. Restore the check or
+record a current issue-backed disposition before using a suite result for
+release confidence.
 
-- `run_id` identifies the validation attempt
-- `suite_id` names the suite that ran
-- `status` is the top-level verdict
-- `failed_sections` lists broken sections that need review
-- `sections.*` records pass or fail results for areas such as `configmap`,
-  `networkpolicy`, `pdb`, `probes`, and observability wiring
+## Failure Decisions
 
-Pass means the governed contract still holds for the suite scope. Fail means the
-surface is unsafe or ambiguous and must be fixed, quarantined with an issue, or
-explicitly removed from the release decision.
+Block promotion when a required test is missing, a selected check fails, a
+report is absent or schema-invalid, quarantine policy is violated, or ownership
+is unknown. A passing script outside the declared manifest is useful diagnosis,
+but it is not governed conformance evidence.
 
-## Failure Modes
-
-- a required script is missing from the manifest for a changed resource
-- a script is quarantined without an issue or beyond the allowed TTL
-- a suite passes informally but no schema-backed report is produced
-- ownership is unclear, so release-blocking failures bounce across teams
-- the changed template surface is not represented in the selected suite
-
-## Evidence Produced
-
-Each conformance run should produce:
-
-- the suite selection and run identifier
-- a report that matches `ops/schema/k8s/conformance-report.schema.json`
-- section-level failures or missing coverage notes
-- ownership mapping for follow-up
-- release review notes when a suite is release-blocking
-
-## Related Contracts and Assets
-
-- `ops/k8s/tests/manifest.json`
-- `ops/k8s/tests/ownership.json`
-- `ops/schema/k8s/conformance-report.schema.json`
-- `ops/k8s/tests/suites.json`
-- `ops/k8s/tests/goldens/k8s-conformance-report.sample.json`
+The executable inventory is under `ops/k8s/tests/`; the sample evidence shape is
+`ops/k8s/tests/goldens/k8s-conformance-report.sample.json`.

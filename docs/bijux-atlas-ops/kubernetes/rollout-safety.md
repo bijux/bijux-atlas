@@ -4,87 +4,86 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Rollout Safety
 
-Rollout safety is documented as an explicit contract over values files,
-release flows, and supporting suites.
+A safe rollout preserves service admission, data availability, security
+posture, and recovery authority while the running release changes. Atlas makes
+these expectations profile-specific through
+`ops/k8s/rollout-safety-contract.json`.
 
-## Purpose
+## Profile Safety Modes
 
-Use this page to decide whether a profile is allowed to deploy as a plain
-deployment or a governed rollout, which readiness gates must hold, and when the
-operator must stop and roll back.
+| Profile | Delivery mode | Warmup required | Network policy | HPA |
+| --- | --- | ---: | --- | --- |
+| `ci` | Deployment | no | disabled | disabled |
+| `dev` | Deployment | no | disabled | disabled |
+| `kind` | Rollout | yes | cluster-aware | disabled |
+| `offline` | Deployment | yes | disabled | disabled |
+| `perf` | Rollout | no | cluster-aware | enabled |
+| `prod` | Rollout | no | cluster-aware | enabled |
 
-## Source of Truth
+Every profile requires a readiness path. Kind requires warmup before promotion;
+offline requires prewarming and pinned datasets while forbidding live-catalog
+readiness. Performance requires a digest-pinned image and service monitoring.
+Production requires HPA and cluster-aware dependency isolation.
 
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/schema/k8s/rollout-safety-contract.schema.json`
-- `ops/k8s/install-matrix.json`
-- `ops/e2e/scenarios/upgrade/`
+## Promotion State Machine
 
-## What Is Governed
+```mermaid
+stateDiagram-v2
+    [*] --> Preflight
+    Preflight --> Deploying: render and contracts pass
+    Preflight --> Rejected: contract failure
+    Deploying --> Observing: new instances become ready
+    Deploying --> Rollback: readiness or warmup fails
+    Observing --> Promoted: service and load evidence pass
+    Observing --> Rollback: SLO, error, policy, or integrity regression
+    Rollback --> Recovered: previous release is ready
+    Rollback --> Incident: recovery contract fails
+```
 
-The rollout safety contract currently defines profile-level invariants such as:
+Do not promote on pod phase alone. Promotion requires readiness to stabilize,
+traffic to reach the new release, expected telemetry to arrive, and the
+selected load or resilience evidence to remain inside budget.
 
-- `rollout_mode`, which separates simple deployment paths from governed rollout
-  paths
-- `warmup_required`, which determines whether startup data preparation must
-  finish before promotion
-- `readiness_path_required`, which keeps readiness endpoints mandatory for every
-  supported profile
-- `requiredToggles` and `forbiddenToggles`, which prevent risky runtime and
-  profile combinations
-- `networkPolicyModeRequired` and `hpaPolicyRequired`, which tie rollout safety
-  to isolation and scaling posture
+## Observe During Change
 
-## Rollout Invariants
+Track at least:
 
-Treat these as non-negotiable rules before promotion:
+- ready, live, draining, and overload states by release identity;
+- request rate, error rate, latency distributions, and heavy-work shedding;
+- restart, scheduling, image-pull, and dependency failures;
+- warmup and catalog discovery progress where required;
+- HPA decisions, replica availability, and PDB constraints;
+- audit, authentication, and network-policy failures;
+- store integrity and dataset-resolution errors.
 
-- readiness must reflect actual serving ability for the selected profile
-- drain and termination settings must allow in-flight requests to complete
-- warmup jobs must complete when the profile requires them
-- production-oriented rollout paths must keep their declared network and scaling
-  policies intact
-- rollback references must be explicit for upgrade and rollback scenarios
+Compare the new and previous releases over the same observation window. A
+global average can hide a failing candidate behind healthy old replicas.
 
 ## Rollback Triggers
 
-Start rollback review immediately when any of these happen:
+Begin rollback when the candidate cannot become ready within the declared
+window, loses required policy or configuration, violates latency or error
+budgets, cannot resolve governed datasets, or causes cheap-path survival to
+fail under load. Also roll back when required telemetry is absent: an
+unobservable candidate is not safe to promote.
 
-- readiness never stabilizes after the allowed rollout window
-- validation or conformance evidence shows broken probes, missing policy, or
-  failed rollout groups
-- latency or error behavior regresses during the rollout-under-load path
-- the running profile no longer satisfies its required toggles
+Stop automatic rollback and escalate to incident response when the previous
+release cannot recover, shared data or catalog state may be damaged, or the
+rollback would violate a known compatibility boundary.
 
-## How to Validate
+## Required Record
 
-1. Confirm the target profile entry in `ops/k8s/rollout-safety-contract.json`.
-2. Check the matching install or upgrade scenario in
-   `ops/k8s/install-matrix.json`.
-3. Run render, validate, and the required suite for that profile.
-4. Review the related upgrade or rollback scenario assets under
-   `ops/e2e/scenarios/upgrade/`.
-5. Carry observability and load evidence into the promotion decision for
-   rollout-based profiles.
+Preserve the baseline and target release identities, selected profile, rendered
+diff, conformance report, rollout timestamps, probe transitions, relevant
+metrics and traces, rollback decision, and final service state. For an upgrade
+or rollback claim, the install matrix must also declare the corresponding
+lifecycle scenario.
 
-## Evidence Produced
-
-Rollout safety review should be backed by:
-
-- render and validate reports for the exact profile
-- conformance suite evidence for the selected rollout path
-- upgrade or rollback scenario references
-- readiness, drain, and load evidence when the rollout mode is not a simple
-  deployment
-
-## Related Contracts and Assets
-
-- `ops/schema/k8s/rollout-safety-contract.schema.json`
-- `ops/e2e/scenarios/upgrade/`
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/k8s/install-matrix.json`
+See [Health Readiness and Drain](../observability/health-readiness-and-drain.md)
+for endpoint semantics and [Rollout Under Load](../load/rollout-under-load.md)
+for traffic evidence.
