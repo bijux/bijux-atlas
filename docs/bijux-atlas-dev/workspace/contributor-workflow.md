@@ -4,102 +4,113 @@ audience: maintainer
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Contributor Workflow
 
-This page explains the expected path from a fresh checkout to a review-ready Atlas change.
+A reviewable Atlas change connects intent, ownership, contract impact, and
+reproducible evidence. The workflow begins with the affected surface, not with
+a universal setup or test command.
 
-## First Contribution Path
+## From Change to Review
 
 ```mermaid
 flowchart TD
-    Read[Read the relevant docs] --> Baseline[Run baseline validation]
-    Baseline --> SmallChange[Make one narrow change]
-    SmallChange --> Tests[Run targeted tests and checks]
-    Tests --> Review[Prepare review evidence]
-    Review --> Merge[Merge with ownership approval]
+    Scope[Name the affected surface] --> Authority[Find owner and authority]
+    Authority --> Baseline[Capture focused baseline]
+    Baseline --> Change[Implement coherent change]
+    Change --> Verify[Run proportional validation]
+    Verify --> Review[Review diff and evidence]
+    Review --> Commit[Commit one durable intent]
+    Commit --> Broaden[Run containing lane if required]
 ```
 
-This first-contribution path shows the expected shape of a reviewable Atlas change. Reading, scoped
-editing, focused proof, and clear evidence are part of the workflow, not optional cleanup.
+### Name the affected surface
 
-## Environment Baseline
+State whether the change affects product behavior, a public contract,
+operations, maintainer automation, documentation, or generated evidence. A
+single patch can affect more than one surface; each one needs an owner and proof.
 
-Treat the workspace root as the only supported starting point.
+### Find the authority
+
+Use code for behavior, schemas and registries for governed shapes, generated
+references for observed surfaces, and docs for reader workflows. If they
+disagree, record the discrepancy. Do not silently choose the version that makes
+the change easiest.
+
+### Capture a focused baseline
+
+Run or inspect the narrow check that can fail for the intended change. For a
+docs edit, validate docs. For a schema edit, validate that schema and a governed
+example. For a command edit, compare the command tree, command registry, output
+schema, and consuming wrapper.
+
+### Implement a coherent change
+
+Keep unrelated work out of the diff. Update public docs and examples when the
+behavior they teach changes. Update generated output only through its owning
+generator, and keep generated changes distinct when they have separate review
+value.
+
+## Evidence by Change Type
+
+| Change | Minimum focused evidence | Broader evidence when warranted |
+| --- | --- | --- |
+| docs prose or navigation | `docs validate`, Markdown diff check, and link/nav validation owned by the docs command. | docs build or UX smoke when rendering, theme, includes, or generated references change. |
+| one Rust crate | selected package test or named test target. | dependent packages or the containing suite when public behavior crosses crates. |
+| CLI surface | help/output snapshot, registry agreement, and command-specific test. | compatibility and pull-request lanes for public names or output changes. |
+| JSON Schema or report | exact schema validation against governed examples and producer output. | compatibility report and all known consumers for a breaking or versioned change. |
+| runtime configuration | effective-config validation with exact candidate inputs. | deployment profile, security, and startup tests for cross-field or production rules. |
+| operations profile | render and validate the named profile. | scenario, load, or rollback evidence for behavior under runtime conditions. |
+
+The minimum is a starting point, not a waiver. Risk, ownership boundaries, and
+consumer count determine how far validation must expand.
+
+## Review the Change Before Committing
+
+Inspect both unstaged and staged diffs. Confirm that the commit contains one
+durable intent, no incidental artifacts, no unrelated user work, and no claim
+stronger than the retained evidence.
+
+Useful checks include:
 
 ```bash
-cargo fetch
-cargo test -p bijux-atlas-dev --no-run
-cargo run -q -p bijux-atlas-dev -- governance validate --format json
-cargo run -q -p bijux-atlas-dev -- docs doctor --format json
+git diff --check
+git diff --name-only
+git diff --cached --check
+git diff --cached --name-only
 ```
 
-If those commands fail, fix the environment first instead of trying to work around the failure in later steps.
+Stage explicit paths. Commit only after the focused evidence for that unit is
+known. If a required check is intentionally deferred because it is slow,
+networked, or environment-specific, name it and do not imply that it passed.
 
-## Recommended Onboarding Sequence
+## Review Handoff
 
-1. Read the product and architecture pages for the surface you plan to change.
-2. Start with a docs-only or low-risk code change before touching contract-owned behavior.
-3. Run the narrowest targeted validation that proves the change is correct.
-4. Run the lane wrapper or suite that matches the review path before you ask for approval.
+A reviewer should be able to answer:
 
-## Governance Baseline
+- What user, operator, or maintainer outcome changed?
+- Which authority owns the changed surface?
+- Is the change compatible, versioned, or intentionally breaking?
+- Which exact commands ran, and what did each prove?
+- Which checks were not run, and why?
+- Where is the retained report when the decision depends on an artifact?
+- What known discrepancy or risk remains?
 
-Every contributor should understand the repository governance baseline before
-submitting a cross-cutting change.
+One copy-paste rerun command is valuable only when it selects the same scope and
+capabilities as the reported evidence.
 
-- run `cargo run -q -p bijux-atlas-dev -- governance check --format json`
-- run `cargo run -q -p bijux-atlas-dev -- governance validate --format json`
-- get maintainer signoff when the change affects contracts, ownership, or
-  repository-wide automation behavior
+## When Validation Disagrees
 
-This governance baseline exists because Atlas treats repository rules as a product-quality concern,
-not as optional maintainer preference.
+If focused validation passes and a containing lane fails, preserve both results.
+Inspect the lane's selected IDs and failure artifacts before expanding again.
+If local behavior and CI differ, compare binary version, registry revision,
+environment, capability grants, and artifact roots.
 
-## Review Expectations
+Do not weaken a check, broaden an allowlist, or edit generated evidence to make
+the disagreement disappear. Resolve the owning contract or report the blocker.
 
-- make the scope and user-visible intent explicit
-- call out compatibility or contract impact, even when the answer is "none"
-- update tests, docs, and operational guidance together when behavior changes
-- avoid hidden side effects, unreviewable wrappers, and silent output changes
-- involve the owning domain when a change crosses crate, docs, or ops boundaries
-
-## Pull Request Readiness
-
-Before opening or updating a pull request, confirm:
-
-- the branch contains one coherent story per commit
-- the smallest relevant test or check set already passes locally
-- the matching docs page is updated when public behavior changed
-- evidence artifacts or JSON output are refreshed when review depends on them
-- reviewers can reproduce the result with one copy-paste command
-
-## One Rule That Prevents Review Pain
-
-If a reviewer cannot tell what changed, why it changed, and how to rerun the proof quickly, the
-branch is not ready yet.
-
-## Common Local Problems
-
-If governance validation fails, re-run `cargo run -q -p bijux-atlas-dev -- governance check --format json` and fix the rule or file path named in the output.
-
-If a control-plane command fails before doing useful work, inspect whether it needs explicit capability flags or an external tool that is only expected in broader lanes.
-
-If CI fails but your narrow local check passes, reproduce the matching wrapper first, then narrow to the underlying command only after the lane itself is understood.
-
-## Where to Go Next
-
-- [Workspace and Tooling](workspace-and-tooling.md)
-- [Automation Control Plane](../automation/automation-control-plane.md)
-- [Testing and Evidence](../governance/testing-and-evidence.md)
-- [Change and Compatibility](../governance/change-and-compatibility.md)
-
-## Purpose
-
-This page explains the Atlas material for contributor workflow and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Continue with [Testing and Evidence](../governance/testing-and-evidence.md) for
+proof strength and [Change and
+Compatibility](../governance/change-and-compatibility.md) for public evolution.
