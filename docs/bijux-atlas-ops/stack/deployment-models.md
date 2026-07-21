@@ -83,6 +83,20 @@ be inherited as production readiness. Promotion requires the target profile's
 rendered identity and all evidence demanded by its security, telemetry,
 capacity, and recovery posture.
 
+## Evidence Transfer
+
+| Earlier evidence | Reusable conclusion | Must be repeated for the target |
+| --- | --- | --- |
+| source and schema validation | authored inputs satisfy repository contracts | target-specific values and overlays |
+| deterministic render for another profile | chart templates can produce valid objects | target resource inventory and policy result |
+| local functional result | product path works for recorded local dependencies | target networking, storage, identity, and traffic path |
+| lower-scale load result | scenario and query pack can execute | target capacity, autoscaling, saturation, and recovery budgets |
+| prior release rollback | recovery workflow has a known shape | candidate-to-previous compatibility in the target profile |
+
+Evidence is reusable when the authority and unchanged inputs are identical.
+Environment-dependent conclusions are not portable merely because the runtime
+binary is the same.
+
 ## Non-Negotiable Boundaries
 
 - Serve from published store state, never directly from an ingest build root.
@@ -92,6 +106,10 @@ capacity, and recovery posture.
 - Record relaxed security, network, or admin behavior as an explicit exception.
 - Prove rollback against the same release and profile identities used for
   promotion.
+
+The selected model should also document who owns external dependencies. A
+managed object store, ingress, identity provider, or telemetry backend may sit
+outside the Atlas composition while remaining inside the release decision.
 
 Continue with [Install Matrix](../kubernetes/install-matrix.md),
 [Render and Validate](../kubernetes/render-and-validate.md), and

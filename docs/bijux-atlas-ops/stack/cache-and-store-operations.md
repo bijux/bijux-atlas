@@ -66,6 +66,37 @@ declared budget. The repository cache policy sets a 60% minimum hit ratio and
 an 8 GiB disk ceiling; scenario-specific load thresholds still govern latency
 and errors.
 
+## Cache Identity and Invalidation
+
+A reusable entry must be scoped by every input that can change the result,
+including dataset release, query shape, pagination or region selection, output
+contract, and relevant policy. Entries from one immutable release must never
+answer for another release merely because the user query text is identical.
+
+Invalidate or isolate cache state when:
+
+- the release or catalog pointer changes;
+- integrity, serialization, or schema identity is uncertain;
+- a partial write or process crash may have exposed incomplete metadata;
+- cache policy, result limits, or authorization-relevant inputs change; or
+- an incident cannot distinguish stale acceleration state from store truth.
+
+Eviction is a performance event when the store remains verified. It is not a
+repair for uncertain store or catalog integrity.
+
+## Recovery Sequence
+
+1. Preserve release, catalog, cache, and store identities plus the first
+   failing request and signal window.
+2. Stop promotion and isolate ambiguous state.
+3. Verify the catalog pointer, manifest, and artifact hashes at the store
+   boundary.
+4. Remove only cache state that cannot be trusted or safely reused.
+5. Rewarm with bounded traffic while observing store pressure, errors, latency,
+   and cheap-path survival.
+6. Restore normal capacity only after query correctness and operating budgets
+   hold through the observation window.
+
 ## Evidence
 
 For cache incidents, retain hit and miss ratios, evictions, entry identity,

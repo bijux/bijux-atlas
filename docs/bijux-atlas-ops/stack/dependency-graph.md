@@ -47,6 +47,35 @@ can invalidate a rollout, incident, or SLO claim even while queries succeed.
 Criticality describes stack viability; the evidence required for a particular
 decision may be stricter.
 
+## Dependency States
+
+```mermaid
+stateDiagram-v2
+    [*] --> Declared
+    Declared --> Resolved: version and configuration selected
+    Resolved --> Reachable: network and credentials succeed
+    Reachable --> Usable: owning health contract passes
+    Usable --> Degraded: latency, errors, or freshness breach
+    Degraded --> Usable: recovery verified
+    Reachable --> Failed: semantic or integrity check fails
+    Resolved --> Failed: connection or identity fails
+```
+
+Reachability is weaker than usability. A TCP connection does not establish
+that the correct bucket, catalog, cache namespace, metrics source, or API
+version is available. Health surfaces should test the narrowest semantics
+needed by the dependent runtime without performing destructive work.
+
+## Failure Ownership
+
+| Failure | Primary owner | Cross-domain impact |
+| --- | --- | --- |
+| selected version or digest cannot resolve | stack and release inputs | installation and reproducibility |
+| credentials or network path fail | deployment and security profile | readiness and incident response |
+| object store returns missing or inconsistent artifact | store and release identity | correctness, readiness, and recovery |
+| cache is unavailable | runtime cache policy | latency, backend load, and overload |
+| collector or metrics backend is unavailable | observability pipeline | promotion and diagnosis confidence |
+
 ## Profile Membership
 
 `ci` and `local` contain four critical components: chart, namespace, MinIO, and
