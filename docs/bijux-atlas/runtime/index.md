@@ -4,100 +4,65 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Runtime
 
-`bijux-atlas/runtime` explains how Atlas works once artifacts and requests are
-moving through the system.
+The Atlas runtime resolves immutable dataset releases and executes bounded
+queries through CLI and HTTP delivery surfaces. It composes domain policy,
+application use cases, store adapters, caches, configuration, security, and
+telemetry without moving release authority into a running process.
 
 ```mermaid
-flowchart TD
-    Runtime[Runtime section] --> Composition[Composition]
-    Runtime --> Requests[Request lifecycle]
-    Runtime --> Ingest[Ingest and artifact flow]
-    Runtime --> Storage[Storage and serving store]
-    Runtime --> Process[Runtime process behavior]
-    Composition --> Model[Running system model]
-    Requests --> Model
-    Ingest --> Model
-    Storage --> Model
-    Process --> Model
+flowchart LR
+    Config[Validated runtime configuration] --> Compose[Runtime composition]
+    Catalog[Published catalog state] --> Compose
+    Store[Immutable artifact store] --> Compose
+    Compose --> CLI[CLI delivery]
+    Compose --> HTTP[HTTP delivery]
+    CLI --> Query[Bounded query execution]
+    HTTP --> Query
+    Query --> Evidence[Structured result and telemetry]
 ```
 
-Runtime pages explain how Atlas behaves as a running system once the product
-model and exposed interfaces are already clear. This section is architectural
-rather than operational: it explains why the system behaves the way it does
-and where that behavior is assembled in the repo.
+## Runtime Invariants
 
-Use this section when a product question turns into an internal design or
-lifecycle question.
+- The catalog selects a published dataset identity; a request cannot invent one.
+- The serving store supplies immutable artifact state; caches do not become
+  release authority.
+- Domain and query crates own biological and query semantics; delivery adapters
+  do not redefine them.
+- Configuration is resolved before it controls runtime behavior and remains
+  attributable in diagnostics.
+- Security, overload, and concurrency boundaries may reject work before query
+  execution.
+- Successful output preserves enough release and request context to be
+  interpreted against the owning contract.
 
-## What This Section Explains
+## Follow the Running System
 
-- how Atlas moves from validated input to published artifact to serving lookup
-- where request handling, query resolution, storage, and runtime composition live
-- how the source tree maps onto architectural boundaries
-- which runtime explanations are descriptive architecture versus compatibility contracts
+| Question | Read |
+| --- | --- |
+| How do crates and control planes fit together? | [System Overview](system-overview.md) |
+| Where is behavior owned in source? | [Source Layout and Ownership](source-layout-and-ownership.md) |
+| How is the concrete runtime assembled? | [Runtime Composition](runtime-composition.md) |
+| What happens from startup to shutdown? | [Runtime Process Model](runtime-process-model.md) |
+| How does an HTTP request cross boundaries? | [Request Lifecycle](request-lifecycle.md) |
+| How does source data become a release? | [Ingest Architecture](ingest-architecture.md) and [Artifact Lifecycle](artifact-lifecycle.md) |
+| How are queries planned and executed? | [Query Architecture](query-architecture.md) |
+| Which storage boundary is authoritative? | [Storage Architecture](storage-architecture.md) and [Serving Store Model](serving-store-model.md) |
 
-## What Runtime Means In This Repository
+## Architecture, Interface, and Operations
 
-In this repo, runtime means the composition of domain logic, adapters, config,
-storage assumptions, request handling, and process startup across:
+Runtime architecture explains ownership and execution flow. Exact flags,
+environment variables, HTTP paths, output shapes, and error codes belong to
+[Interfaces](../interfaces/index.md). Compatibility guarantees belong to
+[Contracts](../contracts/index.md). Deployment profiles, observability,
+capacity, recovery, and release decisions belong to the
+[Operations handbook](../../bijux-atlas-ops/index.md).
 
-- `crates/bijux-atlas-runtime/src/runtime/`
-- `crates/bijux-atlas-runtime/src/app/`
-- `crates/bijux-atlas-runtime/src/domain/`
-- `crates/bijux-atlas-runtime/src/adapters/outbound/`
-- `crates/bijux-atlas-server/src/adapters/inbound/http/`
-
-## Suggested Reading Order
-
-1. [System Overview](system-overview.md)
-2. [Source Layout and Ownership](source-layout-and-ownership.md)
-3. [Request Lifecycle](request-lifecycle.md)
-4. [Ingest Architecture](ingest-architecture.md)
-5. [Query Architecture](query-architecture.md)
-
-Use the remaining pages as targeted follow-ups when you need storage,
-composition, process, or artifact-lifecycle detail.
-
-## Boundary Rule
-
-This section explains how the runtime works internally. It does not replace:
-
-- [Interfaces](../interfaces/index.md) for exact surface lookup
-- [Contracts](../contracts/index.md) for formal compatibility promises
-- `bijux-atlas-ops` for deployment and operating guidance
-
-When the question becomes "what does the user see?" or "what do we promise to
-keep stable?", move to the section that owns that answer.
-
-## Pages
-
-- [Artifact Lifecycle](artifact-lifecycle.md)
-- [Ingest Architecture](ingest-architecture.md)
-- [Query Architecture](query-architecture.md)
-- [Request Lifecycle](request-lifecycle.md)
-- [Runtime Composition](runtime-composition.md)
-- [Runtime Process Model](runtime-process-model.md)
-- [Serving Store Model](serving-store-model.md)
-- [Source Layout and Ownership](source-layout-and-ownership.md)
-- [Storage Architecture](storage-architecture.md)
-- [System Overview](system-overview.md)
-
-## Source Anchors
-
-- `crates/bijux-atlas-runtime/src/domain/`
-- `crates/bijux-atlas-runtime/src/app/`
-- `crates/bijux-atlas-runtime/src/adapters/outbound/`
-- `crates/bijux-atlas-runtime/src/runtime/`
-- `crates/bijux-atlas-server/src/adapters/inbound/http/`
-
-## Main Takeaway
-
-The runtime section is where Atlas stops being a list of commands or contracts
-and becomes a running system. It should help trace from published artifact
-state to request handling, composition, storage, and process behavior without
-drifting into operations or repository governance.
+The distinction matters during failure analysis. A runtime explanation can
+identify the rejecting boundary, but only its interface contract defines the
+consumer-visible result. Only captured operational evidence establishes what
+happened in a particular environment.

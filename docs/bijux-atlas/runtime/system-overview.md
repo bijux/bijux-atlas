@@ -42,6 +42,25 @@ No delivery interface owns genomic truth. The model and leaf crates define
 domain behavior. The runtime composes them. The CLI and server translate user
 requests. The store and catalog establish which immutable release is serveable.
 
+## Authority Flow
+
+```mermaid
+flowchart TD
+    Model[Domain and model semantics] --> UseCase[Application use case]
+    Query[Query contracts] --> UseCase
+    Catalog[Published release identity] --> UseCase
+    Store[Immutable artifact bytes] --> UseCase
+    UseCase --> Delivery[CLI or HTTP adapter]
+    Delivery --> Consumer[Structured consumer result]
+    Config[Resolved runtime policy] --> UseCase
+    Config --> Delivery
+```
+
+Authority flows inward from owned contracts and published state, then outward
+as a structured result. Delivery code may translate transport details but may
+not synthesize dataset identity, weaken query limits, or turn unavailable
+artifact state into a successful response.
+
 ## Crate Ownership
 
 | Crate | Owns | Does not own |
@@ -87,6 +106,11 @@ runtime, executes governed load and failure scenarios, and assembles release
 evidence. The repository control plane validates code-adjacent contracts and
 generates machine-readable reports. Neither control plane is a hidden dependency
 of normal query execution.
+
+The data plane may continue serving while a control plane is unavailable, but
+that does not make future promotion safe. Conversely, a passing repository or
+deployment validation report cannot establish live query correctness without
+data-plane observation.
 
 ```mermaid
 flowchart LR

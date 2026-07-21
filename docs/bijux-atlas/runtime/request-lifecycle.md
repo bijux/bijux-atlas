@@ -81,6 +81,26 @@ An exempt route is not an unrestricted data route. Its resource kind remains
 the service namespace, and deployment network policy still determines who can
 reach it.
 
+## Failure Attribution
+
+```mermaid
+flowchart LR
+    Rejection[Non-successful request] --> Transport{Parsed and admitted?}
+    Transport -->|no| Edge[Transport or middleware result]
+    Transport -->|yes| Authorized{Authorized?}
+    Authorized -->|no| Policy[Authentication or authorization result]
+    Authorized -->|yes| Resolved{Dataset resolved?}
+    Resolved -->|no| Catalog[Catalog or selection result]
+    Resolved -->|yes| Executed{Execution completed?}
+    Executed -->|no| Runtime[Store, query, overload, or limit result]
+    Executed -->|yes| Presentation[Structured success or empty result]
+```
+
+The first rejecting boundary owns the primary outcome. Later middleware may
+add correlation, hardening, or presentation fields, but it must not obscure
+whether the request failed at transport, policy, catalog, store, query, or
+capacity control.
+
 ## Dataset Resolution and Caching
 
 The catalog establishes discoverable dataset identity. Artifact caches and the
@@ -96,6 +116,10 @@ dataset. Execution completed under its limits, and presentation produced the
 versioned envelope. Success does not identify a particular cache layer. Policy
 rejection, dataset miss, overload refusal, and empty query result are distinct
 outcomes. Status, error code, and telemetry preserve that distinction.
+
+For streaming or paginated work, response start is not equivalent to complete
+delivery. Completion must account for serialization, body transfer, cursor or
+continuation state, and any terminal error exposed by the interface contract.
 
 Continue with [Query Architecture](query-architecture.md),
 [Serving Store Model](serving-store-model.md), and
