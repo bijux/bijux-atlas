@@ -152,8 +152,7 @@ artifacts and then from immutable artifacts to stable delivery surfaces.
 
 ## What Ships in 0.2.2
 
-The release line is strongest when it stays concrete about what is already
-real:
+The release surface is concrete:
 
 * a runtime CLI named `bijux-atlas`, published through `bijux-atlas-cli`,
 * a server binary named `bijux-atlas-server`, published through `bijux-atlas-server`,
@@ -162,9 +161,6 @@ real:
 * one repository-only crate, `bijux-atlas-dev`, with `publish = false` for maintainer automation and release policy,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
 * and release inputs for crates, images, docs, and operations evidence.
-
-This README intentionally describes the released product and maintainer
-surfaces, not every internal implementation detail in the workspace.
 
 ```mermaid
 flowchart TD
@@ -182,9 +178,8 @@ flowchart TD
     Workspace --> Governance[configs and ops validation]
 ```
 
-This release-surface diagram is important because Atlas ships more than one binary and more than
-one kind of repository contract. Readers should be able to see immediately which surfaces are for
-runtime use and which are for repository maintenance.
+Runtime binaries, compatibility libraries, operational contracts, and
+repository maintenance have separate owners and release obligations.
 
 ## Choose the Right Surface
 
@@ -278,6 +273,23 @@ Orchestration logic belongs in Rust commands, not in shell-heavy wrapper files.
 
 The release story includes checked manifests, compatibility tables, docs deployment, crates.io publication, and GitHub release automation instead of one-off manual steps.
 
+### Operations as a Governed System
+
+The `ops/` control plane is not a collection of deployment examples. It owns
+profile intent, Helm and Kubernetes contracts, network and workload security,
+service topology, observability packs, load scenarios and thresholds, drift
+detection, recovery drills, checksums, provenance, and release evidence.
+
+```mermaid
+flowchart LR
+    Profile[Environment profile] --> Render[Render and validate]
+    Render --> Deploy[Deploy published artifacts]
+    Deploy --> Signals[Health, metrics, logs, traces]
+    Signals --> Stress[Load and failure evidence]
+    Stress --> Release[Promotion or rollback decision]
+    Release --> Proof[Checksums, provenance, and release packet]
+```
+
 ---
 
 ## Installation
@@ -354,8 +366,8 @@ flowchart LR
     Serve --> Query[Run first queries]
 ```
 
-This quick-start path is intentionally shorter than the full docs spine. It is for readers who want
-to confirm the product shape before they commit to a deeper setup.
+This path confirms binary ownership and product shape before a dataset is
+built or deployed.
 
 ---
 
