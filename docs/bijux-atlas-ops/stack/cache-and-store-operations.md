@@ -1,112 +1,79 @@
 ---
 title: Cache and Store Operations
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Cache and Store Operations
 
-Atlas has strong opinions about store and cache behavior because durable release state and transient performance state should not blur together.
+Atlas separates immutable serving truth from disposable acceleration state. The
+store owns released artifacts and catalog-backed dataset identity. The cache
+may reduce latency, but losing it must not redefine which data exists or make a
+partial result authoritative.
 
-```mermaid
-flowchart TD
-    Request[Client request] --> Runtime[Atlas runtime]
-    Runtime --> Hit{Cache hit?}
-    Hit -- Yes --> Cache[Serve from Redis or cache layer]
-    Hit -- No --> Store[Read durable store via MinIO or serving artifacts]
-    Store --> Serve[Serve result]
-    Serve --> Warm[Optionally warm cache]
-    Durable[Durable serving state] -. must not be confused with .-> Transient[Transient acceleration state]
-```
-
-This page exists to keep two operator instincts separate: where Atlas keeps the
-truth it serves, and where it keeps acceleration state that can be rebuilt. The
-whole point of the cache/store model is to stop performance troubleshooting from
-becoming accidental data-governance confusion.
-
-## Store vs Cache
+## Data Authority
 
 ```mermaid
 flowchart LR
-    Store[Serving store] --> Durable[Durable release state]
-    Cache[Runtime cache] --> Transient[Transient acceleration state]
+    Release["Published release artifacts"] --> Store["Serving store"]
+    Store --> Resolve["Dataset resolution"]
+    Resolve --> Query["Query execution"]
+    Query --> Cache["Disposable cache entry"]
+    Cache --> Response["Response"]
+    Cache -. miss or eviction .-> Resolve
 ```
 
-This store-versus-cache diagram names the most important operational separation in Atlas. The store
-is durable serving truth; the cache is optional performance help.
+| Surface | Authority | Loss mode | Recovery requirement |
+| --- | --- | --- | --- |
+| Serving store | Released artifact bytes and catalog identity | Availability or correctness incident | Verify integrity and restore the governed release set. |
+| Runtime cache | Recomputable acceleration state | Latency and dependency pressure | Rebuild from verified store data without changing results. |
 
-The store is durable and authoritative for serving content.
+## Checked-In Local Dependencies
 
-The cache is disposable and performance-oriented.
+The stack manifests under `ops/stack/` are local end-to-end fixtures, not
+production persistence recipes:
 
-## Operational Model
+- Redis runs one replica in `atlas-e2e` with snapshots and append-only logging
+  disabled. Its state is intentionally disposable.
+- MinIO runs one replica in `atlas-e2e`, uses the development
+  `minioadmin` credentials, and declares no persistent volume in that manifest.
+- The component YAML uses image tags; the generated stack version manifest
+  carries the reviewed digest pins. A run must record the resolved digest.
+
+Never deploy those credentials or persistence settings as a durable environment.
+Production storage must supply independent credential, encryption, replication,
+retention, backup, and restore controls.
+
+## Failure Classification
 
 ```mermaid
 flowchart TD
-    Published[Published artifacts and catalog] --> Store[Serving store]
-    Store --> Runtime[Runtime lookup path]
-    Runtime --> Cache[Cache warm or populate]
-    Cache --> Response[Serve response faster]
+    Symptom["Query latency or failure"] --> CacheHealthy{"Cache metadata valid?"}
+    CacheHealthy -->|no| Evict["Isolate or evict cache"]
+    Evict --> StoreValid{"Store and catalog verify?"}
+    CacheHealthy -->|yes| StoreValid
+    StoreValid -->|yes| Rewarm["Rewarm and observe budgets"]
+    StoreValid -->|no| Protect["Stop promotion and protect correctness"]
+    Protect --> Restore["Restore verified release artifacts"]
 ```
 
-This operating model shows where the cache sits in the request path. It is downstream of the store,
-which is why cache loss and store loss should be treated as different classes of incident.
+A query crash must not corrupt cache metadata. A cold cache is acceptable only
+when store-backed correctness holds and the performance impact stays within the
+declared budget. The repository cache policy sets a 60% minimum hit ratio and
+an 8 GiB disk ceiling; scenario-specific load thresholds still govern latency
+and errors.
 
-## Operator Rules
+## Evidence
 
-- never treat cache contents as the durable source of truth
-- keep cache roots under the sanctioned artifacts hierarchy
-- understand what happens when caches are cold or unavailable
-- validate store integrity before assuming query failures are only cache-related
+For cache incidents, retain hit and miss ratios, evictions, entry identity,
+cache size, store requests, error rates, and recovery time. For store incidents,
+also retain release and dataset identity, catalog and artifact checksums,
+backend error class, isolation action, and restore verification.
 
-## Practical Questions
-
-- is the store root complete and discoverable?
-- is `catalog.json` present and correct?
-- is cache growth bounded and expected?
-- can the service recover safely from cache loss?
-
-## Failure Interpretation
-
-If a cold cache makes responses slower, that is usually a performance issue.
-
-If the store is missing or inconsistent, that is a correctness and availability issue.
-
-## Operator Checks Worth Automating
-
-- verify the serving store layout and catalog presence
-- observe cache size, miss behavior, and recovery after cold start
-- make sure cache loss does not look like data loss in your runbooks
-
-## Purpose
-
-This page explains the Atlas material for cache and store operations and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Source of Truth
-
-- `ops/stack/redis/redis.yaml`
-- `ops/stack/minio/minio.yaml`
-- `ops/k8s/values/documentation-map.json`
-- `ops/observe/dashboards/atlas-artifact-cache-performance-dashboard.json`
-
-## Concrete Component Mapping
-
-- Redis is the declared cache component in `ops/stack/redis/redis.yaml`
-- MinIO is the declared durable object store component in
-  `ops/stack/minio/minio.yaml`
-- the Kubernetes documentation map ties `cache`, `catalog`, and `store` keys to
-  this operating topic
-- cache behavior is reflected in the cache performance dashboard pack
-
-## Main Takeaway
-
-Cache loss is a performance event. Store loss is a durability and correctness
-event. Good Atlas operations keep those ideas separate in values, dashboards,
-incident response, and recovery procedures.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Do not classify an empty cache as data loss or a missing artifact as a cache
+miss. See [Failure Injection Under Load](../load/failure-injection-load.md) for
+degraded-service proof and [Backup and Recovery](../release/backup-and-recovery.md)
+for durable-state restoration.

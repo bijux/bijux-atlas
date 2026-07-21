@@ -4,44 +4,57 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Environment Overlays
 
-Environment overlays live under `ops/env/` and describe how Atlas runtime
-behavior changes across base, dev, CI, prod, and overlay layers.
+Environment overlays control the execution envelope for Atlas operational
+work. They define namespace, cluster profile, filesystem-write authority,
+subprocess authority, and network mode. They do not select release bytes,
+dataset identity, chart membership, or production topology.
+
+## Declared Values
+
+| Environment | Namespace | Cluster profile | Filesystem write | Subprocess | Network mode |
+| --- | --- | --- | ---: | ---: | --- |
+| `base` | `atlas-e2e` | `kind` | no | no | restricted |
+| `ci` | `atlas-e2e` | `kind` | no | no | restricted |
+| `prod` | `atlas-e2e` | `kind` | no | no | restricted |
+| `dev` | `atlas-e2e` | `kind` | yes | yes | local |
+
+The current `base`, `ci`, and `prod` overlays are equivalent. The `prod` name
+therefore does not describe a production deployment; it describes a restricted
+execution envelope using the same end-to-end namespace and Kind cluster
+profile. Production readiness must come from Kubernetes profiles, security
+contracts, immutable artifacts, and environment-specific evidence.
+
+## Resolution Model
 
 ```mermaid
-flowchart TD
-    Base[Base overlay] --> Select[Overlay selection]
-    Select --> Dev[dev]
-    Select --> CI[ci]
-    Select --> Prod[prod]
-    Dev --> Effective[Effective environment]
-    CI --> Effective
-    Prod --> Effective
-    Effective --> Validate[Validation and review]
+flowchart LR
+    B["Base execution envelope"] --> O["Selected environment overlay"]
+    O --> E["Effective permissions and network mode"]
+    R["Release and dataset identity"] --> Run["Operational run"]
+    G["Stack composition graph"] --> Run
+    E --> Run
+    Run --> P["Evidence preserves all three identities"]
 ```
 
-The overlay model should answer one question quickly: which parts of runtime
-behavior come from the base environment and which parts are allowed to diverge
-per environment. Good overlay docs stop operators from creating silent
-environment folklore around permissions, cluster profile, or network mode.
+An overlay may narrow or explicitly grant effects. It must not silently replace
+the stack graph, values profile, or release manifest. Keep environment effect
+selection separate from application configuration so a permissive developer
+run cannot be mistaken for restricted evidence.
 
-## Source of Truth
+## Review Rules
 
-- `ops/env/base/`.
-- `ops/env/dev/`.
-- `ops/env/ci/`.
-- `ops/env/prod/`.
-- `ops/env/overlays/`.
+- Treat `allow_write`, `allow_subprocess`, and `network_mode` changes as
+  capability changes.
+- Verify the namespace is safe for every permitted effect.
+- Reject unknown keys and invalid inheritance through the overlay schema.
+- Record the effective overlay, not only the requested environment name.
+- Require separate evidence before calling any overlay production-safe.
 
-## Overlay Semantics
-
-- `base` defines the shared defaults such as namespace, cluster profile, and.
-  restricted execution assumptions
-- `dev` relaxes write and subprocess permissions for local work.
-- `ci` and `prod` preserve the more restricted execution model.
-- overlays should change only what the environment legitimately owns, not the.
-  underlying release or topology contract
+If a command needs broader effects than the chosen overlay permits, change the
+declared operating intent or stop the run. Do not bypass the envelope and retain
+the original profile claim.
