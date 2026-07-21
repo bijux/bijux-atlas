@@ -4,53 +4,70 @@ audience: operators
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Release
+# Release Operations
 
-`bijux-atlas-ops/release` explains how Atlas turns a build into a governed
-release through manifests, evidence, packets, signing, provenance, drift
-review, and rollback readiness.
+An Atlas release is a coherent, consumer-verifiable set of binaries, images,
+chart material, policies, software bills of materials, operational proof, and
+source identity. A build is not promotable merely because its packages exist or
+a historical verification report says `ok`.
 
-## Purpose
+## Release Trust Chain
 
-Use this section to understand which release artifacts are mandatory, how trust
-is verified before distribution, and which rollback and reproducibility checks
-must be in place before promotion.
+```mermaid
+flowchart LR
+    S["Source and governance identity"] --> B["Build and package"]
+    B --> M["Evidence manifest"]
+    M --> L["Checksum ledger"]
+    M --> P["Portable release packet"]
+    L --> V["Fresh local verification"]
+    P --> V
+    V --> G{"All policy and lifecycle evidence passes?"}
+    G -->|yes| D["Distribute and promote"]
+    G -->|no| X["Reject and rebuild coherent set"]
+    D --> R["Retain rollback and recovery authority"]
+```
 
-## Source of Truth
+The identity, manifest, packet, provenance, and checksum ledger must describe
+the same release bytes. Regenerating one member without rebuilding the others
+breaks the chain even if each JSON document remains schema-valid.
 
-- `ops/release/release-manifest.json`
-- `ops/release/ops-release-manifest.json`
-- `ops/release/evidence/`
-- `ops/release/packet/packet.json`
-- `ops/release/signing/`
-- `ops/release/provenance.json`
-- `ops/e2e/scenarios/upgrade/`
+## Current Checked-In Evidence
 
-## Release Control Model
+The repository carries release-contract examples and generated evidence for
+workspace version `0.2.0`. Treat this set as validation material, not as a
+production release ready for promotion. A fresh local verification of the
+checked-in bundle currently fails because required audit, governance,
+performance, and ingest assets are absent from the bundle and several policy
+and SBOM checksums do not match.
 
-Atlas release control follows this path:
+The checked-in `release-verify.json` reports `ok`, but it is not evidence for
+the current file set. The transport packet also records digests that differ
+from current release files, and the evidence manifest includes placeholder
+profile image digests and empty drill, simulation, and scan-report collections.
+Generate and verify a new coherent release set before distribution.
 
-1. a release manifest defines the governed release surfaces
-2. evidence collection produces identity, policy, SBOM, package, and report
-   artifacts
-3. the release packet gathers the minimum portable set for release consumers
-4. signing and provenance bind the artifacts to checksums, policy, and source
-   identity
-5. drift, reproducibility, and rollback readiness decide whether the release is
-   safe to distribute
+## Route by Decision
 
-## Pages
+| Decision | Read | Required outcome |
+| --- | --- | --- |
+| Establish release identity and governed surfaces | [Version Manifests](version-manifests.md) | Workspace, chart, source, and artifact identities agree. |
+| Review the proof carried with the build | [Release Evidence](release-evidence.md) | Required assets exist, match policy, and pass fresh verification. |
+| Prepare portable consumer material | [Release Packets](release-packets.md) | Minimum packet is complete and digest-coherent. |
+| Verify integrity and source claims | [Signing and Provenance](signing-and-provenance.md) | Checksum and provenance limits are understood and verified. |
+| Compare independent rebuilds | [Reproducibility](reproducibility.md) | Declared reproducible surfaces match. |
+| Detect runtime or configuration divergence | [Drift Detection](drift-detection.md) | Deployed state remains attributable to the promoted set. |
+| Select a supported delivery path | [Distribution Channels](distribution-channels.md) | Channel carries the same governed identity and evidence. |
+| Prove forward and reverse change | [Upgrades and Rollback](upgrades-and-rollback.md) | Compatibility and rollback invariants pass. |
+| Exercise recovery before dependence | [Rollback Drills](rollback-drills.md) | Operators can restore the previous release under evidence. |
+| Protect state beyond release rollback | [Backup and Recovery](backup-and-recovery.md) | Restore objectives and data boundaries are tested. |
 
-- [Backup and Recovery](backup-and-recovery.md)
-- [Distribution Channels](distribution-channels.md)
-- [Drift Detection](drift-detection.md)
-- [Release Evidence](release-evidence.md)
-- [Release Packets](release-packets.md)
-- [Reproducibility](reproducibility.md)
-- [Rollback Drills](rollback-drills.md)
-- [Signing and Provenance](signing-and-provenance.md)
-- [Upgrades and Rollback](upgrades-and-rollback.md)
-- [Version Manifests](version-manifests.md)
+## Promotion Rule
+
+Promote only from a newly generated packet that passes verification in the
+consumer's environment. Preserve the exact verification output, immutable
+artifact references, release manifest, policy, lifecycle results, and rollback
+target. Reject unexplained drift; do not repair a suspect packet by updating
+checksums over unknown bytes.
