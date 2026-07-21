@@ -27,6 +27,21 @@ recovery are different procedures.
 Do not roll back immutable dataset artifacts because runtime code fails. Do not
 use Helm rollback as a substitute for restoring corrupt durable state.
 
+## Compatibility Directions
+
+| Boundary | Forward question | Reverse question |
+| --- | --- | --- |
+| API and clients | Can supported clients consume the candidate? | Do clients still work after runtime rollback? |
+| configuration | Can the candidate read the selected configuration? | Can the previous runtime read state left by the candidate? |
+| chart and values | Can the candidate render and become ready? | Can the previous chart and values be restored coherently? |
+| catalog and artifacts | Can the candidate serve the published release? | Can the previous runtime serve the same selected release? |
+| cache and transient state | Can entries be reused or rebuilt safely? | Can candidate-created entries be ignored or invalidated? |
+| telemetry | Are candidate signals complete and attributable? | Can recovery be proven with previous-release signals? |
+
+Forward compatibility permits rollout. Reverse compatibility permits routine
+rollback. A supported forward transition without a supported reverse path
+requires a different recovery plan and must be visible before traffic changes.
+
 ## Bind Baseline and Candidate
 
 Before changing traffic, record:
@@ -140,3 +155,8 @@ Preserve the first violated signal and every recovery action. If the previous
 release cannot recover or shared state is damaged, stop cycling releases and
 enter [Backup and Recovery](backup-and-recovery.md). Use [Rollback
 Drills](rollback-drills.md) to build the missing execution evidence.
+
+An aborted rollout is not automatically a successful rollback. Record whether
+the candidate changed shared configuration, catalog pointers, caches, or other
+state before it was removed. Verify each touched boundary against the restored
+release rather than relying only on controller status.

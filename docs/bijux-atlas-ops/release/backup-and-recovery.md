@@ -44,6 +44,38 @@ the same encryption keys, credentials, network boundary, storage class, and
 catalog scale used by the target environment. A file copy is not recovered
 service until identity, integrity, readiness, and representative queries pass.
 
+## Recovery Objectives
+
+| Objective | Governing question | Required measurement |
+| --- | --- | --- |
+| recovery point | How much committed state may be lost? | newest restorable identity and gap from incident time |
+| recovery time | How long may the service remain unavailable or degraded? | detection-to-restored-service timeline |
+| integrity | Can restored bytes be trusted? | manifest, checksum, signature, and catalog verification |
+| completeness | Are all required durable classes present? | artifact, catalog, release, configuration, and secret inventory |
+| usability | Can the intended workload resume safely? | readiness plus representative correctness and load checks |
+
+Objectives apply per durable class. A current catalog backup paired with stale
+artifact bytes is not a coherent recovery point. Restoring bytes inside the
+time objective does not pass recovery if identity or query correctness fails.
+
+## Restore Validation Sequence
+
+```mermaid
+flowchart LR
+    Select[Select named recovery point] --> Isolate[Isolate failed state]
+    Isolate --> Restore[Restore durable classes]
+    Restore --> Integrity[Verify bytes, manifests, and catalog]
+    Integrity --> Configure[Restore policy, configuration, and secrets]
+    Configure --> Admit[Start without normal traffic]
+    Admit --> Query[Run representative correctness checks]
+    Query --> Load[Observe bounded traffic and dependencies]
+    Load --> Resume[Resume service or reject recovery]
+```
+
+Keep the failed state and restore evidence isolated until the verdict is
+recorded. A failed restore is diagnostic evidence and must not overwrite the
+last known recoverable point.
+
 ## Current Repository Boundary
 
 The repository defines a dataset pointer rollback policy with a maximum depth

@@ -34,6 +34,26 @@ The identity, manifest, packet, provenance, and checksum ledger must describe
 the same release bytes. Regenerating one member without rebuilding the others
 breaks the chain even if each JSON document remains schema-valid.
 
+## Producer and Consumer Verification
+
+```mermaid
+sequenceDiagram
+    participant Producer
+    participant Channel
+    participant Consumer
+    Producer->>Producer: Build, attest, assemble, and verify
+    Producer->>Channel: Publish immutable artifacts and evidence
+    Consumer->>Channel: Resolve exact release identities
+    Consumer->>Consumer: Verify checksums, provenance, policy, and compatibility
+    Consumer->>Consumer: Render or install in target environment
+    Consumer->>Consumer: Observe, exercise, and decide
+```
+
+Producer verification establishes internal coherence before distribution.
+Consumer verification establishes that the received bytes, trust policy,
+target profile, and supported transition agree. Neither replaces live
+deployment, workload, or recovery evidence in the consumer environment.
+
 ## Current Checked-In Evidence
 
 The repository carries release-contract examples and generated evidence for
@@ -107,3 +127,9 @@ consumer's environment. Preserve the exact verification output, immutable
 artifact references, release manifest, policy, lifecycle results, and rollback
 target. Reject unexplained drift; do not repair a suspect packet by updating
 checksums over unknown bytes.
+
+The promotion record should name the decision owner, candidate, baseline,
+consumer environment, verifier and policy versions, evidence manifest,
+exceptions, observation window, verdict, and rollback target. A release can be
+validly packaged yet rejected for one environment because a required
+deployment, capacity, or recovery claim is missing.
