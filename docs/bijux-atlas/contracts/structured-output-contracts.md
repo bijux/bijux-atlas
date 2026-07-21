@@ -78,6 +78,21 @@ A payload containing `"status": "ok"` proves only what that contract assigns
 to the field. It does not by itself prove completeness, conformance, promotion
 readiness, or artifact integrity.
 
+## Validation Depth
+
+| Validation | Establishes |
+| --- | --- |
+| JSON parse | bytes form one syntactically valid JSON value |
+| schema identity | the consumer selected the intended contract family and version |
+| schema validation | required structure and declared constraints hold |
+| semantic validation | identifiers, cross-field rules, and referenced artifacts agree |
+| execution validation | the producer performed the governed operation |
+| artifact binding | output is attributable to exact source, inputs, and release bytes |
+
+Stopping at parse or schema validation is insufficient when the decision
+depends on semantic completeness or an executed external check. A report
+validator must state its depth so consumers do not infer more than it checked.
+
 ## Error Handling
 
 Machine consumers should branch on documented error codes and structured
@@ -100,6 +115,11 @@ sequenceDiagram
 If output is truncated, mixed with unrelated text, fails schema validation, or
 uses an unsupported version, treat the entire result as invalid. Recover from
 the original command or retained artifact; do not repair evidence in place.
+
+For retained evidence, hash the original valid payload and preserve producer,
+invocation, timestamps, status, and relevant input identities. Normalizing or
+redacting a payload creates a derived artifact; retain its relationship to the
+original rather than presenting it as the producer's exact output.
 
 ## Contract Change
 
