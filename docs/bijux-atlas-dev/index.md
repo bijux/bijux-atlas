@@ -17,6 +17,22 @@ release evidence.
 It is repository-only infrastructure. Product behavior remains in the Atlas
 runtime crates; reusable operational models remain in `bijux-atlas-ops`.
 
+## Ownership Boundaries
+
+```mermaid
+flowchart TB
+    Product[Product crates] --> ProductBehavior[Dataset, query, API, and runtime behavior]
+    Ops[Operations contracts] --> OpsBehavior[Topology, policy, load, and release models]
+    Dev[Maintainer control plane] --> RepoBehavior[Validation, generation, reports, and delivery]
+    RepoBehavior -. validates .-> ProductBehavior
+    RepoBehavior -. validates .-> OpsBehavior
+```
+
+Validation may inspect product and operations contracts, but it does not own
+their behavior. Keeping that direction explicit prevents repository automation
+from becoming a runtime dependency or a competing implementation of an
+operator contract.
+
 ## The Maintainer Trust Loop
 
 ```mermaid
