@@ -36,6 +36,23 @@ Record the fault mechanism, injection and removal timestamps, workload and
 query-pack identities, release and profile, and the exact threshold contract.
 Changing traffic at the same time as the fault makes the result ambiguous.
 
+## Experimental Controls
+
+| Control | Why it matters |
+| --- | --- |
+| healthy pre-fault interval | proves the environment can support the workload before injection |
+| one named fault | keeps cause and blast radius attributable |
+| fixed workload and query pack | prevents demand changes from masking degradation |
+| independent fault confirmation | proves the intended mechanism occurred |
+| protected and shed request classes | distinguishes survival from deliberate rejection |
+| explicit removal event | anchors the recovery-time measurement |
+| post-recovery observation window | detects flapping, stale cache state, and delayed failure |
+
+Abort and classify the experiment when the baseline is already unhealthy, the
+fault cannot be confirmed, telemetry loses the required window, or cleanup
+cannot restore the starting condition. Those outcomes are findings, not failed
+resilience claims against the product.
+
 ## Governed Fault Surfaces
 
 The end-to-end injection catalog defines process termination during ingest and
@@ -87,6 +104,14 @@ A passing run demonstrates all of the following:
 
 Treat a missing signal as an evidence failure. A fault that cannot be observed
 or a recovery that cannot be timed is not a resilience proof.
+
+## Data Integrity Boundary
+
+Capacity and availability budgets never authorize unverifiable data. If shard,
+manifest, catalog, or cache integrity is uncertain, stop promotion and isolate
+the affected state. Recovery evidence must establish the selected release and
+artifact hashes before normal traffic resumes; a low error rate cannot
+compensate for responses from ambiguous state.
 
 Use [Pod Churn Resilience](pod-churn-resilience.md) for instance replacement
 and [Rollout Under Load](rollout-under-load.md) for release changes.

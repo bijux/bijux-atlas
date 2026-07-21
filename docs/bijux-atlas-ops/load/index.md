@@ -37,6 +37,30 @@ often scenarios run. Threshold files define acceptable service behavior.
 Baselines make regressions visible. Generated reports carry the result into
 rollout and release review.
 
+## Valid Comparison Model
+
+```mermaid
+flowchart TD
+    Candidate[Candidate measurement] --> Match{Comparable identity?}
+    Baseline[Approved baseline] --> Match
+    Match -->|no| Invalid[Reject comparison]
+    Match -->|yes| Absolute[Evaluate absolute budgets]
+    Match --> Relative[Evaluate regression policy]
+    Absolute --> Verdict{Both policies pass?}
+    Relative --> Verdict
+    Verdict -->|yes| Accept[Accept bounded claim]
+    Verdict -->|no| Reject[Reject or investigate]
+```
+
+A comparison is valid only when scenario, query pack, dataset, profile,
+resource limits, runtime mode, warmup, sample window, and relevant dependency
+versions are compatible. A faster result from smaller data or a different
+workload is not a regression improvement.
+
+Absolute and relative policies answer different questions. Absolute budgets
+protect the service objective. Baselines detect movement inside that envelope.
+A candidate must satisfy both when both are required.
+
 ## What Atlas Exercises
 
 | Risk | Evidence family |
@@ -83,3 +107,8 @@ rejections.
 
 A run is suitable for promotion only when those identities agree with the
 environment and report being reviewed.
+
+Failed, aborted, and invalid runs remain useful evidence. Classify harness,
+environment, telemetry, threshold, and product failures separately. Do not
+convert an incomplete run into a product pass, and do not use repeated reruns
+to select a favorable sample without preserving the full series.

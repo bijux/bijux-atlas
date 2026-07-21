@@ -48,6 +48,24 @@ start and completion timestamps, replica transitions, and traffic share by
 release. Aggregated service metrics are insufficient: healthy old replicas can
 hide a failing candidate.
 
+## Release-Scoped Observation
+
+```mermaid
+flowchart LR
+    Traffic[Governed traffic] --> Old[Previous release]
+    Traffic --> Candidate[Candidate release]
+    Old --> OldSignals[Release-scoped results and signals]
+    Candidate --> CandidateSignals[Release-scoped results and signals]
+    OldSignals --> Compare[Compare correctness, latency, errors, and saturation]
+    CandidateSignals --> Compare
+    Compare --> Decision{Promote or restore?}
+```
+
+The candidate must serve enough representative traffic to evaluate every
+protected request class. Record zero-traffic, warmup, and readiness intervals
+separately. They must not dilute the measurement window or let aggregate
+service health conceal a candidate that never became useful.
+
 ## Acceptance Budget
 
 Rollout and rollback use the same governed limits:
@@ -84,6 +102,14 @@ failure.
 Escalate instead of repeatedly cycling releases when shared data integrity is
 uncertain, the previous release cannot become ready, or compatibility prevents
 a clean revert.
+
+## Invalidating Conditions
+
+Reject the rollout experiment when release identity is missing from signals,
+the traffic split is unknown, the dataset changes during the comparison,
+telemetry gaps cover a transition, the old release is unhealthy before the
+candidate starts, or an unrelated dependency change enters the window. Repeat
+only after preserving and classifying the invalid run.
 
 Use [Rollout Safety](../kubernetes/rollout-safety.md) for profile controls and
 [Release Evidence](../release/release-evidence.md) for the packet required to
