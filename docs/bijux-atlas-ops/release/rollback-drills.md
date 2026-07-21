@@ -4,50 +4,66 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Rollback Drills
 
-Rollback is treated as a tested procedure with declared scenarios, not as a
-hopeful operator fallback.
+A rollback drill proves that operators can reject a candidate, restore a
+supported previous release, and verify service and data identity under a bounded
+recovery window. A scenario definition or successful Helm command is not enough.
+
+## Drill Sequence
 
 ```mermaid
-flowchart TD
-    Trigger[Rollback drill trigger] --> Prepare[Prepare rollback target]
-    Prepare --> Execute[Execute rollback steps]
-    Execute --> Health[Verify health]
-    Health --> Identity[Verify data and release identity]
-    Identity --> Evidence[Capture drill evidence]
-    Evidence --> Success{Rollback succeeded?}
-    Success -- No --> Repair[Procedure needs correction]
-    Success -- Yes --> Trust[Rollback remains trustworthy]
+sequenceDiagram
+    participant Operator
+    participant Old as Baseline release
+    participant New as Candidate release
+    participant Evidence
+    Operator->>Old: Verify baseline and rollback target
+    Operator->>New: Upgrade and begin observation
+    New-->>Evidence: Readiness, traffic, telemetry, correctness
+    Operator->>Old: Trigger rollback
+    Old-->>Evidence: Restored identity and request behavior
+    Operator->>Evidence: Verify no partial candidate state
 ```
 
-Rollback trust is earned before an incident, not during one. The value of a
-rollback drill is that it proves operators can return to a known-good release,
-verify the restored state, and capture evidence that the procedure actually
-worked under declared conditions.
+Exercise two cases: rollback after an intentionally failed upgrade and rollback
+after a candidate first succeeds. The first proves failure containment; the
+second exposes irreversible migrations or state changes that only appear after
+promotion.
 
-## Source of Truth
+## Preconditions
 
-- `ops/e2e/scenarios/upgrade/rollback-after-failed-upgrade.json`
-- `ops/e2e/scenarios/upgrade/rollback-after-successful-upgrade.json`
-- `ops/e2e/scenarios/upgrade/version-compatibility.json`
+- The rollback target appears in the compatibility matrix.
+- Baseline chart, image, configuration, and dataset identities are immutable.
+- Previous artifacts remain available through the selected distribution path.
+- The operator has a separate durable-state recovery path.
+- Expected readiness, request, telemetry, and load evidence is declared.
+- Escalation criteria are defined for a rollback that cannot restore service.
 
-## Drill Lifecycle
+## Current Drill Status
 
-1. choose the rollback scenario and target version
-2. establish preconditions and the release identity being rolled back from
-3. execute the rollback steps
-4. validate readiness, restored behavior, and release identity
-5. capture the evidence and review the procedure afterwards
+The two runtime rollback scenarios target `0.2.0` to `0.1.0`, while the
+compatibility matrix only declares `0.2.0` to `0.1.1` as supported. The OCI
+rollback evidence is simulated and carries placeholder digests. The
+`rollback-restores-baseline` record is a fixture that names an expected result;
+it is not an execution result.
 
-## Acceptance Rules
+No current checked-in record demonstrates a completed rollback with request,
+readiness, release identity, and cleanup evidence. Treat the catalog as a drill
+specification until the target mismatch is corrected and a fresh run is
+retained.
 
-A rollback drill is only acceptable when:
+## Success Criteria
 
-- the rollback target is explicit and supported by version compatibility data
-- the restored service passes health and readiness checks
-- the expected version or baseline state is observable after rollback
-- the drill leaves behind evidence that another operator can review
+A drill passes only when the supported previous release becomes ready, receives
+governed traffic, restores query correctness and dataset access, preserves
+telemetry, stays inside rollback load budgets, and leaves no candidate-owned
+partial state. Record time to detect, decide, execute, become ready, and restore
+service.
+
+If rollback changes or damages shared durable data, stop cycling runtime
+releases and enter recovery. See [Backup and Recovery](backup-and-recovery.md)
+for that boundary.

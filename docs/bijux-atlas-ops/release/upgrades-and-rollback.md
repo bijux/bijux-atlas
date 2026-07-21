@@ -1,104 +1,79 @@
 ---
 title: Upgrades and Rollback
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Upgrades and Rollback
 
-Atlas upgrades should preserve two invariants:
+An Atlas upgrade changes runtime and deployment identity while preserving API
+behavior, dataset availability, telemetry continuity, and explicit
+configuration migration. Rollback restores the previous release without
+leaving partial runtime state. Neither operation should mutate immutable dataset
+artifacts.
 
-- contract-owned surfaces remain understood and validated
-- serving state stays recoverable if a rollout goes wrong
-
-## Upgrade Flow
-
-```mermaid
-flowchart TD
-    Validate[Validate runtime and contracts] --> Rollout[Roll out new runtime]
-    Rollout --> Observe[Observe health and load]
-    Observe --> Keep[Keep rollout]
-    Observe --> Rollback[Rollback if needed]
-```
-
-This upgrade flow keeps rollout discipline visible. Atlas upgrades should be validated, observed,
-and explicitly kept or rolled back rather than treated as one-way jumps.
-
-## Rollback Flow
+## Lifecycle State Machine
 
 ```mermaid
-flowchart LR
-    Problem[Operational problem] --> Scope[Determine runtime vs store scope]
-    Scope --> RuntimeRollback[Rollback runtime]
-    Scope --> StoreRollback[Rollback serving state if required]
+stateDiagram-v2
+    [*] --> BaselineVerified
+    BaselineVerified --> CandidateDeploying
+    CandidateDeploying --> CandidateObserved: ready and receiving traffic
+    CandidateObserved --> Promoted: invariants and load pass
+    CandidateDeploying --> Rollback: readiness or migration fails
+    CandidateObserved --> Rollback: correctness, SLO, or telemetry fails
+    Rollback --> Restored: previous release and behavior verified
+    Rollback --> Incident: previous release or shared state cannot recover
 ```
 
-This rollback flow explains one of the most important operator distinctions in Atlas: not every
-incident needs store-state rollback, and not every rollback should start there.
+## Upgrade Contract
 
-## Operator Guidance
+Before changing the cluster, bind the baseline and candidate chart and image
+digests, values profile, API compatibility result, dataset snapshot,
+configuration migration, metric surface, and rollback target. During the
+change, observe each release cohort separately and confirm that the candidate
+actually receives traffic.
 
-- separate runtime rollback from store-state rollback in your thinking
-- verify health, readiness, and key query paths after rollout
-- keep rollback paths explicit before you need them
-- use compatibility and contract evidence as rollout input, not only hope and manual spot checks
+The scenario catalog covers patch and minor upgrades, existing datasets,
+configuration migration, and feature-default changes. The install matrix adds
+upgrade and rollback lifecycle coverage only for `kind`, `offline`, and `perf`.
+Other profiles have installation coverage but no declared lifecycle scenario.
 
-## What to Watch During Upgrade
+## Rollback Boundaries
 
-- readiness instability
-- unusual rejection or error patterns
-- metrics or traces indicating saturation changes
-- catalog or dataset discoverability regressions
+| Boundary | Trigger | Authority |
+| --- | --- | --- |
+| Runtime/chart | Candidate code, configuration, readiness, or service regression | Helm release history and supported version path |
+| Dataset pointer | Published dataset selection is wrong but immutable artifacts remain valid | Manifest-lock pointer policy |
+| Durable store | Artifacts or catalog are missing or corrupt | Backup and recovery procedure |
 
-## Rollout Question That Saves Time
+Do not roll back dataset state merely because runtime code fails. The dataset
+policy selects a previous dataset ID, validates `manifest.lock`, and publishes
+the previous pointer without mutating old artifacts. It supports a maximum
+rollback depth of three.
 
-Ask first whether the change affected runtime behavior, serving-store state, or both. That answer
-usually determines the safest rollback path.
+## Current Compatibility Gap
 
-## Purpose
+The compatibility matrix supports `0.1.0` to `0.1.1`, `0.1.1` to `0.2.0`, and
+their adjacent rollback paths. Both checked-in rollback scenarios instead
+declare `0.2.0` to `0.1.0`. That target is not supported by the current matrix.
+Resolve the disagreement before using those scenarios as rollback evidence.
 
-This page explains the Atlas material for upgrades and rollback and points readers to the canonical checked-in workflow or boundary for this topic.
+The OCI upgrade and rollback records are marked `simulated` and use
+repeated-digit chart and image digests. The installation evidence bundle is
+also marked `placeholder`. These assets define expected shape; they do not
+prove an executable release transition.
 
-## Source of Truth
+## Acceptance
 
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/k8s/install-matrix.json`
-- `ops/release/evidence/manifest.json`
-- `ops/report/generated/readiness-score.json`
-- `ops/e2e/scenarios/upgrade/upgrade-patch.json`
-- `ops/e2e/scenarios/upgrade/upgrade-minor.json`
-- `ops/e2e/scenarios/upgrade/rollback-after-failed-upgrade.json`
-- `ops/e2e/scenarios/upgrade/rollback-after-successful-upgrade.json`
+Promote only when compatibility, migration, dataset, readiness, traffic,
+telemetry, security, and load evidence agree. Accept rollback only when the
+previous release is ready, serving traffic, query correctness is restored, and
+no partial release state remains. Preserve the first violated signal and all
+recovery actions even after service returns.
 
-## Upgrade Path in This Repository
-
-A real Atlas upgrade path is not only “deploy the new version.” It is:
-
-1. confirm the install matrix and rollout safety contract for the target profile
-2. verify the release evidence manifest for the candidate
-3. apply the upgrade scenario that matches the version change type
-4. review readiness, health, and load or observability signals during rollout
-5. keep or roll back based on evidence, not instinct
-
-## Required Signals During Upgrade
-
-Operators should treat these as first-class upgrade inputs:
-
-- readiness and health stabilization
-- unusual error or rejection patterns
-- latency or overload changes under real traffic
-- evidence that the target release identity is the one actually serving
-
-## Main Takeaway
-
-An upgrade is safe only when the target release, the rollout path, and the live
-signals all agree. If release evidence says one thing and readiness or traffic
-behavior says another, the system is telling the operator to stop and resolve
-the disagreement before promotion.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Use [Rollout Under Load](../load/rollout-under-load.md) for traffic budgets and
+[Rollback Drills](rollback-drills.md) for rehearsal evidence.
