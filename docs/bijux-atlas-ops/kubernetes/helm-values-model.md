@@ -4,100 +4,97 @@ audience: operators
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Helm Values Model
 
-Atlas treats Helm values as a governed contract surface with explicit schemas,
-documentation maps, and install-profile coverage.
+Atlas configuration is layered. Baseline values define the complete chart
+surface, a named profile expresses deployment intent, and a schema enforces the
+relationships that must remain true in every render.
 
-## Purpose
+## Configuration Resolution
 
-Use this page to understand how Atlas separates baseline defaults, install
-profiles, documented value ownership, and forbidden high-risk combinations.
+```mermaid
+flowchart LR
+    B["Baseline values"] --> M["Merge"]
+    P["Named profile"] --> M
+    O["Reviewed site override"] --> M
+    M --> S{"Schema valid?"}
+    S -->|no| X["Reject configuration"]
+    S -->|yes| H["Review high-risk keys"]
+    H --> R["Render manifests"]
+```
 
-## Source of Truth
+Keep site-specific overrides separate from governed profiles. Editing a shared
+profile to accommodate one cluster silently changes the meaning of every run
+that uses that profile.
 
-- `ops/k8s/charts/bijux-atlas/values.yaml`
-- `ops/k8s/charts/bijux-atlas/values.schema.json`
-- `ops/k8s/values/*.yaml`
-- `ops/k8s/values/profiles.json`
-- `ops/k8s/values/documentation-map.json`
-- `ops/k8s/values-schema-high-risk-policy.json`
+## Profile Contracts
 
-## What Is Governed
+`ops/k8s/values/profiles.json` records purpose, risk, intended use, required and
+forbidden toggles, resource class, network policy, HPA policy, image pinning,
+filesystem posture, debug posture, and storage mode.
 
-The values model is intentionally layered:
+| Profile family | Intended contract |
+| --- | --- |
+| `profile-baseline` | Minimal common chart behavior with read-only filesystem and ephemeral storage |
+| `ci` | Fast cached-only validation without dependency egress or autoscaling |
+| `kind` | Realistic local-cluster dependency wiring with ephemeral storage |
+| `offline` | Prewarmed, cached-only operation without live dependency egress |
+| `perf` | Digest-pinned load environment with HPA, metrics, and dependency-aware policy |
+| `prod` | Primary production shape with autoscaling and dependency isolation |
+| `prod-minimal` | Small production-safe shape with digest pinning and HPA |
+| `prod-ha` | Multiple replicas, disruption protection, tighter probes, and HPA |
+| `prod-airgap` | Disconnected production using a local registry and pinned dataset assets |
 
-- `values.yaml` is the baseline contract for the chart
-- `values.schema.json` defines valid keys and cross-field rules
-- `ops/k8s/values/*.yaml` contains governed install profiles and examples
-- `profiles.json` defines the operator intent for supported profiles
-- `documentation-map.json` maps top-level keys to the docs surface that owns
-  their behavior
-- `values-schema-high-risk-policy.json` identifies keys that require extra care
-  because they affect security, image provenance, runtime behavior, or storage
+The install matrix governs a smaller set of executable installation paths.
+Presence in the profile registry does not automatically mean a profile has an
+install, upgrade, and rollback scenario.
 
-## Value Classes
+## Schema-Enforced Relationships
 
-Atlas separates values into four classes:
+The values schema uses strict objects and cross-field rules. Important examples
+include:
 
-- baseline defaults: the safe shared starting point in `values.yaml`
-- supported overlays: environment or profile values such as `ci.yaml`,
-  `kind.yaml`, `offline.yaml`, `perf.yaml`, and `prod.yaml`
-- examples and specialist variants: files such as `ingress.yaml`,
-  `networkpolicy-custom.yaml`, and `multi-registry.yaml` that describe a
-  controlled deployment shape
-- forbidden or high-risk toggles: combinations the schema or profile contract
-  rejects, such as mutable image tags in performance paths or unsafe debug
-  surfaces in production-oriented profiles
+- cached-only mode requires catalog readiness to be disabled;
+- init prewarming requires at least one pinned dataset;
+- cluster-aware egress requires at least one allowed namespace;
+- selected ingress requires an allowed namespace;
+- custom network modes require explicit custom rules;
+- container security forbids privilege escalation, requires a read-only root
+  filesystem, and drops all Linux capabilities.
 
-## Documentation Ownership
+Invalid combinations must fail before installation. An operator warning is not
+an adequate substitute for a relationship the schema can enforce.
 
-`ops/k8s/values/documentation-map.json` makes the values model traceable. The
-map ties top-level keys such as `cache`, `store`, `networkPolicy`, `metrics`,
-`rollout`, `probes`, `serviceAccount`, and `rbac` to the docs surface that
-should explain them. Some existing entries still point at older documentation
-paths, which means this handbook must remain the durable source when those links
-are refreshed.
+## High-Risk Values
 
-## Operator Workflow
+The high-risk policy names nine top-level areas:
 
-1. Start from `values.yaml`.
-2. Select the supported profile in `ops/k8s/values/profiles.json`.
-3. Apply the matching values file from `ops/k8s/values/`.
-4. Validate the result against `values.schema.json`.
-5. Review high-risk keys called out by
-   `ops/k8s/values-schema-high-risk-policy.json`.
-6. Confirm the change is explained in the owning documentation page before
-   promotion.
+`image`, `server`, `cache`, `store`, `resources`, `metrics`, `networkPolicy`,
+`serviceAccount`, and `rbac`.
 
-## How to Validate
+Review these values by consequence:
 
-- use the schema to reject unknown keys and invalid combinations
-- confirm the selected profile still satisfies its required and forbidden
-  toggles
-- check that high-risk keys such as `image`, `server`, `cache`, `store`,
-  `metrics`, `networkPolicy`, `serviceAccount`, and `rbac` have matching review
-  evidence
-- confirm documentation ownership is still accurate for newly introduced keys
+- image changes affect provenance, compatibility, and rollback identity;
+- server and cache changes affect readiness, overload, and degraded operation;
+- store changes affect data reachability, credentials, and integrity;
+- resource changes affect scheduling, scaling, and performance baselines;
+- metrics changes affect alert and release evidence;
+- network policy, service account, and RBAC changes alter the security boundary.
 
-## Failure Modes
+## Operator Review
 
-- an operator edits a profile file to express a one-off override that should
-  have stayed local to validation
-- high-risk keys change without rollout, security, or observability review
-- examples drift into acting like supported production profiles without being
-  listed in `profiles.json`
-- documentation claims a key exists, but the schema rejects it or maps it to a
-  different operational surface
+For any values change, record the selected profile, final merged values, chart
+and image identity, affected high-risk areas, and rendered diff. Then run the
+suite declared by the install matrix. Production-oriented changes also require
+security, rollout, observability, and recovery evidence.
 
-## Related Contracts and Assets
+Reject unknown keys, mutable production image tags, enabled debug endpoints,
+unexplained policy relaxation, or overrides that contradict the profile's
+required and forbidden toggles.
 
-- `ops/k8s/values/`
-- `ops/k8s/values/documentation-map.json`
-- `ops/k8s/charts/bijux-atlas/values.schema.json`
-- `ops/k8s/charts/bijux-atlas/values.yaml`
-- `ops/k8s/values/profiles.json`
-- `ops/k8s/values-schema-high-risk-policy.json`
+See [Install Matrix](install-matrix.md) to choose the evidence lane and
+[Runtime Configuration](runtime-configuration.md) for values that become Atlas
+process configuration.

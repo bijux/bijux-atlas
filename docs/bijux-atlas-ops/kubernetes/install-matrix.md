@@ -4,73 +4,77 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Install Matrix
+# Installation, Upgrade, and Rollback Matrix
 
-The install matrix records which values files, profiles, and suites must hold
-for supported installation paths.
+The install matrix is the compatibility table for Kubernetes delivery. It binds
+a values profile to the suite that must prove it, and it names the lifecycle
+transitions Atlas actually exercises.
 
-## Purpose
+## Profile Evidence Lanes
 
-Use the install matrix to decide which profile is supported for a target
-environment, which suite must pass, and whether install, upgrade, or rollback
-is part of the governed path.
+| Profile | Values file | Required suite |
+| --- | --- | --- |
+| `ci` | `ops/k8s/values/ci.yaml` | `install-gate` |
+| `dev` | `ops/k8s/values/dev.yaml` | `install-gate` |
+| `local` | `ops/k8s/values/local.yaml` | `install-gate` |
+| `kind` | `ops/k8s/values/kind.yaml` | `k8s-suite` |
+| `offline` | `ops/k8s/values/offline.yaml` | `k8s-suite` |
+| `profile-baseline` | `ops/k8s/values/profile-baseline.yaml` | `k8s-suite` |
+| `ingress` | `ops/k8s/values/ingress.yaml` | `nightly` |
+| `multi-registry` | `ops/k8s/values/multi-registry.yaml` | `nightly` |
+| `perf` | `ops/k8s/values/perf.yaml` | `nightly` |
+| `prod` | `ops/k8s/values/prod.yaml` | `nightly` |
 
-## Source of Truth
+This table states the minimum named lane. A production decision can require
+additional security, load, observability, and recovery evidence even when the
+matrix row is satisfied.
 
-- `ops/k8s/install-matrix.json`
-- `ops/schema/k8s/install-matrix.schema.json`
-- `ops/k8s/values/profiles.json`
+## Lifecycle Coverage
 
-## Supported Profiles
+```mermaid
+flowchart LR
+    N["No installed release"] -->|install| H["workspace-head"]
+    P["chart-previous"] -->|upgrade| H
+    H -->|rollback| P
+```
 
-`ops/k8s/install-matrix.json` currently defines these supported profile entries:
+The matrix declares these scenarios:
 
-| Profile | Values file | Target environment | Required suite | Offline or air-gapped status | Promotion status |
-| --- | --- | --- | --- | --- | --- |
-| `ci` | `ops/k8s/values/ci.yaml` | fast CI validation | `install-gate` | no | supported for gate checks |
-| `dev` | `ops/k8s/values/dev.yaml` | local or Kind development | `install-gate` | no | supported for local validation |
-| `ingress` | `ops/k8s/values/ingress.yaml` | ingress-specific validation | `nightly` | no | supported when ingress paths are under review |
-| `kind` | `ops/k8s/values/kind.yaml` | deterministic Kind cluster | `k8s-suite` | no | supported for realistic cluster validation |
-| `local` | `ops/k8s/values/local.yaml` | local single-operator installs | `install-gate` | no | supported for workstation validation |
-| `multi-registry` | `ops/k8s/values/multi-registry.yaml` | registry-heavy validation | `nightly` | no | supported for broader integration review |
-| `offline` | `ops/k8s/values/offline.yaml` | offline or air-gapped install path | `k8s-suite` | yes | supported for disconnected installs |
-| `perf` | `ops/k8s/values/perf.yaml` | load and scaling environments | `nightly` | no | supported for performance promotion review |
-| `prod` | `ops/k8s/values/prod.yaml` | production rollout | `nightly` | no | supported for production promotion review |
-| `profile-baseline` | `ops/k8s/values/profile-baseline.yaml` | shared chart baseline validation | `k8s-suite` | no | supported as the common baseline |
+| Lifecycle | Profiles | Source and target identity |
+| --- | --- | --- |
+| Install | `profile-baseline`, `ci`, `kind`, `offline`, `perf` | Clean installation of the selected profile |
+| Upgrade | `kind`, `offline`, `perf` | `chart-previous` to `workspace-head` |
+| Rollback | `kind`, `offline`, `perf` | `workspace-head` to `chart-previous` |
 
-## Governed Scenarios
+There is no declared upgrade or rollback scenario for `prod`, `dev`, `local`,
+`ingress`, or `multi-registry` in the current matrix. Do not present those
+transitions as proven by this contract.
 
-The same matrix also defines the named scenarios operators are expected to run:
+## Selecting a Path
 
-- install: `install-profile-baseline`, `install-ci`, `install-kind`,
-  `install-offline`, and `install-perf`
-- upgrade: `upgrade-kind`, `upgrade-offline`, and `upgrade-perf`
-- rollback: `rollback-kind`, `rollback-offline`, and `rollback-perf`
+1. Choose a profile whose intent matches the target environment.
+2. Confirm its values file and suite in `ops/k8s/install-matrix.json`.
+3. Validate the matrix against `ops/schema/k8s/install-matrix.schema.json`.
+4. For upgrade or rollback, preserve both release references and rendered
+   manifests.
+5. Run the named suite and collect the install, probe, conformance, and
+   observability evidence it requires.
+6. Apply rollout and rollback decisions using the rollout-safety contract.
 
-Upgrade and rollback entries require both `baseline_ref` and `target_ref`,
-which makes the promotion comparison explicit instead of implied.
+## Honest Claims
 
-## How to Validate
+A profile row proves that an evidence lane is defined. A passing install proves
+that one selected release can be installed under that lane. It does not prove
+upgrade compatibility, rollback recovery, capacity, air-gap completeness, or
+production readiness unless those claims have their own declared scenario and
+evidence.
 
-1. Confirm the matrix entry matches the target environment and intended use.
-2. Validate the file against `ops/schema/k8s/install-matrix.schema.json`.
-3. Run the named suite for the selected profile.
-4. If the path is `upgrade` or `rollback`, confirm both baseline and target
-   references are recorded.
-5. Carry the resulting evidence into rollout and release review.
+When a real deployment path is missing from the matrix, add and validate the
+contract before calling the path supported. Do not borrow evidence from a
+different profile because its manifests appear similar.
 
-## Failure Modes
-
-- an install path exists in practice but is absent from the matrix
-- a profile is reused in a different environment without a declared suite
-- an offline claim is made without using the `offline` profile path
-- upgrade or rollback is attempted without an explicit baseline comparison
-
-## Related Contracts and Assets
-
-- `ops/k8s/install-matrix.json`
-- `ops/schema/k8s/install-matrix.schema.json`
-- `ops/k8s/values/profiles.json`
+Continue with [Render and Validate](render-and-validate.md) for preflight proof
+and [Rollout Safety](rollout-safety.md) for live promotion decisions.
