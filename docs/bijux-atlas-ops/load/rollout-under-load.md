@@ -4,49 +4,87 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Rollout Under Load
+# Rollout and Rollback Under Load
 
-Atlas explicitly tests steady load during rollout activity so release safety is
-measured under realistic pressure.
+Atlas tests both directions of release change under steady traffic. A rollout
+proves that a candidate can enter service without violating the request
+contract. A rollback proves that the previous release can restore behavior
+without leaving partial runtime state. Control-plane completion alone proves
+neither outcome.
 
-## Purpose
+Both scenarios require Kubernetes and use `warm-steady.js`:
 
-Use these scenarios when a deployment change is risky enough that normal steady
-state validation is not sufficient. The goal is to prove the service can change
-version while still serving meaningful traffic.
+| Scenario | Control action | Required outcome |
+| --- | --- | --- |
+| `load-under-rollout` | Rollout or restart to the candidate | Candidate becomes ready, receives traffic, and remains inside service budgets. |
+| `load-under-rollback` | Rollback or undo to the previous release | Previous release becomes ready, receives traffic, restores correctness, and leaves no partial release state. |
 
-## Source of Truth
+## Change Sequence
 
-- `ops/load/scenarios/load-under-rollout.json`
-- `ops/load/scenarios/load-under-rollback.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
-- `docs/bijux-atlas-ops/kubernetes/rollout-safety.md`
+```mermaid
+sequenceDiagram
+    participant Load as Steady workload
+    participant Old as Previous release
+    participant New as Candidate release
+    participant Control as Kubernetes controller
+    Load->>Old: Establish baseline traffic
+    Control->>New: Start candidate
+    New-->>Control: Readiness and warmup evidence
+    Control->>Old: Drain old replicas
+    Load->>New: Shift governed traffic
+    alt candidate satisfies evidence contract
+        Control->>New: Promote
+    else candidate violates contract
+        Control->>Old: Restore previous release
+        Load->>Old: Confirm recovered behavior
+    end
+```
 
-## Test Model
+Record the previous and candidate image digests, chart and profile identities,
+start and completion timestamps, replica transitions, and traffic share by
+release. Aggregated service metrics are insufficient: healthy old replicas can
+hide a failing candidate.
 
-The rollout-under-load program has four distinct stages:
+## Acceptance Budget
 
-1. establish steady traffic with the governed workload shape
-2. trigger the rollout or rollback event
-3. observe latency, error behavior, and readiness during the transition
-4. confirm the service stabilizes within the declared thresholds
+Rollout and rollback use the same governed limits:
 
-Both current scenario definitions require Kubernetes and use the
-`warm-steady.js` traffic shape, which keeps the comparison anchored to a known
-steady-state workload.
+| Signal | Maximum |
+| --- | ---: |
+| p95 latency | 1,400 ms |
+| p99 latency | 2,600 ms |
+| Error rate | 5% |
 
-## Acceptance Rules
+These are service ceilings, not promotion targets. Correctness, readiness,
+telemetry continuity, dataset availability, and configuration compatibility
+remain mandatory even when latency and error rate are inside budget.
 
-- latency and failure rate must stay within the rollout-specific thresholds
-- readiness transitions must stay aligned with rollout safety expectations
-- rollback must restore service behavior rather than just complete a control
-  action
+## Promotion Evidence
 
-## Related Contracts and Assets
+A rollout is acceptable only when the candidate:
 
-- `ops/load/scenarios/load-under-rollout.json`
-- `ops/load/scenarios/load-under-rollback.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
+- passes the profile's render, policy, and readiness contracts;
+- becomes an active endpoint and serves a meaningful share of the workload;
+- preserves request semantics, dataset resolution, and protected traffic;
+- emits metrics, logs, traces, and release identity continuously; and
+- stabilizes without restart loops, unresolved warmup, or hidden dependency
+  failures.
+
+## Rollback Evidence
+
+A rollback is acceptable only when the previous release is restored, query
+correctness and governed dataset access are recovered, the validation report is
+complete, and no partial release state remains. Preserve the trigger and the
+first violated signal; a successful recovery does not erase the candidate
+failure.
+
+Escalate instead of repeatedly cycling releases when shared data integrity is
+uncertain, the previous release cannot become ready, or compatibility prevents
+a clean revert.
+
+Use [Rollout Safety](../kubernetes/rollout-safety.md) for profile controls and
+[Release Evidence](../release/release-evidence.md) for the packet required to
+support a promotion decision.

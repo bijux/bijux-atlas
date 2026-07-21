@@ -4,53 +4,68 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Pod Churn Resilience
 
-Pod churn scenarios verify whether Atlas stays healthy when runtime instances
-are killed or rotated during live traffic.
+The `pod-churn` scenario asks whether Atlas can keep serving governed traffic
+while Kubernetes removes and replaces instances. It requires Kubernetes and
+uses the `warm-steady.js` workload, so the churn event is measured against an
+already-active service rather than startup traffic.
 
-## Purpose
+## Churn Timeline
 
-Use this scenario when validating that Atlas can survive pod loss, restart, or
-rotation without turning routine churn into an outage.
+```mermaid
+stateDiagram-v2
+    [*] --> Stable: workload reaches steady state
+    Stable --> ReducedCapacity: pod termination begins
+    ReducedCapacity --> Rebalancing: readiness removes old endpoint
+    Rebalancing --> Restoring: replacement starts and becomes ready
+    Restoring --> Recovered: capacity and service stabilize
+    ReducedCapacity --> Failed: errors or latency exceed budget
+    Rebalancing --> Failed: traffic reaches an unready endpoint
+    Restoring --> Failed: replacement misses recovery window
+```
 
-## Source of Truth
+Capture the stable interval before terminating a pod. Record each termination,
+endpoint removal, replacement start, readiness transition, and return to the
+stable replica count. Keep load parameters unchanged through the recovery
+window.
 
-- `ops/load/scenarios/pod-churn.json`
-- `ops/load/suites/suites.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
+## Acceptance Budget
 
-## What Pod Churn Means
+| Signal | Maximum |
+| --- | ---: |
+| p95 latency | 1,200 ms |
+| p99 latency | 2,500 ms |
+| Error rate | 3% |
 
-For Atlas, pod churn includes:
+The budget applies to the complete governed scenario. Also inspect the churn
+window directly: an acceptable aggregate can conceal a short request blackout.
 
-- intentional rollout or restart replacement
-- unexpected pod loss during live traffic
-- repeated rotation that forces readiness and connection recovery
+## Evidence to Correlate
 
-The current scenario definition requires Kubernetes and runs the
-`warm-steady.js` load shape while pods are killed or rotated.
+- request latency, failures, and status classes over the same timeline;
+- desired, available, ready, terminating, and restarting replicas;
+- readiness and endpoint membership transitions;
+- connection resets, draining behavior, and requests sent to unready pods;
+- PDB decisions and unschedulable or image-pull delays;
+- HPA activity when the selected profile enables autoscaling; and
+- the time from pod loss to restored ready capacity and steady service.
 
-## What Healthy Recovery Looks Like
+A single controlled replacement proves one recovery path. Repeated churn is a
+different experiment and must record cadence, number of replacements, and
+whether events overlap. Do not generalize a one-pod result to node loss,
+availability-zone loss, or arbitrary disruption rates.
 
-- latency rises only within the declared churn thresholds
-- error rate remains bounded rather than cascading
-- readiness recovers quickly enough that service continuity holds
-- observability signals make the churn visible to operators
+## Failure Conditions
 
-## Transient Turbulence Versus Regression
+Fail the scenario when latency or errors exceed budget, traffic reaches a pod
+after readiness withdrawal, replacement capacity does not stabilize, or
+correctness changes during churn. Missing readiness or event evidence also
+invalidates the result because it prevents attribution of the service impact.
 
-Short-lived latency movement is expected during pod churn. It becomes a release
-regression when:
-
-- `p95` or `p99` exceeds the pod-churn thresholds
-- error rate moves beyond the allowed budget
-- readiness does not recover or traffic black-holes during replacement
-
-## Related Contracts and Assets
-
-- `ops/load/scenarios/pod-churn.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
+Use [Health, Readiness, and Drain](../observability/health-readiness-and-drain.md)
+for probe semantics and [Rollout Safety](../kubernetes/rollout-safety.md) for
+profile-specific delivery controls.

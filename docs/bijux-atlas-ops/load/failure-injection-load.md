@@ -4,59 +4,89 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Failure Injection Load
+# Failure Injection Under Load
 
-Atlas combines failure injection and load scenarios so resilience claims are
-measured under degraded conditions, not only happy-path traffic.
+Resilience is a time-bounded claim: Atlas must preserve correctness, expose the
+fault, shed work deliberately, and recover after the fault is removed. A load
+run without a controlled fault measures capacity. A fault test without traffic
+does not establish service behavior under pressure.
 
-## Purpose
+## Experiment Shape
 
-Use this page when validating graceful degradation, correctness preservation, or
-recovery behavior while Atlas is under meaningful traffic.
+```mermaid
+sequenceDiagram
+    participant Driver as Load driver
+    participant Atlas as Atlas service
+    participant Fault as Fault controller
+    participant Evidence as Evidence collector
+    Driver->>Atlas: Establish governed workload
+    Evidence->>Evidence: Capture healthy baseline
+    Fault->>Atlas: Inject one declared fault
+    Driver->>Atlas: Continue identical workload
+    Atlas-->>Evidence: Metrics, logs, traces, responses
+    Fault->>Atlas: Remove fault
+    Driver->>Atlas: Continue through recovery window
+    Evidence->>Evidence: Classify degradation and recovery
+```
 
-## Source of Truth
+Record the fault mechanism, injection and removal timestamps, workload and
+query-pack identities, release and profile, and the exact threshold contract.
+Changing traffic at the same time as the fault makes the result ambiguous.
 
-- `ops/e2e/scenarios/failure/`.
-- `ops/load/scenarios/`.
-- `ops/load/thresholds/`.
+## Governed Fault Surfaces
 
-## Combined Resilience Model
+The end-to-end injection catalog defines process termination during ingest and
+query, shard corruption, disk-full and read-only storage, network partition,
+downstream timeout, invalid configuration, missing artifacts, and constrained
+memory. Each mechanism has an expected behavior: controlled failure, bounded
+latency, isolation, explicit diagnostics, or preserved state.
 
-The failure program defines injections such as invalid config, missing
-artifacts, corrupted shards, disk exhaustion, ingest crashes, query crashes, bad
-request floods, and slow-query warning conditions. The load program pairs those
-ideas with traffic scenarios such as:
+The load catalog exercises a narrower set of pressure experiments:
 
-- `store-outage-under-spike`.
-- `noisy-neighbor-cpu-throttle`.
-- `pod-churn`.
-- `stampede`.
-- `cheap-only-survival`.
+| Scenario | Pressure question | Required observation |
+| --- | --- | --- |
+| `store-outage-under-spike` | Cached survival during a store outage and traffic spike | Cached requests return `200` or `304`; uncached work fails explicitly. |
+| `noisy-neighbor-cpu-throttle` | Cheap-path survival during CPU contention | Cheap requests succeed; heavy work may return `503`. |
+| `pod-churn` | Can Kubernetes replace serving instances without an uncontrolled outage? | Readiness, error, latency, and recovery evidence. |
+| `load-under-rollout` | Can a candidate enter service under steady traffic? | Per-release readiness and service evidence through promotion. |
+| `load-under-rollback` | Can the previous release resume service under steady traffic? | Restored behavior and absence of partial release state. |
 
-## What Operators Are Testing
+Do not claim that every end-to-end fault is tested under load. The injection
+catalog and load catalog are separate authorities; a combined claim requires a
+run record that names both mechanisms.
 
-Operators should state the hypothesis before running the scenario:
+## Store-Outage Budget
 
-- graceful degradation: protected traffic classes stay available and Atlas.
-  reports overload honestly
-- correctness preservation: degraded conditions do not return wrong data or.
-  break contract semantics
-- recovery: the service stabilizes after the injected failure is removed.
+The governed `store-outage-under-spike` thresholds are:
 
-## How to Judge the Outcome
+| Signal | Maximum |
+| --- | ---: |
+| p95 latency | 1,500 ms |
+| p99 latency | 3,000 ms |
+| Error rate | 10% |
 
-- graceful degradation means Atlas may slow down or shed selected traffic, but.
-  the protected surface stays within the declared thresholds
-- correctness failure means the service returns invalid, inconsistent, or.
-  contract-breaking results even if latency looks acceptable
-- resilience failure means the service does not recover or the incident surface.
-  becomes opaque to operators
+These limits bound degradation; they do not permit wrong answers. A response
+inside the latency budget still fails if it violates the API contract, hides
+the outage, or returns data whose integrity cannot be established.
 
-## Related Contracts and Assets
+## Verdict
 
-- `ops/e2e/scenarios/failure/`.
-- `ops/load/scenarios/`.
-- `ops/load/thresholds/`.
+A passing run demonstrates all of the following:
+
+- the pre-fault interval was healthy and comparable to the selected baseline;
+- the intended fault occurred and was visible in telemetry;
+- protected traffic retained its declared contract;
+- rejected or degraded work failed explicitly and within budget;
+- no partial write, corrupt cache entry, or false success was observed;
+- recovery completed within the recorded window after fault removal; and
+- the evidence bundle contains `result.json`, `summary.md`, failure
+  classification, metrics, configuration, and logs.
+
+Treat a missing signal as an evidence failure. A fault that cannot be observed
+or a recovery that cannot be timed is not a resilience proof.
+
+Use [Pod Churn Resilience](pod-churn-resilience.md) for instance replacement
+and [Rollout Under Load](rollout-under-load.md) for release changes.
