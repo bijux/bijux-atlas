@@ -1,110 +1,98 @@
 ---
-title: Admin Endpoints Exceptions
+title: Admin Endpoint Exceptions
 audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Admin Endpoints Exceptions
+# Admin Endpoint Exceptions
 
-Exceptions around admin-facing endpoints are tracked as schema-backed policy so
-security review and operations review can reason about the same surface. The
-default state is no exception: `ops/k8s/admin-endpoints-exceptions.json`
-currently records an empty `exceptions` array, which means every administrative
-surface is expected to stay disabled, isolated, or authenticated by default.
+Atlas keeps recovery, diagnostics, failure-injection, and chaos controls out of
+the public route set unless administrative endpoints are explicitly enabled.
+The Helm default is `server.adminEndpoints.enabled: false`, which renders
+`ATLAS_ENABLE_ADMIN_ENDPOINTS=false`; the runtime default is also false.
 
-## Purpose
+When enabled, the server adds these routes:
 
-Use this page when a Kubernetes profile needs a narrowly scoped deviation from
-the normal Atlas rule that administrative endpoints stay off the public path and
-out of routine user traffic.
+| Method | Route | Capability |
+| --- | --- | --- |
+| `POST` | `/debug/recovery/run` | execute a recovery control |
+| `GET` | `/debug/recovery/diagnostics` | inspect recovery diagnostics |
+| `POST` | `/debug/failure-injection` | invoke a supported failure target |
+| `POST` | `/debug/chaos/run` | run a chaos action for an explicit node |
 
-## Source of Truth
+The feature flag changes route registration; it is not, by itself, an
+authentication or network-isolation control. An operator must evaluate auth,
+service exposure, ingress, and network policy together.
 
-- `ops/k8s/admin-endpoints-exceptions.json`
-- `ops/schema/k8s/admin-endpoints-exceptions.schema.json`
-- `ops/k8s/profile-security-contract.json`
-- `ops/k8s/examples/networkpolicy/`
+## Default Policy
 
-## What Is Governed
+`ops/k8s/admin-endpoints-exceptions.json` currently contains an empty
+`exceptions` array. No profile has a recorded exception. Enabling the endpoints
+without an approved registry entry therefore conflicts with the checked-in
+operations policy even if the chart renders successfully.
 
-An admin endpoint exception is a governed object, not an ad hoc note in a pull
-request. The governing schema defines the object shape and keeps the exception
-set reviewable as operational policy.
+```mermaid
+flowchart LR
+    Need[Operational need] --> Internal{Keep cluster-internal?}
+    Internal -->|yes| Controls[Auth and network controls]
+    Internal -->|no| Reject[Reject public exposure]
+    Controls --> Record[Register profile, owner, expiry]
+    Record --> Render[Render selected profile]
+    Render --> Verify[Verify routes and isolation]
+    Verify --> Monitor[Retain audit and expiry evidence]
+```
 
-An exception record should identify:
+## Registry Contract
 
-- the endpoint, route, or capability being exposed
-- the profile or environment where the exception applies
-- the reason the default security posture is insufficient
-- the compensating controls that keep the exception bounded
-- the expiry date and revalidation trigger
-- the evidence attached to justify the exception
+The current schema accepts only three fields per exception:
 
-## Decision Criteria
+| Field | Meaning |
+| --- | --- |
+| `profile` | exact profile receiving the exception |
+| `owner` | accountable owner for removal or renewal |
+| `expiresOn` | calendar expiry in `YYYY-MM-DD` form |
 
-Only approve an exception when all of these are true:
+The schema does **not** serialize the route, reason, compensating controls, or
+evidence references. Those details must accompany the change review, but they
+are not recoverable from the registry alone. Do not claim that the current JSON
+record provides a complete exception rationale.
 
-- the operator can name the blocked workflow that requires the endpoint
-- the endpoint cannot stay disabled or cluster-internal
-- the selected profile security contract still holds for auth, network policy,
-  and auditability
-- the exposure is time-bounded and the owner is explicit
-- there is validation evidence showing the exception behaves as intended
+## Approval Standard
 
-Reject the request when a normal chart value, service profile, or internal-only
-network policy would solve the problem without widening the attack surface.
+Approve an exception only when all of these conditions hold:
 
-## Review Workflow
+- the blocked workflow and required route are named
+- the route cannot remain disabled for that profile
+- authentication and network reachability are explicit
+- audit or telemetry coverage can detect use and drift
+- the registry names a responsible owner and future expiry
+- rendered manifests and a runtime check prove the bounded exposure
 
-1. The proposer adds or updates the exception object in
-   `ops/k8s/admin-endpoints-exceptions.json`.
-2. The proposer links the profile, endpoint, reason, expiry, and compensating
-   controls in the change review.
-3. Security and operations review the request against
-   `ops/schema/k8s/admin-endpoints-exceptions.schema.json` and the relevant
-   profile security contract.
-4. The approver confirms the change is reflected in network policy or service
-   wiring and that observability coverage exists for misuse or drift.
-5. Before expiry, the owner must either remove the exception or revalidate it
-   with fresh evidence.
+Reject an exception when an internal service, temporary port-forward, or
+narrower network policy satisfies the workflow without persistent exposure.
 
-## How to Validate
+## Expiry and Evidence
 
-- Validate the exception file against
-  `ops/schema/k8s/admin-endpoints-exceptions.schema.json`.
-- Confirm the owning profile still satisfies
-  `ops/k8s/profile-security-contract.json`.
-- Check the matching network policy examples in `ops/k8s/examples/networkpolicy/`
-  to verify the exception is still narrower than the normal cluster-aware
-  egress or ingress model.
-- Confirm logs, alerts, or dashboard coverage exists if the endpoint changes
-  security posture.
+Before `expiresOn`, the owner must remove the entry and disable the routes or
+renew the exception with fresh review evidence. A useful evidence set includes:
 
-## Failure Modes
+- the registry and schema validation result
+- the selected values profile and rendered ConfigMap value
+- Service, Ingress, and NetworkPolicy resources that bound reachability
+- an authenticated positive check and an unauthorized negative check
+- audit or telemetry output tied to the exercised route
 
-- an endpoint remains open after the exception should have expired
-- a profile inherits the exception without being named explicitly
-- compensating controls are documented but not rendered into manifests
-- drift removes the alerting or audit coverage that justified the exception
-- a rollout keeps the exception while the underlying operational need no longer
-  exists
+An expired entry, an enabled route without an entry, or an entry for one
+profile inherited by another is a failed policy state.
 
-## Evidence Produced
-
-Attach evidence that explains why the exception exists and proves it is bounded:
-
-- schema validation output for the exception record
-- rendered manifest or network policy evidence showing the scope of exposure
-- security review notes tied to the owning profile
-- observability evidence showing the endpoint is monitored and auditable
-
-## Related Contracts and Assets
+## Authorities
 
 - `ops/k8s/admin-endpoints-exceptions.json`
 - `ops/schema/k8s/admin-endpoints-exceptions.schema.json`
+- `ops/k8s/charts/bijux-atlas/values.yaml`
+- `ops/k8s/charts/bijux-atlas/templates/configmap.yaml`
 - `ops/k8s/profile-security-contract.json`
-- `ops/k8s/examples/networkpolicy/cluster-aware.yaml`
-- `ops/k8s/examples/networkpolicy/custom.yaml`
+- `crates/bijux-atlas-server/src/adapters/inbound/http/router.rs`
