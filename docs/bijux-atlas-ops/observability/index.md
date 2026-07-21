@@ -35,6 +35,40 @@ No signal is authoritative by itself. Metrics quantify scope, traces localize a
 request path, and logs explain discrete events and policy decisions. Release,
 dataset, profile, and request-class identity must remain visible across them.
 
+## Correlation Spine
+
+```mermaid
+flowchart TD
+    Request[Request or lifecycle event] --> RequestId[Request and trace identity]
+    Request --> ReleaseId[Runtime and dataset release identity]
+    Request --> Context[Profile, instance, route, and request class]
+    RequestId --> Logs[Structured logs]
+    RequestId --> Traces[Trace and spans]
+    ReleaseId --> Metrics[Metrics and SLO windows]
+    Context --> Metrics
+    Logs --> Evidence[Correlated evidence window]
+    Traces --> Evidence
+    Metrics --> Evidence
+```
+
+Correlation fields should be stable enough to join signals without putting
+high-cardinality values into metric labels. Request and trace identifiers
+belong in logs and traces. Metrics carry bounded dimensions such as route,
+request class, result class, profile, and release identity where their
+contracts permit them.
+
+## Signal Quality
+
+| Property | Question |
+| --- | --- |
+| coverage | Does every protected path emit the signals named by its contract? |
+| freshness | Is collection delay short enough for the decision window? |
+| continuity | Are gaps, restarts, and exporter loss visible? |
+| correlation | Can metrics, logs, traces, release, and dataset identity be joined? |
+| cardinality | Are dimensions bounded so the telemetry system survives load? |
+| retention | Will raw evidence outlive the incident or promotion review? |
+| redaction | Are secrets and sensitive payloads excluded without removing decision identity? |
+
 ## Choose the Operating Question
 
 | Question | Start here | Decision supported |
@@ -74,5 +108,9 @@ profile, alert and rule versions, dashboard snapshot, representative trace IDs,
 and relevant structured logs. Treat missing telemetry as a finding: an incident
 cannot be declared understood when the evidence needed to distinguish runtime,
 store, catalog, or policy failure is absent.
+
+Telemetry degradation changes the decision boundary. A serving runtime may
+remain available while promotion is held because alert delivery, trace
+retention, or required measurements cannot be established.
 
 For incident execution, continue to [Incident Response](incident-response.md).

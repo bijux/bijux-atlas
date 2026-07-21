@@ -9,11 +9,11 @@ last_reviewed: 2026-07-22
 
 # Operational Evidence Reports
 
-Operational evidence freezes the signals and identities behind an action. A
-second operator should be able to reproduce the decision after live telemetry
-has expired. Asset inventory, readiness declaration, runtime observation, and
-drill result are different evidence classes. They must not substitute for one
-another.
+Operational evidence freezes the signals and identities behind an action. It
+must remain useful after live telemetry expires. A second operator should be
+able to reconstruct the decision. Asset inventory, readiness declaration,
+runtime observation, and drill result are different evidence classes. They
+must not substitute for one another.
 
 ## Evidence Chain
 
@@ -56,13 +56,41 @@ An incident record adds detection time, first user impact, containment actions,
 recovery time, and integrity assessment. It also preserves the evidence that
 ruled out competing causes.
 
+## Evidence Lineage
+
+```mermaid
+flowchart LR
+    Raw[Raw snapshots and event exports] --> Normalize[Schema and redaction checks]
+    Normalize --> Evaluate[Threshold and SLO evaluation]
+    Evaluate --> Verdict[Operator verdict and exceptions]
+    Raw --> Manifest[Evidence manifest and hashes]
+    Normalize --> Manifest
+    Evaluate --> Manifest
+    Verdict --> Manifest
+    Manifest --> Packet[Release or incident packet]
+```
+
+Derived summaries must retain links to raw inputs. Redaction should remove
+secrets and sensitive payloads. It must preserve the timestamps, request
+classes, release identity, dataset identity, principal class, decision result,
+and trace correlation needed for review. Hash the retained form so later
+mutation is detectable.
+
+| Decision | Minimum evidence depth |
+| --- | --- |
+| local investigation | bounded signal window and identities sufficient to test a hypothesis |
+| incident containment | timeline, affected boundary, mitigation, reversal condition, and evidence gaps |
+| rollout continuation | probes, request-path signals, error and saturation windows, and rollout identity |
+| release promotion | conformance, SLO/load/recovery results, raw references, verdict, and artifact binding |
+| security response | exposure and identity state, authorization decisions, audit trail, containment, and integrity assessment |
+
 ## Current Evidence Boundary
 
 The generated telemetry index inventories six artifact classes. The readiness
-file declares `ready` when SLO definitions, alert catalog, telemetry drills,
-and dashboard index exist. That is static asset readiness. It does not prove
-scrape freshness, trace retention, alert delivery, dashboard population, or
-drill execution.
+file declares `ready` when four asset families exist: SLO definitions, the
+alert catalog, telemetry drills, and the dashboard index. That declaration is
+static asset readiness. It does not prove scrape freshness, trace retention,
+alert delivery, dashboard population, or drill execution.
 
 No schema-valid drill result is checked in under `ops/observe/`. Release
 evidence also carries empty drill and simulation summary collections. Until a
@@ -71,10 +99,11 @@ the static readiness declaration as promotion evidence.
 
 ## Acceptance
 
-Reject reports with missing time windows, mutable release references, absent
-raw signals, unresolved redaction, or a verdict disconnected from thresholds.
-Generated summaries must link to their inputs and schema. Preserve failed and
-partial runs; deleting them removes information needed to assess reliability.
+Reject reports with missing time windows or mutable release references. Also
+reject absent raw signals, unresolved redaction, or a verdict disconnected from
+thresholds. Generated summaries must link to their inputs and schema. Preserve
+failed and partial runs. Deleting them removes information needed to assess
+reliability.
 
 Use [Telemetry Drills](telemetry-drills.md) for executable-coverage limits and
 [Release Evidence](../release/release-evidence.md) for packaging constraints.

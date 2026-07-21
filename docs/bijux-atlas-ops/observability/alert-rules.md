@@ -50,6 +50,27 @@ release, profile, and dataset context. Open the bound runbook, confirm the
 protected invariant with independent signals, and capture the evidence before
 mutating the system when safety permits.
 
+## Alert Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Inactive
+    Inactive --> Pending: expression breaches
+    Pending --> Firing: persistence window completes
+    Pending --> Inactive: condition clears
+    Firing --> Acknowledged: owner accepts
+    Acknowledged --> Mitigating: bounded action starts
+    Mitigating --> Observing: condition clears
+    Observing --> Resolved: recovery window passes
+    Firing --> Defective: metric, query, or routing fault
+    Defective --> Inactive: rule path repaired and tested
+```
+
+Acknowledgement is not resolution. Resolution requires the protected invariant
+to recover and remain inside its boundary for the defined observation window.
+If the expression, metric, or notification path is defective, record a
+monitoring incident rather than silently muting the alert.
+
 ## Catalog and Security Boundaries
 
 The alert catalog lists 22 entries: 20 governed rule identities plus
@@ -85,6 +106,11 @@ reach the intended notification route, resolve when the condition clears, and
 produce an evidence record. A missing metric, stale rule version, unresolved
 runbook, or untested notification path is a monitoring failure even when the
 application is healthy.
+
+Silences and routing overrides need an owner, narrow matcher, justification,
+start time, expiry, and review trail. A silence must not outlive the condition
+that justified it, and it must not hide a broader label set than the operator
+intended.
 
 Continue to [Telemetry Drills](telemetry-drills.md) for firing evidence and
 [Incident Response](incident-response.md) for containment and recovery.
