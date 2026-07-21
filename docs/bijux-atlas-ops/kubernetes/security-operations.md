@@ -33,6 +33,22 @@ internal service boundary. Deployments exposed beyond a private trusted network
 must remain behind an ingress authentication proxy, service mesh, or equivalent
 institutional control.
 
+## Threat-to-Control Map
+
+| Threat | Preventive boundary | Detection and retained evidence |
+| --- | --- | --- |
+| unauthenticated external access | private service exposure, edge identity, runtime auth mode | denied-request audit fields, ingress and runtime auth decisions |
+| excessive principal authority | default-deny authorization and narrow service identities | principal, action, resource, route, and decision records |
+| administrative route exposure | disabled route registration, isolated service path, governed exception | rendered flag, route probe, reachability test, exception expiry |
+| workload escape or privilege | non-root security context, constrained service account and RBAC | rendered workload review and admission-policy result |
+| unauthorized dependency access | ingress and egress policy plus backend credentials | policy inventory, rejected connections, backend audit records |
+| artifact substitution | immutable manifests, hashes, signatures, and provenance | verifier result bound to image and dataset identities |
+| secret disclosure | secret references, redaction, least privilege, and rotation | access audit and rotation record without secret material |
+
+Security evidence must not reproduce credentials, bearer tokens, private keys,
+or unredacted request content. Preserve identifiers, decision metadata, and
+secret version references instead.
+
 ## Identity and Authorization
 
 `ATLAS_AUTH_MODE` selects the runtime authentication mode. Supported models are
@@ -102,6 +118,15 @@ verification quietly requires a network call.
    and trace linkage before promotion.
 7. Bind the rendered security evidence, policy snapshots, SBOMs, and artifact
    checksums into the release evidence set.
+
+## Security Acceptance Boundary
+
+A profile is not security-qualified merely because it renders or runs as
+non-root. Qualification requires the selected exposure model, identity mode,
+authorization policy, administrative-route posture, workload confinement,
+network policy, secrets path, and artifact verification to agree. Any
+unverified boundary is a recorded exception or a failed promotion condition;
+silence is not an implicit pass.
 
 ## Security Incident Containment
 

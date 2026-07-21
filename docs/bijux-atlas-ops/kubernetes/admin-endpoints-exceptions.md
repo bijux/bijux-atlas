@@ -27,6 +27,26 @@ The feature flag changes route registration; it is not, by itself, an
 authentication or network-isolation control. An operator must evaluate auth,
 service exposure, ingress, and network policy together.
 
+## Exception Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Disabled
+    Disabled --> Proposed: bounded operational need
+    Proposed --> Rejected: safer path exists
+    Proposed --> Active: review, registry, and controls pass
+    Active --> Revoked: risk or misuse detected
+    Active --> Expired: expiry reached
+    Active --> Removed: workflow completed
+    Revoked --> Disabled: routes and exposure removed
+    Expired --> Disabled: routes and exposure removed
+    Removed --> Disabled: registry and values reconciled
+```
+
+An exception is active only while the registry, selected profile, rendered
+configuration, reachability controls, and runtime route set agree. Review
+approval without that agreement is not an active exception.
+
 ## Default Policy
 
 `ops/k8s/admin-endpoints-exceptions.json` currently contains an empty
@@ -87,6 +107,11 @@ renew the exception with fresh review evidence. A useful evidence set includes:
 
 An expired entry, an enabled route without an entry, or an entry for one
 profile inherited by another is a failed policy state.
+
+Expiry is a hard boundary. Operators should disable the routes first when an
+exception cannot be renewed before its date. Extending only the date without
+fresh reachability, authorization, audit, and use-case evidence converts an
+exception ledger into permanent exposure and is not a renewal.
 
 ## Authorities
 

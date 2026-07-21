@@ -30,6 +30,18 @@ Broad simultaneous changes destroy diagnostic value. Stabilize user impact
 with the smallest reversible control. Then repair the boundary that owns the
 failure.
 
+## Command and Decision Control
+
+Name an incident lead and one active mitigation at a time. Record the expected
+effect, owner, start time, observation window, and reversal condition before
+each change. Emergency access and administrative endpoints remain subject to
+the security boundary; urgency does not turn an ungoverned route into an
+acceptable control.
+
+If evidence is incomplete, label the working diagnosis as a hypothesis. A
+timeline should distinguish observed facts, interpretations, decisions, and
+actions so later review does not turn an early guess into incident truth.
+
 ## Classification Matrix
 
 | Symptom class | First evidence | Do not confuse with |
@@ -85,6 +97,20 @@ Real incidents should preserve at least the same correlation quality.
 - Runtime rollback and dataset-store rollback are separate decisions.
 - Recovery is incomplete until representative cheap and heavy user paths match
   their expected status, latency, and provenance behavior.
+
+## Exit and Escalation Criteria
+
+Leave active response only when traffic admission is intentional, the selected
+dataset and runtime identities are known, representative queries pass, required
+security controls are restored, and the monitoring window shows no trigger
+recurrence. Assign every deferred repair or evidence gap an owner and durable
+tracking record.
+
+Escalate when artifact or catalog integrity cannot be established, credentials
+or administrative routes may be compromised, rollback cannot restore the
+service objective, the blast radius is still growing, or required telemetry is
+too incomplete to choose a safe action. Escalation is a risk decision, not an
+admission of diagnostic failure.
 
 Continue with [Dashboards and Panels](dashboards-and-panels.md),
 [Debug Bundles](../kubernetes/debug-bundles.md), and
