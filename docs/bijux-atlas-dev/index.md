@@ -73,6 +73,29 @@ Stable integrations should consume documented commands, registries, schemas,
 and report fields. Internal Rust module paths and terminal presentation are not
 automation contracts.
 
+## Command, Report, and Decision Boundaries
+
+The control plane separates inspection, execution, and promotion so that a
+successful discovery command cannot be mistaken for evidence of a completed
+run.
+
+| Surface | Responsibility | Trust boundary |
+| --- | --- | --- |
+| `list`, `describe`, registries | discover commands, owners, capabilities, and report types | inventory only; no runtime claim |
+| validators and doctors | evaluate a named contract against explicit inputs | valid only for the recorded source and inputs |
+| scenario runners | exercise load, conformance, resilience, or release behavior | require metrics and run identity, not an empty report shell |
+| report commands | serialize findings and artifact paths | report status must preserve missing or failed evidence |
+| release verification | bind reports, checksums, provenance, and artifacts | promotion is invalid when identities disagree |
+
+```mermaid
+flowchart LR
+    Discover[Discover owner and capability] --> Plan[Resolve inputs and authority]
+    Plan --> Run[Execute focused validation]
+    Run --> Report[Retain structured report]
+    Report --> Verify[Verify artifact binding]
+    Verify --> Promote[Make promotion decision]
+```
+
 ## Working by Risk
 
 - For a documentation-only change, validate structure, navigation, links, and

@@ -119,7 +119,7 @@ flowchart LR
     end
 ```
 
-## Contract Boundaries
+## Contract Boundaries and Limits
 
 - deterministic build behavior from governed inputs and pinned configuration
 - immutable release artifacts as the delivery unit
@@ -131,11 +131,11 @@ They establish that Atlas can show which inputs crossed its boundary, how the
 release was built, which artifact was served, and which checks informed an
 operational decision.
 
-## Boundaries
-
-Atlas is not a generic mutable runtime that rewrites release truth in place.
-It is not a replacement for source governance, and it is not a shortcut around
-validation, publication, and release evidence.
+Atlas is not a generic mutable runtime that rewrites release truth in place, a
+replacement for source governance, or a shortcut around validation,
+publication, and release evidence. A schema-valid fixture proves a contract
+shape; only an executed check or scenario proves observed behavior; only a
+coherent release packet binds that evidence to distributed artifacts.
 
 ## One Product, Three Decision Surfaces
 
@@ -197,13 +197,20 @@ release evidence bundle.
 `bijux-atlas-ops` is where deployment, rollout safety, observability, load
 budgets, and release trust are explained.
 
-If your question is about running Atlas safely in real environments, operations
-is the primary handbook.
+Security and release assurance are not side checks after the runtime is done.
+They help prove what was built, promoted, and eligible for rollback.
 
-The same is true of trust. Security and release assurance are not side checks
-after the runtime is done. They are part of how Atlas proves what was built,
-what was promoted, and what should be rolled back.
 ## Release Confidence Signals
+
+Evidence gains strength as it moves from declared shape to release-bound proof:
+
+| Evidence level | Establishes | Does not establish |
+| --- | --- | --- |
+| schema or policy | accepted structure and required fields | that a scenario ran |
+| checked-in fixture or sample | representative serialization and validator behavior | current environment health |
+| execution report | observed result for named inputs and run identity | artifact identity unless bound to it |
+| checksums and provenance | artifact identity and build lineage | operational fitness without run evidence |
+| verified release packet | agreement among artifacts, reports, checksums, and provenance | correctness of upstream biological claims |
 
 Primary publication and confidence lanes:
 
@@ -216,6 +223,7 @@ Primary publication and confidence lanes:
 Each lane contributes a distinct claim. Passing compilation does not establish
 documentation integrity, package publication, image provenance, or rollback
 readiness.
+
 ```mermaid
 flowchart TB
     source[Source changes] --> ci[repo and ci]
@@ -233,10 +241,10 @@ flowchart TB
 Atlas is not complete when it merely builds. It is complete when build, docs,
 contracts, publication channels, and operational evidence line up tightly
 enough that release decisions are reviewable instead of improvised.
+
 ## Published and Repository-Only Crates
 
-Atlas `0.2.2` publishes eleven Rust crates and keeps one maintainer crate
-repository-only.
+Atlas `0.2.2` publishes eleven Rust crates and keeps one maintainer crate repository-only.
 
 Published crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
 `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,

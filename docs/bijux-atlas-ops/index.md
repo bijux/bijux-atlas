@@ -110,6 +110,23 @@ Operators should be able to answer five questions for every promotion:
 Missing evidence is itself an operational finding. It must not be converted
 into a pass because the runtime appears healthy at one instant.
 
+## Evidence Strength
+
+Operational assets answer different questions and are not interchangeable.
+
+| Asset | Safe conclusion | Unsafe conclusion |
+| --- | --- | --- |
+| schema, policy, or threshold | the required shape and decision rule are explicit | the environment passed |
+| sample or golden file | serializers and validators have a representative target | current runtime behavior matches the sample |
+| rendered manifest | the selected values produce a concrete resource shape | the workload became ready or survived failure |
+| telemetry inventory | expected signals have names and owners | signals were emitted, retained, or queried successfully |
+| scenario report | the named behavior was observed for recorded inputs | another profile, version, or environment behaves identically |
+| verified release packet | evidence and artifact identities agree | unrecorded operational assumptions are safe |
+
+Use the weakest artifact that can answer an inspection question and the
+strongest evidence required by the decision. Promotion needs observed,
+release-bound proof; local design review often needs only the owning contract.
+
 ## Start by Outcome
 
 - deploy or inspect a topology: [Deployment Models](stack/deployment-models.md)

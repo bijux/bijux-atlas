@@ -118,6 +118,19 @@ Stable claims are backed by four kinds of authority:
 - machine-checked contract schemas under `configs/schemas/contracts/`
 - example or workflow material under `configs/examples/`
 
+Those authorities have different force. Implementation and schemas define
+behavior; generated references expose the resolved surface; examples teach a
+supported path but do not expand the contract. For a release-specific claim,
+pair the authority with evidence from the owning workflow.
+
+| Reader question | Product authority | Release-specific proof |
+| --- | --- | --- |
+| Which dataset identity is served? | model, artifact, store, and catalog contracts | published manifest and store/catalog record |
+| Which queries are stable? | query implementation, structured-output schemas, and OpenAPI | contract results for the released binaries |
+| Which command owns an operation? | CLI command tree and generated command reference | help or contract output from the released command |
+| Is an ingest directory serveable? | publication and artifact contracts | completed publish record, not build output alone |
+| Is a wire change compatible? | API and compatibility policy | compatibility report for the affected release pair |
+
 ## Continue by Concern
 
 - [Foundations](foundations/index.md)

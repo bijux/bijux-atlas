@@ -106,6 +106,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 
 * [Why Atlas Exists](#why-atlas-exists)
 * [What Ships in 0.2.2](#what-ships-in-022)
+* [How to Verify an Atlas Claim](#how-to-verify-an-atlas-claim)
 * [Choose the Right Surface](#choose-the-right-surface)
 * [How Atlas Fits With Bijux CLI](#how-atlas-fits-with-bijux-cli)
 * [Key Features](#key-features)
@@ -180,6 +181,36 @@ flowchart TD
 
 Runtime binaries, compatibility libraries, operational contracts, and
 repository maintenance have separate owners and release obligations.
+
+## How to Verify an Atlas Claim
+
+Atlas distinguishes a declared contract from evidence that the contract held
+for a particular build, deployment, or release. Source code and schemas define
+what must be true; generated references make those rules inspectable; run
+reports show what was exercised; signed release material binds the result to
+the artifacts consumers receive.
+
+```mermaid
+flowchart LR
+    Contract[Code, schema, and policy] --> Reference[Generated reference]
+    Reference --> Execution[Named validation or scenario]
+    Execution --> Report[Machine-readable report]
+    Report --> Binding[Checksum and provenance binding]
+    Binding --> Decision[Consumer-verifiable decision]
+```
+
+| Claim | Primary authority | Evidence required for a concrete release |
+| --- | --- | --- |
+| a command or HTTP shape is supported | owning crate plus generated CLI or OpenAPI reference | contract validation tied to the source revision |
+| a dataset is publishable | ingest, artifact, store, and catalog contracts | manifest, hashes, provenance, and publication record |
+| a deployment is admissible | chart schema, profile values, and Kubernetes policy | render inventory and conformance report for the selected profile |
+| a performance budget holds | named scenario, threshold, and metric contract | measured run plus baseline comparison from the same scenario identity |
+| a release is distributable | channel manifests and signing policy | coherent packet, checksums, provenance, and verifier result |
+
+A checked-in sample, schema-valid fixture, or empty report inventory proves
+shape only. It does not prove that a live scenario ran or that the current
+release passed. The [operations handbook](docs/bijux-atlas-ops/index.md)
+separates these evidence levels for deployment and promotion decisions.
 
 ## Choose the Right Surface
 
