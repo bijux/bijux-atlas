@@ -113,6 +113,29 @@ Machine consumers must combine structured output with the process exit code.
 See [Structured Output Contracts](../contracts/structured-output-contracts.md)
 before binding automation to fields.
 
+## Invocation Contract
+
+```mermaid
+flowchart LR
+    Args[Executable, global flags, family, and arguments] --> Parse[Parse and normalize]
+    Parse --> Resolve[Resolve config, policy, and dataset identity]
+    Resolve --> Execute[Execute owned operation]
+    Execute --> Encode[Encode result or structured error]
+    Encode --> Stdout[Standard output]
+    Execute --> Diagnostics[Diagnostics and telemetry]
+    Encode --> Exit[Process exit code]
+```
+
+Automation should retain the executable identity, complete argument vector with
+secrets redacted, producer version, structured standard output, diagnostics,
+and exit code. A JSON document with an unexpected exit status is not a
+successful command result. Conversely, an empty success stream is valid only
+when the invoked command explicitly defines silence as success.
+
+Global flags belong to the invocation, not the domain result. Repeated
+`--verbose`, `--trace`, or presentation changes must not be treated as domain
+schema fields.
+
 ## Surface Authority
 
 The public family list is governed by
@@ -120,6 +143,11 @@ The public family list is governed by
 command tree implements the executable surface. Generated command references
 record the observed build. All three must agree before a newly exposed family
 is treated as public.
+
+When they disagree, the installed command tree determines what can execute,
+the registry determines intended public governance, and the generated
+reference records what its build observed. Report the mismatch instead of
+silently selecting the broadest surface.
 
 For maintainer commands, continue with [Automation Command
 Surface](../../bijux-atlas-dev/automation/automation-command-surface.md). For

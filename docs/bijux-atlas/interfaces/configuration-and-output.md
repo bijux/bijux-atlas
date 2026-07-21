@@ -84,6 +84,24 @@ Treat that output as sensitive. Runtime configuration can describe endpoints,
 authentication modes, and secret-bearing settings. Apply the redaction policy
 before retaining it as operational evidence.
 
+## Configuration Identity
+
+A deployment record should preserve the config-file digest, selected
+environment variable names, CLI overrides, redacted effective configuration,
+runtime version, and resolution timestamp. Store secret references or versions,
+never secret values. This identity makes it possible to distinguish a binary
+regression from an unrecorded override.
+
+```mermaid
+flowchart LR
+    File[Config file and digest] --> Resolve[Resolve effective configuration]
+    Env[Allowed environment names] --> Resolve
+    Flags[CLI overrides] --> Resolve
+    Resolve --> Redact[Redact sensitive values]
+    Redact --> Fingerprint[Retain configuration fingerprint]
+    Fingerprint --> Run[Bind to runtime and evidence]
+```
+
 ## Configuration Is Validated as a Whole
 
 Startup-field precedence does not bypass runtime invariants. After resolution,
@@ -118,6 +136,11 @@ Use the following rules in automation:
 - validate against the command- or report-specific schema;
 - retain producer version and dataset or release identity;
 - never parse help text, log messages, or indentation.
+
+Standard output carries the requested command result. Standard error carries
+human diagnostics unless the specific command contract states otherwise. Logs,
+metrics, and traces are operational signals, not alternate command-result
+channels. Keep them correlated but validate them against their own contracts.
 
 Configuration identity and output identity belong together. A comparison is
 credible only when both runs record the relevant effective configuration and

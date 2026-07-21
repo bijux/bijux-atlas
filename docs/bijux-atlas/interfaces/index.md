@@ -4,87 +4,73 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Interfaces
 
-`bijux-atlas/interfaces` is where Atlas becomes a visible product surface.
+Atlas exposes four consumer boundaries: commands, HTTP/OpenAPI, runtime
+configuration, and structured results. Each has a distinct owner and
+compatibility policy. Source paths and generated references help locate those
+owners; they do not expand the supported surface by themselves.
+
+```mermaid
+flowchart LR
+    Consumer[User, client, or automation] --> CLI[Product commands]
+    Consumer --> HTTP[HTTP and OpenAPI]
+    Operator[Runtime operator] --> Config[Configuration and environment]
+    CLI --> Result[Structured result or error]
+    HTTP --> Result
+    Config --> Runtime[Resolved runtime behavior]
+    Runtime --> Signals[Logs, metrics, and traces]
+```
+
+## Surface Directory
+
+| Consumer need | Primary reference | Authority |
+| --- | --- | --- |
+| discover commands and installed binaries | [Command Surface](command-surface.md) | CLI registry, executable command tree, and generated reference |
+| identify an HTTP route | [API Endpoint Index](api-endpoint-index.md) | router and generated OpenAPI |
+| integrate an API client | [OpenAPI and API Usage](openapi-and-api-usage.md) | API DTOs, errors, and OpenAPI contract |
+| start and inspect the server | [Server Workflows](server-workflows.md) | server executable and runtime composition |
+| resolve flags, files, and environment | [Configuration and Output](configuration-and-output.md), [Runtime Config Reference](runtime-config-reference.md), and [Environment Variables](environment-variables.md) | runtime configuration model and allowlist |
+| interpret structured failures | [Error Codes and Exit Codes](error-codes-and-exit-codes.md) | owning error and output contracts |
+| review guarded runtime behavior | [Feature Flags](feature-flags.md) and [Policy Workflows](policy-workflows.md) | feature and policy contracts |
+
+## Interface Resolution
 
 ```mermaid
 flowchart TD
-    Interfaces[Interfaces section] --> CLI[CLI and binaries]
-    Interfaces --> HTTP[HTTP and API routes]
-    Interfaces --> Config[Config and env input]
-    Interfaces --> Output[Structured output and errors]
-    CLI --> Surface[User-facing repository surfaces]
-    HTTP --> Surface
-    Config --> Surface
-    Output --> Surface
+    Question[Consumer question] --> Surface{Which boundary?}
+    Surface -->|command| Help[Installed help and command reference]
+    Surface -->|HTTP| OpenAPI[OpenAPI and endpoint contract]
+    Surface -->|configuration| Effective[Effective config and precedence]
+    Surface -->|result or error| Schema[Owning structured-output schema]
+    Help --> Version[Bind producer version]
+    OpenAPI --> Version
+    Effective --> Version
+    Schema --> Version
 ```
 
-This section shows the exact surfaces users, operators, and automation
-consumers touch, and it points back to the code and generated references that
-define them.
+Resolve the exact installed or deployed version before assuming a field,
+route, flag, or default. Documentation describes the governed release surface;
+the producer version and generated contract identify the concrete instance a
+consumer is using.
 
-Use this section when the question is exact rather than conceptual.
+## Boundary Rules
 
-## Questions This Section Answers
+- Human help text and logs are not machine-output contracts.
+- Default pretty JSON and explicit compact `--json` differ in encoding, not
+  semantic authority.
+- Environment and CLI overrides can change effective configuration after a
+  file has been validated in isolation.
+- Authentication-exempt health routes remain subject to network exposure and
+  resilience controls.
+- Generated OpenAPI or command references describe their recorded build; they
+  need source and version identity for release-specific claims.
+- Internal modules, hidden commands, and source-visible switches are not public
+  merely because a repository reader can find them.
 
-- which CLI binaries and command families are public
-- which HTTP endpoints exist and what kind of question each route answers
-- which config inputs, env vars, and flags shape runtime behavior
-- which outputs, errors, and feature flags are part of the visible runtime surface
-
-## User-Facing Surfaces In This Repository
-
-- CLI surface: `crates/bijux-atlas-cli/src/bin/`
-- HTTP and API surface:
-  `crates/bijux-atlas-server/src/adapters/inbound/http/`
-- runtime configuration surface:
-  `crates/bijux-atlas-runtime/src/runtime/config/` and
-  `configs/generated/runtime/`
-- generated interface references: `configs/generated/openapi/` and
-  `configs/generated/docs/`
-
-## Fast Navigation
-
-- CLI and command discovery: [Command Surface](command-surface.md)
-- HTTP route inventory: [API Endpoint Index](api-endpoint-index.md)
-- startup and request flow from the server boundary: [Server Workflows](server-workflows.md)
-- runtime configuration inputs: [Configuration and Output](configuration-and-output.md) and [Runtime Config Reference](runtime-config-reference.md)
-- compatibility-sensitive runtime switches: [Feature Flags](feature-flags.md) and [Environment Variables](environment-variables.md)
-- machine-facing descriptions: [OpenAPI and API Usage](openapi-and-api-usage.md)
-
-If you already know the interface family, use that page directly. This section
-mainly helps decide which surface owns the question in front of you.
-
-## Reading Rule
-
-Stay in this section when you need the visible surface exactly as a user,
-integrator, or operator would consume it. Move elsewhere when the question
-changes shape:
-
-- move to [Workflows](../workflows/index.md) for step-by-step product usage
-- move to [Runtime](../runtime/index.md) for internal architecture and lifecycle
-- move to [Contracts](../contracts/index.md) for the strongest compatibility promises
-
-## Pages
-
-- [API Endpoint Index](api-endpoint-index.md)
-- [Command Surface](command-surface.md)
-- [Configuration and Output](configuration-and-output.md)
-- [Environment Variables](environment-variables.md)
-- [Error Codes and Exit Codes](error-codes-and-exit-codes.md)
-- [Feature Flags](feature-flags.md)
-- [OpenAPI and API Usage](openapi-and-api-usage.md)
-- [Policy Workflows](policy-workflows.md)
-- [Runtime Config Reference](runtime-config-reference.md)
-- [Server Workflows](server-workflows.md)
-
-## Source Anchors
-
-- `crates/bijux-atlas-cli/src/bin/`
-- `crates/bijux-atlas-server/src/adapters/inbound/http/`
-- `crates/bijux-atlas-runtime/src/runtime/config/`
-- `configs/generated/openapi/`
+Product task sequences are under [Workflows](../workflows/index.md). Internal
+execution is under [Runtime](../runtime/index.md). Compatibility strength and
+change rules are under [Contracts](../contracts/index.md).
