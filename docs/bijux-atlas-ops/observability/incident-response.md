@@ -1,103 +1,91 @@
 ---
 title: Incident Response
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Incident Response
 
-Incident response in Atlas is easier when operators classify failures by layer before reaching for fixes.
+Atlas incident response preserves release and serving-state identity during
+stabilization. Operators first classify the failing boundary. Only then should
+they change runtime, catalog, store, cache, policy, or traffic controls.
 
-## Incident Classification
-
-```mermaid
-flowchart TD
-    Incident[Incident] --> Runtime[Runtime availability]
-    Incident --> Store[Store or catalog integrity]
-    Incident --> Query[Query policy or request shape]
-    Incident --> Capacity[Load or saturation]
-    Incident --> Security[Security or access control]
-```
-
-This incident-classification diagram keeps the first response structured. Atlas incidents are easier
-to stabilize when operators decide early whether they are facing availability, correctness, policy,
-capacity, or security trouble.
-
-## Response Flow
+## Response Sequence
 
 ```mermaid
 flowchart LR
-    Detect[Detect issue] --> Classify[Classify layer]
-    Classify --> Stabilize[Stabilize service]
-    Stabilize --> Diagnose[Diagnose root cause]
-    Diagnose --> Recover[Recover and validate]
+    Detect[Detect and timestamp] --> Preserve[Preserve release, profile, signal, and trace identity]
+    Preserve --> Classify[Classify failing boundary]
+    Classify --> Stabilize[Drain, shed, isolate, or roll back]
+    Stabilize --> Diagnose[Correlate metrics, logs, traces, and artifact state]
+    Diagnose --> Recover[Restore one authoritative boundary]
+    Recover --> Validate[Recheck probes and representative user paths]
+    Validate --> Record[Retain decision and prevention evidence]
 ```
 
-This response flow emphasizes order. Stabilization and recovery are faster when operators classify
-the layer first instead of changing runtime, store, and traffic controls all at once.
+Broad simultaneous changes destroy diagnostic value. Stabilize user impact
+with the smallest reversible control. Then repair the boundary that owns the
+failure.
 
-## First Questions to Ask
+## Classification Matrix
 
-1. Is the process alive?
-2. Is the instance ready?
-3. Is the catalog discoverable?
-4. Are queries failing because of policy, data absence, or runtime problems?
-5. Is this a correctness incident, a capacity incident, or a security incident?
+| Symptom class | First evidence | Do not confuse with |
+| --- | --- | --- |
+| process availability | `/live`, restart history, termination reason, runtime logs | readiness or catalog loss |
+| traffic admission | `/readyz`, `/healthz/overload`, endpoint membership, drain state | a dead process |
+| catalog or store | catalog freshness, store requests, manifest and checksum evidence | Redis or local cache loss |
+| query correctness | request identity, dataset identity, query class, stable error code, trace spans | generic availability |
+| capacity | latency histograms, saturation, bulkhead, queue, cache, and overload metrics | data corruption |
+| security | authentication and authorization decisions, ingress exposure, admin posture, audit logs | ordinary policy rejection |
+| release drift | image, chart, values, dataset, toolchain, checksum, and provenance identity | transient dependency failure |
 
-## Stabilization Order
+## Triage Decision Tree
 
-- preserve evidence
-- avoid making store state more ambiguous
-- reduce traffic or drain when necessary
-- restore safe readiness before declaring success
+```mermaid
+flowchart TD
+    Incident[User or alert signal] --> Integrity{Artifact or catalog integrity suspect?}
+    Integrity -->|yes| Freeze[Stop promotion and mutation; verify hashes and manifest]
+    Integrity -->|no| Admission{Readiness, drain, or overload?}
+    Admission -->|yes| Shape[Remove traffic or shed heavy work]
+    Admission -->|no| Security{Identity or exposure concern?}
+    Security -->|yes| Isolate[Isolate route or workload and preserve audit evidence]
+    Security -->|no| Runtime[Trace request through store, cache, query, and presentation]
+    Freeze --> Recover[Select trusted release or store recovery]
+    Shape --> Recover
+    Isolate --> Recover
+    Runtime --> Recover
+```
 
-## Operator Reminder
+## Minimum Incident Record
 
-During incidents, do not confuse:
+Retain enough evidence for another operator to reconstruct the decision:
 
-- cache loss with store loss
-- policy rejection with dataset absence
-- liveness with readiness
-- runtime rollback with store rollback
+- Incident start, detection source, affected user paths, and severity.
+- Runtime version, image digest, chart, values profile, and cluster identity.
+- Dataset release, species, assembly, catalog epoch, and artifact hashes.
+- Opening alert, probe state, dashboards, logs, metric snapshots, and trace IDs.
+- Cache, store, dependency, saturation, and overload state.
+- Commands or deployment actions used to drain, isolate, roll back, or recover.
+- Recovery validation and the signal that closed the incident.
+- Missing or unavailable telemetry, recorded as an explicit evidence gap.
 
-## A Good Incident Habit
+Observability drill results use a structured contract. It records start and end
+time, status, metric/log/trace snapshot paths, trace IDs, and expected signals.
+Real incidents should preserve at least the same correlation quality.
 
-- preserve evidence before making broad changes
-- keep the serving store and catalog state understandable during mitigation
-- validate recovery with readiness and key query paths before you declare the incident over
+## Recovery Rules
 
-## Purpose
+- Cache loss does not authorize store rollback.
+- Store unavailability does not establish artifact corruption.
+- Policy rejection does not establish dataset absence.
+- A healthy process does not establish readiness or acceptable latency.
+- Runtime rollback and dataset-store rollback are separate decisions.
+- Recovery is incomplete until representative cheap and heavy user paths match
+  their expected status, latency, and provenance behavior.
 
-This page explains the Atlas material for incident response and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Source of Truth
-
-- `ops/observe/alert-catalog.json`
-- `ops/observe/dashboard-registry.json`
-- `ops/observe/drills/result.schema.json`
-- `ops/observe/generated/telemetry-index.json`
-- `ops/observe/readiness.json`
-
-## Minimum Incident Artifact Set
-
-Every significant observability-backed incident should leave behind:
-
-- the alert or symptom that opened the investigation
-- the dashboard or signal views used during diagnosis
-- the readiness or health evidence that shows service state
-- log, metric, and trace references or snapshots
-- any drill-style or debug-bundle evidence captured during mitigation
-
-## Asset-Grounded Response Flow
-
-Use the alert catalog to classify urgency, use the dashboard registry to open
-canonical views, and use the telemetry index to confirm the required signal pack
-is still present. If a signal is missing, record that as part of the incident,
-not just as investigative friction.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Continue with [Dashboards and Panels](dashboards-and-panels.md),
+[Debug Bundles](../kubernetes/debug-bundles.md), and
+[Backup and Recovery](../release/backup-and-recovery.md).

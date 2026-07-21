@@ -1,118 +1,94 @@
 ---
 title: Health, Readiness, and Drain
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Health, Readiness, and Drain
 
-Atlas exposes separate ideas that operators should not collapse into one boolean:
+Atlas exposes separate process, traffic-admission, catalog, and overload
+signals. They answer different questions and must drive different actions.
 
-- health
-- readiness
-- overload or drain state
+## Endpoint Semantics
 
-## Endpoint Model
+| Endpoint | Question | Success | Failure meaning |
+| --- | --- | --- | --- |
+| `/health` and `/healthz` | can the process answer a basic health request? | `200` with `ok` | no deeper dependency or traffic claim is made |
+| `/live` | is the process accepting requests rather than draining? | `200` with `live: true` | `503` with `draining: true` |
+| `/ready` and `/readyz` | should normal traffic reach this instance? | `200` when runtime state and required catalog state are ready | `503` while startup, catalog, or readiness policy is unsatisfied |
+| `/healthz/overload` | is overload shedding active, and what are live/ready/drain states? | `200` when not overloaded | `503` when overload is active |
+
+Readiness requires a catalog when `readiness_requires_catalog` is enabled and
+the runtime is not in cached-only mode. Cached-only mode can remain ready
+without a live catalog because its contract limits serving to retained cache
+state.
+
+## State Model
 
 ```mermaid
-flowchart LR
-    Runtime[Atlas runtime] --> Health[Health route]
-    Runtime --> Ready[Readiness route]
-    Runtime --> Overload[Overload route]
-    Runtime --> Live[Liveness route]
+stateDiagram-v2
+    [*] --> Starting
+    Starting --> Ready: runtime and required catalog ready
+    Ready --> Overloaded: pressure threshold crossed
+    Overloaded --> Ready: pressure clears
+    Ready --> Unready: required catalog or readiness state lost
+    Overloaded --> Unready: dependency or readiness loss
+    Ready --> Draining: shutdown or traffic drain begins
+    Overloaded --> Draining: drain begins
+    Unready --> Draining: shutdown begins
+    Draining --> [*]
 ```
 
-This endpoint model is here to stop one of the most common operator mistakes: treating every probe
-as if it were answering the same operational question.
+These states are not mutually reducible to process health. An overloaded
+instance can still be alive. An unready instance can still answer diagnostics.
+A draining instance may intentionally refuse work without having crashed.
 
-## Why the Distinction Matters
+## Traffic Policy
 
 ```mermaid
 flowchart TD
-    Healthy[Process is alive] --> NotReady[May still be unready]
-    Ready[Can accept traffic] --> Draining[May later drain traffic]
-    Overloaded[Overload state] --> Traffic[Traffic shaping decisions]
+    Probe[Observe live, ready, overload] --> Live{Live?}
+    Live -->|no| Replace[Complete drain or restart under workload policy]
+    Live -->|yes| Ready{Ready?}
+    Ready -->|no| Remove[Remove from normal service traffic]
+    Ready -->|yes| Load{Overloaded?}
+    Load -->|yes| Shed[Shed heavy work; preserve cheap survival routes]
+    Load -->|no| Serve[Serve normal traffic]
 ```
 
-This distinction diagram explains why Atlas exposes multiple routes. A runtime can be alive, unready,
-or intentionally shedding work in different combinations, and traffic policy should respond
-accordingly.
+The overload contract preserves cheap routes such as `/v1/version`,
+`/healthz`, `/readyz`, and `/v1/datasets` with successful responses. Heavy
+routes may refuse work with `422`, `429`, or `503` and a stable policy code.
+This lets operators distinguish deliberate load shedding from a dead process.
 
-Health answers “is the process alive enough to answer basic liveness checks?”
+## Kubernetes Probe Use
 
-Readiness answers “should this instance currently receive normal traffic?”
+- Use liveness to decide whether a process is irrecoverably stuck, not whether
+  it should receive user traffic.
+- Use readiness for service endpoints and rollout progression.
+- Use overload state, latency, saturation, and error signals for traffic shaping
+  and promotion decisions.
+- Give drain enough time to remove the pod from endpoints and complete bounded
+  in-flight work before termination.
 
-Drain or overload state answers “is the instance reducing or refusing certain work classes?”
+## Promotion and Recovery
 
-Operators get into trouble when they collapse those into a single success signal. Atlas exposes
-separate endpoints because a process can be alive, not yet ready, and already overloaded in
-meaningfully different combinations.
-
-## Operational Usage
-
-- use liveness checks to detect dead processes
-- use readiness checks to gate traffic
-- use overload or drain signals to avoid making a bad situation worse
-- decide traffic routing from readiness and overload, not from liveness alone
-
-## Practical Checks
+A green readiness probe is necessary but not sufficient for promotion. Review
+user-path latency, overload activity, store errors, catalog freshness, cheap
+route survival, and rollout-under-load evidence. Recovery is complete only when
+the intended traffic classes work and the signals that detected the incident
+have returned to their expected state.
 
 ```bash
-curl -s http://127.0.0.1:8080/healthz
-curl -s http://127.0.0.1:8080/readyz
-curl -s http://127.0.0.1:8080/healthz/overload
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS http://127.0.0.1:8080/live
+curl -fsS http://127.0.0.1:8080/readyz
+curl -sS http://127.0.0.1:8080/healthz/overload
 ```
 
-## Operator Advice
-
-- do not route normal traffic based only on liveness
-- treat readiness regression as a first-class operational signal
-- observe overload behavior under stress before calling a deployment “ready for production”
-- do not declare an incident resolved just because `/healthz` came back
-
-## What a Healthy Probe Story Looks Like
-
-- liveness stays boring and stable
-- readiness reflects whether the instance should receive normal traffic
-- overload and drain signals help prevent healthy-looking saturation failures
-
-## Purpose
-
-This page explains the Atlas material for health, readiness, and drain and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Source of Truth
-
-- `ops/observe/readiness.json`
-- `ops/observe/contracts/endpoint-observability-contract.json`
-- `ops/observe/contracts/overload-behavior-contract.json`
-- `docs/bijux-atlas-ops/kubernetes/rollout-safety.md`
-
-## Probe and Decision Map
-
-Use the endpoint surfaces for different operational decisions:
-
-- liveness decides whether the process should be restarted
-- readiness decides whether the instance should receive normal traffic
-- overload or drain state decides whether the instance should shed or limit work
-  even while it remains alive
-
-These signals should feed rollout and service-routing decisions differently.
-
-## When Readiness Passes but User Latency Fails
-
-Treat this as a real operational mismatch, not as a false alarm. It usually
-means:
-
-- the instance is technically available but overloaded
-- the readiness contract is narrower than the user-facing performance contract
-- load, alert, or dashboard evidence must be consulted before promotion
-
-In that situation, do not promote just because readiness is green. Cross-check
-overload behavior, latency alerts, and rollout-under-load evidence first.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Continue with [Alert Rules](alert-rules.md),
+[Performance and Load](../load/performance-and-load.md), and
+[Rollout Safety](../kubernetes/rollout-safety.md).
