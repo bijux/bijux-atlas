@@ -8,49 +8,92 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-ops-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/)
 [![docs-operations](https://img.shields.io/badge/docs-operations-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-ops/)
 
-`bijux-atlas-ops` is the published operations-contract library crate for
-Atlas. It holds the durable references and owned metadata that operators,
-release tools, and maintainer automation need for stack, Kubernetes, load,
-observability, and release-support surfaces.
+`bijux-atlas-ops` is the published Rust library behind the Atlas operational
+contract system. It models stack profiles, Kubernetes safety, load plans,
+observability checks, diagnostics, release evidence, tool inventories, and
+repository-owned paths.
 
-It does not install an end-user command or a server process by itself. Its
-value is the contract surface that other Atlas crates and release workflows can
-consume without hard-coding repository topology.
+The library is only one layer of Atlas operations. The repository's `ops/`
+tree contains the Helm chart, deployment profiles, load scenarios, dashboards,
+alerts, security exercises, schemas, and release records. This crate gives Rust
+consumers typed access to those assets and the rules that connect them.
 
-## What This Crate Owns
+It does not install an operator CLI or run the Atlas server. Executable
+orchestration belongs to the repository-only `bijux-atlas-dev` control plane.
 
-- operational path contracts and reference surfaces
-- Kubernetes and Helm ownership metadata
-- observability, load, and release-support contract fixtures
-- reusable repository-owned ops references consumed by higher-level tooling
+## Add the Library
 
-## Choose This Crate When
+```toml
+[dependencies]
+bijux-atlas-ops = "0.2"
+```
 
-- you need the owned Atlas operations surface in another Rust crate
-- you want operator-facing paths and references without hard-coding repository
-  topology
-- you are extending stack, load, release, or observability contracts
+Most consumers should begin with `workspace` helpers, which resolve and
+validate repository surfaces from an explicit root:
 
-## What It Does Not Own
+```rust,no_run
+use std::path::Path;
 
-`bijux-atlas-ops` does not own runtime command dispatch, HTTP serving, dataset
-build logic, or repository governance orchestration. Those surfaces stay in
-`bijux-atlas-cli`, `bijux-atlas-server`, the product leaf crates, and
-`bijux-atlas-dev`.
+use bijux_atlas_ops::workspace::stack::{
+    load_stack_manifest,
+    validate_stack_manifest,
+};
+
+let root = Path::new("/path/to/bijux-atlas");
+let manifest = load_stack_manifest(root)?;
+let errors = validate_stack_manifest(root, &manifest);
+assert!(errors.is_empty(), "{errors:#?}");
+# Ok::<(), Box<dyn std::error::Error>>(())
+```
+
+## Public Domains
+
+| Module | Responsibility |
+| --- | --- |
+| `diagnostics` | Bundle paths, evidence collection, explanation payloads, and secret-field redaction |
+| `inventory` | Operational surfaces, scenarios, tools, pins, runbooks, and resilience reports |
+| `kubernetes` | Context guards, profile validation, render policy, probes, status, waits, and conformance |
+| `lifecycle` | Install state, release inventory and bundles, compatibility checks, and simulation evidence |
+| `load` | Load manifests, plans, runs, report contracts, and report artifacts |
+| `observe` | SLO, alert, runbook, telemetry, and operational-readiness verification |
+| `reference` | Durable command and workspace path references |
+| `stack` | Stack manifests, profile catalogs, path contracts, and dependency SBOM payloads |
+| `workspace` | Repository-root adapters for inventory, profiles, load, stack, reports, and artifacts |
+
+The modules return typed values or deterministic JSON payloads so command-line
+and CI consumers can share one implementation. Filesystem mutation and cluster
+execution remain explicit at the call site.
+
+## Operations Architecture
+
+```mermaid
+flowchart LR
+    A["ops/ contracts and assets"] --> L["bijux-atlas-ops library"]
+    L --> C["bijux-atlas-dev commands"]
+    L --> T["Rust tests and integrations"]
+    C --> E["reports and release evidence"]
+    C --> K["local stack and Kubernetes actions"]
+```
+
+The crate prevents command implementations from scattering string paths and
+duplicating validation logic. A profile, scenario, report, or governed asset
+should have one repository owner and one model used by all higher-level tools.
+
+## Use This Crate For
+
+- resolving Atlas operational assets without hard-coded relative paths;
+- validating stack, load, pin, and profile manifests;
+- building deterministic reports for CI or another Rust command;
+- checking Kubernetes safety and observability contracts;
+- collecting or inspecting diagnostics and release-evidence inventories.
+
+Do not use it for query planning, ingest, HTTP serving, or end-user commands.
+Those capabilities belong to the product crates. Do not treat the public Rust
+library as a replacement for the operational policies and assets in `ops/`;
+the code and governed data form the contract together.
 
 ## Documentation
 
-- Atlas handbook: <https://bijux.io/bijux-atlas/>
-- Rust API docs: <https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/>
-- Source repository: <https://github.com/bijux/bijux-atlas>
-
-This crate owns durable references to repository surfaces that belong to stack,
-ops, load, k8s, and generated operational assets. Higher-level tooling crates
-such as `bijux-atlas-dev` should consume these surfaces instead of hard-coding
-repository topology directly.
-
-Current owned surfaces:
-
-- `reference`: workspace-owned source and generated surface contracts.
-- `kubernetes`: durable path contracts for Helm charts, values, toolchain
-  inventory, rollout safety, and dataset manifests used by Atlas operations.
+- operations handbook: <https://bijux.io/bijux-atlas/bijux-atlas-ops/>
+- Rust API: <https://docs.rs/bijux-atlas-ops/latest/bijux_atlas_ops/>
+- source: <https://github.com/bijux/bijux-atlas>
