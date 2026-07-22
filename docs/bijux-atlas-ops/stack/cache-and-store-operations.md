@@ -119,6 +119,42 @@ repair for uncertain store or catalog integrity.
 6. Restore normal capacity only after query correctness and operating budgets
    hold through the observation window.
 
+## Recovery Authority Handoff
+
+The store remains the byte authority, the catalog remains the selection
+authority, and the cache remains disposable throughout recovery. Service
+authority returns only when those roles agree on one release identity and the
+cold path proves that the cache is not masking a broken dependency.
+
+```mermaid
+stateDiagram-v2
+    [*] --> AuthorityUnknown
+    AuthorityUnknown --> StoreVerified: artifact and manifest identities agree
+    StoreVerified --> CatalogConsistent: selection names the verified release
+    CatalogConsistent --> CacheEmpty: incompatible entries isolated
+    CacheEmpty --> BoundedRefill: cold queries pass and limits hold
+    BoundedRefill --> ServingQualified: correctness and observation window pass
+    BoundedRefill --> AuthorityUnknown: identity, integrity, or capacity fails
+```
+
+| Finding | Authoritative interpretation | Required action before serving |
+| --- | --- | --- |
+| store unavailable | released bytes cannot currently be read | reject or use an explicitly qualified cached-only mode; do not recast absence as a cache miss |
+| artifact checksum mismatch | the named object cannot establish released truth | quarantine the object and restore a coherent release set |
+| catalog names missing or different bytes | selection and byte authority disagree | stop promotion, reconcile the catalog to verified immutable artifacts, and repeat resolution checks |
+| cache entry identity is absent or mismatched | acceleration state is untrusted | isolate or evict the entry and prove the cold result from the verified release |
+| cache is empty but the store verifies | correctness may hold while capacity is degraded | bound offered load and refill concurrency, then qualify latency, errors, and cheap-path survival |
+| store credential or key generation is unavailable | the bytes may exist but are not recoverable through the governed access path | restore the matching access generation and record its custody; do not bypass authentication or encryption |
+
+Record the handoff as a lineage, not a collection of green checks: selected
+release and manifest, store object identity, catalog generation, isolated cache
+generation, first verified cold result, refill limits, observation window, and
+the person or controller that accepted serving authority. For a durable-state
+restore, the selected recovery point and restored access generation come from
+[Backup and Recovery](../release/backup-and-recovery.md). For a production
+target, authority transfer also remains subject to
+[Production Qualification](../kubernetes/production-qualification.md).
+
 ## Operation Boundaries
 
 | Operation | May change | Must remain invariant |

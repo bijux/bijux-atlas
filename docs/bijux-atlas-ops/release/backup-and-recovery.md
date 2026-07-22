@@ -106,6 +106,47 @@ Keep the failed state and restore evidence isolated until the verdict is
 recorded. A failed restore is diagnostic evidence and must not overwrite the
 last known recoverable point.
 
+## Recovery State and Serving Authority
+
+Recovery has several distinct states. Treating them as synonyms creates the
+most dangerous restore failure: a system that is reachable but serves an
+unproven combination of data, catalog, runtime, and policy.
+
+```mermaid
+stateDiagram-v2
+    [*] --> BackupPresent
+    BackupPresent --> Restorable: inventory, access, and integrity verify
+    Restorable --> Restored: coherent set materialized in isolation
+    Restored --> ServingCandidate: runtime starts and identity checks pass
+    ServingCandidate --> Qualified: correctness and bounded traffic pass
+    ServingCandidate --> Rejected: identity, correctness, or capacity fails
+    Rejected --> Restorable: preserve evidence and select a trusted point
+    Qualified --> Authoritative: governed failover transfers traffic and writes
+```
+
+| State | What has been established | What remains prohibited |
+| --- | --- | --- |
+| backup present | an archive or snapshot is discoverable | assuming it is readable, complete, or correctly keyed |
+| restorable | the coherent set can be read and its inventory and integrity agree | modifying the failed environment or accepting service traffic |
+| restored | artifacts, catalog, release metadata, configuration, and access state exist in isolation | advertising the target as production-ready |
+| serving candidate | the runtime starts and returns the expected release and dataset identities | normal traffic, writes, and promotion |
+| qualified | representative correctness, dependency, and bounded-load checks pass | authority transfer without a recorded decision |
+| authoritative | one governed endpoint, catalog pointer, and writer path have been transferred | reactivating the retired writer or stale endpoint |
+
+Measure the recovery-point interval from the last accepted mutation or
+publication included in the selected recovery set to the first mutation known
+to be excluded. Measure recovery time from the declared incident or recovery
+start to the recorded authority transfer, with detection, isolation, restore,
+qualification, and failover timestamps retained separately. Configured
+objectives, archive timestamps, and a successful process start are inputs to
+those measurements; none proves the observed result.
+
+If only part of the set restores, stop before serving. Do not combine a newer
+catalog with older artifacts, recover encrypted bytes without the matching key
+generation, or reuse a cache populated from the rejected target. Preserve the
+partial result, return to a known restorable point, and repeat the complete
+identity and qualification chain.
+
 ## Prevent Split Authority
 
 Restore into an isolated target while the failed environment remains frozen.
