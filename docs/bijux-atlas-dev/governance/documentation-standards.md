@@ -64,6 +64,25 @@ does not prove external links or the truth of an operational claim.
 - Keep generated reference material attributable to its source and generator.
 - Preserve moved public URLs through the governed redirect map.
 
+## Title and Metadata Contract
+
+Every published page carries two title representations with different jobs:
+
+| Representation | Purpose | Rule |
+| --- | --- | --- |
+| front matter `title` | navigation, browser, and site metadata | concise title case; must describe the page readers receive |
+| visible `#` heading | rendered page title and document outline root | exactly one per page; normally matches the metadata title |
+
+The Markdown lint configuration keeps the one-H1 rule enabled and sets its
+front-matter title key to an empty value. This makes the rule count rendered
+headings rather than treating MkDocs metadata as a second visible H1. It does
+not permit multiple H1 headings or a page without a reader-facing title.
+
+Keep metadata and the visible heading aligned unless navigation genuinely
+needs a shorter label. When they differ, both must still identify the same
+reader contract; metadata must not introduce editorial status, delivery
+history, or internal planning language.
+
 ## Evidence Language
 
 | Label or phrase | Meaning readers may rely on |
