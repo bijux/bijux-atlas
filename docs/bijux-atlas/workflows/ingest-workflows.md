@@ -7,64 +7,57 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Ingest Workflows
+# Ingest workflows
 
-Ingest converts a matched annotation and reference set into an immutable Atlas
-build root. It parses GFF3 records, resolves sequence coordinates against the
-FASTA index, applies identifier and anomaly policies, and emits the manifest,
-database, indexes, and quality evidence used by later gates.
+Ingest turns matched GFF3 annotations, a FASTA reference, and its FAI index into
+a deterministic Atlas build root. It validates coordinates and identifiers,
+applies anomaly policy, and emits queryable artifacts plus the evidence needed
+to decide whether those artifacts may be published.
 
 ```mermaid
 flowchart LR
-    GFF3["GFF3 annotations"] --> Parse["parse and normalize"]
-    FASTA["FASTA reference"] --> Identity["validate sequence identity"]
-    FAI["FAI index"] --> Identity
-    Parse --> Policy["apply identifier and strictness policies"]
-    Identity --> Policy
-    Policy --> Build["write dataset build root"]
-    Build --> QC["inspect quality and anomaly evidence"]
-    QC --> Verify["dataset verify --deep"]
+    Inputs[GFF3 + FASTA + FAI] --> Admit[Validate source set]
+    Admit --> Normalize[Normalize features + identifiers]
+    Normalize --> Policy[Apply anomaly policy]
+    Policy --> Build[Manifest + SQLite + indexes]
+    Build --> Evidence[QC + anomaly evidence]
+    Evidence --> Verify[Deep verification]
+    Verify --> Publish[Separate publication decision]
 ```
 
-## Establish the dataset identity
+## Establish identity and source agreement
 
-`release`, `species`, and `assembly` form the dataset identity. Use the same
-values during ingest, verification, publication, catalog promotion, and query.
-Atlas does not infer that identity from filenames.
+`release`, `species`, and `assembly` identify the dataset through ingest,
+verification, publication, catalog promotion, and queries. Atlas does not infer
+them from filenames.
 
-The three biological inputs must describe the same source release:
+The three inputs must describe the same biological source:
 
-- the GFF3 supplies features and their identifiers;
-- the FASTA supplies the reference sequence;
-- the FAI supplies contig names and lengths used to validate coordinates.
+- GFF3 supplies features, relationships, coordinates, and identifiers;
+- FASTA supplies reference sequence bytes;
+- FAI supplies contig names and lengths used to validate coordinates.
 
-Network inputs are disabled unless `--allow-network-inputs` is supplied. For a
-repeatable production build, pin source URLs or files and preserve their
-checksums outside the output root.
+Network inputs require `--allow-network-inputs`. A reproducible build pins its
+source locations and preserves source checksums independently from the output
+root.
 
-## Choose policy before running
+## Select anomaly policy before execution
 
-Strictness controls whether anomalous input stops the build or is recorded in
-its evidence. It is part of the meaning of the resulting dataset, not a tuning
-knob to change until a command succeeds.
-
-| Mode | Intended use | Acceptance consequence |
+| Strictness | Appropriate use | Resulting claim |
 | --- | --- | --- |
-| `strict` | release candidates and trusted serving data | policy violations fail ingest |
-| `compat` | sources with known, bounded compatibility defects | accepted compatibility cases remain visible in evidence |
-| `lenient` | investigation and source assessment | more anomalies may be accepted; inspect reports before reuse |
-| `report-only` | measuring a source without accepting it | produces diagnostic output, not publication approval |
+| `strict` | Release candidates and trusted serving data | Policy violations stop ingest |
+| `compat` | Sources with understood compatibility defects | Accepted compatibility cases remain evidence-bearing |
+| `lenient` | Source investigation | More anomalies may pass; output needs explicit review before reuse |
+| `report-only` | Measuring source quality | Diagnostic output, not publication approval |
 
-`--duplicate-gene-id-policy`, `--gene-identifier-policy`, `--ensembl-keys`, and
-`--seqid-aliases` further define normalization. Record non-default choices with
-the source provenance because they can change stable identifiers and counts.
+Identifier, duplicate-gene, Ensembl-key, and sequence-alias policies can change
+stable IDs and counts. Record every non-default choice with source provenance.
+Strictness is part of dataset meaning, not a knob to relax until a run passes.
 
-## Build a dataset
-
-The repository fixture is useful for learning the lifecycle:
+## Build the committed sample
 
 ```bash
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
+cargo run --locked -p bijux-atlas-cli --bin bijux-atlas -- ingest \
   --gff3 crates/bijux-atlas-ingest/tests/fixtures/tiny/genes.gff3 \
   --fasta crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa \
   --fai crates/bijux-atlas-ingest/tests/fixtures/tiny/genome.fa.fai \
@@ -75,27 +68,25 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
   --strictness strict
 ```
 
-Use a new output root for a changed source or policy. `--resume` is for
-continuing a compatible interrupted run; it is not permission to combine
-different inputs. Use `--dry-run` or `--explain` to inspect the planned action
-before a costly build.
+Use a new output root when source or policy changes. `--resume` continues a
+compatible interrupted build; it must not combine different inputs. Use
+`--dry-run` or `--explain` to inspect costly work before execution.
 
-## Inspect the evidence
+## Decide whether the build is admissible
 
-A zero exit code means the selected ingest policy completed. Before treating
-the build as a release candidate, inspect its manifest, quality report, anomaly
-report, and any shard catalog. Check that:
+A zero exit code means the selected ingest policy completed. It does not mean
+the output is published or production-qualified. Review:
 
-- source identity and dataset identity are the intended values;
-- feature, contig, and rejection counts are plausible for the source;
-- every accepted anomaly is understood;
-- emitted shards cover the expected key space when sharding is enabled;
-- no development-only input behavior was used unintentionally.
+- source and dataset identity;
+- feature, contig, warning, and rejection counts;
+- every accepted anomaly and compatibility case;
+- shard coverage when sharding is enabled;
+- whether development-only input behavior was used.
 
-Then perform deep verification:
+Then verify the complete artifact set:
 
 ```bash
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
+cargo run --locked -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
@@ -103,21 +94,19 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --deep
 ```
 
-## Preserve the trust boundaries
-
-The output root is build state. It is not discoverable serving state until it
-passes publication and catalog gates.
+## Preserve the publication boundary
 
 ```mermaid
 stateDiagram-v2
-    [*] --> SourceSet: pin inputs and policy
+    [*] --> SourceSet: pin inputs + policy
     SourceSet --> BuildRoot: ingest
-    BuildRoot --> Verified: dataset verify --deep
-    Verified --> Published: dataset publish
-    Published --> Discoverable: catalog promote
-    Discoverable --> Served: runtime loads catalog
+    BuildRoot --> Verified: deep verification
+    Verified --> Published: publish immutable payload
+    Published --> Discoverable: promote catalog entry
+    Discoverable --> Served: runtime resolves identity
 ```
 
-If ingest succeeds but verification fails, keep the failed build and its
-reports for diagnosis; do not publish around the failure. Continue with
-[Dataset workflows](dataset-workflows.md) once the build root is accepted.
+The build root is not serving state. If verification fails, retain the failed
+root and reports for diagnosis; do not publish around the failure. Continue
+with [Dataset Workflows](dataset-workflows.md) for publication, catalog
+promotion, and serving verification.
