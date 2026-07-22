@@ -32,6 +32,21 @@ The scenario budget answers whether behavior is acceptable in absolute terms.
 The regression budget answers whether the candidate became materially worse
 than its approved reference. Neither substitutes for the other.
 
+## Policy Layers
+
+| Boundary | Question | Decision consequence |
+| --- | --- | --- |
+| Correctness invariant | Did the service return admissible results and preserve required survival behavior? | any violation rejects the run |
+| Absolute service budget | Is this deployment useful under the named scenario? | any violation rejects promotion for that claim |
+| Regression budget | Did behavior move materially against an approved, compatible baseline? | any violation requires investigation or explicit policy change |
+| Capacity objective | Does the sustainable operating point retain the required headroom? | insufficient headroom blocks the capacity claim |
+| Measurement requirement | Are the population, windows, and required signals complete? | missing evidence makes the decision invalid rather than passing |
+
+Correctness comes first. Faster responses do not compensate for wrong results,
+and a lower error rate does not compensate for the loss of a required cheap
+route during overload. Performance tradeoffs are considered only inside the
+service's correctness and degradation contract.
+
 ## Sources of Authority
 
 | Contract | Responsibility |
@@ -78,6 +93,22 @@ Percentiles are not comparable when request mix, sample population, or failure
 filtering differs. Throughput is not comparable when offered load or completed
 work semantics change. A threshold report must preserve these definitions with
 the result.
+
+## Boundary Outcomes
+
+Use one of four outcomes rather than forcing every execution into pass or fail:
+
+| Outcome | Meaning |
+| --- | --- |
+| accepted | measurement is valid and every required absolute and comparative boundary passes |
+| rejected | measurement is valid and at least one required boundary fails |
+| invalid | workload identity or measurement integrity cannot support the claim |
+| qualified | absolute evidence is valid, but an optional comparison or required baseline is unavailable |
+
+A qualified result may support local diagnosis or an explicitly narrower
+claim. It must not be promoted as regression-safe. An invalid run may reveal a
+real problem, but it cannot prove acceptance until the measurement defect is
+removed and the experiment is repeated.
 
 ## Shared Scenario Budgets
 

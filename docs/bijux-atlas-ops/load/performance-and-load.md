@@ -95,6 +95,51 @@ A comparable run must preserve:
 Expected metrics are contractual. A run that omits a required signal is
 incomplete; the missing measurement must not be interpreted as a pass.
 
+## Traffic and Measurement Validity
+
+The traffic model is part of the workload identity:
+
+| Model | What remains fixed | Primary risk when interpreting it |
+| --- | --- | --- |
+| Closed loop | concurrent clients wait for a response before issuing more work | latency growth reduces offered load and can hide saturation |
+| Open loop | arrivals continue at the declared rate independently of response time | generator lag or dropped arrivals can hide the intended pressure |
+| Trace replay | request timing and mix follow a recorded corpus | the trace may not represent the target dataset or deployment |
+
+Record which model the runner implements. For rate-driven work, preserve both
+the intended and achieved arrival rate. For concurrency-driven work, preserve
+active clients, completed requests, and queueing. A candidate and baseline are
+not equivalent merely because they use the same nominal concurrency value.
+
+Client health is also evidence. CPU saturation, connection exhaustion, clock
+skew, network limits, or backpressure in the load generator can cap the offered
+load before Atlas reaches its own limit. When that happens, classify the run as
+measurement-limited and move or resize the generator before drawing a capacity
+conclusion.
+
+For latency, avoid coordinated-omission bias: the recorded population must
+account for work that arrived or should have arrived while the service was
+slow. Preserve timeouts and rejected requests as outcomes; excluding them
+changes the user population and can make a degraded service look healthy.
+
+## Invalidate Before Comparing
+
+Stop the comparison and retain the run as diagnostic evidence when any of the
+following occurs:
+
+- the target dataset, query corpus, deployment profile, or traffic model does
+  not match the approved baseline;
+- the generator misses its declared offer or becomes the bottleneck;
+- required latency, throughput, failure, resource, or recovery signals are
+  absent or have an ambiguous time window;
+- an unrelated dependency fault or rollout overlaps the measurement window;
+- warmup never reaches the scenario's required state; or
+- clocks cannot align load events with metrics, logs, traces, and injected
+  faults.
+
+Invalidation protects the claim. It is not a mechanism for discarding an
+unfavorable product result: budget violations observed in a valid run remain
+failures and must stay in the retained series.
+
 ## Reading Results
 
 Judge each candidate twice:
@@ -116,6 +161,12 @@ candidate-versus-baseline decision should include repeated comparable runs and
 the full distribution. Report run-to-run spread and outliers rather than
 selecting the most favorable sample. Operational budgets remain hard
 boundaries even when average behavior looks better.
+
+For a capacity claim, increase load across multiple points and identify the
+knee where latency, queueing, rejection, or resource use changes materially.
+Report the last sustainable point and the first unsustainable point. A single
+high-load sample cannot show whether the result is stable, near a cliff, or
+already generator-limited.
 
 ## Choosing an Execution Scope
 

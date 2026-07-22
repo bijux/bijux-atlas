@@ -108,6 +108,37 @@ rejections.
 A run is suitable for promotion only when those identities agree with the
 environment and report being reviewed.
 
+## Evidence Layers
+
+Load assurance has four independent layers. A complete decision preserves the
+result of each layer instead of collapsing them into one pass flag.
+
+| Layer | Required proof | Failure means |
+| --- | --- | --- |
+| Workload identity | scenario, query corpus, dataset, traffic model, and cache state match the claim | the run answered a different question |
+| Measurement validity | the generator sustained the declared offer, required telemetry exists, and clocks and windows are usable | the result is invalid, not a product failure |
+| Service behavior | latency, completed work, errors, resource use, and recovery satisfy absolute budgets | the deployment does not meet its operating contract |
+| Comparative behavior | candidate and approved baseline are compatible and regression limits pass | the candidate moved outside the accepted change envelope |
+
+This separation matters during saturation. A client that cannot generate the
+target rate can make the server appear fast, while a server that sheds
+expensive work can preserve cheap routes exactly as designed. Offered,
+admitted, completed, rejected, and timed-out work therefore belong in the same
+record.
+
+## Match the Claim to the Experiment
+
+| Decision | Minimum suitable evidence |
+| --- | --- |
+| Release regression | repeated candidate and approved-baseline runs with matching identities |
+| Capacity limit | a controlled saturation curve showing the knee, resource constraint, and failure behavior |
+| Overload safety | survival signals for cheap routes plus declared rejection behavior for expensive work |
+| Rollout safety | traffic before, during, and after the change, including availability and recovery |
+| Endurance | a duration long enough to expose drift, with resource slope and steady workload identity |
+
+A smoke result supports fast confidence only. It does not establish a capacity
+ceiling, sustained stability, or resilience under an unexercised fault.
+
 Failed, aborted, and invalid runs remain useful evidence. Classify harness,
 environment, telemetry, threshold, and product failures separately. Do not
 convert an incomplete run into a product pass, and do not use repeated reruns
