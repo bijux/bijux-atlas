@@ -111,6 +111,35 @@ must not silently reinterpret evidence from the previous identity. A new
 render digest, workload revision, dataset pointer or policy result starts a new
 promotion record and observation window.
 
+## Target Lock Before Mutation
+
+The installed Kubernetes command path guards the target before cluster-scoped
+effects. For Kind-backed routes, the selected Kind profile resolves to an
+expected context such as `kind-normal`; the guard compares it with the current
+`kubectl` context and verifies the owned `bijux-atlas` namespace. A force
+override is explicit authority to cross that guard, not proof that the new
+target is equivalent.
+
+```mermaid
+flowchart TD
+    Request[mutating or observing command] --> Effects{required effects granted?}
+    Effects -->|no| Reject[refuse]
+    Effects -->|yes| Context{current context equals expected Kind context?}
+    Context -->|no| Override{explicit force override?}
+    Override -->|no| Reject
+    Override -->|yes| Namespace
+    Context -->|yes| Namespace{owned namespace exists?}
+    Namespace -->|no| Reject
+    Namespace -->|yes| Execute[execute against locked target]
+    Execute --> Receipt[record context, namespace, command and run identity]
+```
+
+The guard prevents an accidental context mismatch; it does not establish
+production authorization, cluster ownership, or workload correctness. An
+external-cluster procedure must supply an equally explicit target identity and
+authorization policy. Every result retained for promotion must record the
+effective context and namespace, including whether the override path was used.
+
 ## Traffic Eligibility Is Conditional
 
 Readiness answers the probe contract configured for one instance. It does not
@@ -173,6 +202,11 @@ versions, image digests, values profile and overrides, namespace, rendered
 inventory, policy and conformance results, rollout timestamps, probe history,
 relevant telemetry window, and rollback target. Without those identities, a
 green status cannot be reproduced or attributed to the release under review.
+
+The record must also preserve the transition that produced each observation:
+desired inputs, rendered digest, admitted workload revision, observed dataset
+identity, and the qualification policy. This prevents a readiness snapshot
+from one rollout being reused after a manifest, target, or dataset change.
 
 ## Operator Route
 

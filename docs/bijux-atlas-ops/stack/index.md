@@ -79,6 +79,37 @@ observability services are noncritical and required only by the `kind`
 composition. Required here means required by the checked-in stack contract; it
 does not imply that every external Atlas deployment must use the same backend.
 
+## Resolve Profile Vocabulary Before Execution
+
+Atlas uses profile names in several authorities. Equal spelling is not enough
+to prove equal meaning, and some authorities intentionally expose different
+sets. Resolve them into one stack plan before a command receives effects.
+
+| Authority | Selection controls | Current vocabulary |
+| --- | --- | --- |
+| profile intent registry | intended use, safety level, allowed effects and required dependencies | `ci`, `dev`, `developer`, `kind`, `minimal`, `perf`, `small` |
+| composition graph | concrete resource list, Kind size, namespace and critical services | `ci`, `kind`, `local` |
+| Kubernetes values | chart behavior and deployment posture | governed by `ops/k8s/install-matrix.json` |
+| Kind profile | cluster substrate selected by a composition | `small` or `normal` for current compositions |
+
+```mermaid
+flowchart LR
+    Intent[profile intent] --> Resolver{stack-plan resolution}
+    Composition[composition graph] --> Resolver
+    Values[Kubernetes values profile] --> Resolver
+    Target[Kind or external target] --> Resolver
+    Resolver --> Plan[resolved components, effects, target and evidence lane]
+    Plan --> Guard{identities agree?}
+    Guard -->|yes| Execute[permit execution]
+    Guard -->|no| Refuse[refuse ambiguous stack]
+```
+
+`local` demonstrates the boundary: it is a valid composition identity but not
+an entry in the profile-intent registry. A caller must not infer permissions
+from that name. The resolved plan must carry the policy identity that grants
+the requested effects, the composition identity that selects resources, and
+the values identity that controls the chart.
+
 ## Plane Ownership
 
 | Plane | Components | Authority |

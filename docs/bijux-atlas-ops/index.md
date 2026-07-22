@@ -46,6 +46,37 @@ authored policy; command availability does not expand the crate's contract;
 and inventory presence does not imply executable coverage. Review a decision
 from the final packet back to the selected inputs and release identity.
 
+## The Operational Ledger
+
+Operations advances one release through five distinct records. Each record is
+append-only evidence about a boundary crossing; none replaces the authority
+that produced the preceding record.
+
+| Record | Question answered | Created from | Required before continuing |
+| --- | --- | --- | --- |
+| desired | what is intended to run? | release, dataset, profile, policy, dependency and target selections | every mutable input resolves to an immutable identity or governed exception |
+| rendered | what exact resources would those inputs create? | deterministic composition and manifest rendering | schema, inventory, namespace, image-pin and policy checks pass |
+| admitted | what did the target accept? | API admission and controller state | context, namespace, live object and workload revision bind to the intended target |
+| observed | how did the admitted system behave? | probes, traffic, telemetry and executed scenarios | observation window and release-scoped measurements satisfy the selected policy |
+| qualified | what decision is supported? | verified evidence packet | artifact, dataset, deployment, target and execution identities join without ambiguity |
+
+```mermaid
+flowchart LR
+    Desired[desired record] --> Rendered[rendered record]
+    Rendered --> Admitted[admitted record]
+    Admitted --> Observed[observed record]
+    Observed --> Qualified[qualified record]
+    Qualified --> Decision{"promote, hold, drain, recover"}
+    Policy[authored policy] -. constrains .-> Desired
+    Policy -. evaluates .-> Qualified
+```
+
+A retry after an identity-changing correction starts a new ledger path. For
+example, a changed values digest invalidates the previous render, and a changed
+workload revision starts a new observation window. Retain failed paths: they
+explain why a release was held and prevent evidence from one identity being
+attached to another.
+
 ## Operating Model
 
 ```mermaid
@@ -213,11 +244,11 @@ are required for its decision.
 
 | Loop | Input | Decision | Evidence to retain |
 | --- | --- | --- | --- |
-| admission | release inputs | permit render and install | versions, values digest, policy, inventory |
-| rollout | workload and traffic state | continue, drain, roll back | events, readiness, error, saturation |
-| capacity | scenario, concurrency, baseline | accept or reject envelope | measurements and threshold evaluation |
-| incident | symptoms, changes, dependencies | mitigate, recover, escalate | timeline, diagnostics, recovery result |
-| promotion | artifact and operating proof | promote or refuse | verified packet bound to artifacts |
+| admission | desired and rendered records | permit target mutation | versions, values digest, policy, inventory, target guard |
+| rollout | admitted and observed records | continue, drain, roll back | object revisions, events, readiness, error, saturation |
+| capacity | scenario, concurrency, baseline | accept or reject envelope | release-scoped measurements and threshold evaluation |
+| incident | symptoms, changes, dependencies | mitigate, recover, escalate | affected ledger path, timeline, diagnostics, recovery result |
+| promotion | complete ledger and artifact proof | promote or refuse | verified packet bound to artifacts and decision policy |
 
 The loops share release and environment identity but answer different
 questions. Admission cannot stand in for runtime observation. A load result
