@@ -86,6 +86,36 @@ Observe generator and target resources separately. A runner-limited result is
 evidence about the harness, while a target-limited result may support an Atlas
 capacity claim only when the generator retained declared headroom.
 
+## Separate the Generator from the Target
+
+A workflow that drives load and hosts Atlas on the same runner couples their
+CPU, memory, network, storage, and process scheduling. Contention can look like
+a product regression, while generator saturation can silently reduce offered
+load and make the target look faster.
+
+```mermaid
+flowchart LR
+    Controller[Workflow controller] --> Generator[Load generator identity]
+    Controller --> Target[Atlas target identity]
+    Generator --> Traffic[Offered and achieved traffic]
+    Traffic --> Target
+    Generator --> GenSignals[Generator headroom]
+    Target --> TargetSignals[Service saturation and latency]
+    GenSignals --> Verdict[Qualified comparison]
+    TargetSignals --> Verdict
+```
+
+Retain separate resource telemetry and clocks for the generator and target.
+The generator needs headroom at the maximum offered rate, stable connection and
+timeout policy, and an accounted request denominator. The target needs an
+independent resource envelope, release identity, and dependency telemetry.
+
+If co-location is intentional for a developer benchmark, label the result as a
+whole-runner experiment and compare only with the same topology. Do not use it
+as evidence of target capacity. A governed CI gate should also retry only under
+a predeclared infrastructure-failure policy; rerunning noisy measurements until
+one passes biases the retained result.
+
 ## Trigger and Gate Limits
 
 The load and performance workflows watch the canonical

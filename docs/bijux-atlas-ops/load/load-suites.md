@@ -115,6 +115,38 @@ interrupted execution, missing metric, invalid record, or threshold failure.
 Preserve every attempt. Replacing a failed attempt with a successful retry
 removes evidence about instability and is not an acceptable reconciliation.
 
+## Restore Scenario Preconditions
+
+Scenarios in one lane can change cache contents, HPA replicas, pod revisions,
+catalog state, dependency health, and background work. The next scenario is
+valid only after its declared starting condition is observed, not merely after
+the prior process exits.
+
+| Precondition | Evidence before the scenario starts |
+| --- | --- |
+| release and dataset | exact runtime, catalog, store, and dataset identities match the plan |
+| cache | required cold, warm, pinned, or empty state is observed and generation-bound |
+| capacity | replica count, resource limits, HPA state, node pressure, and generator headroom match the profile |
+| dependencies | store, Redis, catalog, DNS, and telemetry have the required healthy or injected-failure state |
+| background work | prior rollout, warmup, recovery, compaction, and request drain have completed or are intentionally part of the scenario |
+| observation | required metrics, logs, traces, clocks, and release labels are available before offered load begins |
+
+```mermaid
+stateDiagram-v2
+    [*] --> Reconcile
+    Reconcile --> Ready: all declared preconditions observed
+    Reconcile --> Incomplete: state cannot be established
+    Ready --> Execute
+    Execute --> Preserve: results and residual state retained
+    Preserve --> Reconcile: next scenario
+```
+
+Use isolated targets when restoration cannot be proven cheaply or when a fault
+may leave ambiguous state. Preserve residual state from the previous scenario
+as evidence; resetting without recording it can hide slow recovery, leaked
+work, or persistent corruption. Lane ordering must not become an undocumented
+input to the result.
+
 ## Scenario Families
 
 - Core service: `mixed`, `cheap-only-survival`, warm steady state, and cold

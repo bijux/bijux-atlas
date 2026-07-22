@@ -102,6 +102,37 @@ retain offered load, completed work, rejected work, and their denominators. For
 CPU and memory, retain per-replica samples and resource limits so saturation is
 reconstructable.
 
+## Preserve Rejected and Censored Work
+
+Latency percentiles over successful responses can improve while the system is
+dropping its slowest work. Keep completed, rejected, timed-out, cancelled, and
+still-in-flight requests in the same measurement accounting.
+
+| Outcome | Required measurement treatment |
+| --- | --- |
+| completed | include latency and correctness verdict in the declared distribution |
+| policy rejection | retain response class, decision latency, route class, and offered-load denominator |
+| client timeout | retain the timeout bound as censored work; do not discard it from failure accounting |
+| server or transport failure | retain elapsed time, error class, and whether work continued after the client left |
+| unfinished at test end | report residual concurrency and drain outcome separately from completed throughput |
+
+```mermaid
+flowchart LR
+    Offered[All offered requests] --> Completed[Completed responses]
+    Offered --> Rejected[Policy rejections]
+    Offered --> TimedOut[Timeouts and cancellations]
+    Offered --> Residual[In flight at test end]
+    Completed --> Verdict[Latency, correctness, and throughput verdict]
+    Rejected --> Verdict
+    TimedOut --> Verdict
+    Residual --> Verdict
+```
+
+Record both offered and achieved rate. A candidate that completes less work is
+not comparable merely because the remaining successful sample has similar
+percentiles. If the load generator cannot account for every offered request,
+mark the run incomplete rather than estimating a favorable denominator.
+
 ## Comparability Decision
 
 Evaluate identity before calculating deltas:
