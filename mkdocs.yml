@@ -248,6 +248,7 @@ nav:
           - Helm Values Model: bijux-atlas-ops/kubernetes/helm-values-model.md
           - Chart Layout: bijux-atlas-ops/kubernetes/chart-layout.md
           - Install Matrix: bijux-atlas-ops/kubernetes/install-matrix.md
+          - Production Qualification: bijux-atlas-ops/kubernetes/production-qualification.md
           - Render and Validate: bijux-atlas-ops/kubernetes/render-and-validate.md
           - Conformance Suites: bijux-atlas-ops/kubernetes/conformance-suites.md
           - Rollout Safety: bijux-atlas-ops/kubernetes/rollout-safety.md

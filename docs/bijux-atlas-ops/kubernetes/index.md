@@ -186,7 +186,9 @@ green status cannot be reproduced or attributed to the release under review.
    [Rollout Safety](rollout-safety.md).
 6. Require the evidence described by
    [Conformance Suites](conformance-suites.md).
-7. Verify [Security Operations](security-operations.md),
+7. Assemble the profile-specific gates in
+   [Production Qualification](production-qualification.md).
+8. Verify [Security Operations](security-operations.md),
    [Runtime Configuration](runtime-configuration.md), and
    [Debug Bundles](debug-bundles.md) before production handoff.
 

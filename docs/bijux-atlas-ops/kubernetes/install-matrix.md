@@ -71,6 +71,12 @@ There is no declared upgrade or rollback scenario for `prod`, `dev`, `local`,
 `ingress`, or `multi-registry` in the current matrix. Do not present those
 transitions as proven by this contract.
 
+The production-oriented `prod-minimal`, `prod-ha`, and `prod-airgap` profiles
+are absent from the profile rows as well as the lifecycle scenarios. Their
+values files define reviewable intent, but the matrix provides no execution
+lane for them. [Production Qualification](production-qualification.md) defines
+the additional evidence and the claims that must remain blocked.
+
 ## Selecting a Path
 
 1. Choose a profile whose intent matches the target environment.
@@ -121,4 +127,6 @@ release, narrowing the supported claim, or adding the missing scenario. It must
 not be converted into an inferred pass.
 
 Continue with [Render and Validate](render-and-validate.md) for preflight proof
-and [Rollout Safety](rollout-safety.md) for live promotion decisions.
+and [Rollout Safety](rollout-safety.md) for live promotion decisions. Use
+[Production Qualification](production-qualification.md) to assemble the
+cross-domain production record.

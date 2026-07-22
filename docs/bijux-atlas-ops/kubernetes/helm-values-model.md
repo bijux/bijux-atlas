@@ -97,4 +97,6 @@ required and forbidden toggles.
 
 See [Install Matrix](install-matrix.md) to choose the evidence lane and
 [Runtime Configuration](runtime-configuration.md) for values that become Atlas
-process configuration.
+process configuration. Before using a production-oriented overlay, apply the
+identity, target-capability, resilience, and recovery gates in
+[Production Qualification](production-qualification.md).
