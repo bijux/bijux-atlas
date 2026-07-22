@@ -4,93 +4,89 @@ audience: mixed
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Documentation Map
 
-Atlas documentation is organized around five durable slices:
-
-- `foundations` for product identity and core concepts
-- `workflows` for ingest, dataset, and query usage
-- `interfaces` for CLI, API, config, and exact lookups
-- `runtime` for architecture and serving behavior
-- `contracts` for published promises and compatibility rules
-
-## Documentation Map
+Atlas documentation follows three reader journeys: using the product,
+operating a deployment, and maintaining the repository. Start with the journey
+that owns your decision, then move from concepts to a workflow and finally to
+the exact interface, contract, or evidence reference.
 
 ```mermaid
 flowchart TD
-    Docs[Product docs] --> Foundations[Foundations]
-    Docs --> Workflows[Workflows]
-    Docs --> Interfaces[Interfaces]
-    Docs --> Runtime[Runtime]
-    Docs --> Contracts[Contracts]
-
-    Foundations --> Domain[Domain vocabulary]
-    Workflows --> Tasks[Task guidance]
-    Interfaces --> Surface[Exact surface lookup]
-    Runtime --> Architecture[Running-system architecture]
-    Contracts --> Promise[Compatibility and promise strength]
+    Need[What are you trying to decide?] --> Product[Use or integrate Atlas]
+    Need --> Ops[Deploy, secure, observe, or recover Atlas]
+    Need --> Dev[Change or govern the repository]
+    Product --> Workflow[Runnable product workflow]
+    Workflow --> Interface[CLI, HTTP, config, or artifact interface]
+    Interface --> Contract[Compatibility contract]
+    Ops --> Target[Profile and target]
+    Target --> Evidence[Validation, load, security, and recovery evidence]
+    Dev --> Control[Checks, suites, governance, and release control plane]
 ```
 
-This diagram shows how the product docs are divided. Each slice answers a
-different class of question.
+## Product Documentation
 
-## How To Use It
+The `bijux-atlas` domain has five complementary sections:
 
-Start in `foundations` when you need the mental model. Move to `workflows`
-when you are doing product work. Move to `interfaces`, `runtime`, or
-`contracts` when the question becomes exact.
+| Section | Use it for | Continue when |
+| --- | --- | --- |
+| [Foundations](index.md) | product identity, dataset and query models, releases, and stability | you can name the artifact and consumer boundary |
+| [Workflows](../workflows/index.md) | installation, ingest, validation, publication, startup, and queries | you need exact flags, fields, or failure behavior |
+| [Interfaces](../interfaces/index.md) | command, HTTP, configuration, output, and artifact lookup | you need the governing compatibility promise |
+| [Runtime](../runtime/index.md) | cache, serving, security, observability, and process architecture | you need deployment behavior or operational proof |
+| [Contracts](../contracts/index.md) | public shape, ownership, versioning, and compatibility | you need candidate-specific evidence |
 
-## Reader Map
+## Operations Documentation
 
-Use this table when you are unsure where a question belongs:
+The `bijux-atlas-ops` domain owns deployment and operational decisions. Route
+there for:
 
-| If the question sounds like... | Start here |
+- containers, Kubernetes, Helm, overlays, and profiles;
+- configuration and secret delivery;
+- health, SLOs, metrics, logs, traces, and alerts;
+- load, capacity, scaling, and overload control;
+- backup, restore, failover, drills, and incident response; and
+- release promotion and operational evidence.
+
+A product contract can define readiness semantics, but only target-bound
+operations evidence can show that a deployment satisfied them.
+
+## Maintainer Documentation
+
+The `bijux-atlas-dev` domain owns repository change mechanics:
+
+- workspace layout, crate ownership, and repository laws;
+- checks, suites, effects, reports, and the development control plane;
+- governance policy, compatibility, exceptions, and evidence;
+- CI, templates, review routing, and required contexts; and
+- release automation and documentation governance.
+
+Maintainer commands describe repository conformance. They are not end-user
+runtime interfaces, even when they inspect product artifacts.
+
+## Route Common Questions
+
+| Question | Start here |
 | --- | --- |
-| What is Atlas for? | [What Atlas Is](what-atlas-is.md) |
-| Which concepts matter before I run anything? | [Core Concepts](core-concepts.md) |
-| How do I install, ingest, start, or query? | [Workflows](../workflows/index.md) |
-| Which flag, endpoint, env var, or output is public? | [Interfaces](../interfaces/index.md) |
-| How does the runtime actually work? | [Runtime](../runtime/index.md) |
-| Is this a compatibility promise? | [Contracts](../contracts/index.md) |
+| What is Atlas and what does it not claim? | [What Atlas Is](what-atlas-is.md) and [Boundaries and Non-Goals](boundaries-and-non-goals.md) |
+| How do I turn source fixtures into queryable state? | [Run Atlas Locally](../workflows/run-atlas-locally.md) |
+| Which command or HTTP field can a consumer depend on? | [Interfaces](../interfaces/index.md), then [Contracts](../contracts/index.md) |
+| Why is the server healthy but not ready? | [Start the Server](../workflows/start-the-server.md), then the operations health model |
+| How is a crate or module owner chosen? | [Crate Boundary Contract](crate-boundary-contract.md) and [Package Ownership](package-ownership.md) |
+| Which check, workflow, or report supports a repository claim? | the `bijux-atlas-dev` automation and governance sections |
+| What proves a deployment is safe under load or failure? | the `bijux-atlas-ops` load, resilience, security, and evidence sections |
 
-## Repository Map
+## Authority Ladder
 
-Use this table when you want to jump from the docs slice to the real source of
-truth in the repo:
+Concept pages define vocabulary. Workflow pages connect supported interfaces in
+an executable order. Interface pages enumerate observed surfaces. Contract and
+schema artifacts define consumer commitments. Release, deployment, or audit
+claims additionally require evidence tied to the exact revision, artifact,
+profile, and target.
 
-| Docs slice | Main repository anchors |
-| --- | --- |
-| foundations | `crates/bijux-atlas-model/src/`, `crates/bijux-atlas-ingest/src/engine/`, and `crates/bijux-atlas-query/src/` |
-| workflows | `configs/examples/` plus runnable product entrypoints |
-| interfaces | `crates/bijux-atlas-cli/src/bin/`, `crates/bijux-atlas-server/src/adapters/inbound/http/`, and `crates/bijux-atlas-runtime/src/runtime/config/` |
-| runtime | `crates/bijux-atlas-runtime/src/`, `crates/bijux-atlas-server/src/app/`, and `crates/bijux-atlas-server/src/adapters/inbound/http/` |
-| contracts | `crates/bijux-atlas-runtime/src/contracts/`, `crates/bijux-atlas-api/src/`, and `configs/schemas/contracts/` |
-
-## Ownership Boundary
-
-This repository docs set is only one of the Atlas documentation domains:
-
-- `bijux-atlas` is the product runtime documentation
-- `bijux-atlas-ops` is the operations documentation
-- `bijux-atlas-dev` is the repository-governance documentation
-
-If a page starts drifting into Helm values, incident response, CI lanes, or
-GitHub workflow ownership, it probably belongs outside these product docs.
-
-## Navigation Rule
-
-The cleanest reading pattern is:
-
-1. choose the top navigation domain first
-2. choose the section home inside that domain
-3. move to exact reference or contract pages only after the model is clear
-
-## Main Takeaway
-
-The documentation map should help readers move from idea to code without losing
-their footing. The slices stay useful because they separate mental model, task
-flow, exact surface lookup, runtime architecture, and explicit promise
-strength instead of blending them together.
+Examples teach shape. Generated references describe a specific build. Neither
+substitutes for candidate-bound validation when the decision is operational or
+release-critical.
