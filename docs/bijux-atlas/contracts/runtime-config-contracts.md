@@ -57,6 +57,11 @@ bound. Socket syntax itself is parsed later, immediately before bind, so a
 non-empty but invalid `bind_addr` can pass config construction and still fail
 server startup.
 
+Runtime construction also validates environment-variable names against the
+generated allowlist. Unknown `ATLAS_*` and `BIJUX_*` names fail closed. The
+`ATLAS_DEV_ALLOW_UNKNOWN_ENV` escape hatch exists only for local development;
+using it in a deployment removes typo detection from the admission boundary.
+
 ## Validate and Inspect
 
 ```bash
@@ -65,10 +70,36 @@ bijux-atlas-server --config atlas.toml --print-effective-config
 ```
 
 Both paths load the full environment-backed runtime configuration. Validation
-returns before listener startup. Effective-config output has schema version 1
-and redacts known Redis, API-key, HMAC, token, and store bearer fields. It is a
-diagnostic snapshot, not safe permission to expose arbitrary future config
-fields; review redaction whenever secret-bearing fields are added.
+returns before listener startup. Effective-config output has schema version 1,
+identifies itself as `atlas_server_effective_config_v2`, and redacts known
+Redis, API-key, HMAC, token, and store bearer fields. It is a diagnostic
+snapshot, not safe permission to expose arbitrary future config fields; review
+redaction whenever secret-bearing fields are added.
+
+## Preserve configuration evidence
+
+The effective payload records resolved values, but it does not attribute each
+value to CLI, environment, file, or default. Redaction also deliberately
+removes the secret material needed to reproduce authentication. A deployment
+record therefore needs more than the printed payload.
+
+```mermaid
+flowchart LR
+    Sources["versioned file + deployment inputs"] --> Resolve["runtime resolution"]
+    Resolve --> Validate["allowlist and invariant validation"]
+    Validate --> Effective["redacted effective payload"]
+    Effective --> Record["deployment evidence"]
+    Image["binary or image identity"] --> Record
+    Contract["environment contract revision"] --> Record
+    SecretRef["secret reference and version, never value"] --> Record
+```
+
+Retain the redacted effective payload with the binary or image identity, the
+versioned non-secret configuration reference, the environment-contract
+revision, and secret identifiers or versions. Never place secret values in the
+evidence packet. This distinguishes “the process accepted these resolved
+settings” from the stronger claim that operators can explain where each
+setting came from.
 
 ## Schema Boundary
 

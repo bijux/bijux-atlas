@@ -59,6 +59,38 @@ flowchart TD
     Bind --> Claim[Scoped operational claim]
 ```
 
+## Make every claim falsifiable
+
+An operational claim should identify five things: the subject, evaluated
+contract, observation window, evidence location, and decision. Add the dataset
+identity for data-bearing behavior and the release identity for deployed
+behavior. Without those bindings, a passing result cannot be attributed to the
+system now receiving traffic.
+
+| Field | Question it answers | Example shape |
+| --- | --- | --- |
+| subject | what exact runtime, dataset, or release was evaluated? | release and dataset identities |
+| contract | which named threshold or invariant applied? | readiness, overload, restore, or latency budget |
+| window | when and for how long was it observed? | start, end, and sample coverage |
+| evidence | where are raw and summarized observations retained? | immutable report and signal query reference |
+| decision | what action is justified, and by whom? | admit, hold, drain, rollback, or restore |
+
+```mermaid
+flowchart LR
+    Subject["bound subject"] --> Evaluate["evaluate named contract"]
+    Window["complete observation window"] --> Evaluate
+    Evaluate --> Evidence["retained raw + summary evidence"]
+    Evidence --> Decision{"scoped decision"}
+    Decision -->|pass| Admit["admit or continue"]
+    Decision -->|fail| Hold["hold, drain, or recover"]
+    Decision -->|unknown| Incomplete["insufficient evidence"]
+```
+
+“No alert fired,” “the dashboard was green,” and “the command exited zero” are
+observations, not complete claims. Missing or stale evidence produces an
+unknown decision, not a pass. This three-valued interpretation prevents an
+instrumentation gap from becoming accidental release approval.
+
 ## Change Rules
 
 Treat changes to endpoint meaning, traffic admission, metric or label

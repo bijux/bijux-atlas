@@ -9,8 +9,11 @@ last_reviewed: 2026-07-22
 
 # Artifact and Store Contracts
 
-Atlas publishes a dataset as an immutable manifest-and-SQLite pair addressed by
-dataset identity. Integrity, discoverability, and publication state are related
+Atlas addresses a dataset by identity and serves it through a
+manifest-and-SQLite integrity pair. Publication evidence is backend-specific:
+the local filesystem backend adds an immutable marker and lifecycle records,
+whereas the S3-like backend publishes the pair and lock without those local
+lifecycle files. Integrity, discoverability, and publication state are related
 contracts, but they are not interchangeable.
 
 ```mermaid
@@ -19,12 +22,14 @@ flowchart LR
     Ingest --> SQLite[gene_summary.sqlite]
     Manifest --> Lock[manifest.lock]
     SQLite --> Lock
-    Lock --> Publish[Store publication]
-    Publish --> Marker[immutable.release.json]
-    Publish --> Lifecycle[lifecycle state and transitions]
+    Lock --> Publish{Store publication}
+    Publish -->|local filesystem| Marker[immutable marker and lifecycle records]
+    Publish -->|S3-like| Objects[verified object set]
+    Publish -->|read-only HTTP| Unsupported[publication unsupported]
     Catalog[catalog.json] --> Discover[Dataset discovery]
     Discover --> Read[Verified manifest read]
     Marker --> Read
+    Objects --> Read
 ```
 
 ## Dataset Layout
@@ -32,19 +37,20 @@ flowchart LR
 Each dataset uses the canonical `release/species/assembly` prefix. The store
 contract recognizes:
 
-| Path | Responsibility |
-| --- | --- |
-| `<dataset>/manifest.json` | versioned dataset identity, input and artifact hashes, statistics, provenance references, scientific metadata, and schema identities |
-| `<dataset>/gene_summary.sqlite` | queryable serving payload |
-| `<dataset>/manifest.lock` | SHA-256 values for the exact manifest and SQLite bytes |
-| `<dataset>/immutable.release.json` | publication marker binding dataset and expected checksums |
-| `<dataset>/lifecycle.state.json` | current lifecycle state |
-| `<dataset>/lifecycle.transitions.json` | recorded publication transition history |
-| `catalog.json` | sorted discoverability index for published dataset identities |
+| Path | Scope | Responsibility |
+| --- | --- | --- |
+| `<dataset>/manifest.json` | all backends | versioned dataset identity, input and artifact hashes, statistics, provenance references, scientific metadata, and schema identities |
+| `<dataset>/gene_summary.sqlite` | all backends | queryable serving payload |
+| `<dataset>/manifest.lock` | all backends | SHA-256 values for the exact manifest and SQLite bytes |
+| `<dataset>/immutable.release.json` | local filesystem | publication marker binding dataset and expected checksums |
+| `<dataset>/lifecycle.state.json` | local filesystem | current lifecycle state |
+| `<dataset>/lifecycle.transitions.json` | local filesystem | recorded publication transition history |
+| `catalog.json` | discovery contract | sorted discoverability index for dataset identities |
 
-`.publish.lock` is an exclusive publication guard, not durable publication
-evidence. Temporary files are written beneath the dataset's derived directory
-and renamed into place before the directory is synchronized.
+For the local backend, `.publish.lock` is an exclusive publication guard, not
+durable publication evidence. Temporary files are written beneath the
+dataset's derived directory and renamed into place before the directory is
+synchronized.
 
 ## Publication Invariants
 
@@ -85,23 +91,49 @@ that the referenced payload passes integrity checks.
 Backend selection must be compiled and configured explicitly. Shared trait
 names do not imply identical atomicity, cache, retry, or consistency guarantees.
 
+## Concurrency and repeat requests
+
+Publication is create-only for a dataset identity. The local backend acquires
+an exclusive file lock and rejects any existing marker or payload. The S3-like
+backend checks for an existing verified manifest and rejects it as a conflict,
+but does not provide the local lock guard. Read-only HTTP rejects both publish
+and lock operations as unsupported.
+
+Consequently, callers must treat a conflict as evidence that the identity is
+already occupied, not as idempotent success. They must read and verify the
+existing object set before deciding whether it represents the intended bytes.
+A retry that carries different hashes under the same dataset identity is a
+collision requiring a new release decision; overwrite is not recovery.
+
+```mermaid
+flowchart TD
+    Attempt["publish identity + expected hashes"] --> Exists{"identity occupied?"}
+    Exists -- no --> Commit["backend commit protocol"]
+    Commit --> Verify["read back through integrity contract"]
+    Exists -- yes --> Conflict["return conflict"]
+    Conflict --> Compare["verify existing identity and hashes"]
+    Compare --> Same{"same intended bytes?"}
+    Same -- yes --> Observe["record existing publication; do not rewrite"]
+    Same -- no --> Reject["identity collision; require release decision"]
+```
+
 ## Backup and Recovery Contract
 
-A recoverable dataset includes the manifest, SQLite payload, lock, immutable
-marker, lifecycle records, and the relevant catalog state. Recovery must
-revalidate bytes and identity before restoring discoverability. Copying only
-`catalog.json`, or only the SQLite file, does not reconstruct the publication
-contract.
+A recoverable dataset always includes the manifest, SQLite payload, lock, and
+relevant catalog state. A local-filesystem recovery also includes the immutable
+marker and lifecycle records. Recovery must revalidate bytes and identity
+before restoring discoverability. Copying only `catalog.json`, or only the
+SQLite file, does not reconstruct the publication contract.
 
 ## Interpret Partial State
 
 | Observed state | Safe interpretation | Required response |
 | --- | --- | --- |
 | candidate files exist without a lock | build output is incomplete or not yet integrity-bound | diagnose the build; do not publish by hand |
-| payload and lock exist without an immutable marker | publication did not establish the durable completion boundary | retain diagnostics and retry through the owning publication operation |
-| immutable marker exists but catalog entry is absent | payload may be published but is not discoverable | verify the complete payload, then perform governed promotion |
+| local payload and lock exist without an immutable marker | local publication did not establish its durable completion boundary | retain diagnostics and retry through the owning publication operation |
+| local immutable marker exists but catalog entry is absent | payload may be published but is not discoverable | verify the complete payload, then perform governed promotion |
 | catalog entry exists but verified read fails | discovery points at unavailable or inconsistent bytes | remove serving eligibility and repair catalog/store coherence |
-| lifecycle state disagrees with marker or transition history | publication evidence is internally inconsistent | treat the dataset as non-promotable until reconciled |
+| local lifecycle state disagrees with marker or transition history | publication evidence is internally inconsistent | treat the dataset as non-promotable until reconciled |
 
 Never repair partial state by inventing a marker, editing a hash, or copying a
 catalog entry. Those actions manufacture the appearance of a completed
