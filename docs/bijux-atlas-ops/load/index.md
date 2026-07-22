@@ -185,6 +185,52 @@ expensive work can preserve cheap routes exactly as designed. Offered,
 admitted, completed, rejected, and timed-out work therefore belong in the same
 record.
 
+## Account for Every Offered Request
+
+Latency percentiles are meaningful only after the run accounts for the full
+offered population. Record the generator and service transitions instead of
+letting successful responses become the implicit denominator.
+
+```mermaid
+flowchart LR
+    Scheduled[scheduled requests] --> Offered[offered by generator]
+    Scheduled --> ClientDropped[not offered: client or pacing failure]
+    Offered --> Admitted[admitted by service]
+    Offered --> Rejected[explicitly rejected]
+    Offered --> ClientTimeout[client timeout or transport failure]
+    Admitted --> Completed[completed responses]
+    Admitted --> ServerLost[server error, cancellation or deadline]
+```
+
+For each transition, preserve a count and reason class. The useful invariants
+are explicit:
+
+- scheduled equals offered plus generator-side omissions;
+- offered equals admitted plus explicit rejections plus requests whose
+  admission outcome is unknown to the client;
+- admitted equals completed plus server errors, cancellations and unfinished
+  work at the observation boundary.
+
+Retries are new attempts but not new user operations. Report both attempt and
+operation counts so retries cannot manufacture throughput or hide user-visible
+failure. Coordinated-omission correction, if used, belongs in the report with
+the raw distribution; a corrected percentile must not replace the observed
+sample.
+
+| Measurement | Required denominator |
+| --- | --- |
+| acceptance rate | all offered attempts |
+| completion rate | all admitted attempts and, separately, all offered operations |
+| rejection rate | all offered attempts, classified by governed overload reason |
+| latency | completed attempts plus separately reported timeout and deadline populations |
+| throughput | completed operations per measured interval, with offered rate beside it |
+| recovery | affected operations from confirmed fault onset through restored invariant |
+
+If the accounting identity does not close within a declared tolerance, the run
+is invalid. It is not a product pass or failure. This distinction is especially
+important at saturation, where generator collapse, client timeout and governed
+server shedding can otherwise produce similar summaries.
+
 ## Match the Claim to the Experiment
 
 | Decision | Minimum suitable evidence |

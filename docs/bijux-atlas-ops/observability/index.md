@@ -99,6 +99,41 @@ Do not collapse these levels into “observability present.” Promotion evidenc
 should name the highest level actually demonstrated for every required signal
 path.
 
+## Decision Authority Is Per Signal Path
+
+Qualification is evaluated row by row, not as a site-wide observability flag.
+For every required endpoint, lifecycle event, dependency and policy decision,
+join the signal contract to its observed delivery path.
+
+| Path receipt | Identity retained | Decision it enables |
+| --- | --- | --- |
+| source event | release, dataset, instance, route or lifecycle event, and correlation key | establish which behavior should have emitted a signal |
+| instrumentation | metric, event or span contract and implementation revision | distinguish absent instrumentation from delivery loss |
+| transport | exporter or scraper, collector route, queue state and collection clock | bound loss, delay and backpressure |
+| storage | backend, tenant, retention class and ingestion timestamp | prove the evidence survived beyond emission |
+| query | exact expression, rule or panel revision and evaluation window | make the operator's observation reproducible |
+| ownership | alert owner, notification route, acknowledgement and runbook | connect detection to accountable action |
+| decision | incident or release record and evidence digest | preserve what the observed path justified |
+
+```mermaid
+flowchart TD
+    Contract[required signal path] --> Receipt{receipt complete?}
+    Receipt -->|no| Blind[record blind boundary]
+    Receipt -->|yes| Fresh{fresh and continuous for decision window?}
+    Fresh -->|no| Limited[limit claim to observed interval]
+    Fresh -->|yes| Correlated{release and request identity join?}
+    Correlated -->|no| Diagnostic[diagnostic evidence only]
+    Correlated -->|yes| Governed{rule, owner and action exercised?}
+    Governed -->|no| Observation[observed behavior; no response claim]
+    Governed -->|yes| Qualified[qualified signal path]
+```
+
+One qualified path cannot compensate for an unrelated blind path. A healthy
+latency metric does not establish audit completeness, and a delivered trace
+does not establish population error rate. The promotion policy must name the
+required paths and the minimum assurance level for each; optional paths remain
+diagnostic rather than silently expanding the release claim.
+
 ## Choose the Operating Question
 
 | Question | Start here | Decision supported |

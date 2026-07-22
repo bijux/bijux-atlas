@@ -65,6 +65,42 @@ the platform accepted that state. Live exercises prove selected behavior.
 Detection evidence proves the outcome was attributable. Release binding proves
 which distributed artifacts the observation supports.
 
+## Control Closure Is a Join, Not a Checklist
+
+A security control is closed only when the same control identity can be traced
+from threat to enforcement and back from evidence to the protected release.
+Keep the following fields together in the security receipt:
+
+| Closure field | Required content | A missing field means |
+| --- | --- | --- |
+| exposure | asset, trust boundary, threat or abuse path, and affected profile | the control has no bounded security claim |
+| control | mitigation ID, owner, enforcement point and failure posture | intent cannot be tied to implementation |
+| resolved state | effective runtime setting, rendered workload or platform policy | the deployed control is unknown |
+| positive exercise | an authorized action succeeds through the intended path | the control may block legitimate use |
+| negative exercise | a forbidden action fails at the intended enforcement point | denial behavior is unproved |
+| detection | audit event or signal identifies principal, action, resource, result and correlation key | the outcome is not attributable |
+| recovery | containment, revocation, rotation or restoration result | operational control after compromise is unproved |
+| binding | runtime, dataset, deployment, target, policy and evidence identities | the result cannot support this release |
+
+```mermaid
+flowchart LR
+    Exposure[exposure] --> Control[owned control]
+    Control --> Resolved[resolved enforcement]
+    Resolved --> Positive[allowed path]
+    Resolved --> Negative[denied path]
+    Positive --> Detection[correlated detection]
+    Negative --> Detection
+    Detection --> Recovery[containment or recovery]
+    Recovery --> Binding[release-bound receipt]
+    Binding --> Verdict{"closed, excepted, or blocked"}
+```
+
+A preventive control can pass while detection fails; a denied request can be
+caused by routing rather than authorization; an audit event can exist without
+proving the request was blocked. Preserve those outcomes separately. An
+exception must name the unresolved field, compensating control, exposure
+boundary, owner and expiry instead of converting partial closure into a pass.
+
 ## Known Qualification Boundaries
 
 Atlas documents limitations as security decisions:
