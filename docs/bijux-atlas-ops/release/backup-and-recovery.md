@@ -58,6 +58,36 @@ Objectives apply per durable class. A current catalog backup paired with stale
 artifact bytes is not a coherent recovery point. Restoring bytes inside the
 time objective does not pass recovery if identity or query correctness fails.
 
+## Coherent Recovery Set
+
+```mermaid
+flowchart TD
+    RP[Named recovery point] --> Artifacts[Dataset artifacts and manifest]
+    RP --> Catalog[Catalog and dataset index]
+    RP --> Release[Runtime and release metadata]
+    RP --> Config[Configuration and policy]
+    RP --> Access[Keys, credentials, and access path]
+    Artifacts --> Bind{Identities and hashes agree?}
+    Catalog --> Bind
+    Release --> Bind
+    Config --> Bind
+    Access --> Bind
+    Bind -->|no| Reject[Reject incoherent restore]
+    Bind -->|yes| Exercise[Exercise representative workload]
+    Exercise --> Verdict[Independent recovery verdict]
+```
+
+The backup unit is the coherent recovery set, not an individual archive.
+Artifact bytes without their manifest cannot establish identity. Encrypted
+backups without recoverable keys cannot establish availability. A restored
+catalog that selects a different artifact generation cannot establish the
+declared recovery point.
+
+Preserve the dependency order for each environment. Recover the access path
+needed to read protected backups, then authoritative artifacts and catalog,
+then policy and runtime configuration, and only then rebuild disposable caches.
+Do not allow a rebuilt cache to become evidence for an unverified store.
+
 ## Restore Validation Sequence
 
 ```mermaid
@@ -75,6 +105,24 @@ flowchart LR
 Keep the failed state and restore evidence isolated until the verdict is
 recorded. A failed restore is diagnostic evidence and must not overwrite the
 last known recoverable point.
+
+## Exercise and Acceptance Authority
+
+A recovery exercise records the selected point, backup age, restore start and
+end, recovered identities, validation results, data-loss interval, and operator
+verdict. Measure recovery point and recovery time from observed timestamps;
+archive timestamps or workflow duration alone are insufficient.
+
+When practical, a person other than the restore executor should confirm the
+manifest and catalog binding, representative query results, and traffic-ready
+state. Independence protects against repeating the same assumption that caused
+or concealed the incident. If independent verification is unavailable, record
+that limitation with the acceptance decision.
+
+Test more than the successful path. An unreadable object, missing key, partial
+catalog, stale manifest, and unavailable rollback target should fail closed
+without damaging the last verified recovery point. A restore procedure that
+has only been read or rendered is not a tested recovery capability.
 
 ## Current Repository Boundary
 

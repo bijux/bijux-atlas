@@ -76,6 +76,46 @@ classes, release identity, dataset identity, principal class, decision result,
 and trace correlation needed for review. Hash the retained form so later
 mutation is detectable.
 
+## Custody and Time Integrity
+
+```mermaid
+flowchart LR
+    Source[Source system and query window] --> Capture[Immutable raw capture]
+    Capture --> Hash[Digest and evidence manifest]
+    Capture --> Redact[Policy-governed redacted derivative]
+    Redact --> Review[Threshold and hypothesis review]
+    Hash --> Packet[Decision packet]
+    Review --> Packet
+    Packet --> Verify[Independent digest and lineage verification]
+```
+
+Every retained object needs a stable identifier, source, capture time, event
+window, producer version, digest, and relationship to its derivative or
+decision. A redacted export is a new evidence object: preserve its parent
+digest and redaction policy instead of silently replacing the raw capture.
+
+Time integrity is part of custody. Record the source clock and collection
+clock, known skew, query boundaries, and time zone. If a metric window, log
+event, trace span, rollout, and injected fault cannot be ordered reliably,
+mark the correlation as uncertain. Do not infer absence of an event from a
+retention gap or an unqueried interval.
+
+## Evidence Quality Dimensions
+
+| Dimension | Acceptance question |
+| --- | --- |
+| Identity | Is every signal bound to the intended release, profile, dataset, and environment? |
+| Coverage | Are all required classes and representative success and failure paths present? |
+| Freshness | Does the captured window cover the decision or incident interval? |
+| Integrity | Can digests and manifests detect later mutation? |
+| Lineage | Can a reviewer trace summaries and verdicts to raw inputs? |
+| Confidentiality | Was sensitive content removed under a recorded policy without erasing decision context? |
+| Interpretability | Are units, populations, thresholds, exclusions, and known gaps explicit? |
+
+An evidence packet may be internally well formed yet too stale, narrow, or
+weakly identified for its claim. Structural validity and decision sufficiency
+therefore receive separate verdicts.
+
 | Decision | Minimum evidence depth |
 | --- | --- |
 | local investigation | bounded signal window and identities sufficient to test a hypothesis |

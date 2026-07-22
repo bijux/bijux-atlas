@@ -42,6 +42,42 @@ If evidence is incomplete, label the working diagnosis as a hypothesis. A
 timeline should distinguish observed facts, interpretations, decisions, and
 actions so later review does not turn an early guess into incident truth.
 
+## Operating States
+
+```mermaid
+stateDiagram-v2
+    [*] --> Investigating: impact or integrity signal opens incident
+    Investigating --> Containing: reversible mitigation selected
+    Containing --> Stabilized: blast radius and user impact bounded
+    Stabilized --> Recovering: trusted runtime or data state selected
+    Recovering --> Monitoring: invariants and representative paths pass
+    Monitoring --> Closed: observation window passes and ownership transfers
+    Monitoring --> Containing: trigger recurs
+    Recovering --> Investigating: restore evidence contradicts diagnosis
+```
+
+State transitions require evidence. A quiet alert does not by itself establish
+stability, and restored probes do not by themselves establish correctness.
+Record who authorized each transition and which invariant supported it.
+
+## Response Roles
+
+One person may hold several roles in a small incident, but each responsibility
+must remain explicit:
+
+| Responsibility | Decision authority | Required record |
+| --- | --- | --- |
+| Incident lead | priority, active mitigation, and state transition | decision, owner, timestamp, and reversal condition |
+| Operations | traffic, runtime, dependency, and rollback controls | exact action, target identity, and observed effect |
+| Evidence custodian | capture, redaction, hashing, and retention | source window, chain of custody, and evidence gaps |
+| Communications | user impact and status cadence | audience, known facts, uncertainty, and next update |
+| Domain owner | correctness of runtime, dataset, catalog, or security diagnosis | hypothesis, supporting signals, and disconfirming evidence |
+
+Separate authorization from execution for destructive recovery whenever the
+response window permits. The operator performing a store restore or dataset
+pointer change should be able to name the approving incident decision and the
+pre-change evidence capture.
+
 ## Classification Matrix
 
 | Symptom class | First evidence | Do not confuse with |
@@ -87,6 +123,12 @@ Retain enough evidence for another operator to reconstruct the decision:
 Observability drill results use a structured contract. It records start and end
 time, status, metric/log/trace snapshot paths, trace IDs, and expected signals.
 Real incidents should preserve at least the same correlation quality.
+
+Maintain a hypothesis ledger for ambiguous failures. Each entry states the
+suspected boundary, predicted signal, evidence that would disprove it, and the
+next safe observation or action. Close hypotheses as supported, rejected, or
+unresolved. This keeps diagnostic exploration separate from the authoritative
+incident timeline.
 
 ## Recovery Rules
 
