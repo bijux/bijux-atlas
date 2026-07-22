@@ -1,58 +1,71 @@
 ---
 title: Feature Flags
-audience: maintainer
+audience: mixed
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Feature Flags
 
-This page summarizes the notable Cargo feature flags in the current
-`bijux-atlas` crate.
+Cargo features are crate-specific build-time choices. The `bijux-atlas`
+compatibility crate declares no features; runtime, store, server, core, and
+maintainer capabilities are owned by their direct crates.
 
 ## Feature Flag Groups
 
 ```mermaid
 flowchart LR
-    Features[Cargo features] --> Runtime[Runtime capabilities]
-    Features --> Bench[Benchmark enablement]
-    Features --> Allocator[Allocator choice]
+    Manifest[Owning Cargo.toml] --> Selection[Resolved feature set]
+    Selection --> Compile[Compiled crate graph]
+    Compile --> Binary[Binary or library capabilities]
+    RuntimeConfig[Runtime configuration] --> Process[Running behavior]
+    Binary --> Process
 ```
 
-This feature-group diagram shows why Cargo features belong in reference rather
-than runtime configuration docs. They are build-time capability switches, not
-live server knobs.
+Runtime configuration can select only behavior compiled into the artifact. It
+cannot enable a missing Cargo feature, and changing an environment variable
+does not reveal which features were used to build a binary.
 
-## Current Features
+## Feature Ownership
 
-```mermaid
-flowchart TD
-    FeatureSet[Feature set] --> Default[default]
-    FeatureSet --> Local[backend-local]
-    FeatureSet --> S3[backend-s3]
-    FeatureSet --> Bench[bench-ingest-throughput]
-    FeatureSet --> Jemalloc[jemalloc]
-```
+| Crate | Default features | Optional features | Effect |
+| --- | --- | --- | --- |
+| `bijux-atlas` | none declared | none | compatibility re-exports only |
+| `bijux-atlas-runtime` | `serde`, `backend-local` | `backend-s3`, `bench-ingest-throughput`, `jemalloc` | serialization helpers, store backend graph, benchmark surface, allocator |
+| `bijux-atlas-store` | `backend-local` | `backend-s3` | local publication by default; S3-like HTTP support adds `reqwest` and retains local support |
+| `bijux-atlas-server` | none | `jemalloc` | optional process allocator |
+| `bijux-atlas-core` | none | `serde` | cursor/JSON support and feature-gated contracts or benchmarks |
+| `bijux-atlas-dev` | none | `kind_integration` | repository-only Kind integration code |
 
-This current-feature map gives a fast inventory of the notable compile-time
-switches in the crate.
+Other crates currently declare no Cargo feature section. Always inspect the
+manifest of the crate being built rather than assuming the runtime's feature
+names are workspace-global.
 
-## Feature Summary
+## Dependency Effects
 
-- `default`
-- `serde`
-- `backend-local`
-- `backend-s3`
-- `bench-ingest-throughput`
-- `jemalloc`
+- `bijux-atlas-runtime/backend-local` enables its own `serde` feature and
+  `bijux-atlas-store/backend-local`.
+- `bijux-atlas-runtime/backend-s3` includes `backend-local` and enables
+  `bijux-atlas-store/backend-s3`.
+- `bijux-atlas-store/backend-s3` includes local support and adds the optional
+  HTTP client dependency.
+- `jemalloc` is declared separately by the runtime and server. Enabling it for
+  one crate does not imply that another binary owner selected it.
+- `bench-ingest-throughput` and `kind_integration` are not production runtime
+  configuration switches.
 
-## Reading Guidance
+## Reproducible Builds
 
-Treat feature flags as build-time capability switches. Do not confuse them with runtime configuration flags.
+Record the package, target, Cargo feature arguments, default-feature decision,
+lockfile, toolchain, and source revision. A version alone is insufficient when
+two builds can select different features.
 
-## Reading Rule
+Authorities:
 
-Use this page when a behavior difference might come from how Atlas was built
-rather than how the running server was configured.
+- [`bijux-atlas-runtime/Cargo.toml`](../../../crates/bijux-atlas-runtime/Cargo.toml)
+- [`bijux-atlas-store/Cargo.toml`](../../../crates/bijux-atlas-store/Cargo.toml)
+- [`bijux-atlas-server/Cargo.toml`](../../../crates/bijux-atlas-server/Cargo.toml)
+- [`bijux-atlas-core/Cargo.toml`](../../../crates/bijux-atlas-core/Cargo.toml)
+- [`bijux-atlas-dev/Cargo.toml`](../../../crates/bijux-atlas-dev/Cargo.toml)
