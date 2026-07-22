@@ -63,6 +63,25 @@ Without release and environment identity, a passing report cannot support the
 deployment under review. The current `k8s_conformance` report does not contain
 these identities and must not be promoted into a full-suite result.
 
+## Prove Selection Completeness
+
+For a selected suite, every check ID must end in exactly one governed outcome:
+passed, failed, blocked, or validly quarantined. Missing results and duplicate
+results are report failures, not implicit skips.
+
+```mermaid
+flowchart LR
+    Suite[Selected suite revision] --> IDs[Resolved check IDs]
+    IDs --> Results[One result per ID]
+    Results --> Policy[Budget, retry, fail-fast, and quarantine policy]
+    Policy --> Verdict[Complete suite verdict]
+    IDs --> Missing[Missing or duplicate IDs]
+    Missing --> Reject[Reject completeness]
+```
+
+Retain the resolved ID list before execution. This prevents a changed selector
+or manifest from shrinking coverage after failures are known.
+
 ## Suite Catalog
 
 | Suite | Groups and operating question | Budget |

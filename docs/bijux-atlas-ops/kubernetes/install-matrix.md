@@ -87,6 +87,23 @@ does not: Kubernetes version, architecture, registry mode, network policy
 implementation, storage class, ingress controller, and dependency topology.
 These facts belong in evidence; they do not create undocumented matrix rows.
 
+## Bind a Matrix Cell to One Run
+
+An accepted cell needs more than the profile and lane names. Retain a receipt
+that fixes the lifecycle direction, both release identities, exact values and
+render hashes, cluster capabilities, selected checks, and final traffic state.
+
+| Cell state | Meaning |
+| --- | --- |
+| declared. | The matrix names the profile, lifecycle direction, and required lane. |
+| executable. | Every referenced suite, tool, artifact, and rollback target resolves. |
+| exercised. | One identified environment ran the complete selected path. |
+| accepted. | Required behavior, evidence, and cleanup passed for the exact identities. |
+| stale. | A release, profile, tool, policy, or environment input changed after acceptance. |
+
+Only an accepted, non-stale cell supports the scoped delivery claim. Matrix
+membership alone remains declaration evidence.
+
 ## Honest Claims
 
 A profile row proves that an evidence lane is defined. A passing install proves
