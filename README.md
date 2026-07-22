@@ -112,7 +112,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 * [How Atlas Fits With Bijux CLI](#how-atlas-fits-with-bijux-cli)
 * [Key Features](#key-features)
 * [Installation](#installation)
-* [Runtime in 60 Seconds](#runtime-in-60-seconds)
+* [Verify Installed Surfaces](#verify-installed-surfaces)
 * [Maintainer Control Plane](#maintainer-control-plane)
 * [Packages, Configs, and Ops](#packages-configs-and-ops)
 * [What Does Not Ship Yet](#what-does-not-ship-yet)
@@ -140,8 +140,10 @@ It is a fit when:
 flowchart LR
     Sources[Governed source inputs] --> Validate[Validate and normalize]
     Validate --> Build[Build immutable artifacts]
-    Build --> Publish[Publish to store and catalog]
-    Publish --> Serve[Serve through CLI and HTTP]
+    Build --> Verify[Verify artifact identity and integrity]
+    Verify --> Store[Publish immutable store payload]
+    Store --> Catalog[Promote dataset into catalog]
+    Catalog --> Serve[Serve through CLI and HTTP]
     Serve --> Observe[Observe through metrics, logs, and contracts]
 ```
 
@@ -202,7 +204,8 @@ flowchart LR
 | Claim | Primary authority | Evidence required for a concrete release |
 | --- | --- | --- |
 | a command or HTTP shape is supported | owning crate plus generated CLI or OpenAPI reference | contract validation tied to the source revision |
-| a dataset is publishable | ingest, artifact, store, and catalog contracts | manifest, hashes, provenance, and publication record |
+| a dataset is publishable | ingest, artifact, and store contracts | manifest, hashes, provenance, and store publication record |
+| a dataset is discoverable | catalog identity and promotion contracts | promoted catalog entry bound to the published payload |
 | a deployment is admissible | chart schema, profile values, and Kubernetes policy | render inventory and conformance report for the selected profile |
 | a performance budget holds | named scenario, threshold, and metric contract | measured run plus baseline comparison from the same scenario identity |
 | a release is distributable | channel manifests and signing policy | coherent packet, checksums, provenance, and verifier result |
@@ -371,7 +374,7 @@ Atlas does not publish a Python package yet. The planned Python bridge is a futu
 
 ---
 
-## Runtime in 60 Seconds
+## Verify Installed Surfaces
 
 ```bash
 # Inspect the runtime surface
@@ -393,14 +396,17 @@ For the canonical runtime references, start with:
 
 ```mermaid
 flowchart LR
-    Inspect[Inspect CLI and server] --> BuildDocs[Read getting started]
-    BuildDocs --> Ingest[Build a dataset]
-    Ingest --> Serve[Start the server]
-    Serve --> Query[Run first queries]
+    Inspect[Inspect CLI and server] --> Install[Confirm binary identity]
+    Install --> BuildDocs[Follow getting started]
+    BuildDocs --> Ingest[Build and verify a dataset]
+    Ingest --> Publish[Publish payload and promote catalog]
+    Publish --> Serve[Start the server]
+    Serve --> Query[Run identity-bearing queries]
 ```
 
-This path confirms binary ownership and product shape before a dataset is
-built or deployed.
+The commands above confirm binary ownership and product shape. They do not boot
+a server or prove dataset behavior. Follow the workflow guide for those claims,
+and keep the binary, dataset, store, and catalog identities visible throughout.
 
 ---
 

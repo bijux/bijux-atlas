@@ -17,8 +17,10 @@ through artifact construction, publication, serving, and compatibility.
 flowchart LR
     Inputs[Governed GFF3 and FASTA] --> Ingest[Validate and normalize]
     Ingest --> Build[Build immutable artifacts]
-    Build --> Publish[Publish catalog and store state]
-    Publish --> Query[Execute gene, transcript, sequence, and diff queries]
+    Build --> Verify[Verify artifact identity and integrity]
+    Verify --> Store[Publish immutable store payload]
+    Store --> Catalog[Promote catalog identity]
+    Catalog --> Query[Execute gene, transcript, sequence, and diff queries]
     Query --> Interfaces[CLI, HTTP, OpenAPI, and Rust APIs]
 ```
 
@@ -27,7 +29,7 @@ flowchart LR
 Atlas is the repository-owned product surface for:
 
 - ingesting governed GFF3 and FASTA inputs into immutable dataset artifacts
-- publishing those artifacts into a serving store and catalog
+- publishing those artifacts into a serving store and promoting their catalog identity
 - serving dataset identity, gene, transcript, sequence, and diff workflows
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
 
@@ -39,8 +41,9 @@ crates own ingest, query, model, core, store, and operations contracts.
 | Capability | Product boundary |
 | --- | --- |
 | dataset construction | validates and normalizes supported GFF3 and FASTA inputs into release-shaped artifacts |
-| publication | moves complete artifacts into explicit store and catalog state |
-| discovery | resolves release, species, assembly, dataset, and available endpoint identity |
+| publication | moves complete, verified artifacts into an explicit immutable store payload |
+| promotion | exposes the published release, species, and assembly identity through the catalog |
+| discovery | resolves catalog, dataset, and endpoint identity without redefining release truth |
 | query | serves genes, counts, transcripts, sequence regions, and release comparisons |
 | delivery | exposes direct binaries, split Rust crates, HTTP routes, and generated OpenAPI |
 | compatibility | versions wire shapes, structured output, configuration, plugins, artifacts, and crate ownership |
@@ -113,14 +116,23 @@ Choose a path based on the question in front of you:
 ## Publication Boundary
 
 Atlas is artifact-first. The runtime is not meant to serve mutable, partially
-built local state directly from ad hoc ingest output. The normal path is:
+built local state directly from ad hoc ingest output. The normal path preserves
+separate authorities:
 
-1. validate and build source inputs into release-shaped artifacts
-2. publish artifacts into a serving store
-3. resolve catalog state from that store
-4. expose queries and metadata through the CLI and HTTP surfaces
+```mermaid
+flowchart LR
+    Candidate[Built candidate] --> Verify[Validate and deeply verify]
+    Verify --> Store[Publish immutable payload]
+    Store --> Promote[Promote catalog entry]
+    Promote --> Refresh[Runtime refreshes catalog]
+    Refresh --> Result[Return result with resolved dataset identity]
+```
 
-Serving from an ingest build directory bypasses catalog publication, store
+Store publication proves that immutable bytes exist under the selected backend
+contract. Catalog promotion proves discoverability. Runtime refresh proves one
+instance observed that catalog state. None substitutes for another.
+
+Serving from an ingest build directory bypasses catalog promotion, store
 identity, and release provenance. A completed build is therefore necessary but
 not sufficient for a serveable release.
 

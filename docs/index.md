@@ -79,8 +79,9 @@ flowchart LR
     source[Governed GFF3 and FASTA inputs] --> validate[Validation and normalization]
     validate --> build[Deterministic artifact build]
     build --> release[Immutable release artifacts]
-    release --> publish[Catalog and store publish]
-    publish --> serve[CLI and HTTP runtime surfaces]
+    release --> publish[Immutable store publication]
+    publish --> promote[Catalog promotion]
+    promote --> serve[CLI and HTTP runtime surfaces]
     serve --> observe[Health, metrics, logs, and traces]
     observe --> decide[Promotion, rollback, and incident evidence]
 ```
@@ -89,7 +90,8 @@ flowchart LR
 | --- | --- | --- |
 | source admission | governed GFF3, FASTA, configuration, and policy inputs | validation findings and normalized identity |
 | artifact build | deterministic ingest and model contracts | immutable dataset files, manifests, hashes, and provenance |
-| publication | catalog and store contracts | discoverable release identity and serving-store state |
+| store publication | artifact and store contracts | immutable payload, integrity lock, and backend-specific publication result |
+| catalog promotion | catalog contract | discoverable release identity bound to the published payload |
 | serving | CLI, HTTP, OpenAPI, query, and runtime policy | structured results, stable errors, metrics, logs, and traces |
 | operations | stack, Kubernetes, load, security, and release contracts | conformance reports, baselines, drill results, checksums, and release packets |
 
@@ -189,6 +191,18 @@ budgets, and release trust are explained.
 
 Security and release assurance are not side checks after the runtime is done.
 They help prove what was built, promoted, and eligible for rollback.
+
+The operating system spans four control loops:
+
+| Control loop | Governing question | Decision evidence |
+| --- | --- | --- |
+| deployment | did the intended release and configuration reach the target? | render, admission, rollout, and identity observations |
+| service | can the runtime serve the intended dataset within policy? | health, readiness, telemetry, and correctness probes |
+| capacity | does behavior remain inside budgets under representative stress? | scenario-bound load results and comparable baselines |
+| recovery | can operators detect divergence and restore coherent state? | drift findings, incident records, backups, and rollback drills |
+
+These loops share release identity but not proof. A healthy rollout does not
+establish capacity, and a valid backup does not establish restoration.
 
 ## Release Confidence Signals
 
