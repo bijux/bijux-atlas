@@ -1,4 +1,7 @@
 {
+  "schema_version": 1,
+  "id": "tutorial.dataset-onboarding.evidence-summary",
+  "summary": "Dataset onboarding tutorial validation, integrity, reproducibility, and scenario checks passed for the recorded example.",
   "tutorial_suite": "dataset-onboarding",
   "validation": "passed",
   "integrity": "passed",
