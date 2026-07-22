@@ -54,3 +54,60 @@ feature activation, duplicate versions, or source changes are part of the
 change even when the direct dependency line looks small. Record what was run
 and distinguish checks executed on the pull request from policies that are
 merely declared in configuration.
+
+## Resolve the Complete Change
+
+A direct version edit can alter more than one package. Review the resolved
+graph by ownership and effect:
+
+| Graph change | Risk to investigate | Focused evidence |
+| --- | --- | --- |
+| new package | source, license, maintainer, feature, build script, and transitive graph | dependency review plus owning crate behavior |
+| source change | registry, Git revision, checksum, or local path trust boundary | exact source identity and reproducible resolution |
+| feature change | newly compiled code, native dependency, platform behavior, or default policy | feature graph and affected target tests |
+| duplicate version | larger attack and maintenance surface or incompatible types | justification, convergence plan, and binary impact |
+| build dependency | code execution during compilation | builder isolation, toolchain, and generated-output review |
+| native or system dependency | ABI, architecture, packaging, and runtime availability | supported-target build and deployment evidence |
+
+Do not evaluate only the package named in the manifest diff. The lockfile is
+the resolved build input, and activated features determine which parts of that
+graph can affect produced bytes.
+
+## Dependency Trust Receipt
+
+```mermaid
+flowchart LR
+    Intent[Requested dependency change] --> Resolve[Resolved lock graph]
+    Resolve --> Policy[Source, license, advisory, and feature policy]
+    Policy --> Build[Affected target build]
+    Build --> Behavior[Owner-focused behavior evidence]
+    Behavior --> Artifact[SBOM and release identity]
+```
+
+Retain the manifest and lockfile hashes, resolver and Rust toolchain versions,
+changed source and checksum identities, activated features, advisory database
+identity, policy revision, affected package set, focused test results, and
+resulting SBOM identity. An advisory scan without its database timestamp and
+policy cannot be reproduced later.
+
+## Update Decision
+
+Accept an update only when:
+
+- the resolved change matches the requested scope;
+- source and checksum changes are understood;
+- license, advisory, and exception decisions are attributable;
+- changed features and target support are exercised;
+- public API, serialization, output, and operational behavior remain inside
+  their compatibility contracts; and
+- release evidence can bind the new graph to produced artifacts.
+
+Hold the update when a required scanner is unavailable, the graph contains an
+unreviewed source, native target evidence is missing, or the lockfile includes
+unexplained movement. A successful lockfile generation proves resolution, not
+acceptance.
+
+Use [Compatibility Matrix](compatibility-matrix.md) when the dependency changes
+an observed surface and the operations
+[Supply Chain and Artifact Trust](../../bijux-atlas-ops/security/supply-chain-and-artifact-trust.md)
+guide for consumer verification.
