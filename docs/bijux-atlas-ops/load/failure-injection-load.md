@@ -175,6 +175,31 @@ If any link is missing, report the observation that remains supported—for
 example, unexplained degradation or an injection-control failure—without
 promoting it to a resilience verdict.
 
+## Control Compound Failures
+
+Inject one primary fault unless the experiment explicitly studies a compound
+failure. An unplanned second fault—telemetry loss, HPA movement, node pressure,
+credential expiry, or generator saturation—changes the causal question and
+usually invalidates the resilience verdict.
+
+| Secondary condition | Default disposition |
+| --- | --- |
+| required telemetry disappears | abort acceptance; preserve local and client evidence |
+| generator cannot sustain the offer | classify as measurement-limited and stop the fault window |
+| unrelated dependency degrades | contain the environment and treat the run as compound, not as proof for the primary fault |
+| autoscaling or rollout begins unexpectedly | end comparability and retain the controller timeline |
+| protected data identity becomes uncertain | stop traffic and promotion immediately; integrity outranks availability measurement |
+
+A deliberate compound experiment needs its own name, blast radius, state
+model, and acceptance budgets. Establish both single-fault baselines first so
+the interaction can be interpreted. Never create compound-failure evidence by
+combining independent summaries after execution.
+
+Define an abort path before injection. The controller must be able to remove
+the fault, stop offered load, fence writes or publication, and preserve the
+last trusted state without depending on the component being disrupted. Test
+that control path before increasing blast radius.
+
 ## Store-Outage Budget
 
 The governed `store-outage-under-spike` thresholds are:

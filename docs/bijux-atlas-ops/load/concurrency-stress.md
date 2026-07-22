@@ -95,6 +95,37 @@ declared envelope, or repetitions use different warm-up, cache state, dataset,
 or query mix. Those runs may diagnose the harness, but they cannot establish a
 capacity boundary.
 
+## Separate Static Capacity From Autoscaled Capacity
+
+Autoscaling changes resource supply while the experiment changes demand. A
+curve with HPA enabled therefore measures the controller, scheduling, startup,
+warmup, and dependency response together with Atlas request handling. It must
+not be compared directly with a fixed-replica curve as though only load
+changed.
+
+| Capacity view | Hold fixed | Evidence required |
+| --- | --- | --- |
+| per-replica | replica count, pod resources, placement, cache condition | request distribution, per-pod saturation, completed work, and first bottleneck |
+| fixed fleet | ready replicas and aggregate resource supply | fleet throughput, queueing, rejection, and dependency pressure |
+| autoscaled fleet | HPA policy, metric source, bounds, scheduling capacity | desired and observed replicas, scale decision, startup and readiness lag, work per replica, and stabilization |
+| post-scale recovery | reduced offer and unchanged scaling policy | scale-down timing, queue drain, cache and memory settlement, and absence of oscillation |
+
+```mermaid
+flowchart LR
+    Demand[Offered demand] --> Metric[Scaling signal]
+    Metric --> Decision[HPA decision]
+    Decision --> Schedule[Pod scheduling and startup]
+    Schedule --> Ready[Ready capacity]
+    Ready --> Distribution[Traffic distribution]
+    Distribution --> Outcome[Completed work and service budgets]
+```
+
+Record every control-loop delay separately. A higher eventual throughput does
+not prove useful autoscaling when the service violates its latency or error
+budget while capacity arrives. Conversely, deliberate shedding during that
+lag can be a valid result when protected routes survive and the rejection
+contract holds.
+
 ## Attribute the First Bottleneck
 
 At the first unstable point, identify the resource that saturated before

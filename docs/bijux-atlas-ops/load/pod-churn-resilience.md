@@ -23,7 +23,7 @@ The same values appear in the suite registry, dedicated threshold file, and k6
 threshold contract. That agreement defines the budget. It is not evidence that
 a churn experiment ran.
 
-## Current execution boundary
+## Current Execution Boundary
 
 `pod-churn` is registered in `ops/load/suites/suites.json` and its scenario
 requires Kubernetes. It is not present in `ops/load/load.toml`, which is the
@@ -36,7 +36,7 @@ Do not present the registry entry, generated manifest, or a plain
 `warm-steady.js` result as pod-churn evidence. A valid run needs an external or
 future governed orchestrator that performs and records the disruption.
 
-## Required experiment sequence
+## Required Experiment Sequence
 
 ```mermaid
 stateDiagram-v2
@@ -53,7 +53,7 @@ Use one run identity for workload output and cluster evidence. Keep workload
 rate, request mix, dataset, and resource settings constant from baseline
 through recovery. Record the exact disruption command and selected pod UID.
 
-## Observe the transition
+## Observe the Transition
 
 Correlate monotonic timestamps for:
 
@@ -100,7 +100,35 @@ have retried a reset, the withdrawn endpoint may have completed work after its
 readiness changed, or surviving replicas may have hidden a replacement that
 never served a representative request.
 
-## Acceptance decision
+## Prove Replacement Equivalence
+
+Kubernetes restoring the desired replica count is controller success. Atlas
+recovery additionally requires the replacement to join with the intended
+release, configuration, dataset, dependency, and traffic identities.
+
+```mermaid
+flowchart LR
+    Old[Selected pod UID and endpoint] --> Remove[Termination and withdrawal]
+    Remove --> New[Replacement pod UID]
+    Desired[Desired image, config, profile, and dataset] --> Compare{Replacement equivalent?}
+    New --> Compare
+    Compare -->|no| Hold[Keep endpoint out of service]
+    Compare -->|yes| Exercise[Send representative attributed traffic]
+    Exercise --> Accept[Accept restored capacity]
+```
+
+Retain the old and replacement pod UIDs, node and failure-domain placement,
+image ID, configuration digest, dataset and catalog identity, readiness
+transition, cache condition, and first attributed request. A replacement on
+the same node does not support a node-loss claim; a replacement that inherits
+a warm volume does not establish cold-start behavior.
+
+Require the new endpoint to serve enough identified traffic to exercise the
+protected request classes. Ready replicas can reach the target count while a
+selector, endpoint, or connection-reuse defect continues routing all work to
+the survivors.
+
+## Acceptance Decision
 
 Accept only when the declared thresholds pass, responses remain correct,
 traffic does not reach a withdrawn endpoint, replacement capacity stabilizes,

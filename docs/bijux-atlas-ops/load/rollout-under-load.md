@@ -69,6 +69,36 @@ Healthy old replicas can hide a candidate that never becomes ready. Aggregate
 service metrics are insufficient unless traffic and results can be attributed
 to each release.
 
+## Establish State Compatibility Before Traffic
+
+Rollout reversal is safe only when the previous and candidate releases can use
+the same selected dataset, catalog, configuration, cache namespace, and
+persistent state without changing their meaning. Complete this compatibility
+decision before the candidate receives governed traffic.
+
+| Shared surface | Pre-traffic question | Rollback blocker |
+| --- | --- | --- |
+| API and response contract | Can both releases serve the same request and error envelopes? | candidate emits state or responses the previous release cannot interpret |
+| dataset and catalog | Do both releases resolve the same immutable release tuple and manifest? | candidate advances an incompatible pointer or artifact schema |
+| runtime configuration | Are keys, defaults, feature flags, and secrets understood in both directions? | candidate-only configuration becomes required for serving |
+| cache | Are entries versioned by release and output contract? | candidate entries can be reused incorrectly by the previous release |
+| durable writes and jobs | Can in-flight and completed mutations be read or replayed after reversal? | an irreversible mutation crosses the rollback boundary |
+
+```mermaid
+flowchart LR
+    Previous[Previous release contract] --> Compatible{Bidirectional compatibility established?}
+    Candidate[Candidate release contract] --> Compatible
+    State[Dataset, config, cache, and durable-state identities] --> Compatible
+    Compatible -->|no| Block[Do not start mixed traffic]
+    Compatible -->|yes| Overlap[Begin attributed overlap]
+    Overlap --> Decide{Promote or reverse}
+```
+
+If the candidate can perform an irreversible publication, schema change, or
+administrative mutation, disable that capability during reversible overlap or
+use a separately governed forward-recovery plan. A deployment controller can
+restore old pods while application rollback has already become impossible.
+
 ## Prove Traffic Assignment
 
 For each request class and observation window, calculate the observed candidate
