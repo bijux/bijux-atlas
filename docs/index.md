@@ -161,40 +161,21 @@ and maintenance each own decisions. Evidence and trust cross all three; they
 are not a fourth implementation surface.
 
 ```mermaid
-flowchart TB
+flowchart LR
     atlas[Bijux Atlas]
-
     atlas --> runtime[Runtime and product]
     atlas --> maintainer[Maintainer control plane]
     atlas --> ops[Operations]
     trust[Evidence and trust]
-
-    runtime --> runtime_a[Datasets and releases]
-    runtime --> runtime_b[CLI, HTTP, and OpenAPI surfaces]
-    runtime --> runtime_c[Runtime contracts]
-
-    maintainer --> maintainer_a[Ownership and workflow control]
-    maintainer --> maintainer_b[Automation and governance]
-    maintainer --> maintainer_c[Delivery and compatibility]
-
-    ops --> ops_a[Deployment and stack]
-    ops --> ops_b[Rollout safety and recovery]
-    ops --> ops_c[Observability and load]
-
     runtime -. produces and consumes .-> trust
     ops -. produces and consumes .-> trust
     maintainer -. validates and preserves .-> trust
-
-    trust --> trust_a[Provenance and reproducibility]
-    trust --> trust_b[Policy enforcement and drift control]
-    trust --> trust_c[Release confidence and safe change]
 ```
 
-The arrows into the trust model are deliberately bidirectional in meaning.
-Each surface produces evidence, but each also consumes evidence before making
-a stronger claim. Product code cannot declare its own publication complete;
-operations cannot infer capacity from readiness; maintenance cannot infer
-compatibility from repository shape alone.
+Each surface produces evidence and consumes it before making a stronger claim.
+Product code cannot declare publication complete, operations cannot infer
+capacity from readiness, and maintenance cannot infer compatibility from
+repository shape alone.
 
 ## Operations Are Part of the Release
 
