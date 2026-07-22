@@ -10,10 +10,9 @@ last_reviewed: 2026-07-22
 # Bijux Atlas
 
 Bijux Atlas turns governed GFF3 and FASTA inputs into immutable genomic dataset
-releases, places them behind explicit serving stores, and exposes them through
-Rust libraries, command-line workflows, and a versioned HTTP API. Deployment,
-load, security, observability, rollback, and release evidence are governed parts
-of the same delivery system.
+releases and serves them through Rust libraries, command workflows, and a
+versioned HTTP API. Its documentation follows the decisions needed to build,
+publish, operate, and trust those releases.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -57,295 +56,100 @@ of the same delivery system.
 
 ## Choose by Outcome
 
-| Outcome | Start here | Decision owned there |
-| --- | --- | --- |
-| understand datasets, ingest, queries, and interfaces | [Product handbook](bijux-atlas/index.md) | product behavior and compatibility |
-| deploy or recover Atlas | [Operations handbook](bijux-atlas-ops/index.md) | topology, security, rollout, telemetry, load, and recovery |
-| change or release the repository | [Maintainer handbook](bijux-atlas-dev/index.md) | validation, governance, automation, and delivery |
-| assess whether a claim is proven | [Evidence and Trust](bijux-atlas-ops/release/release-evidence.md) | relationship among contracts, observations, and released artifacts |
+| Outcome | Handbook |
+| --- | --- |
+| understand dataset construction, publication, queries, and interfaces | [Atlas product](bijux-atlas/index.md) |
+| run the complete committed sample journey | [Run Atlas locally](bijux-atlas/workflows/run-atlas-locally.md) |
+| deploy, secure, observe, load-test, or recover a target | [Atlas operations](bijux-atlas-ops/index.md) |
+| interpret release evidence or distribution trust | [Release operations](bijux-atlas-ops/release/index.md) |
+| change repository automation, policy, or delivery | [Maintainer control plane](bijux-atlas-dev/index.md) |
 
-The product can be evaluated without learning repository automation. Operators
-can reason about deployment evidence without treating checked-in examples as
-live results. Maintainers can change the system without moving control-plane
-logic into user-facing binaries.
+## Understand the System
 
-## Two Lifecycles Meet at Serving Identity
-
-Atlas is an artifact-first system with separate dataset and service
-lifecycles. Dataset work establishes which immutable biological release may be
-served. Service work establishes where, under which policy, and with which
-operational evidence it may receive traffic. The resolved dataset and runtime
-identities join those lifecycles.
+Atlas has two independent lifecycles that meet at a serving decision.
 
 ```mermaid
 flowchart TB
-    subgraph data[Dataset lifecycle]
-        source[Governed GFF3 and FASTA] --> build[Validate and build]
-        build --> publish[Verify and publish immutable artifacts]
-        publish --> catalog[Promote catalog identity]
+    subgraph Dataset["Dataset lifecycle"]
+        Source["governed source"] --> Build["build + verify"]
+        Build --> Publish["publish immutable artifacts"]
+        Publish --> Catalog["promote catalog identity"]
     end
-    subgraph service[Service lifecycle]
-        release[Runtime release] --> render[Resolve profile and render]
-        render --> deploy[Deploy and admit traffic]
-        deploy --> qualify[Observe, load, secure, and recover]
+    subgraph Service["Service lifecycle"]
+        Software["software release"] --> Render["profile + render + admission"]
+        Render --> Run["running server"]
+        Run --> Qualify["security + telemetry + load + recovery"]
     end
-    catalog --> identity[Resolved serving identity]
-    deploy --> identity
-    identity --> query[CLI and HTTP results]
-    qualify --> decision[Promotion, rollback, and incident decisions]
-    query --> decision
+    Catalog --> Identity["resolved serving identity"]
+    Run --> Identity
+    Identity --> Result["CLI or HTTP result"]
+    Qualify --> Decision["promotion or recovery decision"]
 ```
 
-| Boundary | Authority | Evidence retained |
+A published dataset may have no qualified deployment. A healthy deployment may
+observe the wrong catalog generation. A trustworthy result therefore binds:
+
+- the dataset tuple `release/species/assembly`;
+- manifest and artifact hashes;
+- software, configuration, chart, profile, and target identity; and
+- the request, observation window, or scenario that produced the evidence.
+
+## Read by Ownership
+
+The documentation is divided by who makes the decision:
+
+| Surface | Owns | Does not own |
 | --- | --- | --- |
-| source admission | governed GFF3, FASTA, configuration, and policy inputs | validation findings and normalized identity |
-| artifact build | deterministic ingest and model contracts | immutable dataset files, manifests, hashes, and provenance |
-| store publication | artifact and store contracts | immutable payload, integrity lock, and backend-specific publication result |
-| catalog promotion | catalog contract | discoverable release identity bound to the published payload |
-| serving | CLI, HTTP, OpenAPI, query, and runtime policy | structured results, stable errors, metrics, logs, and traces |
-| operations | stack, Kubernetes, load, security, and release contracts | results from named executable checks, measured baselines, drill results, checksums, and release packets |
+| [product](bijux-atlas/index.md) | data model, ingest, publication, query, runtime, and interfaces | deployment qualification |
+| [operations](bijux-atlas-ops/index.md) | topology, Kubernetes, security, signals, load, recovery, and release trust | product semantics |
+| [maintenance](bijux-atlas-dev/index.md) | repository validation, generation, governance, and delivery automation | user-facing runtime behavior |
 
-A dataset can be published while no deployment is qualified to serve it. A
-deployment can be healthy while it observes the wrong catalog generation or
-dataset tuple. Readiness for traffic requires both lifecycles to converge; it
-cannot be inferred from either one alone.
+Evidence crosses these surfaces without transferring ownership. A maintainer
+command can validate a chart contract but cannot declare a target healthy. An
+operator can observe a correct query but cannot redefine the dataset identity
+or wire contract.
 
-## One Release Identity Across the System
+## Match Evidence to the Claim
 
-The dataset tuple `release/species/assembly` identifies biological content, but
-an operational decision needs the surrounding runtime identity as well.
-
-```mermaid
-flowchart LR
-    Dataset["release / species / assembly"] --> Artifact["manifest + artifact digests"]
-    Artifact --> Runtime["runtime + configuration digest"]
-    Runtime --> Deploy["chart + profile + target"]
-    Deploy --> Run["scenario or observation run"]
-    Run --> Packet["release or incident packet"]
-```
-
-| Identity | Prevents this ambiguity |
-| --- | --- |
-| dataset tuple | which biological release answered the request |
-| artifact digests | which immutable files implemented that tuple |
-| runtime and configuration | which behavior and limits were active |
-| chart, profile, and target | which deployment policy reached which environment |
-| run identity | which observation window, scenario, and tools produced evidence |
-| packet digest | which evidence set informed the final decision |
-
-If any identity is absent, narrow the claim. A query can prove behavior for a
-resolved dataset without proving cluster capacity; a load run can prove a
-scenario without proving that its evidence belongs to a distributed release.
-
-## Why the Artifact Boundary Matters
-
-Atlas exists to avoid a common failure mode in data systems: mixing raw inputs,
-intermediate files, and mutable serving state into one opaque process.
-
-Atlas keeps those boundaries explicit so teams can answer high-stakes questions
-without guessing:
-
-- what was actually built
-- what was actually published
-- what is currently served
-- what evidence supports promotion, rollback, or incident decisions
-
-Atlas is strongest when teams need trusted serving of governed release data
-rather than a convenient but opaque runtime that quietly mutates its own truth.
-
-```mermaid
-flowchart LR
-    subgraph avoid[What Atlas avoids]
-        raw[Raw inputs]
-        intermediate[Intermediate files]
-        mutable[Mutable runtime truth]
-        opaque[Opaque operational decisions]
-        raw --- intermediate
-        intermediate --- mutable
-        mutable --- opaque
-    end
-
-    avoid --> boundary
-
-    subgraph boundary[What Atlas enforces]
-        governed[Governed inputs]
-        validated[Validated build boundary]
-        immutable[Immutable release artifacts]
-        serving[Published serving state]
-        evidence[Operational and release evidence]
-        governed --> validated --> immutable --> serving --> evidence
-    end
-```
-
-## Contract Boundaries and Limits
-
-- deterministic build behavior from governed inputs and pinned configuration
-- immutable release artifacts as the delivery unit
-- explicit runtime, API, configuration, and structured-output contracts
-- operational evidence tied to named scenarios, profiles, and release identity
-
-These guarantees do not establish that upstream biological data is correct.
-They establish that Atlas can show which inputs crossed its boundary, how the
-release was built, which artifact was served, and which checks informed an
-operational decision.
-
-Atlas is not a generic mutable runtime that rewrites release truth in place, a
-replacement for source governance, or a shortcut around validation,
-publication, and release evidence. A schema-valid fixture proves a contract
-shape; only an executed check or scenario proves observed behavior; only a
-coherent release packet binds that evidence to distributed artifacts.
-
-## Three Decision Surfaces, One Trust Model
-
-Atlas is easier to trust when its major concerns stay explicit instead of
-being collapsed into one generic idea of "the runtime". Product, operations,
-and maintenance each own decisions. Evidence and trust cross all three; they
-are not a fourth implementation surface.
-
-```mermaid
-flowchart LR
-    atlas[Bijux Atlas]
-    atlas --> runtime[Runtime and product]
-    atlas --> maintainer[Maintainer control plane]
-    atlas --> ops[Operations]
-    trust[Evidence and trust]
-    runtime -. produces and consumes .-> trust
-    ops -. produces and consumes .-> trust
-    maintainer -. validates and preserves .-> trust
-```
-
-Each surface produces evidence and consumes it before making a stronger claim.
-Product code cannot declare publication complete, operations cannot infer
-capacity from readiness, and maintenance cannot infer compatibility from
-repository shape alone.
-
-## Operations Are Part of the Release
-
-`bijux-atlas-ops` is where deployment, rollout safety, observability, load
-budgets, and release trust are explained.
-
-Security and release assurance are not side checks after the runtime is done.
-They help prove what was built, promoted, and eligible for rollback.
-
-The operating system spans four control loops:
-
-| Control loop | Governing question | Decision evidence |
+| Evidence | Establishes | Does not establish |
 | --- | --- | --- |
-| deployment | did the intended release and configuration reach the target? | render, admission, rollout, and identity observations |
-| service | can the runtime serve the intended dataset within policy? | health, readiness, telemetry, and correctness probes |
-| capacity | does behavior remain inside budgets under representative stress? | scenario-bound load results and comparable baselines |
-| recovery | can operators detect divergence and restore coherent state? | drift findings, incident records, backups, and rollback drills |
+| schema, policy, or registry | declared structure and required fields | that behavior ran |
+| checked-in fixture | validator and serialization shape | target fitness |
+| execution report | observed behavior for named inputs and a run | release binding unless identities are included |
+| checksums and provenance | artifact membership and lineage | operational fitness |
+| consumer verification receipt | coherence and authorization of exact received bytes | upstream biological correctness |
 
-These loops share release identity but not proof. A healthy rollout does not
-establish capacity, and a valid backup does not establish restoration.
+When evidence is missing, narrow the claim rather than filling the gap with a
+later green check. Readiness does not prove capacity; a load result does not
+prove recovery; an internally coherent release packet does not provide an
+independent trust anchor.
 
-## Security Assurance Crosses the System
+## Current Qualification Boundaries
 
-Security is not owned by one crate or deployment manifest. Atlas carries a
-threat and control decision from governed policy through runtime behavior and
-into release and incident evidence.
+The documentation records limitations that affect present claims:
 
-```mermaid
-flowchart LR
-    Threat["asset and threat model"] --> Control["preventive and detective control"]
-    Control --> Render["rendered deployment intent"]
-    Render --> Enforce["runtime and platform enforcement"]
-    Enforce --> Observe["audit, metrics, logs, and traces"]
-    Observe --> Verify["release and consumer verification"]
-```
+- production-oriented overlays are not all represented in executable lifecycle
+  scenarios;
+- registered rollout-under-load suites do not currently have executable control
+  runners;
+- administrative endpoint classification does not cover every registered route;
+- the repository defines recovery contracts but does not provide an operational
+  production backup schedule or restore runner; and
+- the GHCR release path publishes compressed bundles as OCI artifacts, not
+  evidence of runnable container images.
 
-| Security question | Direct evidence |
-| --- | --- |
-| Which asset and abuse path is protected? | governed asset, threat, mitigation, and compliance records |
-| Which identity may perform an action? | authentication context, authorization decision, and negative route check |
-| Which network and workload boundary is effective? | rendered object, admission result, live reachability, and workload identity |
-| Which released bytes were reviewed? | immutable digest, SBOM, provenance, evidence policy, and verifier result |
-| Can an incident be reconstructed? | correlated request, principal, dataset, release, policy, and containment records |
+These are decision boundaries, not documentation footnotes. Follow the linked
+operations pages before describing a deployment or release as qualified.
 
-Repository validation proves only the controls it executes. Deployment review
-must establish live exposure and identity; release verification must establish
-the exact distributed set. The [security operations guide](bijux-atlas-ops/kubernetes/security-operations.md)
-states those boundaries and the current administrative-route limitation.
+## Continue with a Concrete Question
 
-## Operational Qualification Is Cumulative
-
-Each operating gate answers a narrower question and hands its evidence to the
-next gate. Passing a later-looking check does not repair a missing earlier
-identity or substitute for a different kind of proof.
-
-| Gate | Question answered | Hold when |
-| --- | --- | --- |
-| release admission | are runtime, dataset, chart, profile and dependency identities coherent? | versions, digests or ownership disagree |
-| deployment admission | does the selected configuration render and satisfy implemented policy? | inventory is incomplete or a required control is absent |
-| service observation | did the workload serve the intended dataset during the window? | traffic, dataset or signals cannot be attributed |
-| resilience qualification | did named scenarios remain inside their budgets? | executable result or comparable baseline is absent |
-| recovery qualification | can the environment restore and reverse coherent state? | backup, rollback or recovery proof is absent |
-| promotion closure | does the packet bind results to distributed artifacts? | membership or consumer verification is incomplete |
-
-```mermaid
-flowchart LR
-    admission["release admission"] --> deploy["deployment admission"]
-    deploy --> observe["service observation"]
-    observe --> resilience["resilience qualification"]
-    resilience --> recovery["recovery qualification"]
-    recovery --> closure["promotion closure"]
-    closure -. "missing identity returns to owner" .-> admission
-```
-
-This ordering is a review model, not a command that claims to perform every
-gate. The operations handbook names the owning assets and executable routes;
-release policy selects which gates are mandatory for a given environment.
-
-## Follow a Decision Across Boundaries
-
-| Question | Owning guide |
-| --- | --- |
-| What request, response, OpenAPI, and error contract applies? | [HTTP interfaces](bijux-atlas/interfaces/api-endpoint-index.md) |
-| Which runtime, catalog, store, cache, or telemetry component owns truth? | [Service topology](bijux-atlas-ops/stack/service-topology.md) |
-| How strong is the observed signal path? | [Observability](bijux-atlas-ops/observability/index.md) |
-| Is publication complete and consumer-verified? | [Release operations](bijux-atlas-ops/release/index.md) |
-
-## Release Confidence Signals
-
-Evidence gains strength as it moves from declared shape to release-bound proof:
-
-| Evidence level | Establishes | Does not establish |
-| --- | --- | --- |
-| schema or policy | accepted structure and required fields | that a scenario ran |
-| checked-in fixture or sample | representative serialization and validator behavior | current environment health |
-| execution report | observed result for named inputs and run identity | artifact identity unless bound to it |
-| checksums and provenance | artifact identity and build lineage | operational fitness without run evidence |
-| verified release packet | agreement among artifacts, reports, checksums, and provenance | correctness of upstream biological claims |
-
-Primary confidence lanes are `repo/ci`, `deploy-docs`, `release-crates`,
-`release-ghcr`, and `release-github`.
-
-Each lane contributes a distinct claim. Compilation does not establish
-documentation integrity, package publication, OCI bundle provenance, or
-rollback readiness. The current `release-ghcr` lane publishes compressed
-release bundles as OCI artifacts through ORAS; it is not evidence of runnable
-container-image publication.
-
-```mermaid
-flowchart TB
-    source[Source changes] --> ci[repo and ci]
-    ci --> docs[Docs and contract visibility]
-    docs --> package[Release packaging]
-    package --> crates[release-crates]
-    package --> ghcr[release-ghcr]
-    package --> github[release-github]
-    crates --> confidence[Confidence signals]
-    ghcr --> confidence
-    github --> confidence
-    confidence --> decisions[Promotion, rollback, and incident decisions]
-```
-
-Atlas is not complete when it merely builds. It is complete when build, docs,
-contracts, publication channels, and operational evidence line up tightly
-enough that release decisions are reviewable instead of improvised.
-
-## Reference Surfaces
-
-- [Badge Catalog](bijux-atlas-dev/governance/badge-catalog.md)
-- [Shell JavaScript Ownership](assets/javascripts/shell/README.md)
-- [Shell CSS Ownership](assets/styles/README.md)
+- [What Atlas is](bijux-atlas/foundations/what-atlas-is.md)
+- [Dataset and query workflows](bijux-atlas/workflows/index.md)
+- [CLI, HTTP, OpenAPI, and configuration](bijux-atlas/interfaces/index.md)
+- [Runtime and storage architecture](bijux-atlas/runtime/index.md)
+- [Deployment and service topology](bijux-atlas-ops/stack/index.md)
+- [Kubernetes delivery](bijux-atlas-ops/kubernetes/index.md)
+- [Security assurance](bijux-atlas-ops/security/index.md)
+- [Observability](bijux-atlas-ops/observability/index.md)
+- [Load and resilience](bijux-atlas-ops/load/index.md)
+- [Release and recovery](bijux-atlas-ops/release/index.md)
