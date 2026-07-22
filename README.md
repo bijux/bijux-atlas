@@ -163,7 +163,8 @@ The workspace and release manifests declare:
 * eleven publishable crates with explicit ownership split across core, model, query, ingest, store, API, runtime, compatibility, CLI, server, and operations contracts,
 * one repository-only crate, `bijux-atlas-dev`, with `publish = false` for maintainer automation and release policy,
 * governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
-* and release inputs for crates, images, docs, and operations evidence.
+* and release inputs for crates, OCI release bundles, docs, and operations
+  evidence.
 
 ```mermaid
 flowchart TD
@@ -206,7 +207,7 @@ flowchart LR
 | a command or HTTP shape is supported | owning crate plus generated CLI or OpenAPI reference | contract validation tied to the source revision |
 | a dataset is publishable | ingest, artifact, and store contracts | manifest, hashes, provenance, and store publication record |
 | a dataset is discoverable | catalog identity and promotion contracts | promoted catalog entry bound to the published payload |
-| a deployment is admissible | chart schema, profile values, and Kubernetes policy | render inventory and conformance report for the selected profile |
+| a deployment is admissible | chart schema, profile values, and Kubernetes policy | render and admission evidence plus results from the exact executable checks selected for the profile |
 | a performance budget holds | named scenario, threshold, and metric contract | measured run plus baseline comparison from the same scenario identity |
 | a release is distributable | channel manifests and signing policy | coherent packet, checksums, provenance, and verifier result |
 
@@ -309,10 +310,12 @@ The release story includes checked manifests, compatibility tables, docs deploym
 
 ### Operations as a Governed System
 
-The `ops/` control plane is not a collection of deployment examples. It owns
+The `ops/` contract system is not a collection of deployment examples. It owns
 profile intent, Helm and Kubernetes contracts, network and workload security,
 service topology, observability packs, load scenarios and thresholds, drift
 detection, recovery drills, checksums, provenance, and release evidence.
+Reusable Rust models live in `bijux-atlas-ops`; executable repository
+orchestration belongs to `bijux-atlas-dev`.
 
 ```mermaid
 flowchart LR

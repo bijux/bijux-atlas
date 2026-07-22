@@ -93,7 +93,7 @@ flowchart LR
 | store publication | artifact and store contracts | immutable payload, integrity lock, and backend-specific publication result |
 | catalog promotion | catalog contract | discoverable release identity bound to the published payload |
 | serving | CLI, HTTP, OpenAPI, query, and runtime policy | structured results, stable errors, metrics, logs, and traces |
-| operations | stack, Kubernetes, load, security, and release contracts | conformance reports, baselines, drill results, checksums, and release packets |
+| operations | stack, Kubernetes, load, security, and release contracts | results from named executable checks, measured baselines, drill results, checksums, and release packets |
 
 ## Why the Artifact Boundary Matters
 
@@ -228,9 +228,11 @@ Evidence gains strength as it moves from declared shape to release-bound proof:
 Primary confidence lanes are `repo/ci`, `deploy-docs`, `release-crates`,
 `release-ghcr`, and `release-github`.
 
-Each lane contributes a distinct claim. Passing compilation does not establish
-documentation integrity, package publication, image provenance, or rollback
-readiness.
+Each lane contributes a distinct claim. Compilation does not establish
+documentation integrity, package publication, OCI bundle provenance, or
+rollback readiness. The current `release-ghcr` lane publishes compressed
+release bundles as OCI artifacts through ORAS; it is not evidence of runnable
+container-image publication.
 
 ```mermaid
 flowchart TB
@@ -252,8 +254,7 @@ enough that release decisions are reviewable instead of improvised.
 
 ## Published and Repository-Only Crates
 
-The workspace declares eleven publishable Rust crates and keeps one maintainer
-crate repository-only. Live registry badges report publication state.
+The workspace declares eleven publishable Rust crates and keeps one maintainer crate repository-only.
 
 Publishable crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
 `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,
