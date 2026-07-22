@@ -60,5 +60,48 @@ Do not replace a failing dependency with a mock and retain the same evidence
 claim. A mock, local filesystem, external Redis, or different object-store
 backend defines a different composition and must be identified as such.
 
+## State and Recovery Ownership
+
+Component criticality does not determine whether its state is durable. Recovery
+must follow the data owner:
+
+| Surface | State class | Failure response | Recovery proof |
+| --- | --- | --- | --- |
+| Atlas service | replaceable process with release-bound configuration | drain or replace the affected revision | intended image, configuration, dataset, and traffic eligibility restored |
+| immutable object store | release and dataset authority when selected by the profile | stop publication and protect existing objects | object identity, manifest, access policy, and post-recovery verification |
+| Redis | disposable acceleration unless a profile declares otherwise | degrade explicitly or bypass under policy | cache identity, bounded miss behavior, and refill without release mutation |
+| Prometheus and collector | operational evidence path | hold promotion when required signals are blind | scrape or intake continuity plus a post-recovery control event |
+| Grafana | diagnostic presentation | use raw metrics and preserve dashboard outage | datasource, dashboard revision, and diagnostic path restored |
+| Toxiproxy | test-only fault mechanism | abort the scenario and remove injected conditions | target topology restored and fault no longer active |
+
+Do not restore disposable cache bytes as release truth or treat retained
+telemetry as a source for rebuilding dataset state. Every recovery action must
+name which plane it changes: serving, durable data, acceleration, evidence, or
+test control.
+
+## Dependency Degradation Decision
+
+```mermaid
+flowchart TD
+    Failure[Component failure confirmed] --> Identity[Bind profile, release, component, and time]
+    Identity --> Critical{Critical for selected claim?}
+    Critical -->|yes| Remove[Remove traffic or hold mutation]
+    Critical -->|no| Degrade[Enter declared degraded mode]
+    Remove --> Recover[Recover owning state]
+    Degrade --> Observe[Prove remaining claims and blind spots]
+    Recover --> Verify[Verify identity and behavior]
+    Observe --> Verify
+```
+
+A noncritical label permits a bounded loss of capability; it does not permit
+silent disappearance. Record the unavailable dashboards, traces, comparison,
+or fault evidence and narrow the operating claim accordingly.
+
+Before returning a component to service, verify its configured identity,
+dependency edges, credentials, network reachability, health surface, and any
+state it owns. A process-level health response cannot prove that an object
+store contains the intended immutable release or that telemetry continuity was
+preserved.
+
 See [Dependency Graph](dependency-graph.md) for failure boundaries and
 [Toolchain Pins](toolchain-pins.md) for immutable external identities.

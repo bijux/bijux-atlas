@@ -61,6 +61,41 @@ resulting composition. For a tool compatibility change, review every command
 whose output or validation semantics can differ. Preserve old and new versions
 with the evidence so drift can be attributed rather than guessed.
 
+## Resolution Failure Modes
+
+| Observation | Trust failure | Required response |
+| --- | --- | --- |
+| tag resolves to a new digest | mutable reference changed beneath declared intent | reject the run and resolve the approved immutable digest |
+| manifest digest and live workload differ | render, admission, mutation, or rollout drift | compare submitted and admitted objects before continuing |
+| executable satisfies major policy but output differs | compatible range is too broad for reproducibility claim | bind the exact version and rerun both comparison sides |
+| action label and SHA disagree | review label no longer describes executed action | treat commit SHA as execution identity and correct the annotation |
+| optional tool is absent | evidence family is unavailable | record the gap and do not emit a passing result for that family |
+| tool version cannot be parsed | identity is unknown | fail evidence qualification even if the subprocess otherwise succeeds |
+
+Do not repair a mismatch by rewriting the evidence manifest from the live
+environment. First determine whether the governed pin, generated manifest,
+rendered intent, or admitted state lost authority.
+
+## Execution Receipt
+
+```mermaid
+flowchart LR
+    Policy[Allowed version or immutable pin] --> Resolve[Resolved executable or image]
+    Resolve --> Invoke[Exact command or workload]
+    Invoke --> Output[Output and exit status]
+    Output --> Receipt[Policy, identity, input, and output receipt]
+```
+
+For local tools, retain executable path, parsed version, package or installation
+source where available, command arguments, environment-affecting variables,
+and output hash. For images, retain registry, repository, manifest digest,
+platform digest, pull policy, and observed workload image ID. For actions,
+retain workflow revision, action commit SHA, permissions, and supplied inputs.
+
+The receipt must be produced for the run under review. A generated inventory
+showing the intended version cannot prove that a different workstation,
+runner, or cluster consumed it.
+
 See [Reproducibility](../release/reproducibility.md) for repeat-build claims and
 [Stack Components](stack-components.md) for where pinned images enter a
 composition.

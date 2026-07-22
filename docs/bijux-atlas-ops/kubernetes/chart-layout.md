@@ -86,5 +86,49 @@ selector without its consumer, weakens a security context, enables a privileged
 surface by default, or creates a resource without a matching validation route.
 Also block a change whose only evidence is a hand-edited generated snapshot.
 
+## Activation and Absence Contract
+
+Values control both fields and object existence. Review the activation edge,
+not only the emitted object:
+
+| Capability | Enabling intent | Expected rendered evidence | Required absence when disabled |
+| --- | --- | --- | --- |
+| ingress | ingress profile and host/TLS values | Ingress, Service target, annotations, and certificate references | no externally routable Ingress object |
+| autoscaling | HPA policy and metric configuration | HPA target, limits, metrics, and compatible replica policy | no stale HPA controlling the workload |
+| disruption protection | availability and maintenance policy | PDB selector and allowed disruption | no orphan PDB selecting another release |
+| network confinement | profile security policy | ingress and egress NetworkPolicy matching selected pods | no unrestricted policy branch in restricted profiles |
+| persistent audit | audit storage and retention intent | PVC, mount, permissions, retention, and recovery identity | no writable audit volume or unused privilege grant |
+| dataset preparation | warmup or catalog publication intent | job image, configuration, store identity, deadline, and cleanup | no preparation job mutating an unselected catalog |
+| monitoring | scrape and rule intent | ServiceMonitor, rule objects, ports, and release labels | no rules querying metrics the profile does not emit |
+
+An absent protective object is often more important than a malformed present
+object. Profile review must include explicit negative assertions and resource
+counts.
+
+## Workload Controller Equivalence
+
+The chart can render a Deployment or an Argo Rollout. Those controllers must
+carry the same product contract unless a documented rollout capability requires
+a difference.
+
+```mermaid
+flowchart LR
+    Values[One profile and pod intent] --> Deploy[Deployment render]
+    Values --> Rollout[Rollout render]
+    Deploy --> Compare[Compare pod and service contract]
+    Rollout --> Compare
+    Compare --> Evidence[Document intended differences and reject drift]
+```
+
+Compare image digest, command, environment, ConfigMap and Secret references,
+service account, security context, probes, ports, resources, volumes,
+scheduling, lifecycle hooks, termination grace, and telemetry labels. A
+controller switch must not silently change dataset, authorization, drain, or
+observability behavior.
+
+Retain both rendered inventories when changing shared helpers or pod fields.
+Testing only the controller selected by the default values leaves the alternate
+production path unqualified.
+
 Continue with [Helm Values Model](helm-values-model.md) for configuration
 semantics and [Render and Validate](render-and-validate.md) for the proof path.
