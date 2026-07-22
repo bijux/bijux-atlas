@@ -75,6 +75,36 @@ manifest is refreshed and verified against its actual artifact.
   identity enter a governed release packet.
 - Stack dependency tags remain untrusted without the recorded digest.
 
+## Resolve Drift at Its Owning Surface
+
+Version drift is evidence about an ownership boundary, not a reason to copy one
+string across every file. Resolve the intended release identity first, then
+regenerate each dependent record from the authority that owns it.
+
+| Mismatch | Owning decision | Required resolution |
+| --- | --- | --- |
+| workspace and publishable crate | package release | select the package version and validate inherited declarations |
+| chart `version` and chart package | chart release | build the chart from the authoritative metadata and record its digest |
+| chart `appVersion` and runtime | deployment compatibility | bind the application version to an immutable runtime artifact |
+| release manifest and built files | release assembly | regenerate inventory and checksums from the selected artifacts |
+| stack manifest and rendered resources | environment composition | render the selected profile and compare every dependency digest |
+| metadata and provenance | release run | rerun the governed producer workflow from the intended source revision |
+
+```mermaid
+flowchart LR
+    Intent[Selected release identity] --> Owners[Owning source manifests]
+    Owners --> Build[Build immutable artifacts]
+    Build --> Generate[Generate dependent manifests]
+    Generate --> CrossCheck[Cross-check versions and digests]
+    CrossCheck -->|coherent| Candidate[Promotion candidate]
+    CrossCheck -->|drift| Owners
+```
+
+Do not edit generated evidence to make a comparison pass. That produces a
+consistent label over unproven bytes. The correction is complete only when the
+owning source, generated manifests, immutable artifact digests, and provenance
+all converge in a fresh release run.
+
 ## Operator Verification
 
 1. Resolve the intended workspace version and `v`-prefixed release tag.

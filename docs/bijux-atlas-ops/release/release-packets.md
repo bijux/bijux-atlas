@@ -67,6 +67,38 @@ Extraction must not overwrite an existing deployment, evidence directory, or
 trust policy. Use a new isolated destination and promote only verified members
 through the owning deployment workflow.
 
+## Packet Closure Test
+
+A packet is portable only when a consumer can reach a verdict from the packet,
+the declared trust roots, and the documented verifier distribution. Repository
+state, producer caches, and paths outside the extraction root must not repair a
+missing member or replace a transported member during verification.
+
+Run the closure test in an empty consumer workspace:
+
+1. retain the immutable outer packet and its expected digest;
+2. extract into a new root after the archive safety checks pass;
+3. remove access to the producer checkout and artifact caches;
+4. resolve every manifest reference within the extracted root;
+5. run the declared verifier using only packet inputs and governed trust roots;
+6. record every attempted external read and network request; and
+7. fail when a required input is absent, substituted, or fetched implicitly.
+
+```mermaid
+flowchart LR
+    Packet[Immutable packet] --> Isolated[Empty extraction root]
+    Trust[Declared trust roots] --> Verify[Consumer verifier]
+    Verifier[Versioned verifier distribution] --> Verify
+    Isolated --> Verify
+    Verify --> Reads{Undeclared input?}
+    Reads -->|no| Receipt[Closed consumer receipt]
+    Reads -->|yes| Reject[Reject incomplete packet]
+```
+
+The closure result is distinct from integrity. A packet can have internally
+consistent digests and still be unusable because its verifier, schema, policy,
+or referenced artifact is available only in the producer environment.
+
 ## Current Packet Status
 
 The checked-in packet satisfies its structural `REL-PACK-001` flag, but its
