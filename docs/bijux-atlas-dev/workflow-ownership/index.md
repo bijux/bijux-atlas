@@ -4,49 +4,58 @@ audience: maintainers
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Workflow Ownership
 
-`bijux-atlas-dev/workflow-ownership` is the section home for this handbook slice.
+Atlas separates intake, review routing, validation, merge policy, release
+decisions, and publication. These mechanisms cooperate, but none is a substitute
+for the others: a requested reviewer is not an approval, a completed template
+is not evidence, and a green domain workflow is not automatically a required
+merge context.
 
 ```mermaid
-flowchart TD
-    Ownership[Workflow ownership section] --> Review[Review routing]
-    Ownership --> Templates[Templates and intake]
-    Ownership --> Checks[Status checks and validation]
-    Ownership --> RC[Release candidate flow]
-    Ownership --> Entry[Workflow entrypoints]
-    Review --> Model[Assigned repository process]
-    Templates --> Model
-    Checks --> Model
-    RC --> Model
-    Entry --> Model
+flowchart LR
+    Intake[Issue and PR intake] --> Scope[Change scope and owner]
+    Ownership[CODEOWNERS routing] --> Review[Review decision]
+    Scope --> Evidence[Focused validation evidence]
+    Evidence --> Review
+    Policy[Approval and required contexts] --> Merge[Merge decision]
+    Review --> Merge
+    Merge --> Candidate[Release candidate]
+    Candidate --> Publish[Channel-specific publication]
 ```
 
-Workflow ownership is where repository process becomes explicit, assigned, and
-reviewable. These pages should help maintainers see how CODEOWNERS, templates,
-required checks, and release or validation workflows fit together into one
-ownership system rather than a collection of unrelated files.
+## Route by Decision
 
-## Source Map
+| Decision | Primary guide | Repository authority |
+| --- | --- | --- |
+| where a report or proposal enters | [Issue Templates](issue-templates.md) | `.github/ISSUE_TEMPLATE/` |
+| what a change author declares | [Pull Request Templates](pull-request-templates.md) | `.github/PULL_REQUEST_TEMPLATE/` |
+| who receives review requests | [Codeowners and Review](codeowners-and-review.md) | `.github/CODEOWNERS` |
+| which contexts gate `main` | [Required Status Checks](required-status-checks.md) | ruleset and required-status documentation |
+| which workflow matches a claim | [Workflow Entrypoints](workflow-entrypoints.md) | workflow triggers, jobs, and delegated commands |
+| whether operations contracts hold | [Ops Validation Workflow](ops-validation-workflow.md) | `ops-validate.yml` and its emitted evidence |
+| whether documentation is coherent | [Documentation Governance Workflow](docs-governance-workflow.md) | docs commands, navigation, redirects, audit, and deploy workflows |
+| whether a candidate is promotable | [Release Candidate Workflow](release-candidate-workflow.md) | candidate and readiness workflows |
 
-- review routing and ownership signals: `.github/CODEOWNERS`
-- issue and pull request intake: `.github/ISSUE_TEMPLATE/` and
-  `.github/PULL_REQUEST_TEMPLATE*`
-- required checks and release workflows: `.github/workflows/` and
-  `.github/required-status-checks.md`
+## Specialized Validation
 
-## Pages
-
-- [Codeowners and Review](codeowners-and-review.md)
-- [Docs Governance Workflow](docs-governance-workflow.md)
-- [Issue Templates](issue-templates.md)
-- [Ops Validation Workflow](ops-validation-workflow.md)
-- [Pull Request Templates](pull-request-templates.md)
-- [Release Candidate Workflow](release-candidate-workflow.md)
-- [Required Status Checks](required-status-checks.md)
 - [Sustainability Validation Workflow](sustainability-validation-workflow.md)
-- [System Simulation Workflow](system-simulation-workflow.md)
-- [Workflow Entrypoints](workflow-entrypoints.md)
+  distinguishes declared models from measured signals.
+- [System Simulation Workflow](system-simulation-workflow.md) explains the
+  simulation target, scenario selection, and evidence boundary.
+
+## Evidence Rules
+
+For every workflow-backed claim, record the triggering revision, event,
+selected command or suite, granted capabilities, external target when present,
+structured result, and process or job outcome. Scheduled, manual, and reusable
+workflows do not imply per-pull-request coverage unless a triggering workflow
+actually calls them and branch policy requires the resulting context.
+
+Workflow names, job names, permissions, path filters, delegated commands, and
+artifact retention are reviewable contracts. When shared-standard content owns
+a workflow or template, change the upstream authority and synchronize it rather
+than allowing downstream copies to drift.
