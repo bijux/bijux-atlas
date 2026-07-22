@@ -7,173 +7,105 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Serving Store Model
+# Serving store model
 
-The serving store is the durable boundary between artifact publication and
-query traffic. Ingest produces dataset candidates. Publication places verified
-artifacts into a named store layout. A separate catalog promotion makes the
-identity discoverable. Runtime caches can accelerate reads, but they never
-replace published state.
+The serving store is the durable boundary between ingest and query traffic.
+Ingest builds a candidate. Publication commits verified bytes. Catalog
+promotion makes those bytes discoverable. Runtime caches may accelerate later
+reads, but none can create or redefine a published dataset.
 
-## Publication and Read Path
-
-```mermaid
-flowchart LR
-    B["Built dataset artifacts"] --> L["Acquire publication lock"]
-    L --> W["Write manifest, SQLite, and integrity records"]
-    W --> V["Verify SHA-256 digests"]
-    V --> M["Record immutable payload"]
-    M --> C["Promote catalog entry"]
-    C --> D["Runtime discovers dataset"]
-    D --> Q["Query resolves immutable content"]
-    Q --> H["Transient cache accelerates reads"]
-```
-
-Publication and catalog promotion are separate commands and authorities.
-Promote only after the dataset payload and its integrity records are coherent.
-Readers then resolve a named release instead of an arbitrary build directory.
-
-## Dataset Layout
-
-Each published dataset has a deterministic key prefix and a governed set of
-files:
-
-| File | Role |
-| --- | --- |
-| `manifest.json` | Dataset identity, content description, and artifact metadata |
-| `gene_summary.sqlite` | Queryable dataset content |
-| `manifest.lock` | Expected SHA-256 digests for the manifest and SQLite payload |
-| `.publish.lock` | Mutual exclusion for local publication |
-| `immutable.release.json` | Marker for immutable published state |
-| `lifecycle.state.json` | Current lifecycle state |
-| `lifecycle.transitions.json` | Recorded lifecycle transitions |
-
-`catalog.json` indexes published datasets. The catalog is a discovery surface;
-the manifest lock remains the integrity check for each dataset payload.
-
-The build layout places dataset material under
-`release=<release>/species=<species>/assembly=<assembly>/`, with source inputs
-and derived artifacts separated below that identity. Use the model and store
-layout helpers instead of reconstructing these paths. The helpers are the
-shared authority for filesystem paths and remote object keys.
-
-## Storage Capabilities
-
-The store library separates read, write, and administrative capabilities. This
-allows a serving process to receive only the authority it needs.
-
-- `LocalFsStore` supports local filesystem publication and reads.
-- `HttpReadonlyStore` serves immutable content from HTTP when the `backend-s3`
-  feature is enabled.
-- `S3LikeStore` supports object-storage publication and reads under the same
-  feature.
-
-Backend choice does not change dataset identity, layout keys, checksum
-expectations, or catalog semantics. It does change publication guarantees:
-
-| Capability | Local filesystem | HTTP read-only | S3-like |
-| --- | --- | --- | --- |
-| list and read datasets | yes | yes | yes |
-| publish payload | yes | no | yes |
-| per-dataset local lock | yes | no | no |
-| reject readable existing dataset | yes | not applicable | yes |
-| local immutability and lifecycle records | yes | read if present | no |
-| cache-backed reads | runtime concern | backend support | optional backend cache |
-
-The S3-like implementation is an object transport adapter, not a distributed
-transaction coordinator. Serialize publishers through deployment controls and
-inspect object state after interrupted writes.
-
-## Publication Visibility
-
-Readers must never discover a catalog entry before its payload is complete and
-verifiable:
+## Publication creates two separate facts
 
 ```mermaid
 sequenceDiagram
     participant Publisher
     participant Store
     participant Catalog
-    participant Reader
-    Publisher->>Store: Acquire publication authority
-    Publisher->>Store: Write manifest and SQLite with expected hashes
-    Publisher->>Store: Read and verify committed bytes
-    Publisher->>Catalog: Publish dataset reference
-    Reader->>Catalog: Resolve explicit identity
-    Reader->>Store: Read manifest and verified SQLite
+    participant Runtime
+    Publisher->>Store: write manifest + SQLite + expected hashes
+    Publisher->>Store: read back and verify committed bytes
+    Publisher->>Catalog: promote immutable dataset reference
+    Runtime->>Catalog: resolve explicit identity
+    Runtime->>Store: verify and open published payload
 ```
 
-Catalog promotion is the visibility edge, not the payload write. If promotion
-fails after a complete payload write, the result is an undiscoverable orphan
-that may be inspected or garbage-collected. If payload publication fails,
-catalog state must remain unchanged. If catalog state points to missing or
-unverifiable bytes, stop serving that identity and treat it as an integrity
-incident.
+Payload publication establishes that coherent bytes exist. Catalog promotion
+establishes visibility. If promotion fails after publication, the payload is an
+undiscoverable orphan—not a queryable release. If publication fails, catalog
+state must remain unchanged.
 
-Object stores can expose ambiguous outcomes after timeouts. Before retrying a
-write, read the target and compare hashes. Matching bytes allow the operation to
-continue idempotently; different readable bytes are an immutability conflict,
-not a transient error.
+## Published layout
 
-## Runtime Boundary
+Each dataset key resolves a governed file set:
 
-The runtime depends on a dataset-store port rather than backend implementation
-details. Its store adapters load catalogs, manifests, locks, and SQLite
-artifacts, then expose resolved dataset state to the application layer.
-
-This boundary keeps four concerns separate:
-
-- ingest owns normalization and artifact construction;
-- the store owns layout, publication, locking, integrity, and persistence;
-- the runtime owns dataset resolution and service policy;
-- request-local caches own temporary acceleration only.
-
-Cached-only operation is an explicit degraded mode. It may continue serving
-retained state when the live catalog is unavailable, but it cannot claim that
-newly published datasets have been discovered.
-
-## Three Read Authorities
-
-| State | Authority | Allowed claim |
-| --- | --- | --- |
-| catalog entry | discoverability | this dataset identity is advertised by the selected catalog snapshot |
-| manifest and lock | identity and integrity metadata | expected content and checksums are known and parseable |
-| verified SQLite bytes | queryable content | the loaded database matches the published checksum |
-
-All three are required for a newly resolved dataset. A retained in-process or
-disk cache may preserve previously verified bytes during catalog or store
-outage, but the response must remain bound to the retained manifest identity.
-Cache presence alone cannot create a catalog entry, repair a lock, or authorize
-new publication.
-
-Cache eviction is safe because it removes acceleration, not authority. Cache
-poisoning is unsafe because it associates bytes with the wrong artifact
-identity. Key caches with the complete dataset identity and artifact hash, and
-verify content before admission into a trusted serving cache.
-
-## Integrity and Failure Semantics
-
-A dataset is not safe to serve when its required files are missing, its lock
-cannot be parsed, or a recorded digest differs from the bytes read. Treat those
-conditions as integrity failures; do not rebuild the lock around unexplained
-content.
-
-Because catalog promotion is separate, a failed payload publication should not
-change catalog visibility. Retry policy may address transient backend errors,
-while store instrumentation records reads, writes, failures, and latency.
-Persistent integrity, concurrency, permission, or layout failures require
-operator action.
-
-Failure categories imply different responses:
-
-| Failure | Safe response |
+| File | Authority |
 | --- | --- |
-| catalog unavailable | serve only previously verified state allowed by cached-only policy; otherwise fail explicitly |
-| dataset absent from catalog | return an explicit dataset miss; do not scan storage for a substitute |
-| manifest or lock invalid | quarantine the identity and preserve the offending bytes for investigation |
-| SQLite checksum mismatch | reject the artifact and invalidate derived caches |
-| transient backend timeout | retry only within policy and verify ambiguous writes or reads |
-| concurrent different publication | reject as an immutability or coordination conflict |
+| `manifest.json` | Dataset identity and artifact description |
+| `gene_summary.sqlite` | Queryable content |
+| `manifest.lock` | Expected SHA-256 digests for manifest and SQLite payload |
+| `.publish.lock` | Local publication exclusion |
+| `immutable.release.json` | Immutable-publication marker |
+| `lifecycle.state.json` | Current lifecycle state |
+| `lifecycle.transitions.json` | Recorded state transitions |
 
-The result is a stable read contract: a query names a published dataset, the
-runtime resolves verified immutable content, and caches remain disposable.
+`catalog.json` advertises datasets; it does not replace each payload's manifest
+and lock. Layout helpers own filesystem paths and object keys under
+`release=<release>/species=<species>/assembly=<assembly>/`. Consumers should
+not reconstruct those paths independently.
+
+## Backend capabilities
+
+| Capability | Local filesystem | HTTP read-only | S3-like |
+| --- | --- | --- | --- |
+| list and read | yes | yes | yes |
+| publish | yes | no | yes |
+| local per-dataset lock | yes | no | no |
+| reject readable conflicting payload | yes | not applicable | yes |
+| local lifecycle records | yes | read if present | no |
+
+HTTP and S3-like support are enabled by `backend-s3`. Backend choice does not
+change identity, key layout, checksums, or catalog meaning. The S3-like adapter
+is not a distributed transaction coordinator; deployment controls must
+serialize publishers and inspect remote state after ambiguous failures.
+
+Before retrying an object-store write that timed out, read the target and
+compare hashes. Matching bytes permit idempotent continuation. Different
+readable bytes are an immutability conflict.
+
+## Three read authorities
+
+```mermaid
+flowchart LR
+    Catalog[Catalog entry] --> Resolve[Discover identity]
+    Manifest[Manifest + lock] --> Verify[Verify expected content]
+    Bytes[SQLite payload] --> Verify
+    Resolve --> Open[Open queryable dataset]
+    Verify --> Open
+    Open --> Cache[Disposable acceleration]
+```
+
+| Authority | Safe claim |
+| --- | --- |
+| catalog entry | This identity is advertised by the selected catalog snapshot |
+| manifest and lock | Expected content and hashes are known and parseable |
+| verified SQLite bytes | The opened database matches its published checksum |
+
+All three are required for a newly resolved dataset. Cached-only operation may
+continue serving previously verified bytes when policy permits it, but cannot
+claim that new catalog state was discovered. Cache keys must include the full
+dataset identity and artifact hash.
+
+## Failure semantics
+
+| Failure | Safe behavior |
+| --- | --- |
+| catalog unavailable | Serve only policy-permitted verified retained state; otherwise fail explicitly |
+| identity absent from catalog | Return a dataset miss; never scan storage for a substitute |
+| invalid manifest or lock | Quarantine the identity and preserve evidence |
+| SQLite checksum mismatch | Reject the payload and invalidate derived caches |
+| transient backend timeout | Retry within policy and verify ambiguous outcomes |
+| conflicting concurrent publication | Reject as an immutability or coordination conflict |
+
+The runtime depends on a dataset-store port, not backend details. Ingest owns
+artifact construction, the store owns publication and integrity, the runtime
+owns selection and service policy, and caches own temporary acceleration.

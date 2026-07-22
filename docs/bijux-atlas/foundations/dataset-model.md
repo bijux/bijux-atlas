@@ -7,107 +7,88 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Dataset Model
+# Dataset model
 
-Atlas treats a dataset as a release-shaped serving unit, not as a loose bundle
-of files.
+An Atlas dataset is one immutable, queryable release of biological data. It is
+identified by three values—release, species, and assembly—and carries that
+identity from source admission to every query response.
 
-Its identity combines release, species, and assembly. The same identity follows
-the dataset through admission, artifact creation, store publication, catalog
-promotion, query resolution, comparison, and rollback. A path on disk or a
-server's in-memory selection is not a substitute for that identity.
+For example, `110/homo_sapiens/GRCh38` means Ensembl release `110`, human, and
+the GRCh38 assembly. It is not interchangeable with another assembly, another
+release, or different source bytes published under a similar directory name.
+
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Source: governed GFF3 and FASTA
-    Source --> Candidate: validate and normalize
-    Candidate --> Verified: build and verify artifacts
-    Verified --> Published: commit immutable store payload
+    [*] --> Source: governed GFF3 + FASTA
+    Source --> Candidate: validate + normalize
+    Candidate --> Verified: build + hash artifacts
+    Verified --> Published: commit immutable payload
     Published --> Discoverable: promote catalog entry
-    Discoverable --> Selected: runtime resolves identity
+    Discoverable --> Selected: request resolves identity
     Selected --> Discoverable: request completes
 ```
 
-Each transition adds a distinct fact. Verification establishes that a
-candidate is internally coherent. Publication establishes that immutable bytes
-exist under the store contract. Promotion establishes discoverability. Runtime
-selection establishes which published dataset answered one request.
-
-## Dataset States
-
-| State | Durable facts | What is still unproven |
+| State | What is true | What is not yet true |
 | --- | --- | --- |
-| source | input identity, provenance, and admission policy | normalized content or usable artifacts |
-| candidate | normalized records and build inputs under one dataset identity | artifact integrity and publication |
-| verified | required files, hashes, statistics, and manifest agree | store presence and catalog visibility |
-| published | immutable payload is committed to the selected store | discoverability through the catalog |
-| discoverable | catalog maps the identity to the published payload | observation by every running instance |
-| selected | one request resolved the catalog and opened the payload | health or freshness of other instances |
+| source | Provenance and admission inputs are known | Normalized content and serving artifacts exist |
+| candidate | Normalized records and build inputs share one identity | Required artifacts and hashes have passed verification |
+| verified | Manifest, files, statistics, and hashes agree | A serving store contains the payload |
+| published | Immutable payload exists under the store contract | A catalog advertises it |
+| discoverable | A catalog maps the identity to published bytes | Every runtime instance has observed it |
+| selected | One request resolved and opened that exact identity | Other requests or instances are healthy or current |
 
-State may advance only when the evidence for the next boundary exists. A
-completed ingest directory cannot be served as though it were published, and a
-published store prefix cannot be queried by discovery until catalog promotion
-has succeeded.
+These boundaries prevent two unsafe shortcuts: serving an ingest directory as
+though it were published, and discovering a catalog entry before its payload
+is complete.
 
-## Identity and Immutability
+## Identity forms
 
-Within one release identity:
-
-- manifest identity and catalog identity must agree;
-- required artifact hashes must resolve to the published bytes;
-- publication must not replace an existing payload with different content;
-- responses must expose the identity actually resolved by the runtime;
-- rollback selects an earlier published identity rather than mutating the
-  current release in place.
-
-Mutable caches and process-local handles may accelerate access, but they do not
-own dataset truth. Losing them may affect latency or availability; it must not
-change the meaning of the published dataset.
-
-## Canonical Identity and Fingerprints
-
-The model has two text representations for the same three-part identity:
-
-| Representation | Form | Use |
+| Representation | Example | Used for |
 | --- | --- | --- |
-| canonical release ID | `110/homo_sapiens/GRCh38` | manifests, fingerprints, logs, and internal joins |
-| dataset key | `release=110&species=homo_sapiens&assembly=GRCh38` | explicit selectors and interfaces |
+| canonical release ID | `110/homo_sapiens/GRCh38` | Manifests, logs, fingerprints, and internal joins |
+| dataset key | `release=110&species=homo_sapiens&assembly=GRCh38` | Explicit selectors and public interfaces |
 
-Release values are numeric strings. Persisted species values use lowercase
-snake case, while assembly values preserve meaningful case and accept letters,
-digits, dots, and underscores. Input normalization may turn a value such as
-`Homo-sapiens` into `homo_sapiens`, but stored identities and dataset keys are
-strict. Normalization belongs at a declared admission boundary; it must not
-make two published identities appear interchangeable after publication.
+Release values are numeric strings. Persisted species names use lowercase
+snake case. Assembly names preserve meaningful case and accept letters,
+digits, dots, and underscores. Admission may normalize `Homo-sapiens` to
+`homo_sapiens`; published identities remain strict after that boundary.
+
+## Names are not enough
 
 ```mermaid
 flowchart LR
-    Tuple[Release, species, and assembly] --> Canonical[Canonical release ID]
-    Source[Source inputs] --> SourceHash[Source fingerprint]
-    Build[Build inputs] --> BuildHash[Build fingerprint]
-    Artifacts[Artifact inventory] --> ArtifactHash[Artifact fingerprint]
-    Canonical --> Identity[Canonical metadata hash]
-    SourceHash --> Identity
-    BuildHash --> Identity
-    ArtifactHash --> Identity
+    Name[Release + species + assembly] --> Identity[Dataset identity]
+    Source[Source fingerprint] --> Identity
+    Build[Build fingerprint] --> Identity
+    Artifacts[Artifact fingerprint] --> Identity
+    Identity --> Hash[Canonical metadata hash]
 ```
 
-`DatasetIdentity` joins the canonical release ID with separate source, build,
-and artifact SHA-256 fingerprints, then hashes their canonical serialization.
-Matching the three-part name is therefore necessary but insufficient: a
-different source, build contract, or artifact set under the same name is an
-identity violation, not another valid copy of the release.
+`DatasetIdentity` joins the three-part name with SHA-256 fingerprints for the
+source, build inputs, and artifact inventory. Reusing the name with different
+source or artifact bytes is an identity violation, not another copy of the
+same release.
 
-## Repository Authorities
+Within one identity:
 
-- dataset identities and catalog values:
+- manifest, catalog, and response identities agree;
+- required hashes resolve to the published bytes;
+- publication never replaces readable content with different bytes;
+- rollback selects an earlier published identity instead of mutating one;
+- caches accelerate access without becoming dataset authority.
+
+## Where the contract lives
+
+- identity and catalog models:
   [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
-- ingest-time dataset construction:
+- ingest construction:
   [`crates/bijux-atlas-ingest/src/engine/`](../../../crates/bijux-atlas-ingest/src/engine/)
-- manifest and serving-shape contracts:
+- manifest schema and serving source:
   [`manifest.schema.json`](../../../configs/schemas/contracts/datasets/manifest.schema.json)
   and [`manifest.yaml`](../../../configs/sources/runtime/datasets/manifest.yaml)
 
-The [release model](release-model.md) defines the wider software and dataset
-release boundary. [Artifact and store contracts](../contracts/artifact-and-store-contracts.md)
-define the publication rules in detail.
+Continue with the [Serving Store Model](../runtime/serving-store-model.md) for
+publication and read semantics, and [Artifact and Store Contracts](../contracts/artifact-and-store-contracts.md)
+for the durable interface.

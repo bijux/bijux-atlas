@@ -7,225 +7,120 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Request Lifecycle
+# Request lifecycle
 
-An Atlas HTTP request crosses several owned boundaries. They cover transport,
-security, resilience, normalization, dataset resolution, execution,
-presentation, and telemetry. Each boundary owns a distinct rejection class and
-retains context about where processing stopped.
+An Atlas HTTP request crosses owned boundaries for transport, security,
+resilience, dataset resolution, query execution, presentation, and telemetry.
+The first boundary that refuses work owns the primary outcome. Later layers may
+add correlation and response structure, but must not obscure why processing
+stopped.
 
-## Lifecycle
+## End-to-end path
 
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Middleware
+    participant Server as HTTP server
     participant Policy
-    participant Handler
     participant Cache as Dataset cache manager
-    participant Backend as Store backend
+    participant Store
     participant Query
-    participant Telemetry
-    Client->>Middleware: HTTP request
-    Middleware->>Middleware: error envelope, body limit, debug hardening, provenance, resilience, security, CORS, tracing
-    Middleware->>Policy: authenticated request or exempt route
-    Policy->>Handler: authorized principal and normalized transport
-    Handler->>Cache: resolve release, species, and assembly
-    Cache->>Backend: refresh catalog or fetch immutable artifact on miss
-    Backend-->>Cache: catalog or artifact result
-    Cache-->>Handler: verified local artifact paths or typed failure
-    Handler->>Query: normalized query and limits
-    Query-->>Handler: ordered result or policy error
-    Handler-->>Telemetry: status, latency, class, dataset, request and trace identity
-    Handler-->>Client: structured response with provenance headers
+    Client->>Server: HTTP request
+    Server->>Server: limits + request identity + resilience
+    Server->>Policy: route, principal, action, resource
+    Policy-->>Server: allow or deny
+    Server->>Cache: resolve release + species + assembly
+    Cache->>Store: catalog or artifact read on miss
+    Store-->>Cache: immutable published state
+    Cache-->>Server: verified dataset or typed failure
+    Server->>Query: normalized query + work budgets
+    Query-->>Server: ordered result or typed failure
+    Server-->>Client: versioned envelope + provenance
 ```
 
-Axum applies middleware around the router. The server owns HTTP composition,
-admission, dataset caching, and response caching. Handlers retain ownership of
-domain-specific parsing and invoke query capabilities directly. Runtime
-modules supply configuration, policy, store ports, and shared domain
-semantics; they are not a separate network hop in the request. Middleware can
-reject a request. It cannot make an invalid query valid or redefine dataset
-identity.
+Axum middleware owns HTTP composition and admission. Handlers own
+domain-specific parsing and query invocation. Runtime modules provide shared
+configuration, policy, store ports, and domain semantics; they are not a
+separate network hop.
 
-## Boundary Map
+## Boundary map
 
-| Boundary | Representative checks | Observable outcome |
+| Boundary | Decides | Representative outcome |
 | --- | --- | --- |
-| transport | body size, CORS, request ID, response hardening | HTTP rejection or normalized request context |
-| debug hardening | admin endpoint enablement and protected debug routes | unavailable or rejected administrative request |
-| security | authentication mode, principal, role, action, resource, route policy | stable authorization decision and audit event |
-| resilience | global breaker, overload state, cheap/heavy class, concurrency permit | admitted request or `RateLimited`, `QueryRejectedByPolicy`, or `NotReady` |
-| normalization | path, query, region, selector, cursor, limit, and output validation | typed request or stable client error |
-| dataset resolution | release, species, assembly, catalog presence, cached-only rules | selected immutable dataset or explicit miss |
-| execution | query planning, shard access, SQLite execution, sequence or diff work | ordered result or typed runtime/store error |
-| presentation | envelope, status, cache, ETag, provenance, pagination | versioned wire response |
-| telemetry | route, status, latency, request class, dataset, trace identity | metrics, structured logs, and trace events |
+| transport | Body, CORS, request identity, and response hardening | Normalized context or HTTP rejection |
+| security | Authentication, route class, action, resource, and authorization | Attributable allow or deny |
+| resilience | Breaker state, request class, rate, concurrency, and overload | Admission or stable policy rejection |
+| normalization | Dataset selector, region, cursor, limit, projection, and output | Typed request or client error |
+| dataset | Catalog presence, verified artifacts, and cached-only policy | Exact published identity or explicit miss |
+| execution | Query plan, SQLite work, sequence or diff operation, and budgets | Ordered result or typed runtime failure |
+| presentation | Envelope, status, ETag, pagination, cache, and provenance | Versioned wire response |
+| telemetry | Route, class, status, latency, release, dataset, request, and trace | Correlated metrics, logs, and spans |
 
-## Route Classes
-
-Health, readiness, liveness, overload, metrics, version, and OpenAPI routes are
-authentication-exempt by contract. Ordinary dataset routes receive
-dataset-read authorization. Administrative routes are only registered when
-administrative endpoints are enabled, but the current authorization classifier
-does not classify every registered route as administrative.
-
-```mermaid
-flowchart TD
-    Request[Matched route] --> Exempt{Operationally exempt?}
-    Exempt -->|yes| Service[Health, readiness, metrics, version, OpenAPI]
-    Exempt -->|no| Admin{Administrative route?}
-    Admin -->|yes| AdminPolicy[Assign embedded operator and evaluate ops.admin]
-    Admin -->|no| DatasetPolicy[Evaluate dataset.read authority]
-    Service --> Resilience[Apply runtime resilience]
-    AdminPolicy --> Resilience
-    DatasetPolicy --> Resilience
-    Resilience --> Handler[Execute owning handler]
-```
-
-An exempt route is not an unrestricted data route. Its resource kind remains
-the service namespace, and deployment network policy still determines who can
-reach it.
-
-The diagram describes current classifier behavior, not a complete security
-claim. Several registered replica, recovery, failure-injection, and chaos
-routes are missing from `route_is_admin_endpoint`; they fall through to
-`dataset.read`. Routes that are classified as administrative are assigned the
-embedded `operator` principal after configured authentication checks rather
-than deriving a distinct operator role from the caller. Keep administrative
-endpoints disabled or isolated, and require a complete route-by-route test for
-any exception.
-
-## Identity Carried Through the Request
-
-Three identities must not be conflated:
+## Three identities travel together
 
 | Identity | Origin | Purpose |
 | --- | --- | --- |
-| request identity | accepted `x-request-id` or server-generated identifier | correlates one transport attempt across response, log, metric exemplar, and trace |
-| principal identity | authentication context or embedded route classification | drives authorization and audit attribution within its documented boundary |
-| dataset identity | explicit release, species, and assembly resolved to a manifest | binds the answer, cache key, ETag, provenance, and query cursor to published data |
+| request | Accepted `x-request-id` or server-generated value | Correlates one transport attempt |
+| principal | Authentication context and route classification | Drives authorization and audit attribution |
+| dataset | Resolved release, species, assembly, and manifest | Binds result, cache key, ETag, cursor, and provenance |
 
-A retried HTTP call may have a new request identity while retaining the same
-principal and dataset identity. A different dataset identity is not a retry of
-the same scientific request, even when the route and filters are identical.
+A retry may receive a new request ID while retaining principal and dataset
+identity. Changing the dataset means a different scientific request, even when
+filters and route are unchanged.
 
-Responses expose `x-request-id` for correlation. Dataset responses also carry
-artifact and cache provenance where the route contract supports it. Preserve
-these fields in client diagnostics; they are needed to distinguish a repeated
-request from a response served from different published bytes.
+## Route classification boundary
 
-## Authorization Decision Trace
+Health, readiness, liveness, overload, metrics, version, and OpenAPI routes are
+authentication-exempt by contract. Dataset routes require `dataset.read`.
+Administrative routes are registered only when enabled and are intended to
+require `ops.admin`.
 
-Authorization evidence must preserve the inputs to the decision without
-retaining credentials. A status code alone cannot show whether identity was
-missing, invalid, underprivileged, or applied to the wrong resource.
+The current implementation does not classify all enabled administrative routes
+correctly: only 18 of 26 are recognized as administrative. Four replica routes,
+two recovery routes, failure injection, and chaos execution fall through to
+ordinary dataset-read treatment. Keep administrative endpoints disabled or
+network-isolated unless an exception proves every enabled route end to end.
 
-```mermaid
-flowchart LR
-    Route["matched route"] --> Class["service, dataset, or administrative class"]
-    Credential["credential or exempt-route context"] --> Principal["validated principal class"]
-    Class --> Decision["action + resource authorization"]
-    Principal --> Decision
-    Decision --> Outcome["allow or deny"]
-    Outcome --> Audit["request, policy, release, and correlation evidence"]
-```
+Authentication exemption is not unrestricted reachability. Network policy and
+service exposure remain separate deployment controls.
 
-| Decision element | Evidence to retain | Never retain as proof |
-| --- | --- | --- |
-| route classification | normalized route and service, dataset, or administrative class | raw unbounded URL data |
-| identity | principal identifier or class, authentication mode, issuer or key version | token, API key, private key, or secret value |
-| authorization | action, resource kind, resource identity, policy version, and verdict | a role name with no evaluated action or resource |
-| request context | request ID, trace ID, runtime release, effective config identity, and dataset tuple | correlation ID without the decision fields |
-| outcome | stable status and error code plus whether domain work began | HTTP status alone |
-
-Negative checks are first-class evidence. Exercise a missing credential, an
-invalid credential, a valid but unauthorized principal, and an authorized
-principal for each protected route class required by the deployment claim.
-Network isolation remains separate: an application-level denial does not prove
-that an administrative route is unreachable from an untrusted network.
-
-## Admission and Work Budgets
-
-Admission is layered so expensive work is rejected before consuming the most
-constrained resource:
+## Reject expensive work early
 
 ```mermaid
 flowchart LR
-    Edge[body and header limits] --> Auth[authentication and authorization]
-    Auth --> Rate[rate and global overload policy]
-    Rate --> Parse[parameter and cursor validation]
-    Parse --> Plan[query class and estimated work]
-    Plan --> Permit[heavy-worker or queue permit]
-    Permit --> Data[store and SQLite work]
-    Data --> Encode[response-size and deadline checks]
+    Edge[Body + header limits] --> Auth[Authentication + authorization]
+    Auth --> Rate[Rate + overload policy]
+    Rate --> Parse[Parameters + cursor]
+    Parse --> Plan[Query class + estimated work]
+    Plan --> Permit[Worker or queue permit]
+    Permit --> Data[Store + SQLite]
+    Data --> Encode[Response size + deadline]
 ```
 
-Each layer has its own budget and error code. A global request timeout does not
-replace SQL, sequence-size, response-size, queue, or query-work limits. Reject
-at the earliest boundary that can prove the request is inadmissible. This
-preserves capacity for cheap traffic and produces a more accurate client error.
+A global timeout does not replace SQL, response-size, queue, sequence, or work
+budgets. The user-visible deadline includes queue wait, store access, cache
+fill, execution, serialization, compression, and delivery.
 
-The request deadline covers more than SQL execution. Queue wait, store access,
-cache fill, serialization, compression, and body delivery all consume the
-user-visible latency budget. Telemetry should separate those stages when a
-timeout diagnosis depends on ownership.
+## Interpret outcomes by owner
 
-## Failure Attribution
+| Outcome | First place to investigate |
+| --- | --- |
+| malformed or oversized input | Transport and normalization |
+| missing, invalid, or underprivileged identity | Authentication, authorization, and route classification |
+| overload or concurrency refusal | Resilience and request-class policy |
+| dataset miss or stale discovery | Catalog selection and cached-only state |
+| integrity or backend failure | Serving store and dataset cache manager |
+| work-limit or query failure | Query planning and execution |
+| incomplete stream or pagination | Presentation, deadline, and continuation state |
 
-```mermaid
-flowchart LR
-    Rejection[Non-successful request] --> Transport{Parsed and admitted?}
-    Transport -->|no| Edge[Transport or middleware result]
-    Transport -->|yes| Authorized{Authorized?}
-    Authorized -->|no| Policy[Authentication or authorization result]
-    Authorized -->|yes| Resolved{Dataset resolved?}
-    Resolved -->|no| Catalog[Catalog or selection result]
-    Resolved -->|yes| Executed{Execution completed?}
-    Executed -->|no| Runtime[Store, query, overload, or limit result]
-    Executed -->|yes| Presentation[Structured success or empty result]
-```
+The same HTTP status can represent different recovery actions. Group incidents
+by the first rejecting boundary before status code.
 
-The first rejecting boundary owns the primary outcome. Later middleware may
-add correlation, hardening, or presentation fields, but it must not obscure
-whether the request failed at transport, policy, catalog, store, query, or
-capacity control.
-
-For incident analysis, group failures by the first rejecting boundary before
-grouping by HTTP status. The same status can represent different recovery
-actions: a policy rejection is not repaired by adding query capacity, and a
-store-integrity error is not repaired by relaxing an overload threshold.
-
-## Dataset Resolution and Caching
-
-The catalog establishes discoverable dataset identity. Artifact caches and the
-optional Redis response cache accelerate access. They are not release
-authority. A Redis failure can fall back to the serving path. Catalog or
-artifact unavailability can fail a request or change readiness, depending on
-cached-only and readiness configuration.
-
-The server's `DatasetCacheManager` owns catalog refresh, verified local artifact
-admission, download and open concurrency, quarantine, and store-breaker state.
-The server also owns an in-process response cache and optional Redis gene cache.
-These layers have different keys and failure modes; “cache hit” is not enough
-provenance to identify which work was reused.
-
-## Completion Semantics
-
-A successful response means middleware admitted the request and resolved the
-dataset. Execution completed under its limits, and presentation produced the
-versioned envelope. Success does not identify a particular cache layer. Policy
-rejection, dataset miss, overload refusal, and empty query result are distinct
-outcomes. Status, error code, and telemetry preserve that distinction.
-
-Conditional success has the same identity requirements. A `304 Not Modified`
-is valid only when the request's ETag represents the selected artifact and
-normalized request. It is not permission to reuse a response from another
-release, species, assembly, projection, or query order.
-
-For streaming or paginated work, response start is not equivalent to complete
-delivery. Completion must account for serialization, body transfer, cursor or
-continuation state, and any terminal error exposed by the interface contract.
+A successful response means the request was admitted, an exact dataset was
+resolved, execution completed within its budgets, and presentation finished.
+A `304 Not Modified` is valid only when its ETag represents that same dataset
+and normalized request. Response start is not completion for streaming or
+paginated work.
 
 Continue with [Query Architecture](query-architecture.md),
 [Serving Store Model](serving-store-model.md), and
