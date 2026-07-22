@@ -57,6 +57,22 @@ The emitted `offline_safe: true` value is a static property of the report
 payload. The verification checks that value; it does not instrument or prove
 the absence of network access during an artifact rebuild.
 
+## Separate Repeatability, Reproducibility, and Hermeticity
+
+These properties answer different questions and need different experiments:
+
+| Property | Required experiment | Claim limit |
+| --- | --- | --- |
+| deterministic metadata. | Generate and normalize the same report twice in one checkout. | Report construction is stable for those inputs. |
+| build repeatability. | Build twice with the same builder, caches, and controlled environment. | One environment can repeat its own output. |
+| independent reproducibility. | Build the same source with isolated builders and independently acquired dependencies. | Separate builders agree on the governed artifact identity. |
+| hermeticity. | Deny undeclared filesystem, environment, clock, credential, and network inputs during the build. | The output depends only on the declared input closure. |
+| offline rebuild. | Populate a declared local dependency set, deny network access, and rebuild from it. | The retained local set is sufficient for that target. |
+
+Passing a weaker property does not imply a stronger one. In particular,
+offline execution can consume mutable local inputs, and a hermetic build can be
+non-reproducible when its declared inputs contain time or randomness.
+
 ## Release-Specific Reproducibility
 
 The separate `release reproducibility report` command checks required build

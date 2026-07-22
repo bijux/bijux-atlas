@@ -41,6 +41,25 @@ flowchart LR
 Record how the expectation was obtained. A value copied from inside the same
 untrusted packet is not an independent trust anchor.
 
+## Govern Withdrawal and Replacement
+
+Integrity remains true for bytes that are no longer safe or authorized. A
+consumer therefore needs release-state information outside the packet: active,
+superseded, withdrawn, or revoked. The current checksum ledger contains no
+external timestamp, revocation service, or transparency entry.
+
+| Event | Consumer action |
+| --- | --- |
+| routine supersession. | Apply compatibility and minimum-version policy; retain the older packet for supported rollback only. |
+| vulnerability withdrawal. | Reject new deployment even when checksums pass, and identify affected installed releases. |
+| trust-channel compromise. | Replace the independently trusted digest or policy through a separate recovery channel. |
+| provenance correction. | Issue a new release identity and packet; never rewrite the old provenance in place. |
+| signer introduction or rotation. | Define overlap, trusted identities, verification policy, and retirement before requiring the new mechanism. |
+
+Preserve the release-state source and observation time in the consumer receipt.
+A packet cannot authoritatively declare itself unrevoked using only records it
+contains.
+
 ## Separate the Trust Claims
 
 | Claim | Current mechanism | Current boundary |

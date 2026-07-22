@@ -78,6 +78,34 @@ Do not substitute the checked-in `release-verify.json` for this command. A
 verification report is bound to the bytes and references present when it was
 created. It becomes stale when any governed member changes.
 
+## Current Verification Topology
+
+The current `ops evidence verify` command is repository-relative. It loads
+`manifest.json`, `identity.json`, and referenced assets from the active
+repository root. When a tarball is supplied, it also checks that governed paths
+are members of that tarball. It does not extract an arbitrary packet and use
+only the packet contents as its verification root.
+
+```mermaid
+flowchart LR
+    Repo[Active repository root] --> Manifest[Manifest and identity]
+    Repo --> Members[Referenced governed files]
+    Tar[Supplied bundle.tar] --> Membership[Tar membership checks]
+    Manifest --> Verify[Current verifier]
+    Members --> Verify
+    Membership --> Verify
+```
+
+This command can establish repository-and-tar coherence for the checked-out
+release set. It is not yet a standalone consumer verifier for an isolated
+download. A portable verification claim requires a clean consumer environment
+that resolves every policy, manifest, ledger, schema, and governed member from
+the received packet or separately trusted inputs, with no fallback to producer
+workspace files.
+
+Record which topology produced the verdict. Do not label repository-relative
+success as independent packet verification.
+
 ## Current Repository Snapshot
 
 The checked-in identity and provenance agree on release
