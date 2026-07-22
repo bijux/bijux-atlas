@@ -197,6 +197,34 @@ The operating system spans four control loops:
 These loops share release identity but not proof. A healthy rollout does not
 establish capacity, and a valid backup does not establish restoration.
 
+## Security Assurance Crosses the System
+
+Security is not owned by one crate or deployment manifest. Atlas carries a
+threat and control decision from governed policy through runtime behavior and
+into release and incident evidence.
+
+```mermaid
+flowchart LR
+    Threat["asset and threat model"] --> Control["preventive and detective control"]
+    Control --> Render["rendered deployment intent"]
+    Render --> Enforce["runtime and platform enforcement"]
+    Enforce --> Observe["audit, metrics, logs, and traces"]
+    Observe --> Verify["release and consumer verification"]
+```
+
+| Security question | Direct evidence |
+| --- | --- |
+| Which asset and abuse path is protected? | governed asset, threat, mitigation, and compliance records |
+| Which identity may perform an action? | authentication context, authorization decision, and negative route check |
+| Which network and workload boundary is effective? | rendered object, admission result, live reachability, and workload identity |
+| Which released bytes were reviewed? | immutable digest, SBOM, provenance, evidence policy, and verifier result |
+| Can an incident be reconstructed? | correlated request, principal, dataset, release, policy, and containment records |
+
+Repository validation proves only the controls it executes. Deployment review
+must establish live exposure and identity; release verification must establish
+the exact distributed set. The [security operations guide](bijux-atlas-ops/kubernetes/security-operations.md)
+states those boundaries and the current administrative-route limitation.
+
 ## Operational Qualification Is Cumulative
 
 Each operating gate answers a narrower question and hands its evidence to the

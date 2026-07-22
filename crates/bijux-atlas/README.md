@@ -69,6 +69,25 @@ that defines behavior. Compatibility additions belong here only when they
 preserve an intentional public path; new domain behavior belongs in its owner
 crate.
 
+## Facade Trust Boundary
+
+The facade changes import ergonomics, not authority. Re-exporting a type does
+not move the contract, validation, or security decision into this crate.
+
+| Imported concern | Authority remains with |
+| --- | --- |
+| dataset and query meaning | `bijux-atlas-model` and `bijux-atlas-query` |
+| ingest normalization and artifact construction | `bijux-atlas-ingest` |
+| store integrity and publication capability | `bijux-atlas-store` |
+| runtime policy, identity propagation, and composition | `bijux-atlas-runtime` |
+| HTTP authentication, authorization placement, and route exposure | `bijux-atlas-server` and `bijux-atlas-api` |
+| deployment, load, evidence, and release contracts | `bijux-atlas-ops` |
+
+Applications must still configure and enforce the owning runtime and
+deployment boundaries. Depending on `bijux-atlas` does not enable an
+authentication mode, authorize a principal, verify a dataset, or qualify a
+deployment.
+
 ## Compatibility Policy
 
 The facade and its leaf dependencies share the Atlas workspace version. A

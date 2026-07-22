@@ -108,6 +108,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 * [Why Atlas Exists](#why-atlas-exists)
 * [Follow One Dataset End to End](#follow-one-dataset-end-to-end)
 * [Operate the Released Dataset](#operate-the-released-dataset)
+* [Trust Boundaries](#trust-boundaries)
 * [Declared Release Surface](#declared-release-surface)
 * [How to Verify an Atlas Claim](#how-to-verify-an-atlas-claim)
 * [Choose the Right Surface](#choose-the-right-surface)
@@ -221,6 +222,40 @@ through stack composition, Kubernetes, observability, load and release
 contracts. It also states where checked-in inventories exceed the behavior of
 the current executable commands, so declared coverage is not mistaken for an
 observed pass.
+
+---
+
+## Trust Boundaries
+
+Atlas security is a chain of independently enforced boundaries. Source
+admission protects what enters a dataset build. Artifact integrity protects
+what becomes publishable. Runtime identity and authorization protect who can
+request or administer published data. Deployment controls protect workload and
+network exposure. Release evidence protects the decision to distribute or
+promote exact bytes.
+
+```mermaid
+flowchart LR
+    Source["source admission"] --> Artifact["artifact integrity"]
+    Artifact --> Runtime["runtime identity and authorization"]
+    Runtime --> Deploy["workload and network confinement"]
+    Deploy --> Release["release integrity and provenance"]
+    Release --> Evidence["consumer verification and operating evidence"]
+```
+
+| Boundary | Primary authority | Failure posture |
+| --- | --- | --- |
+| source admission | format, normalization, anomaly, and dataset policy | reject ambiguous or inadmissible inputs |
+| artifact integrity | manifest, hashes, deep verification, immutable publication | quarantine unexplained bytes; never manufacture trust from a new checksum |
+| request security | authentication mode, principal, action, resource, and default-deny authorization | reject before dataset or administrative work executes |
+| workload exposure | profile values, pod security, service account, RBAC, ingress, egress, and secrets | hold promotion when rendered and effective posture disagree |
+| release trust | SBOMs, evidence manifest, checksum ledger, provenance, and consumer policy | reject incomplete, stale, revoked, or incoherent release sets |
+
+No boundary substitutes for another. A verified dataset does not authorize a
+caller, a non-root pod does not authenticate an artifact producer, and a clean
+checksum ledger does not prove target-environment isolation. Start with
+[Security Operations](docs/bijux-atlas-ops/kubernetes/security-operations.md)
+for the implemented deployment and runtime controls.
 
 ---
 

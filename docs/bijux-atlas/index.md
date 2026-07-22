@@ -103,6 +103,33 @@ the catalog and artifact manifest to governed inputs. Its shape leads to the
 owning interface contract. Those paths are more useful than a generic statement
 that the runtime or dataset is current.
 
+## Product Trust Boundaries
+
+The product path crosses several security authorities before a result is safe
+to use. Each authority answers a different question and retains a different
+identity.
+
+| Boundary | Question answered | Identity retained |
+| --- | --- | --- |
+| source admission | were the biological sources and ingest policy accepted? | source hashes, normalization policy, and findings |
+| publication | are the named artifacts complete, immutable, and discoverable? | dataset tuple, manifest, artifact hashes, and catalog generation |
+| request admission | may this principal perform this action on this resource? | request, principal, route, action, resource, and decision |
+| execution | did the selected immutable dataset answer under declared limits? | query plan, runtime release, effective configuration, and dataset identity |
+| presentation | does the CLI or HTTP result preserve contract and provenance? | output schema, error code, request correlation, ETag, and artifact identity |
+
+```mermaid
+flowchart LR
+    Principal["principal and request"] --> Admission["authentication and authorization"]
+    Dataset["catalog + manifest + verified artifact"] --> Execute["bounded query execution"]
+    Admission --> Execute
+    Policy["effective runtime policy"] --> Execute
+    Execute --> Result["versioned result + correlation + provenance"]
+```
+
+Delivery adapters may translate a typed result into CLI or HTTP form, but they
+may not invent dataset identity, bypass authorization, weaken work limits, or
+turn an integrity failure into an empty scientific result.
+
 ## Locate the Broken Boundary
 
 Atlas failures are easier to diagnose when the observed symptom is traced to
