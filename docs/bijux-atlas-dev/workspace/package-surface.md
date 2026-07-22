@@ -4,59 +4,74 @@ audience: maintainers
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Package Surface
 
-`bijux-atlas-dev` is the Rust control-plane package that owns repository
-automation, docs governance, reports, and enforcement.
-
-## Package Surface Model
+`bijux-atlas-dev` is a repository-only crate with `publish = false`. Its
+supported surface is the maintainer binary, its installed umbrella route,
+governed command identities, report contracts, and generated outputs—not a
+public Rust library API.
 
 ```mermaid
 flowchart TD
-    Package[Package surface] --> Identity[Public package identity]
-    Package --> Binary[Binary or command surface]
-    Package --> Docs[Docs and contract surface]
-    Package --> Generated[Generated surface]
-    Package --> Internal[Internal-only implementation]
-
-    Identity --> Stable[What other parts of the repo may rely on]
-    Binary --> Stable
-    Docs --> Stable
-    Generated --> Stable
-    Internal --> Unstable[Not part of stable surface]
+    Crate[bijux-atlas-dev] --> Binary[bijux-atlas-dev binary]
+    Binary --> Umbrella[bijux dev atlas]
+    Binary --> Direct[cargo run -p bijux-atlas-dev]
+    Binary --> Wrappers[Make and workflow routes]
+    Binary --> Reports[Versioned reports and artifacts]
+    Crate --> Internal[Private modules and adapters]
+    Umbrella --> Contract[Maintainer contract]
+    Direct --> Contract
+    Wrappers --> Contract
+    Reports --> Contract
+    Internal --> Detail[Implementation detail]
 ```
 
-This page exists so maintainers do not flatten everything inside `bijux-atlas-dev` into one support
-promise. Some parts of the crate are relied on by docs, workflows, and other maintainers; other
-parts are free to evolve as implementation detail.
+## Supported Surface
 
-## Stable Surface Expectations
+- the `bijux-atlas-dev` binary identity and exit behavior;
+- the `bijux dev atlas ...` installed namespace when the Bijux umbrella is
+  present;
+- command and suite identifiers consumed by Make, CI, and documentation;
+- capability flags controlling write, subprocess, network, and git effects;
+- structured report kinds, schema versions, paths, and validation commands;
+- generated references whose registries name this binary as their generator.
 
-- the binary identity `bijux-atlas-dev`
-- the documented `bijux dev atlas` maintainer namespace it backs
-- the governed command families recorded in the command-surface registry
-- the generated reports and docs references that other workflows consume
+Internal handlers, module layout, and adapter implementations can change while
+those observable contracts remain stable. A private Rust symbol becomes a
+compatibility concern only when another supported repository surface consumes
+it as an authority.
 
-## Internal Surface Expectations
+## Command Authorities
 
-- internal routing details
-- command handler structure
-- private modules and refactors that do not change documented command behavior, report shape, or evidence paths
+The compiled CLI in `crates/bijux-atlas-dev/src/interfaces/cli/` is the
+executable authority. The policy declaration at
+`configs/sources/governance/governance/cli-dev-command-surface.json` records the
+intended top-level families and forbidden product flows. The two must be
+validated together; configuration does not create a runnable command.
 
-Those internals still deserve care, but they are not automatically part of the stable maintainer
-contract unless another authoritative page promotes them into that role.
+At this revision, compiled `--help` and the policy declaration are not
+identical. The declaration lists `clients`, `packages`, and `demo`, which are
+not exposed as compiled top-level commands, while compiled help exposes
+`migrations`, which is not listed in the declaration. Treat that difference as
+registry drift rather than silently promising either side as synchronized.
 
-## Repository Anchors
+The registry also forbids `query` as a maintainer user-flow command. Product
+queries belong to `bijux atlas`, while repository validation and evidence
+remain under `bijux dev atlas`.
 
-- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the public command and binary surface
-- [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed top-level command families
-- [`docs/bijux-atlas-dev/automation/automation-command-surface.md`](/Users/bijan/bijux/bijux-atlas/docs/bijux-atlas-dev/automation/automation-command-surface.md:1) documents the maintainer-facing command contract
+## Compatibility Boundary
 
-## Main Takeaway
+Changing a command name, capability requirement, report schema, or governed
+artifact path requires consumer and workflow review. Moving internal modules
+does not, provided direct CLI, umbrella, Make, and workflow routes retain their
+claimed parity. See [Automation Command Surface](../automation/automation-command-surface.md)
+for command selection and report discovery.
 
-The `bijux-atlas-dev` package is not just another crate in the workspace. It is the maintainer
-control-plane package, which means its stable binary, docs, reports, and command behavior carry a
-repository-wide support burden that ordinary internal refactors do not.
+## Stability
+
+The crate is not published to crates.io, so its stability is repository
+contract stability rather than a public library SemVer promise. Checked-in
+consumers and documented maintainer commands define the support burden.

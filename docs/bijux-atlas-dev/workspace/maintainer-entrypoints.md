@@ -4,64 +4,68 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Maintainer Entrypoints
 
-Maintainers enter the control plane through `cargo run -p bijux-atlas-dev`,
-`bijux dev atlas`, and curated `make` wrappers. This page exists to show which
-entrypoint is best for which kind of maintainer work.
-
-## Entrypoint Routing Model
+Atlas exposes one repository control plane through four routes. They are an
+installed umbrella, a direct crate binary, curated Make targets, and GitHub
+workflows. Choose by execution context. Retain the report produced by the
+command that actually ran.
 
 ```mermaid
-flowchart TD
-    Task[Maintainer task] --> Daily[Daily review]
-    Task --> Validation[Change validation]
-    Task --> Release[Release preparation]
-    Task --> Docs[Docs or governance changes]
-    Task --> Incident[Incident or failure investigation]
-
-    Daily --> Entry[Use maintainer entrypoint set]
-    Validation --> Entry
-    Release --> Entry
-    Docs --> Entry
-    Incident --> Entry
+flowchart LR
+    Intent[Maintainer intent] --> Installed[bijux dev atlas]
+    Intent --> Local[cargo run -p bijux-atlas-dev]
+    Intent --> Make[make target]
+    Intent --> GitHub[GitHub workflow]
+    Installed --> Control[bijux-atlas-dev control plane]
+    Local --> Control
+    Make --> Control
+    GitHub --> Control
+    Control --> Report[Structured report and exit status]
 ```
 
-This diagram is intentionally simple because the main lesson is practical: different maintainer jobs
-should still begin from the same governed entrypoint set, not from ad hoc scripts or directory-local
-shortcuts.
+## Route Selection
 
-## Canonical Entrypoints
+| Route | Prefer it when | Evidence boundary |
+| --- | --- | --- |
+| `bijux dev atlas ...` | the Bijux umbrella is installed | delegation must preserve arguments, capabilities, output, and exit status |
+| `cargo run --locked -q -p bijux-atlas-dev -- ...` | working directly from a checkout | identifies the repository source and lockfile used by the invocation |
+| `make <target>` | invoking a governed convenience lane | covers commands selected by the current Make definition, not the whole domain |
+| `.github/workflows/*.yml` | hosted merge, audit, or release behavior matters | binds results to the revision, workflow, permissions, runner, and artifact set |
 
-- `bijux dev atlas ...` is the canonical installed namespace for maintainer automation
-- `cargo run -q -p bijux-atlas-dev -- ...` is the repo-local direct binary path for exact local parity
-- `make ci-fast`, `make ci-pr`, `make ci-nightly`, `make docs-build`, and other curated targets are the convenience layer for common workflows
-- GitHub workflows under [`.github/workflows`](/Users/bijan/bijux/bijux-atlas/.github/workflows) are the remote execution entrypoints once a change moves into CI or release automation
+Use `--format json` for evidence consumed by automation. Human output is for
+interactive diagnosis and may omit fields that are present in the structured
+report. Capability flags remain explicit regardless of route. A wrapper must
+not grant write, subprocess, network, or git authority implicitly.
 
-## Which Entrypoint To Prefer
+## Common Starting Points
 
-- use `make` when you want the standard maintainer lane with the least command memorization
-- use `bijux dev atlas` when you want a documented control-plane surface that maps cleanly to maintainer docs
-- use direct `cargo run -q -p bijux-atlas-dev -- ...` when you need an exact in-repo command, debug fidelity, or a command not exposed as a make wrapper
-- use GitHub workflows when the question is about merge gates, release promotion, or environment-specific CI behavior rather than local iteration
+```bash
+bijux dev atlas check list --domain docs --format json
+bijux dev atlas suites list --format json
+bijux dev atlas docs validate --format json
+bijux dev atlas ops validate --profile kind --format json
+```
 
-## What Not To Use As An Entrypoint
+For checkout-local parity, replace the prefix with:
 
-- ad hoc root scripts that bypass the Rust control plane
-- crate-local scratch commands that hide side effects or artifact paths
-- undocumented shell aliases that make evidence or reproduction harder for another maintainer
+```bash
+cargo run --locked -q -p bijux-atlas-dev --
+```
 
-## Repository Anchors
+Use targeted commands during development. `make ci-nightly` selects the broad
+nightly lane and is not the default proof for a documentation-only change.
 
-- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the direct command surface
-- [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed command families
-- [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) records the validation evidence maintainers should bring back from those entrypoints
+## Reproducible Handoff
 
-## Main Takeaway
+Record the route, arguments, revision, capabilities, report path, and exit
+status. Include any external target identity. Shell aliases or scratch commands
+that omit these details are unsuitable as shared evidence.
 
-Maintainer entrypoints are part of repository governance. The right starting command should make the
-work reproducible, route to the right policy, and leave behind evidence another maintainer can
-understand without reconstructing your local habits.
+## Stability
+
+The direct binary is the executable authority. Other routes are supported when
+their checked-in delegation preserves the command contract.
