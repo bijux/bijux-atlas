@@ -4,35 +4,19 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Start the Server
 
-Once you have published and promoted a sample dataset into a serving store,
-starting the local server is straightforward: point the runtime at that store
-root and keep the cache root under `artifacts/`.
+Start the local server from a published and catalog-promoted serving store. The
+server process can bind without a usable dataset, but readiness and queries
+depend on catalog discovery. Keep the build root, serving store, and cache root
+as separate directories.
 
-The important precondition is real: the sample dataset must already be
-published and catalog-promoted. Starting the server against a build root is a
-workflow mistake, not a supported shortcut.
+## Validate Configuration
 
-## Runtime Inputs
-
-```mermaid
-flowchart LR
-    BuildRoot[artifacts/getting-started/tiny-build] --> Publish[dataset publish]
-    Publish --> Store[artifacts/getting-started/tiny-store]
-    Store --> Server[bijux-atlas-server]
-    Cache[artifacts/getting-started/server-cache] --> Server
-    Config[flags or config file] --> Server
-```
-
-This runtime-input diagram shows why the server startup page comes after
-publication. Atlas expects the runtime to start from serving store state, plus
-explicit cache and configuration inputs.
-
-## Validate the Runtime Shape First
+From the repository root:
 
 ```bash
 mkdir -p artifacts/getting-started/server-cache
@@ -43,12 +27,22 @@ cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --validate-config
 ```
 
-This is a low-risk first step because it validates runtime inputs without
-committing to a long-running process.
+This command parses the startup sources, resolves precedence, loads the full
+`ATLAS_*` environment-backed configuration, and checks its cross-field
+invariants. It exits before catalog refresh, socket bind, and request serving.
+It does **not** prove that the serving store exists, contains a promoted
+dataset, or can be queried.
 
-If `--validate-config` fails, fix that before trying to bind the server. A broken validation step usually means startup would fail or produce misleading partial behavior anyway.
+Inspect the redacted resolved configuration when precedence is unclear:
 
-## Start the Local Server
+```bash
+cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
+  --store-root artifacts/getting-started/tiny-store \
+  --cache-root artifacts/getting-started/server-cache \
+  --print-effective-config
+```
+
+## Start the Runtime
 
 ```bash
 cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
@@ -57,71 +51,63 @@ cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
   --cache-root artifacts/getting-started/server-cache
 ```
 
-Leave the server running in one terminal while you query it from another.
-
-## Startup Sequence
+Keep this terminal open. Atlas prepares its cache, performs startup warmup,
+refreshes the catalog, computes the runtime-policy hash, binds the listener,
+and begins serving. A failed initial catalog refresh leaves ordinary mode not
+ready, but the server can still bind so health and diagnostic behavior remain
+observable.
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Server
+    participant Operator
+    participant Runtime
     participant Store
-    participant Cache
-    User->>Server: start with bind, store-root, cache-root
-    Server->>Store: open store root
-    Server->>Cache: prepare cache directory
-    Server-->>User: bind and accept requests
+    participant Listener
+    Operator->>Runtime: flags, file, and environment
+    Runtime->>Runtime: resolve and validate config
+    Runtime->>Store: warm and refresh catalog
+    Store-->>Runtime: catalog or refresh error
+    Runtime->>Listener: parse address, bind, listen
+    Listener-->>Operator: HTTP surface available
 ```
 
-This startup sequence keeps the server’s dependencies visible. If startup
-fails, the first place to look is the store root, cache root, or resolved
-configuration, not the query layer.
+## Check Lifecycle and Identity
 
-## First Health Checks
-
-In another terminal:
+Use a second terminal and preserve HTTP failures:
 
 ```bash
-curl -s http://127.0.0.1:8080/healthz
-curl -s http://127.0.0.1:8080/readyz
-curl -s http://127.0.0.1:8080/v1/version
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS http://127.0.0.1:8080/live
+curl -fsS http://127.0.0.1:8080/readyz
+curl -fsS http://127.0.0.1:8080/v1/version
+curl -fsS http://127.0.0.1:8080/v1/datasets
 ```
 
-Interpret them in order:
+| Endpoint | Successful response establishes |
+| --- | --- |
+| `/healthz` | the router can answer; this handler always returns `200 ok` while reachable |
+| `/live` | the runtime is accepting requests rather than draining |
+| `/readyz` | the ready flag is set and required catalog state is present |
+| `/v1/version` | API, plugin, config-schema, policy, and artifact identity are reachable |
+| `/v1/datasets` | catalog-backed dataset discovery succeeds |
 
-- `healthz` tells you whether the process is alive enough to answer
-- `readyz` tells you whether it considers itself ready to serve
-- `/v1/version` tells you whether the API surface is reachable beyond pure health plumbing
+`/healthz` is not a store or catalog check. `/v1/version` is also independent
+of dataset availability. Use `/readyz` and `/v1/datasets` before making a query
+readiness claim.
 
-## What the Startup Model Is Protecting
+## Diagnose Startup
 
-```mermaid
-flowchart TD
-    Validate[Validate runtime inputs] --> Bind[Bind server]
-    Bind --> Health[Expose health endpoints]
-    Health --> Query[Serve query endpoints]
-```
+- If config validation fails, fix the first named variable or cross-field
+  invariant.
+- If bind fails, verify the `host:port` syntax and whether another process owns
+  the port.
+- If health succeeds but readiness returns `503 not-ready`, inspect catalog
+  refresh errors and confirm `tiny-store/catalog.json` exists.
+- If the catalog is empty, repeat dataset publication and promotion; do not
+  point the server at `tiny-build` as a shortcut.
+- If the process is live but queries fail, distinguish missing dataset,
+  admission policy, and upstream availability from process health.
 
-This model shows the order Atlas is trying to enforce. Readiness should come
-after configuration and artifact resolution, not before.
-
-Atlas tries to make startup failure explicit rather than turning configuration drift into partial runtime behavior.
-
-## If the Server Does Not Start
-
-- confirm the sample dataset was built, published, and catalog-promoted first
-- confirm the `--store-root` points at the serving store, not the ingest build root or source fixture directory
-- confirm the `--cache-root` is under `artifacts/` and writable
-- re-run with `--print-effective-config` if you need to inspect resolved settings
-- treat “process started” and “runtime is ready” as different questions
-
-## What a Good Startup Proves
-
-- the server can resolve the store root and cache root you supplied
-- the runtime can bind and expose health endpoints
-- you are ready to move from startup checks to real query checks
-
-## Reading Rule
-
-Use this page when the serving store is ready and the remaining question is how
-to start the runtime without blurring build state and serving state.
+A successful local startup establishes configuration resolution, listener
+availability, and the lifecycle states you explicitly checked. It does not
+establish production security, resilience, scale, or remote-store behavior.
