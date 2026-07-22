@@ -130,6 +130,28 @@ next safe observation or action. Close hypotheses as supported, rejected, or
 unresolved. This keeps diagnostic exploration separate from the authoritative
 incident timeline.
 
+## Preserve Evidence During Signal Loss
+
+Telemetry degradation often accompanies overload, network isolation, or a
+collector failure. Preserve independent observations before restarting a pod,
+clearing a cache, changing traffic, or widening network access. Those actions
+can erase the state that distinguishes a runtime failure from an observation
+failure.
+
+| Available source | Preserve first | Interpretation limit |
+| --- | --- | --- |
+| client response. | Status, correlation headers, timing, route class, and a redacted body. | One response does not measure population impact. |
+| Kubernetes control plane. | Admitted workload identity, endpoints, events, restart state, and probe transitions. | Control-plane health does not prove request correctness. |
+| workload output. | Bounded logs from affected and healthy replicas with release identity. | Missing logs may reflect collection or process loss. |
+| metrics backend. | Raw query, evaluation time, source window, labels, and returned series. | An empty result is not an observed zero. |
+| trace backend. | Full representative traces plus sampling and retention context. | Unsampled requests cannot be ruled out. |
+| catalog or store. | Active identity, manifest, hashes, freshness, and read results. | Availability alone does not prove runtime consumption. |
+
+If only one source remains available, narrow the claim to what that source can
+establish. Record the missing sources and choose mitigations that do not depend
+on unobserved correctness. Restoration of telemetry is itself a recovery gate
+when promotion, integrity, or security decisions require those signals.
+
 ## Recovery Rules
 
 - Cache loss does not authorize store rollback.

@@ -75,6 +75,26 @@ A telemetry-path failure should not be rewritten as a runtime success. It is a
 separate operational defect that reduces the strength of any release or
 incident claim depending on that signal.
 
+## Detect Broken Correlation
+
+Having all three signal types is insufficient when their identities or clocks
+cannot join. Test correlation as an operational contract, including failure
+paths and non-sampled requests.
+
+| Failure pattern | Consequence | Required correction |
+| --- | --- | --- |
+| request ID changes across a boundary. | Logs and spans describe separate apparent requests. | Propagate the accepted ingress identity and test asynchronous work. |
+| release or dataset identity is absent. | Healthy baseline traffic can mask a failing candidate or artifact. | Attach stable low-cardinality identity at the producing boundary. |
+| trace exists but request-end log is absent. | Completion, status, or log delivery is unproven. | Inspect process termination, log export, and event registration. |
+| metric window and trace time disagree. | The representative trace cannot support the population claim. | Record clock skew and query a corrected bounded window. |
+| only successful traces are retained. | Sampling biases diagnosis away from errors and rare paths. | Preserve error-aware sampling and quantify its policy. |
+| a join requires an unbounded metric label. | Cardinality and privacy controls would be weakened. | Join through bounded dimensions, then use logs or traces for request identity. |
+
+A correlation drill passes only when an operator can move from a response
+identifier to its logs and trace, then place that request inside the correct
+bounded metric population. A dashboard hyperlink alone does not prove the
+join.
+
 ## Structured Logs
 
 Every governed log record carries `level`, `msg`, and `request_id`; registered

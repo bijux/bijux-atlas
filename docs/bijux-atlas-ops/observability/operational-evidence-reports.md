@@ -100,6 +100,26 @@ event, trace span, rollout, and injected fault cannot be ordered reliably,
 mark the correlation as uncertain. Do not infer absence of an event from a
 retention gap or an unqueried interval.
 
+## Qualify Negative Evidence
+
+“No errors were observed” is a strong claim only when the observation path was
+capable of finding errors. Before using absence as evidence, bind the claim to
+the population and prove the collection boundary.
+
+| Qualification | Evidence required |
+| --- | --- |
+| population. | Release, route class, dataset, status family, and traffic volume are explicit. |
+| interval. | Event window, query window, evaluation time, clock skew, and retention overlap are explicit. |
+| instrumentation. | The expected event, metric, or span is registered and enabled on the exercised path. |
+| delivery. | Scrape, export, ingestion, and query paths were healthy for the interval. |
+| selection. | Filters, sampling, aggregation, and exclusions are recorded and do not discard the target condition. |
+| comparison. | A known event or healthy control demonstrates that the query can return data from the same source. |
+
+Without these qualifications, report “no matching evidence retrieved,” not
+“the event did not occur.” A zero-valued series, an empty query result, and an
+absent series are different observations and must remain distinct in the raw
+record and verdict.
+
 ## Evidence Quality Dimensions
 
 | Dimension | Acceptance question |
