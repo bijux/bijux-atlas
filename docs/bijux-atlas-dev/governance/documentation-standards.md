@@ -34,11 +34,16 @@ belong in the published site.
 | Authority | Governs | Verification surface |
 | --- | --- | --- |
 | `mkdocs.yml` and `mkdocs.shared.yml` | site composition, extensions, and navigation | MkDocs build |
-| `configs/sources/repository/docs/quality-policy.json` | freshness, area budgets, naming, terminology, line length, headings, and asset roots | `bijux-atlas-dev docs validate` and related docs commands |
+| docs quality policy | freshness, naming, terminology, headings, and assets | docs validation commands |
 | `configs/sources/repository/docs/docs-spine.json` | principal entrypoints | spine validation |
 | `configs/sources/repository/docs/redirects.json` | retained reader locations | redirect checks and synchronization |
-| `configs/sources/repository/docs/generated-files-registry.json` | generated-reference ownership and generator command | generated-reference verification |
+| generated-files registry | reference ownership and generator | generated-reference verification |
 | `.github/CODEOWNERS` | review routing | GitHub review assignment; not proof of approval |
+
+The docs quality policy lives at
+`configs/sources/repository/docs/quality-policy.json`. The generated-files
+registry lives beside it as `generated-files-registry.json`. The shorter table
+labels keep the decision surface readable without weakening source ownership.
 
 The `docs` command family exposes lint, links, navigation, inventory, graph,
 duplicate, freshness, generated-reference, redirect, spine, build, and deploy
@@ -81,7 +86,30 @@ machine-observable properties. Reviewers remain responsible for factual
 accuracy, useful diagrams, coherent pacing, and whether limitations are clear.
 Neither side substitutes for the other.
 
-## Stability
+## Reader Trust Review
+
+Before accepting a public page, review it as a consumer rather than as the
+author who already knows the repository:
+
+1. Can the reader identify the decision, workflow, or contract in the opening
+   paragraph?
+2. Does every operational or compatibility claim name its authority and
+   evidence scope?
+3. Are declared, generated, simulated, measured, and published states kept
+   distinct?
+4. Do diagrams expose ownership or sequence instead of decorating prose?
+5. Are limitations adjacent to the claim, including incomplete automation and
+   unsupported environments?
+6. Do links lead to the next reader decision rather than to source locations
+   without context?
+7. Can a reader reproduce the documented path without private knowledge,
+   local absolute paths, or editorial instructions?
+
+Delete sections that merely announce a page's purpose or canonical status.
+Front matter already records audience, type, owner, and review date; the body
+should spend its attention on the reader's problem.
+
+## URL Compatibility
 
 Published URLs, generated-reference identities, report links, and documented
 commands are compatibility surfaces. Editorial structure can evolve, but URL

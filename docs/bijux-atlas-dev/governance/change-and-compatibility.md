@@ -58,6 +58,24 @@ rules for environment keys, chart values, profile keys, report schemas, check
 identifiers, and documentation URLs. API and package surfaces carry their own
 contract tests and versioning obligations in addition to that matrix.
 
+## Trace Change Fan-Out
+
+One source edit can alter several public contracts. Review the downstream
+surfaces before deciding that a change is isolated:
+
+| Changed authority | Commonly affected consumers |
+| --- | --- |
+| runtime configuration | startup, environment, generated reference, chart values, profiles |
+| API DTO or router | HTTP clients, OpenAPI, examples, compatibility snapshots, observability labels |
+| artifact schema or path | ingest, store, catalog, backup, recovery, fixtures, and release packets |
+| command or report schema | umbrella routing, Make, CI parsing, docs examples, and retained evidence |
+| profile or safety policy | rendering, admission, rollout, load scenario selection, and release qualification |
+| documentation URL | navigation, repository links, search results, redirects, and external consumers |
+
+The owning source determines behavior; the fan-out identifies migration and
+evidence obligations. Generated consumers are updated from that source rather
+than patched individually.
+
 ## Automation Boundary
 
 `bijux-atlas-dev audit readiness validate` checks that its audit bundle and
@@ -66,9 +84,10 @@ exists. It does not interpret those documents, compare runtime behavior, or
 prove backward compatibility. Compatibility still depends on surface-specific
 tests, overlap evidence, and review of the actual consumer contract.
 
-## Stability
+## Decision Boundary
 
 An internal boundary remains freely changeable only while no supported client,
 operator, workflow, or artifact observes it. Once a surface is published or
 machine-consumed, its owning compatibility policy governs removal and rename
-behavior.
+behavior. When observability is uncertain, inspect repository consumers and
+published references before classifying the change as internal.

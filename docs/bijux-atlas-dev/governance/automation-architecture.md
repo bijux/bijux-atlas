@@ -34,7 +34,7 @@ flowchart LR
 | --- | --- | --- |
 | `interfaces/cli` and `ui/terminal` | argument parsing and human rendering | repository policy or host effects |
 | `application` | command-family dispatch and workflow composition | durable domain registration |
-| `domains` | runnable definitions for configs, docs, Docker, governance, ops, performance, release, security, and tutorials | direct terminal behavior |
+| `domains` | registered runnable definitions | direct terminal behavior |
 | `registry` | registry loading, suite expansion, route validation, and report catalogs | executing subprocesses |
 | `engine` | selection, execution coordination, rendering, and report encoding | concrete filesystem or network access |
 | `model` and `core` | stable identifiers, serialized shapes, and reusable checks | orchestration |
@@ -84,7 +84,22 @@ describes the operator-facing command model, while
 [Command Routing](../automation/command-routing.md) defines route identity and
 effect parity.
 
-## Stability
+## Failure Containment
+
+| Failure | Owning boundary | Expected behavior |
+| --- | --- | --- |
+| unknown command or selector | CLI and registry | reject before domain execution |
+| invalid governed input | owning domain validator | emit attributable findings without host mutation |
+| missing capability | engine and runtime world | deny the effect and preserve a structured failure |
+| external tool failure | runtime adapter | retain tool identity, exit status, and bounded output |
+| report serialization failure | engine and model | fail the run rather than emit a success without evidence |
+| wrapper parity failure | route integration | identify the diverging arguments, authority, output, or status |
+
+Domain code should not catch an infrastructure failure and replace it with a
+successful empty report. The report is the handoff contract; missing evidence
+must remain missing or failed all the way to the process exit status.
+
+## Compatibility Boundary
 
 CLI flags, route identifiers, report schemas, and registry identifiers can be
 consumed outside the crate and require compatibility review. Internal module
