@@ -22,26 +22,31 @@ sequenceDiagram
     participant Middleware
     participant Policy
     participant Handler
-    participant Catalog
-    participant Store
+    participant Cache as Dataset cache manager
+    participant Backend as Store backend
     participant Query
     participant Telemetry
     Client->>Middleware: HTTP request
     Middleware->>Middleware: error envelope, body limit, debug hardening, provenance, resilience, security, CORS, tracing
     Middleware->>Policy: authenticated request or exempt route
     Policy->>Handler: authorized principal and normalized transport
-    Handler->>Catalog: resolve explicit release, species, and assembly
-    Catalog->>Store: fetch manifest, index, sequence, or shard
-    Store-->>Handler: published artifact data or typed store failure
+    Handler->>Cache: resolve release, species, and assembly
+    Cache->>Backend: refresh catalog or fetch immutable artifact on miss
+    Backend-->>Cache: catalog or artifact result
+    Cache-->>Handler: verified local artifact paths or typed failure
     Handler->>Query: normalized query and limits
     Query-->>Handler: ordered result or policy error
     Handler-->>Telemetry: status, latency, class, dataset, request and trace identity
     Handler-->>Client: structured response with provenance headers
 ```
 
-Axum applies middleware around the router. Each handler retains ownership of
-domain-specific parsing and execution. Middleware can reject a request. It
-cannot make an invalid query valid or redefine dataset identity.
+Axum applies middleware around the router. The server owns HTTP composition,
+admission, dataset caching, and response caching. Handlers retain ownership of
+domain-specific parsing and invoke query capabilities directly. Runtime
+modules supply configuration, policy, store ports, and shared domain
+semantics; they are not a separate network hop in the request. Middleware can
+reject a request. It cannot make an invalid query valid or redefine dataset
+identity.
 
 ## Boundary Map
 
@@ -60,17 +65,18 @@ cannot make an invalid query valid or redefine dataset identity.
 ## Route Classes
 
 Health, readiness, liveness, overload, metrics, version, and OpenAPI routes are
-authentication-exempt by contract. Dataset routes require dataset-read
-authority. Debug and cluster routes require operator authority and are only
-registered when administrative endpoints are enabled.
+authentication-exempt by contract. Ordinary dataset routes receive
+dataset-read authorization. Administrative routes are only registered when
+administrative endpoints are enabled, but the current authorization classifier
+does not classify every registered route as administrative.
 
 ```mermaid
 flowchart TD
     Request[Matched route] --> Exempt{Operationally exempt?}
     Exempt -->|yes| Service[Health, readiness, metrics, version, OpenAPI]
     Exempt -->|no| Admin{Administrative route?}
-    Admin -->|yes| AdminPolicy[Require ops.admin authority]
-    Admin -->|no| DatasetPolicy[Require dataset.read authority]
+    Admin -->|yes| AdminPolicy[Assign embedded operator and evaluate ops.admin]
+    Admin -->|no| DatasetPolicy[Evaluate dataset.read authority]
     Service --> Resilience[Apply runtime resilience]
     AdminPolicy --> Resilience
     DatasetPolicy --> Resilience
@@ -81,6 +87,15 @@ An exempt route is not an unrestricted data route. Its resource kind remains
 the service namespace, and deployment network policy still determines who can
 reach it.
 
+The diagram describes current classifier behavior, not a complete security
+claim. Several registered replica, recovery, failure-injection, and chaos
+routes are missing from `route_is_admin_endpoint`; they fall through to
+`dataset.read`. Routes that are classified as administrative are assigned the
+embedded `operator` principal after configured authentication checks rather
+than deriving a distinct operator role from the caller. Keep administrative
+endpoints disabled or isolated, and require a complete route-by-route test for
+any exception.
+
 ## Identity Carried Through the Request
 
 Three identities must not be conflated:
@@ -88,7 +103,7 @@ Three identities must not be conflated:
 | Identity | Origin | Purpose |
 | --- | --- | --- |
 | request identity | accepted `x-request-id` or server-generated identifier | correlates one transport attempt across response, log, metric exemplar, and trace |
-| principal identity | validated API key or token context | drives authorization and audit attribution |
+| principal identity | authentication context or embedded route classification | drives authorization and audit attribution within its documented boundary |
 | dataset identity | explicit release, species, and assembly resolved to a manifest | binds the answer, cache key, ETag, provenance, and query cursor to published data |
 
 A retried HTTP call may have a new request identity while retaining the same
@@ -188,6 +203,12 @@ optional Redis response cache accelerate access. They are not release
 authority. A Redis failure can fall back to the serving path. Catalog or
 artifact unavailability can fail a request or change readiness, depending on
 cached-only and readiness configuration.
+
+The server's `DatasetCacheManager` owns catalog refresh, verified local artifact
+admission, download and open concurrency, quarantine, and store-breaker state.
+The server also owns an in-process response cache and optional Redis gene cache.
+These layers have different keys and failure modes; “cache hit” is not enough
+provenance to identify which work was reused.
 
 ## Completion Semantics
 

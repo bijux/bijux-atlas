@@ -23,7 +23,7 @@ flowchart LR
     Build --> Verify[Validated and deeply verified candidate]
     Verify --> Publish[Immutable store payload]
     Publish --> Promote[Catalog entry]
-    Promote --> Resolve[Runtime resolution]
+    Promote --> Resolve[Server-side resolution]
     Resolve --> Observe[Identity-bearing query result]
 ```
 
@@ -33,7 +33,7 @@ flowchart LR
 | verify | validation and integrity results for the exact candidate | candidate is eligible for publication |
 | publish | store payload, checksum lock, and backend-specific publication record | immutable bytes exist in the selected store |
 | promote | catalog entry for the exact dataset tuple | dataset is discoverable through that catalog |
-| resolve | runtime observation with store, catalog, and dataset identity | one runtime can select the published dataset |
+| resolve | server observation with store, catalog, and dataset identity | one server process can select the published dataset |
 
 No row implies the next one. Files on disk do not imply successful deep
 verification. A published payload does not imply catalog promotion. A catalog
@@ -56,6 +56,32 @@ filesystem atomicity from the shared store trait.
 Catalog promotion remains a separate operation for both paths. A successful
 payload write is not permission to serve it until the intended catalog contains
 the exact dataset identity.
+
+## Close Each Authority Transfer
+
+Each transition needs a receipt from the consumer of the preceding boundary,
+not only a success message from its producer.
+
+| Transfer | Producer evidence | Consumer-side closure |
+| --- | --- | --- |
+| build to verify | candidate root and manifest | validator opens the exact root and records input and artifact identities |
+| verify to publish | passing validation and deep verification | publisher rechecks expected hashes before transfer |
+| publish to promote | immutable payload and checksum lock | catalog operation names the exact dataset tuple and artifact identity |
+| promote to resolve | catalog generation containing the tuple | server refresh selects that generation and opens verified local paths |
+| resolve to answer | selected dataset and query inputs | response carries request, dataset, artifact, and contract provenance where supported |
+
+```mermaid
+flowchart LR
+    Producer["Producer success"] --> Receipt["Identity-bound receipt"]
+    Receipt --> Consumer["Next boundary reopens exact identity"]
+    Consumer --> Close{"Inputs and bytes agree?"}
+    Close -->|yes| Transfer["Authority advances"]
+    Close -->|no| Hold["Hold and preserve both observations"]
+```
+
+This pattern protects against a correct operation applied to the wrong root,
+store, catalog generation, or process. It also makes delayed catalog refresh a
+distinct resolution state instead of misclassifying it as publication failure.
 
 ## Failure Recovery
 

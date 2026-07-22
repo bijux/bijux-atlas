@@ -32,11 +32,35 @@ stateDiagram-v2
 | `crates/bijux-atlas-ingest/tests/fixtures/tiny/` | committed source fixture | input bytes belong to the checkout |
 | `artifacts/getting-started/tiny-build/` | ingest candidate and verified dataset root | may be discarded and rebuilt |
 | `artifacts/getting-started/tiny-store/` | published serving store and catalog | runtime discovery source |
-| `artifacts/getting-started/server-cache/` | local runtime cache | disposable process state |
+| `artifacts/getting-started/server-cache/` | server-managed dataset artifact cache | disposable process state |
 
 The server store is not the ingest output directory. Publication copies the
 validated dataset into serving shape; promotion makes its exact
 `release/species/assembly` identity discoverable through the catalog.
+
+## Understand the Local Process Boundaries
+
+The local loop uses one repository and filesystem, but it still crosses real
+ownership boundaries.
+
+```mermaid
+flowchart LR
+    CLI["CLI workflow"] --> Ingest["Ingest candidate builder"]
+    Ingest --> Store["Published local store"]
+    CLI --> Catalog["Catalog promotion"]
+    Catalog --> Store
+    Client["HTTP client"] --> Server["Atlas server"]
+    Server --> Manager["Dataset cache manager"]
+    Manager --> StorePort["Runtime store port"]
+    StorePort --> Store
+    Server --> Query["Query capabilities"]
+```
+
+The CLI coordinates ingest, validation, publication, and promotion. The server
+constructs the local store backend behind the runtime store port, owns dataset
+and response caches, and invokes query capabilities. The `bijux-atlas-runtime`
+crate supplies configuration, policy, and store abstractions; it is not another
+daemon to start between the server and local store.
 
 ## Run the Local Loop
 
