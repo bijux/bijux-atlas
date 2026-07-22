@@ -40,6 +40,33 @@ flowchart LR
 - Successful output preserves enough release and request context to be
   interpreted against the owning contract.
 
+## Runtime Admission Model
+
+The running process makes three admissions before a scientific result can be
+returned. They fail independently and have different recovery owners.
+
+```mermaid
+flowchart LR
+    Start["process startup"] --> Process{"configuration and dependencies admissible?"}
+    Process -->|no| Stop["fail startup or remain unready"]
+    Process -->|yes| Traffic{"instance eligible for traffic?"}
+    Traffic -->|no| Drain["withhold readiness"]
+    Traffic -->|yes| Request{"principal, dataset, and work admissible?"}
+    Request -->|no| Reject["typed rejection + audit and telemetry"]
+    Request -->|yes| Execute["bounded query execution"]
+```
+
+| Admission | Establishes | Does not establish |
+| --- | --- | --- |
+| process | effective configuration is valid and selected adapters can be composed | catalog freshness, target capacity, or caller authority |
+| traffic | the instance meets the configured readiness contract for its current catalog mode | every route is authorized or every query will succeed |
+| request | the caller, dataset selection, and work estimate satisfy the applicable policy | biological correctness beyond the selected published artifact |
+
+Treat these as state transitions, not synonyms for “healthy.” A live process
+may be intentionally unready. A ready process may correctly reject an
+unauthorized or excessive request. A successful request says nothing about an
+unexercised failure or capacity boundary.
+
 ## Follow the Running System
 
 | Question | Read |

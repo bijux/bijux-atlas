@@ -100,6 +100,36 @@ artifact and cache provenance where the route contract supports it. Preserve
 these fields in client diagnostics; they are needed to distinguish a repeated
 request from a response served from different published bytes.
 
+## Authorization Decision Trace
+
+Authorization evidence must preserve the inputs to the decision without
+retaining credentials. A status code alone cannot show whether identity was
+missing, invalid, underprivileged, or applied to the wrong resource.
+
+```mermaid
+flowchart LR
+    Route["matched route"] --> Class["service, dataset, or administrative class"]
+    Credential["credential or exempt-route context"] --> Principal["validated principal class"]
+    Class --> Decision["action + resource authorization"]
+    Principal --> Decision
+    Decision --> Outcome["allow or deny"]
+    Outcome --> Audit["request, policy, release, and correlation evidence"]
+```
+
+| Decision element | Evidence to retain | Never retain as proof |
+| --- | --- | --- |
+| route classification | normalized route and service, dataset, or administrative class | raw unbounded URL data |
+| identity | principal identifier or class, authentication mode, issuer or key version | token, API key, private key, or secret value |
+| authorization | action, resource kind, resource identity, policy version, and verdict | a role name with no evaluated action or resource |
+| request context | request ID, trace ID, runtime release, effective config identity, and dataset tuple | correlation ID without the decision fields |
+| outcome | stable status and error code plus whether domain work began | HTTP status alone |
+
+Negative checks are first-class evidence. Exercise a missing credential, an
+invalid credential, a valid but unauthorized principal, and an authorized
+principal for each protected route class required by the deployment claim.
+Network isolation remains separate: an application-level denial does not prove
+that an administrative route is unreachable from an untrusted network.
+
 ## Admission and Work Budgets
 
 Admission is layered so expensive work is rejected before consuming the most
