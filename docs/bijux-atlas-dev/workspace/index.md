@@ -9,60 +9,50 @@ last_reviewed: 2026-07-22
 
 # Workspace
 
-The Atlas repository separates authored contracts, product implementation,
-generated references, operational inputs, and disposable run output. That
-separation determines what may be edited, what must be regenerated, and what
-can support a release claim.
+The repository separates authored authority, governed derived content, and
+disposable run output. That distinction determines what can be edited, what
+must be regenerated, and what can support a review or release decision.
 
 ```mermaid
-flowchart TD
-    Contracts[Authored configs, schemas, and registries] --> Generate[Governed generation]
-    Product[Product and control-plane source] --> Build[Build and validation]
-    Ops[Authored deployment and scenario inputs] --> Execute[Operational execution]
-    Generate --> Governed[Governed generated references]
-    Build --> Artifacts[Disposable local artifacts]
-    Execute --> Artifacts
+flowchart LR
+    Authored[Authored source] --> Generate[Owned generator]
+    Generate --> Governed[Governed derived content]
+    Authored --> Execute[Build or execute]
+    Execute --> Local[Local artifacts]
     Governed --> Review[Repository review]
-    Artifacts --> Evidence{Promoted into a governed evidence location?}
-    Evidence -->|yes| Review
-    Evidence -->|no| Dispose[Discard or reproduce]
+    Local --> Promote{Governed workflow accepts it?}
+    Promote -->|yes| Evidence[Retained evidence]
+    Promote -->|no| Dispose[Discard or reproduce]
+    Evidence --> Review
 ```
 
-## Repository Authorities
+## Repository authorities
 
-| Path | Ownership | Change rule |
+| Path | Owns | Change rule |
 | --- | --- | --- |
-| `crates/` | product, operations-contract, and maintainer implementations | change the narrowest owning crate and preserve dependency direction |
-| `configs/` | schemas, policies, registries, examples, and governed references | edit authored inputs; regenerate managed outputs through their owner |
-| `ops/` | deployment, observability, load, resilience, and release contracts | bind changes to the affected profile, scenario, or evidence family |
-| `docs/` | public product, operator, and maintainer handbooks | write for the reader and validate navigation, links, and contract claims |
-| `makes/` | thin command aliases | keep orchestration in Rust control-plane commands |
-| `artifacts/` | local outputs, reports, caches, and run products | treat as disposable unless a governed workflow promotes an output |
+| `crates/` | Product, operations-library, and maintainer implementations | Change the narrowest owning crate and preserve dependency direction |
+| `configs/` | Schemas, policies, registries, examples, and governed references | Edit authored inputs; regenerate managed consumers through their owner |
+| `ops/` | Deployment, observability, load, resilience, and release contracts | Bind a change to its profile, scenario, or evidence family |
+| `docs/` | Public product, operator, and maintainer handbooks | Write for the reader and verify navigation, links, and claims |
+| `makes/` | Thin command aliases | Keep durable orchestration in typed control-plane commands |
+| `artifacts/` | Local reports, caches, and run products | Treat output as disposable until a governed workflow promotes it |
 
 Generated files are not a second authoring surface. Their provenance must lead
-to an authored source and a reproducible generator. A manual edit that cannot
-survive regeneration is not a durable repository change.
+to an authored source and reproducible generator. A manual edit that disappears
+on regeneration is not a durable change.
 
-## Route by Change
+## Route by change
 
 | Change | Read before editing |
 | --- | --- |
-| local setup or command discovery | [Local Development](local-development.md) and [Maintainer Entrypoints](maintainer-entrypoints.md) |
-| crate ownership or dependency direction | [Package Surface](package-surface.md), [Crate Boundary Review](crate-boundary-review.md), and [Runtime Ownership Boundary](runtime-ownership-boundary.md) |
-| generated or checked-in derived content | [Generated Files](generated-files.md) and [Inventory Registry](inventory-registry.md) |
-| local outputs or retained evidence | [Artifact Roots](artifact-roots.md) |
-| cross-cutting ownership decision | [Decision Records and Ownership](decision-records-and-ownership.md) |
+| setup or command discovery | [Local Development](local-development.md) and [Maintainer Entrypoints](maintainer-entrypoints.md) |
+| crate boundaries | [Package Surface](package-surface.md), [Boundary Review](crate-boundary-review.md), and [Runtime Ownership](runtime-ownership-boundary.md) |
+| generated content | [Generated Files](generated-files.md) and [Inventory Registry](inventory-registry.md) |
+| local output or retained evidence | [Artifact Roots](artifact-roots.md) |
+| cross-cutting ownership | [Decision Records and Ownership](decision-records-and-ownership.md) |
 | repository invariant | [Repository Laws](repository-laws.md) |
-| normal contribution | [Contributor Workflow](contributor-workflow.md) and [Workspace and Tooling](workspace-and-tooling.md) |
+| contribution flow | [Contributor Workflow](contributor-workflow.md) and [Workspace and Tooling](workspace-and-tooling.md) |
 
-## Integrity Rules
-
-- A repository path has one durable owner even when several workflows consume it.
-- Authored inputs and generated outputs are reviewed as different change types.
-- Local execution writes disposable output under `artifacts/` unless the
-  workflow owns another governed destination.
-- A report is evidence only for the source, inputs, capabilities, and run
-  identity it records.
-- Runtime code must not depend on repository-only maintainer automation.
-- A clean worktree and reproducible generation are part of reviewability, not
-  cosmetic preferences.
+One path has one durable owner even when many workflows consume it. A report is
+evidence only for the source, inputs, capabilities, and run identity it records.
+A clean worktree and reproducible generation make that ownership reviewable.

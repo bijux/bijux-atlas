@@ -9,107 +9,85 @@ last_reviewed: 2026-07-22
 
 # Automation
 
-Atlas automation is a typed repository control plane. It resolves command
-ownership, validates explicit inputs, declares required capabilities, and emits
-structured reports. Shell and Make entrypoints remain adapters around that
-model rather than independent sources of repository behavior.
+Atlas automation resolves command ownership, loads explicit inputs, gates
+effects, and emits structured results. Shell, Make, and umbrella entrypoints are
+adapters around that control plane; they are not independent sources of
+repository behavior.
+
+## Route parity
 
 ```mermaid
 flowchart LR
-    Caller[Maintainer, CI, or wrapper] --> Command[Resolve command and owner]
-    Command --> Inputs[Load explicit repository inputs]
-    Inputs --> Capabilities{Capabilities allowed?}
-    Capabilities -->|no| Deny[Refuse execution]
-    Capabilities -->|yes| Execute[Run focused operation]
-    Execute --> Report[Emit status, findings, and artifact paths]
-    Report --> Decision[Review or automation decision]
-```
-
-## Entry Points
-
-| Surface | Role | Stability boundary |
-| --- | --- | --- |
-| `bijux dev atlas ...` | installed maintainer route in a Bijux environment | delegated command route |
-| `bijux-atlas-dev ...` | direct control-plane binary | authoritative repository command implementation |
-| `cargo run -p bijux-atlas-dev -- ...` | checkout execution of the direct binary | source-tree command behavior |
-| `make ...` | curated convenience aliases | wrapper only; must not own hidden orchestration |
-
-Command discovery, Clap exposure, registries, and report registries are related
-but distinct inventories. A command listed in one is not automatically callable
-through every entrypoint. Verify the exact route and its `--help` output before
-building automation around it.
-
-## Route Parity
-
-A durable automation route has four agreeing layers:
-
-```mermaid
-flowchart LR
-    Registry[Registry identity and owner] --> Parser[CLI parser exposure]
+    Registry[Registry identity + owner] --> Parser[CLI exposure]
     Parser --> Dispatch[Dispatch implementation]
     Dispatch --> Wrapper[Umbrella or Make delegation]
-    Wrapper --> Behavior[Equivalent result and exit semantics]
+    Wrapper --> Result[Equivalent result + exit semantics]
 ```
 
-Validate the direct binary first, then each supported wrapper. Compare command
-availability, argument forwarding, default format, exit status, capability
-requirements, and report identity. Registry membership proves ownership and
-intent; it does not prove the parser, dispatcher, or wrapper exposes the route.
-
-## Capability Boundary
-
-Read-only commands should require no filesystem writes, network, subprocess,
-or cluster access. Commands that need those powers must declare them and fail
-when they are unavailable. Capability denial is a controlled outcome, not a
-reason to bypass the control plane with an untracked shell command.
-
-| Capability | Typical use | Review concern |
+| Surface | Role | Contract boundary |
 | --- | --- | --- |
-| filesystem write | generation and governed artifact creation | destination ownership and overwrite behavior |
-| subprocess | external validators and build tools | executable identity, arguments, and captured result |
-| network | remote verification or publication | endpoint, credentials, retry, and partial failure |
-| cluster | render-independent conformance or operations | profile, context, namespace, and mutation scope |
+| `bijux dev atlas ...` | Installed maintainer route | Delegates without changing arguments or meaning |
+| `bijux-atlas-dev ...` | Direct control-plane binary | Authoritative command implementation |
+| `cargo run --locked -p bijux-atlas-dev -- ...` | Checkout execution | Behavior of the current source tree |
+| `make ...` | Curated convenience aliases | Wrapper only; no hidden orchestration |
 
-## Route by Intent
+Registry membership establishes ownership and intent. It does not prove parser
+exposure, dispatch, or wrapper parity. Compare argument forwarding, default
+format, exit status, capability requirements, and report identity through every
+supported route.
 
-- [Automation Command Surface](automation-command-surface.md) inventories the
-  exposed command model.
-- [Command Routing](command-routing.md) traces umbrella, direct binary, and
-  wrapper delegation.
-- [Automation Control Plane](automation-control-plane.md) defines execution and
-  capability boundaries.
-- [Automation Reports Reference](automation-reports-reference.md) defines
-  report families and validation depth.
-- [Generated Reference Workflows](generated-reference-workflows.md) governs
-  derived references and drift.
-- [Subprocess Allowance](subprocess-allowance.md) records external-tool policy.
-- [Tutorial Runs](tutorial-runs.md) separates teaching runs from release proof.
-- [Adding CLI Surface](adding-cli-surface.md), [Adding HTTP Surface](adding-http-surface.md),
-  and [Adding Contracts](adding-contracts.md) preserve ownership when the public
-  surface expands.
+## Effect boundary
 
-## Completion Contract
+```mermaid
+flowchart LR
+    Contract[Registered command] --> Required[Required effects]
+    Run[Arguments + granted effects] --> Gate{Required subset granted?}
+    Required --> Gate
+    Gate -->|no| Denied[Structured denial or skip]
+    Gate -->|yes| Execute[Owned adapter]
+    Execute --> Receipt[Target-bound result]
+```
 
-A successful command exit is insufficient when required evidence is absent.
-Completion requires the report status, findings, input identity, output paths,
-and declared capabilities to agree. An empty report, skipped external check, or
-missing governed output remains visible as incomplete or failed evidence.
-
-## Report Validation Depth
-
-The generic `reports validate` command currently walks JSON files and checks
-that each `report_id` exists in the report registry and that its numeric
-`version` matches. It does not validate each payload against the registry's
-referenced JSON Schema, inspect internal `status`, or prove referenced artifacts
-exist.
-
-| Check | Establishes |
+| Effect | Record with the result |
 | --- | --- |
-| `reports validate` | registered report identity and version membership |
-| owning schema validator | payload fields and types match that report contract |
-| semantic validator | findings, status, counts, and invariants agree |
-| artifact verification | referenced outputs exist and match recorded hashes |
-| candidate binding | report inputs and outputs belong to the release under review |
+| filesystem write | Owned paths, previous and resulting identity, and generated status |
+| subprocess | Executable identity, arguments, exit status, and captured output |
+| Git | Repository, revision, worktree state, and exact operation |
+| network | Endpoint, trust policy, retrieved identity, time, and partial-failure state |
+| cluster | Profile, context, namespace, requested mutation, and admitted identity |
 
-Use all applicable layers before calling a report decision-bearing. A generic
-registry pass is useful catalog hygiene, not complete report conformance.
+Capability presence proves permission, not successful execution. Denials,
+missing tools, skipped external checks, and incomplete outputs remain explicit.
+
+## Report validation depth
+
+The generic `reports validate` route walks JSON reports and checks that each
+`report_id` exists in the registry and its numeric `version` matches. It does
+not validate payloads against referenced JSON Schemas, inspect internal status,
+or prove that referenced artifacts exist.
+
+| Layer | Establishes |
+| --- | --- |
+| registry validation | Report identity and version membership |
+| schema validation | Payload fields and types match the report contract |
+| semantic validation | Status, findings, counts, and invariants agree |
+| artifact verification | Referenced outputs exist and match recorded hashes |
+| candidate binding | Inputs and outputs belong to the release under review |
+
+Use every applicable layer before treating a report as decision-bearing. A
+generic registry pass is catalog hygiene, not full report conformance.
+
+## Route by intent
+
+| Need | Continue to |
+| --- | --- |
+| Discover the exposed command model | [Automation Command Surface](automation-command-surface.md) |
+| Trace direct and delegated dispatch | [Command Routing](command-routing.md) |
+| Understand execution and effects | [Automation Control Plane](automation-control-plane.md) |
+| Inspect report families | [Automation Reports Reference](automation-reports-reference.md) |
+| Regenerate governed references | [Generated Reference Workflows](generated-reference-workflows.md) |
+| Review external-tool policy | [Subprocess Allowance](subprocess-allowance.md) |
+| Separate teaching runs from release proof | [Tutorial Runs](tutorial-runs.md) |
+| Add a public command | [Adding CLI Surface](adding-cli-surface.md) |
+| Add a public HTTP route | [Adding HTTP Surface](adding-http-surface.md) |
+| Add a governed contract | [Adding Contracts](adding-contracts.md) |

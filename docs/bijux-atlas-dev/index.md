@@ -7,226 +7,106 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Atlas Maintainer Overview
+# Atlas maintainer handbook
 
-Atlas is maintained through a repository control plane, not a collection of
-unrelated scripts. `bijux-atlas-dev` gives maintainers and CI one command model
-for documentation, configuration, governance, operations, security, load, and
-release evidence.
+`bijux-atlas-dev` is the repository control plane used by maintainers and CI.
+It discovers owned contracts, validates explicit inputs, gates effects, and
+emits structured reports for documentation, governance, operations, security,
+load, and release work. It is repository infrastructure, not a runtime
+dependency or an alternate implementation of product behavior.
 
-It is repository-only infrastructure. Product behavior remains in the Atlas
-runtime crates; reusable operational models remain in `bijux-atlas-ops`.
-
-## Ownership Boundaries
+## Ownership direction
 
 ```mermaid
 flowchart TB
-    Product[Product crates] --> ProductBehavior[Dataset, query, API, and runtime behavior]
-    Ops[Operations contracts] --> OpsBehavior[Topology, policy, load, and release models]
-    Dev[Maintainer control plane] --> RepoBehavior[Validation, generation, reports, and delivery]
-    RepoBehavior -. validates .-> ProductBehavior
-    RepoBehavior -. validates .-> OpsBehavior
+    Product[Product crates] --> Behavior[Dataset, query, API, runtime behavior]
+    Ops[Operations contracts] --> Policy[Topology, security, load, release policy]
+    Dev[Maintainer control plane] --> Evidence[Validation, generation, reports, delivery]
+    Evidence -. inspects .-> Behavior
+    Evidence -. inspects .-> Policy
 ```
 
-Validation may inspect product and operations contracts, but it does not own
-their behavior. Keeping that direction explicit prevents repository automation
-from becoming a runtime dependency or a competing implementation of an
-operator contract.
+Product crates own serving behavior. `bijux-atlas-ops` owns reusable operating
+models. The maintainer control plane can validate both, but must not become a
+dependency of either.
 
-## The Maintainer Trust Loop
+## Work from the changed contract
 
 ```mermaid
 flowchart LR
-    C["Proposed change"] --> O["Resolve owner and contract"]
-    O --> P["Select focused control-plane command"]
-    P --> V["Validate behavior and evidence"]
-    V --> D{"Contract satisfied?"}
-    D -->|no| C
-    D -->|yes| R["Review and promotion"]
-    R --> E["Preserved report or release evidence"]
+    Change[Proposed change] --> Owner[Find durable owner]
+    Owner --> Contract[Identify affected contract]
+    Contract --> Command[Select focused command]
+    Command --> Report[Inspect status + findings + artifacts]
+    Report --> Decision{Contract satisfied?}
+    Decision -->|no| Change
+    Decision -->|yes| Review[Review with retained evidence]
 ```
 
-The loop starts with ownership. A values change is evaluated as Kubernetes
-configuration; an API change is evaluated against compatibility contracts; a
-load change is evaluated against a named scenario and baseline. The command is
-chosen after the contract, not before it.
+| Change | First proof | Broader consequence to inspect |
+| --- | --- | --- |
+| public documentation | Navigation, links, Markdown, and stated contract facts | Reader journey and generated navigation |
+| product API or CLI | Owning tests and compatibility contract | Downstream examples, wrappers, and release promises |
+| schema or policy | Owning validator plus positive and negative fixtures | Generated consumers and enforcement parity |
+| Kubernetes values or chart | Schema, render, policy, and inventory | Rollout, security, telemetry, and rollback |
+| load scenario or threshold | Registry, runner, measurement, and baseline compatibility | CI lane, operating envelope, and promotion policy |
+| release material | Fresh packet, checksum, provenance, and consumer verification | Channel state, deployment qualification, and withdrawal |
 
-## Control-Plane Entry Points
+Choose the command after identifying the contract. A broad suite cannot explain
+whether the changed boundary itself has complete proof.
 
-The direct checkout command is:
+## Entry points
+
+From a checkout:
 
 ```bash
-cargo run -p bijux-atlas-dev -- --repo-root "$PWD" --help
+cargo run --locked -p bijux-atlas-dev -- --repo-root "$PWD" --help
 ```
 
-Installed Bijux environments expose the same surface under:
+From an installed Bijux environment:
 
 ```bash
 bijux dev atlas --help
 ```
 
-| Question | Start here |
+| Question | Begin with |
 | --- | --- |
-| What commands, checks, or reports exist? | `list`, `describe`, `registry`, `reports` |
-| Is the documentation coherent? | `docs validate`, `docs links`, `docs nav-integrity` |
-| Are repository policies satisfied? | `governance`, `policies`, `invariants`, `check` |
-| What would an operational action do? | `ops plan`, `ops describe`, profile and scenario commands |
-| Is a deployment shape valid? | `ops render`, `ops validate`, `ops conformance` |
-| Has performance changed? | `load baseline`, `load run`, `load compare` |
-| Is the release packet coherent? | `release`, `ops evidence`, and verification commands |
+| Which command or report owns this surface? | `list`, `describe`, `registry`, `reports` |
+| Is public documentation coherent? | `docs validate`, `docs links`, `docs nav-integrity` |
+| Are repository contracts satisfied? | `governance`, `policies`, `invariants`, `check` |
+| What would an operational action select? | `ops plan`, `ops describe`, then the owning domain route |
+| Is the release evidence coherent? | `release`, `ops evidence`, and their verification routes |
 
-Run the relevant command's `--help` before granting write, network, subprocess,
-or cluster access. Read-only inspection should remain read-only.
-
-## Evidence Is an Interface
-
-Control-plane commands emit deterministic human or JSON output. Reports carry
-the run identity, inputs, findings, status, and owned artifact paths needed by
-CI and reviewers. A missing required metric, report, schema, or capability is a
-failed or incomplete run—not a successful empty result.
-
-Stable integrations should consume documented commands, registries, schemas,
-and report fields. Internal Rust module paths and terminal presentation are not
-automation contracts.
-
-## Establish Automation Identity
-
-Before a control-plane result can support a review or release decision, bind
-five identities:
-
-| Identity | What to retain |
-| --- | --- |
-| implementation | source revision and direct binary build identity |
-| route | direct, umbrella, CI, or Make invocation plus resolved arguments |
-| inputs | governed file hashes, selected profile or scenario, and baseline identity |
-| effects | granted capabilities, external tool identities, and mutation targets |
-| outputs | report IDs and versions, artifact paths, checksums, and internal status |
-
-```mermaid
-flowchart LR
-    Source[Control-plane source] --> Route[Resolved command route]
-    Inputs[Governed inputs] --> Route
-    Route --> Effects[Declared capabilities and external tools]
-    Effects --> Result[Structured result]
-    Result --> Artifacts[Content-addressed reports and artifacts]
-    Artifacts --> Decision[Review or release decision]
-```
-
-If the same logical command behaves differently through the direct binary and
-umbrella route, preserve both observations and treat route parity as failed.
-Do not choose whichever route happens to pass.
-
-## Effects Are Granted Per Run
-
-The control plane distinguishes pure inspection from four effect classes:
-filesystem write, subprocess, Git and network. A route declares its required
-effects; the run grants them explicitly; the executor refuses or skips work
-whose requirement is not granted. A profile or suite name does not grant an
+Inspect the selected command's `--help` before granting filesystem write,
+subprocess, Git, network, or cluster effects. A profile name does not grant an
 effect by implication.
 
-```mermaid
-flowchart LR
-    Contract[registered command contract] --> Required[required effect set]
-    Request[run arguments and profile] --> Granted[granted effect set]
-    Required --> Gate{required is subset of granted?}
-    Granted --> Gate
-    Gate -->|no| Denied[structured denied or skipped result]
-    Gate -->|yes| Execute[owned adapter executes]
-    Execute --> Receipt[result with capabilities and target identity]
-```
+## Evidence interface
 
-| Effect | Boundary crossed | Receipt requirement |
-| --- | --- | --- |
-| filesystem write | repository or artifact bytes change | owned paths, before/after identity and generated status |
-| subprocess | another executable participates | executable identity, arguments, exit status and result |
-| Git | history, index or remote metadata is used | repository, revision, worktree state and operation |
-| network | result depends on an external endpoint | endpoint, trust policy, retrieved identity and time |
+Stable automation consumes documented commands, registries, schemas, exit
+semantics, and report fields. Internal Rust modules and terminal presentation
+are implementation details.
 
-Capability presence proves only that execution was permitted. The report must
-still show that the effect occurred against the intended target and produced a
-complete result. Denied effects and missing tools remain visible findings; an
-empty output is not converted into successful evidence.
+| Identity | Preserve in decision-bearing output |
+| --- | --- |
+| implementation | Source revision and direct-binary build identity |
+| route | Direct, umbrella, CI, or Make invocation with resolved arguments |
+| inputs | Governed hashes, selected profile or scenario, and baseline identity |
+| effects | Granted capabilities, external tools, and mutation targets |
+| outputs | Report IDs and versions, status, findings, artifact paths, and checksums |
 
-## Command, Report, and Decision Boundaries
+If direct and delegated routes disagree, route parity failed. Preserve both
+observations; do not select whichever result happens to pass. Missing tools,
+denied capabilities, empty output, and absent required metrics remain visible
+as incomplete or failed evidence.
 
-The control plane separates inspection, execution, and promotion so that a
-successful discovery command cannot be mistaken for evidence of a completed
-run.
+## Handbook routes
 
-| Surface | Responsibility | Trust boundary |
-| --- | --- | --- |
-| `list`, `describe`, registries | discover commands, owners, capabilities, and report types | inventory only; no runtime claim |
-| validators and doctors | evaluate a named contract against explicit inputs | valid only for the recorded source and inputs |
-| scenario runners | exercise load, conformance, resilience, or release behavior | require metrics and run identity, not an empty report shell |
-| report commands | serialize findings and artifact paths | report status must preserve missing or failed evidence |
-| release verification | bind reports, checksums, provenance, and artifacts | promotion is invalid when identities disagree |
-
-```mermaid
-flowchart LR
-    Discover[Discover owner and capability] --> Plan[Resolve inputs and authority]
-    Plan --> Run[Execute focused validation]
-    Run --> Report[Retain structured report]
-    Report --> Verify[Verify artifact binding]
-    Verify --> Promote[Make promotion decision]
-```
-
-## Security Control Custody
-
-Security assurance crosses four owners. Keeping their identities separate
-prevents a passing repository command from being mistaken for production
-security proof.
-
-| Owner | Governed surface | Evidence it can supply | Evidence it cannot supply alone |
-| --- | --- | --- | --- |
-| security model | threats, controls and exceptions | consistent intent and residual-risk records | implementation or target enforcement |
-| product and operations | runtime, chart, policy and recovery | revision-bound code and rendered controls | target execution |
-| maintainer control plane | validators, tests, reports and workflows | observations for exact inputs and tools | edge identity or production admission |
-| decision authority | required claims, findings, target policy and artifact binding | attributable accept, reject or exception | evidence absent from the underlying runs |
-
-```mermaid
-flowchart LR
-    Model[Governed threat and control model] --> Implementation[Owned implementation]
-    Implementation --> Selection[Focused security selection]
-    Selection --> Report[Internally qualified report]
-    Report --> Binding[Source and artifact binding]
-    Binding --> Decision[Authorized decision]
-    Target[Target-environment evidence] --> Decision
-```
-
-For threat-model changes, run the registry verifier and its positive and
-negative command contracts. For authorization or deployment claims, add route,
-identity, rendered-policy, admission, and reachability evidence. A threat
-registry coverage percentage measures model linkage; it is not a percentage of
-production risk removed.
-
-## Working by Risk
-
-- For a documentation-only change, validate structure, navigation, links, and
-  rendering without invoking product or cluster suites.
-- For a policy or schema change, validate the owning contract and every
-  generated consumer affected by it.
-- For a security-model change, verify registry linkage, execute the command
-  contracts, inspect internal report status, and preserve unresolved findings.
-- For an operations change, render first, inspect the plan, then run only the
-  profile and conformance evidence needed for that deployment shape.
-- For a release decision, require the source identity, governed artifacts,
-  checksums, provenance, and verification report to agree.
-
-Broad suites are useful before promotion, but they do not replace focused proof
-of the changed contract.
-
-## Handbook Routes
-
-- [Workspace](workspace/index.md) — repository layout, generated assets, local
-  development, and contribution boundaries
-- [Automation](automation/index.md) — commands, execution, reports, and
-  capability controls
-- [Governance](governance/index.md) — policies, invariants, compatibility, and
-  evidence contracts
-- [Delivery](delivery/index.md) — CI, publication, security lanes, and release
-  readiness
-- [Workflow Ownership](workflow-ownership/index.md) — review routing, required
-  checks, and operational workflow entry points
-
-For production operation rather than repository maintenance, continue to the
-[Atlas operations handbook](../bijux-atlas-ops/index.md).
+| Need | Continue to |
+| --- | --- |
+| Understand repository authorities and generated files | [Workspace](workspace/index.md) |
+| Trace commands, effects, and reports | [Automation](automation/index.md) |
+| Review policy, invariants, and compatibility | [Governance](governance/index.md) |
+| Understand CI, publication, and release readiness | [Delivery](delivery/index.md) |
+| Find review and workflow ownership | [Workflow Ownership](workflow-ownership/index.md) |
+| Operate a deployed Atlas system | [Atlas operations handbook](../bijux-atlas-ops/index.md) |
