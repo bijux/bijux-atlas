@@ -4,52 +4,70 @@ audience: maintainers
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Repository Laws
 
-Repository laws are declared data, not folk wisdom.
+Repository laws name the structural invariants Atlas expects maintainers and
+automation to preserve. Their authority is
+`configs/sources/repository/repo-laws.json`. Each row has a stable ID, severity,
+owner, and plain-language statement.
 
-## Repository Law Model
+## Declared Laws
+
+| ID | Severity | Invariant |
+| --- | --- | --- |
+| `repo_artifacts_stay_ephemeral` | high | runtime artifacts remain outside tracked source except for governed examples |
+| `repo_control_plane_stays_rust_owned` | high | repository orchestration remains in the Rust control plane |
+| `repo_docs_and_configs_are_navigable` | medium | documentation and configuration remain discoverable through indexes and ownership contracts |
+| `repo_legacy_script_roots_stay_absent` | medium | retired script and tool roots remain absent |
+| `repo_makes_entrypoint_stays_include_only` | high | the root Makefile remains a thin include entrypoint |
+| `repo_root_layout_stays_allowlisted` | high | root directories and Markdown files remain within the approved surface |
 
 ```mermaid
-flowchart TD
-    Law[Repository law] --> Statement[Rule statement]
-    Statement --> Rationale[Rationale]
-    Rationale --> Enforcement[Enforcement path]
-    Enforcement --> Evidence[Evidence of compliance]
-    Evidence --> Violations[Violation handling]
-
-    Violations --> Actionable[Repo law is actionable, not decorative]
+flowchart LR
+    Law[Stable law ID] --> Review[Review vocabulary]
+    Law --> Metadata[Owner and severity]
+    Check[Named executable check] --> Finding[Structured violation]
+    Finding --> Evidence[Run evidence]
+    Law -. conceptual relationship .-> Check
 ```
 
-The key idea is that a repository law in Atlas is not a slogan. It is a tracked rule with enough
-shape that maintainers can understand what it protects and how drift is supposed to be caught.
+The dashed edge is important. The law file does not encode a check ID,
+rationale, exception, or evidence path for each law. Enforcement is implemented
+by separately registered repository checks. A law statement is therefore an
+authoritative invariant and review vocabulary, but the file alone is not proof
+that the invariant is executable or currently passing.
 
-## Source Anchor
+## What Is Validated
 
-- [`configs/sources/repository/repo-laws.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/repository/repo-laws.json:1).
+The focused metadata check requires every law to have a non-empty ID, severity,
+and owner; rejects duplicate IDs; and requires lexicographic ordering by ID.
+It does not validate the statement field, restrict severity to a vocabulary, or
+prove one-to-one coverage by executable checks.
 
-## Current Laws In Plain Language
+```bash
+bijux-atlas-dev check run \
+  --repo-root . \
+  --id checks_repo_law_metadata_complete_and_unique \
+  --include-internal \
+  --format json
+```
 
-The current registry declares laws that say:
+Other checks enforce concrete repository properties such as root allowlists,
+tracked artifacts, Makefile shape, and retired roots. Their evidence establishes
+those named checks, not an automatic aggregate status for all six law IDs.
 
-- runtime artifacts stay out of tracked source except for governed examples.
-- repository automation orchestration stays owned by the Rust control plane.
-- docs and configs stay navigable through index and ownership contracts.
-- retired script and tool roots stay absent.
-- the root `Makefile` stays a thin include entrypoint.
-- root layout stays within the allowlisted repository surface.
+## Adding or Changing a Law
 
-## Why Maintainers Should Use These Laws
+A durable law change should coordinate four things:
 
-- they turn broad repository discipline into named rules that can be referenced in review.
-- they make structural regressions easier to explain than vague "please keep things tidy" comments.
-- they keep core architectural promises durable even when individual implementations change.
+1. a stable domain-based ID and precise statement;
+2. an accountable owner and severity;
+3. one or more named checks with unambiguous failure evidence; and
+4. documentation that maps the law to its enforcement depth and exceptions.
 
-## Main Takeaway
-
-Repository laws are Atlas's structural guardrails written as data. They matter because they let
-maintainers argue from a declared repository rule, with rationale and enforcement, instead of from
-personal preference or fading project memory.
+If enforcement is intentionally advisory or absent, say so in review. Keeping
+that gap visible is more trustworthy than implying that declaration and
+enforcement are the same mechanism.
