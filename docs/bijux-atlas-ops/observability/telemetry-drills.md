@@ -49,6 +49,29 @@ metric, trace, and log snapshot paths, trace IDs, and expected signals. Preserve
 the fault parameters, release and profile identity, actual signals, cleanup
 outcome, and recovery time as supporting context.
 
+## Safety Boundary
+
+Before injection, define blast radius, protected traffic, maximum duration,
+abort signals, cleanup owner, and recovery target. Confirm the baseline is
+healthy and that the fault can be independently observed. Do not run a drill
+when the environment is already degraded or when the cleanup path cannot be
+verified.
+
+```mermaid
+flowchart TD
+    Preflight[Healthy baseline and bounded fault] --> Inject[Inject one condition]
+    Inject --> Observe{Expected signals and safe behavior?}
+    Observe -->|yes| Cleanup[Remove fault]
+    Observe -->|unsafe or ambiguous| Abort[Abort and contain]
+    Cleanup --> Recover[Verify signal and service recovery]
+    Abort --> Recover
+    Recover --> Record[Retain result, gaps, and cleanup proof]
+```
+
+An abort is not a pass or a routine failure. It is evidence that the drill
+could not remain inside its safety contract and requires incident-style
+containment and review.
+
 ## Current Executability Gap
 
 Every runner path in `ops/observe/drills/drills.json` points to a Python file
@@ -73,6 +96,11 @@ against `ops/observe/drills/result.schema.json`.
 Fail the drill for missing or ambiguous telemetry even if service behavior is
 correct. Also fail it when a validator merely confirms that a rule file exists
 without proving the runtime signal and notification path needed by the claim.
+
+Cleanup is part of the verdict. Confirm injected resources, silences, routing
+overrides, credentials, network policy, and test data are removed or restored.
+A drill that detects the fault but leaves the environment altered is failed and
+may be an operational incident.
 
 See [Alert Rules](alert-rules.md) for paging readiness and
 [Operational Evidence Reports](operational-evidence-reports.md) for retention.

@@ -35,6 +35,25 @@ cross asynchronous boundaries. Logs must correlate with traces; traces must
 correlate with request and latency metrics. Metrics intentionally do not carry
 request or trace IDs because per-request labels would create unbounded series.
 
+## Telemetry Pipeline Boundaries
+
+```mermaid
+flowchart LR
+    Runtime[Runtime instrumentation] --> Buffer[Local buffer and exporter]
+    Buffer --> Collector[Collector]
+    Collector --> Metrics[Metrics backend]
+    Collector --> Logs[Log backend]
+    Collector --> Traces[Trace backend]
+    Metrics --> Alert[Rules and notifications]
+    Logs --> Investigate[Incident query]
+    Traces --> Investigate
+```
+
+Instrumentation success does not establish backend ingestion. Backend
+ingestion does not establish retention, queryability, alert evaluation, or
+notification delivery. Monitor and drill each boundary required by the
+operating claim.
+
 ## Structured Logs
 
 Every governed log record carries `level`, `msg`, and `request_id`; registered
@@ -94,3 +113,15 @@ behavior.
 A dashboard can show correlation without establishing causation. Confirm the
 fault through the governed contract, a controlled drill, or reproducible
 request evidence before changing traffic or data.
+
+## Signal Loss and Sampling
+
+Record exporter failures, dropped events, queue saturation, scrape gaps, clock
+skew, sampling policy, and retention limits with the observation window. A
+missing trace may be sampling; a missing metric series may be instrumentation,
+collection, or query failure. Classify the telemetry boundary before inferring
+that the runtime event did not happen.
+
+Sampling must preserve error and rare-path diagnostic value. Aggregate metrics
+remain necessary for population impact because traces cannot be assumed to
+represent the full request distribution.

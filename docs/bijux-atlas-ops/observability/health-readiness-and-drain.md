@@ -61,6 +61,27 @@ These states are not mutually reducible to process health. An overloaded
 instance can still be alive. An unready instance can still answer diagnostics.
 A draining instance may intentionally refuse work without having crashed.
 
+## Drain Timeline
+
+```mermaid
+sequenceDiagram
+    participant Control as Rollout or shutdown control
+    participant Pod as Atlas instance
+    participant Service as Service endpoints
+    participant Client
+    Control->>Pod: Begin drain
+    Pod->>Pod: Mark unready and reject new heavy work
+    Service->>Service: Remove endpoint after readiness observation
+    Client->>Pod: Complete bounded in-flight work
+    Pod->>Pod: Flush required telemetry and close dependencies
+    Control->>Pod: Terminate after grace boundary
+```
+
+Drain ordering prevents a terminating instance from receiving new traffic
+while preserving bounded in-flight work. The grace period must cover endpoint
+propagation, request limits, and required shutdown evidence. Extending it
+indefinitely hides stuck work rather than making shutdown graceful.
+
 ## Traffic Policy
 
 ```mermaid
@@ -88,6 +109,15 @@ This lets operators distinguish deliberate load shedding from a dead process.
   and promotion decisions.
 - Give drain enough time to remove the pod from endpoints and complete bounded
   in-flight work before termination.
+
+Avoid probe coupling that turns a recoverable dependency delay into a restart
+loop. Liveness should not depend on remote catalog or store health. Readiness
+may depend on them when the selected mode requires those dependencies for
+correct traffic service.
+
+Probe success can also be false confidence when the check bypasses the normal
+service path, resolves no governed dataset, or is cached by an intermediary.
+Verify endpoint, network, and request behavior in the deployed topology.
 
 ## Promotion and Recovery
 
