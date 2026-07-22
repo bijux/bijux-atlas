@@ -160,6 +160,37 @@ next safe observation or action. Close hypotheses as supported, rejected, or
 unresolved. This keeps diagnostic exploration separate from the authoritative
 incident timeline.
 
+## Incident Identity Envelope
+
+An incident may span several releases, datasets, replicas, or traffic routes.
+Preserve each identity transition rather than assigning one convenient label to
+the whole event.
+
+```mermaid
+flowchart LR
+    Client["client + route + request class"] --> Window["incident window"]
+    Runtime["runtime + configuration"] --> Window
+    Dataset["dataset + catalog epoch"] --> Window
+    Deploy["chart + profile + workload revision"] --> Window
+    Target["cluster + dependency state"] --> Window
+    Change["deploy, policy, or data change"] --> Window
+    Window --> Timeline["identity-aware timeline"]
+```
+
+| Identity change | Required timeline marker |
+| --- | --- |
+| traffic shift | source, destination, percentage, and endpoint membership |
+| workload rollout | old and new revision, image digest, and replica transition |
+| dataset promotion | old and new tuple, catalog epoch, manifest, and hashes |
+| configuration change | previous and effective digest plus activating event |
+| credential rotation | non-secret old and new version identities |
+| dependency failover | old and new endpoint or backend identity |
+
+An observation belongs to the identity active at its event time, not the state
+visible when the operator later queries it. Split metrics and conclusions at
+each transition. Otherwise a healthy replacement can hide the behavior of the
+failed revision, or stale telemetry can be blamed on the restored one.
+
 ## Preserve Evidence During Signal Loss
 
 Telemetry degradation often accompanies overload, network isolation, or a
@@ -191,6 +222,31 @@ when promotion, integrity, or security decisions require those signals.
 - Runtime rollback and dataset-store rollback are separate decisions.
 - Recovery is incomplete until representative cheap and heavy user paths match
   their expected status, latency, and provenance behavior.
+
+## Mitigation, Recovery, and Closure
+
+These are separate decisions with separate evidence:
+
+| Decision | Establishes | Does not establish |
+| --- | --- | --- |
+| mitigation | user harm or blast radius was reduced | root cause or trusted state |
+| stabilization | operating signals remain bounded for a stated window | permanent repair |
+| recovery | selected runtime, data, and security authorities are coherent | recurrence prevention |
+| closure | monitoring window passed and remaining work has owners | that uncertainty disappeared |
+
+```mermaid
+stateDiagram-v2
+    [*] --> Impact
+    Impact --> Mitigated: reversible control reduces harm
+    Mitigated --> Recovered: authoritative state restored
+    Recovered --> Observed: qualification window passes
+    Observed --> Closed: residual risk accepted and owned
+    Recovered --> Mitigated: trigger or integrity check fails
+```
+
+Closure records unresolved hypotheses and lost evidence explicitly. “Unknown”
+is a valid bounded conclusion; converting it to “not observed” or “resolved”
+weakens the incident record and the next release decision.
 
 ## Exit and Escalation Criteria
 

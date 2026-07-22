@@ -56,6 +56,38 @@ An incident record adds detection time, first user impact, containment actions,
 recovery time, and integrity assessment. It also preserves the evidence that
 ruled out competing causes.
 
+## Assemble an Incident Packet
+
+An incident packet is a graph of related evidence, not one exported dashboard
+or a prose summary. Its manifest joins independently captured objects to the
+timeline and decision ledger.
+
+```mermaid
+flowchart TD
+    Identity["release + dataset + target identities"] --> Manifest["incident manifest"]
+    Timeline["observations + transitions"] --> Manifest
+    Signals["metrics + logs + traces + probes"] --> Manifest
+    Changes["deploys + policy + traffic actions"] --> Manifest
+    Integrity["catalog + store + artifact verification"] --> Manifest
+    Decisions["hypotheses + actions + authorizations"] --> Manifest
+    Manifest --> Verify["independent digest and lineage verification"]
+    Verify --> Closure["closure or escalation record"]
+```
+
+| Packet member | Minimum identity |
+| --- | --- |
+| raw signal | source, query, event window, capture time, and digest |
+| workload state | cluster, namespace, workload revision, and observation time |
+| data state | dataset tuple, catalog epoch, manifest, and payload hashes |
+| change event | authorizer, executor, target, old state, new state, and time |
+| hypothesis | predicted and disconfirming evidence plus disposition |
+| recovery result | selected authority, checks performed, window, and residual risk |
+
+Keep raw captures immutable. Corrections, redactions, and normalized forms are
+new child objects with their own digests and parent links. A later diagnosis
+may supersede an earlier decision, but must not rewrite the evidence or remove
+the uncertainty visible at that time.
+
 ## Preserve the Decision Ledger
 
 The evidence packet needs the reasoning between raw signals and the final
