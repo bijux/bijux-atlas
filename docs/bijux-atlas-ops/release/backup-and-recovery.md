@@ -88,6 +88,27 @@ needed to read protected backups, then authoritative artifacts and catalog,
 then policy and runtime configuration, and only then rebuild disposable caches.
 Do not allow a rebuilt cache to become evidence for an unverified store.
 
+## Recover Access Without Collapsing Trust
+
+Recovery credentials, encryption keys, trust roots, and verifier policy are
+dependencies of the restore, not ordinary members of the same untrusted
+archive. If every access and verification input is protected by the system it
+must unlock, the backup may be intact but operationally unrecoverable.
+
+| Trust input | Independent recovery requirement | Acceptance evidence |
+| --- | --- | --- |
+| encryption key | recoverable key generation under separate custody and quorum or break-glass policy | key generation opens the named backup without exposing key material |
+| storage credential | least-privilege restore identity with audited issuance and expiry | only the selected recovery set is readable or writable as intended |
+| release expectation | expected outer digest or release identity outside the restored packet | restored members match the independently supplied identity |
+| trust and withdrawal policy | current verifier roots, policy, revocations, and time source | verifier records the policy identity and current authorization result |
+| target authority | named approver for restore, traffic transfer, and writer activation | decision record binds recovery point, target, and accepted evidence |
+
+Use separate identities for reading the backup, materializing the isolated
+restore, verifying it, and activating service. Record each grant and revoke
+temporary access after the boundary it owns completes. A break-glass action
+must leave an audit record and cannot substitute for restored least-privilege
+operation.
+
 ## Restore Validation Sequence
 
 ```mermaid

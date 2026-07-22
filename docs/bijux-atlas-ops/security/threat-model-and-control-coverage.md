@@ -43,7 +43,7 @@ status. Verify the evidence content and bind it to the candidate under review.
 
 | Threat family | Protected concern | Evidence needed beyond registry validity |
 | --- | --- | --- |
-| runtime spoofing and unauthenticated access | trusted caller boundary and default-deny access | configured identity mode, allowed and denied route checks, ingress boundary, and audit attribution |
+| runtime spoofing and unauthenticated access | trusted caller boundary and default-deny access | identity mode, route checks, ingress boundary, and audit attribution |
 | secret disclosure | credentials in logs, reports, configuration, and evidence | redaction tests, evidence scanning, secret-version handling, and incident detection |
 | artifact or evidence tampering | release and review bytes after production | recomputed digests, provenance agreement, consumer verification, and independent trust expectation |
 | dependency outage | bounded readiness and serving behavior | failure injection, protected-route behavior, recovery timing, and residual-state proof |
@@ -74,6 +74,35 @@ missing implementation is a control gap. A missing live exercise is an
 assurance gap. A missing audit record is a detection gap. A missing candidate
 identity is an evidence-binding gap. These failures have different owners and
 must not collapse into a generic security status.
+
+## Evaluate Coverage in Context
+
+A check can support several threats, but its result transfers only when the
+enforcement boundary, configuration, environment, and observation window still
+match. Counted mappings are inventory evidence, not effectiveness evidence.
+
+| Coverage question | Required context | Common false conclusion |
+| --- | --- | --- |
+| Is the threat in scope? | asset, exposure, actor, entry point, and impact | a threat is absent because its current registry category differs |
+| Is the mitigation present? | implementation revision and effective configuration | a linked check means the control exists in the deployed target |
+| Was prevention exercised? | positive and negative case against the owning boundary | a successful allowed path proves denial behavior |
+| Was detection exercised? | expected event, sink, correlation, retention, and query result | emitted telemetry remained available and attributable |
+| Is the result reusable? | unchanged identities plus a declared validity window | last release's result applies to a changed profile or dependency |
+| Is residual risk accepted? | remaining likelihood, impact, compensating controls, owner, and expiry | all mapped checks erase the threat |
+
+```mermaid
+flowchart LR
+    Mapping["Threat-to-control mapping"] --> Context["Effective target context"]
+    Context --> Exercise["Preventive and detective exercise"]
+    Exercise --> Finding["Findings and evidence gaps"]
+    Finding --> Risk["Residual risk decision"]
+    Risk --> Validity["Scope and expiry"]
+```
+
+Reopen coverage when an identity used by the result changes or the validity
+window expires. A lower-severity environment may reuse implementation evidence,
+but it cannot silently transfer an exposure, likelihood, or acceptance decision
+to a more privileged target.
 
 ## Validate the Model
 

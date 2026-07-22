@@ -39,13 +39,13 @@ evidence bindings must be regenerated and reverified for the new set.
 
 | Boundary | Direct evidence | Claim boundary |
 | --- | --- | --- |
-| source and dependency | source revision, lock state, allowed source policy, dependency audit, toolchain identity | inputs were the governed set; not that produced bytes reached the consumer unchanged |
+| source and dependency | revision, lock state, source policy, audit, and toolchain | inputs were governed; not that consumer bytes are unchanged |
 | build | reproducible inputs, builder and environment identity, output digests | outputs are attributable to the recorded build; not external producer authenticity |
-| package and deployment | crate/package inventory, chart, values, immutable image or bundle reference | the declared release surface is complete; not target admission or runtime safety |
+| package and deployment | package inventory, chart, values, and immutable reference | declared release surface is complete; not target admission |
 | composition | SBOM tied to the exact profile or artifact digest | components are declared for that artifact; not absence of all vulnerabilities |
 | evidence | scenario, report, policy, audit, and compatibility identities | selected claims were exercised; not claims omitted by the release policy |
 | transport integrity | checksum ledger, packet manifest, provenance, and fresh recomputation | received members match the received ledger; not who supplied the complete set |
-| consumer authorization | independent expected identity, withdrawal status, compatibility, target policy, and verification receipt | this consumer may deploy these exact bytes in this environment |
+| consumer authorization | expected identity, withdrawal, compatibility, target policy, and receipt | this target may deploy these exact bytes |
 
 ## Current Integrity Mechanism
 
@@ -103,6 +103,36 @@ resolved channel references, packet and ledger digests, verifier and policy
 versions, verification time, findings, withdrawal observation, target profile,
 exceptions, and final decision. Store the receipt outside the received packet
 or protect it with a separate custody boundary.
+
+## Preserve Trust Through Replication and Recovery
+
+Copying an artifact to a mirror, backup, offline bundle, or restored store does
+not create a new release, but it does create a new custody path. Verify both
+content continuity and authorization at the destination.
+
+```mermaid
+flowchart LR
+    Origin["Authorized immutable release"] --> Copy["Mirror or backup copy"]
+    Copy --> Restore["Restored destination"]
+    Expectation["Independent expected identity"] --> Verify["Fresh consumer verification"]
+    Restore --> Verify
+    Policy["Current withdrawal and target policy"] --> Verify
+    Verify --> Admit{"Authorize restored bytes?"}
+```
+
+| Custody boundary | Evidence to retain |
+| --- | --- |
+| export | origin channel digest, complete member inventory, export tool identity, and time |
+| storage | object identity, encryption and key generation, retention, immutability, and access audit |
+| transfer | source and destination identities, transport integrity, and accepted member count |
+| restore | recovered object digest, manifest closure, and any format or metadata transformation |
+| reauthorization | independent expected identity, current withdrawal status, target policy, verifier, and decision |
+
+A restored checksum ledger can prove internal coherence only relative to the
+restored ledger. It cannot establish that the whole set is the release expected
+by the consumer, nor that a once-authorized release remains deployable after a
+withdrawal. Fetch the trust expectation and withdrawal state from a custody
+boundary independent of the restored packet.
 
 ## Vulnerability and Withdrawal
 
