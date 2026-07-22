@@ -59,6 +59,40 @@ does not establish an internally passing result. Review the generated statuses
 and findings before accepting security evidence, and require downstream gates
 to fail closed on invalid or failed content.
 
+## Trigger, Execution, and Acceptance
+
+```mermaid
+flowchart LR
+    Change[Candidate change] --> Trigger{Workflow triggered?}
+    Trigger -- no --> Gap[Record coverage gap]
+    Trigger -- yes --> Execute{Required commands executed?}
+    Execute -- no --> Incomplete[Record incomplete lane]
+    Execute -- yes --> Internal{Reports internally pass?}
+    Internal -- no --> Reject[Reject or govern exception]
+    Internal -- yes --> Bind{Bound to candidate artifacts?}
+    Bind -- no --> Unbound[Retain as unbound observation]
+    Bind -- yes --> Accept[Accept lane-owned claim]
+```
+
+A green workflow conclusion answers only the outermost automation question.
+Security acceptance also requires expected trigger coverage, command execution,
+internally passing reports, and binding to the exact candidate. Artifact upload
+with `if: always()` preserves diagnostics; it does not convert failed content
+into passing evidence.
+
+## Coverage by Claim
+
+| Release claim | Repository lane | Additional evidence outside the lane |
+| --- | --- | --- |
+| dependency and source policy | supply chain | released SBOM, artifact provenance, and consumer verification |
+| threat controls match implementation | threat model | rendered exposure, live route tests, and incident detection |
+| protected runtime data paths | data protection | live secret delivery, storage encryption, access audit, and retention |
+| image admitted as intended | supply chain plus deployment policy | image digest, signature or ledger verification, and admission result |
+| production exposure is safe | all applicable lanes | edge identity, network reachability, authorization, and workload evidence |
+
+No repository lane observes the entire production trust boundary. Use lane
+results as inputs to deployment security review, not as a replacement for it.
+
 ## Release Use
 
 Bind each accepted report to the source revision, dependency lock state,

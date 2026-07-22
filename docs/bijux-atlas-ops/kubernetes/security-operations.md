@@ -33,6 +33,27 @@ internal service boundary. Deployments exposed beyond a private trusted network
 must remain behind an ingress authentication proxy, service mesh, or equivalent
 institutional control.
 
+## Security Planes
+
+```mermaid
+flowchart TB
+    Supply[Supply chain: source, dependencies, images, artifacts] --> Deploy[Deployment admission]
+    Identity[Identity: edge and runtime authentication] --> Request[Request authorization]
+    Network[Network: ingress and egress policy] --> Request
+    Workload[Workload: pod, account, RBAC, filesystem] --> Runtime[Atlas runtime]
+    Deploy --> Runtime
+    Request --> Runtime
+    Runtime --> Data[Dataset and store integrity]
+    Runtime --> Evidence[Audit, metrics, logs, traces]
+    Data --> Decision[Security decision]
+    Evidence --> Decision
+```
+
+Each plane can fail independently. A signed image does not prove safe runtime
+authorization. A default-deny policy does not prove secret custody. A confined
+pod can still serve substituted dataset bytes. Qualification requires the
+planes needed by the selected exposure model to agree.
+
 ## Threat-to-Control Map
 
 | Threat | Preventive boundary | Detection and retained evidence |
@@ -48,6 +69,23 @@ institutional control.
 Security evidence must not reproduce credentials, bearer tokens, private keys,
 or unredacted request content. Preserve identifiers, decision metadata, and
 secret version references instead.
+
+## Credential Lifecycle
+
+Treat credential delivery as an operational lifecycle rather than a static
+Secret reference:
+
+| Boundary | Evidence |
+| --- | --- |
+| issuance | issuer, principal, scope, validity window, and non-secret version identity |
+| delivery | Secret or provider reference, service account, mount or environment target |
+| consumption | effective auth mode and successful least-privilege route tests |
+| rotation | overlap policy, rollout identity, old-version rejection, and recovery path |
+| revocation | revocation time, affected principals, cache behavior, and denied-request evidence |
+| disposal | workload termination, volume or environment removal, and retention decision |
+
+Never log credential values to prove rotation. Use version references and
+controlled positive and negative authorization tests.
 
 ## Identity and Authorization
 
@@ -127,6 +165,11 @@ authorization policy, administrative-route posture, workload confinement,
 network policy, secrets path, and artifact verification to agree. Any
 unverified boundary is a recorded exception or a failed promotion condition;
 silence is not an implicit pass.
+
+For every accepted boundary, retain both a preventive-control result and a
+detection result. Rendered non-root settings are preventive evidence; admission
+and live workload identity show enforcement. A policy file is preventive
+intent; denied and permitted route tests plus audit events show behavior.
 
 ## Security Incident Containment
 

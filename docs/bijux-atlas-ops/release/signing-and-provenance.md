@@ -41,6 +41,20 @@ flowchart LR
 Record how the expectation was obtained. A value copied from inside the same
 untrusted packet is not an independent trust anchor.
 
+## Separate the Trust Claims
+
+| Claim | Current mechanism | Current boundary |
+| --- | --- | --- |
+| integrity | SHA-256 ledger over governed members | detects byte changes relative to the received ledger |
+| internal coherence | manifest, provenance, ledger, bundle, and verifier checks | detects disagreement inside one release set |
+| source attribution | declared Git SHA and governance revision | describes origin but does not authenticate the producer |
+| authenticity | no detached signature or external signer identity | must come from an independently trusted channel or outer digest |
+| freshness | release policy and trusted channel metadata | no external timestamp or transparency-log proof |
+| deployment authorization | environment policy and operator decision | not granted by checksum verification alone |
+
+Do not compress these into “signed” or “verified.” State which claim passed and
+which trust anchor supplied it.
+
 ## Trust Chain
 
 ```mermaid
@@ -115,6 +129,29 @@ Before promotion or distribution:
 
 The verifier reads local evidence files, so it does not depend on network
 availability or a remote transparency service.
+
+## Consumer Verification Receipt
+
+Retain a local receipt with the expected release identity, source of that
+expectation, packet or outer digest, verifier version, policy digest, ledger
+digest, verification time, findings, and final deployment decision. Store the
+receipt outside the received packet or protect it with a separate custody
+boundary.
+
+```mermaid
+flowchart LR
+    Channel[Trusted channel expectation] --> Receipt[Consumer receipt]
+    Packet[Received release packet] --> Verify[Local verifier]
+    Policy[Locally trusted policy or digest] --> Verify
+    Verify --> Receipt
+    Receipt --> Authorize{Environment policy authorizes deployment?}
+    Authorize -- yes --> Deploy[Deploy exact verified bytes]
+    Authorize -- no --> Quarantine[Quarantine and investigate]
+```
+
+Verification is an input to authorization. An internally coherent packet can
+still be revoked, too old, incompatible, or disallowed in the target
+environment.
 
 ## What Verification Establishes
 
