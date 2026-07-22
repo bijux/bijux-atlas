@@ -109,6 +109,33 @@ availability but cannot support a percentage-based canary claim. Record that
 limitation and use a separately addressable candidate path or another delivery
 mode with observable routing.
 
+## Join the Candidate Evidence
+
+Controller state, endpoint eligibility, and request telemetry must identify the
+same candidate. A timestamp-only correlation is too weak when pods restart,
+Services change membership, or a rollout revision is retried.
+
+```mermaid
+flowchart LR
+    Render["Rendered template digest"] --> Revision["Rollout revision"]
+    Revision --> Pod["Pod UID and image digest"]
+    Pod --> Endpoint["Endpoint membership interval"]
+    Endpoint --> Request["Release-scoped requests"]
+    Request --> Decision["Promotion observation window"]
+```
+
+| Join | Required key | What it excludes |
+| --- | --- | --- |
+| render to revision | template digest and controller revision | a controller accepting a different pod contract |
+| revision to pod | pod UID, image digest, and configuration identity | stale or replaced candidates |
+| pod to endpoint | pod UID and readiness membership interval | requests attributed outside traffic eligibility |
+| endpoint to request | release identity, route class, and request timestamp | stable traffic hidden inside candidate totals |
+| request to decision | observation-window identity and evidence digest | post-hoc metric selection from another interval |
+
+If any join is missing, narrow the result to the last established boundary. For
+example, eligible candidate endpoints prove rollout availability; they do not
+prove representative requests executed on the candidate.
+
 ## Decision Gates
 
 | Gate | Required state | Failure action |
@@ -234,6 +261,12 @@ diff, conformance report, rollout timestamps, probe transitions, relevant
 metrics and traces, rollback decision, and final service state. For an upgrade
 or rollback claim, the install matrix must also declare the corresponding
 lifecycle scenario.
+
+Close the record with one of four explicit outcomes: promoted, recovered to the
+previous release, escalated with shared authority frozen, or incomplete. The
+last observed controller state is not a decision outcome, and a timed-out
+evidence join must remain incomplete rather than being inferred from healthy
+aggregate traffic.
 
 See [Health Readiness and Drain](../observability/health-readiness-and-drain.md)
 for endpoint semantics and [Rollout Under Load](../load/rollout-under-load.md)

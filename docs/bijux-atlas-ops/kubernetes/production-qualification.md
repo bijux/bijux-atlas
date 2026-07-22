@@ -91,6 +91,42 @@ A later gate cannot repair missing identity from an earlier gate. For example,
 a successful query does not establish which values were admitted, and a valid
 rollback plan does not establish that reversal completed.
 
+## Prove the Admission Delta
+
+The rendered manifest is proposed state. The API server's stored object is
+admitted state, and the running pod is effective state. Defaulting, mutating
+webhooks, policy controllers, sidecar injection, and scheduler decisions can
+change security, resources, networking, identity, or shutdown behavior between
+those boundaries.
+
+```mermaid
+flowchart LR
+    Authored["Profile and site override"] --> Rendered["Rendered objects"]
+    Rendered --> Submitted["Submitted object digest"]
+    Submitted --> Admitted["API-server stored object"]
+    Admitted --> Live["Effective pod and endpoints"]
+    Rendered -. semantic diff .-> Admitted
+    Admitted -. identity and behavior checks .-> Live
+```
+
+Retain a semantic diff that ignores volatile status while preserving fields
+that can change the claim: image digest, command, environment and secret
+references, service account, security contexts, volumes, probes, resources,
+scheduling, termination, labels, annotations, and network selectors. Then bind
+the admitted workload UID and template hash to the pods and endpoints exercised
+by qualification.
+
+| Admission result | Qualification consequence |
+| --- | --- |
+| expected default with documented controller identity | accept the normalized field and retain the controller and policy revision |
+| unexpected mutation of a claim-bearing field | hold qualification until the source or reviewed override explains the effective state |
+| rejected object | record policy identity and denial; a different object cannot satisfy the original render receipt |
+| live pod differs from the admitted template | investigate controller drift or replacement before collecting service evidence |
+
+This comparison turns admission from a single green response into a custody
+chain. It also prevents a live query from certifying a workload whose effective
+security or capacity no longer matches the reviewed render.
+
 ## Profile-Specific Proof
 
 ### `prod`

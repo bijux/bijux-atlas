@@ -125,6 +125,28 @@ also fail closed. Authentication-exempt service routes still require network
 exposure review because exemption changes application authorization, not who can
 reach the service.
 
+## Keep Identity Claims at Their Enforcement Boundary
+
+Atlas can receive identity from an edge proxy or runtime mechanism, apply an
+embedded authorization decision, and run inside a Kubernetes service identity.
+Those are different principals. Do not merge them into one “authenticated”
+claim.
+
+| Identity | Establishing boundary | Required evidence | It does not prove |
+| --- | --- | --- | --- |
+| client or caller | API key, token, proxy, OIDC, or mTLS path | mechanism, subject, issuer, and route tests | pod access to the store |
+| authorization principal | route classifier, action, resource, role, and policy | complete route inventory and decision trace | an upstream operator role |
+| workload principal | service account, RBAC, and workload identity | admitted pod identity and backend audit | the human caller was authorized |
+| dependency principal | store, Redis, registry, or telemetry credential | non-secret version, scope, target, and rotation | another dependency has equal privilege |
+
+The current administrative path illustrates why this separation matters. A
+route recognized by `route_is_admin_endpoint` is assigned the embedded
+`operator` principal after configured authentication checks. That assignment
+is an application classification result, not evidence that the upstream caller
+presented an independently asserted operator role. A registered admin route
+missing from the classifier instead falls through to ordinary dataset
+authorization. Neither case supports public or shared exposure.
+
 For release or exposure decisions, preserve an authorization trace rather than
 only a route response: authentication mode, non-secret principal identity,
 route class, action, resource kind and identity, policy version, allow or deny
