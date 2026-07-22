@@ -63,6 +63,37 @@ those assertions are part of the pass decision. Do not copy a weaker threshold
 into a local runner to make a candidate pass. Contract changes require an
 explicit review of the operational expectation they alter.
 
+## Resolve Policy Ownership Before Evaluation
+
+The same scenario can appear in the acceptance registry, a dedicated threshold
+file, the shared K6 contract, and an executable manifest. A trustworthy report
+records which source supplied every comparison and whether overlapping values
+agree.
+
+```mermaid
+flowchart TD
+    Scenario[Acceptance scenario] --> Resolve[Resolve required metrics and budgets]
+    Dedicated[Dedicated threshold file] --> Resolve
+    Shared[Shared K6 contract] --> Resolve
+    Manifest[Executable suite manifest] --> Resolve
+    Resolve --> Conflict{Overlapping values agree?}
+    Conflict -->|no| Invalid[Reject policy resolution]
+    Conflict -->|yes| Effective[Emit effective policy receipt]
+    Effective --> Evaluate[Evaluate raw measurement]
+```
+
+The three currently executable suites have matching values across their
+acceptance entries and dedicated threshold files. Their names are not fully
+identical: `diff_heavy` and `hpa_validation_short` are executable manifest keys,
+while the acceptance IDs and threshold filenames use hyphens. Preserve both
+identities rather than normalizing one silently.
+
+When overlapping sources disagree, do not choose the most permissive value or
+assume that one file is newer. Classify the run as policy-invalid until the
+owning contracts are reconciled. The effective policy receipt should include
+source paths and hashes, resolved operators and units, required metrics, and
+the exact comparison values used by the evaluator.
+
 ## Current Regression Limits
 
 The performance regression contract rejects a candidate when it exceeds any of

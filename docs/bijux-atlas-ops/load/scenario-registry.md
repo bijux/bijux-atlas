@@ -62,6 +62,38 @@ Those records still describe intended thresholds and lane membership, but they
 are not executable from the declared paths. A registry validator that checks
 JSON shape without resolving runner paths cannot close this gap.
 
+## Current Command Boundary
+
+The manifest consumed by `ops load plan`, `run`, and `report` exposes only
+three command keys:
+
+| Command key | K6 script | Acceptance scenario ID |
+| --- | --- | --- |
+| `mixed` | `ops/load/k6/suites/mixed-80-20.js` | `mixed` |
+| `diff_heavy` | `ops/load/k6/suites/diff-heavy.js` | `diff-heavy` |
+| `hpa_validation_short` | `ops/load/k6/suites/hpa-validation-short.js` | `hpa-validation-short` |
+
+`ops load plan diff-heavy` and `ops load plan hpa-validation-short` are not
+valid command selections; the underscore manifest keys are required. The
+hyphenated IDs remain the acceptance-registry identities. This is a join that
+evidence must state explicitly, not a naming variation operators should guess.
+
+The current `ops load list-suites` output lists the broader operational suite
+families `e2e`, `k8s`, `load`, and `obs`; it does not enumerate these three
+manifest keys. Consult `ops/load/load.toml` or a successful `ops load plan`
+receipt to establish current command executability.
+
+```mermaid
+flowchart LR
+    Key[Manifest command key] --> Plan[ops load plan receipt]
+    Plan --> Process[K6 process and raw result]
+    Scenario[Acceptance scenario ID] --> Policy[Metrics and thresholds]
+    Process --> Join{Key-to-scenario join recorded?}
+    Policy --> Join
+    Join -->|no| Qualified[Measured result without acceptance coverage]
+    Join -->|yes| Verdict[Acceptance verdict]
+```
+
 ## Scenario Identity
 
 A performance result is comparable only when these identities agree:

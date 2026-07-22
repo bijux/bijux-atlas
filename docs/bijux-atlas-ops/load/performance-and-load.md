@@ -184,6 +184,34 @@ Report the last sustainable point and the first unsustainable point. A single
 high-load sample cannot show whether the result is stable, near a cliff, or
 already generator-limited.
 
+## Quantify Repeatability and Uncertainty
+
+Threshold evaluation answers whether each observed run crossed a policy
+boundary. It does not by itself show whether a close result is repeatable.
+Before measuring, declare the repetition count, sample duration, aggregation
+rule, and invalidation conditions. Retain every valid repetition and every
+invalid attempt with its classification.
+
+| Measurement | Repeatability evidence |
+| --- | --- |
+| latency percentiles | per-run population size and percentile, spread across runs, and compatible histogram or raw-sample lineage |
+| throughput | offered, admitted, completed, rejected, and timed-out work for every repetition |
+| failure rate | denominator and failure classes per window, including deliberate shedding |
+| resource use | per-replica samples, requests and limits, throttling, and the time alignment with workload |
+| recovery | confirmed injection and removal markers plus the restored invariant for each repetition |
+
+Do not average percentile values into a synthetic percentile or merge
+incompatible request populations. When a decision is close to a boundary,
+report the full run series and the chosen conservative statistic. A single
+favorable repetition cannot replace a predeclared aggregation rule, and a
+single unfavorable but valid repetition cannot be discarded as noise without
+an owned investigation.
+
+Run-to-run variance is itself an operational signal. If the candidate moves
+between accepted and rejected states under the same declared identity, the
+result is unstable even when its mean appears acceptable. Narrow the claim or
+resolve the uncontrolled variable before promotion.
+
 ## Choosing an Execution Scope
 
 Use the smallest suite that answers the operational question:

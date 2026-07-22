@@ -37,6 +37,34 @@ often scenarios run. Threshold files define acceptable service behavior.
 Baselines make regressions visible. Generated reports carry the result into
 rollout and release review.
 
+## Distinguish the Three Selection Surfaces
+
+Atlas currently has three load-selection vocabularies. They overlap, but they
+are not interchangeable:
+
+| Selection surface | Examples | What selection means |
+| --- | --- | --- |
+| executable `ops load` manifest | `mixed`, `diff_heavy`, `hpa_validation_short` | one of three entries that `ops load plan`, `run`, and `report` can resolve from `ops/load/load.toml` |
+| acceptance scenario registry | `mixed`, `diff-heavy`, `pod-churn`, `load-under-rollout` | one of 40 declared operating experiments with lanes, metrics, and budgets |
+| lane metadata | `smoke`, `full`, `nightly`, `load-nightly` | intended scenario membership, not an executable command or execution receipt |
+
+The underscores in two executable names and hyphens in their acceptance IDs
+are significant. A report must preserve the exact selected manifest key and,
+when it makes an acceptance claim, the separately resolved scenario ID. Do not
+infer that a lane executed because a similarly named manifest entry passed.
+
+```mermaid
+flowchart LR
+    Manifest[Executable manifest key] --> Run[Measured process]
+    Registry[Acceptance scenario ID] --> Claim[Operating claim]
+    Lane[Declared lane membership] --> Coverage[Coverage expectation]
+    Run --> Join{Identities and thresholds agree?}
+    Claim --> Join
+    Coverage --> Join
+    Join -->|yes| Receipt[Qualified evidence receipt]
+    Join -->|no| Gap[Record unresolved coverage]
+```
+
 ## Valid Comparison Model
 
 ```mermaid
@@ -174,3 +202,16 @@ Failed, aborted, and invalid runs remain useful evidence. Classify harness,
 environment, telemetry, threshold, and product failures separately. Do not
 convert an incomplete run into a product pass, and do not use repeated reruns
 to select a favorable sample without preserving the full series.
+
+## Publish a Bounded Claim
+
+A load verdict should end with one sentence that names its boundary: candidate
+identity, target profile, dataset, workload, offered load, duration, cache
+condition, dependency state, accepted metrics, and observation window. Include
+the last sustainable point and first rejected point for capacity work, or the
+confirmed fault and recovery invariant for resilience work.
+
+Avoid broad conclusions such as “Atlas handles production load.” A valid run
+supports only the exercised environment and conditions. Wider claims require
+evidence across the additional scale, topology, failure domain, and duration
+being asserted.
