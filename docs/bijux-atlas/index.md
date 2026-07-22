@@ -86,6 +86,30 @@ Ownership stays split so consumers can depend on the narrowest durable surface:
 - workflow examples and machine-checked contract shapes live under
   `configs/examples/` and `configs/schemas/contracts/`
 
+## Dataset Identity
+
+Atlas does not treat a release number alone as a dataset identifier. Runtime
+selection and result provenance use the tuple `release/species/assembly`.
+
+```mermaid
+flowchart LR
+    Release[release] --> Tuple[dataset tuple]
+    Species[species] --> Tuple
+    Assembly[assembly] --> Tuple
+    Tuple --> Catalog[catalog entry]
+    Catalog --> Manifest[artifact manifest]
+    Manifest --> Result[query result]
+```
+
+The tuple is stable across catalog discovery, CLI selection, HTTP routes,
+readiness checks, cache keys, metrics, and result envelopes. Artifact hashes
+then bind that logical identity to exact bytes.
+
+Aliases such as `latest` are selectors, not stored release identity. Resolve an
+alias before execution and retain the resolved tuple in evidence. Never compare
+results across releases or assemblies merely because their gene identifiers
+look similar.
+
 ## Follow a Result
 
 ```mermaid

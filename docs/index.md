@@ -95,6 +95,33 @@ flowchart LR
 | serving | CLI, HTTP, OpenAPI, query, and runtime policy | structured results, stable errors, metrics, logs, and traces |
 | operations | stack, Kubernetes, load, security, and release contracts | results from named executable checks, measured baselines, drill results, checksums, and release packets |
 
+## One Release Identity Across the System
+
+The dataset tuple `release/species/assembly` identifies biological content, but
+an operational decision needs the surrounding runtime identity as well.
+
+```mermaid
+flowchart LR
+    Dataset["release / species / assembly"] --> Artifact["manifest + artifact digests"]
+    Artifact --> Runtime["runtime + configuration digest"]
+    Runtime --> Deploy["chart + profile + target"]
+    Deploy --> Run["scenario or observation run"]
+    Run --> Packet["release or incident packet"]
+```
+
+| Identity | Prevents this ambiguity |
+| --- | --- |
+| dataset tuple | which biological release answered the request |
+| artifact digests | which immutable files implemented that tuple |
+| runtime and configuration | which behavior and limits were active |
+| chart, profile, and target | which deployment policy reached which environment |
+| run identity | which observation window, scenario, and tools produced evidence |
+| packet digest | which evidence set informed the final decision |
+
+If any identity is absent, narrow the claim. A query can prove behavior for a
+resolved dataset without proving cluster capacity; a load run can prove a
+scenario without proving that its evidence belongs to a distributed release.
+
 ## Why the Artifact Boundary Matters
 
 Atlas exists to avoid a common failure mode in data systems: mixing raw inputs,
@@ -301,47 +328,6 @@ flowchart TB
 Atlas is not complete when it merely builds. It is complete when build, docs,
 contracts, publication channels, and operational evidence line up tightly
 enough that release decisions are reviewable instead of improvised.
-
-## Published and Repository-Only Crates
-
-The workspace declares eleven publishable Rust crates and keeps one maintainer crate repository-only.
-
-Publishable crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
-`bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,
-`bijux-atlas-ops`, `bijux-atlas-query`, `bijux-atlas-runtime`,
-`bijux-atlas-server`, and `bijux-atlas-store`.
-
-Repository-only crate: `bijux-atlas-dev`.
-
-Use this split when deciding where to start:
-- product runtime and release behavior: `bijux-atlas`, `bijux-atlas-runtime`,
-  `bijux-atlas-cli`, `bijux-atlas-server`, `bijux-atlas-api`
-- leaf implementation contracts: `bijux-atlas-core`, `bijux-atlas-model`,
-  `bijux-atlas-query`, `bijux-atlas-ingest`, `bijux-atlas-store`
-- operational surfaces: `bijux-atlas-ops`
-- repository governance and maintainer workflows: `bijux-atlas-dev`
-
-## Choose a Decision Surface
-
-Start from the surface that owns the decision in front of you.
-
-### Repository
-
-Use [Repository](bijux-atlas/index.md) when the question is about the Atlas
-product itself: datasets, releases, workflows, interfaces, runtime
-architecture, and compatibility contracts.
-
-### Operations
-
-Use [Operations](bijux-atlas-ops/index.md) when the question is about how Atlas
-runs safely: deployment, rollout safety, observability, load, recovery, and
-release operations.
-
-### Maintainer
-
-Use [Maintainer](bijux-atlas-dev/index.md) when the question is about how Atlas
-changes safely: ownership, automation, workflow control, delivery, and
-governance.
 
 ## Reference Surfaces
 

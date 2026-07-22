@@ -112,6 +112,35 @@ operation requires explicit agreement across all three.
 | evidence | behavior cannot be measured or attributed | hold promotion and retain local diagnostics |
 | cross-plane identity | release, profile, or dataset differs | reject the incoherent packet |
 
+## Operating Packet Identity
+
+Every operational result must identify both what ran and where it ran. The
+minimum join spans six authorities:
+
+| Authority | Identity retained |
+| --- | --- |
+| product | runtime revision and immutable artifact digest |
+| dataset | release, species, assembly, manifest, and payload hashes |
+| deployment | chart, values digest, profile, namespace, and workload revision |
+| target | cluster, dependency composition, and observation boundary |
+| execution | command or scenario, tool versions, start time, and run ID |
+| decision | reviewer, policy, verdict, exceptions, and packet digest |
+
+```mermaid
+flowchart LR
+    Product[product] --> Join{"identity join"}
+    Dataset[dataset] --> Join
+    Deployment[deployment] --> Join
+    Target[target] --> Join
+    Execution[execution] --> Join
+    Join --> Decision[attributable decision]
+```
+
+Telemetry labels, scenario reports, and release records do not need to repeat
+every field inline, but they must carry stable join keys. A result that cannot
+be joined back to its target and release is diagnostic material, not promotion
+evidence.
+
 ## Operational Domains
 
 ### [Stack](stack/index.md)
