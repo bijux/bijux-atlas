@@ -89,6 +89,33 @@ Stable integrations should consume documented commands, registries, schemas,
 and report fields. Internal Rust module paths and terminal presentation are not
 automation contracts.
 
+## Establish Automation Identity
+
+Before a control-plane result can support a review or release decision, bind
+five identities:
+
+| Identity | What to retain |
+| --- | --- |
+| implementation | source revision and direct binary build identity |
+| route | direct, umbrella, CI, or Make invocation plus resolved arguments |
+| inputs | governed file hashes, selected profile or scenario, and baseline identity |
+| effects | granted capabilities, external tool identities, and mutation targets |
+| outputs | report IDs and versions, artifact paths, checksums, and internal status |
+
+```mermaid
+flowchart LR
+    Source[Control-plane source] --> Route[Resolved command route]
+    Inputs[Governed inputs] --> Route
+    Route --> Effects[Declared capabilities and external tools]
+    Effects --> Result[Structured result]
+    Result --> Artifacts[Content-addressed reports and artifacts]
+    Artifacts --> Decision[Review or release decision]
+```
+
+If the same logical command behaves differently through the direct binary and
+umbrella route, preserve both observations and treat route parity as failed.
+Do not choose whichever route happens to pass.
+
 ## Command, Report, and Decision Boundaries
 
 The control plane separates inspection, execution, and promotion so that a

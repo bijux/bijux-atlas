@@ -62,6 +62,43 @@ flowchart TD
     Manifest --> Consumer[Consumer verification]
 ```
 
+## Interpret Lane Status
+
+Delivery has more state than green or red:
+
+| State | Meaning | Required action |
+| --- | --- | --- |
+| passed | the lane's owned checks and internal report status passed for the candidate | retain and bind its evidence |
+| failed | the lane executed and rejected the candidate or its evidence | stop the dependent publication path |
+| skipped | the lane did not execute for this candidate | narrow the release claim or execute it explicitly |
+| tolerated failure | automation continued after a failing command | inspect the failure; never count workflow continuation as a pass |
+| published | a channel accepted bytes | verify channel identity and reconcile other channels |
+
+Workflow conclusion and command exit are separate observations. Report status
+is another. Uploaded artifact presence and release binding add two more.
+Promotion requires all applicable observations to agree.
+
+## Partial Publication Recovery
+
+```mermaid
+flowchart TD
+    Publish[Publish candidate channels] --> Result{All required channels agree?}
+    Result -- yes --> Verify[Verify consumer-visible versions and digests]
+    Verify --> Complete[Declare coherent release]
+    Result -- no --> Freeze[Stop remaining promotion]
+    Freeze --> Inventory[Record successful, failed, and unknown channels]
+    Inventory --> Decision{Safe deterministic completion?}
+    Decision -- yes --> Resume[Resume exact candidate and verify]
+    Decision -- no --> Withdraw[Withdraw or supersede affected channels]
+    Resume --> Verify
+    Withdraw --> Record[Publish reconciliation record]
+```
+
+Do not rebuild an allegedly identical candidate after partial publication.
+Resume with retained bytes and source identity. Otherwise issue a new release
+identity. A rebuild can produce different digests while preserving the same
+human-readable version.
+
 ## Failure Rules
 
 - A skipped lane does not pass; it narrows available release claims.
