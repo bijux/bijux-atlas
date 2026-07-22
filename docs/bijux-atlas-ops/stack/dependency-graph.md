@@ -47,6 +47,33 @@ can invalidate a rollout, incident, or SLO claim even while queries succeed.
 Criticality describes stack viability; the evidence required for a particular
 decision may be stricter.
 
+## Dependency Roles
+
+```mermaid
+flowchart LR
+    Runtime[Atlas runtime] --> Serving[Serving dependencies]
+    Runtime --> Acceleration[Acceleration dependencies]
+    Runtime --> Evidence[Evidence dependencies]
+    Runtime --> Delivery[Delivery dependencies]
+    Serving --> Catalog[Catalog and object store]
+    Acceleration --> Cache[Local cache and optional Redis]
+    Evidence --> Telemetry[Collector, metrics, logs, traces]
+    Delivery --> Registry[Chart, image, package, and policy sources]
+```
+
+The declared stack graph is a composition graph, not the whole dependency
+universe. A service can be absent from startup ordering yet remain necessary
+for release retrieval, credential resolution, backup recovery, or promotion
+evidence. Record those external dependencies in the environment's operating
+inventory instead of adding false runtime edges to the generated graph.
+
+| Role | Failure policy |
+| --- | --- |
+| serving authority | fail closed when correct dataset identity or immutable bytes cannot be established |
+| acceleration | bypass or shed within policy; never substitute different data |
+| operational evidence | continue serving only within the environment's telemetry-degradation policy; hold claims requiring missing evidence |
+| delivery and recovery | block new promotion or recovery when immutable artifact or trust identity cannot be resolved |
+
 ## Dependency States
 
 ```mermaid
@@ -98,3 +125,16 @@ and confirm it agrees with `stack.toml` and the dependency contract.
 
 A missing edge can hide a real dependency. An extra edge can make an optional
 service look mandatory. Either mismatch is a release-evidence defect.
+
+## Failure-Budget Review
+
+For every edge, define connection and operation timeouts, retry ownership,
+circuit-breaking or shedding behavior, maximum queueing, and the signal that
+declares recovery. Nested retries across runtime, proxy, and dependency can
+multiply traffic and extend failure beyond the caller's deadline; one layer
+must own the retry budget.
+
+Test the graph in both directions. Dependency loss must produce the declared
+runtime behavior, and dependency recovery must restore service without stale
+identity, retry storms, or an unbounded cache refill. A health check that only
+opens a socket cannot prove either property.

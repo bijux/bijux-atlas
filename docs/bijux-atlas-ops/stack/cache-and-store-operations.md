@@ -31,6 +31,28 @@ flowchart LR
 | Serving store | Released artifact bytes and catalog identity | Availability or correctness incident | Verify integrity and restore the governed release set. |
 | Runtime cache | Recomputable acceleration state | Latency and dependency pressure | Rebuild from verified store data without changing results. |
 
+## Read-Path Authority
+
+```mermaid
+stateDiagram-v2
+    [*] --> ResolveDataset
+    ResolveDataset --> Reject: catalog cannot select an admissible release
+    ResolveDataset --> CheckCache: release identity resolved
+    CheckCache --> VerifyEntry: matching entry exists
+    CheckCache --> FetchStore: miss or eviction
+    VerifyEntry --> Respond: entry identity and contract match
+    VerifyEntry --> FetchStore: stale or incompatible entry
+    FetchStore --> VerifyArtifact: bytes retrieved
+    VerifyArtifact --> Quarantine: hash, manifest, or schema fails
+    VerifyArtifact --> PopulateCache: authoritative artifact passes
+    PopulateCache --> Respond
+```
+
+Cache lookup happens only after dataset resolution, and a hit is usable only
+when its release and output-contract identity match the request. Store bytes
+become servable only after manifest, checksum, and schema verification. A fast
+response from an unbound entry is a correctness failure, not a cache success.
+
 ## Checked-In Local Dependencies
 
 The stack manifests under `ops/stack/` are local end-to-end fixtures, not
@@ -96,6 +118,29 @@ repair for uncertain store or catalog integrity.
    and cheap-path survival.
 6. Restore normal capacity only after query correctness and operating budgets
    hold through the observation window.
+
+## Operation Boundaries
+
+| Operation | May change | Must remain invariant |
+| --- | --- | --- |
+| cache eviction | derived local or Redis entries | store bytes, catalog selection, and query semantics |
+| cache rewarm | cache population and store request volume | artifact identity and response correctness |
+| catalog refresh | discoverable selection and freshness metadata | immutable artifacts already named by hash |
+| dataset promotion | active catalog pointer | previously published immutable release bytes |
+| runtime rollout | process, image, configuration, and local cache | selected dataset unless the rollout explicitly includes data promotion |
+| store recovery | physical durable state at a named recovery point | verified manifest-to-artifact binding |
+
+Run one authority-changing operation at a time during diagnosis. Simultaneous
+runtime rollout, catalog promotion, and cache eviction removes the stable
+comparison needed to identify which boundary changed the result.
+
+## Capacity Coupling
+
+A cache outage transfers demand to local disk and the object store. Preserve
+offered query rate, hit and miss rates, store concurrency and latency, local
+disk pressure, rejection behavior, and cheap-route survival. Recovery is not
+complete merely because the cache reconnects: the backend pressure accumulated
+during misses must drain without violating correctness or overload policy.
 
 ## Evidence
 
