@@ -13,26 +13,53 @@ for Atlas. It pulls together ingest, query, store, API, cache, policy, and
 runtime configuration so the direct CLI and server crates can expose one
 coherent product.
 
-This crate is the right starting point if you are looking for:
+```mermaid
+flowchart TB
+    CLI[bijux-atlas-cli] --> Runtime[bijux-atlas-runtime]
+    Server[bijux-atlas-server] --> Runtime
+    Runtime --> Contracts[configuration and errors]
+    Runtime --> Policy[security and policy]
+    Runtime --> Ports[store, network, clock, process ports]
+    Ports --> Store[bijux-atlas-store]
+    CLI --> Ingest[bijux-atlas-ingest]
+    Server --> Query[bijux-atlas-query]
+    API[bijux-atlas-api] --> Server
+```
 
-- GFF3 and FASTA ingest in Rust
-- immutable genome annotation dataset artifacts
-- gene and transcript query APIs
-- the composed runtime used by the Atlas server and OpenAPI export surfaces
+The runtime is the composition boundary, not a second owner for every domain.
+Leaf crates remain responsible for ingest, query, store, model, and wire
+semantics. The runtime selects implementations, validates configuration, and
+provides application ports that keep process code independent of concrete
+backends.
 
-## What This Crate Owns
+## Public Architecture
+
+| Module | Responsibility | Stable reason to depend on it |
+| --- | --- | --- |
+| `contracts` | Runtime configuration artifacts and stable error context. | Validate or exchange process configuration without importing a binary. |
+| `domain` | Runtime-owned cluster, security, policy, and deterministic-time rules. | Apply product policy consistently across CLI and server hosts. |
+| `app` | Application ports and cache orchestration. | Supply or test store, filesystem, network, clock, process, and telemetry adapters. |
+| `adapters` | Concrete outbound integrations. | Run the composed application against supported filesystem and store implementations. |
+| `runtime` | Settings, paths, environment resolution, and build identity. | Resolve the same effective configuration as shipped processes. |
+| `packaged` | Packaged resource access. | Consume runtime-owned resources without relying on repository paths. |
+
+Dependencies point inward: binaries depend on runtime services, runtime
+services depend on ports and domain contracts, and adapters implement those
+ports. Transport details do not become domain rules, and persistence details do
+not leak into API envelopes.
+
+## Composition Guarantees
 
 - runtime composition across ingest, query, store, API, and policy crates
 - application wiring, cache setup, runtime config, and orchestration
 - shared product-facing runtime modules consumed by CLI and server owners
 - feature-flagged backend selection for local and remote storage integrations
-
-## Choose This Crate When
-
-- you need the composed Atlas runtime as a Rust dependency
-- you are changing cross-crate orchestration rather than one leaf boundary
-- you want the central runtime view without going through the compatibility
-  alias crate
+- deterministic behavior: randomness is forbidden and time-sensitive work uses
+  explicit policy or ports
+- configuration precedence and effective values are inspectable rather than
+  hidden in process-specific startup code
+- backend selection is compile-time explicit through features and runtime
+  explicit through validated settings
 
 ## Related Shipped Surfaces
 
@@ -45,7 +72,20 @@ This crate is the right starting point if you are looking for:
 - Rust library modules rooted in `adapters`, `app`, `contracts`, `domain`, and
   `runtime`
 
-## How It Fits With `bijux-cli`
+## Select Features Deliberately
+
+| Feature | Effect |
+| --- | --- |
+| `backend-local` | Enables the local filesystem-backed store integration; included by default. |
+| `backend-s3` | Adds the S3-like store integration and retains local support. |
+| `jemalloc` | Selects the optional allocator for shipped process integrations. |
+| `bench-ingest-throughput` | Enables heavyweight ingest benchmark targets. |
+
+Disable default features when a consumer needs a narrow contract-only build,
+then enable only the backend it will operate. Feature selection does not choose
+a live store by itself; validated runtime configuration remains authoritative.
+
+## Direct and Umbrella Commands
 
 Atlas owns the genomic dataset runtime itself. The sibling `bijux-cli`
 repository owns the umbrella command runtime that can route Atlas under
@@ -56,14 +96,14 @@ Use this crate when you want the canonical Atlas runtime and libraries
 directly. Use `bijux-cli` when you want a shared command root that can host
 Atlas alongside other Bijux tools.
 
-## What It Does Not Own
+## Ownership Boundary
 
 `bijux-atlas-runtime` is not the direct owner of the installed CLI binary, the
 installed server binary, the OpenAPI binary, or maintainer governance
 automation. Those surfaces belong to `bijux-atlas-cli`,
 `bijux-atlas-server`, `bijux-atlas-api`, and `bijux-atlas-dev`.
 
-## Install and Verify
+## Install the Shipped Processes
 
 Choose one install route at a time.
 
@@ -103,38 +143,6 @@ cargo run -p bijux-atlas-api --bin bijux-atlas-openapi -- --out ./openapi.json
 
 The GitHub Pages site is the human-facing documentation surface. `docs.rs` is the API reference
 for the Rust crate itself.
-
-## Scope
-
-Use this crate when you need to:
-
-- build immutable genomic dataset artifacts from GFF3 and FASTA inputs
-- run Atlas dataset and catalog workflows locally or in CI
-- serve Atlas through the HTTP runtime via `bijux-atlas-server`
-- generate the published OpenAPI description via `bijux-atlas-api`
-- integrate against the crate-owned domain, contract, and runtime modules
-
-This crate does not own repository governance, release automation, or
-documentation publishing. Those maintainer workflows live in
-`bijux-atlas-dev` and the repository-level docs and ops contracts.
-
-## Main Workflows
-
-- `config`: inspect and validate runtime configuration inputs
-- `catalog`: validate, publish, roll back, and promote catalog artifacts
-- `dataset`: verify dataset roots and dataset-level contracts
-- `ingest`: build governed ingest artifacts from source datasets
-- `diff`: compare dataset and catalog artifacts
-- `gc`: plan and apply garbage collection for managed artifacts
-- `policy`: validate and inspect policy-governed behavior
-- `openapi`: export the API contract through the API-owned binary surface
-
-## Feature Flags
-
-- `backend-local`: enable the local filesystem-backed store integration
-- `backend-s3`: enable the S3-like store integration on top of the local backend support
-- `jemalloc`: enable the optional allocator override
-- `bench-ingest-throughput`: enable the heavier ingest benchmark targets
 
 ## Stability and Contract Policy
 
