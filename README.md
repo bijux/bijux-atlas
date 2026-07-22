@@ -324,6 +324,20 @@ flowchart LR
     Release --> Proof[Checksums, provenance, and release packet]
 ```
 
+The operational surface is organized by decisions rather than tool names:
+
+| Decision | Start with | Completion evidence |
+| --- | --- | --- |
+| admit or remove traffic | [Health, Readiness, and Drain](docs/bijux-atlas-ops/observability/health-readiness-and-drain.md) | stable probe window plus representative user-path behavior |
+| diagnose a request | [Logging, Metrics, and Tracing](docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md) | correlated request ID, trace, logs, and population metrics |
+| isolate data or cache failure | [Cache and Store Operations](docs/bijux-atlas-ops/stack/cache-and-store-operations.md) | verified store authority and bounded cache recovery |
+| publish a release | [Distribution Channels](docs/bijux-atlas-ops/release/distribution-channels.md) | required immutable channel identities resolve and agree |
+| accept transported evidence | [Release Packets](docs/bijux-atlas-ops/release/release-packets.md) | fresh consumer verification receipt |
+
+A successful command, healthy process, uploaded artifact, or present report is
+only one checkpoint. Promotion requires the identities and evidence across the
+relevant decision path to agree.
+
 ---
 
 ## Installation

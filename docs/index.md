@@ -204,6 +204,15 @@ The operating system spans four control loops:
 These loops share release identity but not proof. A healthy rollout does not
 establish capacity, and a valid backup does not establish restoration.
 
+## Follow a Decision Across Boundaries
+
+| Question | Owning guide |
+| --- | --- |
+| What request, response, OpenAPI, and error contract applies? | [HTTP interfaces](bijux-atlas/interfaces/api-endpoint-index.md) |
+| Which runtime, catalog, store, cache, or telemetry component owns truth? | [Service topology](bijux-atlas-ops/stack/service-topology.md) |
+| How strong is the observed signal path? | [Observability](bijux-atlas-ops/observability/index.md) |
+| Is publication complete and consumer-verified? | [Release operations](bijux-atlas-ops/release/index.md) |
+
 ## Release Confidence Signals
 
 Evidence gains strength as it moves from declared shape to release-bound proof:
@@ -216,13 +225,8 @@ Evidence gains strength as it moves from declared shape to release-bound proof:
 | checksums and provenance | artifact identity and build lineage | operational fitness without run evidence |
 | verified release packet | agreement among artifacts, reports, checksums, and provenance | correctness of upstream biological claims |
 
-Primary publication and confidence lanes:
-
-- `repo/ci`
-- `deploy-docs`
-- `release-crates`
-- `release-ghcr`
-- `release-github`
+Primary confidence lanes are `repo/ci`, `deploy-docs`, `release-crates`,
+`release-ghcr`, and `release-github`.
 
 Each lane contributes a distinct claim. Passing compilation does not establish
 documentation integrity, package publication, image provenance, or rollback
