@@ -160,6 +160,27 @@ next safe observation or action. Close hypotheses as supported, rejected, or
 unresolved. This keeps diagnostic exploration separate from the authoritative
 incident timeline.
 
+## Accept Evidence from Drills and Experiments
+
+An incident may begin during a fault drill, load run, recovery exercise, or
+rollout experiment. Reuse its observations without pretending the controlled
+test still owns the event after the blast radius or abort contract fails.
+
+| Incoming evidence | Accept when | Preserve as a limitation |
+| --- | --- | --- |
+| experiment timeline | monotonic markers and wall-clock correlation are retained | clock offset, missing marker, or controller-only confirmation |
+| workload observations | request class, release, dataset, offer, and generator health are known | dropped or unattributed requests |
+| fault confirmation | an independent signal confirms target and removal | requested action without observed effect |
+| baseline comparison | environment, topology, release, dataset, and workload match | any changed authority or supply |
+| cleanup result | residual state was checked before further mutation | incomplete cleanup or environment reuse |
+
+Create one incident identity that references the original run receipt and first
+escaped-impact timestamp. Hash or otherwise identify imported artifacts, note
+their original custody, and continue the same timeline. Experiment thresholds
+remain useful context, but incident stabilization is governed by current user
+impact, integrity, security, and recovery authority—not by finishing the test
+plan.
+
 ## Incident Identity Envelope
 
 An incident may span several releases, datasets, replicas, or traffic routes.

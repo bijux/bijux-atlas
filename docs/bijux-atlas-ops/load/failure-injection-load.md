@@ -54,6 +54,38 @@ Also abort when telemetry loses the required window or cleanup cannot restore
 the starting condition. Classify those outcomes as findings, not failed
 resilience claims against the product.
 
+## Know When the Experiment Becomes an Incident
+
+The experiment controller owns only the declared blast radius and cleanup
+path. Transfer control to incident response when impact escapes that boundary,
+data authority becomes uncertain, the fault cannot be removed, the protected
+traffic contract fails beyond the abort budget, or an undeclared dependency or
+tenant is affected.
+
+```mermaid
+flowchart LR
+    Run["Controlled experiment"] --> Guard{"Blast radius and abort controls hold?"}
+    Guard -->|yes| Continue["Continue or remove fault"]
+    Guard -->|no| Fence["Stop offered load and fence mutation"]
+    Fence --> Preserve["Preserve experiment clock and identities"]
+    Preserve --> Transfer["Incident lead accepts control"]
+```
+
+The handoff must retain the experiment identity, release and dataset tuple,
+fault-controller action, confirmed target, offered load, first escaped impact,
+active protections, cleanup attempts, and last trusted state. Do not reset the
+clock, relabel the event as an ordinary alert, or continue injecting faults to
+improve diagnostic coverage. The incident timeline begins with the original
+experiment events.
+
+| Trigger | Immediate experiment action | Incident authority to protect |
+| --- | --- | --- |
+| integrity or catalog ambiguity | stop traffic and publication; preserve hashes and manifests | dataset and store authority |
+| fault removal cannot be confirmed | stop load and isolate the target environment | infrastructure and dependency state |
+| impact crosses tenant, zone, or service boundary | halt the controller and contain routing | blast radius and user safety |
+| protected traffic exceeds abort budget | remove the fault and shed nonessential work | service admission and recovery capacity |
+| required evidence path fails | preserve client and local observations; avoid destructive restart | evidence custody and decision confidence |
+
 ## Use a Counterfactual Run
 
 For release or capacity decisions, pair the injected run with a no-fault run

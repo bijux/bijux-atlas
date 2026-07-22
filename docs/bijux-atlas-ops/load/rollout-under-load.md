@@ -36,6 +36,28 @@ generation only. They are not measured rollout evidence. Do not claim nightly
 coverage until a real runner performs the control action and emits the required
 release-correlated result.
 
+## What Closes the Execution Gap
+
+Adding a runner path alone does not establish coverage. The runner must own the
+load process and Kubernetes control action, observe both independently, and
+produce a result whose failure is visible to the suite harness.
+
+| Runner boundary | Minimum behavior |
+| --- | --- |
+| preflight | resolve old and candidate digests, profile, dataset, thresholds, rollback target, and cluster identity |
+| baseline | prove the previous release carries the governed workload before mutation |
+| control | start rollout or rollback and record controller revision, commands, events, and timestamps |
+| attribution | join pod UID and endpoint membership to release-scoped completed requests |
+| decision | apply correctness gates and per-window latency, error, saturation, and sample requirements |
+| reversal | execute or verify the declared abort path while the same load remains active |
+| closure | emit final workload, controller, release, dataset, evidence, and residual-state identities |
+
+Registering this implementation requires all three authorities to agree: the
+suite registry names the executable runner, `ops/load/load.toml` exposes the
+scenario to the operational command, and the scenario record names a workload
+that the runner actually coordinates. Generated inventory can then attest to
+registration; only a completed run receipt can attest to behavior.
+
 ## Evidence Contract for a Real Runner
 
 ```mermaid
@@ -64,6 +86,11 @@ A runner must bind:
 - rollout revision, replica history, endpoint membership, and timestamps;
 - metrics, logs, traces, and request results labeled by release;
 - the violated signal and rollback trigger when recovery occurs.
+
+The result must distinguish `not_executed`, `incomplete`, `rejected`,
+`promoted`, and `recovered_previous`. A missing control action or release join
+is `not_executed` or `incomplete`, even if the k6 workload itself passes every
+threshold.
 
 Healthy old replicas can hide a candidate that never becomes ready. Aggregate
 service metrics are insufficient unless traffic and results can be attributed
