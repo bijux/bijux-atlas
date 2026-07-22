@@ -107,6 +107,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 
 * [Why Atlas Exists](#why-atlas-exists)
 * [Follow One Dataset End to End](#follow-one-dataset-end-to-end)
+* [Operate the Released Dataset](#operate-the-released-dataset)
 * [Declared Release Surface](#declared-release-surface)
 * [How to Verify an Atlas Claim](#how-to-verify-an-atlas-claim)
 * [Choose the Right Surface](#choose-the-right-surface)
@@ -184,6 +185,42 @@ flowchart LR
     Catalog --> Runtime[Ready runtime]
     Runtime --> Query[Identity-bearing query]
 ```
+
+---
+
+## Operate the Released Dataset
+
+Atlas treats operation as a continuation of dataset release custody. A
+deployment is not qualified merely because manifests render or pods become
+ready; operators must connect the exact runtime and dataset identities to
+security, telemetry, capacity, recovery, and distribution evidence.
+
+```mermaid
+flowchart LR
+    Packet["verified runtime + dataset packet"] --> Admit["profile, render, policy admission"]
+    Admit --> Rollout["install or upgrade"]
+    Rollout --> Observe["health, traffic, metrics, logs, traces"]
+    Observe --> Stress["load, fault, churn, rollout scenarios"]
+    Stress --> Recover["backup, rollback, drift repair"]
+    Recover --> Decide{"promotion evidence coherent?"}
+    Decide -->|yes| Serve["continue serving"]
+    Decide -->|no| Hold["hold, drain, or restore"]
+```
+
+| Operational decision | Evidence that belongs with it | Evidence that cannot replace it |
+| --- | --- | --- |
+| admit a deployment | release identity, profile, values digest, rendered inventory, policy results | a valid chart schema alone |
+| accept a rollout | workload revision, readiness history, traffic state, errors and saturation | one successful readiness probe |
+| accept a capacity envelope | scenario identity, target, concurrency, measurements, thresholds and comparable baseline | an unexecuted scenario definition |
+| accept failure tolerance | injected fault, affected dependency, service behavior, recovery action and residual state | a nominal load result |
+| accept recovery | backup identity, restore or rollback execution, post-recovery query and drift verification | presence of backup files |
+| promote a release | coherent packet binding all required results to distributed artifacts | independent green checks with no shared identity |
+
+The [operations handbook](docs/bijux-atlas-ops/index.md) follows these decisions
+through stack composition, Kubernetes, observability, load and release
+contracts. It also states where checked-in inventories exceed the behavior of
+the current executable commands, so declared coverage is not mistaken for an
+observed pass.
 
 ---
 

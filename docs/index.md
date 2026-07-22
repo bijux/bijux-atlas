@@ -197,6 +197,35 @@ The operating system spans four control loops:
 These loops share release identity but not proof. A healthy rollout does not
 establish capacity, and a valid backup does not establish restoration.
 
+## Operational Qualification Is Cumulative
+
+Each operating gate answers a narrower question and hands its evidence to the
+next gate. Passing a later-looking check does not repair a missing earlier
+identity or substitute for a different kind of proof.
+
+| Gate | Question answered | Hold when |
+| --- | --- | --- |
+| release admission | are runtime, dataset, chart, profile and dependency identities coherent? | versions, digests or ownership disagree |
+| deployment admission | does the selected configuration render and satisfy implemented policy? | inventory is incomplete or a required control is absent |
+| service observation | did the intended workload become ready and serve the intended dataset during the observation window? | traffic, dataset or telemetry identity cannot be attributed |
+| resilience qualification | did named load, fault, churn and rollout scenarios remain inside their budgets? | a required scenario lacks an executable result or comparable baseline |
+| recovery qualification | can the environment restore coherent serving state and demonstrate reversal? | backup presence, rollback completion or post-recovery verification is unproven |
+| promotion closure | do checksums, provenance and the evidence manifest bind every required result to the distributed artifacts? | packet membership or consumer verification is incomplete |
+
+```mermaid
+flowchart LR
+    admission["release admission"] --> deploy["deployment admission"]
+    deploy --> observe["service observation"]
+    observe --> resilience["resilience qualification"]
+    resilience --> recovery["recovery qualification"]
+    recovery --> closure["promotion closure"]
+    closure -. "missing identity returns to owner" .-> admission
+```
+
+This ordering is a review model, not a command that claims to perform every
+gate. The operations handbook names the owning assets and executable routes;
+release policy selects which gates are mandatory for a given environment.
+
 ## Follow a Decision Across Boundaries
 
 | Question | Owning guide |
