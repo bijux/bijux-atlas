@@ -4,57 +4,99 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Runtime Process Model
 
-The Atlas runtime process is the composed application that binds config,
-resolves stores, wires adapters, and exposes the HTTP surface.
-
-## Process Model
+`bijux-atlas-server` is the long-running process that resolves runtime
+configuration, selects store and cache backends, initializes observability,
+loads catalog authority, and exposes the HTTP router. It never ingests or
+publishes datasets in a request path.
 
 ```mermaid
-flowchart TD
-    Start[Start process] --> Config[Load runtime config]
-    Config --> Wire[Wire runtime and adapters]
-    Wire --> Serve[Expose HTTP and health surfaces]
-    Serve --> Shutdown[Drain or exit cleanly]
+stateDiagram-v2
+    [*] --> Configured: load and validate config
+    Configured --> Composed: select store, cache, policy, and telemetry
+    Composed --> Warming: coordinate optional cache warmup
+    Warming --> CatalogRefresh: load discovery authority
+    CatalogRefresh --> Listening: bind socket
+    Listening --> Ready: catalog available or cached-only policy permits
+    Ready --> Draining: SIGTERM or SIGINT
+    Draining --> [*]: reject new work and finish drain window
 ```
 
-This process view is deliberately simple because the page is about
-responsibility boundaries: startup, composition, serving, and shutdown are not
-the same concern and should not collapse into one vague notion of "the server."
+## Startup sequence
 
-## Process Responsibilities
+Configuration is resolved before any socket is bound. Command-line values may
+select a config path and override bind, store root, or cache root. Two
+inspection modes stop before serving:
 
-- accept validated runtime configuration.
-- initialize store and cache dependencies.
-- expose health, readiness, metrics, and product endpoints.
-- keep request execution separate from build and repository control-plane work.
+- `--validate-config` validates the effective configuration and exits;
+- `--print-effective-config` prints the resolved payload and exits.
 
-## Repository Authority Map
+Normal startup then:
 
-- the long-running server entrypoint lives in [`bijux-atlas-server/src/bin/bijux-atlas-server.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs:1).
-- runtime composition and application wiring live under [`crates/bijux-atlas-runtime/src/runtime/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/runtime) and [`crates/bijux-atlas-runtime/src/app/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/app).
-- inbound HTTP behavior lives under [`crates/bijux-atlas-server/src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http).
-- startup config shape is documented under [`configs/generated/runtime/runtime-startup-config.md`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime/runtime-startup-config.md:1).
+1. initializes logging and tracing;
+2. records the effective config, release identity, and governance version;
+3. selects local, S3-like, HTTP, or federated store adapters;
+4. coordinates configured warmups and starts cache background work;
+5. records the selected policy and authentication modes;
+6. refreshes the catalog and establishes readiness;
+7. binds the configured address and serves the router.
 
-## Process Boundaries
+Store mode is explicit. Registry sources select a federated backend; otherwise
+S3 mode requires its base URL, and local mode uses the configured filesystem
+root. A process must not silently change backends when one is unavailable.
 
-- CLI execution is not the long-running server process, even when both live in the same crate.
-- OpenAPI generation is a repository artifact path, not part of the runtime serving loop.
-- serving behavior should consume published store state, not rebuild datasets inside the request path.
-- request handling, middleware, and response shaping are runtime concerns once composition has completed.
+## Readiness represents discovery authority
 
-## Reading Rule
+The process begins unready. A successful catalog refresh makes it ready.
+Refresh runs periodically and clears readiness on failure, except when
+cached-only mode explicitly permits retained reads. In cached-only mode,
+readiness means bounded continuity for cached identities; it does not mean the
+live store is healthy or new releases are discoverable.
 
-When the question is about startup wiring or live process behavior, stay in the
-runtime slice rather than the maintainer or operations docs.
+Liveness, readiness, overload health, metrics, version, OpenAPI, catalog, and
+product query routes share one router. Administrative and failure-injection
+routes are absent unless admin endpoints are enabled. Middleware applies body
+limits, request identity, tracing, CORS, security, resilience, provenance, and
+the common error envelope.
 
-## Main Takeaway
+## Warmup coordination
 
-The runtime process model explains how Atlas becomes a live server instead of a
-set of source files. It starts from validated config, composes the runtime from
-app and adapter layers, serves stable interfaces, and stays separate from build
-or repository-only paths.
+When Redis coordination is enabled, each configured dataset warmup uses an
+owner-valued lease with a TTL. Bounded retries and pod-specific jitter reduce
+duplicate work. Lease release checks ownership. If coordination cannot be
+used, startup falls back to local warmup and records the event; Redis is not a
+source of dataset authority.
+
+Warmup failure is logged and startup continues. Readiness is decided by the
+catalog refresh and cached-only policy, not by assuming every warmup succeeded.
+
+## Shutdown and admission
+
+On `SIGTERM` or `SIGINT`, the process stops accepting new requests, closes the
+heavy-query bulkhead, waits for the configured drain interval, and then lets
+the HTTP server complete graceful shutdown.
+
+```mermaid
+sequenceDiagram
+    participant Platform
+    participant Server
+    participant Heavy as Heavy-query pool
+    participant Requests as In-flight requests
+    Platform->>Server: SIGTERM
+    Server->>Server: accepting_requests = false
+    Server->>Heavy: close admission
+    Server->>Requests: wait configured drain interval
+    Server-->>Platform: process exits after server shutdown
+```
+
+Route readiness away before the platform's termination deadline. The
+configured drain interval must fit inside that deadline with room for process
+exit and network propagation.
+
+See [Runtime configuration](../../bijux-atlas-ops/kubernetes/runtime-configuration.md)
+for deployment inputs and [Health, readiness, and drain](../../bijux-atlas-ops/observability/health-readiness-and-drain.md)
+for operational probes.
