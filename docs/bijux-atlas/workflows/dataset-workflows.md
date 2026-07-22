@@ -4,66 +4,42 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Dataset Workflows
 
-Dataset workflows are the bridge between built artifact state and store-backed
-serving state.
-
-## Dataset Workflow Map
-
-```mermaid
-flowchart TD
-    Build[Ingest build root] --> Validate[dataset validate]
-    Validate --> Verify[dataset verify]
-    Verify --> Publish[dataset publish]
-    Publish --> Pack[dataset pack]
-    Pack --> VerifyPack[dataset verify-pack]
-```
-
-This workflow map shows the main dataset lifecycle after ingest. Atlas keeps
-validation, publication, and packaging as explicit steps so it stays clear
-which boundary is being crossed.
-
-## The Important Distinction
+Dataset commands move an ingested build through verification, publication, and
+portable packaging. Each command crosses a different trust boundary. A file in
+a build root is not automatically safe to serve or distribute.
 
 ```mermaid
 flowchart LR
-    BuildRoot[Build root] --> ValidateOps[validate and verify]
-    BuildRoot --> PublishOps[publish into store]
-    Store[Serving store] --> CatalogOps[catalog workflows]
+    Build["ingest build root"] --> Verify["dataset verify --deep"]
+    Verify --> Publish["dataset publish"]
+    Publish --> Stored["immutable dataset in store"]
+    Stored --> Promote["catalog promote"]
+    Verify --> Pack["dataset pack"]
+    Pack --> CheckPack["dataset verify-pack"]
 ```
 
-This distinction diagram exists because “dataset state” can mean more than one
-thing in casual conversation. The build root and the serving store are related,
-but they are not interchangeable.
+## Know which root you are changing
 
-Atlas uses dataset commands both before and after publication:
+| Root | Created by | Mutable operation | Used by |
+| --- | --- | --- | --- |
+| build root | `ingest` | verification reads it; a new ingest writes a new root | publication and packaging |
+| store root | `dataset publish` | catalog operations change discoverability metadata | CLI queries and servers |
+| pack file | `dataset pack` | none; replace it with a newly created pack | transfer and independent verification |
 
-- before publication, they validate or verify build output.
-- after publication, they help package or inspect durable dataset state.
+Keep build and store roots distinct, even on a workstation. This prevents a
+partial ingest from becoming visible to readers.
 
-## Most Common Dataset Commands
+## Verify before publication
 
-- `dataset validate`.
-- `dataset verify`.
-- `dataset publish`.
-- `dataset pack`.
-- `dataset verify-pack`.
-
-## Example Workflow
-
-Validate and deeply verify a build root:
+Deep verification checks the dataset artifacts and their relationships rather
+than only parsing top-level metadata:
 
 ```bash
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset validate \
-  --root artifacts/getting-started/tiny-build \
-  --release 110 \
-  --species homo_sapiens \
-  --assembly GRCh38
-
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --root artifacts/getting-started/tiny-build \
   --release 110 \
@@ -72,7 +48,14 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
   --deep
 ```
 
-Publish into a store:
+Treat the structured output and exit status as evidence. Preserve them with the
+source checksums and ingest reports. The hidden `dataset validate` command
+exists for compatibility. Use `dataset verify --deep` for acceptance.
+
+## Publish atomically into the store
+
+Publication rechecks the source artifacts and writes the identified dataset
+under the store root. It does not make the dataset discoverable by itself.
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset publish \
@@ -83,24 +66,42 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset publish \
   --assembly GRCh38
 ```
 
-## When to Use Pack Operations
+Use `--dry-run` to see whether publication would change the store. Use
+`--explain` to inspect the decision. Do not repair a failed publish by copying
+individual files into the store. That bypasses manifest checks, locking, and
+the atomic write boundary.
 
-Use `dataset pack` and `dataset verify-pack` when you need a portable dataset bundle for transport, validation, or release handling outside the immediate build directory.
+After a successful publish, promote the exact identity with the catalog
+workflow. Existing readers continue to use the current catalog until promotion.
 
-## Workflow Advice
+## Package for transfer
 
-- do not skip validation before publication.
-- treat build roots and serving stores as different lifecycle stages.
-- use pack verification when moving dataset bundles across trust boundaries.
+Packing starts from a verified root and produces a portable file:
 
-## When This Page Is Enough
+```bash
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset pack \
+  --root artifacts/getting-started/tiny-build \
+  --release 110 \
+  --species homo_sapiens \
+  --assembly GRCh38 \
+  --out artifacts/getting-started/tiny-dataset.tar
 
-- you are validating or publishing a dataset root.
-- you are packaging a dataset bundle for transport or review.
-- you need the dataset lifecycle without the deeper contract details.
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify-pack \
+  --pack artifacts/getting-started/tiny-dataset.tar
+```
 
-## Reading Rule
+Verify the pack again after transport and before extraction or distribution.
+This establishes the bundle's internal integrity. It does not replace source
+provenance, signature verification, or catalog promotion.
 
-Use this page when the ingest step is already done and the question is how a
-dataset moves through validation, publication, packaging, and serving-state
-handling.
+## Diagnose by boundary
+
+| Symptom | Inspect first | Safe response |
+| --- | --- | --- |
+| deep verification fails | manifest, checksum, QC, and shard evidence in the build root | rebuild from pinned inputs; do not publish |
+| publication fails | source verification result, destination permissions, free space, publish lock | correct the condition and rerun the command |
+| published dataset is not returned by queries | `catalog.json` and the requested dataset identity | promote the dataset; do not edit artifact paths |
+| transferred pack fails verification | transport checksum and original pack | discard the received copy and transfer again |
+
+Continue with [Catalog workflows](catalog-workflows.md) to make a published
+dataset discoverable.

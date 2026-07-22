@@ -4,57 +4,40 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Catalog Workflows
 
-Catalog workflows decide which published datasets the serving layer can
-discover.
-
-The catalog is the discoverable registry of published datasets. A serving store
-without a valid catalog is not a complete serving surface.
-
-## Catalog Lifecycle
+The catalog is the serving store's discovery authority. Dataset artifacts may
+exist without being visible to readers. Promotion changes the catalog only
+after the identified dataset is present and valid.
 
 ```mermaid
 flowchart LR
-    Publish[dataset publish] --> Promote[catalog promote]
-    Promote --> Discover[Dataset discoverable]
-    Discover --> Rollback[catalog rollback if needed]
-    Promote --> Alias[latest alias update if policy allows]
+    Publish["dataset publish"] --> Stored["dataset artifacts in store"]
+    Stored --> Promote["catalog promote"]
+    Promote --> Catalog["catalog.json"]
+    Catalog --> Runtime["CLI or server discovery"]
+    Promote --> Alias["latest-alias-update"]
 ```
 
-This lifecycle diagram shows the catalog’s real job: making published dataset
-state discoverable to the serving layer. Publication alone is not enough if the
-catalog never points the runtime at the dataset.
+## Catalog operations and their authority
 
-## Main Catalog Operations
+| Command | Reads | Changes | Does not do |
+| --- | --- | --- | --- |
+| `catalog validate PATH` | a catalog document | nothing | verify referenced dataset artifacts |
+| `catalog publish` | an external catalog document | `catalog.json` in a store | copy dataset artifacts |
+| `catalog promote` | stored manifest and artifacts | adds the exact dataset identity to `catalog.json` | update the latest alias |
+| `catalog rollback` | current catalog | removes the exact identity from discovery | delete dataset artifacts |
+| `catalog latest-alias-update` | current catalog | writes `latest.alias.json` | promote an absent dataset |
 
-- `catalog validate`: validate a catalog document.
-- `catalog publish`: write a catalog into a store root.
-- `catalog promote`: add a published dataset to the catalog.
-- `catalog rollback`: remove a dataset from the catalog.
-- `catalog latest-alias-update`: update the latest alias after promotion.
+Catalog writes use a temporary file and rename boundary. Operate on the store
+through these commands rather than editing `catalog.json` in place.
 
-## Recommended Normal Flow
+## Promote an exact dataset
 
-```mermaid
-flowchart TD
-    Build[Build and validate dataset] --> Publish[dataset publish]
-    Publish --> Promote[catalog promote]
-    Promote --> Serve[Serving store is ready]
-```
-
-This normal flow matters because it separates dataset publication from dataset
-discovery. Many issues that look like runtime bugs are really catalog-state
-omissions.
-
-For most users, `catalog promote` is the important day-to-day action after a dataset is successfully published.
-
-## Example Commands
-
-Promote a published dataset into the catalog:
+After publication, promote the same release, species, and assembly:
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog promote \
@@ -64,7 +47,27 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog promote \
   --assembly GRCh38
 ```
 
-Remove it again if needed:
+Promotion checks that the dataset's manifest and SQLite artifact exist. A
+successful command establishes catalog membership. Confirm visibility with a
+query against the same store before directing traffic to it.
+
+Update the convenience alias only after promotion:
+
+```bash
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog latest-alias-update \
+  --store-root artifacts/getting-started/tiny-store \
+  --release 110 \
+  --species homo_sapiens \
+  --assembly GRCh38
+```
+
+The alias command rejects a dataset absent from the catalog. Explicit dataset
+identities remain the reproducible choice for automation. Use `latest` only
+where following the current promoted release is intentional.
+
+## Roll back discovery
+
+Rollback removes a catalog entry without deleting its stored artifacts:
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog rollback \
@@ -74,24 +77,33 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- catalog rollback \
   --assembly GRCh38
 ```
 
-## What Can Go Wrong
+```mermaid
+sequenceDiagram
+    participant Operator
+    participant Catalog
+    participant Runtime
+    participant Store
+    Operator->>Catalog: rollback exact identity
+    Catalog-->>Runtime: dataset no longer discoverable
+    Runtime->>Store: existing in-flight reads may finish
+    Store-->>Operator: artifacts remain for diagnosis or re-promotion
+```
 
-- the dataset was never published into the store.
-- the catalog is missing or malformed.
-- the latest alias is updated before promotion.
-- the serving store is mistaken for the ingest build root.
+Coordinate rollback with runtime caches and active requests. If the latest
+alias points to the removed identity, move it to an accepted catalog member.
+Keep that change separate and auditable.
 
-## What This Page Helps You Confirm
+## Validate the outcome
 
-- whether a dataset is actually discoverable by the server.
-- whether the catalog reflects the dataset state you think is published.
-- whether alias changes happened in the right order.
+For every promotion or rollback, retain:
 
-## Rule of Thumb
+- the exact dataset identity and store root;
+- the command's structured output and exit status;
+- a catalog validation result;
+- a representative query showing the intended visibility state;
+- the previous and resulting catalog digest when the store is operationally
+  controlled.
 
-If the question is “can the server discover this dataset,” the answer usually lives in the catalog state, not only in the existence of artifact files.
-
-## Reading Rule
-
-Use this page when the dataset exists in the store but the real question is
-whether the server can discover it.
+If a stored dataset is undiscoverable, inspect catalog membership first. If a
+cataloged dataset cannot be opened, inspect manifest paths and artifact
+integrity. Repeating promotion will not repair those artifacts.

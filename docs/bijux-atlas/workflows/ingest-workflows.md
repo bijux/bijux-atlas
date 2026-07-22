@@ -4,62 +4,64 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Ingest Workflows
 
-Ingest is the workflow that turns source inputs into validated Atlas build
-output.
-
-## Ingest Pipeline
+Ingest converts a matched annotation and reference set into an immutable Atlas
+build root. It parses GFF3 records, resolves sequence coordinates against the
+FASTA index, applies identifier and anomaly policies, and emits the manifest,
+database, indexes, and quality evidence used by later gates.
 
 ```mermaid
 flowchart LR
-    Inputs[GFF3 + FASTA + FAI] --> Validate[Validate input set]
-    Validate --> Normalize[Normalize and classify]
-    Normalize --> Build[Emit derived artifacts]
-    Build --> Verify[Validate dataset root]
+    GFF3["GFF3 annotations"] --> Parse["parse and normalize"]
+    FASTA["FASTA reference"] --> Identity["validate sequence identity"]
+    FAI["FAI index"] --> Identity
+    Parse --> Policy["apply identifier and strictness policies"]
+    Identity --> Policy
+    Policy --> Build["write dataset build root"]
+    Build --> QC["inspect quality and anomaly evidence"]
+    QC --> Verify["dataset verify --deep"]
 ```
 
-This ingest pipeline diagram shows that Atlas ingest is more than file copying.
-The step produces validated derived output and quality signals that later
-workflows depend on.
+## Establish the dataset identity
 
-## Important Ingest Inputs
+`release`, `species`, and `assembly` form the dataset identity. Use the same
+values during ingest, verification, publication, catalog promotion, and query.
+Atlas does not infer that identity from filenames.
 
-- GFF3 annotation input
-- FASTA reference input
-- FAI index input
-- release, species, and assembly identity
-- strictness and policy-related options
+The three biological inputs must describe the same source release:
 
-## Strictness Matters
+- the GFF3 supplies features and their identifiers;
+- the FASTA supplies the reference sequence;
+- the FAI supplies contig names and lengths used to validate coordinates.
 
-```mermaid
-flowchart TD
-    Strictness[Strictness mode] --> Strict[strict]
-    Strictness --> Compat[compat]
-    Strictness --> Lenient[lenient]
-    Strictness --> ReportOnly[report-only]
-```
+Network inputs are disabled unless `--allow-network-inputs` is supplied. For a
+repeatable production build, pin source URLs or files and preserve their
+checksums outside the output root.
 
-The strictness mode changes how Atlas responds to problematic input conditions. Use stricter modes unless you have a clear reason not to.
+## Choose policy before running
 
-This strictness view helps choose intentionally. A looser mode may be useful
-for exploration, but it changes the meaning of a “successful” ingest.
+Strictness controls whether anomalous input stops the build or is recorded in
+its evidence. It is part of the meaning of the resulting dataset, not a tuning
+knob to change until a command succeeds.
 
-## Why Ingest Output Is a Build Root
+| Mode | Intended use | Acceptance consequence |
+| --- | --- | --- |
+| `strict` | release candidates and trusted serving data | policy violations fail ingest |
+| `compat` | sources with known, bounded compatibility defects | accepted compatibility cases remain visible in evidence |
+| `lenient` | investigation and source assessment | more anomalies may be accepted; inspect reports before reuse |
+| `report-only` | measuring a source without accepting it | produces diagnostic output, not publication approval |
 
-The output of ingest is not automatically the serving store. It is validated build state containing derived artifacts and quality signals.
+`--duplicate-gene-id-policy`, `--gene-identifier-policy`, `--ensembl-keys`, and
+`--seqid-aliases` further define normalization. Record non-default choices with
+the source provenance because they can change stable identifiers and counts.
 
-That distinction is what allows Atlas to:
+## Build a dataset
 
-- apply publication gates
-- keep serving state explicit
-- prevent accidental runtime drift from raw ingest output
-
-## Example Ingest Command
+The repository fixture is useful for learning the lifecycle:
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
@@ -69,31 +71,53 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
   --output-root artifacts/getting-started/tiny-build \
   --release 110 \
   --species homo_sapiens \
-  --assembly GRCh38
+  --assembly GRCh38 \
+  --strictness strict
 ```
 
-## After Ingest
+Use a new output root for a changed source or policy. `--resume` is for
+continuing a compatible interrupted run; it is not permission to combine
+different inputs. Use `--dry-run` or `--explain` to inspect the planned action
+before a costly build.
 
-Always do these next:
+## Inspect the evidence
 
-1. validate the build root
-2. verify the build root if needed
-3. publish into a serving store
-4. promote into the catalog
+A zero exit code means the selected ingest policy completed. Before treating
+the build as a release candidate, inspect its manifest, quality report, anomaly
+report, and any shard catalog. Check that:
 
-## What Ingest Alone Does Not Prove
+- source identity and dataset identity are the intended values;
+- feature, contig, and rejection counts are plausible for the source;
+- every accepted anomaly is understood;
+- emitted shards cover the expected key space when sharding is enabled;
+- no development-only input behavior was used unintentionally.
 
-- that the runtime can discover the dataset
-- that the serving store has been populated correctly
-- that catalog state now points to the new dataset
+Then perform deep verification:
 
-## Practical Advice
+```bash
+cargo run -p bijux-atlas-cli --bin bijux-atlas -- dataset verify \
+  --root artifacts/getting-started/tiny-build \
+  --release 110 \
+  --species homo_sapiens \
+  --assembly GRCh38 \
+  --deep
+```
 
-- use committed fixtures for experimentation before using real inputs
-- keep output roots under `artifacts/`
-- treat report-only and lenient modes as intentional exceptions, not the default
+## Preserve the trust boundaries
 
-## Reading Rule
+The output root is build state. It is not discoverable serving state until it
+passes publication and catalog gates.
 
-Use this page when the source inputs are ready and the question is how to
-produce a valid Atlas build root without confusing it for serving state.
+```mermaid
+stateDiagram-v2
+    [*] --> SourceSet: pin inputs and policy
+    SourceSet --> BuildRoot: ingest
+    BuildRoot --> Verified: dataset verify --deep
+    Verified --> Published: dataset publish
+    Published --> Discoverable: catalog promote
+    Discoverable --> Served: runtime loads catalog
+```
+
+If ingest succeeds but verification fails, keep the failed build and its
+reports for diagnosis; do not publish around the failure. Continue with
+[Dataset workflows](dataset-workflows.md) once the build root is accepted.
