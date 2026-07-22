@@ -7,209 +7,118 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Rollout and Rollback Under Load
+# Rollout and rollback under load
 
-These experiments evaluate both directions of a release change while governed
-traffic remains active. Rollout asks whether a candidate becomes useful without
-breaking the service contract. Rollback asks whether the previous release
-restores that contract without leaving mixed state.
+Rollout asks whether a candidate can become useful while governed traffic
+continues. Rollback asks whether the previous release can recover full service
+without mixed authority. Both need release-attributed traffic, not only
+aggregate success.
 
 | Scenario | Control action | p95 | p99 | Error rate |
 | --- | --- | ---: | ---: | ---: |
-| `load-under-rollout` | move from previous release to candidate | 1,400 ms | 2,600 ms | 5% |
-| `load-under-rollback` | restore previous release | 1,400 ms | 2,600 ms | 5% |
+| `load-under-rollout` | Previous release → candidate | 1,400 ms | 2,600 ms | 5% |
+| `load-under-rollback` | Candidate → previous release | 1,400 ms | 2,600 ms | 5% |
 
-Both are marked mandatory in nightly load lanes. Latency and error ceilings are
-service survival limits, not sufficient promotion criteria.
+These are service-survival ceilings. Correctness, identity, readiness,
+telemetry, compatibility, and reversal remain hard gates.
 
-## Current Execution Boundary
+## Current execution gap
 
-The suite registry declares both entries as `script` runners, but each runner
-path points to a Python file that is absent from the repository. Neither suite
-is present in `ops/load/load.toml`, the executable manifest used by `ops load
-run`. Their scenario records name `warm-steady.js`, but that k6 script does not
-perform a rollout or rollback.
+Both suite entries are declared mandatory nightly `script` scenarios, but each
+points to a Python runner file absent from the repository. Neither appears in
+`ops/load/load.toml`, the executable manifest used by `ops load run`. Their
+scenario records select `warm-steady.js`, which generates traffic but does not
+perform rollout or rollback.
 
-Therefore, the checked-in control plane does not currently execute either
-end-to-end experiment. Generated suite manifests demonstrate registry
-generation only. They are not measured rollout evidence. Do not claim nightly
-coverage until a real runner performs the control action and emits the required
-release-correlated result.
+Generated manifests prove registry generation only. Atlas does not currently
+execute these end-to-end experiments. A passing nightly lane cannot be cited as
+rollout-under-load evidence until a real controller is wired into the command
+surface and emits release-bound results.
 
-## What Closes the Execution Gap
-
-Adding a runner path alone does not establish coverage. The runner must own the
-load process and Kubernetes control action, observe both independently, and
-produce a result whose failure is visible to the suite harness.
-
-| Runner boundary | Minimum behavior |
-| --- | --- |
-| preflight | resolve old and candidate digests, profile, dataset, thresholds, rollback target, and cluster identity |
-| baseline | prove the previous release carries the governed workload before mutation |
-| control | start rollout or rollback and record controller revision, commands, events, and timestamps |
-| attribution | join pod UID and endpoint membership to release-scoped completed requests |
-| decision | apply correctness gates and per-window latency, error, saturation, and sample requirements |
-| reversal | execute or verify the declared abort path while the same load remains active |
-| closure | emit final workload, controller, release, dataset, evidence, and residual-state identities |
-
-Registering this implementation requires all three authorities to agree: the
-suite registry names the executable runner, `ops/load/load.toml` exposes the
-scenario to the operational command, and the scenario record names a workload
-that the runner actually coordinates. Generated inventory can then attest to
-registration; only a completed run receipt can attest to behavior.
-
-## Evidence Contract for a Real Runner
+## Contract for an executable runner
 
 ```mermaid
 sequenceDiagram
     participant Load as Governed workload
     participant Old as Previous release
-    participant New as Candidate release
-    participant K8s as Kubernetes controller
+    participant New as Candidate
+    participant K8s as Controller
     Load->>Old: establish healthy baseline
-    K8s->>New: create candidate replicas
-    New-->>K8s: readiness and warmup
-    Load->>New: candidate serves identified traffic
-    alt candidate accepted
-        K8s->>Old: drain old replicas
+    K8s->>New: create candidate revision
+    New-->>K8s: readiness + warmup
+    Load->>New: attributed representative traffic
+    alt candidate qualifies
+        K8s->>Old: drain old revision
     else contract violated
-        K8s->>Old: restore previous release
-        Load->>Old: confirm recovered behavior
+        K8s->>Old: restore prior revision
+        Load->>Old: verify recovered service
     end
 ```
 
-A runner must bind:
+The runner must:
 
-- previous and candidate image digests;
-- chart, values profile, config digest, and dataset identity;
-- workload script, query corpus, rate, duration, and cache state;
-- rollout revision, replica history, endpoint membership, and timestamps;
-- metrics, logs, traces, and request results labeled by release;
-- the violated signal and rollback trigger when recovery occurs.
+1. resolve previous and candidate digests, dataset, chart, profile, target,
+   thresholds, and rollback identity;
+2. prove a healthy previous-release baseline;
+3. start and independently observe the Kubernetes control action;
+4. join pod and endpoint identity to completed requests;
+5. evaluate per-window correctness, latency, errors, saturation, and samples;
+6. execute or verify the abort path under the same load;
+7. emit workload, controller, release, dataset, target, and residual-state
+   identity with a visible failure status.
 
-The result must distinguish `not_executed`, `incomplete`, `rejected`,
-`promoted`, and `recovered_previous`. A missing control action or release join
-is `not_executed` or `incomplete`, even if the k6 workload itself passes every
-threshold.
+The suite registry, `load.toml`, and scenario record must agree. Registration
+proves discoverability; only a completed receipt proves behavior.
 
-Healthy old replicas can hide a candidate that never becomes ready. Aggregate
-service metrics are insufficient unless traffic and results can be attributed
-to each release.
+## Establish reversible state before traffic
 
-## Establish State Compatibility Before Traffic
+| Shared surface | Required decision before overlap |
+| --- | --- |
+| API and responses | Both releases understand requests, errors, and response envelopes |
+| dataset and catalog | Both resolve the same immutable tuple and manifest |
+| configuration | Keys, defaults, flags, and secret references work in both directions |
+| cache | Entries are versioned by release and output contract |
+| durable writes | Candidate work remains readable or replayable after reversal |
 
-Rollout reversal is safe only when the previous and candidate releases can use
-the same selected dataset, catalog, configuration, cache namespace, and
-persistent state without changing their meaning. Complete this compatibility
-decision before the candidate receives governed traffic.
-
-| Shared surface | Pre-traffic question | Rollback blocker |
-| --- | --- | --- |
-| API and response contract | Can both releases serve the same request and error envelopes? | candidate emits state or responses the previous release cannot interpret |
-| dataset and catalog | Do both releases resolve the same immutable release tuple and manifest? | candidate advances an incompatible pointer or artifact schema |
-| runtime configuration | Are keys, defaults, feature flags, and secrets understood in both directions? | candidate-only configuration becomes required for serving |
-| cache | Are entries versioned by release and output contract? | candidate entries can be reused incorrectly by the previous release |
-| durable writes and jobs | Can in-flight and completed mutations be read or replayed after reversal? | an irreversible mutation crosses the rollback boundary |
-
-```mermaid
-flowchart LR
-    Previous[Previous release contract] --> Compatible{Bidirectional compatibility established?}
-    Candidate[Candidate release contract] --> Compatible
-    State[Dataset, config, cache, and durable-state identities] --> Compatible
-    Compatible -->|no| Block[Do not start mixed traffic]
-    Compatible -->|yes| Overlap[Begin attributed overlap]
-    Overlap --> Decide{Promote or reverse}
-```
-
-If the candidate can perform an irreversible publication, schema change, or
+If a candidate can perform an irreversible publication, schema change, or
 administrative mutation, disable that capability during reversible overlap or
-use a separately governed forward-recovery plan. A deployment controller can
-restore old pods while application rollback has already become impossible.
+use an explicit forward-recovery plan. Restoring old pods does not guarantee
+application rollback remains possible.
 
-## Prove Traffic Assignment
+## Prove candidate traffic
 
-For each request class and observation window, calculate the observed candidate
-share:
+For each protected request class and window, calculate candidate share from
+completed requests with unambiguous release identity:
 
 \[
 w_{observed} = \frac{N_{candidate}}{N_{candidate} + N_{previous}}
 \]
 
-`N` counts completed requests with an unambiguous release identity. Compare
-`w_observed` with the controller's declared traffic weight and record a
-tolerance before the run. Requests with missing or conflicting identity remain
-in the service-level denominator but cannot support a candidate verdict.
+Compare it with declared routing weight under a pre-recorded tolerance. Keep
+requests with missing release identity in service-level failure denominators,
+but exclude them from candidate proof. Representative traffic includes cheap,
+heavy, error, dataset-resolution, cold-cache, and warm-cache classes required
+by the release claim.
 
-Verify more than total request count. The candidate needs representative cheap,
-heavy, error, dataset-resolution, cold-cache, and warm-cache traffic when those
-classes are part of the release claim. A correct overall weight can still hide
-a selector, session-affinity, or routing defect that sends one class only to
-the previous release.
+## Evaluate each window
 
-## Budget the Overlap
+| Window | Required evidence |
+| --- | --- |
+| healthy baseline | Previous release alone satisfies identity, correctness, and budgets |
+| candidate warmup | Startup, cache and dependency pressure, readiness, and zero-traffic duration |
+| mixed traffic | Both releases serve attributed representative requests within capacity |
+| steady candidate | Candidate alone sustains the workload for the required window |
+| restored previous | Previous release regains full traffic and candidate authority is absent |
 
-Mixed-version operation creates its own capacity condition. During overlap,
-the previous release drains while the candidate starts, warms caches, opens
-dependencies, and begins receiving traffic. The service-level result is useful
-only when the run also attributes the capacity and behavior of each release.
+Aggregate metrics can hide a candidate that never served. Preserve desired,
+ready, available, and serving replicas by release; endpoint withdrawal;
+in-flight completion; reset and termination timing; resource peaks; and
+reversal reserve.
 
-| Overlap proof | Required evidence | Decision protected |
-| --- | --- | --- |
-| capacity supply | desired, ready, available, and serving replicas by release | the rollout never silently falls below the capacity assumed by the workload |
-| candidate admission | completed requests and offered share by release and request class | healthy previous replicas cannot mask an unused candidate |
-| startup pressure | startup duration, warmup, cache misses, store calls, and resource peaks | transient candidate cost fits inside the overlap budget |
-| previous-release drain | endpoint withdrawal, in-flight completion, reset, and termination timing | capacity is not removed before accepted work is resolved |
-| service outcome | correctness, latency, rejection, failure, and timeout by release | aggregate success cannot hide candidate-specific failure |
-| reversal reserve | previous-release readiness, compatible state, and time to resume full traffic | rollback remains executable under the same governed load |
+Rollback completes only when the prior digest owns traffic, queries are
+correct, readiness is stable, shared state is compatible, and no candidate pod
+or configuration retains authority. Preserve failed-candidate evidence;
+recovery does not turn the rollout into a pass.
 
-```mermaid
-flowchart LR
-    B["Previous release<br/>healthy baseline"] --> O["Bounded overlap<br/>old and candidate attributed"]
-    O --> C{"Candidate satisfies<br/>identity and budgets?"}
-    C -->|yes| P["Candidate carries full governed load"]
-    C -->|no| R["Previous release resumes full traffic"]
-    P --> S["Stable candidate observation"]
-    R --> E["Recovery and residual-state evidence"]
-```
-
-Set the allowed overlap duration and minimum capacity before the run. A slow
-rollout that eventually succeeds can still violate the operational contract;
-a quick rollback can still fail if the previous release returns with ambiguous
-catalog, configuration, or store authority.
-
-## Measurement Windows
-
-Evaluate at least four windows: healthy baseline, candidate warmup, mixed
-traffic, and stable candidate or restored previous release. Exclude zero-traffic
-intervals from candidate latency calculations, but retain them as availability
-evidence. The candidate must serve a meaningful sample of every protected
-request class.
-
-Correctness, dataset resolution, readiness, telemetry continuity, and
-configuration compatibility are hard gates. A threshold pass cannot compensate
-for a wrong dataset, missing release labels, an unobserved transition, or a
-candidate that received no useful traffic.
-
-Treat each window as a separate verdict:
-
-| Window | Required evidence | Invalidating condition |
-| --- | --- | --- |
-| healthy baseline. | Previous release satisfies correctness and service budgets at governed load. | Baseline is already degraded or identity is incomplete. |
-| candidate warmup. | Startup, cache and dependency pressure, readiness, and zero-traffic duration are retained. | Candidate becomes ready without its required warmup contract. |
-| mixed traffic. | Both releases serve attributed representative requests within overlap capacity. | Declared weight is not observed or one request class bypasses the candidate. |
-| steady candidate. | Candidate alone sustains the workload through the declared observation window. | Previous replicas still mask candidate behavior. |
-| restored previous. | Previous release alone regains traffic, correctness, and stable readiness. | Candidate authority or incompatible shared state remains. |
-
-## Rollback Completion
-
-Rollback is complete only when the previous digest is active, governed queries
-are correct, readiness is stable, and no candidate pods or partial config state
-retain authority. Preserve the failed candidate evidence. Successful recovery
-does not turn the rollout into a pass.
-
-Escalate instead of cycling releases when data integrity is uncertain, the
-previous release cannot become ready, or schema compatibility prevents a clean
-revert.
-
-Use [Rollout safety](../kubernetes/rollout-safety.md) for deployment controls
-and [Release evidence](../release/release-evidence.md) for promotion custody.
+Use [Rollout Safety](../kubernetes/rollout-safety.md) for deployment controls
+and [Release Evidence](../release/release-evidence.md) for custody.

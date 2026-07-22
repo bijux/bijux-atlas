@@ -7,285 +7,130 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Failure Injection Under Load
+# Failure injection under load
 
-Resilience is a time-bounded claim: Atlas must preserve correctness, expose the
-fault, shed work deliberately, and recover after the fault is removed. A load
-run without a controlled fault measures capacity. A fault test without traffic
-does not establish service behavior under pressure.
+A resilience experiment asks whether Atlas preserves correctness, exposes a
+confirmed fault, degrades deliberately, and recovers while governed traffic
+continues. Load without a fault measures capacity. A fault without traffic does
+not establish user-visible behavior under pressure.
 
-## Experiment Shape
+## Controlled experiment
 
 ```mermaid
 sequenceDiagram
     participant Driver as Load driver
-    participant Atlas as Atlas service
-    participant Fault as Fault controller
-    participant Evidence as Evidence collector
-    Driver->>Atlas: Establish governed workload
-    Evidence->>Evidence: Capture healthy baseline
-    Fault->>Atlas: Inject one declared fault
-    Driver->>Atlas: Continue identical workload
-    Atlas-->>Evidence: Metrics, logs, traces, responses
-    Fault->>Atlas: Remove fault
-    Driver->>Atlas: Continue through recovery window
-    Evidence->>Evidence: Classify degradation and recovery
+    participant Atlas
+    participant Control as Fault controller
+    participant Evidence
+    Driver->>Atlas: fixed governed workload
+    Evidence->>Evidence: healthy baseline
+    Control->>Atlas: inject one named fault
+    Evidence->>Evidence: independently confirm impact
+    Driver->>Atlas: unchanged traffic through fault
+    Control->>Atlas: remove fault
+    Evidence->>Evidence: confirm removal + recovery window
 ```
 
-Record the fault mechanism and the injection and removal timestamps. Preserve
-the workload, query-pack, release, profile, and threshold identities with the
-same record. Changing traffic at the same time as the fault makes the result
-ambiguous.
-
-## Experimental Controls
-
-| Control | Why it matters |
+| Control | Why it is required |
 | --- | --- |
-| healthy pre-fault interval | proves the environment can support the workload before injection |
-| one named fault | keeps cause and blast radius attributable |
-| fixed workload and query pack | prevents demand changes from masking degradation |
-| independent fault confirmation | proves the intended mechanism occurred |
-| protected and shed request classes | distinguishes survival from deliberate rejection |
-| explicit removal event | anchors the recovery-time measurement |
-| post-recovery observation window | detects flapping, stale cache state, and delayed failure |
+| healthy pre-fault interval | Proves the target carried the workload before injection |
+| one named fault | Keeps cause and blast radius attributable |
+| fixed workload and query corpus | Prevents demand change from masking degradation |
+| independent impact confirmation | Proves the controller changed the intended boundary |
+| protected and shed classes | Separates survival from deliberate rejection |
+| confirmed removal | Establishes the start of recovery measurement |
+| post-recovery window | Detects flapping, stale state, and delayed retries |
 
-Abort when the baseline is already unhealthy or the fault cannot be confirmed.
-Also abort when telemetry loses the required window or cleanup cannot restore
-the starting condition. Classify those outcomes as findings, not failed
-resilience claims against the product.
+Abort when baseline is unhealthy, impact cannot be confirmed, required
+telemetry disappears, offered load collapses, cleanup fails, or data identity
+becomes uncertain. These are invalid or escaped experiments, not product
+resilience failures.
 
-## Know When the Experiment Becomes an Incident
+## Define the blast radius
 
-The experiment controller owns only the declared blast radius and cleanup
-path. Transfer control to incident response when impact escapes that boundary,
-data authority becomes uncertain, the fault cannot be removed, the protected
-traffic contract fails beyond the abort budget, or an undeclared dependency or
-tenant is affected.
+Before injection, record:
 
-```mermaid
-flowchart LR
-    Run["Controlled experiment"] --> Guard{"Blast radius and abort controls hold?"}
-    Guard -->|yes| Continue["Continue or remove fault"]
-    Guard -->|no| Fence["Stop offered load and fence mutation"]
-    Fence --> Preserve["Preserve experiment clock and identities"]
-    Preserve --> Transfer["Incident lead accepts control"]
-```
+- exact pod, dependency, network path, shard, volume, or resource pool;
+- affected release, dataset, replica, zone, and tenant boundary;
+- protected cheap, cached, health, audit, and control traffic;
+- work allowed to shed, including expected status and error classes;
+- manifests, catalogs, locks, artifacts, and cache state that must remain
+  authoritative;
+- a cleanup path that does not depend on the disrupted component.
 
-The handoff must retain the experiment identity, release and dataset tuple,
-fault-controller action, confirmed target, offered load, first escaped impact,
-active protections, cleanup attempts, and last trusted state. Do not reset the
-clock, relabel the event as an ordinary alert, or continue injecting faults to
-improve diagnostic coverage. The incident timeline begins with the original
-experiment events.
+A global error rate cannot prove containment. Segment results by release,
+dataset, replica, route class, and cache condition wherever the claim depends
+on them.
 
-| Trigger | Immediate experiment action | Incident authority to protect |
-| --- | --- | --- |
-| integrity or catalog ambiguity | stop traffic and publication; preserve hashes and manifests | dataset and store authority |
-| fault removal cannot be confirmed | stop load and isolate the target environment | infrastructure and dependency state |
-| impact crosses tenant, zone, or service boundary | halt the controller and contain routing | blast radius and user safety |
-| protected traffic exceeds abort budget | remove the fault and shed nonessential work | service admission and recovery capacity |
-| required evidence path fails | preserve client and local observations; avoid destructive restart | evidence custody and decision confidence |
-
-## Use a Counterfactual Run
-
-For release or capacity decisions, pair the injected run with a no-fault run
-that uses the same release, environment, workload, cache state, duration, and
-collection path. The counterfactual separates fault-induced degradation from
-an unstable environment or a workload that already exceeds capacity.
-
-Compare both runs by request class and time window. Report the absolute service
-budget and the change attributable to the confirmed fault. If the no-fault run
-cannot remain healthy, the experiment has no valid control. If the two runs
-differ in topology, resource supply, dataset, or offered load, qualify the
-comparison instead of presenting the delta as fault cost.
-
-A counterfactual does not replace the pre-fault interval. The interval proves
-the injected run began healthy; the paired run tests whether the same system
-would have remained healthy without injection.
-
-## Declare the Blast Radius
-
-Before injection, define what may fail and what must remain protected:
-
-| Boundary | Declare before the run | Evidence during the run |
-| --- | --- | --- |
-| target | pods, dependency, network path, shard, volume, or resource pool | independent confirmation that only the intended target changed |
-| scope | one replica, one dataset, one availability zone, or the whole service | release-, replica-, and dataset-scoped signals |
-| protected traffic | cheap reads, cached datasets, health, audit, or control operations | success, latency, and correctness for each protected class |
-| shed traffic | heavy query, uncached fetch, ingest, or administrative work | explicit status and error code within the rejection budget |
-| protected state | manifests, SQLite artifacts, catalogs, locks, and cache entries | hashes, lifecycle state, and absence of partial publication |
-| dependencies | store, catalog, Redis, DNS, telemetry, and cluster control plane | dependency-specific fault and recovery signals |
-
-A global error rate cannot establish containment. Segment the workload by route
-class, dataset, cache state, release, and replica wherever the experiment's
-claim depends on those boundaries.
-
-## Fault Timeline
-
-Use one monotonic experiment clock and record at least these markers:
+## Measure one timeline
 
 ```mermaid
 stateDiagram-v2
     [*] --> Stabilizing
-    Stabilizing --> Healthy: baseline window passes
-    Healthy --> Injecting: fault command starts
-    Injecting --> Faulted: independent confirmation succeeds
-    Faulted --> Removing: fault duration completes
-    Removing --> Recovering: removal is confirmed
-    Recovering --> Recovered: invariants and budgets stabilize
-    Recovering --> ResidualFailure: recovery deadline or invariant fails
+    Stabilizing --> Healthy: baseline passes
+    Healthy --> Injecting: control begins
+    Injecting --> Faulted: impact confirmed
+    Faulted --> Removing: duration completes
+    Removing --> Recovering: removal confirmed
+    Recovering --> Recovered: invariants stabilize
+    Recovering --> ResidualFailure: deadline or invariant fails
 ```
 
-Measure fault-detection time from confirmed injection to the first required
-signal. Measure degraded-service duration from confirmed injection to restored
-user behavior. Measure recovery time from confirmed removal to stable
-invariants. These quantities should not share one ambiguous `recovery_ms`
-field.
+Measure detection from confirmed impact to first required signal, degradation
+from confirmed impact to restored user behavior, and recovery from confirmed
+removal to stable invariants. Do not collapse all three into one ambiguous
+duration.
 
-## Governed Fault Surfaces
+## Prove fault fidelity
 
-The end-to-end injection catalog defines process termination during ingest and
-query, shard corruption, disk-full and read-only storage, network partition,
-downstream timeout, invalid configuration, missing artifacts, and constrained
-memory. Each mechanism has an expected behavior: controlled failure, bounded
-latency, isolation, explicit diagnostics, or preserved state.
-
-The load catalog exercises a narrower set of pressure experiments:
-
-| Scenario | Pressure question | Required observation |
-| --- | --- | --- |
-| `store-outage-under-spike` | Cached survival during a store outage and traffic spike | Cached requests return `200` or `304`; uncached work fails explicitly. |
-| `noisy-neighbor-cpu-throttle` | Cheap-path survival during CPU contention | Cheap requests succeed; heavy work may return `503`. |
-| `pod-churn` | Can Kubernetes replace serving instances without an uncontrolled outage? | Readiness, error, latency, and recovery evidence. |
-| `load-under-rollout` | Can a candidate enter service under steady traffic? | Per-release readiness and service evidence through promotion. |
-| `load-under-rollback` | Can the previous release resume service under steady traffic? | Restored behavior and absence of partial release state. |
-
-Do not claim that every end-to-end fault is tested under load. The injection
-catalog and load catalog are separate authorities; a combined claim requires a
-run record that names both mechanisms.
-
-## Preserve Degradation Semantics
-
-Classify each request outcome as correct success, deliberate rejection,
-dependency failure, timeout, transport failure, or incorrect success. Only the
-first two can satisfy a designed degradation contract. A fast `200` can still
-contain stale, partial, cross-dataset, or unverifiable content. That outcome is
-more severe than a bounded explicit rejection.
-
-For cache-related experiments, divide requests into cached-before-fault,
-uncached-before-fault, and populated-during-fault cohorts. This reveals whether
-the service preserved known-good data, attempted unsafe cache fills, or hid
-store loss behind stale state.
-
-## Prove Fault Fidelity
-
-A useful experiment proves the full causal chain from control action to clean
-recovery. The injection command alone is not proof that the intended service
-boundary changed, and an elevated error rate alone cannot attribute the cause.
-
-| Evidence point | Required question | Invalidating ambiguity |
-| --- | --- | --- |
-| injection control | What exact action, target, and duration did the controller request? | command, target identity, or timestamp is missing |
-| dependency impact | Did an independent signal confirm the intended dependency or resource became unavailable? | only the controller reports success |
-| Atlas detection | Which metric, log, trace, or health state exposed the fault, and how quickly? | no service-visible detection signal exists |
-| client behavior | Which protected, shed, and failed request classes changed? | one aggregate error rate hides route or dataset behavior |
-| protection action | Did timeout, breaker, admission, cache, or rejection policy act as declared? | apparent survival cannot be tied to a protection mechanism |
-| removal confirmation | Did an independent signal prove the fault was removed? | recovery timing begins from an assumed removal |
-| residual-state check | Did replicas, catalogs, stores, caches, locks, and telemetry return to an authoritative state? | traffic recovered while state remained ambiguous |
-
-```mermaid
-flowchart LR
-    C["Controller action"] --> I["Independent impact confirmation"]
-    I --> D["Atlas detection"]
-    D --> B["Classified client behavior"]
-    B --> P["Protection mechanism"]
-    P --> U["Confirmed fault removal"]
-    U --> S["Residual-state proof"]
-```
-
-If any link is missing, report the observation that remains supported—for
-example, unexplained degradation or an injection-control failure—without
-promoting it to a resilience verdict.
-
-## Control Compound Failures
-
-Inject one primary fault unless the experiment explicitly studies a compound
-failure. An unplanned second fault—telemetry loss, HPA movement, node pressure,
-credential expiry, or generator saturation—changes the causal question and
-usually invalidates the resilience verdict.
-
-| Secondary condition | Default disposition |
+| Evidence point | Required fact |
 | --- | --- |
-| required telemetry disappears | abort acceptance; preserve local and client evidence |
-| generator cannot sustain the offer | classify as measurement-limited and stop the fault window |
-| unrelated dependency degrades | contain the environment and treat the run as compound, not as proof for the primary fault |
-| autoscaling or rollout begins unexpectedly | end comparability and retain the controller timeline |
-| protected data identity becomes uncertain | stop traffic and promotion immediately; integrity outranks availability measurement |
+| controller | Action, target, start, duration, and requested cleanup |
+| dependency or resource | Independent confirmation of the intended impact |
+| Atlas detection | First metric, event, trace, health, or breaker transition |
+| clients | Correct success, deliberate rejection, dependency failure, timeout, transport failure, or incorrect success |
+| protection | Timeout, breaker, cache, admission, or shedding policy that acted |
+| removal | Independent confirmation that the fault ended |
+| residual state | Replicas, catalog, store, caches, locks, and telemetry returned to authoritative state |
 
-A deliberate compound experiment needs its own name, blast radius, state
-model, and acceptance budgets. Establish both single-fault baselines first so
-the interaction can be interpreted. Never create compound-failure evidence by
-combining independent summaries after execution.
+A quick `200` with stale, partial, cross-dataset, or unverifiable content is
+more severe than a bounded explicit rejection. Availability budgets never
+authorize ambiguous data.
 
-Define an abort path before injection. The controller must be able to remove
-the fault, stop offered load, fence writes or publication, and preserve the
-last trusted state without depending on the component being disrupted. Test
-that control path before increasing blast radius.
+## Current governed scenarios
 
-## Store-Outage Budget
+| Scenario | Question | Current expectation |
+| --- | --- | --- |
+| `store-outage-under-spike` | Can verified cached data survive store loss and a traffic spike? | Cached requests return `200` or `304`; uncached work fails explicitly |
+| `noisy-neighbor-cpu-throttle` | Do cheap routes survive CPU contention? | Cheap work succeeds; heavy work may shed with `503` |
+| `pod-churn` | Does instance replacement preserve bounded service? | Readiness, error, latency, and recovery are recorded |
+| `load-under-rollout` | Can a candidate enter service under attributed traffic? | Requires an executable rollout controller |
+| `load-under-rollback` | Can the prior release recover under traffic? | Requires an executable rollback controller |
 
-The governed `store-outage-under-spike` thresholds are:
+The injection catalog is broader than the load catalog. A combined claim needs
+a run that names both the fault mechanism and load scenario. The current
+rollout and rollback entries lack their declared runner files and therefore do
+not supply executed evidence.
 
-| Signal | Maximum |
-| --- | ---: |
-| p95 latency | 1,500 ms |
-| p99 latency | 3,000 ms |
-| Error rate | 10% |
+The store-outage budget is p95 ≤ 1,500 ms, p99 ≤ 3,000 ms, and error rate ≤ 10%.
+These limits bound degradation; they do not permit incorrect answers.
 
-These limits bound degradation; they do not permit wrong answers. A response
-inside the latency budget still fails if it violates the API contract, hides
-the outage, or returns data whose integrity cannot be established.
+## Transfer escaped experiments to incident response
 
-## Verdict
+Stop offered load, fence mutation, preserve the original clock, and transfer
+authority when impact escapes the declared boundary, cleanup cannot restore
+state, protected traffic exceeds its abort budget, an undeclared tenant or
+dependency is affected, or integrity becomes uncertain.
 
-A passing run demonstrates all of the following:
+Retain experiment ID, release, dataset, controller action, confirmed target,
+offered load, first escaped impact, active protections, cleanup attempts, and
+last trusted state. The incident timeline begins with the original experiment;
+do not reset it or continue injecting faults for diagnostic convenience.
 
-- the pre-fault interval was healthy and comparable to the selected baseline;
-- the intended fault occurred and was visible in telemetry;
-- protected traffic retained its declared contract;
-- rejected or degraded work failed explicitly and within budget;
-- no partial write, corrupt cache entry, or false success was observed;
-- recovery completed within the recorded window after fault removal; and
-- the evidence bundle contains `result.json`, `summary.md`, failure
-  classification, metrics, configuration, and logs.
-
-Treat a missing signal as an evidence failure. A fault that cannot be observed
-or a recovery that cannot be timed is not a resilience proof.
-
-## Cleanup Is Part of the Verdict
-
-After fault removal, prove more than request recovery:
-
-- injected network, process, storage, and resource controls are absent;
-- replica count, routing, HPA, PDB, and readiness return to the declared state;
-- store and catalog identities match the pre-fault authority;
-- no publication lock, partial object, poisoned cache entry, or quarantined
-  artifact was silently cleared;
-- telemetry pipelines contain the full pre-fault, fault, and recovery windows;
-- a second healthy observation window passes without delayed retries, memory
-  growth, or repeated breaker transitions.
-
-If cleanup cannot be proven, isolate the environment. Do not reuse it for a
-baseline or another resilience experiment because residual state destroys
-comparability.
-
-## Data Integrity Boundary
-
-Capacity and availability budgets never authorize unverifiable data. If shard,
-manifest, catalog, or cache integrity is uncertain, stop promotion and isolate
-the affected state. Recovery evidence must establish the selected release and
-artifact hashes before normal traffic resumes; a low error rate cannot
-compensate for responses from ambiguous state.
+Cleanup is part of the verdict. Prove injected controls are absent, replicas
+and routing match intent, store and catalog identities agree, no partial object
+or poisoned cache was silently cleared, telemetry covers every window, and a
+second healthy observation remains stable.
 
 Use [Pod Churn Resilience](pod-churn-resilience.md) for instance replacement
 and [Rollout Under Load](rollout-under-load.md) for release changes.
