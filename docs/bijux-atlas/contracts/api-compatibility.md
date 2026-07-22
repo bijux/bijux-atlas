@@ -78,9 +78,26 @@ captured live-server responses.
 Treat these outputs as focused evidence. Full compatibility requires router,
 handler, error, schema, and behavior tests appropriate to the changed surface.
 
-## Stability
+## Classify an API Change
+
+| Proposed change | Default classification | Required review |
+| --- | --- | --- |
+| add an optional response field | additive, subject to tolerant-reader expectations | generated OpenAPI, serialization, and representative client behavior |
+| add a new route | additive only when route policy, auth, limits, and errors are explicit | router/OpenAPI agreement and surface-registry ownership |
+| tighten a limit or validation rule | potentially breaking | affected clients, structured errors, migration path, and rollout policy |
+| change ordering, cursor meaning, or defaults | breaking for consumers that observe result sequence | query contract, pagination tests, and client migration |
+| add or expose an administrative route | operational security change, not ordinary API growth | explicit enablement, authentication, authorization, audit, and exception review |
+| remove or rename a stable `/v1` element | breaking | versioned replacement, overlap window, and consumer transition evidence |
+
+Compatibility is assessed across the request, behavior, response, and
+operational exposure together. A schema-only diff cannot classify changes to
+defaults, authorization, ordering, rate limits, or error semantics.
+
+## Change Review Boundary
 
 Stable `/v1` routes and their documented contracts require compatibility
 review. Health, readiness, metrics, and admin surfaces follow their operational
 contracts. Undocumented implementation details remain internal only while
-clients cannot observe them.
+clients cannot observe them. Record the old and new observable behavior, the
+authority for each, the consumers examined, and the focused evidence used to
+support the classification.

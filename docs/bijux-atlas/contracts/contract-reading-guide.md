@@ -75,9 +75,27 @@ simulation proves model behavior under its fixture. A measured run proves an
 observation against its named target. Publication proof requires a channel
 receipt or immutable identity.
 
-## Stability
+## When Authorities Disagree
+
+```mermaid
+flowchart TD
+    Conflict[Contract sources disagree] --> Consumer[Name the affected consumer]
+    Consumer --> Owner[Identify the authority that owns the decision]
+    Owner --> Observe[Reproduce the observable behavior]
+    Observe --> Correct[Correct stale prose, code, schema, or generated output]
+    Correct --> Prove[Run focused compatibility evidence]
+    Prove --> Record[Retain revision and result]
+```
+
+Do not average conflicting sources into a vague promise. Generated output may
+be stale, a schema may be broader than runtime validation, and a test may cover
+only one adapter. The owner is the surface that makes the disputed decision;
+the other sources must either align with it or explicitly narrow their claim.
+
+## Change Review Boundary
 
 Contract meaning, machine-consumed fields, identifiers, and public locations
 are compatibility surfaces. Explanatory prose may become clearer without
 changing the promise, but a change to relied-on behavior requires the owning
-compatibility process.
+compatibility process. Review the consumer-visible delta, not only the file
+type or implementation diff that carried it.

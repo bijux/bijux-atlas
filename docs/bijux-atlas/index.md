@@ -103,6 +103,24 @@ the catalog and artifact manifest to governed inputs. Its shape leads to the
 owning interface contract. Those paths are more useful than a generic statement
 that the runtime or dataset is current.
 
+## Locate the Broken Boundary
+
+Atlas failures are easier to diagnose when the observed symptom is traced to
+the first authority that could have produced it:
+
+| Observation | Inspect first | Do not conclude yet |
+| --- | --- | --- |
+| ingest rejects a record | normalization finding and source location | that all files in the source set are invalid |
+| deep verification fails | manifest, lock, payload hash, and referenced artifact | that publication or the catalog caused the corruption |
+| published tuple is absent from discovery | catalog entry and promotion record | that the payload was never published |
+| readiness is false | catalog refresh, required dataset state, and lifecycle mode | that the process is not live |
+| query returns no rows | resolved tuple, selector, ordering, and page boundary | that the dataset is missing |
+| HTTP and CLI disagree | shared query result before each presentation adapter | that the wire contract alone is wrong |
+
+Start at the earliest failed boundary and preserve its identity. Skipping
+directly to a later layer often turns an explicit data, publication, or catalog
+problem into an ambiguous runtime symptom.
+
 ## Choose a Product Surface
 
 Choose a path based on the question in front of you:

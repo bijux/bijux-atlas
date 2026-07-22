@@ -93,9 +93,25 @@ revalidate bytes and identity before restoring discoverability. Copying only
 `catalog.json`, or only the SQLite file, does not reconstruct the publication
 contract.
 
-## Stability
+## Interpret Partial State
+
+| Observed state | Safe interpretation | Required response |
+| --- | --- | --- |
+| candidate files exist without a lock | build output is incomplete or not yet integrity-bound | diagnose the build; do not publish by hand |
+| payload and lock exist without an immutable marker | publication did not establish the durable completion boundary | retain diagnostics and retry through the owning publication operation |
+| immutable marker exists but catalog entry is absent | payload may be published but is not discoverable | verify the complete payload, then perform governed promotion |
+| catalog entry exists but verified read fails | discovery points at unavailable or inconsistent bytes | remove serving eligibility and repair catalog/store coherence |
+| lifecycle state disagrees with marker or transition history | publication evidence is internally inconsistent | treat the dataset as non-promotable until reconciled |
+
+Never repair partial state by inventing a marker, editing a hash, or copying a
+catalog entry. Those actions manufacture the appearance of a completed
+transition without recreating its validation and durability evidence.
+
+## Change Review Boundary
 
 Dataset prefixes, filenames, manifest fields, schema versions, checksum
 semantics, and catalog ordering are machine-consumed compatibility surfaces.
 Changes require coordinated ingest, store, runtime, backup, and recovery
-review.
+review. Backend-specific atomicity, consistency, and retry behavior must be
+documented beside any shared-trait claim rather than inferred from the local
+filesystem implementation.
