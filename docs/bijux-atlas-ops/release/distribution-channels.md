@@ -33,14 +33,14 @@ flowchart TB
 
 ## Channel Map
 
-| Channel | Declared authority | Publication mechanism | Consumer verifies |
+| Channel | Authority | Publisher | Consumer verifies |
 | --- | --- | --- | --- |
-| Rust crates | `crates-release.toml` | `release-crates.yml` and crates.io | package name, version, checksum, dependency closure |
-| GHCR bundles | release workflow matrices | `release-ghcr.yml` packages build artifacts with ORAS | OCI reference, tag, digest, artifact media type |
-| GitHub release | release plan and notes | `release-github.yml` uploads release artifacts | tag, source revision, assets, checksums, notes |
-| documentation | MkDocs configuration | `deploy-docs.yml` builds and deploys Pages | site version, source revision, canonical URLs |
-| Helm chart | `ops-release.toml` | control-plane package and push commands | chart version, OCI digest, values schema, install evidence |
-| offline bundle | `ops-release.toml` and bundle manifest | control-plane bundle commands | manifest, included assets, checksums, offline install evidence |
+| crates | package plan | crates workflow | name, version, checksum, closure |
+| GHCR | workflow matrix | ORAS workflow | reference, digest, media type |
+| GitHub | release plan | release workflow | tag, revision, assets, checksums |
+| docs | MkDocs config | Pages workflow | revision and canonical URLs |
+| Helm | operations plan | package commands | version, digest, schema, install |
+| offline | bundle manifest | bundle commands | assets and offline install |
 
 `release-ghcr.yml` publishes tarred release artifacts as generic OCI artifacts
 using ORAS. That is distinct from proving that a runnable multi-architecture
@@ -78,19 +78,68 @@ not prove chart availability; a GitHub release does not prove an offline
 install; a GHCR tag does not prove its media type or digest matches another
 manifest.
 
+## Channel Failure Domains
+
+Each channel has a different safe retry boundary. Reconciliation must preserve
+successful immutable publications and avoid overwriting their history.
+
+| Channel | Characteristic failure | Safe reconciliation |
+| --- | --- | --- |
+| crates.io | sibling package fails | verify success; publish missing versions |
+| GHCR | wrong media or digest | hold; publish a corrected version |
+| GitHub | partial assets | verify retained assets; add missing ones |
+| Pages | wrong revision | deploy the selected revision |
+| Helm OCI | runtime mismatch | rebuild the chart and runtime pair |
+| offline | missing or changed asset | rebuild and verify the bundle |
+
+Remote immutability and overwrite rules are part of the release contract. A
+retry is safe only when it cannot change the bytes behind an identity already
+observed by consumers. Otherwise publish a corrected release identity and
+record the supersession.
+
+Documentation is an informational channel, not an artifact trust anchor. It
+helps readers discover a release and understand its contract, but Pages content
+cannot establish package checksums, runtime digests, or provenance subjects.
+
 ## Channel Completion States
 
 | State | Evidence | Promotion consequence |
 | --- | --- | --- |
-| planned | channel, artifact, version, and expected identity are declared | no publication claim |
-| uploaded | producer reports a successful upload | retrieval and remote identity still unproven |
-| resolved | consumer can retrieve the immutable reference and recompute its identity | channel delivery established |
-| cross-checked | version, digest, provenance, and packet records agree with required sibling channels | channel can participate in release completion |
-| failed | upload, retrieval, identity, or policy check fails | release remains partial and promotion is held |
+| planned | expected identity is declared | no publication claim |
+| uploaded | producer accepted the upload | retrieval remains unproven |
+| resolved | consumer retrieves immutable bytes | delivery established |
+| cross-checked | required channel records agree | eligible for completion |
+| failed | upload, retrieval, or policy failed | promotion held |
 
 Use immutable digests or registry checksums for completion. A mutable tag, web
 page, or package search result is useful for discovery but cannot by itself
 bind the received bytes to the release packet.
+
+## Producer and Consumer Receipts
+
+Producer completion and consumer retrievability are separate observations.
+
+```mermaid
+sequenceDiagram
+    participant P as Publisher
+    participant C as Channel
+    participant V as Clean verifier
+    P->>C: upload versioned bytes
+    C-->>P: producer reference
+    V->>C: resolve public reference
+    C-->>V: bytes, digest, and media type
+    V->>V: verify checksum, provenance, and packet identity
+    V-->>P: consumer resolution receipt
+```
+
+The consumer receipt records the exact requested reference, resolved digest or
+registry checksum, media type, retrieval time, byte length, verifier identity,
+and release-packet digest. It also records authentication mode and visibility
+because a maintainer-only retrieval does not prove public distribution.
+
+Withdrawal or supersession must remain discoverable from that receipt. Do not
+erase a failed or withdrawn resolution result after a later channel retry; the
+history explains which bytes were available to consumers at a given time.
 
 ## Partial Publication Reconciliation
 

@@ -27,20 +27,56 @@ flowchart TB
 
 ## Authority by Question
 
-| Question | Authority | Required binding |
+| Surface | Authority | Required binding |
 | --- | --- | --- |
-| Which version do workspace crates inherit? | root `Cargo.toml` | each publishable package and intended tag |
-| Which chart is installed? | chart `Chart.yaml` plus immutable package digest | operations release manifest and OCI reference |
-| Which runtime does the chart describe? | chart `appVersion` | runtime artifact digest and compatibility record |
-| Which public surfaces belong to a release? | `ops/release/release-manifest.json` | packet, signing, and verification records |
-| Which chart package was built? | `ops-release-manifest.json` | chart path, digest, version, and build metadata |
-| Which dependency images define the stack? | stack version manifest | selected composition and rendered deployment |
-| Which release run produced an artifact root? | generated release metadata | run identity and source revision |
+| workspace crates | root `Cargo.toml` | packages and intended tag |
+| installed chart | chart `Chart.yaml` | OCI digest and operations manifest |
+| chart runtime | chart `appVersion` | runtime digest and compatibility |
+| public surfaces | release manifest | packet, signing, and verification |
+| chart package | operations manifest | path, digest, version, and build |
+| dependency images | stack manifest | composition and rendered deployment |
+| release run | generated metadata | run identity and source revision |
 
 The stack version manifest pins Kind, MinIO, Prometheus, OpenTelemetry
 Collector, Redis, and Toxiproxy images. It does not declare the Atlas workspace
 or chart version, so it must be joined with release identity rather than used as
 a standalone release manifest.
+
+## Release Identity Join
+
+No single version string identifies an Atlas release. The durable identity is a
+join across source, package, runtime, chart, distribution, and evidence records.
+
+```mermaid
+flowchart LR
+    Source["tag and source revision"] --> Join{"release identity join"}
+    Package["crate name and checksum"] --> Join
+    Runtime["runtime artifact digest"] --> Join
+    Chart["chart version and digest"] --> Join
+    Channel["remote reference and digest"] --> Join
+    Evidence["provenance and packet digest"] --> Join
+    Join -- all records agree --> Resolvable["consumer-resolvable release"]
+    Join -- missing or different --> Reject["reject promotion"]
+```
+
+| Record | Join key | Required comparison |
+| --- | --- | --- |
+| source | tag and revision | tag resolves to the built revision |
+| package | name and version | checksum belongs to that source |
+| runtime | platform and digest | provenance names the digest |
+| chart | version and digest | `appVersion` names the runtime |
+| channel | immutable reference | remote bytes match the manifest |
+| packet | release and digest | inventory contains every record |
+
+The join must be one-to-one for a promoted platform and channel. Multiple
+digests for one claimed artifact, an unbound mutable tag, or a version with no
+retrievable bytes is an identity failure even when every version string is
+equal.
+
+Classify a mismatch before remediation: source drift, package drift, runtime
+drift, chart compatibility drift, remote channel drift, or stale evidence.
+That classification determines the owning producer and prevents a generated
+manifest from being edited as a substitute for rebuilding the artifact.
 
 ## Current Checkout State
 
@@ -83,12 +119,12 @@ regenerate each dependent record from the authority that owns it.
 
 | Mismatch | Owning decision | Required resolution |
 | --- | --- | --- |
-| workspace and publishable crate | package release | select the package version and validate inherited declarations |
-| chart `version` and chart package | chart release | build the chart from the authoritative metadata and record its digest |
-| chart `appVersion` and runtime | deployment compatibility | bind the application version to an immutable runtime artifact |
-| release manifest and built files | release assembly | regenerate inventory and checksums from the selected artifacts |
-| stack manifest and rendered resources | environment composition | render the selected profile and compare every dependency digest |
-| metadata and provenance | release run | rerun the governed producer workflow from the intended source revision |
+| workspace and crate | package release | select and validate the version |
+| chart version and package | chart release | rebuild and record the digest |
+| `appVersion` and runtime | compatibility | bind to the runtime digest |
+| manifest and files | assembly | regenerate inventory and checksums |
+| stack and resources | composition | render and compare dependency digests |
+| metadata and provenance | release run | rerun from the intended revision |
 
 ```mermaid
 flowchart LR
@@ -114,6 +150,21 @@ all converge in a fresh release run.
 5. Confirm stack digests match the selected profile and rendered resources.
 6. Reject stale generated metadata or a packet containing more than one release
    identity.
+
+## Consumer Resolution Receipt
+
+Complete verification from a clean consumer context and retain a receipt with:
+
+- requested channel, package name, version, and platform;
+- mutable discovery reference, when used, plus the resolved immutable digest;
+- registry checksum, media type, byte length, and retrieval time;
+- source revision, provenance subject, signer identity, and policy result;
+- verifier version and the digest of the release packet used for comparison.
+
+The receipt proves that a consumer can obtain the same bytes the producer
+declared. A producer-side upload log cannot replace it because authentication,
+visibility, replication, retention, and registry resolution may fail after an
+upload reports success.
 
 ## Authorities
 
