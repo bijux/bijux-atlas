@@ -9,63 +9,77 @@ last_reviewed: 2026-07-22
 
 # Pod Churn Resilience
 
-The `pod-churn` scenario asks whether Atlas can keep serving governed traffic
-while Kubernetes removes and replaces instances. It requires Kubernetes and
-uses the `warm-steady.js` workload, so the churn event is measured against an
-already-active service rather than startup traffic.
-
-## Churn Timeline
-
-```mermaid
-stateDiagram-v2
-    [*] --> Stable: workload reaches steady state
-    Stable --> ReducedCapacity: pod termination begins
-    ReducedCapacity --> Rebalancing: readiness removes old endpoint
-    Rebalancing --> Restoring: replacement starts and becomes ready
-    Restoring --> Recovered: capacity and service stabilize
-    ReducedCapacity --> Failed: errors or latency exceed budget
-    Rebalancing --> Failed: traffic reaches an unready endpoint
-    Restoring --> Failed: replacement misses recovery window
-```
-
-Capture the stable interval before terminating a pod. Record each termination,
-endpoint removal, replacement start, readiness transition, and return to the
-stable replica count. Keep load parameters unchanged through the recovery
-window.
-
-## Acceptance Budget
+Pod-churn testing asks whether Atlas preserves correct, bounded service while
+Kubernetes removes and replaces an instance. The governed suite defines a
+steady `warm-steady.js` workload and these ceilings:
 
 | Signal | Maximum |
 | --- | ---: |
 | p95 latency | 1,200 ms |
 | p99 latency | 2,500 ms |
-| Error rate | 3% |
+| error rate | 3% |
 
-The budget applies to the complete governed scenario. Also inspect the churn
-window directly: an acceptable aggregate can conceal a short request blackout.
+The same values appear in the suite registry, dedicated threshold file, and k6
+threshold contract. That agreement defines the budget. It is not evidence that
+a churn experiment ran.
 
-## Evidence to Correlate
+## Current execution boundary
 
-- request latency, failures, and status classes over the same timeline;
+`pod-churn` is registered in `ops/load/suites/suites.json` and its scenario
+requires Kubernetes. It is not present in `ops/load/load.toml`, which is the
+manifest consumed by `bijux-atlas-dev ops load run`. The checked-in k6 script
+generates steady traffic, but it does not delete a pod or correlate Kubernetes
+events.
+
+As a result, `ops load run pod-churn` is not a working end-to-end harness today.
+Do not present the registry entry, generated manifest, or a plain
+`warm-steady.js` result as pod-churn evidence. A valid run needs an external or
+future governed orchestrator that performs and records the disruption.
+
+## Required experiment sequence
+
+```mermaid
+stateDiagram-v2
+    [*] --> Preflight: bind release, dataset, cluster, and workload
+    Preflight --> Stable: establish steady baseline
+    Stable --> Disrupted: terminate one selected pod
+    Disrupted --> Withdrawn: endpoint leaves readiness
+    Withdrawn --> Replacing: controller starts replacement
+    Replacing --> Recovered: ready replicas and service stabilize
+    Recovered --> [*]: evaluate full and disruption windows
+```
+
+Use one run identity for workload output and cluster evidence. Keep workload
+rate, request mix, dataset, and resource settings constant from baseline
+through recovery. Record the exact disruption command and selected pod UID.
+
+## Observe the transition
+
+Correlate monotonic timestamps for:
+
+- request latency, failures, status classes, and correctness checks;
 - desired, available, ready, terminating, and restarting replicas;
-- readiness and endpoint membership transitions;
-- connection resets, draining behavior, and requests sent to unready pods;
-- PDB decisions and unschedulable or image-pull delays;
-- HPA activity when the selected profile enables autoscaling; and
-- the time from pod loss to restored ready capacity and steady service.
+- readiness changes and endpoint membership;
+- pod deletion, replacement scheduling, image pull, and start events;
+- PDB and HPA decisions;
+- connection resets and drain behavior;
+- return to the pre-disruption ready count and stable request budget.
 
-A single controlled replacement proves one recovery path. Repeated churn is a
-different experiment and must record cadence, number of replacements, and
-whether events overlap. Do not generalize a one-pod result to node loss,
-availability-zone loss, or arbitrary disruption rates.
+Aggregate thresholds apply to the complete scenario. Also calculate the
+baseline, disruption, and recovery windows separately. A short blackout can be
+hidden by a long healthy baseline.
 
-## Failure Conditions
+## Acceptance decision
 
-Fail the scenario when latency or errors exceed budget, traffic reaches a pod
-after readiness withdrawal, replacement capacity does not stabilize, or
-correctness changes during churn. Missing readiness or event evidence also
-invalidates the result because it prevents attribution of the service impact.
+Accept only when the declared thresholds pass, responses remain correct,
+traffic does not reach a withdrawn endpoint, replacement capacity stabilizes,
+and the timeline is complete. Missing cluster events or release identity makes
+the run inconclusive, even if k6 reports green.
 
-Use [Health, Readiness, and Drain](../observability/health-readiness-and-drain.md)
-for probe semantics and [Rollout Safety](../kubernetes/rollout-safety.md) for
-profile-specific delivery controls.
+A single pod replacement proves only that bounded path. It does not establish
+node-loss, zone-loss, repeated-churn, or arbitrary disruption-rate resilience.
+Declare a new experiment when cadence or overlap changes.
+
+Use [Health, readiness, and drain](../observability/health-readiness-and-drain.md)
+for probe semantics and [Debug bundles](../kubernetes/debug-bundles.md) to
+preserve failures before cluster state disappears.

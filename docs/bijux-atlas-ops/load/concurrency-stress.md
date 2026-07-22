@@ -9,70 +9,75 @@ last_reviewed: 2026-07-22
 
 # Concurrency and Saturation
 
-Concurrency testing asks how Atlas behaves as independent clients compete for
-CPU, store access, cache space, queues, and admission capacity. The goal is to
-locate controlled limits and prove service survival, not simply maximize
-parallel requests.
+Concurrency testing locates the point where clients begin competing for Atlas
+admission, CPU, store access, cache space, and database work. The useful result
+is a repeatable operating envelope and controlled overload behavior, not a peak
+request count.
 
-## Declared Stress Profiles
+## Declared scenario shapes
 
-`ops/load/generated/concurrency-stress-scenarios.json` defines three workload
-shapes:
+`ops/load/generated/concurrency-stress-scenarios.json` catalogs three shapes:
 
-| Scenario | Workload | Concurrency profile | Role |
-| --- | --- | --- | --- |
-| `load-single-client-baseline` | query | `single_client` | Low-contention reference |
-| `load-multi-client-concurrency` | mixed | `multi_client` | Normal shared-resource contention |
-| `load-saturation-stress` | mixed | `saturation` | Pressure at or beyond intended limits |
+| Scenario | Workload | Concurrency role |
+| --- | --- | --- |
+| `load-single-client-baseline` | query | low-contention reference |
+| `load-multi-client-concurrency` | mixed | shared-resource contention |
+| `load-saturation-stress` | mixed | pressure at or beyond intended limits |
 
-These entries name the shapes but do not include target rates or durations.
-Every executable run must supply the remaining harness fields:
-`duration_secs`, `target_rps`, `ingest_ops_per_sec`, and
-`query_mix_read_ratio`.
+These records contain no target rate, duration, client count, query mix,
+dataset, resource profile, or threshold. They are catalog entries, not
+executable load suites. None is present in `ops/load/load.toml`, so `ops load
+run` cannot execute these IDs directly.
 
-## Saturation Curve
+Do not treat the generated file as performance evidence. A governed experiment
+must add the missing parameters and preserve the actual harness result.
+
+## Build the saturation curve
 
 ```mermaid
 flowchart LR
-    B["Single-client baseline"] --> C["Increase clients and target rate"]
-    C --> K["Observe queue, cache, CPU, and store contention"]
-    K --> L{"Declared limit reached?"}
-    L -->|no| C
-    L -->|yes| S["Verify shedding and cheap-path survival"]
-    S --> R["Record sustainable and overload regions"]
+    Base["single-client baseline"] --> Clients["increase client concurrency"]
+    Clients --> Rate["increase offered rate"]
+    Rate --> Observe["measure service and resources"]
+    Observe --> Boundary{"contention boundary stable?"}
+    Boundary -- no --> Clients
+    Boundary -- yes --> Overload["cross boundary deliberately"]
+    Overload --> Recover["remove pressure and prove recovery"]
 ```
 
-Increase one pressure dimension at a time before combining them. If client
-count, request mix, dataset, cache state, and resources all change together,
-the result cannot identify the controlling limit.
+Change one pressure dimension at a time. Fix the release, dataset, query
+corpus, cache state, resources, and dependency versions. Report offered rate
+and completed throughput separately; queues can make them diverge sharply.
 
-## Signals That Explain the Curve
+For each point, record:
 
-Measure latency distributions, completed throughput, failure rate, in-flight
-work, queue depth, overload state, and response codes by request class. Correlate
-those with CPU throttling, memory and cache growth, store latency, connection
-pressure, and replica count.
+- clients, arrival model, target rate, duration, and request-class mix;
+- p50, p95, and p99 latency plus status and error classes;
+- completed throughput, in-flight work, queues, and overload state;
+- CPU use and throttling, memory, cache growth, store latency, and connections;
+- replica count, HPA actions, and workload distribution;
+- query correctness and response-size bounds.
 
-For saturation scenarios, verify these behaviors explicitly:
+## Protected behavior under overload
 
-- heavy requests are rejected with declared policy codes rather than hanging;
-- cheap health, readiness, version, and catalog paths remain within their
-  survival contract;
-- queue and overload metrics become visible before uncontrolled collapse;
-- response size and memory remain bounded;
-- the service returns to normal after pressure is removed.
+Atlas separates cheap and heavy query admission. Saturation evidence should
+show that heavy work is rejected with the declared policy response while cheap
+health, readiness, version, and catalog paths retain their contract. Observe
+the response code and error envelope; timeouts alone are uncontrolled failure.
 
-## Capacity Claims
+After load stops, verify that queues drain, overload state clears, memory and
+cache settle inside expected bounds, and normal requests recover. A service
+that meets peak thresholds but does not recover has failed the experiment.
 
-Report at least three regions: normal operation, the onset of contention, and
-controlled overload. State the lowest repeatable boundary, not the best single
-sample. A throughput claim without its latency, error, resource, and traffic
-mix constraints is incomplete.
+## Make a capacity claim
 
-Fail the review when correctness changes under concurrency, required signals
-are absent, protected paths collapse with heavy traffic, memory remains elevated
-after recovery, or repeated runs produce materially different boundaries.
+Report three regions: normal operation, onset of contention, and controlled
+overload. Use the lowest repeatable boundary across valid repetitions. Bind the
+claim to its latency, error, resource, traffic-mix, and correctness conditions.
 
-Use [Baseline Management](baseline-management.md) for reference approval and
-[Failure Injection Load](failure-injection-load.md) when concurrency is combined
-with dependency or infrastructure faults.
+Reject a result when parameters are missing, correctness changes, protected
+paths collapse, telemetry cannot identify the bottleneck, or repetitions move
+the boundary materially without explanation.
+
+Use [Baseline management](baseline-management.md) for comparison custody and
+[Thresholds and budgets](thresholds-and-budgets.md) for approval semantics.

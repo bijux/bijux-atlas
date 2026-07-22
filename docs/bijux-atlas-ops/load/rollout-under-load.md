@@ -9,108 +9,89 @@ last_reviewed: 2026-07-22
 
 # Rollout and Rollback Under Load
 
-Atlas tests both directions of release change under steady traffic. A rollout
-proves that a candidate can enter service without violating the request
-contract. A rollback proves that the previous release can restore behavior
-without leaving partial runtime state. Control-plane completion alone proves
-neither outcome.
+These experiments evaluate both directions of a release change while governed
+traffic remains active. Rollout asks whether a candidate becomes useful without
+breaking the service contract. Rollback asks whether the previous release
+restores that contract without leaving mixed state.
 
-Both scenarios require Kubernetes and use `warm-steady.js`:
+| Scenario | Control action | p95 | p99 | Error rate |
+| --- | --- | ---: | ---: | ---: |
+| `load-under-rollout` | move from previous release to candidate | 1,400 ms | 2,600 ms | 5% |
+| `load-under-rollback` | restore previous release | 1,400 ms | 2,600 ms | 5% |
 
-| Scenario | Control action | Required outcome |
-| --- | --- | --- |
-| `load-under-rollout` | Rollout or restart to the candidate | Candidate becomes ready, receives traffic, and remains inside service budgets. |
-| `load-under-rollback` | Rollback or undo to the previous release | Previous release becomes ready, receives traffic, restores correctness, and leaves no partial release state. |
+Both are marked mandatory in nightly load lanes. Latency and error ceilings are
+service survival limits, not sufficient promotion criteria.
 
-## Change Sequence
+## Current execution boundary
+
+The suite registry declares both entries as `script` runners, but each runner
+path points to a Python file that is absent from the repository. Neither suite
+is present in `ops/load/load.toml`, the executable manifest used by `ops load
+run`. Their scenario records name `warm-steady.js`, but that k6 script does not
+perform a rollout or rollback.
+
+Therefore, the checked-in control plane does not currently execute either
+end-to-end experiment. Generated suite manifests demonstrate registry
+generation only. They are not measured rollout evidence. Do not claim nightly
+coverage until a real runner performs the control action and emits the required
+release-correlated result.
+
+## Evidence contract for a real runner
 
 ```mermaid
 sequenceDiagram
-    participant Load as Steady workload
+    participant Load as Governed workload
     participant Old as Previous release
     participant New as Candidate release
-    participant Control as Kubernetes controller
-    Load->>Old: Establish baseline traffic
-    Control->>New: Start candidate
-    New-->>Control: Readiness and warmup evidence
-    Control->>Old: Drain old replicas
-    Load->>New: Shift governed traffic
-    alt candidate satisfies evidence contract
-        Control->>New: Promote
-    else candidate violates contract
-        Control->>Old: Restore previous release
-        Load->>Old: Confirm recovered behavior
+    participant K8s as Kubernetes controller
+    Load->>Old: establish healthy baseline
+    K8s->>New: create candidate replicas
+    New-->>K8s: readiness and warmup
+    Load->>New: candidate serves identified traffic
+    alt candidate accepted
+        K8s->>Old: drain old replicas
+    else contract violated
+        K8s->>Old: restore previous release
+        Load->>Old: confirm recovered behavior
     end
 ```
 
-Record the previous and candidate image digests, chart and profile identities,
-start and completion timestamps, replica transitions, and traffic share by
-release. Aggregated service metrics are insufficient: healthy old replicas can
-hide a failing candidate.
+A runner must bind:
 
-## Release-Scoped Observation
+- previous and candidate image digests;
+- chart, values profile, config digest, and dataset identity;
+- workload script, query corpus, rate, duration, and cache state;
+- rollout revision, replica history, endpoint membership, and timestamps;
+- metrics, logs, traces, and request results labeled by release;
+- the violated signal and rollback trigger when recovery occurs.
 
-```mermaid
-flowchart LR
-    Traffic[Governed traffic] --> Old[Previous release]
-    Traffic --> Candidate[Candidate release]
-    Old --> OldSignals[Release-scoped results and signals]
-    Candidate --> CandidateSignals[Release-scoped results and signals]
-    OldSignals --> Compare[Compare correctness, latency, errors, and saturation]
-    CandidateSignals --> Compare
-    Compare --> Decision{Promote or restore?}
-```
+Healthy old replicas can hide a candidate that never becomes ready. Aggregate
+service metrics are insufficient unless traffic and results can be attributed
+to each release.
 
-The candidate must serve enough representative traffic to evaluate every
-protected request class. Record zero-traffic, warmup, and readiness intervals
-separately. They must not dilute the measurement window or let aggregate
-service health conceal a candidate that never became useful.
+## Measurement windows
 
-## Acceptance Budget
+Evaluate at least four windows: healthy baseline, candidate warmup, mixed
+traffic, and stable candidate or restored previous release. Exclude zero-traffic
+intervals from candidate latency calculations, but retain them as availability
+evidence. The candidate must serve a meaningful sample of every protected
+request class.
 
-Rollout and rollback use the same governed limits:
+Correctness, dataset resolution, readiness, telemetry continuity, and
+configuration compatibility are hard gates. A threshold pass cannot compensate
+for a wrong dataset, missing release labels, an unobserved transition, or a
+candidate that received no useful traffic.
 
-| Signal | Maximum |
-| --- | ---: |
-| p95 latency | 1,400 ms |
-| p99 latency | 2,600 ms |
-| Error rate | 5% |
+## Rollback completion
 
-These are service ceilings, not promotion targets. Correctness, readiness,
-telemetry continuity, dataset availability, and configuration compatibility
-remain mandatory even when latency and error rate are inside budget.
+Rollback is complete only when the previous digest is active, governed queries
+are correct, readiness is stable, and no candidate pods or partial config state
+retain authority. Preserve the failed candidate evidence. Successful recovery
+does not turn the rollout into a pass.
 
-## Promotion Evidence
+Escalate instead of cycling releases when data integrity is uncertain, the
+previous release cannot become ready, or schema compatibility prevents a clean
+revert.
 
-A rollout is acceptable only when the candidate:
-
-- passes the profile's render, policy, and readiness contracts;
-- becomes an active endpoint and serves a meaningful share of the workload;
-- preserves request semantics, dataset resolution, and protected traffic;
-- emits metrics, logs, traces, and release identity continuously; and
-- stabilizes without restart loops, unresolved warmup, or hidden dependency
-  failures.
-
-## Rollback Evidence
-
-A rollback is acceptable only when the previous release is restored, query
-correctness and governed dataset access are recovered, the validation report is
-complete, and no partial release state remains. Preserve the trigger and the
-first violated signal; a successful recovery does not erase the candidate
-failure.
-
-Escalate instead of repeatedly cycling releases when shared data integrity is
-uncertain, the previous release cannot become ready, or compatibility prevents
-a clean revert.
-
-## Invalidating Conditions
-
-Reject the rollout experiment when release identity is missing from signals,
-the traffic split is unknown, the dataset changes during the comparison,
-telemetry gaps cover a transition, the old release is unhealthy before the
-candidate starts, or an unrelated dependency change enters the window. Repeat
-only after preserving and classifying the invalid run.
-
-Use [Rollout Safety](../kubernetes/rollout-safety.md) for profile controls and
-[Release Evidence](../release/release-evidence.md) for the packet required to
-support a promotion decision.
+Use [Rollout safety](../kubernetes/rollout-safety.md) for deployment controls
+and [Release evidence](../release/release-evidence.md) for promotion custody.
