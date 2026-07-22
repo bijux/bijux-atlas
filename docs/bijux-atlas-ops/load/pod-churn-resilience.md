@@ -69,6 +69,37 @@ Aggregate thresholds apply to the complete scenario. Also calculate the
 baseline, disruption, and recovery windows separately. A short blackout can be
 hidden by a long healthy baseline.
 
+## Account for Service Continuity
+
+Replica recovery and request continuity are related but distinct. A complete
+run accounts for what happened to traffic and authority while Kubernetes
+changed the serving population.
+
+| Continuity boundary | Before termination | During withdrawal and replacement | Recovery proof |
+| --- | --- | --- | --- |
+| request admission | offered and admitted rates are stable | new work stops reaching the withdrawn endpoint | admitted rate and routing stabilize |
+| in-flight work | active connections and long requests are identified | completions, explicit cancellations, and resets are classified | no orphaned work or retry storm remains |
+| serving capacity | ready endpoints sustain the governed workload | surviving capacity and any deliberate shedding remain within budget | declared ready count sustains the same workload |
+| cache and store | cache state and authoritative store identity are recorded | cold-path pressure and store access remain attributable | cache behavior settles without hiding store or dataset changes |
+| dataset authority | release, catalog, manifest, and dataset hashes agree | every successful response retains the same authority | replacement serves the bound identities |
+| replacement readiness | no replacement is yet needed | scheduling, startup, warmup, and readiness are timed separately | the new endpoint receives representative traffic correctly |
+
+```mermaid
+flowchart TD
+    T["Selected pod terminates"] --> W["Endpoint withdrawal"]
+    W --> A["Surviving endpoints admit traffic"]
+    W --> I["In-flight work is classified"]
+    A --> C["Replacement starts and warms"]
+    I --> C
+    C --> R["Replacement becomes ready"]
+    R --> V["Representative traffic verifies identity and behavior"]
+```
+
+Do not infer clean draining from a low aggregate error rate. The workload may
+have retried a reset, the withdrawn endpoint may have completed work after its
+readiness changed, or surviving replicas may have hidden a replacement that
+never served a representative request.
+
 ## Acceptance decision
 
 Accept only when the declared thresholds pass, responses remain correct,

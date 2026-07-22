@@ -89,6 +89,37 @@ classes are part of the release claim. A correct overall weight can still hide
 a selector, session-affinity, or routing defect that sends one class only to
 the previous release.
 
+## Budget the Overlap
+
+Mixed-version operation creates its own capacity condition. During overlap,
+the previous release drains while the candidate starts, warms caches, opens
+dependencies, and begins receiving traffic. The service-level result is useful
+only when the run also attributes the capacity and behavior of each release.
+
+| Overlap proof | Required evidence | Decision protected |
+| --- | --- | --- |
+| capacity supply | desired, ready, available, and serving replicas by release | the rollout never silently falls below the capacity assumed by the workload |
+| candidate admission | completed requests and offered share by release and request class | healthy previous replicas cannot mask an unused candidate |
+| startup pressure | startup duration, warmup, cache misses, store calls, and resource peaks | transient candidate cost fits inside the overlap budget |
+| previous-release drain | endpoint withdrawal, in-flight completion, reset, and termination timing | capacity is not removed before accepted work is resolved |
+| service outcome | correctness, latency, rejection, failure, and timeout by release | aggregate success cannot hide candidate-specific failure |
+| reversal reserve | previous-release readiness, compatible state, and time to resume full traffic | rollback remains executable under the same governed load |
+
+```mermaid
+flowchart LR
+    B["Previous release<br/>healthy baseline"] --> O["Bounded overlap<br/>old and candidate attributed"]
+    O --> C{"Candidate satisfies<br/>identity and budgets?"}
+    C -->|yes| P["Candidate carries full governed load"]
+    C -->|no| R["Previous release resumes full traffic"]
+    P --> S["Stable candidate observation"]
+    R --> E["Recovery and residual-state evidence"]
+```
+
+Set the allowed overlap duration and minimum capacity before the run. A slow
+rollout that eventually succeeds can still violate the operational contract;
+a quick rollback can still fail if the previous release returns with ambiguous
+catalog, configuration, or store authority.
+
 ## Measurement Windows
 
 Evaluate at least four windows: healthy baseline, candidate warmup, mixed

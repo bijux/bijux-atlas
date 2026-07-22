@@ -78,6 +78,37 @@ readiness, version, and catalog paths have separate survival expectations. A
 healthy overload result proves controlled degradation, not the absence of
 rejections.
 
+## The Resilience Envelope
+
+Resilience is established by a connected series of experiments, not by
+extrapolating one healthy load run. Each experiment changes one operating
+condition while keeping workload and evidence identity controlled.
+
+```mermaid
+flowchart LR
+    N["Nominal load<br/>capacity and service budget"] --> F["Confirmed dependency fault<br/>degradation and recovery"]
+    N --> P["Pod replacement<br/>continuity across instance loss"]
+    N --> R["Release overlap<br/>candidate attribution and reversal"]
+    F --> E["Supported operating envelope"]
+    P --> E
+    R --> E
+    E --> Q{"Claim names every<br/>exercised boundary?"}
+    Q -->|yes| A["Accept bounded resilience claim"]
+    Q -->|no| X["Narrow the claim or run more evidence"]
+```
+
+| Experiment | Controlled change | Claim it can support | Claim it cannot support alone |
+| --- | --- | --- | --- |
+| nominal saturation | offered load and concurrency | capacity knee, overload policy, and cheap-path survival | behavior during dependency or orchestration failure |
+| dependency fault | one confirmed dependency or resource fault | containment, explicit degradation, and timed recovery | instance replacement or release compatibility |
+| pod churn | one selected serving instance is removed and replaced | endpoint withdrawal, capacity continuity, and replacement readiness | node, zone, or repeated-churn resilience |
+| rollout and rollback | candidate and previous releases overlap under attributed traffic | mixed-version capacity, candidate behavior, and reversal | safety of an unattributed candidate or incompatible state change |
+
+The supported envelope is the intersection of these bounded claims. Keep
+invalid, aborted, and failed experiments in the evidence record: they describe
+where measurement authority ended or where the operating envelope was
+exceeded.
+
 ## Select Evidence by Question
 
 - Start with [Performance and Load](performance-and-load.md) to identify the

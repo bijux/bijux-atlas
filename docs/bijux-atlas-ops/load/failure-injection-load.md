@@ -145,6 +145,36 @@ uncached-before-fault, and populated-during-fault cohorts. This reveals whether
 the service preserved known-good data, attempted unsafe cache fills, or hid
 store loss behind stale state.
 
+## Prove Fault Fidelity
+
+A useful experiment proves the full causal chain from control action to clean
+recovery. The injection command alone is not proof that the intended service
+boundary changed, and an elevated error rate alone cannot attribute the cause.
+
+| Evidence point | Required question | Invalidating ambiguity |
+| --- | --- | --- |
+| injection control | What exact action, target, and duration did the controller request? | command, target identity, or timestamp is missing |
+| dependency impact | Did an independent signal confirm the intended dependency or resource became unavailable? | only the controller reports success |
+| Atlas detection | Which metric, log, trace, or health state exposed the fault, and how quickly? | no service-visible detection signal exists |
+| client behavior | Which protected, shed, and failed request classes changed? | one aggregate error rate hides route or dataset behavior |
+| protection action | Did timeout, breaker, admission, cache, or rejection policy act as declared? | apparent survival cannot be tied to a protection mechanism |
+| removal confirmation | Did an independent signal prove the fault was removed? | recovery timing begins from an assumed removal |
+| residual-state check | Did replicas, catalogs, stores, caches, locks, and telemetry return to an authoritative state? | traffic recovered while state remained ambiguous |
+
+```mermaid
+flowchart LR
+    C["Controller action"] --> I["Independent impact confirmation"]
+    I --> D["Atlas detection"]
+    D --> B["Classified client behavior"]
+    B --> P["Protection mechanism"]
+    P --> U["Confirmed fault removal"]
+    U --> S["Residual-state proof"]
+```
+
+If any link is missing, report the observation that remains supported—for
+example, unexplained degradation or an injection-control failure—without
+promoting it to a resilience verdict.
+
 ## Store-Outage Budget
 
 The governed `store-outage-under-spike` thresholds are:
