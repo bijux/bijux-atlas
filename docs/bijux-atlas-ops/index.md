@@ -81,10 +81,10 @@ operation requires explicit agreement across all three.
 
 | Plane failure | Immediate risk | Safe response |
 | --- | --- | --- |
-| control | desired state cannot be applied or reversed predictably | stop mutation and preserve current workload identity |
-| data | requests cannot resolve or serve the intended dataset correctly | remove traffic eligibility and restore verified state |
+| control | state cannot be changed predictably | stop mutation; preserve workload identity |
+| data | intended dataset cannot be served correctly | remove traffic; restore verified state |
 | evidence | behavior cannot be measured or attributed | hold promotion and retain local diagnostics |
-| cross-plane identity | observations refer to different release, profile, or dataset | reject the decision packet as incoherent |
+| cross-plane identity | release, profile, or dataset differs | reject the incoherent packet |
 
 ## Operational Domains
 
@@ -122,15 +122,40 @@ Cross-cutting inventory, schema, policy, security, drift, dataset, and
 reproducibility contracts live under `ops/`. They connect these domains and
 prevent one domain from making an isolated promotion claim.
 
+## Executable Routes and Ownership
+
+The installed maintainer route is `bijux dev atlas ops ...`; a checkout can use
+`cargo run --locked -p bijux-atlas-dev -- ops ...`. The command family is broad,
+but its subcommands still have narrow proof boundaries:
+
+| Route | Primary use | Strongest safe claim from success alone |
+| --- | --- | --- |
+| `ops stack plan` | resolve composition | profile and planned components are inspectable |
+| `ops stack status` | inspect local services | named services were observed at that time |
+| `ops k8s render`, `validate` | check Kubernetes input | shape passed implemented validators |
+| `ops k8s conformance` | inspect readiness | current deployment, pod, and HPA snapshot passed |
+| `ops obs verify` | verify selected signals | that observability verification completed |
+| `ops load plan`, `run`, `evaluate` | run a load contract | measurements satisfy that scenario and threshold |
+| `ops evidence collect`, `verify` | check evidence binding | packet passed implemented binding checks |
+
+The executable observability subcommand is named `obs`. Documentation uses the
+full domain name “observability” for readers, but command examples must preserve
+the compiled route. Always inspect `--help` for the selected subcommand before
+granting cluster, subprocess, network, or write authority.
+
+Commands expose mechanisms, not a universal promotion recipe. An environment's
+policy decides which routes, observation windows, scenarios, and recovery proof
+are required for its decision.
+
 ## Operator Control Loops
 
 | Loop | Input | Decision | Evidence to retain |
 | --- | --- | --- | --- |
-| admission | release identity, profile, values, images, and policy | reject or permit render and install | resolved versions, values digest, policy result, render inventory |
-| rollout | desired replicas, probes, disruption rules, and traffic state | continue, hold, drain, or roll back | rollout events, readiness history, error and saturation signals |
-| capacity | scenario, concurrency, thresholds, and baseline | accept, tune, or reject operating envelope | scenario identity, measurements, threshold evaluation, comparison |
-| incident | symptoms, blast radius, recent changes, and dependencies | mitigate, isolate, recover, or escalate | timeline, queries, debug bundle, actions, recovery verification |
-| promotion | artifacts, conformance, telemetry, load, and recovery proof | promote or refuse release | verified evidence packet bound to artifact identities |
+| admission | release inputs | permit render and install | versions, values digest, policy, inventory |
+| rollout | workload and traffic state | continue, drain, roll back | events, readiness, error, saturation |
+| capacity | scenario, concurrency, baseline | accept or reject envelope | measurements and threshold evaluation |
+| incident | symptoms, changes, dependencies | mitigate, recover, escalate | timeline, diagnostics, recovery result |
+| promotion | artifact and operating proof | promote or refuse | verified packet bound to artifacts |
 
 The loops share release and environment identity but answer different
 questions. Admission cannot stand in for runtime observation. A load result
@@ -183,10 +208,10 @@ Operational assets answer different questions and are not interchangeable.
 | Asset | Safe conclusion | Unsafe conclusion |
 | --- | --- | --- |
 | schema, policy, or threshold | the required shape and decision rule are explicit | the environment passed |
-| sample or golden file | serializers and validators have a representative target | current runtime behavior matches the sample |
-| rendered manifest | the selected values produce a concrete resource shape | the workload became ready or survived failure |
-| telemetry inventory | expected signals have names and owners | signals were emitted, retained, or queried successfully |
-| scenario report | the named behavior was observed for recorded inputs | another profile, version, or environment behaves identically |
+| sample or golden file | representative validator target exists | runtime matches the sample |
+| rendered manifest | values produce a resource shape | workload became ready or survived |
+| telemetry inventory | expected signals have names and owners | signals were emitted and retained |
+| scenario report | named behavior was observed | another target behaves identically |
 | verified release packet | evidence and artifact identities agree | unrecorded operational assumptions are safe |
 
 Use the weakest artifact that can answer an inspection question and the

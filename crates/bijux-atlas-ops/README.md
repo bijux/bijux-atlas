@@ -64,6 +64,36 @@ The modules return typed values or deterministic JSON payloads so command-line
 and CI consumers can share one implementation. Filesystem mutation and cluster
 execution remain explicit at the call site.
 
+## Library and Execution Boundary
+
+The crate contains both pure contract logic and adapters that can inspect or
+act on external state. Callers choose the boundary explicitly:
+
+```mermaid
+flowchart LR
+    Root[Explicit repository root] --> Load[Load governed assets]
+    Load --> Validate[Validate shape and relationships]
+    Validate --> Plan[Build typed plan or report]
+    Plan --> Authorize{Caller grants effects?}
+    Authorize -->|no| Inspect[Return deterministic inspection result]
+    Authorize -->|yes| Execute[Use explicit process, filesystem, or cluster adapter]
+    Execute --> Observe[Capture result and external identity]
+```
+
+Loading a profile, producing a plan, or validating a manifest does not execute
+Helm, contact Kubernetes, run load traffic, or prove an environment healthy.
+Execution evidence must retain the target, command, inputs, capabilities,
+result, and generated artifact paths supplied by the caller.
+
+| Need | Begin with | Escalate only when |
+| --- | --- | --- |
+| inspect repository paths and manifests | `workspace`, `reference`, `inventory` | a decision requires external state |
+| validate composition and profiles | `stack` and `workspace` | render or deployment behavior is in scope |
+| reason about Kubernetes safety | `kubernetes` policies | cluster identity and authority are explicit |
+| evaluate signal contracts | `observe` | a target and observation window are named |
+| prepare load evidence | `load` plan and report contracts | the scenario, endpoint, and budget are selected |
+| assemble release evidence | `lifecycle` and diagnostics | consumer verification and custody are defined |
+
 ## Operations Architecture
 
 ```mermaid
