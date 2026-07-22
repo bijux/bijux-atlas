@@ -277,10 +277,10 @@ identity or substitute for a different kind of proof.
 | --- | --- | --- |
 | release admission | are runtime, dataset, chart, profile and dependency identities coherent? | versions, digests or ownership disagree |
 | deployment admission | does the selected configuration render and satisfy implemented policy? | inventory is incomplete or a required control is absent |
-| service observation | did the intended workload become ready and serve the intended dataset during the observation window? | traffic, dataset or telemetry identity cannot be attributed |
-| resilience qualification | did named load, fault, churn and rollout scenarios remain inside their budgets? | a required scenario lacks an executable result or comparable baseline |
-| recovery qualification | can the environment restore coherent serving state and demonstrate reversal? | backup presence, rollback completion or post-recovery verification is unproven |
-| promotion closure | do checksums, provenance and the evidence manifest bind every required result to the distributed artifacts? | packet membership or consumer verification is incomplete |
+| service observation | did the workload serve the intended dataset during the window? | traffic, dataset or signals cannot be attributed |
+| resilience qualification | did named scenarios remain inside their budgets? | executable result or comparable baseline is absent |
+| recovery qualification | can the environment restore and reverse coherent state? | backup, rollback or recovery proof is absent |
+| promotion closure | does the packet bind results to distributed artifacts? | membership or consumer verification is incomplete |
 
 ```mermaid
 flowchart LR

@@ -172,7 +172,7 @@ Atlas currently has two similarly named surfaces:
 
 | Surface | Current scope | Safe claim |
 | --- | --- | --- |
-| `bijux-atlas-dev ops k8s conformance` | `kubectl` snapshots of deployments and pods, plus custom-metrics API presence when HPA exists | workload-readiness snapshot for the fixed `bijux-atlas` namespace |
+| `bijux-atlas-dev ops k8s conformance` | deployment, pod and HPA metric snapshots | readiness snapshot for `bijux-atlas` |
 | `ops/k8s/tests/manifest.json` and `suites.json` | 79 declared checks selected by five suite definitions | intended check inventory and grouping, not execution |
 
 No current runner connects a selected suite to all declared scripts and emits

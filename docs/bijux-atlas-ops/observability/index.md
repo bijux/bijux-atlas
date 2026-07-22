@@ -198,7 +198,7 @@ collection path could not have produced.
 | centralized logs | aggregate health and sampled request paths | complete discrete-event, audit or policy-decision history |
 | alert notification | rule evaluation state and direct backend queries | that the assigned owner received or acted on the page |
 | dashboard rendering | raw query results and validated panel definition | that the operator view displayed the same window correctly |
-| all telemetry backends | client captures, Kubernetes state, bounded pod output, catalog and store integrity checks | promotion, security closure, or a claim that no hidden failures occurred |
+| all telemetry backends | clients, Kubernetes, pod output and integrity checks | promotion, security closure or absence of hidden failures |
 
 Restoring the missing path is not retrospective proof for the blind interval.
 Record the gap, the collection and source clocks, any emergency observation

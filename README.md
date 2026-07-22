@@ -249,7 +249,7 @@ flowchart LR
 | a command or HTTP shape is supported | owning crate plus generated CLI or OpenAPI reference | contract validation tied to the source revision |
 | a dataset is publishable | ingest, artifact, and store contracts | manifest, hashes, provenance, and store publication record |
 | a dataset is discoverable | catalog identity and promotion contracts | promoted catalog entry bound to the published payload |
-| a deployment is admissible | chart schema, profile values, and Kubernetes policy | render and admission evidence plus results from the exact executable checks selected for the profile |
+| a deployment is admissible | chart, profile and Kubernetes policy | render, admission and selected-check evidence |
 | a performance budget holds | named scenario, threshold, and metric contract | measured run plus baseline comparison from the same scenario identity |
 | a release is distributable | channel manifests and signing policy | coherent packet, checksums, provenance, and verifier result |
 
@@ -314,8 +314,8 @@ The operational surface is organized by decisions rather than tool names:
 
 | Decision | Start with | Completion evidence |
 | --- | --- | --- |
-| admit or remove traffic | [Health, Readiness, and Drain](docs/bijux-atlas-ops/observability/health-readiness-and-drain.md) | stable probe window plus representative user-path behavior |
-| diagnose a request | [Logging, Metrics, and Tracing](docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md) | correlated request ID, trace, logs, and population metrics |
+| admit or remove traffic | [Health and Drain](docs/bijux-atlas-ops/observability/health-readiness-and-drain.md) | probe window and user-path behavior |
+| diagnose a request | [Signals](docs/bijux-atlas-ops/observability/logging-metrics-and-tracing.md) | correlated request, trace, logs and metrics |
 | isolate data or cache failure | [Cache and Store Operations](docs/bijux-atlas-ops/stack/cache-and-store-operations.md) | verified store authority and bounded cache recovery |
 | publish a release | [Distribution Channels](docs/bijux-atlas-ops/release/distribution-channels.md) | required immutable channel identities resolve and agree |
 | accept transported evidence | [Release Packets](docs/bijux-atlas-ops/release/release-packets.md) | fresh consumer verification receipt |

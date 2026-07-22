@@ -134,11 +134,11 @@ mean authoritative, and replaceable does not mean operationally free.
 
 | Surface | State role | Replacement expectation | Authority required after replacement |
 | --- | --- | --- | --- |
-| release artifacts and manifests | immutable released truth | restored or replicated without changing content identity | artifact hashes and manifest binding match the released set |
+| release artifacts and manifests | immutable truth | restored without changing identity | hashes and manifest match the release |
 | catalog | selects admissible dataset releases | restored from a governed recovery point or reconciled explicitly | selected release and catalog generation are unambiguous |
 | Atlas runtime | executes the serving contract | pods and processes may be recreated | image, config, catalog, and dataset identities match the deployment |
 | cache | derived acceleration state | entries may be evicted and rebuilt | every reused or rebuilt entry binds to verified store data |
-| object-store service | hosts authoritative artifact bytes | service instances may change; governed objects may not change silently | durability, integrity, consistency, and access behavior are verified |
+| object-store service | hosts artifact bytes | instances may change; governed objects may not | durability, integrity and access are verified |
 | telemetry pipeline | transports operating evidence | collectors may restart without rewriting observed history | gaps, delay, and recovery are visible in the evidence record |
 
 ```mermaid

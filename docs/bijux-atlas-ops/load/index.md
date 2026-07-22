@@ -44,7 +44,7 @@ are not interchangeable:
 
 | Selection surface | Examples | What selection means |
 | --- | --- | --- |
-| executable `ops load` manifest | `mixed`, `diff_heavy`, `hpa_validation_short` | one of three entries that `ops load plan`, `run`, and `report` can resolve from `ops/load/load.toml` |
+| executable manifest | `mixed`, `diff_heavy`, `hpa_validation_short` | entry resolved by `ops load` from `load.toml` |
 | acceptance scenario registry | `mixed`, `diff-heavy`, `pod-churn`, `load-under-rollout` | one of 40 declared operating experiments with lanes, metrics, and budgets |
 | lane metadata | `smoke`, `full`, `nightly`, `load-nightly` | intended scenario membership, not an executable command or execution receipt |
 
@@ -129,8 +129,8 @@ flowchart LR
 | --- | --- | --- | --- |
 | nominal saturation | offered load and concurrency | capacity knee, overload policy, and cheap-path survival | behavior during dependency or orchestration failure |
 | dependency fault | one confirmed dependency or resource fault | containment, explicit degradation, and timed recovery | instance replacement or release compatibility |
-| pod churn | one selected serving instance is removed and replaced | endpoint withdrawal, capacity continuity, and replacement readiness | node, zone, or repeated-churn resilience |
-| rollout and rollback | candidate and previous releases overlap under attributed traffic | mixed-version capacity, candidate behavior, and reversal | safety of an unattributed candidate or incompatible state change |
+| pod churn | one instance is replaced | withdrawal, capacity continuity and replacement readiness | node, zone or repeated-churn resilience |
+| rollout and rollback | releases overlap under attributed traffic | mixed-version capacity and reversal | unattributed or incompatible change safety |
 
 The supported envelope is the intersection of these bounded claims. Keep
 invalid, aborted, and failed experiments in the evidence record: they describe

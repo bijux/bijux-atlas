@@ -29,7 +29,7 @@ and evidence have different owners:
 | --- | --- | --- |
 | `ops/` | authored inventories, schemas, profiles, charts, scenarios, thresholds, runbooks and release inputs | that an environment executed or passed them |
 | `bijux-atlas-ops` | typed models, path contracts, deterministic validation and explicit external-state adapters | that a caller granted effects or retained the result |
-| `bijux-atlas-dev ops` | executable routing, capability gates, filesystem/process/cluster effects and report emission | that every declared inventory item has an implemented runner |
+| `bijux-atlas-dev ops` | routing, effect gates and report emission | that every declared item has a runner |
 | generated run and release evidence | observed target, inputs, result, timing, identities and artifact binding | truth beyond the named check, scenario and observation window |
 
 ```mermaid
@@ -54,10 +54,10 @@ that produced the preceding record.
 
 | Record | Question answered | Created from | Required before continuing |
 | --- | --- | --- | --- |
-| desired | what is intended to run? | release, dataset, profile, policy, dependency and target selections | every mutable input resolves to an immutable identity or governed exception |
+| desired | what is intended to run? | release, dataset, profile, policy and target | mutable inputs resolve to immutable identities or exceptions |
 | rendered | what exact resources would those inputs create? | deterministic composition and manifest rendering | schema, inventory, namespace, image-pin and policy checks pass |
 | admitted | what did the target accept? | API admission and controller state | context, namespace, live object and workload revision bind to the intended target |
-| observed | how did the admitted system behave? | probes, traffic, telemetry and executed scenarios | observation window and release-scoped measurements satisfy the selected policy |
+| observed | how did the system behave? | probes, traffic, signals and scenarios | release-scoped measurements satisfy policy |
 | qualified | what decision is supported? | verified evidence packet | artifact, dataset, deployment, target and execution identities join without ambiguity |
 
 ```mermaid

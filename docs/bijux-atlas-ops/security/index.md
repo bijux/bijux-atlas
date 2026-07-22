@@ -40,12 +40,12 @@ results to distributed bytes.
 | Boundary | Governing concern | Required proof |
 | --- | --- | --- |
 | dataset | source admission, manifest integrity, immutable publication, cache identity | rejected invalid input, verified artifact hashes, and identity-bearing reads |
-| request | authentication, principal propagation, authorization, limits, route classification | allowed and denied requests with action, resource, policy, and correlation evidence |
-| administrative | route registration, operator authority, network isolation, exceptional access | complete route inventory, classifier parity, negative checks, and bounded reachability |
+| request | authentication, authorization, limits and route class | allowed and denied requests with policy and correlation evidence |
+| administrative | route inventory, authority, isolation and exceptions | classifier parity, denial checks and bounded reachability |
 | workload | pod security, service account, RBAC, filesystem, process configuration | rendered intent, admission result, and observed runtime identity |
 | network | ingress, egress, service exposure, dependency reachability | policy inventory plus allowed and denied connectivity checks |
 | secrets | issuance, reference, delivery, rotation, revocation, redaction | versioned non-secret identifiers and controlled positive and negative checks |
-| supply chain | dependency sources, image and package identity, SBOM, provenance, release integrity | immutable references, policy results, fresh checksum verification, and consumer trust anchor |
+| supply chain | dependencies, images, packages, SBOM and provenance | immutable references, policy, fresh hashes and consumer trust |
 | evidence | audit completeness, retention, tamper detection, incident custody | schema-valid records, gap detection, checksum binding, and retained decision history |
 
 ## Evidence Strength
