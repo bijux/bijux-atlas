@@ -218,7 +218,7 @@ governance responsibilities.
 | `bijux-atlas` | `bijux-atlas-cli` | dataset build, publication, and query workflows |
 | `bijux-atlas-server` | `bijux-atlas-server` | HTTP lifecycle and service entrypoint |
 | `bijux-atlas-openapi` | `bijux-atlas-api` | versioned HTTP contract export |
-| Rust orchestration | `bijux-atlas-runtime` | ingest, store, query, API, and policy composition |
+| shared runtime foundation | `bijux-atlas-runtime` | configuration, cache, store adapters, application ports, cluster, security, and policy domains |
 | historical import | `bijux-atlas` crate | compatibility for the `bijux_atlas` name |
 | operations | `bijux-atlas-ops` | deployment, telemetry, load, recovery, and release models |
 | maintenance | `bijux-atlas-dev` | repository-only validation and release automation |
@@ -267,7 +267,7 @@ Start with the surface that matches the job in front of you:
 | the end-user Atlas command | `bijux-atlas-cli` | owns the installed `bijux-atlas` binary |
 | the long-running HTTP process | `bijux-atlas-server` | owns server startup, telemetry bootstrap, and route exposure |
 | OpenAPI export and API wire contracts | `bijux-atlas-api` | owns DTOs, parameters, envelopes, and `bijux-atlas-openapi` |
-| the orchestration library | `bijux-atlas-runtime` | composes ingest, query, store, API, and runtime policy |
+| the shared runtime foundation | `bijux-atlas-runtime` | supplies configuration, cache, adapters, ports, and runtime-owned policy domains |
 | the historical Rust import path | `bijux-atlas` | preserves the `bijux_atlas` compatibility surface |
 | stack, load, and observability contracts | `bijux-atlas-ops` | owns operator-facing reference and release-support surfaces |
 | maintainer automation and repository law | `bijux-atlas-dev` | owns governance, docs validation, release planning, and reports |
@@ -370,43 +370,10 @@ Runtime crates are configured for Cargo publication. The maintainer crate is
 part of the repository contract and the `bijux dev atlas ...` umbrella
 surface, even when you run it directly from a checkout.
 
-Atlas does not publish a Python package yet. The planned Python bridge is a future release item, not a hidden install path today.
-
----
-
-## Verify Installed Surfaces
-
-```bash
-# Inspect the runtime surface
-bijux-atlas --help
-bijux-atlas version
-
-# Export the OpenAPI document
-bijux-atlas-openapi --help
-
-# Inspect the server surface
-bijux-atlas-server --help
-```
-
-For the canonical runtime references, start with:
-
-* [`docs/bijux-atlas/workflows/index.md`](docs/bijux-atlas/workflows/index.md)
-* [`docs/bijux-atlas-ops/index.md`](docs/bijux-atlas-ops/index.md)
-* [`docs/bijux-atlas/interfaces/command-surface.md`](docs/bijux-atlas/interfaces/command-surface.md)
-
-```mermaid
-flowchart LR
-    Inspect[Inspect CLI and server] --> Install[Confirm binary identity]
-    Install --> BuildDocs[Follow getting started]
-    BuildDocs --> Ingest[Build and verify a dataset]
-    Ingest --> Publish[Publish payload and promote catalog]
-    Publish --> Serve[Start the server]
-    Serve --> Query[Run identity-bearing queries]
-```
-
-The commands above confirm binary ownership and product shape. They do not boot
-a server or prove dataset behavior. Follow the workflow guide for those claims,
-and keep the binary, dataset, store, and catalog identities visible throughout.
+Atlas does not publish a Python package. Binary help confirms command ownership
+and shape; it does not prove dataset behavior. Continue with the
+[product workflows](docs/bijux-atlas/workflows/index.md) and keep binary,
+dataset, store, and catalog identities visible through the executed path.
 
 ---
 

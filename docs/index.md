@@ -69,21 +69,31 @@ can reason about deployment evidence without treating checked-in examples as
 live results. Maintainers can change the system without moving control-plane
 logic into user-facing binaries.
 
-## From Source Data to Operational Evidence
+## Two Lifecycles Meet at Serving Identity
 
-Atlas is an artifact-first system. Runtime processes consume published state;
-they do not redefine release truth in place.
+Atlas is an artifact-first system with separate dataset and service
+lifecycles. Dataset work establishes which immutable biological release may be
+served. Service work establishes where, under which policy, and with which
+operational evidence it may receive traffic. The resolved dataset and runtime
+identities join those lifecycles.
 
 ```mermaid
-flowchart LR
-    source[Governed GFF3 and FASTA inputs] --> validate[Validation and normalization]
-    validate --> build[Deterministic artifact build]
-    build --> release[Immutable release artifacts]
-    release --> publish[Immutable store publication]
-    publish --> promote[Catalog promotion]
-    promote --> serve[CLI and HTTP runtime surfaces]
-    serve --> observe[Health, metrics, logs, and traces]
-    observe --> decide[Promotion, rollback, and incident evidence]
+flowchart TB
+    subgraph data[Dataset lifecycle]
+        source[Governed GFF3 and FASTA] --> build[Validate and build]
+        build --> publish[Verify and publish immutable artifacts]
+        publish --> catalog[Promote catalog identity]
+    end
+    subgraph service[Service lifecycle]
+        release[Runtime release] --> render[Resolve profile and render]
+        render --> deploy[Deploy and admit traffic]
+        deploy --> qualify[Observe, load, secure, and recover]
+    end
+    catalog --> identity[Resolved serving identity]
+    deploy --> identity
+    identity --> query[CLI and HTTP results]
+    qualify --> decision[Promotion, rollback, and incident decisions]
+    query --> decision
 ```
 
 | Boundary | Authority | Evidence retained |
@@ -94,6 +104,11 @@ flowchart LR
 | catalog promotion | catalog contract | discoverable release identity bound to the published payload |
 | serving | CLI, HTTP, OpenAPI, query, and runtime policy | structured results, stable errors, metrics, logs, and traces |
 | operations | stack, Kubernetes, load, security, and release contracts | results from named executable checks, measured baselines, drill results, checksums, and release packets |
+
+A dataset can be published while no deployment is qualified to serve it. A
+deployment can be healthy while it observes the wrong catalog generation or
+dataset tuple. Readiness for traffic requires both lifecycles to converge; it
+cannot be inferred from either one alone.
 
 ## One Release Identity Across the System
 

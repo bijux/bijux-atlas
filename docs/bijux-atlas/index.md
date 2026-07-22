@@ -33,10 +33,11 @@ Atlas is the repository-owned product surface for:
 - serving dataset identity, gene, transcript, sequence, and diff workflows;
 - exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts.
 
-The Atlas product surface is carried by a split crate set.
-`bijux-atlas-runtime` owns orchestration. `bijux-atlas` preserves the historical
-import path. The CLI, server, and API crates own the direct binaries. Leaf
-crates own ingest, query, model, core, store, and operations contracts.
+The Atlas product surface is carried by a split crate set. The CLI and server
+are composition roots: they depend directly on the domain crates needed by
+their executable paths. `bijux-atlas-runtime` supplies the shared process
+foundation, and `bijux-atlas` preserves the historical import path. Leaf crates
+retain ingest, query, model, core, store, API, and operations ownership.
 
 | Capability | Product boundary |
 | --- | --- |
@@ -55,13 +56,18 @@ flowchart TB
     Core[core and model] --> Ingest[ingest]
     Core --> Query[query]
     Core --> Store[store]
-    Ingest --> Runtime[runtime orchestration]
-    Query --> Runtime
-    Store --> Runtime
-    Runtime --> CLI[CLI binary]
-    Runtime --> Server[server binary]
+    Store --> Runtime[runtime foundation]
+    Ingest --> CLI[CLI composition root]
+    Query --> CLI
+    Store --> CLI
+    Runtime --> CLI
+    Query --> Server[server composition root]
     API[API contracts and OpenAPI] --> Server
-    Runtime --> Compat[compatibility alias crate]
+    Runtime --> Server
+    API --> Compat[compatibility facade]
+    Ingest --> Compat
+    Query --> Compat
+    Runtime --> Compat
 ```
 
 Ownership stays split so consumers can depend on the narrowest durable surface:
@@ -71,7 +77,7 @@ Ownership stays split so consumers can depend on the narrowest durable surface:
 - ingest-time normalization and artifact construction live under
   `crates/bijux-atlas-ingest/src/engine/`
 - query semantics live under `crates/bijux-atlas-query/src/engine/`
-- runtime assembly, store ports, policy, and configuration live under
+- shared runtime cache, store ports, adapters, policy, and configuration live under
   `crates/bijux-atlas-runtime/src/app/`,
   `crates/bijux-atlas-runtime/src/domain/`, and
   `crates/bijux-atlas-runtime/src/runtime/`
