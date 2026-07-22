@@ -36,11 +36,11 @@ Atlas exposes several ownership signals:
 
 | Signal | Answers | Does not prove |
 | --- | --- | --- |
-| page `owner` metadata | who maintains the narrative surface | GitHub approval or runtime ownership |
-| registry and schema ownership | who governs a machine-readable contract | that generated consumers are current |
-| runnable and report metadata | who owns automation identity and evidence | that a named run executed successfully |
-| `.github/CODEOWNERS` | who GitHub requests for review | expertise, approval, or enforcement outside GitHub |
-| ADR metadata | who accepted a durable architectural decision | that the implementation still matches the decision |
+| page `owner` metadata | who maintains the narrative | GitHub approval or runtime ownership. |
+| registry and schema ownership | who governs a machine contract | generated consumers are current. |
+| runnable and report metadata | who owns automation and evidence | a named run succeeded. |
+| `.github/CODEOWNERS` | who GitHub requests for review | expertise, approval, or external enforcement. |
+| ADR metadata | who accepted a durable decision | implementation still matches the decision. |
 
 If those signals disagree, resolve the ownership drift before merging the change.
 
@@ -52,10 +52,10 @@ record intentional exceptions explicitly.
 
 Atlas governance stays honest when one checked-in source owns each durable rule.
 
-- public behavior belongs in canonical docs and contracts, not ad hoc notes;
-- generated evidence points back to the checked-in source that defines it;
+- public behavior belongs in canonical docs and contracts, not ad hoc notes.
+- generated evidence points back to the checked-in source that defines it.
 - ownership changes update the owning registry, metadata, and review route in
-  the same coherent change;
+  the same coherent change.
 - ADRs explain decisions but do not become alternate configuration or policy
   authorities.
 
@@ -85,10 +85,10 @@ Owners: <durable owner identifiers>
 
 Capture a durable decision record when you:
 
-- change a contract, schema, or compatibility promise.
-- move a boundary between crates, domains, docs, configs, or ops.
-- introduce a new canonical automation surface or retire an old one.
-- change a workflow that other contributors will need to repeat.
+- change a contract, schema, or compatibility promise;
+- move a boundary between crates, domains, docs, configs, or ops;
+- introduce a canonical automation surface or retire an old one;
+- change a workflow that other contributors will need to repeat;
 - accept a security, reliability, data-integrity, or operational trade-off that
   is not obvious from the resulting code.
 

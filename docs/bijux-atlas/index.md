@@ -28,10 +28,10 @@ flowchart LR
 
 Atlas is the repository-owned product surface for:
 
-- ingesting governed GFF3 and FASTA inputs into immutable dataset artifacts
-- publishing those artifacts into a serving store and promoting their catalog identity
-- serving dataset identity, gene, transcript, sequence, and diff workflows
-- exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts
+- ingesting governed GFF3 and FASTA inputs into immutable dataset artifacts;
+- publishing those artifacts into a serving store and promoting their catalog identity;
+- serving dataset identity, gene, transcript, sequence, and diff workflows;
+- exposing a stable CLI, HTTP, and OpenAPI surface around those artifacts.
 
 The Atlas product surface is carried by a split crate set.
 `bijux-atlas-runtime` owns orchestration. `bijux-atlas` preserves the historical
@@ -40,13 +40,13 @@ crates own ingest, query, model, core, store, and operations contracts.
 
 | Capability | Product boundary |
 | --- | --- |
-| dataset construction | validates and normalizes supported GFF3 and FASTA inputs into release-shaped artifacts |
-| publication | moves complete, verified artifacts into an explicit immutable store payload |
-| promotion | exposes the published release, species, and assembly identity through the catalog |
-| discovery | resolves catalog, dataset, and endpoint identity without redefining release truth |
-| query | serves genes, counts, transcripts, sequence regions, and release comparisons |
-| delivery | exposes direct binaries, split Rust crates, HTTP routes, and generated OpenAPI |
-| compatibility | versions wire shapes, structured output, configuration, plugins, artifacts, and crate ownership |
+| dataset construction | validates and normalizes supported GFF3 and FASTA into release artifacts. |
+| publication | moves complete, verified artifacts into an immutable store payload. |
+| promotion | exposes published release, species, and assembly identity through the catalog. |
+| discovery | resolves catalog, dataset, and endpoint identity without redefining release truth. |
+| query | serves genes, counts, transcripts, sequence regions, and release comparisons. |
+| delivery | exposes direct binaries, split Rust crates, HTTP routes, and generated OpenAPI. |
+| compatibility | versions wire shapes, output, configuration, plugins, artifacts, and crates. |
 
 ## Crate Architecture
 
@@ -110,12 +110,12 @@ the first authority that could have produced it:
 
 | Observation | Inspect first | Do not conclude yet |
 | --- | --- | --- |
-| ingest rejects a record | normalization finding and source location | that all files in the source set are invalid |
-| deep verification fails | manifest, lock, payload hash, and referenced artifact | that publication or the catalog caused the corruption |
-| published tuple is absent from discovery | catalog entry and promotion record | that the payload was never published |
-| readiness is false | catalog refresh, required dataset state, and lifecycle mode | that the process is not live |
-| query returns no rows | resolved tuple, selector, ordering, and page boundary | that the dataset is missing |
-| HTTP and CLI disagree | shared query result before each presentation adapter | that the wire contract alone is wrong |
+| ingest rejects a record | normalization finding and source location | all source files are invalid. |
+| deep verification fails | manifest, lock, payload hash, referenced artifact | publication caused corruption. |
+| published tuple is absent | catalog entry and promotion record | the payload was never published. |
+| readiness is false | catalog refresh, dataset state, lifecycle mode | the process is not live. |
+| query returns no rows | tuple, selector, ordering, page boundary | the dataset is missing. |
+| HTTP and CLI disagree | shared result before presentation adapters | the wire contract alone is wrong. |
 
 Start at the earliest failed boundary and preserve its identity. Skipping
 directly to a later layer often turns an explicit data, publication, or catalog
@@ -125,11 +125,11 @@ problem into an ambiguous runtime symptom.
 
 Choose a path based on the question in front of you:
 
-- start in [Foundations](foundations/index.md) when you need the product model, terminology, or repository scope
-- move to [Workflows](workflows/index.md) when you need to install Atlas, build data, start a server, or run queries
-- use [Interfaces](interfaces/index.md) when the question is about exact commands, endpoints, flags, outputs, or env vars
-- use [Runtime](runtime/index.md) when you need architecture, lifecycle, storage, request flow, or source-layout explanations
-- use [Contracts](contracts/index.md) when you need the strongest compatibility promises and review rules
+- start in [Foundations](foundations/index.md) for the product model, terminology, or repository scope;
+- move to [Workflows](workflows/index.md) to install Atlas, build data, start a server, or run queries;
+- use [Interfaces](interfaces/index.md) for commands, endpoints, flags, outputs, or environment variables;
+- use [Runtime](runtime/index.md) for architecture, lifecycle, storage, request flow, or source layout;
+- use [Contracts](contracts/index.md) for compatibility promises and review rules.
 
 ## Publication Boundary
 
@@ -170,11 +170,11 @@ needs evidence from the owning workflow.
 
 | Reader question | Product authority | Release-specific proof |
 | --- | --- | --- |
-| Which dataset identity is served? | model, artifact, store, and catalog contracts | published manifest and store/catalog record |
-| Which queries are stable? | query implementation, structured-output schemas, and OpenAPI | contract results for the released binaries |
-| Which command owns an operation? | CLI command tree and generated command reference | help or contract output from the released command |
-| Is an ingest directory serveable? | publication and artifact contracts | completed publish record, not build output alone |
-| Is a wire change compatible? | API and compatibility policy | compatibility report for the affected release pair |
+| Which dataset identity is served? | model, artifact, store, and catalog | published manifest and store/catalog record. |
+| Which queries are stable? | query, structured-output schemas, OpenAPI | released-binary contract results. |
+| Which command owns an operation? | CLI tree and generated reference | released-command help or contract output. |
+| Is an ingest directory serveable? | publication and artifact contracts | completed publish record, not build output. |
+| Is a wire change compatible? | API and compatibility policy | report for the affected release pair. |
 
 ## Continue by Concern
 
