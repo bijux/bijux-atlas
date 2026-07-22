@@ -20,6 +20,32 @@ executable orchestration. The `ops/` tree owns Helm, profiles, scenarios,
 policies, schemas, dashboards, runbooks, and evidence inputs. None of these
 surfaces alone is the complete operations system.
 
+## Four Surfaces, Four Kinds of Authority
+
+Atlas operations is larger than the published crate because policy, execution,
+and evidence have different owners:
+
+| Surface | Owns | Does not prove alone |
+| --- | --- | --- |
+| `ops/` | authored inventories, schemas, profiles, charts, scenarios, thresholds, runbooks and release inputs | that an environment executed or passed them |
+| `bijux-atlas-ops` | typed models, path contracts, deterministic validation and explicit external-state adapters | that a caller granted effects or retained the result |
+| `bijux-atlas-dev ops` | executable routing, capability gates, filesystem/process/cluster effects and report emission | that every declared inventory item has an implemented runner |
+| generated run and release evidence | observed target, inputs, result, timing, identities and artifact binding | truth beyond the named check, scenario and observation window |
+
+```mermaid
+flowchart LR
+    source["ops/ authored authority"] --> library["bijux-atlas-ops models + validators"]
+    library --> command["bijux-atlas-dev ops execution"]
+    command --> evidence["run evidence"]
+    evidence --> packet["incident or release packet"]
+    packet --> decision{"promote, hold, drain, recover"}
+```
+
+The chain is intentionally one-way. Generated evidence does not rewrite
+authored policy; command availability does not expand the crate's contract;
+and inventory presence does not imply executable coverage. Review a decision
+from the final packet back to the selected inputs and release identity.
+
 ## Operating Model
 
 ```mermaid

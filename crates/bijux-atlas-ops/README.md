@@ -64,6 +64,26 @@ The modules return typed values or deterministic JSON payloads so command-line
 and CI consumers can share one implementation. Filesystem mutation and cluster
 execution remain explicit at the call site.
 
+## Interpret Library Results
+
+The return type identifies the strongest claim a caller may make. Keep the
+external target and effect receipt beside any result that crosses the pure
+contract boundary.
+
+| Library result | Safe conclusion | Additional evidence required |
+| --- | --- | --- |
+| loaded inventory or profile | governed data parsed from the selected repository root | source revision and content digest for release use |
+| validation report | implemented relationships and schema rules were evaluated | no additional evidence for that static claim; environment fitness remains untested |
+| typed plan | intended commands, inputs or components are reviewable before effects | capability, target and authorization for execution |
+| status, probe or conformance payload | the named adapter observed the recorded target at that time | workload, release, dataset and observation-window identity |
+| load or resilience report | the selected scenario produced the recorded measurements | threshold evaluation and comparable baseline before capacity acceptance |
+| diagnostics or evidence manifest | selected files and identities were collected or verified | custody, redaction review and binding to the incident or release decision |
+
+An empty error list from static validation is not cluster evidence. A typed
+external-state payload is not durable until the caller persists it with target
+identity and timing. A deterministic JSON rendering is reproducible output for
+the same inputs, not proof that the represented environment still exists.
+
 ## Library and Execution Boundary
 
 The crate contains both pure contract logic and adapters that can inspect or

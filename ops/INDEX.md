@@ -24,7 +24,12 @@ Root docs:
 
 - `ops/README.md`
 - `ops/CONTRACT.md`
+- `ops/INDEX.md`
 - `ops/ERRORS.md`
 - `ops/SSOT.md`
 
 Schema registry: `ops/schema/generated/schema-index.json`
+
+Public operator guidance: `docs/bijux-atlas-ops/`
+
+Maintainer execution guidance: `docs/bijux-atlas-dev/`
