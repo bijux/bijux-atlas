@@ -42,6 +42,33 @@ disable catalog readiness, external store endpoints, DNS egress, and declared
 Redis, MinIO, catalog, and telemetry dependencies. Both prewarm dataset
 `110/homo_sapiens/GRCh38` before serving.
 
+## Bootstrap Trust Inside the Boundary
+
+An offline bundle cannot verify itself by assertion. The disconnected
+environment needs an independently acquired trust root, verifier identity, and
+policy version before it can judge transported bytes.
+
+```mermaid
+flowchart LR
+    Trust[Prepositioned trust roots and policy] --> Verify[Offline verifier]
+    Verifier[Verifier binary and digest] --> Verify
+    Packet[Transported packet and outer digest] --> Verify
+    Verify --> Inventory[Member, signature, provenance, and SBOM verdicts]
+    Inventory --> Install[Admit verified local artifacts]
+```
+
+Retain how each trust root and verifier entered the boundary, its immutable
+identity, validity interval, revocation state at transfer time, and the person
+or process that accepted it. A verifier bundled only inside the packet it is
+meant to authenticate cannot independently establish that packet's origin.
+
+Plan trust rotation and emergency revocation for disconnected operation. The
+procedure must distinguish a newer authorized trust set from a malicious or
+accidental replacement, and it must preserve enough prior trust to verify the
+rollback release. When revocation freshness cannot be established offline,
+state the maximum accepted age and the decision owner rather than implying a
+live revocation check occurred.
+
 ## Current Repository Evidence
 
 The checked-in offline distribution record is a simulation, not an executed

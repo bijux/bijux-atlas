@@ -28,6 +28,37 @@ the `prod` overlay still selects the `atlas-e2e` namespace and Kind profile. It
 is a restricted execution envelope, not a production deployment definition.
 Do not cite its name as production evidence.
 
+## Reconcile Namespace Authority
+
+The current operational inputs use three namespace vocabularies:
+
+| Authority | Current namespace values |
+| --- | --- |
+| environment overlays | `atlas-e2e` for `base`, `ci`, `dev`, and `prod` |
+| policy profile registry | `atlas-dev`; selected profiles also allow `atlas-deps` and `atlas-observe` |
+| `stack.toml` compositions | `bijux-atlas` for `ci`, `kind`, and `local` |
+
+None of these names is an alias declared by the other two authorities. A run
+that combines an overlay, policy profile, and stack composition must therefore
+resolve the target namespace explicitly and prove that it is allowed. Do not
+concatenate the inputs and assume the shared intent makes their namespace
+contracts equivalent.
+
+```mermaid
+flowchart LR
+    Overlay[Overlay namespace] --> Resolve{Explicit target resolution}
+    Profile[Allowed profile namespaces] --> Resolve
+    Composition[Composition namespace] --> Resolve
+    Resolve -->|unresolved or disallowed| Reject[Stop before mutation]
+    Resolve -->|one authorized namespace| Context[Bind cluster context and namespace]
+    Context --> Receipt[Record planned and observed target]
+```
+
+This divergence does not make read-only inspection invalid, but it prevents an
+overlay name from proving mutation authority. Preserve the original values,
+the resolution rule, the selected cluster context, and the observed namespace
+in the capability receipt.
+
 ## Overlay, Profile, and Composition Are Different
 
 ```mermaid
