@@ -32,9 +32,10 @@ sequenceDiagram
     Evidence->>Evidence: Classify degradation and recovery
 ```
 
-Record the fault mechanism, injection and removal timestamps, workload and
-query-pack identities, release and profile, and the exact threshold contract.
-Changing traffic at the same time as the fault makes the result ambiguous.
+Record the fault mechanism and the injection and removal timestamps. Preserve
+the workload, query-pack, release, profile, and threshold identities with the
+same record. Changing traffic at the same time as the fault makes the result
+ambiguous.
 
 ## Experimental Controls
 
@@ -48,10 +49,49 @@ Changing traffic at the same time as the fault makes the result ambiguous.
 | explicit removal event | anchors the recovery-time measurement |
 | post-recovery observation window | detects flapping, stale cache state, and delayed failure |
 
-Abort and classify the experiment when the baseline is already unhealthy, the
-fault cannot be confirmed, telemetry loses the required window, or cleanup
-cannot restore the starting condition. Those outcomes are findings, not failed
+Abort when the baseline is already unhealthy or the fault cannot be confirmed.
+Also abort when telemetry loses the required window or cleanup cannot restore
+the starting condition. Classify those outcomes as findings, not failed
 resilience claims against the product.
+
+## Declare the Blast Radius
+
+Before injection, define what may fail and what must remain protected:
+
+| Boundary | Declare before the run | Evidence during the run |
+| --- | --- | --- |
+| target | pods, dependency, network path, shard, volume, or resource pool | independent confirmation that only the intended target changed |
+| scope | one replica, one dataset, one availability zone, or the whole service | release-, replica-, and dataset-scoped signals |
+| protected traffic | cheap reads, cached datasets, health, audit, or control operations | success, latency, and correctness for each protected class |
+| shed traffic | heavy query, uncached fetch, ingest, or administrative work | explicit status and error code within the rejection budget |
+| protected state | manifests, SQLite artifacts, catalogs, locks, and cache entries | hashes, lifecycle state, and absence of partial publication |
+| dependencies | store, catalog, Redis, DNS, telemetry, and cluster control plane | dependency-specific fault and recovery signals |
+
+A global error rate cannot establish containment. Segment the workload by route
+class, dataset, cache state, release, and replica wherever the experiment's
+claim depends on those boundaries.
+
+## Fault Timeline
+
+Use one monotonic experiment clock and record at least these markers:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Stabilizing
+    Stabilizing --> Healthy: baseline window passes
+    Healthy --> Injecting: fault command starts
+    Injecting --> Faulted: independent confirmation succeeds
+    Faulted --> Removing: fault duration completes
+    Removing --> Recovering: removal is confirmed
+    Recovering --> Recovered: invariants and budgets stabilize
+    Recovering --> ResidualFailure: recovery deadline or invariant fails
+```
+
+Measure fault-detection time from confirmed injection to the first required
+signal. Measure degraded-service duration from confirmed injection to restored
+user behavior. Measure recovery time from confirmed removal to stable
+invariants. These quantities should not share one ambiguous `recovery_ms`
+field.
 
 ## Governed Fault Surfaces
 
@@ -74,6 +114,19 @@ The load catalog exercises a narrower set of pressure experiments:
 Do not claim that every end-to-end fault is tested under load. The injection
 catalog and load catalog are separate authorities; a combined claim requires a
 run record that names both mechanisms.
+
+## Preserve Degradation Semantics
+
+Classify each request outcome as correct success, deliberate rejection,
+dependency failure, timeout, transport failure, or incorrect success. Only the
+first two can satisfy a designed degradation contract. A fast `200` can still
+contain stale, partial, cross-dataset, or unverifiable content. That outcome is
+more severe than a bounded explicit rejection.
+
+For cache-related experiments, divide requests into cached-before-fault,
+uncached-before-fault, and populated-during-fault cohorts. This reveals whether
+the service preserved known-good data, attempted unsafe cache fills, or hid
+store loss behind stale state.
 
 ## Store-Outage Budget
 
@@ -104,6 +157,23 @@ A passing run demonstrates all of the following:
 
 Treat a missing signal as an evidence failure. A fault that cannot be observed
 or a recovery that cannot be timed is not a resilience proof.
+
+## Cleanup Is Part of the Verdict
+
+After fault removal, prove more than request recovery:
+
+- injected network, process, storage, and resource controls are absent;
+- replica count, routing, HPA, PDB, and readiness return to the declared state;
+- store and catalog identities match the pre-fault authority;
+- no publication lock, partial object, poisoned cache entry, or quarantined
+  artifact was silently cleared;
+- telemetry pipelines contain the full pre-fault, fault, and recovery windows;
+- a second healthy observation window passes without delayed retries, memory
+  growth, or repeated breaker transitions.
+
+If cleanup cannot be proven, isolate the environment. Do not reuse it for a
+baseline or another resilience experiment because residual state destroys
+comparability.
 
 ## Data Integrity Boundary
 

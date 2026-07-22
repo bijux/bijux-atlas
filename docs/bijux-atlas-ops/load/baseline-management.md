@@ -79,6 +79,47 @@ A measured baseline should record:
 Without those fields, keep the artifact labeled as a fixture or qualified
 reference. Do not promote it to measured production evidence through prose.
 
+## Establish a Measured Reference
+
+Use a declared sampling protocol rather than selecting one favorable run:
+
+1. Freeze source, image, chart, dataset, query pack, scenario, thresholds,
+   resources, topology, and tool versions.
+2. Define warmup, cache state, repetition count, run duration, and aggregation
+   before measuring the candidate.
+3. Execute the full repetition set in a stable environment and retain every
+   result.
+4. Reject invalid samples only for predeclared reasons such as workload-driver
+   failure, lost telemetry, or unconfirmed environment identity.
+5. Aggregate each metric with its declared statistic; do not mix the best
+   latency sample with the best throughput sample from another run.
+6. Compare the proposed reference with the prior baseline and absolute budgets,
+   then record approval and effective scope.
+
+For latency, retain the distribution or histogram inputs used to calculate
+percentiles, not only the displayed p95 or p99. For throughput and failure rate,
+retain offered load, completed work, rejected work, and their denominators. For
+CPU and memory, retain per-replica samples and resource limits so saturation is
+reconstructable.
+
+## Comparability Decision
+
+Evaluate identity before calculating deltas:
+
+| Difference | Default disposition | Why |
+| --- | --- | --- |
+| source or image | comparable candidate | the product change under evaluation |
+| dataset contents or scale | new baseline family | query cost and cache behavior changed |
+| query pack or traffic mix | new baseline family | the measured workload changed |
+| CPU, memory, replicas, or node class | capacity experiment | resource supply changed |
+| cache warmup or persistence mode | separate operating condition | cold and warm behavior answer different questions |
+| Kubernetes, storage, network, or dependency topology | qualified until equivalence is proven | infrastructure can dominate the result |
+| measurement tool or percentile method | invalid comparison unless cross-calibrated | the measuring instrument changed |
+
+A new baseline family should use a durable name derived from the operating
+condition, not a chronological suffix. Preserve the superseded family when its
+environment remains supported.
+
 ## When a Baseline May Change
 
 Approve a new baseline only after a reproducible run shows an intentional
@@ -104,6 +145,10 @@ comparability decision before the baseline remains active.
 - Require a reviewer who can evaluate the user-visible performance tradeoff.
 - Do not select a new baseline from the same candidate solely because it failed
   against the active reference.
+- Do not discard the first, slowest, or post-restart sample unless the sampling
+  protocol declared that exclusion before execution.
+- Do not aggregate percentiles by averaging percentile values across runs;
+  retain per-run verdicts or merge compatible underlying distributions.
 
 ## Comparison Evidence
 
@@ -115,3 +160,16 @@ to 10%, error-rate increase to 2%, CPU saturation to 90%, and memory growth to
 
 Use [Performance and Load](performance-and-load.md) for complete run identity
 and [Thresholds and Budgets](thresholds-and-budgets.md) for decision order.
+
+## Baseline Receipt
+
+The approval record should make four questions answerable without repository
+archaeology:
+
+- What exact system and workload were measured?
+- Which raw samples produced every committed value?
+- Why was the reference accepted, superseded, or invalidated?
+- Which profiles, datasets, scenarios, and release decisions may use it?
+
+If any answer depends on an unretained dashboard or personal environment, the
+baseline is not durable release evidence.

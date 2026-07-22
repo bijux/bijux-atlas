@@ -78,6 +78,58 @@ A performance result is comparable only when these identities agree:
 Do not join results by a human-friendly scenario label alone. Retain the source
 revision and hashes for the scenario, query set, and thresholds with each run.
 
+## Resolve a Scenario Before Running It
+
+A runner should resolve one immutable execution record from the catalogs:
+
+```mermaid
+flowchart LR
+    Selection[scenario and lane] --> Definition[scenario definition]
+    Definition --> Runner[resolved runner path]
+    Definition --> Query[pinned query pack and lock]
+    Definition --> Threshold[scenario and shared thresholds]
+    Definition --> Profile[deployment and dataset identity]
+    Runner --> Receipt[execution receipt]
+    Query --> Receipt
+    Threshold --> Receipt
+    Profile --> Receipt
+```
+
+The receipt should contain the resolved paths and content hashes, not only the
+registry names. This prevents a later catalog edit from changing the meaning of
+an archived result.
+
+Before starting traffic, validate these joins:
+
+| Join | Required invariant |
+| --- | --- |
+| registry to catalog | every referenced catalog exists, parses, and declares the expected schema version |
+| suite to scenario | every suite name resolves exactly once and its declared runner type is supported |
+| scenario to runner | the file exists, is readable, and matches the declared runner kind |
+| scenario to thresholds | required metrics have an owning comparison and no conflicting duplicate definition |
+| scenario to query pack | the query-pack lock matches the selected pack bytes |
+| lane to workflow | the workflow's resolved scenario list equals the intended lane membership |
+| result to selection | the result repeats the same identities and hashes recorded before execution |
+
+Fail closed on an unresolved or multiply owned join. Skipping a malformed
+record and continuing with the rest of a lane changes the coverage claim.
+
+## Separate Inventory From Execution
+
+Atlas uses generated summaries to show registry coverage. These are valuable
+for drift detection, but four distinct receipts are needed for a load claim:
+
+1. inventory receipt: the scenario is declared and its dependencies resolve;
+2. scheduling receipt: the selected lane included that exact scenario;
+3. execution receipt: the runner started and completed against the named
+   candidate;
+4. verdict receipt: required metrics were present and the owning thresholds
+   were evaluated.
+
+Do not collapse these states into a single `covered` flag. Registry coverage
+without an execution receipt proves catalog structure, while execution without
+a verdict receipt proves only that a process ran.
+
 ## Promotion Rules
 
 - A `must_pass` scenario blocks only when the promotion lane is proven to
@@ -90,6 +142,10 @@ revision and hashes for the scenario, query set, and thresholds with each run.
   scenario.
 - Generated catalog membership must be traced into an executable suite before
   it can support a coverage claim.
+- A lane report must preserve selected, started, completed, invalid, rejected,
+  and accepted counts independently; completed is not synonymous with passed.
+- Changes to scenario, query, threshold, or profile hashes invalidate reuse of
+  a cached verdict even when the scenario name is unchanged.
 
 ## Authorities
 
