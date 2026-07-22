@@ -7,257 +7,105 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Load and Performance Assurance
+# Load and performance assurance
 
-Atlas load evidence answers an operational question: will a named deployment
-remain useful under the traffic, contention, failure, and delivery conditions
-it is expected to face?
+Atlas load evidence establishes a bounded operating envelope for a named
+release, dataset, topology, and workload. It is not a freestanding throughput
+number. A defensible verdict preserves workload identity, measurement validity,
+absolute budgets, baseline compatibility, and the full offered population.
 
-The answer is never a single throughput number. It binds a scenario, pinned
-queries, deployment profile, required metrics, absolute budgets, and an
-approved baseline.
-
-## From Workload to Decision
+## From experiment to verdict
 
 ```mermaid
 flowchart LR
-    Q["Capacity or resilience question"] --> S["Named scenario"]
-    S --> U["Suite and execution lane"]
-    U --> M["Metrics, logs, and traces"]
-    M --> T["Absolute thresholds"]
-    M --> B["Baseline comparison"]
-    T --> D{"Evidence accepted?"}
-    B --> D
-    D -->|yes| E["Promotion evidence"]
-    D -->|no| I["Diagnose, correct, and rerun"]
+    Question[Capacity or resilience question] --> Workload[Scenario + query corpus]
+    Workload --> Run[Controlled environment + measured process]
+    Run --> Valid{Measurement valid?}
+    Valid -->|no| Invalid[Invalid run; repair evidence path]
+    Valid -->|yes| Budget[Absolute thresholds]
+    Valid -->|yes| Baseline[Compatible baseline]
+    Budget --> Verdict{Both policies pass?}
+    Baseline --> Verdict
+    Verdict --> Claim[Bounded operating claim]
 ```
 
-The scenario registry preserves workload identity. Suites decide where and how
-often scenarios run. Threshold files define acceptable service behavior.
-Baselines make regressions visible. Generated reports carry the result into
-rollout and release review.
-
-## Distinguish the Three Selection Surfaces
-
-Atlas currently has three load-selection vocabularies. They overlap, but they
-are not interchangeable:
-
-| Selection surface | Examples | What selection means |
+| Layer | Required identity | Failure means |
 | --- | --- | --- |
-| executable manifest | `mixed`, `diff_heavy`, `hpa_validation_short` | entry resolved by `ops load` from `load.toml` |
-| acceptance scenario registry | `mixed`, `diff-heavy`, `pod-churn`, `load-under-rollout` | one of 40 declared operating experiments with lanes, metrics, and budgets |
-| lane metadata | `smoke`, `full`, `nightly`, `load-nightly` | intended scenario membership, not an executable command or execution receipt |
+| workload | Scenario, query corpus, dataset, traffic model, cache condition, and fault | The run answered a different question |
+| measurement | Offered rate, generator capacity, clocks, window, and required telemetry | The result is invalid, not a product verdict |
+| service | Latency, completed work, errors, rejection classes, resources, and recovery | The deployment missed an absolute contract |
+| comparison | Compatible approved baseline and regression policy | Relative movement is unacceptable or incomparable |
 
-The underscores in two executable names and hyphens in their acceptance IDs
-are significant. A report must preserve the exact selected manifest key and,
-when it makes an acceptance claim, the separately resolved scenario ID. Do not
-infer that a lane executed because a similarly named manifest entry passed.
+Absolute budgets protect service objectives. Baselines detect movement within
+those bounds. When policy requires both, the candidate must pass both.
 
-```mermaid
-flowchart LR
-    Manifest[Executable manifest key] --> Run[Measured process]
-    Registry[Acceptance scenario ID] --> Claim[Operating claim]
-    Lane[Declared lane membership] --> Coverage[Coverage expectation]
-    Run --> Join{Identities and thresholds agree?}
-    Claim --> Join
-    Coverage --> Join
-    Join -->|yes| Receipt[Qualified evidence receipt]
-    Join -->|no| Gap[Record unresolved coverage]
-```
+## Keep selection identities distinct
 
-## Valid Comparison Model
-
-```mermaid
-flowchart TD
-    Candidate[Candidate measurement] --> Match{Comparable identity?}
-    Baseline[Approved baseline] --> Match
-    Match -->|no| Invalid[Reject comparison]
-    Match -->|yes| Absolute[Evaluate absolute budgets]
-    Match --> Relative[Evaluate regression policy]
-    Absolute --> Verdict{Both policies pass?}
-    Relative --> Verdict
-    Verdict -->|yes| Accept[Accept bounded claim]
-    Verdict -->|no| Reject[Reject or investigate]
-```
-
-A comparison is valid only when scenario, query pack, dataset, profile,
-resource limits, runtime mode, warmup, sample window, and relevant dependency
-versions are compatible. A faster result from smaller data or a different
-workload is not a regression improvement.
-
-Absolute and relative policies answer different questions. Absolute budgets
-protect the service objective. Baselines detect movement inside that envelope.
-A candidate must satisfy both when both are required.
-
-## What Atlas Exercises
-
-| Risk | Evidence family |
-| --- | --- |
-| Ordinary mixed traffic | smoke and pull-request scenarios using the pinned query pack |
-| Cold and warm behavior | startup, prefetch, steady-state, and cache-stampede scenarios |
-| Resource contention | CPU, disk I/O, thread-pool, cache, and shard hot-spot stress |
-| Dependency degradation | store outage and optional Redis behavior |
-| Delivery disruption | pod churn, rollout, rollback, and artifact reload under traffic |
-| Long-duration drift | stability, memory-growth, leak-detection, and soak scenarios |
-| Abuse resistance | response-size, malicious-input, injection, and denial-of-service suites |
-
-Heavy work is allowed to shed under declared overload policy. Cheap health,
-readiness, version, and catalog paths have separate survival expectations. A
-healthy overload result proves controlled degradation, not the absence of
-rejections.
-
-## The Resilience Envelope
-
-Resilience is established by a connected series of experiments, not by
-extrapolating one healthy load run. Each experiment changes one operating
-condition while keeping workload and evidence identity controlled.
-
-```mermaid
-flowchart LR
-    N["Nominal load<br/>capacity and service budget"] --> F["Confirmed dependency fault<br/>degradation and recovery"]
-    N --> P["Pod replacement<br/>continuity across instance loss"]
-    N --> R["Release overlap<br/>candidate attribution and reversal"]
-    F --> E["Supported operating envelope"]
-    P --> E
-    R --> E
-    E --> Q{"Claim names every<br/>exercised boundary?"}
-    Q -->|yes| A["Accept bounded resilience claim"]
-    Q -->|no| X["Narrow the claim or run more evidence"]
-```
-
-| Experiment | Controlled change | Claim it can support | Claim it cannot support alone |
-| --- | --- | --- | --- |
-| nominal saturation | offered load and concurrency | capacity knee, overload policy, and cheap-path survival | behavior during dependency or orchestration failure |
-| dependency fault | one confirmed dependency or resource fault | containment, explicit degradation, and timed recovery | instance replacement or release compatibility |
-| pod churn | one instance is replaced | withdrawal, capacity continuity and replacement readiness | node, zone or repeated-churn resilience |
-| rollout and rollback | releases overlap under attributed traffic | mixed-version capacity and reversal | unattributed or incompatible change safety |
-
-The supported envelope is the intersection of these bounded claims. Keep
-invalid, aborted, and failed experiments in the evidence record: they describe
-where measurement authority ended or where the operating envelope was
-exceeded.
-
-## Select Evidence by Question
-
-- Start with [Performance and Load](performance-and-load.md) to identify the
-  workload family and evidence identity.
-- Use [Scenario Registry](scenario-registry.md) and
-  [Load Suites](load-suites.md) to find the exact executable contract.
-- Read [Thresholds and Budgets](thresholds-and-budgets.md) before interpreting
-  latency, failure rate, or survival signals.
-- Use [Baseline Management](baseline-management.md) and
-  [Benchmark CI](benchmark-ci.md) for candidate-versus-reference decisions.
-- Use [Concurrency Stress](concurrency-stress.md) for saturation and shared
-  resource behavior.
-- Use [Failure Injection Load](failure-injection-load.md),
-  [Pod Churn Resilience](pod-churn-resilience.md), and
-  [Rollout Under Load](rollout-under-load.md) for controlled degradation and
-  recovery.
-
-## Evidence Authority
-
-- `ops/load/scenario-registry.json` anchors scenario discovery.
-- `ops/load/suites/suites.json` declares membership, required metrics, and
-  must-pass behavior.
-- `ops/load/queries/pinned-v1.json` fixes request identity.
-- `ops/load/thresholds/` and `ops/load/contracts/` define pass boundaries.
-- `ops/load/baselines/` holds approved comparison points.
-- `ops/load/generated/` holds derived coverage and summary material.
-
-A run is suitable for promotion only when those identities agree with the
-environment and report being reviewed.
-
-## Evidence Layers
-
-Load assurance has four independent layers. A complete decision preserves the
-result of each layer instead of collapsing them into one pass flag.
-
-| Layer | Required proof | Failure means |
+| Surface | Examples | Meaning |
 | --- | --- | --- |
-| Workload identity | scenario, query corpus, dataset, traffic model, and cache state match the claim | the run answered a different question |
-| Measurement validity | the generator sustained the declared offer, required telemetry exists, and clocks and windows are usable | the result is invalid, not a product failure |
-| Service behavior | latency, completed work, errors, resource use, and recovery satisfy absolute budgets | the deployment does not meet its operating contract |
-| Comparative behavior | candidate and approved baseline are compatible and regression limits pass | the candidate moved outside the accepted change envelope |
+| executable manifest | `mixed`, `diff_heavy`, `hpa_validation_short` | Key resolved by `ops load` from `load.toml` |
+| acceptance registry | `mixed`, `diff-heavy`, `pod-churn`, `load-under-rollout` | Declared operating experiment with metrics and budgets |
+| lane metadata | `smoke`, `full`, `nightly`, `load-nightly` | Expected membership, not an execution receipt |
 
-This separation matters during saturation. A client that cannot generate the
-target rate can make the server appear fast, while a server that sheds
-expensive work can preserve cheap routes exactly as designed. Offered,
-admitted, completed, rejected, and timed-out work therefore belong in the same
-record.
+Underscores and hyphens are significant. A report must preserve the exact
+manifest key and, for an acceptance claim, its separately resolved registry ID.
+A lane did not execute merely because a similarly named manifest entry passed.
 
-## Account for Every Offered Request
-
-Latency percentiles are meaningful only after the run accounts for the full
-offered population. Record the generator and service transitions instead of
-letting successful responses become the implicit denominator.
+## Account for offered work
 
 ```mermaid
 flowchart LR
-    Scheduled[scheduled requests] --> Offered[offered by generator]
-    Scheduled --> ClientDropped[not offered: client or pacing failure]
-    Offered --> Admitted[admitted by service]
-    Offered --> Rejected[explicitly rejected]
-    Offered --> ClientTimeout[client timeout or transport failure]
-    Admitted --> Completed[completed responses]
-    Admitted --> ServerLost[server error, cancellation or deadline]
+    Scheduled --> Offered
+    Scheduled --> Omitted[Generator omission]
+    Offered --> Admitted
+    Offered --> Rejected
+    Offered --> Unknown[Timeout or transport uncertainty]
+    Admitted --> Completed
+    Admitted --> Lost[Error, cancellation, unfinished]
 ```
 
-For each transition, preserve a count and reason class. The useful invariants
-are explicit:
+Record counts and reason classes for every edge. Report attempts separately
+from user operations so retries cannot manufacture throughput. Latency
+percentiles must not make timeouts disappear by using successful responses as
+the implicit population. If the accounting identities do not close within a
+declared tolerance, classify the run as invalid.
 
-- scheduled equals offered plus generator-side omissions;
-- offered equals admitted plus explicit rejections plus requests whose
-  admission outcome is unknown to the client;
-- admitted equals completed plus server errors, cancellations and unfinished
-  work at the observation boundary.
+## Resilience is an intersection
 
-Retries are new attempts but not new user operations. Report both attempt and
-operation counts so retries cannot manufacture throughput or hide user-visible
-failure. Coordinated-omission correction, if used, belongs in the report with
-the raw distribution; a corrected percentile must not replace the observed
-sample.
+| Experiment | Claim it can support | Claim it cannot support alone |
+| --- | --- | --- |
+| nominal saturation | Capacity knee, overload policy, and cheap-path survival | Dependency or orchestration failure behavior |
+| dependency fault | Confirmed degradation, containment, and timed recovery | Instance replacement or release compatibility |
+| pod churn | Withdrawal, capacity continuity, and replacement readiness | Node, zone, or repeated-churn resilience |
+| rollout and rollback | Attributed mixed-version capacity and reversal | Safety of an untested or unattributed change |
 
-| Measurement | Required denominator |
+The operating envelope is the intersection of exercised claims. Preserve
+failed, aborted, and invalid experiments; they show where the envelope or
+measurement authority ended.
+
+## Current execution boundary
+
+The acceptance registry declares `load-under-rollout` and
+`load-under-rollback` as required nightly script scenarios, but both reference
+runner paths that are absent from the repository. Their registration and
+thresholds express intended coverage; they do not prove executable rollout or
+rollback load control. Promotion requiring either claim remains blocked until
+a real runner emits candidate- and target-bound results.
+
+## Route by question
+
+| Question | Read |
 | --- | --- |
-| acceptance rate | all offered attempts |
-| completion rate | all admitted attempts and, separately, all offered operations |
-| rejection rate | all offered attempts, classified by governed overload reason |
-| latency | completed attempts plus separately reported timeout and deadline populations |
-| throughput | completed operations per measured interval, with offered rate beside it |
-| recovery | affected operations from confirmed fault onset through restored invariant |
+| Which workload family answers the decision? | [Performance and Load](performance-and-load.md) |
+| Which experiment and lane are intended? | [Scenario Registry](scenario-registry.md) and [Load Suites](load-suites.md) |
+| What constitutes a pass? | [Thresholds and Budgets](thresholds-and-budgets.md) |
+| Is the baseline compatible and approved? | [Baseline Management](baseline-management.md) |
+| Where does saturation begin? | [Concurrency Stress](concurrency-stress.md) |
+| How does a confirmed dependency fault change behavior? | [Failure Injection Load](failure-injection-load.md) |
+| Does instance replacement preserve service? | [Pod Churn Resilience](pod-churn-resilience.md) |
+| Is a release change safe under attributed traffic? | [Rollout Under Load](rollout-under-load.md) |
 
-If the accounting identity does not close within a declared tolerance, the run
-is invalid. It is not a product pass or failure. This distinction is especially
-important at saturation, where generator collapse, client timeout and governed
-server shedding can otherwise produce similar summaries.
-
-## Match the Claim to the Experiment
-
-| Decision | Minimum suitable evidence |
-| --- | --- |
-| Release regression | repeated candidate and approved-baseline runs with matching identities |
-| Capacity limit | a controlled saturation curve showing the knee, resource constraint, and failure behavior |
-| Overload safety | survival signals for cheap routes plus declared rejection behavior for expensive work |
-| Rollout safety | traffic before, during, and after the change, including availability and recovery |
-| Endurance | a duration long enough to expose drift, with resource slope and steady workload identity |
-
-A smoke result supports fast confidence only. It does not establish a capacity
-ceiling, sustained stability, or resilience under an unexercised fault.
-
-Failed, aborted, and invalid runs remain useful evidence. Classify harness,
-environment, telemetry, threshold, and product failures separately. Do not
-convert an incomplete run into a product pass, and do not use repeated reruns
-to select a favorable sample without preserving the full series.
-
-## Publish a Bounded Claim
-
-A load verdict should end with one sentence that names its boundary: candidate
-identity, target profile, dataset, workload, offered load, duration, cache
-condition, dependency state, accepted metrics, and observation window. Include
-the last sustainable point and first rejected point for capacity work, or the
-confirmed fault and recovery invariant for resilience work.
-
-Avoid broad conclusions such as “Atlas handles production load.” A valid run
-supports only the exercised environment and conditions. Wider claims require
-evidence across the additional scale, topology, failure domain, and duration
-being asserted.
+A final claim should name the candidate, target profile, dataset, workload,
+offered load, duration, cache condition, dependency state, accepted metrics,
+and observation window. “Handles production load” is not an evidence-backed
+claim; the exercised boundary is.

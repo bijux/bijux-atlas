@@ -9,200 +9,97 @@ last_reviewed: 2026-07-22
 
 # Observability
 
-Atlas observability is an operating system for decisions, not a collection of
-charts. Runtime signals are joined to endpoint contracts, cardinality limits,
-alert ownership, drills, and evidence records so an operator can move from a
-symptom to a bounded action.
+Atlas observability connects runtime events to an operator decision. Metrics
+quantify scope, traces localize request paths, and structured logs explain
+discrete events and policy outcomes. None is sufficient alone. Release,
+dataset, profile, route class, and time must remain joinable across the
+evidence window.
 
-## Signal-to-Decision Model
-
-```mermaid
-flowchart LR
-    R["Request and lifecycle events"] --> L["Structured logs"]
-    R --> M["Governed metrics"]
-    R --> T["Correlated traces"]
-    M --> A["Alert contract"]
-    L --> I["Incident diagnosis"]
-    T --> I
-    A --> I
-    I --> D{"Operating decision"}
-    D -->|protect| S["Shed or isolate work"]
-    D -->|recover| C["Restart, rollback, or restore"]
-    D -->|promote| E["Preserve release evidence"]
-```
-
-No signal is authoritative by itself. Metrics quantify scope, traces localize a
-request path, and logs explain discrete events and policy decisions. Release,
-dataset, profile, and request-class identity must remain visible across them.
-
-## Correlation Spine
+## Correlation spine
 
 ```mermaid
 flowchart TD
-    Request[Request or lifecycle event] --> RequestId[Request and trace identity]
-    Request --> ReleaseId[Runtime and dataset release identity]
-    Request --> Context[Profile, instance, route, and request class]
-    RequestId --> Logs[Structured logs]
-    RequestId --> Traces[Trace and spans]
-    ReleaseId --> Metrics[Metrics and SLO windows]
+    Event[Request or lifecycle event] --> Request[Request + trace identity]
+    Event --> Release[Runtime + dataset identity]
+    Event --> Context[Profile + instance + route class]
+    Request --> Logs[Structured logs]
+    Request --> Traces[Trace and spans]
+    Release --> Metrics[Metrics and SLO window]
     Context --> Metrics
-    Logs --> Evidence[Correlated evidence window]
-    Traces --> Evidence
-    Metrics --> Evidence
+    Logs --> Window[Correlated evidence window]
+    Traces --> Window
+    Metrics --> Window
+    Window --> Decision{admit, drain, mitigate, promote}
 ```
 
-Correlation fields should be stable enough to join signals without putting
-high-cardinality values into metric labels. Request and trace identifiers
-belong in logs and traces. Metrics carry bounded dimensions such as route,
-request class, result class, profile, and release identity where their
-contracts permit them.
+High-cardinality request and trace identifiers belong in logs and traces.
+Metrics use bounded dimensions defined by their contracts. A signal that
+cannot be joined to the release and observation window is diagnostic material,
+not promotion evidence.
 
-## Signal Quality
-
-| Property | Question |
-| --- | --- |
-| coverage | Does every protected path emit the signals named by its contract? |
-| freshness | Is collection delay short enough for the decision window? |
-| continuity | Are gaps, restarts, and exporter loss visible? |
-| correlation | Can metrics, logs, traces, release, and dataset identity be joined? |
-| cardinality | Are dimensions bounded so the telemetry system survives load? |
-| retention | Will raw evidence outlive the incident or promotion review? |
-| redaction | Are secrets and sensitive payloads excluded without removing decision identity? |
-
-## End-to-End Signal Assurance
+## Qualify each signal path
 
 ```mermaid
 flowchart LR
-    Instrument[Runtime instrumented] --> Emit[Signal emitted]
-    Emit --> Transport[Exporter or scrape succeeds]
-    Transport --> Store[Backend ingests and retains]
-    Store --> Query[Operator query returns the window]
-    Query --> Evaluate[Rule or SLO evaluates]
-    Evaluate --> Notify[Notification reaches its owner]
-    Notify --> Act[Decision is recorded]
+    Instrument[Instrumented] --> Emit[Emitted]
+    Emit --> Deliver[Delivered]
+    Deliver --> Query[Queried]
+    Query --> Exercise[Rule + notification exercised]
+    Exercise --> Retain[Decision evidence retained]
 ```
 
-Each arrow is a separate availability boundary. A unit test can establish
-instrumentation shape, but not exporter delivery. A healthy collector can
-establish transport, but not backend retention. A firing rule can establish
-evaluation, but not notification delivery or ownership response.
-
-| Assurance level | Evidence | Claim supported |
+| Level | Evidence | Claim supported |
 | --- | --- | --- |
-| Declared | Registry, rule, dashboard, or drill definition exists and validates. | The intended signal and owner are specified. |
-| Emitted | A known request or lifecycle event produces the expected runtime signal. | Instrumentation is active for that path. |
-| Delivered | Backend query returns the signal with expected labels and timestamp. | Transport, ingestion, and retention worked for the observed window. |
-| Exercised | A controlled condition produces the rule, notification, dashboard, and trace/log correlation. | The operating path worked for the named environment and drill. |
-| Retained | Immutable evidence binds the exercised path to release, dataset, profile, and time. | Another operator can reconstruct the decision after live telemetry expires. |
+| declared | Registry, rule, dashboard, or drill validates | Intended signal, dimensions, and owner are specified |
+| emitted | A known event produces the expected signal | Instrumentation is active for that path |
+| delivered | A backend query returns the signal with expected identity and time | Transport, ingestion, and retention worked for the window |
+| exercised | A controlled condition reaches rule, notification, view, and correlated context | The response path worked in the named environment |
+| retained | Immutable evidence binds the exercise to release, dataset, profile, and time | The decision can be reconstructed after live data expires |
 
-Do not collapse these levels into “observability present.” Promotion evidence
-should name the highest level actually demonstrated for every required signal
-path.
+Qualification is per required path. A latency metric cannot establish audit
+completeness; one delivered trace cannot establish a population error rate.
+Promotion policy must name the minimum level for every required signal.
 
-## Decision Authority Is Per Signal Path
+## Signal-loss decisions
 
-Qualification is evaluated row by row, not as a site-wide observability flag.
-For every required endpoint, lifecycle event, dependency and policy decision,
-join the signal contract to its observed delivery path.
-
-| Path receipt | Identity retained | Decision it enables |
+| Missing boundary | Surviving evidence can establish | Claim that remains blocked |
 | --- | --- | --- |
-| source event | release, dataset, instance, route or lifecycle event, and correlation key | establish which behavior should have emitted a signal |
-| instrumentation | metric, event or span contract and implementation revision | distinguish absent instrumentation from delivery loss |
-| transport | exporter or scraper, collector route, queue state and collection clock | bound loss, delay and backpressure |
-| storage | backend, tenant, retention class and ingestion timestamp | prove the evidence survived beyond emission |
-| query | exact expression, rule or panel revision and evaluation window | make the operator's observation reproducible |
-| ownership | alert owner, notification route, acknowledgement and runbook | connect detection to accountable action |
-| decision | incident or release record and evidence digest | preserve what the observed path justified |
+| metrics delivery | Individual failures from logs, traces, probes, and clients | Population rate, saturation trend, or SLO compliance |
+| trace export | Rates and event classes from metrics and logs | Causal localization across runtime and dependencies |
+| centralized logs | Aggregate health and sampled paths | Complete event, audit, or policy-decision history |
+| alert notification | Rule state and direct backend queries | That the assigned owner received and acted on the page |
+| dashboard rendering | Raw queries and validated panel definitions | That the operator view rendered the same window |
+| all telemetry backends | Clients, Kubernetes, pod output, and integrity checks | Promotion, security closure, or absence of hidden failures |
 
-```mermaid
-flowchart TD
-    Contract[required signal path] --> Receipt{receipt complete?}
-    Receipt -->|no| Blind[record blind boundary]
-    Receipt -->|yes| Fresh{fresh and continuous for decision window?}
-    Fresh -->|no| Limited[limit claim to observed interval]
-    Fresh -->|yes| Correlated{release and request identity join?}
-    Correlated -->|no| Diagnostic[diagnostic evidence only]
-    Correlated -->|yes| Governed{rule, owner and action exercised?}
-    Governed -->|no| Observation[observed behavior; no response claim]
-    Governed -->|yes| Qualified[qualified signal path]
-```
+Restoring a path is not retrospective evidence for its blind interval. Record
+source and collection clocks, the gap, emergency observation methods, and the
+time normal evidence resumed. Start a new continuous qualification window when
+policy requires one.
 
-One qualified path cannot compensate for an unrelated blind path. A healthy
-latency metric does not establish audit completeness, and a delivered trace
-does not establish population error rate. The promotion policy must name the
-required paths and the minimum assurance level for each; optional paths remain
-diagnostic rather than silently expanding the release claim.
+## Contracted surface
 
-## Choose the Operating Question
+The checked-in contracts define 15 HTTP endpoint entries, 39 required metrics,
+structured event fields, six request-path spans, ten lifecycle span identities,
+20 governed alerts, and two telemetry-path drills. The generated telemetry
+index proves that these contracts are discoverable. It does not prove that a
+deployed collector, backend, rule engine, dashboard, or notification route is
+working.
 
-| Question | Start here | Decision supported |
-| --- | --- | --- |
-| Is the service safe to receive traffic? | [Health, Readiness, and Drain](health-readiness-and-drain.md) | Admit, drain, or remove an instance. |
-| Which runtime path is failing? | [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md) | Localize request, store, cache, or policy behavior. |
-| What must a structured event contain? | [Logging Contracts](logging-contracts.md) | Validate event identity, required fields, and data handling. |
-| Which metric and labels are governed? | [Metrics Packages](metrics-packages.md) | Validate metric ownership and cardinality. |
-| Are service objectives within budget? | [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md) | Hold, mitigate, or continue a release decision. |
-| How does trace context move? | [Tracing Pipelines](tracing-pipelines.md) | Validate propagation, correlation, and exporter behavior. |
-| Does a signal require action? | [Alert Rules](alert-rules.md) | Page, investigate, or monitor. |
-| Which view explains the impact? | [Dashboards and Panels](dashboards-and-panels.md) | Correlate service, dependency, and saturation signals. |
-| Can the telemetry path survive failure? | [Telemetry Drills](telemetry-drills.md) | Accept or reject monitoring readiness. |
-| What must accompany a decision? | [Operational Evidence Reports](operational-evidence-reports.md) | Preserve reproducible incident or release evidence. |
+## Route by operating question
 
-## Contracted Surface
+| Question | Read |
+| --- | --- |
+| May an instance receive traffic? | [Health, Readiness, and Drain](health-readiness-and-drain.md) |
+| Which runtime path is failing? | [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md) |
+| What must a structured event retain? | [Logging Contracts](logging-contracts.md) |
+| Which metric dimensions are governed? | [Metrics Packages](metrics-packages.md) |
+| Is the service within budget? | [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md) |
+| How does context cross process boundaries? | [Tracing Pipelines](tracing-pipelines.md) |
+| Which signal requires action? | [Alert Rules](alert-rules.md) |
+| Which view explains impact? | [Dashboards and Panels](dashboards-and-panels.md) |
+| Can the evidence path survive failure? | [Telemetry Drills](telemetry-drills.md) |
+| What must accompany a decision? | [Operational Evidence Reports](operational-evidence-reports.md) |
 
-The checked-in contracts currently define:
-
-- 15 HTTP endpoints with request classes, required metrics, and path spans;
-- 39 required metrics with label sets, owners, semantics, and cardinality
-  budgets;
-- structured log fields and registered request and policy events;
-- six required request-path spans plus ten stable lifecycle span identities;
-- 20 governed alert specifications tied to an owner, runbook, drill, and
-  invariant; and
-- two telemetry-path drills for an OpenTelemetry outage and Prometheus gap.
-
-The generated telemetry index inventories the alert catalog, dashboard,
-readiness, SLO, and drill artifacts. It proves that those assets are discoverable;
-it does not prove that a deployed collector, rule engine, or notification path
-is working. Use drills and captured runtime evidence for that claim.
-
-## Investigation Discipline
-
-Preserve the observation window, release and dataset identities, selected
-profile, alert and rule versions, dashboard snapshot, representative trace IDs,
-and relevant structured logs. Treat missing telemetry as a finding: an incident
-cannot be declared understood when the evidence needed to distinguish runtime,
-store, catalog, or policy failure is absent.
-
-Telemetry degradation changes the decision boundary. A serving runtime may
-remain available while promotion is held because alert delivery, trace
-retention, or required measurements cannot be established.
-
-When one signal type is missing, use the remaining signals to bound impact but
-record the blind spot. Metrics without traces can show population harm without
-localizing a request path. Traces without metrics can explain examples without
-establishing prevalence. Logs without a reliable window can retain events
-without proving what was absent.
-
-## Operate Through Partial Blindness
-
-Signal loss is an operational state with its own decision limits. Use surviving
-sources to reduce harm, but do not promote or close an incident on evidence the
-collection path could not have produced.
-
-| Missing boundary | Surviving evidence can establish | Decision that must remain blocked |
-| --- | --- | --- |
-| metrics delivery | individual failures from logs, traces, probes and client observations | population rate, saturation trend or SLO compliance |
-| trace export | rates and event classes from metrics and logs | causal localization across request, cache, store and dependency spans |
-| centralized logs | aggregate health and sampled request paths | complete discrete-event, audit or policy-decision history |
-| alert notification | rule evaluation state and direct backend queries | that the assigned owner received or acted on the page |
-| dashboard rendering | raw query results and validated panel definition | that the operator view displayed the same window correctly |
-| all telemetry backends | clients, Kubernetes, pod output and integrity checks | promotion, security closure or absence of hidden failures |
-
-Restoring the missing path is not retrospective proof for the blind interval.
-Record the gap, the collection and source clocks, any emergency observation
-method, and the exact time normal evidence resumed. Start a new qualification
-window when the decision requires continuous coverage.
-
-For incident execution, continue to [Incident Response](incident-response.md).
+Preserve the observation window, release and dataset identities, rule and
+dashboard revisions, representative trace IDs, structured events, gaps, and
+decision record. Missing telemetry is an operating finding, not an empty pass.
