@@ -69,6 +69,36 @@ contracts permit them.
 | retention | Will raw evidence outlive the incident or promotion review? |
 | redaction | Are secrets and sensitive payloads excluded without removing decision identity? |
 
+## End-to-End Signal Assurance
+
+```mermaid
+flowchart LR
+    Instrument[Runtime instrumented] --> Emit[Signal emitted]
+    Emit --> Transport[Exporter or scrape succeeds]
+    Transport --> Store[Backend ingests and retains]
+    Store --> Query[Operator query returns the window]
+    Query --> Evaluate[Rule or SLO evaluates]
+    Evaluate --> Notify[Notification reaches its owner]
+    Notify --> Act[Decision is recorded]
+```
+
+Each arrow is a separate availability boundary. A unit test can establish
+instrumentation shape, but not exporter delivery. A healthy collector can
+establish transport, but not backend retention. A firing rule can establish
+evaluation, but not notification delivery or ownership response.
+
+| Assurance level | Evidence | Claim supported |
+| --- | --- | --- |
+| Declared | Registry, rule, dashboard, or drill definition exists and validates. | The intended signal and owner are specified. |
+| Emitted | A known request or lifecycle event produces the expected runtime signal. | Instrumentation is active for that path. |
+| Delivered | Backend query returns the signal with expected labels and timestamp. | Transport, ingestion, and retention worked for the observed window. |
+| Exercised | A controlled condition produces the rule, notification, dashboard, and trace/log correlation. | The operating path worked for the named environment and drill. |
+| Retained | Immutable evidence binds the exercised path to release, dataset, profile, and time. | Another operator can reconstruct the decision after live telemetry expires. |
+
+Do not collapse these levels into “observability present.” Promotion evidence
+should name the highest level actually demonstrated for every required signal
+path.
+
 ## Choose the Operating Question
 
 | Question | Start here | Decision supported |
@@ -112,5 +142,11 @@ store, catalog, or policy failure is absent.
 Telemetry degradation changes the decision boundary. A serving runtime may
 remain available while promotion is held because alert delivery, trace
 retention, or required measurements cannot be established.
+
+When one signal type is missing, use the remaining signals to bound impact but
+record the blind spot. Metrics without traces can show population harm without
+localizing a request path. Traces without metrics can explain examples without
+establishing prevalence. Logs without a reliable window can retain events
+without proving what was absent.
 
 For incident execution, continue to [Incident Response](incident-response.md).

@@ -35,6 +35,12 @@ cross asynchronous boundaries. Logs must correlate with traces; traces must
 correlate with request and latency metrics. Metrics intentionally do not carry
 request or trace IDs because per-request labels would create unbounded series.
 
+Atlas returns the correlation identity in both `x-request-id` and `x-trace-id`
+response headers. Structured error bodies also carry `request_id`. Preserve
+the header even for a successful request selected as the healthy comparison;
+diagnosis is stronger when failing and successful paths share the same release,
+dataset, route class, and time window.
+
 ## Telemetry Pipeline Boundaries
 
 ```mermaid
@@ -53,6 +59,21 @@ Instrumentation success does not establish backend ingestion. Backend
 ingestion does not establish retention, queryability, alert evaluation, or
 notification delivery. Monitor and drill each boundary required by the
 operating claim.
+
+## Failure by Telemetry Boundary
+
+| Boundary | Typical evidence | Safe conclusion |
+| --- | --- | --- |
+| Instrumentation | expected event, metric, or span is absent from a direct runtime exercise | coverage is missing or disabled; backend health is still unknown |
+| Export or scrape | runtime reports drops, exporter errors, queue pressure, or scrape failure | signal left the request path incompletely |
+| Backend ingestion | collector accepted data but backend query returns no current series or spans | delivery is not established |
+| Retention | recent signals exist but the incident window is missing | current health cannot reconstruct historical behavior |
+| Rule evaluation | source series exists but the alert state does not match its expression | rule, labels, or evaluation timing requires investigation |
+| Notification | rule fires but no owned notification receipt exists | paging readiness is not established |
+
+A telemetry-path failure should not be rewritten as a runtime success. It is a
+separate operational defect that reduces the strength of any release or
+incident claim depending on that signal.
 
 ## Structured Logs
 
@@ -113,6 +134,25 @@ behavior.
 A dashboard can show correlation without establishing causation. Confirm the
 fault through the governed contract, a controlled drill, or reproducible
 request evidence before changing traffic or data.
+
+## Correlation Walk
+
+```mermaid
+flowchart TD
+    Response[Response status and x-request-id] --> Logs[Request start/end and policy events]
+    Response --> Trace[Root request span and required child spans]
+    Logs --> Context[release + dataset + route + result class]
+    Trace --> Context
+    Context --> Metrics[Population window for the same bounded dimensions]
+    Metrics --> Compare[Healthy and failing request comparison]
+    Compare --> Decision[Cause hypothesis and bounded action]
+```
+
+Start from the client-visible identifier rather than a broad log search. Check
+that the trace contains the spans required by the endpoint contract, then use
+bounded metric labels to measure how representative that request is. Never add
+gene IDs, transcript IDs, raw regions, request IDs, or trace IDs to metrics to
+make this join easier; those values belong in logs and traces.
 
 ## Signal Loss and Sampling
 

@@ -61,6 +61,20 @@ These states are not mutually reducible to process health. An overloaded
 instance can still be alive. An unready instance can still answer diagnostics.
 A draining instance may intentionally refuse work without having crashed.
 
+## Probe Interpretation Matrix
+
+| Observation | What is established | Operator action |
+| --- | --- | --- |
+| health fails | the process cannot answer its basic health path | inspect process state before replacement policy acts |
+| health passes, liveness fails | the process responds but is intentionally draining | keep it out of new traffic and allow bounded shutdown |
+| liveness passes, readiness fails | the process lives but must not receive normal traffic | inspect startup, catalog, profile, and readiness policy |
+| readiness passes, overload fails | the instance is configured to serve but is actively shedding | protect cheap routes and reduce or redistribute heavy work |
+| all probes pass | basic process, admission, and overload checks pass at that instant | still verify user paths, dependencies, latency, and correctness |
+
+Probe results are point observations. A promotion or recovery decision needs a
+window long enough to expose flapping, catalog refresh failures, overload
+recurrence, and rollout transitions.
+
 ## Drain Timeline
 
 ```mermaid
@@ -114,6 +128,12 @@ Avoid probe coupling that turns a recoverable dependency delay into a restart
 loop. Liveness should not depend on remote catalog or store health. Readiness
 may depend on them when the selected mode requires those dependencies for
 correct traffic service.
+
+Readiness flapping is a traffic-control incident even when liveness stays
+green. Preserve transition counts and timestamps, catalog freshness, endpoint
+membership, dependency errors, and rollout identity. Raising probe thresholds
+without identifying the failing invariant can hide instability and extend the
+time that bad instances receive traffic.
 
 Probe success can also be false confidence when the check bypasses the normal
 service path, resolves no governed dataset, or is cached by an intermediary.
