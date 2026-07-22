@@ -7,180 +7,108 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Production Qualification
+# Production qualification
 
-Production qualification joins release identity, rendered deployment policy,
-live service behavior, resilience, and recovery into one attributable decision.
-A production-named values file is deployment intent; it is not evidence that
-the path was installed, upgraded, rolled back, or operated successfully.
+Production qualification joins immutable release identity, target-admitted
+deployment state, live service behavior, security, capacity, resilience, and
+recovery into one attributable decision. A production-named values file is
+intent, not proof that its lifecycle works.
 
-## Production Profile Intent
-
-Atlas carries four production-oriented overlays:
+## Declared profiles
 
 | Profile | Declared shape | Qualification emphasis |
 | --- | --- | --- |
-| `prod` | 3 replicas, HPA 3–20, rollout, cluster-aware network policy | general dependency-connected production |
-| `prod-minimal` | 2 replicas, HPA 2–8, digest pinning | smaller fault domain and capacity margin |
-| `prod-ha` | 4 replicas, HPA 4–16, PDB minimum 2, tighter probes | disruption and overlap behavior |
-| `prod-airgap` | cached-only, prewarmed dataset, local registry, no HPA | offline asset and recovery completeness |
+| `prod` | 3 replicas, HPA 3–20, rolling deployment, cluster-aware network policy | Autoscaling and connected dependencies |
+| `prod-minimal` | 2 replicas, HPA 2–8, digest requirement | Smaller disruption and capacity margin |
+| `prod-ha` | 4 replicas, HPA 4–16, PDB minimum 2, tighter probes | Eviction, placement, and rolling overlap |
+| `prod-airgap` | Cached-only, prewarmed dataset, local registry, no HPA | Complete offline bill of materials and recovery |
 
-The overlays do not define institutional ingress, storage class, secret
-provider, certificate authority, alert destination, backup target, or cluster
-admission controller. Those site-owned controls must be added as reviewed
-overrides and retained in the qualification record.
+Site-owned ingress, storage, certificate, secret, alert, backup, and admission
+controls are not defined by these overlays. Retain them as reviewed target
+inputs.
 
-## Current Coverage Boundary
+## Current coverage boundary
 
-`ops/k8s/install-matrix.json` contains a `prod` profile row assigned to the
-`nightly` delivery lane. It does not contain rows for `prod-minimal`, `prod-ha`,
-or `prod-airgap`. The lifecycle scenario set has no install, upgrade, or
-rollback scenario for any production profile.
+The install matrix has a `prod` row in the `nightly` lane. It has no rows for
+`prod-minimal`, `prod-ha`, or `prod-airgap`, and no production profile has an
+install, upgrade, or rollback lifecycle scenario.
 
-The `prod-minimal`, `prod-ha`, and `prod-airgap` overlays contain repeated-digit
-SHA-256 values. These are deterministic contract fixtures, not digests of a
-released Atlas image. Replace them with an immutable, provenance-bound image
-digest before rendering a candidate deployment.
+The three specialized overlays use repeated-digit SHA-256 contract fixtures,
+not released Atlas image digests. Replace them with immutable,
+provenance-bound candidates before rendering a real deployment.
 
-`prod-airgap` also disables NetworkPolicy under a dated, owner-bearing profile
-exception while disabling dependency egress. That expresses an air-gap model;
-it does not prove cluster isolation. Qualification requires independent
-reachability evidence for the target boundary and review of the exception at
-decision time.
+`prod-airgap` disables NetworkPolicy under an owner- and date-bearing profile
+exception. That describes a presumed air gap; it does not prove target
+isolation. Independent reachability evidence remains mandatory.
 
-```mermaid
-flowchart LR
-    Profile["production profile exists"] --> Matrix{"matrix row exists?"}
-    Matrix -- no --> Declared["declared profile only"]
-    Matrix -- yes --> Lifecycle{"lifecycle scenario exists?"}
-    Lifecycle -- no --> Partial["installation lane only"]
-    Lifecycle -- yes --> Run["identity-bound execution"]
-    Run --> Qualified["scoped production evidence"]
-```
+Do not borrow Kind, offline, or performance lifecycle results for a production
+profile because selected fields look similar.
 
-Do not borrow a Kind, offline, or performance lifecycle result for a production
-profile merely because selected fields render similarly.
-
-## Qualification Chain
+## Qualification chain
 
 ```mermaid
 flowchart LR
-    Release["runtime + dataset release"] --> Render["profile + site override + render"]
-    Render --> Admit["schema + policy + cluster admission"]
-    Admit --> Install["install or upgrade"]
-    Install --> Observe["readiness + user paths + telemetry"]
-    Observe --> Exercise["load + fault + rollout + recovery"]
-    Exercise --> Verify["drift + security + artifact binding"]
-    Verify --> Decide{"production decision"}
+    Release[Runtime + dataset release] --> Render[Profile + site overrides]
+    Render --> Admit[Policy + API admission]
+    Admit --> Service[Install + readiness + queries]
+    Service --> Exercise[Load + fault + rollout + recovery]
+    Exercise --> Closure[Security + drift + packet binding]
+    Closure --> Decision{qualified, excepted, rejected, incomplete}
 ```
-
-Every link answers a different question:
 
 | Gate | Required evidence |
 | --- | --- |
-| release | source revision, runtime digest, dataset tuple, manifest, and provenance |
-| render | chart, profile, site override, merged-values digest, and inventory |
-| admission | schema, high-risk policy, workload security, and stored-object result |
-| install | lifecycle direction, previous and candidate identity, events, and hooks |
-| service | endpoint membership, probes, representative queries, and telemetry |
-| resilience | capacity, overload, churn, dependency failure, and rollback results |
-| recovery | backup or rollback identity, restored state, and observation window |
-| closure | drift result, exceptions, packet digest, reviewer, and verdict |
+| release | Source, runtime digest, dataset tuple, manifest, and provenance |
+| render | Chart, profile, site overrides, merged-values digest, and inventory |
+| admission | Policy result, stored objects, workload identity, and semantic delta |
+| service | Endpoints, probes, representative queries, dataset identity, and telemetry |
+| resilience | Capacity, overload, churn, dependency failure, and reversal results |
+| recovery | Rollback or recovery identity, restored state, and observation window |
+| closure | Drift, security, exceptions, evidence digest, owner, and verdict |
 
-A later gate cannot repair missing identity from an earlier gate. For example,
-a successful query does not establish which values were admitted, and a valid
-rollback plan does not establish that reversal completed.
+A later gate cannot repair missing identity from an earlier one.
 
-## Prove the Admission Delta
-
-The rendered manifest is proposed state. The API server's stored object is
-admitted state, and the running pod is effective state. Defaulting, mutating
-webhooks, policy controllers, sidecar injection, and scheduler decisions can
-change security, resources, networking, identity, or shutdown behavior between
-those boundaries.
+## Prove admitted and effective state
 
 ```mermaid
 flowchart LR
-    Authored["Profile and site override"] --> Rendered["Rendered objects"]
-    Rendered --> Submitted["Submitted object digest"]
-    Submitted --> Admitted["API-server stored object"]
-    Admitted --> Live["Effective pod and endpoints"]
+    Authored[Profile + site overrides] --> Rendered[Rendered objects]
+    Rendered --> Admitted[API-stored objects]
+    Admitted --> Live[Pods + endpoints]
     Rendered -. semantic diff .-> Admitted
-    Admitted -. identity and behavior checks .-> Live
+    Admitted -. identity + behavior .-> Live
 ```
 
-Retain a semantic diff that ignores volatile status while preserving fields
-that can change the claim: image digest, command, environment and secret
+Defaulting, mutation, sidecar injection, admission policy, and scheduling can
+change security, resources, networking, identity, or shutdown behavior. The
+semantic diff must preserve image digest, command, environment and secret
 references, service account, security contexts, volumes, probes, resources,
-scheduling, termination, labels, annotations, and network selectors. Then bind
-the admitted workload UID and template hash to the pods and endpoints exercised
-by qualification.
+scheduling, termination, labels, annotations, and network selectors.
 
-| Admission result | Qualification consequence |
-| --- | --- |
-| expected default with documented controller identity | accept the normalized field and retain the controller and policy revision |
-| unexpected mutation of a claim-bearing field | hold qualification until the source or reviewed override explains the effective state |
-| rejected object | record policy identity and denial; a different object cannot satisfy the original render receipt |
-| live pod differs from the admitted template | investigate controller drift or replacement before collecting service evidence |
+Unexpected mutation of a claim-bearing field holds qualification. Bind the
+admitted workload UID and template hash to the pods and endpoints actually
+exercised.
 
-This comparison turns admission from a single green response into a custody
-chain. It also prevents a live query from certifying a workload whose effective
-security or capacity no longer matches the reviewed render.
+## Profile-specific proof
 
-## Profile-Specific Proof
+- `prod`: prove scale-up from minimum replicas, dependency reachability, cheap
+  route survival, and rollout capacity.
+- `prod-minimal`: prove one unavailable replica and HPA growth stay within
+  dependency, storage, and telemetry budgets.
+- `prod-ha`: prove PDB enforcement, placement, eviction, rolling overlap, HPA
+  interaction, and dataset access through disruption.
+- `prod-airgap`: prove local resolution of every image, chart, dataset, SBOM,
+  checksum, verifier, telemetry destination, time source, and recovery asset.
 
-### `prod`
+Record Kubernetes version, architecture, container runtime, registries,
+networking, storage, autoscaling APIs, node pools, secret providers, telemetry,
+alerts, backups, and recovery destinations. Platform change can stale this
+evidence even when Atlas is unchanged.
 
-Prove autoscaling from the declared minimum while preserving cheap-path
-availability, dependency reachability, and rollout capacity. Confirm that the
-cluster-aware network policy permits only the selected dependencies and DNS.
+The final record names profile, lifecycle direction, release, dataset, target,
+executed checks, gaps, exceptions, rollback target, decision owner, and validity
+window. “Installed” and “running” are observations, not qualification verdicts.
 
-### `prod-minimal`
-
-Prove the smaller replica floor survives one unavailable replica and that HPA
-growth does not exceed dependency, storage, or telemetry capacity. A two-pod
-shape does not inherit the disruption claim of `prod-ha`.
-
-### `prod-ha`
-
-Prove PDB behavior, scheduler placement, rolling overlap, HPA interaction, and
-quorum-independent dataset access. `minAvailable: 2` is intended state; an
-eviction, node-loss, and rollout observation establishes its effect.
-
-### `prod-airgap`
-
-Prove the complete offline bill of materials, local registry resolution,
-prewarmed dataset integrity, cached-only readiness, tool availability, time
-source, telemetry destination, and recovery without network access. Verify
-that every image, chart, dataset, checksum, SBOM, and verifier resolves locally.
-
-## Target Capability Record
-
-Record target facts that can change behavior without changing chart values:
-
-- Kubernetes version and architecture;
-- container runtime and registry resolution policy;
-- ingress, NetworkPolicy, DNS, and service-mesh implementations;
-- storage classes, volume semantics, snapshots, and encryption authority;
-- autoscaling APIs, metrics freshness, scheduling constraints, and node pools;
-- secret and certificate providers plus rotation behavior;
-- telemetry, alert, backup, and recovery destinations.
-
-Bind the record to the cluster and qualification window. A later platform
-upgrade makes the affected evidence stale even if the Atlas revision is
-unchanged.
-
-## Production Decision Record
-
-The final record states the supported profile, lifecycle direction, release and
-dataset identities, target capability digest, executed checks and scenarios,
-evidence gaps, exceptions, rollback target, reviewer, and validity window.
-
-Use four verdicts: qualified, qualified with governed exceptions, rejected, or
-incomplete. “Installed” and “running” are observations, not production
-qualification verdicts.
-
-Continue with [Helm Values Model](helm-values-model.md),
-[Install Matrix](install-matrix.md), [Render and Validate](render-and-validate.md),
-[Rollout Safety](rollout-safety.md), and
-[Service Objectives and Error Budgets](../observability/service-objectives-and-error-budgets.md).
+Continue with [Install Matrix](install-matrix.md),
+[Render and Validate](render-and-validate.md), [Rollout Safety](rollout-safety.md),
+and [Service Objectives and Error Budgets](../observability/service-objectives-and-error-budgets.md).
