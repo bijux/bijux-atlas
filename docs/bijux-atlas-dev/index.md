@@ -139,12 +139,43 @@ flowchart LR
     Verify --> Promote[Make promotion decision]
 ```
 
+## Security Control Custody
+
+Security assurance crosses four owners. Keeping their identities separate
+prevents a passing repository command from being mistaken for production
+security proof.
+
+| Owner | Governed surface | Evidence it can supply | Evidence it cannot supply alone |
+| --- | --- | --- | --- |
+| security model | threats, assets, mitigations, controls, classifications, and exceptions | internally consistent control intent and residual-risk records | implementation behavior or target enforcement |
+| product and operations implementation | request policy, runtime controls, chart values, RBAC, NetworkPolicy, audit, release, and recovery behavior | code and rendered control surfaces tied to a revision | execution in a named environment |
+| maintainer control plane | focused validators, contract tests, reports, and workflow selection | reproducible observations for exact inputs and tool identities | edge identity, live reachability, external secret delivery, or production admission |
+| reviewer or release authority | required claims, accepted findings, target policy, and artifact binding | an attributable accept, reject, or exception decision | new technical evidence absent from the underlying runs |
+
+```mermaid
+flowchart LR
+    Model[Governed threat and control model] --> Implementation[Owned implementation]
+    Implementation --> Selection[Focused security selection]
+    Selection --> Report[Internally qualified report]
+    Report --> Binding[Source and artifact binding]
+    Binding --> Decision[Authorized decision]
+    Target[Target-environment evidence] --> Decision
+```
+
+For threat-model changes, run the registry verifier and its positive and
+negative command contracts. For authorization or deployment claims, add route,
+identity, rendered-policy, admission, and reachability evidence. A threat
+registry coverage percentage measures model linkage; it is not a percentage of
+production risk removed.
+
 ## Working by Risk
 
 - For a documentation-only change, validate structure, navigation, links, and
   rendering without invoking product or cluster suites.
 - For a policy or schema change, validate the owning contract and every
   generated consumer affected by it.
+- For a security-model change, verify registry linkage, execute the command
+  contracts, inspect internal report status, and preserve unresolved findings.
 - For an operations change, render first, inspect the plan, then run only the
   profile and conformance evidence needed for that deployment shape.
 - For a release decision, require the source identity, governed artifacts,

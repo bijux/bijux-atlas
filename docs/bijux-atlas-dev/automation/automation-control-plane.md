@@ -55,6 +55,7 @@ index as a competing rule set.
 | What belongs to a suite? | `bijux dev atlas suites describe --suite <suite> --format json`. |
 | Which report contracts are registered? | `bijux dev atlas reports list --format json`. |
 | Are the public docs structurally valid? | `bijux dev atlas docs validate --format json`. |
+| Is the governed threat registry internally coherent? | `bijux dev atlas security threats verify --format json`. |
 
 There are two distinct uses of the word *suite*. `check run --suite ci_fast`
 filters the check registry by lane membership. `suites run --suite checks`
@@ -102,6 +103,43 @@ Use a wrapper when its complete lane is the question. Use a focused control-plan
 command when one contract, page family, check, or report is the question. A
 focused pass does not claim the broader lane passed.
 
+## Security Selection and Evidence Custody
+
+Security automation has two selections: which change triggers a lane, and
+which contracts execute inside it. Both selections are part of the evidence.
+
+```mermaid
+flowchart LR
+    Change[Changed governed surface] --> Trigger[Workflow path selection]
+    Trigger --> Command[Exact security command]
+    Command --> Contracts[Positive and negative contracts]
+    Contracts --> Status[Internal status and findings]
+    Status --> Receipt[Run and artifact identities]
+    Receipt --> Decision[Review or release decision]
+```
+
+The threat-model lane watches the governed model, command implementation and
+routing, and the public security pages that state its controls. It runs
+`security threats verify` and the `security_threat_` contract selector. The
+selector covers both accepted registry linkage and rejection of a mismatched
+registry.
+
+Preserve these distinctions during triage:
+
+| Observation | Meaning |
+| --- | --- |
+| path did not trigger the lane | no lane observation exists for that revision |
+| command did not execute | lane execution is incomplete even if another step passed |
+| test filter ran zero tests | selector matched no contract and supplies no behavioral evidence |
+| report exists with non-passing status | findings were transported, not accepted |
+| model verification passed | governed records agree; live enforcement remains outside this command |
+
+When a public security claim changes without a model or implementation change,
+the documentation path still triggers the threat lane. This guards consistency
+between published control claims and the governed registry, but it does not
+prove the prose itself through runtime execution. Reviewers must compare the
+claim with the report and the implementation evidence it cites.
+
 ## Failure Triage
 
 1. Preserve the failing command, exit code, selected IDs, and artifact root.
@@ -115,4 +153,6 @@ already exposes IDs, owners, rationale, fix hints, budgets, and evidence paths.
 
 Continue with [Automation Command Surface](automation-command-surface.md) for
 command families and [Automation Reports Reference](automation-reports-reference.md)
-for evidence interpretation.
+for evidence interpretation. Use
+[Security Validation Lanes](../delivery/security-validation-lanes.md) for
+trigger, selector, and acceptance boundaries.

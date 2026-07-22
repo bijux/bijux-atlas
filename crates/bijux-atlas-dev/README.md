@@ -104,6 +104,40 @@ execution errors where a domain defines that distinction. See the handbook's
 [error and exit-code reference](../../docs/bijux-atlas/interfaces/error-codes-and-exit-codes.md)
 before integrating a command into CI.
 
+## Security Evidence Boundary
+
+The `security` family exposes repository validation for authentication,
+authorization, dependency, compliance, threat, and data-protection contracts.
+Each command owns a narrow observation. It does not collapse those observations
+into an unqualified “secure” result.
+
+For the governed threat model, the focused verification pair is:
+
+```bash
+cargo run --locked -p bijux-atlas-dev -- \
+  security threats verify --format json
+cargo test --locked -p bijux-atlas-dev security_threat_ -- --nocapture
+```
+
+The first command checks that threat categories, likelihoods, assets,
+mitigations, and registry membership agree, then writes
+`artifacts/security/security-threat-coverage-report.json`. The test selector
+executes both the valid-registry command contract and the registry-mismatch
+rejection contract. A successful filter that runs zero tests is not evidence;
+retain the Cargo test count with the result.
+
+| Result | Maintainer interpretation |
+| --- | --- |
+| command exits nonzero | the governed model is invalid or execution failed; do not publish a passing report |
+| report status is non-passing | preserve its findings even if an outer workflow uploaded the file |
+| required report is absent | the run is incomplete, not empty success |
+| model and command contracts pass | model linkage is qualified for the recorded revision; runtime and deployment claims still require direct evidence |
+
+Security reports must retain source identity, selected command, governed input
+hashes, tool identity, internal status, findings, and artifact path. Workflow
+conclusion and artifact presence are transport facts, not replacements for
+those fields.
+
 ## Source Architecture
 
 | Area | Ownership |
@@ -138,4 +172,5 @@ When extending the control plane:
 - command surface: [../../docs/bijux-atlas-dev/automation/automation-command-surface.md](../../docs/bijux-atlas-dev/automation/automation-command-surface.md)
 - control-plane model: [../../docs/bijux-atlas-dev/automation/automation-control-plane.md](../../docs/bijux-atlas-dev/automation/automation-control-plane.md)
 - report contracts: [../../docs/bijux-atlas-dev/automation/automation-reports-reference.md](../../docs/bijux-atlas-dev/automation/automation-reports-reference.md)
+- security validation lanes: [../../docs/bijux-atlas-dev/delivery/security-validation-lanes.md](../../docs/bijux-atlas-dev/delivery/security-validation-lanes.md)
 - testing and evidence: [../../docs/bijux-atlas-dev/governance/testing-and-evidence.md](../../docs/bijux-atlas-dev/governance/testing-and-evidence.md)

@@ -18,7 +18,7 @@ but protect different boundaries and have different trigger coverage.
 | Lane | Trigger | Primary evidence |
 | --- | --- | --- |
 | [supply chain](../../../.github/workflows/security-supply-chain-validation.yml) | every pull request and pushes to `main` | governance artifacts, security validation, dependency audit, and command contract test |
-| [threat model](../../../.github/workflows/security-threat-model-validation.yml) | manual dispatch and selected threat-model, security implementation, CLI, or documentation paths | threat verification and governance contract tests |
+| [threat model](../../../.github/workflows/security-threat-model-validation.yml) | manual dispatch and selected model, implementation, CLI, workflow, or public security documentation paths | threat-registry verification plus positive and negative command contracts |
 | [data protection](../../../.github/workflows/security-data-protection-validation.yml) | every pull request and pushes to `main` | runtime data-protection contracts, governance evidence, and security control validation |
 
 ```mermaid
@@ -40,16 +40,30 @@ Supply-chain validation covers repository governance artifacts, dependency
 security commands, and their command contract. It does not by itself prove
 image provenance, registry integrity, or deployment admission.
 
-Threat-model validation checks the governed threat model and its implementation
-contract. Its path filter currently references
-`docs/04-operations/security-operations.md`, while the public security guide is
-under `docs/bijux-atlas-ops/kubernetes/`. A documentation-only change in the
-current public path may therefore not trigger this lane. Treat this as trigger
-coverage risk, not evidence that the threat model is unaffected.
+Threat-model validation checks governed threat linkage and command behavior.
+Its path filter covers `ops/security/threat-model/**`, the command implementation
+and routing, the public security and maintainer guides, and the workflow itself.
+It intentionally remains a pull-request and manual-dispatch lane; a direct
+push does not create threat-lane evidence unless another invocation runs it.
 
 Data-protection validation exercises runtime protection contracts and broader
 governance/security commands. It does not prove live secret delivery,
 encryption infrastructure, external identity, or production data handling.
+
+## Change-to-Lane Coverage
+
+| Changed surface | Expected threat-lane action | Review requirement |
+| --- | --- | --- |
+| threat assets, taxonomy, registry, threats, or mitigations | trigger and run registry verification plus both command contracts | inspect coverage report status, errors, and changed residual risk |
+| security contract schema | no threat-lane trigger is guaranteed | run the schema's owning validation and determine whether threat verification also needs that schema |
+| threat command implementation or CLI route | trigger and exercise the focused command contracts | retain test count and command output |
+| public threat, identity, supply-chain, workload, or admin-exposure claim | trigger the lane | reconcile the claim with governed model and implementation evidence |
+| runtime authorization or server route outside watched paths | no threat-lane trigger is guaranteed | run route-level security evidence and evaluate whether the workflow path set must expand |
+| chart, RBAC, NetworkPolicy, or deployment profile outside watched paths | no threat-lane trigger is guaranteed | render and validate the exact deployment profile; the threat lane is insufficient |
+
+Path coverage is a change detector, not control coverage. If an implementation
+surface can invalidate a documented mitigation but is not watched, record that
+gap and run the owning evidence explicitly.
 
 ## Administrative Route Coverage Gap
 
@@ -60,7 +74,8 @@ when administrative endpoints are enabled, but the classifier recognizes only
 ordinary dataset-read authorization class.
 
 The supply-chain lane checks dependency and governance surfaces. The threat
-lane verifies the threat-model control-plane command and its governance tests.
+lane verifies the threat-model control-plane command and its positive and
+negative command contracts.
 The data-protection lane runs runtime foundation contracts. Those are valuable
 checks, but none establishes route-level parity in the server adapter. A green
 conclusion from all three lanes must not be reported as proof that enabled
