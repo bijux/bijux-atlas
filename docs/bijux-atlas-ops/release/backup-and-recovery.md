@@ -106,6 +106,26 @@ Keep the failed state and restore evidence isolated until the verdict is
 recorded. A failed restore is diagnostic evidence and must not overwrite the
 last known recoverable point.
 
+## Prevent Split Authority
+
+Restore into an isolated target while the failed environment remains frozen.
+Only one catalog pointer, runtime release, and administrative path may be
+authoritative when service resumes. A successful query against the restore
+target does not by itself transfer authority.
+
+| Transition | Required control |
+| --- | --- |
+| incident to isolation. | Stop publication and administrative mutation, capture the active identities, and fence the failed writer path. |
+| isolation to validation. | Expose the restore only to verification traffic and reject unverified catalog or artifact combinations. |
+| validation to failover. | Record the accepted recovery point, switch one governed authority, and observe representative traffic. |
+| failover to normal service. | Confirm no stale endpoint, pointer, credential, or job can mutate the retired state. |
+| later failback. | Treat the original environment as a new recovery target; reconcile state and repeat validation before switching. |
+
+Inventory every catalog publication or administrative mutation accepted after
+the selected recovery point. Classify it as retained, replayed, superseded, or
+lost. This reconciliation is the observed data-loss interval; a backup
+timestamp alone cannot establish it.
+
 ## Exercise and Acceptance Authority
 
 A recovery exercise records the selected point, backup age, restore start and

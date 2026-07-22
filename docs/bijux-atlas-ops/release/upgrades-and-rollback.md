@@ -71,6 +71,26 @@ flowchart LR
 Readiness without traffic is not candidate validation. Aggregate metrics without
 release labels can hide a failed candidate behind healthy baseline replicas.
 
+## Record Candidate State Changes
+
+Before traffic begins, create a ledger of every boundary the candidate may
+change. Update it from observed actions during rollout. The ledger decides
+whether controller rollback is sufficient or another recovery plane is needed.
+
+| Boundary | Reverse-path requirement |
+| --- | --- |
+| Kubernetes objects. | Previous objects render coherently, regain ownership, and leave no candidate-only resource active. |
+| runtime configuration. | Previous parser accepts the effective values and Secret references after candidate removal. |
+| credentials and trust. | Overlap material remains valid until previous replicas serve traffic; revocation is separately gated. |
+| cache entries. | Keys are version-compatible or the candidate namespace can be discarded without store overload. |
+| catalog pointer. | The previous runtime supports the selected pointer, or an explicit dataset-pointer decision is recorded. |
+| immutable artifacts. | Candidate use creates no mutation; any integrity concern enters durable-data recovery. |
+| policy and telemetry. | Previous release regains required admission, audit, metric, log, and trace coverage. |
+
+For each touched boundary, retain the before identity, candidate identity,
+rollback action, and restored identity. An unplanned shared-state mutation
+stops routine promotion even when request metrics remain within budget.
+
 ## Repository Planning Checks
 
 The repository contains hidden release-planning helpers. They are useful for

@@ -38,6 +38,27 @@ state changes that a startup-failure rehearsal cannot reach.
 If any precondition is missing, record a blocked drill. Do not improvise a
 different target after the failure begins.
 
+## Exercise Detection, Not Only Execution
+
+A drill that rolls back a healthy candidate proves command execution only. A
+recovery claim requires a controlled failure stimulus that exercises detection,
+decision authority, and the same rollback trigger used in operation.
+
+Select the stimulus before the drill and require all of these properties:
+
+- candidate-scoped, so the baseline remains a valid recovery target;
+- reversible, with cleanup that does not depend on the rollback succeeding;
+- observable through a governed invariant and client-visible behavior;
+- bounded away from immutable artifacts, catalog integrity, and real secrets;
+- difficult to satisfy accidentally, with an independent confirmation that the
+  failure actually occurred.
+
+Record the expected first signal, alert or operator decision path, abort limit,
+and disconfirming observation. If the stimulus never occurs, the drill is
+blocked rather than passed. If it occurs but the governed trigger does not
+fire, the drill has found a detection failure even when an operator manually
+restores the baseline.
+
 ## Restore One Coherent Identity
 
 Rollback is complete only when every release-bearing plane agrees:
