@@ -14,18 +14,38 @@ the public route set unless administrative endpoints are explicitly enabled.
 The Helm default is `server.adminEndpoints.enabled: false`, which renders
 `ATLAS_ENABLE_ADMIN_ENDPOINTS=false`; the runtime default is also false.
 
-When enabled, the server adds these routes:
+When enabled, the server adds all 26 routes below:
 
-| Method | Route | Capability |
-| --- | --- | --- |
-| `POST` | `/debug/recovery/run` | execute a recovery control |
-| `GET` | `/debug/recovery/diagnostics` | inspect recovery diagnostics |
-| `POST` | `/debug/failure-injection` | invoke a supported failure target |
-| `POST` | `/debug/chaos/run` | run a chaos action for an explicit node |
+| Class | Routes |
+| --- | --- |
+| dataset and service diagnostics | `/debug/datasets`, `/debug/dataset-health`, `/debug/registry-health`, `/debug/diagnostics`, `/debug/runtime-stats`, `/debug/system-info`, `/debug/build-metadata` |
+| configuration and query diagnostics | `/debug/runtime-config`, `/debug/dataset-registry`, `/debug/shard-map`, `/debug/query-planner-stats`, `/debug/cache-stats` |
+| cluster control | `/debug/cluster/nodes`, `/debug/cluster-status`, `/debug/cluster/register`, `/debug/cluster/heartbeat`, `/debug/cluster/mode` |
+| replica control | `/debug/cluster/replicas`, `/debug/cluster/replicas/health`, `/debug/cluster/replicas/failover`, `/debug/cluster/replicas/diagnostics` |
+| recovery and fault control | `/debug/recovery/run`, `/debug/recovery/diagnostics`, `/debug/failure-injection`, `/debug/chaos/run` |
+| echo | `/v1/_debug/echo` |
 
 The feature flag changes route registration; it is not, by itself, an
 authentication or network-isolation control. An operator must evaluate auth,
 service exposure, ingress, and network policy together.
+
+## Current Authorization Gap
+
+The runtime admin classifier currently recognizes 18 of the 26 registered
+routes. It omits the four replica routes, both recovery routes,
+`/debug/failure-injection`, and `/debug/chaos/run`. Omitted routes are assigned
+the ordinary `dataset.read` action and dataset resource kind rather than
+`ops.admin` and namespace.
+
+Recognized admin routes are assigned the embedded `operator` principal after
+the configured authentication checks. That mapping does not establish that an
+external identity provider asserted an operator role. Consequently, enabling
+the route group is not evidence of complete operator-only authorization.
+
+Until registration and authorization classification agree, keep the feature
+disabled for security-qualified profiles. Any exceptional use needs isolated
+reachability and explicit tests for all 26 routes, including unauthorized
+negative cases for the eight omitted classifier entries.
 
 ## Exception Lifecycle
 
@@ -87,6 +107,8 @@ Approve an exception only when all of these conditions hold:
 - the blocked workflow and required route are named
 - the route cannot remain disabled for that profile
 - authentication and network reachability are explicit
+- every registered route is inventoried against its runtime action and resource
+  classification
 - audit or telemetry coverage can detect use and drift
 - the registry names a responsible owner and future expiry
 - rendered manifests and a runtime check prove the bounded exposure
@@ -103,6 +125,7 @@ renew the exception with fresh review evidence. A useful evidence set includes:
 - the selected values profile and rendered ConfigMap value
 - Service, Ingress, and NetworkPolicy resources that bound reachability
 - an authenticated positive check and an unauthorized negative check
+- a route-parity result covering all routes added by the feature flag
 - audit or telemetry output tied to the exercised route
 
 An expired entry, an enabled route without an entry, or an entry for one

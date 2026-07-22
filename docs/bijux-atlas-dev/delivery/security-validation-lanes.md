@@ -51,6 +51,21 @@ Data-protection validation exercises runtime protection contracts and broader
 governance/security commands. It does not prove live secret delivery,
 encryption infrastructure, external identity, or production data handling.
 
+## Administrative Route Coverage Gap
+
+None of the three workflows compares the complete server route-registration
+set with `route_is_admin_endpoint`. The server currently registers 26 routes
+when administrative endpoints are enabled, but the classifier recognizes only
+18. Replica, recovery, failure-injection, and chaos routes fall through to the
+ordinary dataset-read authorization class.
+
+The supply-chain lane checks dependency and governance surfaces. The threat
+lane verifies the threat-model control-plane command and its governance tests.
+The data-protection lane runs runtime foundation contracts. Those are valuable
+checks, but none establishes route-level parity in the server adapter. A green
+conclusion from all three lanes must not be reported as proof that enabled
+administrative routes are operator-only.
+
 ## Tolerated Commands and Artifacts
 
 The supply-chain and data-protection workflows run several governance evidence
@@ -87,6 +102,7 @@ into passing evidence.
 | dependency and source policy | supply chain | released SBOM, artifact provenance, and consumer verification |
 | threat controls match implementation | threat model | rendered exposure, live route tests, and incident detection |
 | protected runtime data paths | data protection | live secret delivery, storage encryption, access audit, and retention |
+| administrative routes are operator-only | no current lane provides complete coverage | registration-to-classifier parity plus authenticated positive and unauthorized negative tests for every enabled route |
 | image admitted as intended | supply chain plus deployment policy | image digest, signature or ledger verification, and admission result |
 | production exposure is safe | all applicable lanes | edge identity, network reachability, authorization, and workload evidence |
 

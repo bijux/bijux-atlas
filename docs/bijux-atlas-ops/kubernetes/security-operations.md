@@ -97,7 +97,8 @@ authorization evaluates principal, action, resource kind, and route.
 | --- | --- | --- |
 | health, readiness, overload, metrics, version, OpenAPI | `catalog.read` on service namespace | authentication-exempt at the runtime route boundary |
 | catalog and dataset queries | `catalog.read` or `dataset.read` | user, service account, operator, release automation |
-| debug and administrative routes | `ops.admin` or `dataset.ingest` | operator and release automation only |
+| routes recognized by the runtime admin classifier | `ops.admin` on service namespace | runtime assigns the operator principal after the configured authentication checks |
+| enabled routes missing from that classifier | currently fall through to `dataset.read` on dataset identity | must not be treated as safely authorized administrative routes |
 
 The embedded policy defaults to deny. Invalid embedded authorization contracts
 also fail closed. Authentication-exempt service routes still require network
@@ -107,8 +108,22 @@ reach the service.
 ## Administrative Surfaces
 
 Debug, cluster, recovery, failure-injection, chaos, and echo routes are only
-registered when administrative endpoints are enabled. They require operator
-authority and should not share broad public ingress with dataset queries.
+registered when administrative endpoints are enabled. The feature switch adds
+26 routes as one group; it cannot enable a single bounded route.
+
+The current authorization classifier does not cover the full registered set.
+Replica listing, replica health, replica failover, replica diagnostics,
+recovery execution, recovery diagnostics, failure injection, and chaos
+execution are omitted from `route_is_admin_endpoint`. They therefore receive
+the ordinary `dataset.read` action instead of `ops.admin`. In addition, routes
+that are recognized as administrative are assigned the embedded `operator`
+principal after the configured authentication checks; operator identity is not
+derived from a distinct external role assertion at that point.
+
+Treat this as an unresolved authorization boundary. Do not expose enabled
+administrative routes through shared or public ingress. Network isolation and
+route-specific positive and negative tests are mandatory evidence, not
+compensating prose.
 
 `ops/k8s/admin-endpoints-exceptions.json` is the exception ledger. An exception
 must identify its scope, owner, justification, and expiry through the governed
@@ -151,7 +166,9 @@ verification quietly requires a network call.
    boundary.
 4. Verify default-deny authorization and test service, dataset, and admin route
    classes separately.
-5. Confirm admin endpoints are disabled or covered by a current exception.
+5. Confirm admin endpoints are disabled. If an exception is proposed, compare
+   the complete registered route set with the runtime authorization classifier
+   and test every reachable route; the current classifier is incomplete.
 6. Validate audit fields, authentication decisions, authorization decisions,
    and trace linkage before promotion.
 7. Bind the rendered security evidence, policy snapshots, SBOMs, and artifact
@@ -162,9 +179,11 @@ verification quietly requires a network call.
 A profile is not security-qualified merely because it renders or runs as
 non-root. Qualification requires the selected exposure model, identity mode,
 authorization policy, administrative-route posture, workload confinement,
-network policy, secrets path, and artifact verification to agree. Any
-unverified boundary is a recorded exception or a failed promotion condition;
-silence is not an implicit pass.
+network policy, secrets path, and artifact verification to agree. With the
+current admin-classification gap, a profile enabling administrative endpoints
+cannot claim complete route-level authorization from the embedded policy.
+Any unverified boundary is a recorded exception or a failed promotion
+condition; silence is not an implicit pass.
 
 For every accepted boundary, retain both a preventive-control result and a
 detection result. Rendered non-root settings are preventive evidence; admission
