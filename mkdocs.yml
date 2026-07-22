@@ -256,6 +256,7 @@ nav:
           - Security Assurance: bijux-atlas-ops/security/index.md
           - Threat Model and Control Coverage: bijux-atlas-ops/security/threat-model-and-control-coverage.md
           - Identity Authorization and Audit: bijux-atlas-ops/security/identity-authorization-and-audit.md
+          - Data Protection and Cryptographic Custody: bijux-atlas-ops/security/data-protection-and-cryptographic-custody.md
           - Supply Chain and Artifact Trust: bijux-atlas-ops/security/supply-chain-and-artifact-trust.md
           - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
           - Admin Endpoints Exceptions: bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md

@@ -227,5 +227,6 @@ exposure. Temporary exceptions must be governed and removed after containment.
 
 Continue with [Admin Endpoint Exceptions](admin-endpoints-exceptions.md),
 [Identity, Authorization, and Audit](../security/identity-authorization-and-audit.md),
+[Data Protection and Cryptographic Custody](../security/data-protection-and-cryptographic-custody.md),
 [Runtime Configuration](runtime-configuration.md), and
 [Signing and Provenance](../release/signing-and-provenance.md).

@@ -50,6 +50,13 @@ Data-protection validation exercises runtime protection contracts and broader
 governance/security commands. It does not prove live secret delivery,
 encryption infrastructure, external identity, or production data handling.
 
+The runtime contract covers certificate-bundle parsing, TLS policy decisions,
+rotation state, checksums, manifest integrity, and an internal keyed digest.
+It does not establish live TLS termination, asymmetric producer signatures,
+storage-layer encryption, or target key custody. The
+[data-protection guide](../../bijux-atlas-ops/security/data-protection-and-cryptographic-custody.md)
+defines the additional operator evidence for those claims.
+
 ## Change-to-Lane Coverage
 
 | Changed surface | Expected threat-lane action | Review requirement |

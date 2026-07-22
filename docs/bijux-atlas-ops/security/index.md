@@ -90,6 +90,7 @@ control or infer an unobserved pass.
 | --- | --- |
 | connect governed threats to controls and evidence | [Threat Model and Control Coverage](threat-model-and-control-coverage.md) |
 | qualify principal, route, authorization, and audit behavior | [Identity, Authorization, and Audit](identity-authorization-and-audit.md) |
+| qualify TLS, storage protection, integrity, rotation, and retention | [Data Protection and Cryptographic Custody](data-protection-and-cryptographic-custody.md) |
 | verify dependency, package, SBOM, channel, and consumer trust | [Supply Chain and Artifact Trust](supply-chain-and-artifact-trust.md) |
 | render and qualify runtime, workload, network, and secret controls | [Security Operations](../kubernetes/security-operations.md) |
 | govern exceptional administrative-route exposure | [Admin Endpoint Exceptions](../kubernetes/admin-endpoints-exceptions.md) |
