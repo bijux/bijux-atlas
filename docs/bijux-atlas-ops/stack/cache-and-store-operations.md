@@ -142,6 +142,43 @@ disk pressure, rejection behavior, and cheap-route survival. Recovery is not
 complete merely because the cache reconnects: the backend pressure accumulated
 during misses must drain without violating correctness or overload policy.
 
+## Qualify the Cold Path
+
+Warm-cache success can hide an unusable store path. Qualify the cold path
+before relying on cache loss as a safe degradation mode, and repeat that proof
+when release identity, store topology, cache policy, or capacity changes.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Runtime
+    participant Catalog
+    participant Store
+    participant Cache
+    Client->>Runtime: Query with no reusable entry
+    Runtime->>Catalog: Resolve admissible release
+    Catalog-->>Runtime: Release and manifest identity
+    Runtime->>Store: Fetch named immutable artifact
+    Store-->>Runtime: Bytes and integrity metadata
+    Runtime->>Runtime: Verify and execute
+    Runtime->>Cache: Publish identity-bound result
+    Runtime-->>Client: Correct response
+```
+
+| Cold-path proof | Evidence to retain | Unsafe result |
+| --- | --- | --- |
+| resolution | catalog generation, selected release, and manifest identity | an unqualified default or stale pointer selects data |
+| retrieval | object key, store result, latency, retries, and consistency behavior | cache miss becomes ambiguous absence or unbounded retry |
+| verification | expected and observed hashes plus schema and contract result | bytes are served before integrity is established |
+| execution | correctness, resource use, and latency for representative queries | valid bytes exceed the declared service or resource budget |
+| population | entry key, release identity, publication outcome, and concurrency behavior | partial or cross-release state becomes reusable |
+| repeated access | hit result matches the verified cold result | acceleration changes response meaning |
+
+A cold-path failure may justify bounded rejection or cached-only service when
+that policy is declared. It never justifies treating unverified cached content
+as authoritative. Conversely, clearing the cache cannot repair missing or
+inconsistent store state.
+
 ## Miss-Storm Containment
 
 ```mermaid

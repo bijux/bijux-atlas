@@ -83,6 +83,34 @@ be inherited as production readiness. Promotion requires the target profile's
 rendered identity and all evidence demanded by its security, telemetry,
 capacity, and recovery posture.
 
+## Qualification Boundary by Model
+
+The same runtime can move through several deployment models while the
+environmental claim changes. Use each model for the conclusions it can
+actually establish.
+
+| Model | What is held authoritative | Suitable conclusions | Conclusions that require another model |
+| --- | --- | --- | --- |
+| repository and render validation | source, schema, profiles, chart inputs, and rendered objects | deterministic configuration, policy conformance, and dependency declaration | runtime behavior, storage behavior, or recovery |
+| `ci` composition | pinned local composition and restricted automated effects | repeatable install and targeted integration behavior | full observability, target capacity, and external-service ownership |
+| `kind` composition | local cluster, expanded observability stack, MinIO, Redis, and selected profile | Kubernetes lifecycle, local dependency integration, probes, telemetry, and bounded load experiments | target durability, identity, network, and failure-domain behavior |
+| target environment | observed target resources plus owned and external dependency contracts | target security, capacity, availability, rollout, rollback, and recovery claims exercised there | behavior in a different target or an unexercised failure domain |
+
+```mermaid
+flowchart LR
+    R["Repository and render evidence"] --> C["CI composition evidence"]
+    C --> K["Kind lifecycle and integration evidence"]
+    K --> T["Target-environment evidence"]
+    R -. unchanged inputs may transfer .-> T
+    C -. environment conclusions must be repeated .-> T
+    K -. local dependency conclusions must be repeated .-> T
+```
+
+Transfer a result only when its authority and relevant inputs remain unchanged.
+For example, schema validity may transfer with identical bytes, while storage
+durability, workload identity, ingress behavior, and capacity must be
+established against the services and failure domains that own those properties.
+
 ## Evidence Transfer
 
 | Earlier evidence | Reusable conclusion | Must be repeated for the target |

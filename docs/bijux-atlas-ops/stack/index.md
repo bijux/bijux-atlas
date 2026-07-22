@@ -64,6 +64,36 @@ catalog. A Helm release record cannot prove the runtime answered correctly.
 Keep these boundaries visible. Diagnose one plane at a time. Then test the
 cross-plane effect before restoring traffic or promotion authority.
 
+## Durable State and Replaceable Services
+
+The stack is recoverable only when operators can replace execution components
+without inventing or losing dataset authority. Persisted does not necessarily
+mean authoritative, and replaceable does not mean operationally free.
+
+| Surface | State role | Replacement expectation | Authority required after replacement |
+| --- | --- | --- | --- |
+| release artifacts and manifests | immutable released truth | restored or replicated without changing content identity | artifact hashes and manifest binding match the released set |
+| catalog | selects admissible dataset releases | restored from a governed recovery point or reconciled explicitly | selected release and catalog generation are unambiguous |
+| Atlas runtime | executes the serving contract | pods and processes may be recreated | image, config, catalog, and dataset identities match the deployment |
+| cache | derived acceleration state | entries may be evicted and rebuilt | every reused or rebuilt entry binds to verified store data |
+| object-store service | hosts authoritative artifact bytes | service instances may change; governed objects may not change silently | durability, integrity, consistency, and access behavior are verified |
+| telemetry pipeline | transports operating evidence | collectors may restart without rewriting observed history | gaps, delay, and recovery are visible in the evidence record |
+
+```mermaid
+flowchart TD
+    M["Released manifest and hashes"] --> S["Authoritative store objects"]
+    C["Governed catalog selection"] --> R["Replaceable runtime instances"]
+    S --> R
+    R --> K["Rebuildable cache entries"]
+    R --> T["Operational telemetry"]
+    K -. loss changes cost, not truth .-> S
+    T -. loss reduces evidence, not data authority .-> R
+```
+
+Before replacing a component, identify whether the action changes bytes,
+selection, execution, acceleration, or evidence. Restore normal traffic only
+after the authority on both sides of that boundary agrees.
+
 ## Failure Propagation
 
 ```mermaid
