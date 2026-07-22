@@ -65,6 +65,35 @@ Rollback selects a previously verified software and dataset combination and
 records a new operational decision. It does not edit an existing release or
 discard the failed observation.
 
+## Compatibility Is Directional
+
+A software release consuming a dataset, configuration, or API contract is a
+directed relationship. Proving that a newer runtime reads an older dataset does
+not prove that the older runtime can read state written or promoted by the
+newer one.
+
+| Direction | Compatibility question |
+| --- | --- |
+| software upgrade | can the candidate read existing artifacts, configuration, catalog state, and client requests? |
+| software rollback | can the previous release read every state the candidate may have changed? |
+| dataset promotion | can the active software and clients consume the new schema, indexes, and semantics? |
+| dataset rollback | can selection return to the previous payload without incompatible cache, catalog, or derived state? |
+| client transition | do old and new clients receive supported fields, errors, ordering, and cursor behavior? |
+
+```mermaid
+flowchart LR
+    Baseline[Baseline software and dataset] -->|upgrade proof| Candidate[Candidate software and dataset]
+    Candidate -->|rollback proof| Baseline
+    OldClient[Existing clients] --> Candidate
+    Candidate --> NewState[Candidate-observed or written state]
+    NewState -->|reverse compatibility| Baseline
+```
+
+Record each supported arrow independently. A release combination is safe to
+promote only when its forward path and required reversal path are both proven
+for the actual artifacts, profiles, and shared state. Semantic version labels
+help classify change; they cannot manufacture directional evidence.
+
 ## Repository Authority Map
 
 - release policy: [`configs/sources/release/`](../../../configs/sources/release/)

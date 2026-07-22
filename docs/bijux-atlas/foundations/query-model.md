@@ -59,6 +59,36 @@ construct or edit their payloads.
 A cursor is continuation state, not a new dataset selector. If the caller
 changes the dataset identity or query semantics, it must begin a new traversal.
 
+## Cursor Integrity and Rotation
+
+Atlas cursor payloads are authenticated with HMAC-SHA-256. The payload binds
+the continuation to its cursor version, dataset identity, normalized query
+hash, ordering mode, last-seen key, and traversal depth. Decoding rejects a
+signature, dataset, query, order, version, or depth mismatch before execution.
+
+```mermaid
+flowchart LR
+    Query[Admitted query and dataset] --> Hash[Normalized query hash]
+    Position[Last-seen position and order] --> Payload[Cursor payload]
+    Hash --> Payload
+    Key[Cursor signing key] --> Sign[HMAC signature]
+    Payload --> Sign
+    Sign --> Token[Opaque continuation token]
+    Token --> Verify[Verify before planning]
+```
+
+Cursor authentication prevents undetected modification; it does not encrypt
+the payload. Clients must not place secrets in cursor-derived request state or
+infer that an opaque token hides its contents. The decoder accepts the current
+`v1` form and a legacy unversioned form, so removal of legacy decoding is an API
+compatibility change rather than an internal cleanup.
+
+Signing-key rotation also changes which in-flight cursors remain usable. A
+rotation plan must declare either an overlap verification window or an explicit
+cursor-expiry boundary. Replacing the key without that decision can break
+otherwise valid pagination even when the dataset and query contract are
+unchanged.
+
 ## Repository Authority Map
 
 - query parsing, planning, cursoring, and execution:

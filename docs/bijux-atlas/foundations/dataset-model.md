@@ -64,6 +64,40 @@ Mutable caches and process-local handles may accelerate access, but they do not
 own dataset truth. Losing them may affect latency or availability; it must not
 change the meaning of the published dataset.
 
+## Canonical Identity and Fingerprints
+
+The model has two text representations for the same three-part identity:
+
+| Representation | Form | Use |
+| --- | --- | --- |
+| canonical release ID | `110/homo_sapiens/GRCh38` | manifests, fingerprints, logs, and internal joins |
+| dataset key | `release=110&species=homo_sapiens&assembly=GRCh38` | explicit selectors and interfaces |
+
+Release values are numeric strings. Persisted species values use lowercase
+snake case, while assembly values preserve meaningful case and accept letters,
+digits, dots, and underscores. Input normalization may turn a value such as
+`Homo-sapiens` into `homo_sapiens`, but stored identities and dataset keys are
+strict. Normalization belongs at a declared admission boundary; it must not
+make two published identities appear interchangeable after publication.
+
+```mermaid
+flowchart LR
+    Tuple[Release, species, and assembly] --> Canonical[Canonical release ID]
+    Source[Source inputs] --> SourceHash[Source fingerprint]
+    Build[Build inputs] --> BuildHash[Build fingerprint]
+    Artifacts[Artifact inventory] --> ArtifactHash[Artifact fingerprint]
+    Canonical --> Identity[Canonical metadata hash]
+    SourceHash --> Identity
+    BuildHash --> Identity
+    ArtifactHash --> Identity
+```
+
+`DatasetIdentity` joins the canonical release ID with separate source, build,
+and artifact SHA-256 fingerprints, then hashes their canonical serialization.
+Matching the three-part name is therefore necessary but insufficient: a
+different source, build contract, or artifact set under the same name is an
+identity violation, not another valid copy of the release.
+
 ## Repository Authorities
 
 - dataset identities and catalog values:
