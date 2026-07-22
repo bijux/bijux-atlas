@@ -53,6 +53,36 @@ Do not call a major-version allowance an exact pin. Results produced by Helm
 in rendering behavior. When byte-for-byte or semantic reproducibility matters,
 the release evidence must bind the exact tool versions used.
 
+## Resolve Image Identity for the Target Platform
+
+An OCI reference can resolve through a multi-platform index before selecting a
+platform-specific manifest. Preserve both levels when they exist; the outer
+index digest alone does not identify the layers executed by one node.
+
+```mermaid
+flowchart LR
+    Reference[Repository and tag] --> Index[OCI index digest]
+    Index --> Platform[OS and architecture selection]
+    Platform --> Manifest[Platform manifest digest]
+    Manifest --> Runtime[Observed image ID and layers]
+```
+
+| Identity | Why it matters |
+| --- | --- |
+| registry and repository | establishes the distribution and authorization boundary |
+| index digest | binds the reviewed set of platform variants |
+| OS, architecture, and variant | states which branch of the index was selected |
+| platform manifest digest | binds the exact config and layers for that target |
+| admitted workload reference | reveals mutation between render and API admission |
+| runtime image ID | proves what the node actually started |
+
+When a checked-in digest refers directly to a single-platform manifest, record
+that fact instead of manufacturing an index identity. Reject a run when the
+target platform is absent, the registry resolves a different digest, admission
+rewrites the image, or the runtime image ID cannot be joined to the approved
+manifest. Cross-platform release claims require an independent receipt for
+every supported platform.
+
 ## Change Review
 
 For an image or action update, inspect upstream provenance and behavior, change

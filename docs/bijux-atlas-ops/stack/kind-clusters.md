@@ -81,6 +81,34 @@ service behavior, and `perf` only with a declared load scenario and resource
 inventory. A successful Kind creation proves the cluster exists. It does not
 prove that Atlas is installed, ready, conformant, or within capacity budgets.
 
+## Bound Claims to the Single-Node Topology
+
+All four stack cluster configurations contain one control-plane node and no
+worker nodes. Increasing `max-pods` changes a kubelet ceiling; it does not add
+failure domains, independent schedulers, network paths, or physical capacity.
+
+```mermaid
+flowchart LR
+    Host[One host kernel and resource pool] --> Node[One Kind control-plane node]
+    Node --> Stable[Stable Atlas replicas]
+    Node --> Candidate[Candidate replicas]
+    Node --> Dependencies[Store, cache, and telemetry pods]
+```
+
+| Behavior | Kind can exercise | Production claim still missing |
+| --- | --- | --- |
+| scheduling | requests, limits, selectors, and one-node placement | cross-node and cross-zone placement, anti-affinity, and topology spread |
+| disruption | pod deletion and process restart | node loss, zone loss, control-plane loss, and simultaneous infrastructure repair |
+| networking | ClusterIP, NodePort mapping, DNS, and NetworkPolicy behavior in the selected CNI | external load balancer, ingress implementation, cloud firewall, and multi-node data path |
+| storage | declared PVC and ephemeral-volume behavior with installed local providers | production storage class, attachment, replication, expansion, snapshots, and zone recovery |
+| capacity | bounded contention on the recorded host | independently provisioned node capacity and autoscaler response |
+
+For load evidence, record host CPU, memory, storage, container runtime, and
+background contention alongside the cluster config. Results from the `perf`
+shape are local-system measurements, not a production capacity envelope. For
+resilience evidence, state explicitly which failure domains the single node
+cannot represent.
+
 ## Port and ownership safety
 
 The declared API and service ports are fixed. Two cluster variants cannot bind

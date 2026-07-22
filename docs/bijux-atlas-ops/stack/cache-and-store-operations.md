@@ -215,6 +215,40 @@ that policy is declared. It never justifies treating unverified cached content
 as authoritative. Conversely, clearing the cache cannot repair missing or
 inconsistent store state.
 
+## Fence Publication from Cache Admission
+
+An object write, catalog update, and cache population are separate state
+transitions. A writer success cannot authorize a cache entry until the serving
+path can resolve and verify the complete release generation.
+
+```mermaid
+sequenceDiagram
+    participant Publisher
+    participant Store
+    participant Catalog
+    participant Runtime
+    participant Cache
+    Publisher->>Store: Write immutable members and manifest
+    Publisher->>Store: Read back and verify named generation
+    Publisher->>Catalog: Promote complete release identity
+    Runtime->>Catalog: Resolve promoted generation
+    Runtime->>Store: Read and verify exact members
+    Runtime->>Cache: Admit generation-bound entries
+```
+
+| Boundary | Unsafe shortcut | Required fence |
+| --- | --- | --- |
+| artifact upload | treating a successful write response as a complete release | read back every required member by immutable identity and verify the manifest |
+| catalog promotion | exposing a pointer before all referenced bytes are readable | publish the pointer only after release closure passes through the serving credentials and path |
+| cache fill | caching a partial or unverified fetch | publish the entry atomically after content and release identity verification |
+| replacement | overwriting or reusing keys from an older generation | use immutable generation keys and move only the catalog selection |
+
+On an ambiguous read, fail or retry within a bounded policy; never fall back to
+another release under the same cache key. Retain the write receipt, read-back
+receipt, promoted catalog generation, and first cache-admission result as one
+lineage so delayed visibility cannot masquerade as data corruption or a cache
+miss.
+
 ## Miss-Storm Containment
 
 ```mermaid
