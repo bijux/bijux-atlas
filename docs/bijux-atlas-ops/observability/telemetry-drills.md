@@ -9,25 +9,43 @@ last_reviewed: 2026-07-22
 
 # Telemetry Drills
 
-A telemetry drill proves that an injected condition becomes visible, remains
-diagnosable, and clears predictably. A JSON registry entry is a design claim;
-only an executed result with captured signals supports an operating claim.
+A telemetry drill proves that a bounded fault becomes visible, remains
+diagnosable, and clears after recovery. Registry entries and file-existence
+checks describe intended coverage; they do not prove that a fault was injected
+or observed.
 
-## Three Registries
+## Current registries
 
-| Registry | Entries | Meaning |
+| Registry | Entries | Role |
 | --- | ---: | --- |
-| `drills.json` | 8 | High-level service and recovery rehearsal designs |
-| `drills/drills.json` | 21 | Intended runners, expected signals, timeouts, cleanup, and runbooks |
-| `telemetry-drills.json` | 2 | Focused OpenTelemetry-outage and Prometheus-gap classifications |
+| `ops/observe/drills.json` | 8 | high-level service and recovery contracts |
+| `ops/observe/drills/drills.json` | 21 | intended runners, signals, timeouts, cleanup, and runbooks |
+| `ops/observe/telemetry-drills.json` | 2 | focused collector-outage and Prometheus-gap classifications |
 
-The 21 execution entries cover store and collector outages, latency,
-admission control, schema and cardinality violations, missing spans, alert and
-runbook checks, cheap-path survival, cache and registry failure, dataset
-corruption, garbage collection, restart, autoscaling, resource pressure, and
-dashboard fault signatures.
+The 21-entry registry spans store and collector outages, latency, admission,
+schema and cardinality, spans, alerts, runbooks, cache, registry, corruption,
+garbage collection, restart, autoscaling, pressure, and dashboard signatures.
+That breadth is planned coverage, not completed coverage.
 
-## Execution Contract
+## Current execution boundary
+
+Every runner in the 21-entry registry points to a Python file under an absent
+historical source layout. The observability suite registry also names missing
+Python and shell tests. No completed drill result is checked in under
+`ops/observe/`.
+
+The available `ops drills run --name ... --allow-write` command uses
+`execution_mode: contract-verification`. It checks whether a small set of
+expected documentation, configuration, and source paths exists, then writes a
+report. It does not invoke the registered runner, mutate a cluster, inject the
+fault, query metrics, capture traces, or verify cleanup.
+
+`ops obs drill run` is routed to an action explanation rather than a live drill
+executor. The static `readiness.json` value of `ready` does not close these
+gaps. Do not claim that the 21 drills pass or that the full observability suite
+is runnable.
+
+## Contract for a real execution
 
 ```mermaid
 sequenceDiagram
@@ -35,72 +53,40 @@ sequenceDiagram
     participant System
     participant Fault
     participant Signals
-    Operator->>System: Establish healthy baseline
-    Operator->>Fault: Inject declared condition
-    System-->>Signals: Emit expected metrics, logs, traces, or validator failure
-    Operator->>Signals: Confirm correlation and timing
-    Operator->>Fault: Remove condition and clean up
-    System-->>Signals: Recover and resolve
-    Operator->>Operator: Write schema-valid result
+    Operator->>System: verify healthy baseline
+    Operator->>Fault: inject one bounded condition
+    System-->>Signals: emit expected metrics, logs, and traces
+    Operator->>Signals: confirm correlation and timing
+    Operator->>Fault: remove condition
+    System-->>Signals: recover and resolve
+    Operator->>Operator: retain result and cleanup proof
 ```
 
-Every result requires drill ID, start and end timestamps, `pass` or `fail`,
-metric, trace, and log snapshot paths, trace IDs, and expected signals. Preserve
-the fault parameters, release and profile identity, actual signals, cleanup
-outcome, and recovery time as supporting context.
+Before injection, bind the release, profile, dataset, target, fault parameters,
+blast radius, protected traffic, maximum duration, abort signals, cleanup owner,
+and recovery target. Do not start in a degraded environment or without a tested
+cleanup path.
 
-## Safety Boundary
+The result schema requires drill ID, start and end timestamps, verdict, metric,
+trace, and log snapshot paths, trace IDs, and expected signals. Supporting
+evidence must also preserve actual observations, release identity, fault
+parameters, cleanup outcome, and recovery time.
 
-Before injection, define blast radius, protected traffic, maximum duration,
-abort signals, cleanup owner, and recovery target. Confirm the baseline is
-healthy and that the fault can be independently observed. Do not run a drill
-when the environment is already degraded or when the cleanup path cannot be
-verified.
+## Verdict semantics
 
-```mermaid
-flowchart TD
-    Preflight[Healthy baseline and bounded fault] --> Inject[Inject one condition]
-    Inject --> Observe{Expected signals and safe behavior?}
-    Observe -->|yes| Cleanup[Remove fault]
-    Observe -->|unsafe or ambiguous| Abort[Abort and contain]
-    Cleanup --> Recover[Verify signal and service recovery]
-    Abort --> Recover
-    Recover --> Record[Retain result, gaps, and cleanup proof]
-```
+A drill passes only when the intended fault occurred, every required signal
+appeared within its window, protected behavior remained inside contract,
+cleanup completed, and service plus telemetry recovered.
 
-An abort is not a pass or a routine failure. It is evidence that the drill
-could not remain inside its safety contract and requires incident-style
-containment and review.
+Fail when telemetry is missing or ambiguous, even if service behavior appears
+correct. An abort indicates that the drill exceeded its safety boundary; it
+requires containment and review. A validator that proves a rule file exists is
+not a firing test.
 
-## Current Executability Gap
+Cleanup is part of the verdict. Confirm that injected resources, silences,
+routing overrides, credentials, network policy, and test data are removed or
+restored. A drill that detects a fault but leaves the environment altered has
+failed and may have become an incident.
 
-Every runner path in `ops/observe/drills/drills.json` points to a Python file
-under a historical `src/bijux-atlas-dev/...` layout that does not exist in the
-current crate. The observability suite registry likewise references missing
-Python and shell test files. No drill result file is present under
-`ops/observe/`.
-
-Therefore the current drill catalogs describe intended coverage but do not
-provide an executable or completed drill program from those paths. The static
-`readiness.json` value of `ready` cannot close this gap. Do not claim that the
-21 drills pass, or that the `full` observability suite is runnable, until the
-registry points to real maintained entrypoints and fresh results are retained.
-
-## Judging a Drill
-
-A drill passes only when the intended fault occurred, all expected signals were
-observed within the declared window, protected service behavior remained inside
-contract, the condition resolved after cleanup, and the result validates
-against `ops/observe/drills/result.schema.json`.
-
-Fail the drill for missing or ambiguous telemetry even if service behavior is
-correct. Also fail it when a validator merely confirms that a rule file exists
-without proving the runtime signal and notification path needed by the claim.
-
-Cleanup is part of the verdict. Confirm injected resources, silences, routing
-overrides, credentials, network policy, and test data are removed or restored.
-A drill that detects the fault but leaves the environment altered is failed and
-may be an operational incident.
-
-See [Alert Rules](alert-rules.md) for paging readiness and
-[Operational Evidence Reports](operational-evidence-reports.md) for retention.
+See [Alert rules](alert-rules.md) for notification-path proof and
+[Operational evidence reports](operational-evidence-reports.md) for custody.

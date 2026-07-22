@@ -9,70 +9,85 @@ last_reviewed: 2026-07-22
 
 # Dashboards and Panels
 
-Atlas dashboards are curated diagnostic views over governed metrics. They help
-operators ask consistent questions, but a valid dashboard JSON file does not
-prove that its datasource is populated, current, or complete.
+Atlas dashboards are diagnostic views over Prometheus data. Their JSON can be
+complete while the datasource, scrape path, label set, or underlying product is
+unhealthy. Dashboard source validation and live diagnostic readiness are
+different claims.
 
-## Dashboard Inventory
+## Governed inventory
 
-The registry declares ten Prometheus-backed dashboards:
+The registry and JSON validation contract name ten dashboards:
 
-| Domain | Dashboards |
+| Domain | Views |
 | --- | --- |
-| Runtime | Runtime health, system resources |
-| Query | Query performance, latency distribution |
-| Ingest | Ingest pipeline |
-| Data and dependencies | Artifact registry, artifact-cache performance |
-| Assurance | SLO compliance, error classification, drift detection |
+| runtime | runtime health and system resources |
+| query | query performance and latency distribution |
+| ingest | ingest pipeline |
+| artifacts | registry and cache performance |
+| assurance | SLO compliance, error classification, and drift detection |
 
-The JSON validation contract governs the same ten files. The general
-observability dashboard and its golden form are separate validation assets, and
-the minimal dashboard is a fixture. Do not present fixtures or goldens as an
-operator view.
+The standalone observability dashboard, its golden copy, the SLO dashboard,
+and the minimal fixture are not members of this ten-dashboard registry. Do not
+count fixtures or goldens as deployable operator coverage.
 
-## Diagnostic Contract
+The panel contract separately requires eight failure-domain rows and 19 named
+panels covering store, cache, SQLite, bulkheads, Kubernetes pressure, traffic,
+SLO burn, and drills.
+
+## Static verifier limitations
+
+`observe dashboards verify` checks the ten contract paths. For each existing
+JSON file, it records whether top-level `title`, `uid`, and a non-empty `panels`
+array exist. It writes coverage, health, readiness, and telemetry summary files
+under `artifacts/observe/`.
+
+```bash
+cargo run -p bijux-atlas-dev -- observe dashboards verify --format json
+```
+
+The current command loads the dashboard schema but does not apply full schema
+validation. More importantly, its final exit status is based on missing files,
+not failed title, UID, or panel checks. Its generated `ready` field also reflects
+file presence only. A zero exit code is therefore not proof that every row is
+valid or that the 19-panel contract is satisfied.
+
+Review the generated rows directly and use the dedicated contracts before
+accepting a dashboard change. Do not call the generated readiness file live
+operational readiness.
+
+## Diagnose with a dashboard
 
 ```mermaid
 flowchart TD
-    Symptom["Operator symptom"] --> Row["Failure-domain row"]
-    Row --> Panel["Governed diagnostic panel"]
-    Panel --> Metric["Required metric and labels"]
-    Metric --> Correlate["Logs, traces, release, and dataset identity"]
-    Correlate --> Decision{"Action supported?"}
+    Symptom["operator symptom"] --> Fresh{"datasource and scrape fresh?"}
+    Fresh -- no --> Telemetry["repair telemetry path"]
+    Fresh -- yes --> Scope["select release, profile, dataset, and replica"]
+    Scope --> Panel["inspect failure-domain panel"]
+    Panel --> Raw["confirm raw metric and labels"]
+    Raw --> Correlate["logs, traces, events, and release identity"]
+    Correlate --> Action{"evidence supports action?"}
 ```
 
-The panel contract requires 19 named panels across eight rows. It covers store,
-cache, SQLite, admission and bulkhead pressure, Kubernetes resource pressure,
-traffic and SLOs, and drill views. Every panel binds a diagnostic question,
-failure signature, and required metric.
+Before acting, verify datasource health, scrape age, query interval, time zone,
+variables, release filters, dataset identity, and missing-series behavior.
+Compare release cohorts separately during rollout. An average can hide one bad
+replica or a candidate receiving no traffic.
 
-Representative decision paths include:
+A blank panel may mean zero events, missing metrics, query drift, label drift,
+a scrape outage, or a broken datasource. Resolve that ambiguity with a raw
+query and collector health before concluding the system is quiet.
 
-- request rate and status to identify traffic or 5xx shifts;
-- route p95 and SQLite latency to separate API from query-engine regression;
-- store fetch, open, and download latency to isolate backend pressure;
-- cache hit ratio and cache size to identify thrash or disk pressure;
-- queue depth, bulkhead saturation, and shed reason to explain overload;
-- class-specific SLO health and burn to prioritize cheap-path survival; and
-- rollout and drill views to align faults with request quality.
+## Change acceptance
 
-## Reading a Dashboard Safely
+Accept a dashboard change only after:
 
-Confirm datasource health, scrape freshness, release and profile filters,
-dataset identity, time zone, query interval, and missing-series behavior before
-acting. Compare candidate and previous release separately during a rollout.
-Averages can hide one failing replica or release cohort.
+- full JSON schema and registry membership pass;
+- required rows and panels are present;
+- metric names and labels match the runtime contract;
+- PromQL behaves correctly for zero, absent, and multi-replica series;
+- representative live or replayed data renders as expected;
+- one bound failure signature is exercised and correlated;
+- a rendered snapshot and source metric window are retained.
 
-A blank panel is ambiguous. It may mean zero events, a missing metric, a broken
-query, a label migration, a scrape outage, or a datasource failure. Resolve the
-ambiguity through raw queries, collector health, and correlated signals.
-
-## Change Acceptance
-
-Validate JSON schema, dashboard registry membership, required rows and panels,
-metric names and labels, query semantics, variables, and representative data.
-Then inject at least one bound failure signature and preserve a rendered
-snapshot with the source metric window.
-
-Use [Metrics Contracts](metrics-packages.md) for signal ownership and
-[Telemetry Drills](telemetry-drills.md) for fault-signature proof.
+Use [Metrics packages](metrics-packages.md) for signal ownership and
+[Telemetry drills](telemetry-drills.md) for failure-signature proof.
