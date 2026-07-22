@@ -4,7 +4,7 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Load a Sample Dataset
@@ -12,9 +12,9 @@ last_reviewed: 2026-06-28
 This guide builds a small local dataset from the committed `tiny` fixtures so
 you have real Atlas artifacts to validate and serve.
 
-The point is not just to make files appear on disk. The point is to walk
-through the intended data path: ingest, validate, verify, publish, and
-promote.
+The workflow crosses every authority boundary in order: ingest, validation,
+deep verification, publication, and catalog promotion. A later command never
+repairs a failed earlier boundary.
 
 ## Sample Input Set
 
@@ -50,6 +50,10 @@ cargo run -p bijux-atlas-cli --bin bijux-atlas -- ingest \
 
 Those identity flags matter. If you change them, later validation, publication,
 and query steps must use the same values.
+
+Record the checkout revision and the hashes of the three inputs with the run
+notes. The fixture is committed, but its path alone does not identify its bytes
+across different revisions.
 
 ## Why This Input Set
 
@@ -147,6 +151,30 @@ This expected-output diagram helps confirm the result shape, not only the
 command exit status. A successful first run should leave both a validated
 build root and a serving store ready for runtime startup.
 
+## Checkpoints and Authority
+
+| Checkpoint | Inspect | Stop when |
+| --- | --- | --- |
+| ingest | command result and candidate release directory | input parsing, identity, or output creation fails |
+| validation | dataset validation result for the exact tuple | required structure or metadata is invalid |
+| deep verification | integrity result and derived artifacts | hashes, references, or content checks fail |
+| publication | store payload and publication result | the complete immutable payload is not present |
+| promotion | `catalog.json` and catalog lookup | the exact identity is not discoverable |
+
+```mermaid
+stateDiagram-v2
+    [*] --> Candidate: ingest
+    Candidate --> Validated: dataset validate
+    Validated --> Verified: dataset verify --deep
+    Verified --> Published: dataset publish
+    Published --> Discoverable: catalog promote
+    Discoverable --> [*]
+```
+
+Do not rename a partially produced directory to make it appear complete. Keep
+the failed candidate for diagnosis or remove its explicit disposable root, then
+rerun from the first invalid boundary.
+
 ## If This Step Fails
 
 - confirm you are using the repository fixture paths exactly
@@ -161,7 +189,7 @@ build root and a serving store ready for runtime startup.
 - Atlas can build and verify a sample dataset root locally
 - publication and catalog promotion create discoverable serving state
 
-## Reading Rule
-
-Use this page when the local Atlas toolchain works already and the next
-question is how to turn committed fixtures into serving-ready dataset state.
+It does not prove production-scale throughput, remote-store behavior,
+multi-instance catalog refresh, or biological correctness. Continue to
+[Start the Server](start-the-server.md) to test runtime discovery and
+query behavior against the published sample.

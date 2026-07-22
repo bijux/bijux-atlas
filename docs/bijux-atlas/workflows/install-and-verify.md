@@ -4,7 +4,7 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Install and Verify
@@ -14,13 +14,10 @@ Atlas has two stable command identities:
 - runtime commands through `bijux atlas ...` or the direct `bijux-atlas` binary
 - repository-governance commands through `bijux dev atlas ...` or the direct `bijux-atlas-dev` binary
 
-The fastest reliable way to start with Atlas is still to run it from the
-workspace with Cargo. That avoids installation drift while you are learning the
-system.
-
-This page verifies that the binaries, fixture paths, and local artifact roots
-are usable. It does not verify that ingest, publication, or runtime serving are
-already correct. Those come in later steps.
+Run from the workspace with Cargo when validating a checkout. This binds every
+observation to the source tree under review and avoids confusion with a
+different installed version. Use installed binaries when validating a packaged
+release.
 
 ## Verification Flow
 
@@ -32,9 +29,9 @@ flowchart TD
     D --> E[Confirm fixtures and artifacts root]
 ```
 
-This verification flow is intentionally shallow but strict. It proves that the
-binaries, fixture paths, and local output roots are usable before you spend
-time debugging later workflow steps.
+Each checkpoint must pass before ingest begins. These checks establish command
+availability and local path readiness. They do not establish dataset or runtime
+correctness.
 
 ## Prerequisites
 
@@ -67,7 +64,7 @@ For a first pass from source, prefer `cargo run`. It removes uncertainty about
 whether the installed binary and the checked-out repository are on the same
 version.
 
-## Step 1: Verify the Runtime CLI Entrypoint
+## Verify the Runtime CLI Entrypoint
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
@@ -81,7 +78,7 @@ If `--help` does not work, stop here. A failing help surface usually means the
 workspace or binary wiring is not healthy enough for the rest of the
 getting-started flow.
 
-## Step 2: Verify Runtime, Server, and Maintainer Surfaces
+## Verify Runtime, Server, and Maintainer Surfaces
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --help
@@ -95,7 +92,7 @@ repository control plane are wired correctly in your environment.
 
 They do not prove that your local store, dataset, or runtime configuration is valid yet. They only prove that the entrypoints are present and invokable.
 
-## Step 3: Verify Repository Fixture Availability and Local Output Paths
+## Verify Fixture and Output Paths
 
 ```bash
 ls crates/bijux-atlas-ingest/tests/fixtures/tiny
@@ -115,10 +112,11 @@ flowchart LR
     Fixtures --> Next[Sample ingest and validation]
 ```
 
-This layout diagram exists because many first-run failures are path mistakes. The getting-started
-docs assume one workspace root, committed fixtures, and disposable outputs under `artifacts/`.
+The workflow assumes one workspace root, committed fixtures, and disposable
+outputs under `artifacts/`. Resolve path errors before changing product
+configuration.
 
-## Step 4: Sanity-Check Structured Output
+## Verify Structured Output
 
 ```bash
 cargo run -p bijux-atlas-cli --bin bijux-atlas -- config --canonical --json
@@ -128,7 +126,32 @@ cargo run -p bijux-atlas-dev -- list --format json
 These are good first checks because they exercise structured-output paths
 without requiring a built dataset or running server.
 
-It is also the first place to notice whether your shell setup, JSON mode, and top-level config surface agree with each other.
+These commands also expose disagreements between shell invocation, JSON mode,
+and the top-level configuration surface.
+
+## Record the Verification Context
+
+Keep enough context to reproduce a failed first run:
+
+```bash
+rustc --version
+cargo --version
+git rev-parse HEAD
+git status --short
+```
+
+For installed binaries, record their package versions and paths instead of the
+checkout revision. A copied success message without binary or source identity
+cannot distinguish the release under test.
+
+| Checkpoint | Evidence | Safe conclusion |
+| --- | --- | --- |
+| runtime help | command, exit status, binary identity | runtime CLI dispatch is available |
+| server help | command, exit status, binary identity | server entrypoint is available |
+| maintainer help | command, exit status, source revision | repository control plane is available |
+| fixture listing | resolved paths | documented sample inputs exist |
+| output-root creation | resolved writable paths | local workflow outputs can be created |
+| structured command | captured JSON and exit status | that command emitted parseable output |
 
 ## If Something Fails
 
@@ -140,8 +163,8 @@ flowchart TD
     Paths --> Logs[Re-run with --verbose or --trace]
 ```
 
-This troubleshooting order prevents a common mistake: debugging later Atlas workflow layers before
-the local toolchain and workspace are even healthy enough to run the binaries.
+This order keeps later workflow failures separate from toolchain and path
+failures.
 
 - if `cargo run` fails, resolve the workspace build issue first
 - if help commands fail, do not proceed to ingest or server startup
@@ -159,13 +182,13 @@ At this point you should be able to:
 
 If all of that works, you have a usable starting environment. You do not yet have proof that Atlas can ingest, publish, or serve real dataset state.
 
-## What This Page Does Not Prove
+## Evidence Boundary
 
 - that ingest succeeds on the sample fixture
 - that the serving store is shaped correctly
 - that the HTTP runtime can boot and answer queries
+- that an installed package matches an arbitrary checkout
+- that a help or configuration command covers dataset-specific behavior
 
-## Reading Rule
-
-Use this page when the question is whether the local Atlas entrypoints are
-usable at all before you spend time debugging ingest, publication, or serving.
+Continue to [Load a Sample Dataset](load-a-sample-dataset.md) only after every
+checkpoint above is attributable to the same checkout or packaged release.

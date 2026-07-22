@@ -4,14 +4,15 @@ audience: mixed
 type: troubleshooting
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Troubleshoot Early Problems
 
-Most first-run Atlas failures fall into a small number of categories. This
-page is meant to shorten the time between “something failed” and “I know which
-layer is wrong.”
+Most first-run Atlas failures belong to one boundary: command dispatch, input
+resolution, build output, publication, catalog discovery, runtime startup, or
+query execution. Preserve the first failure and classify that boundary before
+changing inputs or configuration.
 
 ## Early Failure Map
 
@@ -71,8 +72,9 @@ Common causes:
 - mismatched flags for release, species, or assembly
 - trying to skip the FAI or other required inputs
 
-The right recovery pattern is to fix one concrete input problem and rerun the same ingest command.
-Do not change multiple identity flags and paths at once unless you enjoy losing the root cause.
+Fix one concrete input problem and rerun the same ingest command. Changing
+multiple identity flags and paths at once destroys the comparison that isolates
+the cause.
 
 ## If Dataset Validation Fails
 
@@ -159,7 +161,26 @@ you narrow the failure boundary instead of pushing uncertainty forward through t
 
 If you answer those in order, you usually isolate the failing layer quickly.
 
-## Reading Rule
+## Preserve Diagnostic Evidence
 
-Use this page when Atlas is failing early and the most important step is to
-isolate the failing layer before changing anything else.
+For the first failing boundary, retain:
+
+- the exact command and working directory;
+- binary version or checkout revision;
+- exit status and structured error fields;
+- resolved release, species, assembly, store, and cache paths;
+- the first relevant log event before retries; and
+- the last successful checkpoint from the same run.
+
+| Symptom | Establish first | Avoid concluding |
+| --- | --- | --- |
+| help fails | the intended binary was invoked | dataset data is invalid |
+| ingest fails | inputs, identity tuple, and output root match the command | the store is corrupt |
+| validation fails | the validator targets the completed build root | publication can repair it |
+| startup fails | configuration resolves and the store is published | every artifact is corrupt |
+| health passes, datasets empty | catalog path and refresh state | the query layer is defective |
+| dataset resolves, query fails | selector, limits, error code, and dataset identity | readiness was false |
+
+Retries can erase the original error or alter cache and lock state. Preserve
+the first observation, make one controlled change, and compare the next result
+at the same boundary.
