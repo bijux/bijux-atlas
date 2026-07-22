@@ -18,11 +18,13 @@ changing inputs or configuration.
 
 ```mermaid
 flowchart TD
-    A[Failure] --> B[Build problem]
-    A --> C[Fixture path problem]
-    A --> D[Artifact root problem]
-    A --> E[Server startup problem]
-    A --> F[Query problem]
+    A[First failed checkpoint] --> B[Command or build]
+    A --> C[Source input]
+    A --> D[Ingest or validation]
+    A --> E[Store publication]
+    A --> F[Catalog discovery]
+    A --> G[Runtime startup]
+    A --> H[Query execution]
 ```
 
 This failure map shortens diagnosis time. Atlas first-run issues usually belong
@@ -184,3 +186,29 @@ For the first failing boundary, retain:
 Retries can erase the original error or alter cache and lock state. Preserve
 the first observation, make one controlled change, and compare the next result
 at the same boundary.
+
+## Classify the Failure Surface
+
+Atlas exposes different diagnostic contracts for shell, CLI, and HTTP
+failures. Use the one that actually failed:
+
+| Surface | Stable evidence | Next action |
+| --- | --- | --- |
+| shell or Cargo | process status and stderr before Atlas dispatch | resolve executable, workspace, or toolchain identity |
+| Atlas CLI | numeric exit code and machine error code in JSON mode | classify usage, validation, dependency, or internal failure |
+| HTTP API | status, structured error code, request ID, and response details | correlate the request with runtime logs and traces |
+| health or readiness | endpoint status and body from the same instance and time | distinguish process life, traffic admission, and overload |
+
+Human-readable messages can gain context across releases. Automation should
+branch on the structured code and treat the message as diagnostic detail. See
+[Error Codes and Exit Codes](../interfaces/error-codes-and-exit-codes.md) for
+the stable classes.
+
+## Stop Conditions
+
+Stop and preserve state rather than continuing when validation reports an
+artifact hash mismatch, the catalog selects an unexpected dataset, a published
+path would overwrite immutable state, or the server cannot establish the
+intended store identity. Those conditions cross from ordinary first-run setup
+into integrity or authority failures; retries and cache deletion can destroy
+the evidence needed to diagnose them.

@@ -64,6 +64,34 @@ For a first pass from source, prefer `cargo run`. It removes uncertainty about
 whether the installed binary and the checked-out repository are on the same
 version.
 
+## Choose One Identity Lane
+
+```mermaid
+flowchart TD
+    Intent{What are you verifying?}
+    Intent -->|checkout behavior| Source[Cargo workspace invocation]
+    Intent -->|published package| Installed[Installed binary invocation]
+    Source --> SourceId[revision + worktree state + Rust toolchain]
+    Installed --> PackageId[binary path + package version]
+    SourceId --> Evidence[Verification record]
+    PackageId --> Evidence
+```
+
+Do not alternate between source and installed invocations inside one result
+without recording the boundary. Shell path order can select a different
+`bijux-atlas` than the package just installed, while `cargo run` can execute
+uncommitted source that has no published version.
+
+For an installed verification, capture the resolved executable and version:
+
+```bash
+command -v bijux-atlas
+bijux-atlas --version
+```
+
+For a checkout verification, capture the source and toolchain identity shown
+under [Record the Verification Context](#record-the-verification-context).
+
 ## Verify the Runtime CLI Entrypoint
 
 ```bash
@@ -183,6 +211,8 @@ At this point you should be able to:
 If all of that works, you have a usable starting environment. You do not yet have proof that Atlas can ingest, publish, or serve real dataset state.
 
 ## Evidence Boundary
+
+Installation verification does not establish:
 
 - that ingest succeeds on the sample fixture
 - that the serving store is shaped correctly

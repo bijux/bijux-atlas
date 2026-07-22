@@ -53,6 +53,37 @@ Success at one boundary does not imply success at the next. In particular, an
 ingest directory is not a serving store, an artifact manifest is not a catalog
 publication record, and process health is not query correctness.
 
+## Identity Carried Across the Journey
+
+```mermaid
+flowchart LR
+    Source[Source inputs] --> Dataset[release + species + assembly]
+    Dataset --> Artifact[manifest + artifact hashes]
+    Artifact --> Publication[store location + catalog epoch]
+    Publication --> Runtime[binary + config + profile]
+    Runtime --> Result[request ID + resolved dataset + contract version]
+```
+
+The identity becomes richer as work moves toward serving. The dataset tuple
+names biological content; manifests and hashes name immutable output;
+publication adds discoverability; runtime identity names the code and policy
+that served it. Preserve all of them when a result must be reproducible.
+
+## Workflow Contract
+
+Every workflow has four parts:
+
+| Part | Reader question | Example |
+| --- | --- | --- |
+| Preconditions | What must already be true? | binaries resolve and source inputs validate |
+| Mutation | What state can change? | build output, store content, or catalog selection |
+| Acceptance | What proves completion? | manifest validation, catalog resolution, or query response |
+| Evidence boundary | What remains unproven? | production durability, capacity, or another release identity |
+
+When a command exits successfully but its acceptance signal is missing, treat
+the workflow as incomplete. When the signal exists but identifies different
+state, stop at that boundary instead of allowing the mismatch to propagate.
+
 ## Exact Surfaces and Production Operations
 
 Flags, environment variables, endpoints, output shapes, and error behavior are
