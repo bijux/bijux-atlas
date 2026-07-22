@@ -58,6 +58,43 @@ For each point, record:
 - replica count, HPA actions, and workload distribution;
 - query correctness and response-size bounds.
 
+## Experiment Ledger
+
+Keep the demand placed on the system distinct from work the system completed.
+The ledger is the join key between the load generator, Atlas telemetry, and the
+recovery observation.
+
+| Record | Minimum fields |
+| --- | --- |
+| Candidate | revision, artifact, configuration, dataset, dependencies |
+| Generator | image, script, resources, location, clock source |
+| Offer | arrival model, clients, requested rate, duration, traffic mix |
+| Service | admitted, completed, rejected, failed, latency, correctness |
+| Resources | replicas, CPU, memory, queues, connections, cache, store |
+| Recovery | pressure removal, queue drain, convergence, probe restoration |
+
+```mermaid
+flowchart LR
+    Offer["offered work"] --> Admission{"admission decision"}
+    Admission -- admitted --> Terminal{"terminal outcome"}
+    Admission -- rejected --> Controlled["controlled overload"]
+    Terminal -- correct_completion --> Capacity["completed throughput"]
+    Terminal -- error_or_timeout --> Instability["service instability"]
+    Capacity --> Recovery["post-load recovery"]
+    Controlled --> Recovery
+    Instability --> Recovery
+```
+
+Throughput means completed, contract-correct work. Offered requests, accepted
+connections, and queued operations are demand indicators; none may substitute
+for completed throughput.
+
+Reject the measurement when the generator saturates before Atlas, clocks or
+measurement windows cannot be reconciled, autoscaling changes outside the
+declared envelope, or repetitions use different warm-up, cache state, dataset,
+or query mix. Those runs may diagnose the harness, but they cannot establish a
+capacity boundary.
+
 ## Attribute the First Bottleneck
 
 At the first unstable point, identify the resource that saturated before

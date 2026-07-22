@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "ops/load/**"
-      - "docs/04-operations/performance-and-load.md"
+      - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
       - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
       - ".github/workflows/load-system-ci.yml"
@@ -12,7 +12,7 @@ on:
     branches: [main]
     paths:
       - "ops/load/**"
-      - "docs/04-operations/performance-and-load.md"
+      - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
       - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
       - ".github/workflows/load-system-ci.yml"

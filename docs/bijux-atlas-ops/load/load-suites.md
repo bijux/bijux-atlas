@@ -78,6 +78,43 @@ Before reporting lane coverage, intersect the requested registry members with
 the executable manifest and verify every referenced file. A generated catalog
 summary can be complete while the execution surface remains much smaller.
 
+## Reconcile Declared and Executed Coverage
+
+A lane name is a selection request, not proof of execution. Reconciliation must
+join the requested registry members to runnable implementations and then to
+records emitted by the same run.
+
+```mermaid
+flowchart LR
+    Requested["requested scenario IDs"] --> Runnable{"runner exists and is wired?"}
+    Runnable -- no --> Incomplete["coverage incomplete"]
+    Runnable -- yes --> Executed{"execution record present?"}
+    Executed -- no --> Incomplete
+    Executed -- yes --> Verdict{"required metrics and verdict present?"}
+    Verdict -- no --> Incomplete
+    Verdict -- yes --> Passed{"scenario passed?"}
+    Passed -- no --> Failed["lane failed"]
+    Passed -- yes --> Complete["scenario complete"]
+```
+
+| Evidence set | Required meaning | Failure meaning |
+| --- | --- | --- |
+| Requested | Exact selected registry members | Selection is unknown |
+| Runnable | Every member has a wired runner | Coverage is not executable |
+| Executed | Every runner has a record | Execution or reporting stopped |
+| Metrics | Every required metric is present | Execution is incomplete |
+| Verdicts | Policy evaluated every metric record | Acceptance is undecided |
+
+The absent specialized runners currently prevent complete execution of
+`full`, `nightly`, and `load-nightly`. A report for any of those lanes must name
+the missing IDs and fail coverage; silently reducing the selected set changes
+the experiment.
+
+Classify each incomplete member as unresolved runner, runner start failure,
+interrupted execution, missing metric, invalid record, or threshold failure.
+Preserve every attempt. Replacing a failed attempt with a successful retry
+removes evidence about instability and is not an acceptable reconciliation.
+
 ## Scenario Families
 
 - Core service: `mixed`, `cheap-only-survival`, warm steady state, and cold

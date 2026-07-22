@@ -18,10 +18,10 @@ benchmark in CI.
 
 | Workflow | Work actually performed | Proof level |
 | --- | --- | --- |
-| `load-system-ci.yml` | JSON parsing, baseline self-comparison, manifest and baseline tests | contract and fixture integrity |
-| `performance-regression-ci.yml` | report parsing, baseline self-comparison, `perf validate`, asset tests | policy and checked-in report integrity |
-| `ingest-benchmark-ci.yml` | build `ingest_throughput` with `--no-run`; run a fixture test | benchmark compilation and fixture logic |
-| `query-benchmark-ci.yml` | build `query_patterns` with `--no-run`; run a threshold sanity test | benchmark compilation and threshold logic |
+| Load system | Parse assets, self-compare, test fixtures | contract integrity |
+| Performance | Parse reports, self-compare, validate | policy integrity |
+| Ingest | Build without running; test a fixture | build integrity |
+| Query | Build without running; test thresholds | build integrity |
 
 The load, performance, and query lanes respond to their owned paths on pull
 requests and pushes to `main`; ingest responds to pull requests. Performance
@@ -60,12 +60,38 @@ that current throughput or latency budgets passed. They remain useful guards
 against broken manifests, unreadable reports, unbuildable benchmarks, and
 invalid comparison machinery.
 
+## Candidate Measurement Lane
+
+A regression gate becomes performance evidence only when it measures the
+checked-out candidate and compares it with a compatible baseline.
+
+```mermaid
+flowchart LR
+    Baseline["approved or freshly measured baseline"]
+    Compare["identity and metric comparison"]
+    Baseline --> Compare
+    Candidate["fresh candidate measurement"] --> Compare
+    Compare --> Absolute["absolute budgets"]
+    Compare --> Relative["relative regression budgets"]
+    Absolute --> Decision{"combined verdict"}
+    Relative --> Decision
+    Decision --> Receipt["retained evidence and gate status"]
+```
+
+The lane must fail when the candidate is missing, stale, or incomparable. Build
+success, fixture validation, and baseline self-comparison cannot synthesize a
+candidate measurement or downgrade its absence to a warning.
+
+Observe generator and target resources separately. A runner-limited result is
+evidence about the harness, while a target-limited result may support an Atlas
+capacity claim only when the generator retained declared headroom.
+
 ## Trigger and Gate Limits
 
-The load and performance workflows still list
-`docs/04-operations/performance-and-load.md` in their path filters. That path is
-not present in the current documentation tree, so edits to the canonical load
-handbook do not trigger those workflows through that entry.
+The load and performance workflows watch the canonical
+`docs/bijux-atlas-ops/load/**` handbook path alongside their executable assets.
+Documentation that changes a load contract therefore receives the same focused
+fixture and policy checks as the corresponding operational surface.
 
 The four job names are not listed in `.github/required-status-checks.md`.
 Repository or organization settings can impose additional checks outside the
