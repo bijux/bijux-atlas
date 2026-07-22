@@ -7,223 +7,119 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Operational Evidence Reports
+# Operational evidence reports
 
-Operational evidence freezes the signals and identities behind an action. It
-must remain useful after live telemetry expires. A second operator should be
-able to reconstruct the decision. Asset inventory, readiness declaration,
-runtime observation, and drill result are different evidence classes. They
-must not substitute for one another.
+Operational evidence freezes the identities, observations, and reasoning behind
+a promotion, hold, mitigation, recovery, or closure decision. It must remain
+reviewable after live telemetry expires.
 
-## Evidence Chain
-
-```mermaid
-flowchart LR
-    C["Candidate or incident"] --> I["Release, profile, dataset, and config identity"]
-    I --> S["Metrics, logs, and traces"]
-    S --> A["Alerts and dashboard snapshots"]
-    A --> D["Drill or live event timeline"]
-    D --> R["Signed decision record"]
-    R --> P["Promote, hold, recover, or follow up"]
-```
-
-## Evidence Classes
+## Evidence classes are not substitutes
 
 | Class | Establishes | Does not establish |
 | --- | --- | --- |
-| Telemetry index | Required observability assets are discoverable | A deployed signal path works |
-| Dashboard validation | JSON and panel contracts are structurally valid | Queries return current data |
-| Readiness declaration | Named observability prerequisites are present | Collectors, rules, and notifications were exercised |
-| SLO definition and measurement map | Objectives and PromQL are declared | The observation window met the objective |
-| Drill definition | Fault, expected signals, timeout, and cleanup are described | The drill ran or passed |
-| Drill result | One identified execution produced bounded evidence | All profiles or releases behave identically |
+| telemetry index | Expected assets are discoverable | A deployed signal path works |
+| dashboard validation | Panel structure and query shape validate | Queries return current data |
+| readiness declaration | Required asset families exist | Collectors, rules, and notifications were exercised |
+| SLO definition | Objective, population, and measurement are declared | A candidate met the objective |
+| drill definition | Fault, signals, timeout, and cleanup are specified | The drill ran |
+| drill result | One identified execution produced evidence | Other targets or releases behave the same |
 
-## Required Record
-
-For a rollout or release decision, retain:
-
-- source revision, release, image, chart, profile, values, and dataset identity;
-- observation start and end times with clock and time-zone context;
-- raw metric snapshots and evaluated SLO windows;
-- alert rule and dashboard versions plus rendered snapshots;
-- representative successful and failing trace IDs and correlated logs;
-- readiness, probe, dependency, and replica transitions;
-- drill result and injected-fault timestamps when a rehearsal supports the
-  claim; and
-- operator verdict, exceptions, rollback target, and unresolved risks.
-
-An incident record adds detection time, first user impact, containment actions,
-recovery time, and integrity assessment. It also preserves the evidence that
-ruled out competing causes.
-
-## Assemble an Incident Packet
-
-An incident packet is a graph of related evidence, not one exported dashboard
-or a prose summary. Its manifest joins independently captured objects to the
-timeline and decision ledger.
+## Packet structure
 
 ```mermaid
 flowchart TD
-    Identity["release + dataset + target identities"] --> Manifest["incident manifest"]
-    Timeline["observations + transitions"] --> Manifest
-    Signals["metrics + logs + traces + probes"] --> Manifest
-    Changes["deploys + policy + traffic actions"] --> Manifest
-    Integrity["catalog + store + artifact verification"] --> Manifest
-    Decisions["hypotheses + actions + authorizations"] --> Manifest
-    Manifest --> Verify["independent digest and lineage verification"]
-    Verify --> Closure["closure or escalation record"]
+    Identity[Release + dataset + target] --> Manifest[Evidence manifest]
+    Timeline[Events + identity transitions] --> Manifest
+    Signals[Metrics + logs + traces + probes] --> Manifest
+    Changes[Deploy + traffic + policy actions] --> Manifest
+    Integrity[Catalog + store + artifact checks] --> Manifest
+    Ledger[Observations + hypotheses + decisions] --> Manifest
+    Manifest --> Verify[Digest + lineage verification]
+    Verify --> Decision[Promotion, recovery, closure, escalation]
 ```
 
-| Packet member | Minimum identity |
+| Object | Minimum identity |
 | --- | --- |
-| raw signal | source, query, event window, capture time, and digest |
-| workload state | cluster, namespace, workload revision, and observation time |
-| data state | dataset tuple, catalog epoch, manifest, and payload hashes |
-| change event | authorizer, executor, target, old state, new state, and time |
-| hypothesis | predicted and disconfirming evidence plus disposition |
-| recovery result | selected authority, checks performed, window, and residual risk |
+| raw signal | Source, exact query, event window, capture time, and digest |
+| workload state | Cluster, namespace, workload revision, and observation time |
+| data state | Dataset tuple, catalog epoch, manifest, and payload hashes |
+| change event | Authorizer, executor, target, old state, new state, and time |
+| hypothesis | Predicted and disconfirming evidence plus disposition |
+| recovery result | Selected authority, checks, observation window, and residual risk |
 
-Keep raw captures immutable. Corrections, redactions, and normalized forms are
-new child objects with their own digests and parent links. A later diagnosis
-may supersede an earlier decision, but must not rewrite the evidence or remove
-the uncertainty visible at that time.
+Keep raw captures immutable. Redaction, normalization, correction, and summary
+produce child objects with their own digests and parent links. A later diagnosis
+can supersede an earlier decision but must not rewrite what was known then.
 
-## Preserve the Decision Ledger
+## Decision ledger
 
-The evidence packet needs the reasoning between raw signals and the final
-action. Record each entry as one of four types so later review does not promote
-a hypothesis into a fact:
-
-| Entry type | Required content | Closure rule |
+| Entry | Required content | Closure |
 | --- | --- | --- |
-| observation | source, query or command, target identity, event window, capture time and retained object digest | immutable once cited by a decision |
-| hypothesis | suspected boundary, supporting observations, predicted signal and disconfirming evidence | supported, rejected or explicitly unresolved |
-| action | authorizer, executor, target, exact change, start time, expected effect and reversal condition | linked to an observed result or recorded as abandoned |
-| decision | admitted facts, policy or threshold, selected action, alternatives rejected, uncertainty and owner | superseded only by a later linked decision |
+| observation | Source, target, query or command, window, capture time, digest | Immutable once cited |
+| hypothesis | Suspected boundary, support, prediction, and disconfirming evidence | Supported, rejected, or unresolved |
+| action | Authorizer, executor, target, exact change, expected effect, reversal | Linked to outcome or abandoned explicitly |
+| decision | Admitted facts, policy, alternatives, selected action, uncertainty, owner | Superseded only by a linked later decision |
 
-```mermaid
-flowchart LR
-    observation["observation"] --> hypothesis["bounded hypothesis"]
-    hypothesis --> action["authorized action"]
-    action --> outcome["observed outcome"]
-    outcome --> decision["decision + uncertainty"]
-    decision -. "references" .-> observation
-```
+Timestamps establish order. Digests establish retained content. Neither proves
+causality by itself; causal interpretation belongs in the decision.
 
-Sequence identifiers and timestamps establish order; digests establish retained
-content. Neither proves causality by itself. State causal interpretation in the
-decision entry and retain evidence that could contradict it. If a later result
-changes the diagnosis, append a superseding decision rather than rewriting the
-earlier ledger.
+## Identity, custody, and time
 
-## Evidence Lineage
+Every object records source system, stable ID, producer version, event window,
+capture time, collection time, time zone, known clock skew, digest, and
+relationship to derived objects or decisions.
 
-```mermaid
-flowchart LR
-    Raw[Raw snapshots and event exports] --> Normalize[Schema and redaction checks]
-    Normalize --> Evaluate[Threshold and SLO evaluation]
-    Evaluate --> Verdict[Operator verdict and exceptions]
-    Raw --> Manifest[Evidence manifest and hashes]
-    Normalize --> Manifest
-    Evaluate --> Manifest
-    Verdict --> Manifest
-    Manifest --> Packet[Release or incident packet]
-```
+If rollout, request, metric, log, trace, and fault times cannot be ordered,
+mark correlation uncertain. Do not infer event absence from a retention gap,
+sampling gap, or unqueried interval.
 
-Derived summaries must retain links to raw inputs. Redaction should remove
-secrets and sensitive payloads. It must preserve the timestamps, request
-classes, release identity, dataset identity, principal class, decision result,
-and trace correlation needed for review. Hash the retained form so later
-mutation is detectable.
+Redaction must remove credentials and sensitive payloads while preserving
+release, dataset, principal class, route class, decision, time, and trace
+correlation. Hash the retained representation.
 
-## Custody and Time Integrity
+## Qualify negative evidence
 
-```mermaid
-flowchart LR
-    Source[Source system and query window] --> Capture[Immutable raw capture]
-    Capture --> Hash[Digest and evidence manifest]
-    Capture --> Redact[Policy-governed redacted derivative]
-    Redact --> Review[Threshold and hypothesis review]
-    Hash --> Packet[Decision packet]
-    Review --> Packet
-    Packet --> Verify[Independent digest and lineage verification]
-```
+“No errors occurred” is defensible only when the observation path could have
+found them.
 
-Every retained object needs a stable identifier, source, capture time, event
-window, producer version, digest, and relationship to its derivative or
-decision. A redacted export is a new evidence object: preserve its parent
-digest and redaction policy instead of silently replacing the raw capture.
-
-Time integrity is part of custody. Record the source clock and collection
-clock, known skew, query boundaries, and time zone. If a metric window, log
-event, trace span, rollout, and injected fault cannot be ordered reliably,
-mark the correlation as uncertain. Do not infer absence of an event from a
-retention gap or an unqueried interval.
-
-## Qualify Negative Evidence
-
-“No errors were observed” is a strong claim only when the observation path was
-capable of finding errors. Before using absence as evidence, bind the claim to
-the population and prove the collection boundary.
-
-| Qualification | Evidence required |
+| Qualification | Required proof |
 | --- | --- |
-| population. | Release, route class, dataset, status family, and traffic volume are explicit. |
-| interval. | Event window, query window, evaluation time, clock skew, and retention overlap are explicit. |
-| instrumentation. | The expected event, metric, or span is registered and enabled on the exercised path. |
-| delivery. | Scrape, export, ingestion, and query paths were healthy for the interval. |
-| selection. | Filters, sampling, aggregation, and exclusions are recorded and do not discard the target condition. |
-| comparison. | A known event or healthy control demonstrates that the query can return data from the same source. |
+| population | Release, route class, dataset, status family, and traffic volume |
+| interval | Event and query windows, evaluation time, skew, and retention overlap |
+| instrumentation | Expected event, metric, or span was active on the exercised path |
+| delivery | Scrape, export, ingestion, retention, and query paths remained healthy |
+| selection | Filters, sampling, aggregation, and exclusions preserve the target condition |
+| control | A known event or healthy source proves the query can return data |
 
-Without these qualifications, report “no matching evidence retrieved,” not
-“the event did not occur.” A zero-valued series, an empty query result, and an
-absent series are different observations and must remain distinct in the raw
-record and verdict.
+Without these facts, say “no matching evidence retrieved.” A zero-valued
+series, an empty query result, and an absent series are different observations.
 
-## Evidence Quality Dimensions
+## Decision depth
 
-| Dimension | Acceptance question |
+| Decision | Minimum evidence |
 | --- | --- |
-| Identity | Is every signal bound to the intended release, profile, dataset, and environment? |
-| Coverage | Are all required classes and representative success and failure paths present? |
-| Freshness | Does the captured window cover the decision or incident interval? |
-| Integrity | Can digests and manifests detect later mutation? |
-| Lineage | Can a reviewer trace summaries and verdicts to raw inputs? |
-| Confidentiality | Was sensitive content removed under a recorded policy without erasing decision context? |
-| Interpretability | Are units, populations, thresholds, exclusions, and known gaps explicit? |
+| local investigation | Bounded signal window and identities sufficient to test a hypothesis |
+| containment | Timeline, affected boundary, mitigation, reversal, and evidence gaps |
+| rollout continuation | Probes, request paths, error and saturation windows, rollout identity |
+| release promotion | Conformance, SLO, load, recovery, raw references, verdict, artifact binding |
+| security response | Exposure, identity, authorization, audit, containment, integrity |
 
-An evidence packet may be internally well formed yet too stale, narrow, or
-weakly identified for its claim. Structural validity and decision sufficiency
-therefore receive separate verdicts.
+Structural validity and decision sufficiency are separate verdicts. A packet
+can be schema-valid yet stale, weakly identified, or too narrow for its claim.
 
-| Decision | Minimum evidence depth |
-| --- | --- |
-| local investigation | bounded signal window and identities sufficient to test a hypothesis |
-| incident containment | timeline, affected boundary, mitigation, reversal condition, and evidence gaps |
-| rollout continuation | probes, request-path signals, error and saturation windows, and rollout identity |
-| release promotion | conformance, SLO/load/recovery results, raw references, verdict, and artifact binding |
-| security response | exposure and identity state, authorization decisions, audit trail, containment, and integrity assessment |
+## Current evidence boundary
 
-## Current Evidence Boundary
-
-The generated telemetry index inventories six artifact classes. The readiness
-file declares `ready` when four asset families exist: SLO definitions, the
-alert catalog, telemetry drills, and the dashboard index. That declaration is
-static asset readiness. It does not prove scrape freshness, trace retention,
-alert delivery, dashboard population, or drill execution.
+The generated telemetry index inventories six artifact classes. Static
+readiness becomes `ready` when SLO definitions, alert catalog, telemetry drills,
+and dashboard index exist. That does not establish scrape freshness, trace
+retention, alert delivery, dashboard population, or drill execution.
 
 No schema-valid drill result is checked in under `ops/observe/`. Release
-evidence also carries empty drill and simulation summary collections. Until a
-run produces immutable snapshots and a result tied to a candidate, do not use
-the static readiness declaration as promotion evidence.
+evidence has empty drill and simulation summary collections. Until execution
+produces immutable candidate-bound captures and results, static readiness is
+not promotion evidence.
 
-## Acceptance
-
-Reject reports with missing time windows or mutable release references. Also
-reject absent raw signals, unresolved redaction, or a verdict disconnected from
-thresholds. Generated summaries must link to their inputs and schema. Preserve
-failed and partial runs. Deleting them removes information needed to assess
-reliability.
-
-Use [Telemetry Drills](telemetry-drills.md) for executable-coverage limits and
-[Release Evidence](../release/release-evidence.md) for packaging constraints.
+Preserve failed and partial packets. Reject mutable release references, missing
+windows, absent raw signals, unresolved redaction, or verdicts disconnected
+from thresholds. Continue with [Telemetry Drills](telemetry-drills.md) and
+[Release Evidence](../release/release-evidence.md).
