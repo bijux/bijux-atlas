@@ -51,6 +51,12 @@ files:
 `catalog.json` indexes published datasets. The catalog is a discovery surface;
 the manifest lock remains the integrity check for each dataset payload.
 
+The build layout places dataset material under
+`release=<release>/species=<species>/assembly=<assembly>/`, with source inputs
+and derived artifacts separated below that identity. Use the model and store
+layout helpers instead of reconstructing these paths. The helpers are the
+shared authority for filesystem paths and remote object keys.
+
 ## Storage Capabilities
 
 The store library separates read, write, and administrative capabilities. This
@@ -78,6 +84,37 @@ The S3-like implementation is an object transport adapter, not a distributed
 transaction coordinator. Serialize publishers through deployment controls and
 inspect object state after interrupted writes.
 
+## Publication Visibility
+
+Readers must never discover a catalog entry before its payload is complete and
+verifiable:
+
+```mermaid
+sequenceDiagram
+    participant Publisher
+    participant Store
+    participant Catalog
+    participant Reader
+    Publisher->>Store: Acquire publication authority
+    Publisher->>Store: Write manifest and SQLite with expected hashes
+    Publisher->>Store: Read and verify committed bytes
+    Publisher->>Catalog: Publish dataset reference
+    Reader->>Catalog: Resolve explicit identity
+    Reader->>Store: Read manifest and verified SQLite
+```
+
+Catalog promotion is the visibility edge, not the payload write. If promotion
+fails after a complete payload write, the result is an undiscoverable orphan
+that may be inspected or garbage-collected. If payload publication fails,
+catalog state must remain unchanged. If catalog state points to missing or
+unverifiable bytes, stop serving that identity and treat it as an integrity
+incident.
+
+Object stores can expose ambiguous outcomes after timeouts. Before retrying a
+write, read the target and compare hashes. Matching bytes allow the operation to
+continue idempotently; different readable bytes are an immutability conflict,
+not a transient error.
+
 ## Runtime Boundary
 
 The runtime depends on a dataset-store port rather than backend implementation
@@ -95,6 +132,25 @@ Cached-only operation is an explicit degraded mode. It may continue serving
 retained state when the live catalog is unavailable, but it cannot claim that
 newly published datasets have been discovered.
 
+## Three Read Authorities
+
+| State | Authority | Allowed claim |
+| --- | --- | --- |
+| catalog entry | discoverability | this dataset identity is advertised by the selected catalog snapshot |
+| manifest and lock | identity and integrity metadata | expected content and checksums are known and parseable |
+| verified SQLite bytes | queryable content | the loaded database matches the published checksum |
+
+All three are required for a newly resolved dataset. A retained in-process or
+disk cache may preserve previously verified bytes during catalog or store
+outage, but the response must remain bound to the retained manifest identity.
+Cache presence alone cannot create a catalog entry, repair a lock, or authorize
+new publication.
+
+Cache eviction is safe because it removes acceleration, not authority. Cache
+poisoning is unsafe because it associates bytes with the wrong artifact
+identity. Key caches with the complete dataset identity and artifact hash, and
+verify content before admission into a trusted serving cache.
+
 ## Integrity and Failure Semantics
 
 A dataset is not safe to serve when its required files are missing, its lock
@@ -107,6 +163,17 @@ change catalog visibility. Retry policy may address transient backend errors,
 while store instrumentation records reads, writes, failures, and latency.
 Persistent integrity, concurrency, permission, or layout failures require
 operator action.
+
+Failure categories imply different responses:
+
+| Failure | Safe response |
+| --- | --- |
+| catalog unavailable | serve only previously verified state allowed by cached-only policy; otherwise fail explicitly |
+| dataset absent from catalog | return an explicit dataset miss; do not scan storage for a substitute |
+| manifest or lock invalid | quarantine the identity and preserve the offending bytes for investigation |
+| SQLite checksum mismatch | reject the artifact and invalidate derived caches |
+| transient backend timeout | retry only within policy and verify ambiguous writes or reads |
+| concurrent different publication | reject as an immutability or coordination conflict |
 
 The result is a stable read contract: a query names a published dataset, the
 runtime resolves verified immutable content, and caches remain disposable.

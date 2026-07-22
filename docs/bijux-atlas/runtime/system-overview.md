@@ -14,6 +14,16 @@ Runtime composition and delivery interfaces have their own owners. Repository
 automation remains outside the product runtime. Crate dependencies and exchanged
 artifacts make those boundaries visible.
 
+The boundaries are deliberate. They keep scientific meaning stable. They also
+make process failures attributable to an owner.
+Each owner publishes a narrow contract. Composition happens above those
+contracts.
+
+Read the system from identity outward. Start with the dataset key. Follow it to
+the manifest and verified artifact. Treat the catalog as discovery. Treat the
+store as byte authority. Treat caches as disposable acceleration. Then use the
+request identity to reconstruct one execution.
+
 ## End-to-End Architecture
 
 ```mermaid
@@ -42,6 +52,21 @@ No delivery interface owns genomic truth. The model and leaf crates define
 domain behavior. The runtime composes them. The CLI and server translate user
 requests. The store and catalog establish which immutable release is serveable.
 
+## Product Invariants Across Components
+
+| Invariant | Established by | Preserved by | Exposed to consumers by |
+| --- | --- | --- | --- |
+| explicit dataset identity | model and ingest | store keys, catalog entries, runtime resolution | CLI arguments, API parameters, provenance, cursors |
+| deterministic content | core canonicalization and ingest | manifest checksums and immutable publication | artifact hash, ETag, reproducibility evidence |
+| coordinate semantics | model and ingest | query filters and SQLite schema | API DTOs and CLI output |
+| bounded work | query plan and runtime policy | server admission, deadlines, concurrency, response limits | stable rejection codes and telemetry |
+| attributable access | security policy | server identity propagation and audit | request identity, authorization result, audit record |
+| diagnosable failure | owning leaf crate | runtime error context and delivery mapping | typed CLI errors, API envelope, logs, metrics, traces |
+
+An invariant has one semantic owner but crosses several implementations. A
+delivery adapter may present it differently; it may not weaken or silently
+reconstruct it.
+
 ## Authority Flow
 
 ```mermaid
@@ -60,6 +85,17 @@ Authority flows inward from owned contracts and published state, then outward
 as a structured result. Delivery code may translate transport details but may
 not synthesize dataset identity, weaken query limits, or turn unavailable
 artifact state into a successful response.
+
+There are two identity chains in every served answer:
+
+- scientific identity: source hashes, normalization policy, dataset identity,
+  manifest, and artifact checksum;
+- execution identity: runtime release, effective configuration, request ID,
+  principal, route, query plan, and response status.
+
+The first explains which biological data was used. The second explains how a
+particular request was processed. Provenance and incident evidence need both;
+one cannot be inferred reliably from the other.
 
 ## Crate Ownership
 
@@ -111,6 +147,22 @@ The data plane may continue serving while a control plane is unavailable, but
 that does not make future promotion safe. Conversely, a passing repository or
 deployment validation report cannot establish live query correctness without
 data-plane observation.
+
+## Failure Isolation
+
+| Unavailable component | Expected containment | Unsafe interpretation |
+| --- | --- | --- |
+| repository control plane | running queries continue; new validation evidence cannot be produced | treating old reports as evidence for changed inputs |
+| deployment control plane | existing pods may continue serving | assuming rollout, rollback, or policy enforcement remains available |
+| catalog | previously verified cached-only data may remain eligible by policy | claiming discovery of new datasets |
+| authoritative store | verified cache hits may survive; misses fail explicitly | converting missing bytes into empty scientific results |
+| Redis or response cache | query path falls back within capacity policy | treating cache loss as dataset loss or bypassing overload limits |
+| telemetry sink | data path may remain correct for a bounded period | promoting an unobservable candidate or claiming recovery timing |
+| one server replica | readiness removes it while peers serve | ignoring shared catalog, store, or configuration causes |
+
+Isolation is a runtime property, not merely a dependency diagram. Load,
+failure-injection, and recovery evidence must demonstrate the containment claim
+for the selected topology and profile.
 
 ```mermaid
 flowchart LR

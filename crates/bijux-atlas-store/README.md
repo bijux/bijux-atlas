@@ -50,8 +50,8 @@ Layout helpers derive every store key from the complete dataset identity. The
 owned files include:
 
 - `manifest.json` for identity, schema, provenance, and checksums;
-- `atlas.sqlite` for the queryable dataset;
-- `manifest.lock.json` for the locked manifest contract;
+- `gene_summary.sqlite` for the queryable dataset;
+- `manifest.lock` for the locked manifest contract;
 - publication and immutability markers;
 - lifecycle state and transition records.
 

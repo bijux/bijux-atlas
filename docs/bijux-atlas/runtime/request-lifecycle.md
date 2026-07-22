@@ -30,7 +30,7 @@ sequenceDiagram
     Middleware->>Middleware: error envelope, body limit, debug hardening, provenance, resilience, security, CORS, tracing
     Middleware->>Policy: authenticated request or exempt route
     Policy->>Handler: authorized principal and normalized transport
-    Handler->>Catalog: resolve explicit or default dataset
+    Handler->>Catalog: resolve explicit release, species, and assembly
     Catalog->>Store: fetch manifest, index, sequence, or shard
     Store-->>Handler: published artifact data or typed store failure
     Handler->>Query: normalized query and limits
@@ -81,6 +81,51 @@ An exempt route is not an unrestricted data route. Its resource kind remains
 the service namespace, and deployment network policy still determines who can
 reach it.
 
+## Identity Carried Through the Request
+
+Three identities must not be conflated:
+
+| Identity | Origin | Purpose |
+| --- | --- | --- |
+| request identity | accepted `x-request-id` or server-generated identifier | correlates one transport attempt across response, log, metric exemplar, and trace |
+| principal identity | validated API key or token context | drives authorization and audit attribution |
+| dataset identity | explicit release, species, and assembly resolved to a manifest | binds the answer, cache key, ETag, provenance, and query cursor to published data |
+
+A retried HTTP call may have a new request identity while retaining the same
+principal and dataset identity. A different dataset identity is not a retry of
+the same scientific request, even when the route and filters are identical.
+
+Responses expose `x-request-id` for correlation. Dataset responses also carry
+artifact and cache provenance where the route contract supports it. Preserve
+these fields in client diagnostics; they are needed to distinguish a repeated
+request from a response served from different published bytes.
+
+## Admission and Work Budgets
+
+Admission is layered so expensive work is rejected before consuming the most
+constrained resource:
+
+```mermaid
+flowchart LR
+    Edge[body and header limits] --> Auth[authentication and authorization]
+    Auth --> Rate[rate and global overload policy]
+    Rate --> Parse[parameter and cursor validation]
+    Parse --> Plan[query class and estimated work]
+    Plan --> Permit[heavy-worker or queue permit]
+    Permit --> Data[store and SQLite work]
+    Data --> Encode[response-size and deadline checks]
+```
+
+Each layer has its own budget and error code. A global request timeout does not
+replace SQL, sequence-size, response-size, queue, or query-work limits. Reject
+at the earliest boundary that can prove the request is inadmissible. This
+preserves capacity for cheap traffic and produces a more accurate client error.
+
+The request deadline covers more than SQL execution. Queue wait, store access,
+cache fill, serialization, compression, and body delivery all consume the
+user-visible latency budget. Telemetry should separate those stages when a
+timeout diagnosis depends on ownership.
+
 ## Failure Attribution
 
 ```mermaid
@@ -101,6 +146,11 @@ add correlation, hardening, or presentation fields, but it must not obscure
 whether the request failed at transport, policy, catalog, store, query, or
 capacity control.
 
+For incident analysis, group failures by the first rejecting boundary before
+grouping by HTTP status. The same status can represent different recovery
+actions: a policy rejection is not repaired by adding query capacity, and a
+store-integrity error is not repaired by relaxing an overload threshold.
+
 ## Dataset Resolution and Caching
 
 The catalog establishes discoverable dataset identity. Artifact caches and the
@@ -116,6 +166,11 @@ dataset. Execution completed under its limits, and presentation produced the
 versioned envelope. Success does not identify a particular cache layer. Policy
 rejection, dataset miss, overload refusal, and empty query result are distinct
 outcomes. Status, error code, and telemetry preserve that distinction.
+
+Conditional success has the same identity requirements. A `304 Not Modified`
+is valid only when the request's ETag represents the selected artifact and
+normalized request. It is not permission to reuse a response from another
+release, species, assembly, projection, or query order.
 
 For streaming or paginated work, response start is not equivalent to complete
 delivery. Completion must account for serialization, body transfer, cursor or
