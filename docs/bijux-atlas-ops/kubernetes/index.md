@@ -7,236 +7,121 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Kubernetes Delivery
+# Kubernetes delivery
 
-Atlas treats Kubernetes deployment as a chain of reviewable contracts. Chart
-templates alone are not deployment evidence. A promotable result connects
-profile intent, validated values, rendered resources, security posture,
-rollout behavior, and conformance output.
+Atlas treats Kubernetes delivery as a sequence of owned handoffs. A chart
+render proves resource shape. API admission proves that a target accepted an
+object request. Readiness describes a live snapshot. Promotion additionally
+requires release-scoped correctness, capacity, security, telemetry, and
+recovery evidence selected by the environment policy.
 
-## Deployment Proof Chain
-
-```mermaid
-flowchart LR
-    I["Deployment intent"] --> P["Governed values profile"]
-    P --> S["Values schema and risk policy"]
-    S --> H["Helm render"]
-    H --> V["Manifest and Kubernetes validation"]
-    V --> W["Workload readiness snapshot"]
-    W --> C["Executable selected checks"]
-    C --> O["Live probes and observability"]
-    O --> R{"Promote or roll back"}
-```
-
-Each layer narrows uncertainty. Schema validation rejects malformed or unsafe
-input. Rendering exposes the actual objects. The current Kubernetes
-conformance command checks deployment and pod readiness plus HPA custom-metrics
-availability. Live probes show whether the installed release admits traffic
-and emits the required signals. The larger check catalog is not evidence until
-its selected checks have an executable runner and recorded results.
-
-## Rollout State Model
+## Delivery state
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Declared: release and profile selected
-    Declared --> Rendered: schema and render pass
-    Rendered --> Admitted: policy and API admission pass
-    Admitted --> Progressing: install or upgrade begins
-    Progressing --> Ready: readiness and traffic criteria pass
-    Progressing --> Held: timeout, error, or saturation trigger
-    Ready --> Promoted: observation window and evidence pass
-    Ready --> Held: regression trigger
-    Held --> RolledBack: recovery policy selects prior release
-    RolledBack --> Verified: service and data checks pass
+    [*] --> Desired: release + profile + target selected
+    Desired --> Rendered: schema, policy, and render pass
+    Rendered --> Admitted: target accepts exact objects
+    Admitted --> Progressing: controller creates revision
+    Progressing --> Ready: traffic eligibility passes
+    Progressing --> Held: timeout or safety trigger
+    Ready --> Promoted: observation policy passes
+    Ready --> Held: regression or evidence gap
+    Held --> Recovered: prior identity restored and verified
 ```
 
-`Rendered`, `Admitted`, `Ready`, and `Promoted` are distinct states. A render
-report proves resource shape. Admission proves selected policy and cluster API
-acceptance. Workload readiness proves only the current deployment, pod, and HPA
-snapshot covered by the command. Promotion additionally requires the named
-behavioral checks, observation window, and evidence policy for the environment.
-
-## Desired, Rendered, and Observed State
-
-```mermaid
-flowchart LR
-    Desired[Profile, values, chart, and image intent] --> Rendered[Exact Kubernetes objects]
-    Rendered --> Admitted[API-server accepted objects]
-    Admitted --> Observed[Running workload, traffic, and signals]
-    Desired -. compare .-> Rendered
-    Rendered -. compare .-> Observed
-```
-
-| State | Identity to retain | Failure exposed |
+| State | Identity to retain | Question answered |
 | --- | --- | --- |
-| desired | source revision, chart, image digest, profile, and values hashes | wrong release intent or unsupported combination |
-| rendered | manifest hash, API capabilities, namespace, labels, selectors, and policy result | template, merge, security, or topology error |
-| admitted | cluster, Kubernetes version, applied object revisions, and admission response | cluster policy or API incompatibility |
-| observed | workload revision, pod images, effective configuration, dataset identity, and telemetry window | drift, startup, dependency, or behavioral failure |
+| desired | Source revision, chart, image digest, profile, values hashes, and target | What should run? |
+| rendered | Manifest digest, object inventory, namespace, selectors, capabilities, and policy result | What exact resources would be requested? |
+| admitted | Cluster, Kubernetes version, object revisions, and admission responses | What did this target accept? |
+| ready | Workload revision, effective images and configuration, dataset identity, and probe history | Which instances currently admit traffic? |
+| promoted | Observation window, governed checks, exceptions, decision owner, and rollback target | Why may this release serve? |
 
-A comparison must cross each boundary. Matching desired and rendered state does
-not prove the cluster admitted those bytes. Matching rendered and live object
-shape does not prove pods loaded the intended configuration or dataset.
+An identity-changing correction starts a new record. Do not reuse readiness or
+telemetry after the manifest digest, workload revision, dataset selection, or
+target changes.
 
-## Deployment Handoffs
-
-Every handoff changes both the owner and the evidence needed to continue:
+## Handoffs and refusal conditions
 
 ```mermaid
 sequenceDiagram
-    participant Policy as Profile and policy
-    participant Helm as Helm renderer
+    participant Policy as Profile policy
+    participant Helm as Renderer
     participant API as Kubernetes API
-    participant Pod as Atlas workload
+    participant Workload as Atlas workload
     participant Evidence as Evidence plane
-    Policy->>Helm: chart, values, image and dataset intent
-    Helm-->>Policy: rendered inventory and digest
-    Helm->>API: admitted object request
-    API-->>Pod: scheduled revision and effective pod spec
-    Pod-->>Evidence: probes, traffic, metrics, logs and traces
-    Evidence-->>Policy: promotion or recovery inputs
+    Policy->>Helm: chart, values, images, dataset intent
+    Helm-->>Policy: inventory + render digest
+    Helm->>API: exact object requests
+    API-->>Workload: admitted workload revision
+    Workload-->>Evidence: probes, requests, metrics, logs, traces
+    Evidence-->>Policy: qualification inputs
 ```
 
-| Handoff | Reject continuation when |
+| Handoff | Refuse continuation when |
 | --- | --- |
-| profile to render | unsupported combination, unknown value, unpinned image or missing rollback target |
-| render to API admission | object inventory, namespace, security or dependency policy differs from intent |
-| API admission to workload | scheduled pod spec, image, configuration or service routing differs from the admitted revision |
-| workload to traffic | readiness lacks the required dataset, dependency, warmup or drain semantics |
-| traffic to promotion | release-scoped request, correctness, saturation or telemetry evidence is absent |
+| profile to render | The combination is unsupported, values are unknown, images are unpinned, or no rollback target exists |
+| render to admission | Inventory, namespace, security, dependency, or target identity differs from intent |
+| admission to workload | Pod spec, images, configuration, or routing differs from the admitted revision |
+| workload to traffic | Readiness lacks required dataset, dependency, warmup, or drain semantics |
+| traffic to promotion | Release-scoped correctness, saturation, security, or telemetry evidence is absent |
 
-An operator may repeat a failed handoff after correcting its owning input, but
-must not silently reinterpret evidence from the previous identity. A new
-render digest, workload revision, dataset pointer or policy result starts a new
-promotion record and observation window.
+## Lock the target before effects
 
-## Target Lock Before Mutation
+Kind-backed commands resolve the selected profile to an expected context and
+verify the owned `bijux-atlas` namespace before cluster effects. A force
+override grants explicit authority to cross that guard; it does not prove that
+the alternate target is equivalent. Retained results must record the effective
+context, namespace, command, run identity, and whether an override was used.
 
-The installed Kubernetes command path guards the target before cluster-scoped
-effects. For Kind-backed routes, the selected Kind profile resolves to an
-expected context such as `kind-normal`; the guard compares it with the current
-`kubectl` context and verifies the owned `bijux-atlas` namespace. A force
-override is explicit authority to cross that guard, not proof that the new
-target is equivalent.
+External clusters need an equally explicit target identity and authorization
+policy. Context matching prevents one class of operator error; it does not
+establish production ownership or workload correctness.
 
-```mermaid
-flowchart TD
-    Request[mutating or observing command] --> Effects{required effects granted?}
-    Effects -->|no| Reject[refuse]
-    Effects -->|yes| Context{current context equals expected Kind context?}
-    Context -->|no| Override{explicit force override?}
-    Override -->|no| Reject
-    Override -->|yes| Namespace
-    Context -->|yes| Namespace{owned namespace exists?}
-    Namespace -->|no| Reject
-    Namespace -->|yes| Execute[execute against locked target]
-    Execute --> Receipt[record context, namespace, command and run identity]
-```
+## Supported evidence lanes
 
-The guard prevents an accidental context mismatch; it does not establish
-production authorization, cluster ownership, or workload correctness. An
-external-cluster procedure must supply an equally explicit target identity and
-authorization policy. Every result retained for promotion must record the
-effective context and namespace, including whether the override path was used.
+The install matrix maps ten profiles to three lanes:
 
-## Traffic Eligibility Is Conditional
-
-Readiness answers the probe contract configured for one instance. It does not
-by itself prove release-wide capacity, correct routing, catalog freshness, or
-telemetry continuity. Pair readiness with a governed request path, resolved
-dataset identity, release-labeled signals, and the required observation window.
-
-When readiness policy permits cached-only serving, record cache age and object
-identity. Continued service from retained bytes is degraded continuity, not
-evidence that new catalog state was discovered.
-
-## Supported Deployment Paths
-
-The install matrix currently maps ten profiles to three evidence lanes:
-
-- `ci`, `dev`, and `local` use the focused `install-gate` suite;
+- `ci`, `dev`, and `local` use `install-gate`;
 - `kind`, `offline`, and `profile-baseline` use `k8s-suite`;
 - `ingress`, `multi-registry`, `perf`, and `prod` use `nightly`.
 
-Install scenarios cover the CI, Kind, offline, performance, and baseline
-profiles. Upgrade and rollback scenarios are declared for Kind, offline, and
-performance, with explicit previous-chart and workspace-head identities.
+Install scenarios cover CI, Kind, offline, performance, and baseline profiles.
+Upgrade and rollback scenarios are declared for Kind, offline, and performance
+with explicit previous-chart and workspace-head identities. The matrix maps
+supported routes; it does not give every profile the same availability,
+security, or capacity promise.
 
-The matrix records supported evidence routes; it does not imply that every
-profile has identical availability, security, or performance promises.
+## Conformance boundary
 
-## Conformance Coverage Boundary
-
-Atlas currently has two similarly named surfaces:
-
-| Surface | Current scope | Safe claim |
+| Surface | Current scope | Safe conclusion |
 | --- | --- | --- |
-| `bijux-atlas-dev ops k8s conformance` | deployment, pod and HPA metric snapshots | readiness snapshot for `bijux-atlas` |
-| `ops/k8s/tests/manifest.json` and `suites.json` | 79 declared checks selected by five suite definitions | intended check inventory and grouping, not execution |
+| `bijux-atlas-dev ops k8s conformance` | Deployment and pod readiness plus HPA metrics API availability | A point-in-time readiness snapshot completed |
+| `ops/k8s/tests/manifest.json` and `suites.json` | 79 checks grouped into five suites | Intended check inventory and selection are declared |
 
 No current runner connects a selected suite to all declared scripts and emits
-per-check results. A promotion record must therefore name which additional
-checks were actually invoked and how their outputs were bound. The generic
-`k8s_conformance` report cannot be used as proof that `smoke`, `resilience`,
-`graceful-degradation`, `api-protection`, or `full` completed.
+per-check results. A generic conformance report therefore does not prove that
+the `smoke`, `resilience`, `graceful-degradation`, `api-protection`, or `full`
+suite completed. Name and bind every additional check actually used for a
+promotion. [Conformance Suites](conformance-suites.md) carries the detailed
+coverage contract.
 
-## Safety Boundaries
+## Operator route
 
-- Production-oriented profiles must run as non-root according to the profile
-  security contract.
-- Administrative endpoints remain disabled unless an explicit governed
-  exception enables them; review the
-  [Administrative Endpoints Exceptions](admin-endpoints-exceptions.md) ledger.
-- Readiness, drain behavior, disruption budgets, and rollback triggers are
-  delivery contracts, not tuning suggestions.
-- Image digests, offline inputs, registries, namespaces, and dependency
-  availability must match the selected profile.
-- A successful template render is insufficient when conformance, probes, or
-  security checks fail.
+| Decision | Read |
+| --- | --- |
+| Understand chart ownership | [Chart Layout](chart-layout.md) |
+| Select configuration | [Helm Values Model](helm-values-model.md) |
+| Choose a supported evidence lane | [Install Matrix](install-matrix.md) |
+| Produce inspectable manifests | [Render and Validate](render-and-validate.md) |
+| Control forward and reverse rollout | [Rollout Safety](rollout-safety.md) |
+| Assemble environment gates | [Production Qualification](production-qualification.md) |
+| Review exposure and confinement | [Security Operations](security-operations.md) |
+| Attribute effective process settings | [Runtime Configuration](runtime-configuration.md) |
+| Preserve investigation context | [Debug Bundles](debug-bundles.md) |
 
-## Promotion Record
-
-A Kubernetes promotion record should identify the chart and application
-versions, image digests, values profile and overrides, namespace, rendered
-inventory, policy and conformance results, rollout timestamps, probe history,
-relevant telemetry window, and rollback target. Without those identities, a
-green status cannot be reproduced or attributed to the release under review.
-
-The record must also preserve the transition that produced each observation:
-desired inputs, rendered digest, admitted workload revision, observed dataset
-identity, and the qualification policy. This prevents a readiness snapshot
-from one rollout being reused after a manifest, target, or dataset change.
-
-## Operator Route
-
-1. Understand chart ownership in [Chart Layout](chart-layout.md).
-2. Select and review configuration through
-   [Helm Values Model](helm-values-model.md).
-3. Confirm the supported evidence lane in [Install Matrix](install-matrix.md).
-4. Produce inspectable manifests with
-   [Render and Validate](render-and-validate.md).
-5. Apply promotion and recovery rules from
-   [Rollout Safety](rollout-safety.md).
-6. Require the evidence described by
-   [Conformance Suites](conformance-suites.md).
-7. Assemble the profile-specific gates in
-   [Production Qualification](production-qualification.md).
-8. Verify [Security Operations](security-operations.md),
-   [Runtime Configuration](runtime-configuration.md), and
-   [Debug Bundles](debug-bundles.md) before production handoff.
-
-## Contract Locations
-
-- chart and baseline values: `ops/k8s/charts/bijux-atlas/`
-- deployment profiles: `ops/k8s/values/`
-- supported paths: `ops/k8s/install-matrix.json`
-- rollout decisions: `ops/k8s/rollout-safety-contract.json`
-- security posture: `ops/k8s/profile-security-contract.json` and the
-  administrative-endpoint exception ledger
-- declared conformance catalog: `ops/k8s/tests/`
-- current readiness command:
-  `crates/bijux-atlas-ops/src/kubernetes/conformance.rs`
-
-Keep the rendered manifests and reports with the release evidence. They are the
-reviewable record of what Kubernetes was asked to run.
+Keep render inventories, admission results, rollout events, probe history,
+telemetry-window identity, and rollback evidence with the release packet. They
+are the reviewable record of what Kubernetes was asked to run, what it
+accepted, and why traffic or promotion was permitted.

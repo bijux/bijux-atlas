@@ -7,232 +7,122 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Release Operations
+# Release operations
 
-An Atlas release is a coherent, consumer-verifiable set of binaries, images,
-chart material, policies, software bills of materials, operational proof, and
-source identity. A build is not promotable merely because its packages exist or
-a historical verification report says `ok`.
+An Atlas release is a consumer-verifiable set of binaries, chart material,
+policies, software bills of materials, evidence, and source identity. Build
+success is only the first custody event. Distribution and promotion require
+the same immutable candidate to remain attributable across every handoff.
 
-## Release Trust Chain
+## Custody chain
 
 ```mermaid
 flowchart LR
-    S["Source and governance identity"] --> B["Build and package"]
-    B --> M["Evidence manifest"]
-    M --> L["Checksum ledger"]
-    M --> P["Portable release packet"]
-    L --> V["Fresh local verification"]
-    P --> V
-    V --> G{"All policy and lifecycle evidence passes?"}
-    G -->|yes| D["Distribute and promote"]
-    G -->|no| X["Reject and rebuild coherent set"]
-    D --> R["Retain rollback and recovery authority"]
+    Source[Source + dependencies] --> Build[Build receipt]
+    Build --> Packet[Packet + provenance + SBOMs]
+    Packet --> Channel[Immutable channel receipts]
+    Channel --> Consumer[Consumer verification]
+    Consumer --> Target[Target qualification]
+    Target --> Decision{promote, hold, withdraw}
 ```
 
-The identity, manifest, packet, provenance, and checksum ledger must describe
-the same release bytes. Regenerating one member without rebuilding the others
-breaks the chain even if each JSON document remains schema-valid.
+| Custodian | Must verify | Emits |
+| --- | --- | --- |
+| builder | Revision, toolchain, dependencies, and build inputs | Artifacts and build receipt |
+| assembler | Membership, schemas, policy, and shared release identity | Packet, provenance, SBOMs, and checksums |
+| publisher | Candidate acceptance, channel policy, reference, and remote digest | Channel receipt or partial-publication record |
+| consumer | Retrieved bytes, trust policy, compatibility, and target policy | Consumer verification receipt |
+| operator | Render, admission, dataset correctness, capacity, security, and recovery | Target qualification packet |
+| decision owner | Producer evidence, target evidence, exceptions, and reversal authority | Promotion, hold, or withdrawal record |
 
-## Producer and Consumer Verification
+A custodian can reject or hold a candidate but must not silently repair an
+upstream receipt. Changed bytes create a new candidate. A changed target,
+profile, dataset, dependency, or policy creates a new target qualification.
 
-```mermaid
-sequenceDiagram
-    participant Producer
-    participant Channel
-    participant Consumer
-    Producer->>Producer: Build, attest, assemble, and verify
-    Producer->>Channel: Publish immutable artifacts and evidence
-    Consumer->>Channel: Resolve exact release identities
-    Consumer->>Consumer: Verify checksums, provenance, policy, and compatibility
-    Consumer->>Consumer: Render or install in target environment
-    Consumer->>Consumer: Observe, exercise, and decide
-```
-
-Producer verification establishes internal coherence before distribution.
-Consumer verification establishes that the received bytes, trust policy,
-target profile, and supported transition agree. Neither replaces live
-deployment, workload, or recovery evidence in the consumer environment.
-
-## Release State Model
+## Release states
 
 ```mermaid
 stateDiagram-v2
     [*] --> Assembled
-    Assembled --> ProducerVerified: packet and evidence pass fresh verification
-    ProducerVerified --> Publishing: immutable channel uploads begin
-    Publishing --> Published: required channels resolve exact identities
-    Publishing --> Partial: one or more required channels fail or disagree
-    Published --> ConsumerVerified: retrieval and policy checks pass
-    ConsumerVerified --> Promoted: target environment evidence passes
-    Partial --> Held: publication state recorded and promotion blocked
-    Published --> Held: integrity or identity concern discovered
-    Promoted --> Held: incident or withdrawal decision
+    Assembled --> ProducerVerified: fresh packet verification passes
+    ProducerVerified --> Publishing: channel uploads begin
+    Publishing --> Published: required channels agree
+    Publishing --> Partial: a required channel fails or differs
+    Published --> ConsumerVerified: retrieval and trust checks pass
+    ConsumerVerified --> Promoted: target qualification passes
+    Partial --> Held
+    Published --> Held: integrity concern
+    Promoted --> Held: incident or withdrawal
 ```
 
-`Published` means every channel required by the release plan is retrievable and
-identity-coherent. It does not mean the release is safe for every environment.
-`Promoted` is a consumer-environment decision and therefore follows retrieval,
-verification, installation, and observation.
+Partial publication is a first-class state. Preserve successful immutable
+references, failed operations, and the retry or withdrawal decision. Reconcile
+remote state before retrying mutable tags. Never replace suspect bytes under a
+published version.
 
-Partial publication is a first-class state. Preserve which channel operations
-succeeded, their immutable references, the failed operation, and the retry or
-withdrawal decision. Do not rerun successful mutable-tag publication blindly;
-reconcile the remote state against the original candidate first.
-
-## Release Custody Ledger
-
-Release integrity is preserved across handoffs, not only inside the producer's
-workspace. Each custodian appends a receipt while the immutable candidate
-identity remains unchanged.
-
-| Custodian | Accepts | Must verify | Emits |
-| --- | --- | --- | --- |
-| builder | source and dependencies | revision, toolchain, inputs and build | artifacts and build receipt |
-| assembler | artifacts and evidence | membership, schema, policy and identity | packet, provenance, SBOMs and checksums |
-| publisher | verified candidate | channel policy, reference and remote digest | channel receipt or partial record |
-| consumer | channel references and packet | bytes, trust, compatibility and target policy | consumer verification receipt |
-| operator | consumer-verified artifacts | render, admission, correctness and operating evidence | target qualification packet |
-| decision owner | producer and target evidence | exceptions, observation window and reversal authority | promotion, hold or withdrawal record |
-
-```mermaid
-flowchart LR
-    Build[build receipt] --> Assemble[packet receipt]
-    Assemble --> Publish[channel receipts]
-    Publish --> Consume[consumer receipt]
-    Consume --> Qualify[target qualification]
-    Qualify --> Decide[promotion record]
-    Identity[immutable candidate identity] -. binds .-> Build
-    Identity -. binds .-> Assemble
-    Identity -. binds .-> Publish
-    Identity -. binds .-> Consume
-    Identity -. binds .-> Qualify
-```
-
-A custodian may reject or hold the candidate but must not repair upstream
-evidence silently. Changed bytes create a new candidate. Changed target,
-profile, dataset or policy creates a new consumer qualification, even when the
-producer packet remains reusable and unchanged.
-
-## Match Evidence to the Release Decision
-
-One coherent packet can support several decisions, but each decision needs a
-different consumer-side observation. Do not collapse packet integrity,
-installability, operating fitness, and promotion into one release status.
+## Match evidence to the decision
 
 | Decision | Producer evidence | Consumer evidence |
 | --- | --- | --- |
-| bytes received intact | packet inventory, checksums, provenance, and immutable channel reference | fresh member hashes and trust-policy verdict |
-| release can be installed | chart, images, values, schemas, compatibility declarations | target render, admission result, dependency resolution, and rollback target |
-| release can serve correctly | product contracts, dataset schemas and test evidence | dataset identity, representative queries, readiness and correct responses |
-| release meets operating envelope | declared SLO, load, security, failure, and recovery contracts | target-specific telemetry, capacity, fault, rollout, and recovery results |
-| release may be promoted | complete candidate packet and producer acceptance | owned consumer decision, exceptions, observation window, and reversal authority |
+| bytes arrived intact | Inventory, checksums, provenance, and channel digest | Fresh hashes and trust-policy verdict |
+| release can be installed | Chart, images, values, schemas, and compatibility declarations | Target render, admission, dependencies, and rollback target |
+| release serves correctly | Product contracts, dataset schemas, and test results | Resolved dataset identity, representative requests, readiness, and responses |
+| release meets its envelope | SLO, load, security, failure, and recovery contracts | Target telemetry, capacity, fault, rollout, and recovery results |
+| release may be promoted | Complete packet and producer acceptance | Owned decision, exceptions, observation window, and reversal authority |
 
-```mermaid
-flowchart LR
-    Packet[Verified producer packet] --> Integrity[Consumer integrity verdict]
-    Integrity --> Install[Target install and admission]
-    Install --> Correct[Correctness and dataset identity]
-    Correct --> Operate[Capacity, security, telemetry, and recovery]
-    Operate --> Promote{Consumer promotion decision}
-```
+Packet integrity, installability, operating fitness, and promotion are separate
+claims. Immutable producer evidence can be reused unchanged; target evidence
+cannot be reused after its environment identity changes.
 
-A later decision may reuse unchanged immutable evidence, but it must not reuse
-environment observations after the target, profile, dataset, dependency, or
-policy identity changes. Preserve the receipt at every boundary so a rejection
-names the missing claim instead of marking the entire release vaguely bad.
-
-## Current Checked-In Evidence
-
-The repository carries release-contract examples and generated evidence for
-workspace version `0.2.0`. Treat this set as validation material, not as a
-production release ready for promotion. A fresh local verification of the
-checked-in bundle currently fails because required audit, governance,
-performance, and ingest assets are absent from the bundle and several policy
-and SBOM checksums do not match.
-
-The checked-in `release-verify.json` reports `ok`, but it is not evidence for
-the current file set. The transport packet also records digests that differ
-from current release files, and the evidence manifest includes placeholder
-profile image digests and empty drill, simulation, and scan-report collections.
-Generate and verify a new coherent release set before distribution.
-
-## Read Evidence by Strength
-
-Release directories contain several artifact classes. Their presence answers
-different questions:
-
-| Artifact class | What it proves | What it cannot prove |
-| --- | --- | --- |
-| policy, schema, or scenario specification | the expected structure, rule, or workflow is declared. | that any candidate executed or passed it. |
-| fixture or golden file | a parser, comparison, or test has a stable example. | that the bytes belong to a deployable release. |
-| generated inventory or index | a generator observed the recorded inputs. | freshness unless source revision and generation run are bound. |
-| simulated evidence | the simulation path emitted the expected class of result. | behavior of a real cluster, registry, dependency, or traffic path. |
-| executed candidate report | the named candidate ran the named check in the recorded environment. | checks not included in that run. |
-| verified release packet | the packet is internally coherent under the verifier and policy used. | safety in a different consumer environment without fresh verification. |
-
-Status labels such as `placeholder`, `simulated`, and `ok` must be interpreted
-with artifact class and candidate identity. An `ok` fixture is still a fixture.
-
-## Release Planes
-
-```mermaid
-flowchart TB
-    Software[Software plane: crates, binaries, images, API] --> Candidate[Release candidate]
-    Deployment[Deployment plane: chart, profiles, policy] --> Candidate
-    Data[Data plane: published immutable datasets and pointers] --> Runtime[Running service]
-    Candidate --> Runtime
-    Evidence[Evidence plane: manifests, SBOMs, signatures, tests, drills] --> Promotion{Promotion decision}
-    Runtime --> Evidence
-    Promotion -->|accept| Published[Published release]
-    Promotion -->|reject| Retain[Retain baseline and diagnose]
-```
+## Delivery and rollback planes
 
 Software rollback, deployment rollback, dataset-pointer rollback, and durable
-data recovery are separate operations. A release packet must say which plane
-changed and which plane remained immutable. Otherwise “rollback succeeded” is
-too ambiguous for an operational decision.
+data recovery change different authorities. A release record must name which
+plane moved and which remained immutable. “Rollback succeeded” is not an
+auditable conclusion without that distinction.
 
-## Route by Decision
+The current GitHub Container Registry workflow publishes compressed release
+bundles as OCI artifacts. That demonstrates transport for those bundles; it is
+not evidence of runnable Atlas container images. Consumers must verify the
+actual artifact type, media, digest, and installation path they depend on.
 
-| Decision | Read | Required outcome |
-| --- | --- | --- |
-| Establish release identity and governed surfaces | [Version Manifests](version-manifests.md) | Workspace, chart, source, and artifact identities agree. |
-| Review the proof carried with the build | [Release Evidence](release-evidence.md) | Required assets exist, match policy, and pass fresh verification. |
-| Prepare portable consumer material | [Release Packets](release-packets.md) | Minimum packet is complete and digest-coherent. |
-| Verify integrity and source claims | [Signing and Provenance](signing-and-provenance.md) | Checksum and provenance limits are understood and verified. |
-| Compare independent rebuilds | [Reproducibility](reproducibility.md) | Declared reproducible surfaces match. |
-| Detect runtime or configuration divergence | [Drift Detection](drift-detection.md) | Deployed state remains attributable to the promoted set. |
-| Select a supported delivery path | [Distribution Channels](distribution-channels.md) | Channel carries the same governed identity and evidence. |
-| Prove forward and reverse change | [Upgrades and Rollback](upgrades-and-rollback.md) | Compatibility and rollback invariants pass. |
-| Exercise recovery before dependence | [Rollback Drills](rollback-drills.md) | Operators can restore the previous release under evidence. |
-| Protect state beyond release rollback | [Backup and Recovery](backup-and-recovery.md) | Restore objectives and data boundaries are tested. |
+## Current checked-in evidence
 
-## Promotion Rule
+The repository includes release-contract examples and generated evidence for
+workspace version `0.2.0`. They are validation material, not a production
+release. Fresh verification of that checked-in bundle currently fails: required
+audit, governance, performance, and ingest assets are absent, some policy and
+SBOM checksums differ, and the transport packet digests do not match current
+release files. Placeholder image digests and empty drill, simulation, and scan
+collections further limit the packet.
 
-Promote only from a newly generated packet that passes verification in the
-consumer's environment. Preserve the exact verification output, immutable
-artifact references, release manifest, policy, lifecycle results, and rollback
-target. Reject unexplained drift; do not repair a suspect packet by updating
-checksums over unknown bytes.
+The checked-in `release-verify.json` status is historical and does not override
+the current file set. Generate and verify one coherent candidate before
+distribution.
 
-The promotion record should name the decision owner, candidate, baseline,
-consumer environment, verifier and policy versions, evidence manifest,
-exceptions, observation window, verdict, and rollback target. A release can be
-validly packaged yet rejected for one environment because a required
-deployment, capacity, or recovery claim is missing.
+## Route by decision
 
-## Hold and Withdrawal
+| Decision | Read |
+| --- | --- |
+| Establish one release identity | [Version Manifests](version-manifests.md) |
+| Review the proof shipped with a build | [Release Evidence](release-evidence.md) |
+| Assemble portable consumer material | [Release Packets](release-packets.md) |
+| Verify integrity and source claims | [Signing and Provenance](signing-and-provenance.md) |
+| Compare independent builds | [Reproducibility](reproducibility.md) |
+| Detect deployed divergence | [Drift Detection](drift-detection.md) |
+| Select a governed channel | [Distribution Channels](distribution-channels.md) |
+| Prove forward and reverse change | [Upgrades and Rollback](upgrades-and-rollback.md) |
+| Exercise operator recovery | [Rollback Drills](rollback-drills.md) |
+| Protect durable state | [Backup and Recovery](backup-and-recovery.md) |
+
+## Hold and withdrawal
 
 When a post-publication concern appears, stop further promotion and preserve
-the exact channel references under review. Classify whether the concern affects
-transport integrity, source attribution, runtime behavior, deployment policy,
-or dataset state. The corrective action may be a new release, channel
-withdrawal, deployment rollback, or dataset-pointer rollback; those actions
-are not interchangeable.
+the exact references under review. Classify whether it affects transport
+integrity, source attribution, runtime behavior, deployment policy, or dataset
+state. A new release, channel withdrawal, deployment rollback, and
+dataset-pointer rollback are different responses.
 
-Never reuse a published version to replace suspect bytes. Record the affected
-identities, consumer impact, last trusted release, and verification needed to
-resume. A mutable convenience tag may be redirected only under its channel
-policy; immutable digests and historical evidence remain part of the incident
-record.
+Record affected identities, consumer impact, the last trusted release, and the
+verification required to resume. Historical immutable digests and receipts
+remain part of the incident record even when a convenience tag is redirected.
