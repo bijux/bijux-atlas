@@ -76,6 +76,34 @@ Use a resource-level diff against the approved release for upgrade and rollback
 review. A summary that hides deleted policy, probe, or identity fields is not
 sufficient.
 
+## Assert Presence and Absence
+
+A review is incomplete if it checks only the objects that exist. Values can
+disable a protective resource or select a different workload kind without
+causing a schema error. Build a profile-specific assertion ledger from the
+render:
+
+| Contract | Positive assertion | Negative assertion |
+| --- | --- | --- |
+| workload | exactly one active Deployment or Rollout owns the selected pods | no second workload selects the same labels |
+| image | every Atlas container resolves to the approved digest | no mutable tag or unexpected registry remains in production renders |
+| identity | Service, monitor, policy, and workload selectors converge | no orphan selector or cross-release match remains |
+| configuration | every required ConfigMap and Secret reference resolves | no unreviewed `extraEnv` or broad `envFrom` source is present |
+| storage | cache and audit volumes match the selected persistence policy | no undeclared host path or writable root filesystem appears |
+| network | required DNS, catalog, store, and telemetry paths are allowed | no unrestricted egress or debug ingress survives a restricted profile |
+| lifecycle | startup, readiness, liveness, drain, PDB, and autoscaling agree | no probe targets an absent route or port |
+
+Count resources as well as inspecting fields. A missing NetworkPolicy, PDB,
+ServiceMonitor, or init container can be the most consequential part of a
+rendered diff.
+
+The chart has separate Deployment and Argo Rollout templates. Do not infer that
+they contain equivalent pod specifications. For every rollout-enabled profile,
+compare command, configuration, probes, security context, volumes, service
+account, resources, scheduling, and termination behavior across the selected
+workload render. Promotion requires the Rollout to carry the complete runtime
+contract expected by that profile.
+
 ## Validation Coverage
 
 ```mermaid
@@ -101,6 +129,25 @@ flowchart TD
 Passes are cumulative. A later check does not erase a failed earlier one, and
 no single validator covers the whole deployment contract.
 
+## Review a Semantic Diff
+
+The control plane exposes a diff mode for the selected profile:
+
+```bash
+bijux-atlas-dev --repo-root "$PWD" ops render \
+  --profile prod \
+  --target helm \
+  --diff \
+  --allow-subprocess \
+  --format json
+```
+
+Interpret the result by resource identity and operational effect, not line
+count. A one-line selector change can redirect all traffic; a large annotation
+change may be inert. Classify each change as workload, traffic, policy,
+configuration, storage, observability, or lifecycle, then attach the focused
+proof required by that class.
+
 ## Bind the Render to Installation
 
 Retain the chart identity, values hashes, Helm version, and target Kubernetes
@@ -108,6 +155,18 @@ version. Also record enabled API capabilities, image digest,
 rendered-manifest hash, and run ID. Install the exact reviewed render. If the
 installer renders again, prove it reproduced the same bytes from the same
 inputs.
+
+The receipt should be content-addressed at three levels:
+
+- input identity: chart, values, profile registry, image digest, and tool
+  versions;
+- render identity: canonical object inventory and rendered-manifest hash;
+- admission identity: cluster version, enabled APIs, namespace, release name,
+  and server-side dry-run result.
+
+This separation makes a mismatch diagnosable. Equal inputs with different
+renders point to capability or tool drift; equal renders with different
+admission results point to cluster policy or API drift.
 
 Helm rendering can vary with capabilities and Kubernetes version. A render for
 one target is not automatically evidence for another. Record the capability

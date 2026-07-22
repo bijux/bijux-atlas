@@ -70,6 +70,42 @@ Profile differences are contractual. For example, `ci`, `offline`, and
 uses `/healthz` and enables debug datasets. Do not describe these overlays as
 cosmetic environment names.
 
+## Classify Configuration Changes
+
+The same YAML edit can have very different runtime consequences. Classify the
+change before choosing rollout evidence:
+
+| Class | Examples | Required proof |
+| --- | --- | --- |
+| admission | authentication mode, admin endpoints, network policy | unauthorized and authorized request behavior; policy isolation |
+| dataset availability | store endpoint, cached-only mode, pinned datasets, catalog readiness | cold start, cache miss, catalog loss, and dataset identity checks |
+| resource protection | request, SQL, body, response, sequence, and rate limits | boundary requests plus cheap-path survival under rejected heavy work |
+| process lifecycle | probes, warmup, drain, termination grace | startup, endpoint transition, in-flight drain, and restart evidence |
+| observability | audit, exemplars, metrics monitor, tracing sink | required signals arrive with release and request identity; secrets are redacted |
+| capacity | replicas, resources, HPA, PDB, cache sizes | saturation, scaling, eviction, and disruption evidence |
+
+Configuration that crosses classes needs the union of their proofs. A parser
+success is necessary but never sufficient for a behavior or capacity change.
+
+## Restart and Rotation Semantics
+
+The ConfigMap is consumed through `envFrom`; environment variables are fixed
+when the container starts. Updating the ConfigMap does not reconfigure an
+existing Atlas process. A configuration release therefore needs a new pod
+template identity or an explicit restart mechanism, followed by verification
+that every serving replica uses the intended effective values.
+
+Secret references have the same environment-variable constraint when consumed
+as `secretKeyRef`. Rotating the Kubernetes Secret object alone does not update
+an already-running process. Plan overlap so old and new credentials remain
+valid across the rollout, then prove that old credentials can be revoked after
+all old replicas drain.
+
+Mounted configuration may have different filesystem update behavior, but the
+server must explicitly reload it before a live update has effect. Unless a
+specific reload contract is documented and observed, treat mounted changes as
+restart-required.
+
 ## Secrets and Mounted Configuration
 
 `envFromSecrets` references Kubernetes Secrets; `configMounts` adds governed
@@ -81,6 +117,11 @@ collisions, and portability before promotion.
 The rendered ConfigMap contains non-secret runtime values. It must not become a
 place to embed credentials. Secret references need their own rotation and
 access evidence.
+
+Because `extraEnv` is rendered after the ConfigMap reference, duplicate names
+can shadow ConfigMap-provided values in the container environment. Reject
+duplicates unless the override is the reviewed intent and appears in the
+configuration receipt. Prefer one authoritative source for each runtime key.
 
 ## Pre-Rollout Proof
 
@@ -94,6 +135,8 @@ access evidence.
    environment before serving traffic.
 6. When limits, probes, cache, or catalog behavior changes, attach the focused
    readiness, load, or rollout evidence for that concern.
+7. Confirm the workload template changes when restart-required configuration
+   changes, and verify the effective values on every candidate replica.
 
 Configuration is ready for promotion only when the values source, rendered
 environment, runtime parser, and observed behavior agree.

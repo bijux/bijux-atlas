@@ -30,6 +30,29 @@ offline requires prewarming and pinned datasets while forbidding live-catalog
 readiness. Performance requires a digest-pinned image and service monitoring.
 Production requires HPA and cluster-aware dependency isolation.
 
+## Workload Parity Gate
+
+Atlas can render either a Kubernetes Deployment or an Argo Rollout. These are
+different workload implementations, not interchangeable names. Before using a
+rollout-enabled profile, prove that its rendered pod template includes the same
+required runtime contract as the approved Deployment baseline:
+
+- command and image digest;
+- ConfigMap, Secret, and explicit environment sources;
+- startup, readiness, and liveness probes;
+- container and pod security contexts;
+- cache, temporary, audit, and configuration volumes;
+- service account, resource requests and limits, scheduling, and priority;
+- drain configuration and termination grace period;
+- labels and annotations consumed by Services, monitors, and policies.
+
+The checked-in Rollout template is a separate render path and currently
+exposes a smaller pod surface than the Deployment template. A
+successful Helm render therefore does not establish workload parity. Treat a
+rollout-enabled render as non-promotable when any required field above is
+absent, even if the Argo controller accepts it. Use a Deployment profile until
+the selected Rollout render proves the complete contract.
+
 ## Promotion State Machine
 
 ```mermaid
@@ -49,6 +72,13 @@ Do not promote on pod phase alone. Promotion requires readiness to stabilize,
 traffic to reach the new release, expected telemetry to arrive, and the
 selected load or resilience evidence to remain inside budget.
 
+The default canary sequence sends 10% traffic, pauses for 60 seconds, sends 50%,
+then pauses for 120 seconds. Those values are routing instructions, not an
+observation policy. A profile must declare enough request volume and time at
+each weight to exercise cheap, heavy, error, and dataset-resolution paths. Low
+traffic may require longer pauses or synthetic probes to produce meaningful
+evidence.
+
 ## Decision Gates
 
 | Gate | Required state | Failure action |
@@ -64,6 +94,28 @@ Each gate has a different rollback cost. Rejecting at preflight avoids cluster
 mutation. Failing after traffic shift requires preserving candidate-scoped
 signals before draining it. Recovery failure ends the routine rollout path.
 
+## Protect Capacity During Overlap
+
+For a candidate fraction \(w\), observed candidate request rate should be close
+to \(w \times R\), where \(R\) is the total request rate for the same route
+class. Use this check to prove that service routing actually exercised the
+candidate. Compare per-release counts rather than assuming the controller's
+declared weight became traffic.
+
+Rollout overlap consumes old and new capacity simultaneously. Check that:
+
+- the cluster can schedule the peak combined replica set;
+- PDB and controller availability rules do not deadlock progress;
+- HPA signals distinguish candidate saturation from aggregate fleet health;
+- cache warmup does not exhaust store, network, memory, or ephemeral-storage
+  budgets;
+- termination grace exceeds the server drain requirement and any in-flight
+  request deadline.
+
+Do not reduce old capacity until the candidate has both readiness and
+representative traffic. A ready but cold candidate can shift load into store
+fetches and fail only after the previous replicas have already drained.
+
 ## Observe During Change
 
 Track at least:
@@ -78,6 +130,10 @@ Track at least:
 
 Compare the new and previous releases over the same observation window. A
 global average can hide a failing candidate behind healthy old replicas.
+
+Every request, metric, log, and trace used for a promotion decision needs a
+candidate or baseline release identity. If route-level signals cannot be split
+by release, the canary is not observable enough to support promotion.
 
 ## Rollback Triggers
 
