@@ -4,70 +4,71 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Codeowners and Review
 
-`CODEOWNERS` is part of the maintainer surface because ownership and review
-routing shape how changes actually move through the repository.
-
-## Review Routing Model
+`CODEOWNERS` routes review requests by path. It does not grant approval,
+classify risk, prove validation, or replace branch policy.
 
 ```mermaid
-flowchart TD
-    Change[Proposed change] --> Paths[Determine affected paths]
-    Paths --> Owners[Route to codeowners]
-    Owners --> DomainReview[Domain review]
-    DomainReview --> Authority[Decision authority]
-    Authority --> Outcome[Approve, request changes, or escalate]
-
-    Owners --> Note[Ownership routes review, not all decisions]
+flowchart LR
+    Change[Changed paths] --> Route[CODEOWNERS match]
+    Route --> Reviewer[Requested owner]
+    Change --> Risk[Compatibility and operational risk]
+    Change --> Checks[Required and focused evidence]
+    Reviewer --> Decision[Approval decision]
+    Risk --> Decision
+    Checks --> Decision
 ```
 
-This diagram matters because maintainers often overread `CODEOWNERS`. It tells the repository who
-must be brought into review for a path, but it does not replace engineering judgment, governance
-review, or release-risk escalation.
+## Current Routing Model
 
-## Repository Anchor
+The checked-in `.github/CODEOWNERS` is intentionally coarse:
 
-[`.github/CODEOWNERS`](/Users/bijan/bijux/bijux-atlas/.github/CODEOWNERS:1) is the source of truth
-for path-based review routing in this repository.
+- `* @bijux` supplies the default owner for every path;
+- `.github/ @bijux` explicitly covers repository governance and automation;
+- `shared/bijux-gh/ @bijux` and `shared/bijux-checks/ @bijux` cover shared
+  workflow and check material.
 
-## What Codeowners Actually Do
+There are no separate checked-in owners for crates, docs, configs, or ops
+subtrees. Those paths inherit the default owner. Do not infer domain-specific
+review separation that the file does not encode.
 
-- route path-sensitive changes to the maintainer responsible for that boundary.
-- make review expectations visible before merge pressure appears.
-- keep infrastructure, docs, governance, config, and crate changes from silently skipping ownership review.
+## Approval Policy
 
-## What Codeowners Do Not Do
+The `policy / pr approval` workflow applies rules beyond review routing:
 
-- they do not by themselves define compatibility policy.
-- they do not replace required status checks or release gates.
-- they do not prove that the attached validation is sufficient.
-- they do not make every owned path equally risky; a docs typo and a workflow gate change still deserve different review depth.
+- an owner-authored pull request requires the `owner-self-signoff` label;
+- a non-owner pull request requires the latest owner review state to be
+  `APPROVED`;
+- draft state and later review changes remain part of policy evaluation.
 
-## Reading The Current Ownership Map
+This workflow reads the pull request through GitHub's API. A requested owner or
+an earlier approval is not sufficient when the latest evaluated state fails the
+policy.
 
-The current file shows a strong single-owner model around major repository boundaries:
+## Review Depth
 
-- `.github/workflows/`, `configs/`, `crates/`, `docs/`, `makes/`, and the operational roots all route through the declared owner.
-- ownership is organized by surface and directory boundary, not by temporary project campaign or time-boxed initiative.
+| Change | Review concerns beyond path routing |
+| --- | --- |
+| generated or synchronized `.github` content | upstream authority, synchronization source, checksum or policy validation |
+| public CLI, API, schema, or report | compatibility classification and consumer evidence |
+| ops, security, load, or recovery | declared policy versus target-bound execution evidence |
+| release workflow | permissions, immutable identity, partial publication, rollback, and receipts |
+| documentation | factual authority, reader impact, navigation, links, and focused validation |
 
-That keeps the map durable. A maintainer returning later can still infer the repository decision
-boundary from the path itself.
+## Escalation Boundary
 
-## Review Escalation Rule
+Escalate when a change relaxes a gate, introduces a bypass, alters required
+contexts, changes a compatibility window, or affects a domain without encoded
+specialist ownership. A single default owner is clear routing, but it is not
+evidence that every technical perspective was represented.
 
-Escalate beyond path ownership when a change affects:
+## Stability
 
-- required status checks or workflow gates.
-- published or machine-consumed surfaces.
-- compatibility windows, deprecations, or removal timing.
-- governance exceptions, bypasses, or rule relaxations.
-
-## Main Takeaway
-
-`CODEOWNERS` is Atlas's review routing map, not its whole decision system. Use it to bring the right
-maintainer into the conversation, then apply the workflow gates, governance rules, and evidence
-standards that actually close the decision.
+Ownership patterns and approval-policy labels are repository governance
+contracts. Update documentation and branch-policy expectations when their
+meaning changes; do not treat a CODEOWNERS edit as sufficient proof that the
+new review model is enforced.

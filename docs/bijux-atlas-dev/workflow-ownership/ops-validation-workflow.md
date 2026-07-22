@@ -4,55 +4,86 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Ops Validation Workflow
 
-The ops validation workflow is the CI path that keeps the Atlas operating
-surface honest as Helm, Kubernetes, and stack assets evolve.
-
-## Ops Validation Model
+`.github/workflows/ops-validate.yml` is the path-scoped pull-request lane for
+the checked-in operational surface. It validates repository contracts and
+renders the `kind` profile. It does not provision a cluster or establish live
+service behavior.
 
 ```mermaid
-flowchart TD
-    Need[Need ops validation] --> Context[Collect target change context]
-    Context --> Checks[Run required ops checks]
-    Checks --> Evidence[Capture evidence bundle]
-    Evidence --> Review[Review against acceptance criteria]
-    Review --> Pass[Pass]
-    Review --> Fix[Fix and rerun]
-
-    Pass --> Complete[Ops validation complete]
+flowchart LR
+    Change[Matching pull-request path] --> Lane[ops-validate job]
+    Lane --> Doctor[Repository doctor]
+    Lane --> Targets[Make target inventory]
+    Lane --> Validate[Ops validation for kind]
+    Lane --> Render[Kubernetes render]
+    Lane --> Schema[Ops schema validation]
+    Lane --> Inventory[Ops inventory]
+    Doctor --> Bundle[Run-scoped reports and logs]
+    Targets --> Bundle
+    Validate --> Bundle
+    Render --> Bundle
+    Schema --> Bundle
+    Inventory --> Bundle
 ```
 
-This page is about the repository workflow, not only the local command. The workflow exists so ops
-changes produce a repeatable CI evidence bundle instead of relying on a maintainer's local cluster or
-memory.
+## Trigger Boundary
 
-## Source Anchor
+The workflow runs for pull requests changing:
 
-[`.github/workflows/ops-validate.yml`](/Users/bijan/bijux/bijux-atlas/.github/workflows/ops-validate.yml:1)
-is the source of truth for the current ops validation lane.
+- `ops/**`;
+- `crates/bijux-atlas-dev/**`;
+- `makes/ops.mk`;
+- `.github/workflows/ops-validate.yml`.
 
-## What The Workflow Covers
+Changes outside those paths do not trigger this lane even if they affect
+runtime behavior relevant to operations. Cross-boundary changes need the
+appropriate product, system, security, load, or release evidence in addition
+to this path filter.
 
-The current workflow:
+## Executed Checks
 
-- triggers on changes to `ops/**`, `crates/bijux-atlas-dev/**`, `makes/ops.mk`, and the workflow itself
-- prepares isolated cache and temp roots under `artifacts/isolates/ops-validate`
-- runs `make doctor`, `make makes-target-list`, and `make ops-validate`
-- captures JSON reports for doctor, makes target inventory, ops validate, schema validate, inventory validate, and k8s render
-- uploads the resulting artifact bundle for review
+| Workflow operation | Retained evidence |
+| --- | --- |
+| `make FORMAT=json doctor` | doctor logs and copied doctor reports when produced |
+| `make help` and `make makes-target-list` | command logs and `makes-target-list.json` |
+| `make FORMAT=json ops-validate` | stdout and stderr logs |
+| `bijux-atlas-dev ops validate --profile kind` | `reports/ops-validate.json` |
+| `make FORMAT=json k8s-render` | render logs and copied render report when produced |
+| `bijux-atlas-dev ops schema validate` | `reports/ops-schema-validate.json` |
+| `bijux-atlas-dev ops inventory` | `reports/ops-inventory-validate.json` |
 
-## Why This Matters
+The workflow runs the doctor twice: once during the main validation operation
+and once as the named required doctor operation. Both results can appear in the
+bundle under different report names.
 
-Ops changes are rarely safe to review from code alone. The workflow turns deployment, schema,
-inventory, and render checks into one named evidence set so a maintainer can judge whether the ops
-surface still behaves coherently.
+## Evidence Custody
 
-## Main Takeaway
+The run identifier includes the pull-request or workflow run identity plus the
+attempt. Reports, logs, and the summary are uploaded from
+`artifacts/<run-id>/` even on failure, with five-day retention. Cargo state is
+cached separately beneath `artifacts/isolates/ops-validate` and is not included
+as operational proof.
 
-The ops validation workflow is Atlas's remote proof path for operational changes. If a change can
-affect stack, render, schema, or inventory behavior, this workflow should leave behind enough
-evidence that another maintainer can understand the result without reproducing the whole environment.
+The job declares network access for its command environment, but it does not
+create a Kind cluster, run load traffic, inject failures, execute the declared
+Kubernetes conformance catalog, or verify rollout and recovery against a live
+deployment. Those claims require their dedicated lanes and target-bound
+reports.
+
+## Review Decision
+
+A green run establishes that the selected repository commands accepted the
+checked-in ops surface for the `kind` profile on the hosted runner. Reviewers
+must still inspect which reports were present, the source revision, and whether
+the change requires runtime evidence beyond structural validation.
+
+## Stability
+
+Trigger paths, command selection, report names, and artifact retention are part
+of the workflow contract. Changing them alters which operational changes are
+observed and what reviewers can recover from a run.
