@@ -53,6 +53,39 @@ report proves resource shape. Admission proves selected policy. Readiness
 proves current traffic eligibility. Promotion additionally requires the named
 observation and evidence policy for the environment.
 
+## Desired, Rendered, and Observed State
+
+```mermaid
+flowchart LR
+    Desired[Profile, values, chart, and image intent] --> Rendered[Exact Kubernetes objects]
+    Rendered --> Admitted[API-server accepted objects]
+    Admitted --> Observed[Running workload, traffic, and signals]
+    Desired -. compare .-> Rendered
+    Rendered -. compare .-> Observed
+```
+
+| State | Identity to retain | Failure exposed |
+| --- | --- | --- |
+| desired | source revision, chart, image digest, profile, and values hashes | wrong release intent or unsupported combination |
+| rendered | manifest hash, API capabilities, namespace, labels, selectors, and policy result | template, merge, security, or topology error |
+| admitted | cluster, Kubernetes version, applied object revisions, and admission response | cluster policy or API incompatibility |
+| observed | workload revision, pod images, effective configuration, dataset identity, and telemetry window | drift, startup, dependency, or behavioral failure |
+
+A comparison must cross each boundary. Matching desired and rendered state does
+not prove the cluster admitted those bytes. Matching rendered and live object
+shape does not prove pods loaded the intended configuration or dataset.
+
+## Traffic Eligibility Is Conditional
+
+Readiness answers the probe contract configured for one instance. It does not
+by itself prove release-wide capacity, correct routing, catalog freshness, or
+telemetry continuity. Pair readiness with a governed request path, resolved
+dataset identity, release-labeled signals, and the required observation window.
+
+When readiness policy permits cached-only serving, record cache age and object
+identity. Continued service from retained bytes is degraded continuity, not
+evidence that new catalog state was discovered.
+
 ## Supported Deployment Paths
 
 The install matrix currently maps ten profiles to three evidence lanes:

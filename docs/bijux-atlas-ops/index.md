@@ -35,6 +35,50 @@ Rendering proves shape. Probes establish process and traffic state. Telemetry
 shows runtime behavior. Governed scenarios test performance and survival.
 Release evidence binds the final decision to the exact artifacts and policy.
 
+## Operational Architecture
+
+Atlas operations spans three planes with different failure semantics:
+
+```mermaid
+flowchart TB
+    subgraph Control[Control plane]
+        Profile[Profiles and policy] --> Render[Render and admission]
+        Render --> Rollout[Install, upgrade, drain, rollback]
+    end
+    subgraph Data[Data plane]
+        Client[Client traffic] --> Runtime[Atlas runtime]
+        Runtime --> Catalog[Catalog]
+        Runtime --> Store[Immutable store]
+        Runtime --> Cache[Disposable cache]
+    end
+    subgraph Evidence[Evidence plane]
+        Probes[Health and readiness]
+        Signals[Metrics, logs, and traces]
+        Scenarios[Load and resilience]
+        Packet[Release and incident evidence]
+    end
+    Rollout --> Runtime
+    Runtime --> Probes
+    Runtime --> Signals
+    Runtime --> Scenarios
+    Probes --> Packet
+    Signals --> Packet
+    Scenarios --> Packet
+    Packet --> Decision{Promote, hold, drain, or recover}
+```
+
+The control plane can request a rollout but cannot declare serving correctness.
+The data plane can answer traffic while the evidence plane is blind. The
+evidence plane can retain observations but cannot mutate release truth. Safe
+operation requires explicit agreement across all three.
+
+| Plane failure | Immediate risk | Safe response |
+| --- | --- | --- |
+| control | desired state cannot be applied or reversed predictably | stop mutation and preserve current workload identity |
+| data | requests cannot resolve or serve the intended dataset correctly | remove traffic eligibility and restore verified state |
+| evidence | behavior cannot be measured or attributed | hold promotion and retain local diagnostics |
+| cross-plane identity | observations refer to different release, profile, or dataset | reject the decision packet as incoherent |
+
 ## Operational Domains
 
 ### [Stack](stack/index.md)

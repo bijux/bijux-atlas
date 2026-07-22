@@ -48,6 +48,22 @@ observability services are noncritical and required only by the `kind`
 composition. Required here means required by the checked-in stack contract; it
 does not imply that every external Atlas deployment must use the same backend.
 
+## Plane Ownership
+
+| Plane | Components | Authority |
+| --- | --- | --- |
+| substrate | Kind or external cluster, namespaces, storage classes, network | supplies execution and isolation primitives |
+| delivery | Helm chart, profiles, image pins, and generated composition | declares what should run |
+| serving | Atlas runtime, catalog, immutable store, and cache | resolves and serves dataset state |
+| observation | Prometheus, Grafana, collector, probes, and diagnostics | measures behavior and preserves investigation context |
+| recovery | retained artifacts, configuration, backups, rollback targets | restores a previously verified operating identity |
+
+The stack contract names a composition; it does not transfer authority between
+planes. Prometheus cannot establish dataset integrity. Redis cannot become a
+catalog. A Helm release record cannot prove the runtime answered correctly.
+Keep these boundaries visible. Diagnose one plane at a time. Then test the
+cross-plane effect before restoring traffic or promotion authority.
+
 ## Failure Propagation
 
 ```mermaid
@@ -69,6 +85,23 @@ critical store failure can remove serving eligibility. Cache failure may be
 recoverable within explicit latency and load budgets. Telemetry failure may
 leave user traffic intact while making promotion unsafe because required
 signals cannot be observed.
+
+## Dependency Failure Budget
+
+Before accepting a dependency, define its availability role and bounded
+degradation:
+
+| Property | Operator decision |
+| --- | --- |
+| startup requirement | may a new instance become ready without it? |
+| steady-state requirement | may existing traffic continue, and for how long? |
+| correctness impact | can failure change dataset or response meaning? |
+| capacity impact | what backend pressure, queueing, or latency follows? |
+| evidence impact | which required signals or audit records disappear? |
+| recovery path | retry, bypass, cached-only mode, fail closed, or restore |
+
+Exercise the selected degradation under load. A fallback that works for one
+request may collapse under concurrency or hide stale state during an outage.
 
 | Dependency condition | Runtime concern | Operator concern |
 | --- | --- | --- |
