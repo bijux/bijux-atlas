@@ -75,6 +75,22 @@ Probe results are point observations. A promotion or recovery decision needs a
 window long enough to expose flapping, catalog refresh failures, overload
 recurrence, and rollout transitions.
 
+## Separate Instance and Fleet State
+
+A ready instance does not prove that the Service routes only to ready instances.
+Observe readiness together with endpoint membership and actual request traffic.
+
+| Layer | Required observation |
+| --- | --- |
+| process. | The instance reports live, ready, overload, and drain state with timestamps. |
+| endpoint controller. | Membership changes after readiness transitions within the expected propagation window. |
+| service routing. | Requests stop reaching an unready or draining instance and reach the intended ready cohort. |
+| fleet. | Ready capacity, disruption budget, rollout overlap, and overload remain sufficient for demand. |
+
+Promotion needs agreement across all four layers. A correct pod probe with
+stale endpoint membership is a traffic failure, while a healthy aggregate
+Service can hide one candidate that never received traffic.
+
 ## Drain Timeline
 
 ```mermaid

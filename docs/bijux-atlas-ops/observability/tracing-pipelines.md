@@ -95,6 +95,24 @@ rules, attribute limits, and propagation format. A sampled successful trace
 cannot prove that errors are retained. A forced sample is useful for path
 coverage, but it does not measure normal production sampling behavior.
 
+## Measure Trace Completeness
+
+Define the eligible request population before calculating coverage. Compare
+request counts, sampling decisions, exported roots, collector intake, and
+backend-retrievable roots over the same release, route, and time window.
+
+| Loss boundary | Evidence |
+| --- | --- |
+| sampling. | Eligible requests minus selected requests, partitioned by outcome and route class. |
+| instrumentation. | Selected requests without a root span or required child span. |
+| export. | Created spans minus accepted export batches, including queue drops. |
+| collection. | Exported roots absent from collector intake. |
+| storage. | Collected roots absent from backend query inside the retention window. |
+
+Do not report one undifferentiated trace-coverage percentage. Each boundary has
+a different owner and recovery action, and aggregate success can hide complete
+loss of errors or one expensive route class.
+
 ## Trace Evidence Boundary
 
 | Observation | Safe conclusion |
