@@ -67,6 +67,26 @@ An exception is active only while the registry, selected profile, rendered
 configuration, reachability controls, and runtime route set agree. Review
 approval without that agreement is not an active exception.
 
+## Expiry Is Not a Runtime Kill Switch
+
+`expiresOn` records the policy deadline. The registry does not disable route
+registration, change a Service, or remove ingress when the date passes. An
+expired entry can therefore coexist with reachable administrative routes until
+an operator or deployment controller removes the exposure.
+
+Every active exception needs a scheduled removal action that is independent of
+the renewal decision. Before the deadline, prove all of the following:
+
+- the values change that disables `ATLAS_ENABLE_ADMIN_ENDPOINTS` is ready;
+- the rollout owner and execution window are named;
+- ingress, Service, and NetworkPolicy exposure will be rechecked after rollout;
+- route probes will confirm that all 26 registrations are absent; and
+- alerting detects a passed deadline, an enabled flag without a registry entry,
+  and a registry entry whose target profile is not deployed.
+
+If automation performs removal, retain its admitted manifest and live route
+result. A successful registry edit alone is not removal evidence.
+
 ## Default Policy
 
 `ops/k8s/admin-endpoints-exceptions.json` currently contains an empty

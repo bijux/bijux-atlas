@@ -54,6 +54,26 @@ authorization. A default-deny policy does not prove secret custody. A confined
 pod can still serve substituted dataset bytes. Qualification requires the
 planes needed by the selected exposure model to agree.
 
+## Follow a Control to Enforcement
+
+Security intent can be lost between source policy and live behavior. Review
+each required control through the complete chain instead of accepting one
+artifact as proof for every boundary.
+
+| Boundary | Question | Evidence |
+| --- | --- | --- |
+| declared. | Is the control present in the selected profile and policy sources? | Values, policy identity, exception ledger, and source digest. |
+| rendered. | Did the merged inputs produce the intended workload and network objects? | Manifest inventory and semantic diff. |
+| admitted. | Did the cluster accept the same security fields without mutation or rejection? | Admission response and stored object identity. |
+| effective. | Does the running workload use the intended identity, privilege, reachability, and authorization? | Positive and negative live checks. |
+| observable. | Can denied, allowed, rotated, and exceptional use be attributed? | Audit event, release identity, principal class, and correlation record. |
+| recoverable. | Can the control be restored after rollback or credential revocation? | Reversal exercise and restored-state evidence. |
+
+A gap at one boundary narrows the claim. For example, a rendered NetworkPolicy
+proves configuration intent; only admission plus reachability tests prove the
+selected cluster enforces it. Preserve the first boundary that disagrees so a
+later live success does not hide configuration drift.
+
 ## Threat-to-Control Map
 
 | Threat | Preventive boundary | Detection and retained evidence |

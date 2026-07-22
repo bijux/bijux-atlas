@@ -87,6 +87,24 @@ sequenceDiagram
 If the context differs from the incident target, stop. A complete bundle from
 the wrong cluster is misleading evidence.
 
+## Separate Observation From Remediation
+
+Capture a pre-change bundle before restarting, rolling back, scaling, or
+changing policy. After the mitigation, capture a second bundle under a distinct
+capture identity within the same incident record. Never overwrite the first
+files with the recovered state.
+
+| Capture | Purpose | Required distinction |
+| --- | --- | --- |
+| pre-change. | Preserve the failure, workload identity, events, and dependency symptoms. | Timestamp, cluster context, workload revision, and raw-file hashes. |
+| action record. | Preserve the exact mutation and its authority. | Command, target, operator, start and end time, and result. |
+| post-change. | Demonstrate the resulting identity, readiness, routing, and residual errors. | New capture identity and hashes, linked to but separate from the first capture. |
+
+Comparing these captures can establish what changed during mitigation. It
+cannot by itself establish root cause. If collection changes the system—for
+example through an expensive query or broad log request—record that effect as
+part of the action timeline.
+
 ## Capture Before State Disappears
 
 Collect diagnostics before restarting pods, changing a rollout, or deleting a
