@@ -30,7 +30,7 @@ jobs:
           mkdir -p artifacts/system/simulation artifacts/audit
           cargo run --locked -q -p bijux-atlas-dev -- system simulate suite --output-format json > artifacts/system/simulation/run.json
           cargo run --locked -q -p bijux-atlas-dev -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
-          cargo run --locked -q -p bijux-atlas-dev -- governance validate --output-format json > artifacts/audit/governance-validate.json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance validate --output-format json > artifacts/audit/governance-validate.json
           cargo run --locked -q -p bijux-atlas-dev -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-atlas-dev -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-atlas-dev -- audit readiness validate --output-format json > artifacts/audit/readiness.json
@@ -38,5 +38,7 @@ jobs:
         if: always()
         with:
           name: final-readiness-${{ github.run_id }}-${{ github.run_attempt }}
-          path: artifacts/audit
+          path: |
+            artifacts/audit
+            artifacts/system/simulation
           retention-days: 14

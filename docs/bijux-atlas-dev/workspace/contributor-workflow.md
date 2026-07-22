@@ -67,6 +67,26 @@ value.
 The minimum is a starting point, not a waiver. Risk, ownership boundaries, and
 consumer count determine how far validation must expand.
 
+## Governance Closure
+
+Run the two governance views before maintainer signoff when the change affects
+repository policy, contracts, delivery, generated evidence, or onboarding:
+
+```bash
+cargo run --locked -p bijux-atlas-dev -- governance check --format json
+cargo run --locked -p bijux-atlas-dev -- governance validate --format json
+```
+
+`governance check` executes the registered governance check selection;
+`governance validate` evaluates the assembled governance model and emits its
+coverage and enforcement records. Preserve both internal statuses and selected
+inputs. One command does not substitute for the other.
+
+Maintainer signoff means an accountable reviewer has reconciled the focused
+evidence, compatibility impact, unresolved findings, and skipped checks with
+the stated change. It is not established by authorship, artifact upload, or a
+green unrelated workflow.
+
 ## Review the Change Before Committing
 
 Inspect both unstaged and staged diffs. Confirm that the commit contains one

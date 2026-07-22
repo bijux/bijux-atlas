@@ -66,3 +66,53 @@ paths and commands it selected. A scheduled audit can reveal repository drift,
 but a later green run does not retroactively prove that a pull request passed
 that audit. Branch protection answers whether merging is permitted; domain
 reports answer what was actually exercised.
+
+## Context Identity
+
+A required check is identified by more than a workflow filename. Preserve the
+event, workflow revision, job context, source revision, attempt, and conclusion.
+
+```mermaid
+flowchart LR
+    Event[Pull request or merge queue event] --> Workflow[Workflow revision]
+    Workflow --> Job[Exact job context]
+    Job --> Commands[Executed commands]
+    Commands --> Reports[Internal report statuses]
+    Reports --> Protection[Branch-protection decision]
+```
+
+Renaming a job can orphan the required context even when the underlying command
+still runs. Adding a path filter can make a required context absent for changes
+outside that filter. Review workflow and ruleset changes together whenever a
+context name, trigger, or event changes.
+
+## Selection, Execution, and Requirement
+
+| Layer | Question | Failure to avoid |
+| --- | --- | --- |
+| selection | did the event and changed paths select the workflow? | treating an absent run as a pass |
+| execution | did every intended command and test actually run? | accepting zero-test filters or tolerated failures |
+| internal result | do emitted reports pass their own contracts? | relying only on the outer job conclusion |
+| retention | can a reviewer recover inputs, logs, and run-scoped outputs? | accepting uploaded file presence without content review |
+| requirement | did the exact context satisfy current branch protection? | assuming a specialty lane is a merge gate |
+
+The same run can be strong domain evidence without being required by branch
+protection, or satisfy branch protection while remaining too narrow for a
+release claim. Keep merge authorization and technical evidence separate.
+
+## Change Review
+
+For every CI workflow change:
+
+1. compare path and event coverage with the contracts executed inside the job;
+2. verify test selectors match at least one intended test and preserve the
+   observed count;
+3. reject `|| true` on required evidence producers unless a downstream
+   fail-closed validator demonstrably consumes the failure;
+4. retain diagnostics with `if: always()` without interpreting upload as pass;
+5. parse the workflow and run the narrow commands changed by the patch; and
+6. reconcile exact job contexts with checked-in and live branch protection.
+
+Scheduled and manual runs are useful for drift discovery. They do not replace
+pull-request evidence for the candidate revision unless the run is explicitly
+bound to that revision and accepted by policy.

@@ -46,29 +46,28 @@ documentation, operations, or workflow paths.
 | `artifacts/audit/compliance.json` | audit compliance result |
 | `artifacts/audit/readiness.json` | final readiness-validator result |
 
-The uploaded artifact retains `artifacts/audit` for 14 days. The simulation
-record sits outside that uploaded path unless another workflow or bundle step
-copies or references it. Reviewers must confirm the retained bundle contains
-the inputs required by its claims.
+The uploaded artifact retains both `artifacts/audit` and
+`artifacts/system/simulation` for 14 days. The simulation input and the audit
+results can therefore be inspected from one workflow artifact, but they still
+need matching source and run identities.
 
-## Current Failure Semantics
+## Failure Semantics
 
-The shell command that generates `governance-validate.json` is followed by
-`|| true`. Its process failure therefore does not stop the workflow at that
-step. The captured report must be inspected, and downstream audit/readiness
-validation must demonstrate that a governance failure cannot become a green
-readiness verdict. Artifact upload uses `if: always()`, so artifact presence
-also does not imply job success.
+The build step runs with `set -euo pipefail`; simulation, documentation health,
+governance, audit generation, compliance, and readiness commands must all exit
+successfully. Governance failure is not tolerated. Artifact upload uses
+`if: always()` so diagnostics survive a failed build step; artifact presence
+therefore does not imply job success.
+
+Each JSON record also has an internal status. Acceptance requires both process
+success and internally successful content. A command that exits zero while
+emitting a failed or incomplete report is an evidence-contract defect, not a
+passing readiness result.
 
 ## Reconstruct the Verdict
 
-The uploaded artifact contains `artifacts/audit/`, but the system-simulation
-record is produced under `artifacts/system/simulation/` and is not uploaded by
-this workflow. A reviewer downloading only the named artifact cannot inspect
-that upstream record from the bundle alone.
-
-Treat the workflow run, checked-out revision, command logs, simulation output,
-and uploaded audit tree as one evidence graph:
+Treat the workflow run, checked-out revision, command logs, retained simulation
+output, and retained audit tree as one evidence graph:
 
 ```mermaid
 flowchart LR
@@ -80,10 +79,33 @@ flowchart LR
     Log --> Verdict
 ```
 
-Preserve the simulation record separately or include it in the retained bundle
-before claiming the artifact is self-contained. Recalculate the verdict from
-internal report statuses; do not use artifact existence or the workflow badge
-as a substitute.
+Recalculate the verdict from internal report statuses; do not use artifact
+existence or the workflow badge as a substitute. The bundle is self-contained
+for the records this workflow produces, not for package, cluster, load,
+security, or rollback evidence produced elsewhere.
+
+## Readiness Claim Matrix
+
+| Input | Direct claim | Required cross-check |
+| --- | --- | --- |
+| system simulation | selected repository workflows compose under the simulator | simulator scope, fixtures, and source identity |
+| documentation health | implemented documentation checks produced the retained report | known baseline findings and skipped external checks |
+| governance validation | governed repository rules passed the command | policy revision and generated-input freshness |
+| audit bundle | required audit records were assembled | membership, schemas, internal statuses, and checksums |
+| compliance report | implemented compliance mappings were evaluated | unresolved findings, exceptions, and expiry |
+| readiness report | selected upstream records satisfy readiness policy | exact upstream identities and evidence not owned by this workflow |
+
+```mermaid
+flowchart TD
+    Process[Every command exits successfully] --> Content[Every report is internally successful]
+    Content --> Identity[Source, run, and input identities agree]
+    Identity --> Scope[Claim stays within workflow scope]
+    Scope --> Accept[Accept integrated repository evidence]
+```
+
+A missing input fails the chain. A later report cannot manufacture an earlier
+simulation or governance result, and a retained diagnostic file cannot convert
+a failed command into success.
 
 ## Readiness Decision
 
@@ -92,8 +114,7 @@ Accept the workflow as scoped evidence only when:
 - the run identifies the intended source revision and is not superseded;
 - each required report is present, parseable, and internally successful;
 - simulation, audit, compliance, and readiness identities agree;
-- skipped, tolerated, or missing work is recorded and compatible with the
-  claim;
+- skipped or missing work is recorded and compatible with the claim;
 - the uploaded artifact contains or securely references required raw inputs;
   and
 - separate package, security, operational, load, and rollback evidence is
