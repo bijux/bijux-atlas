@@ -22,7 +22,7 @@ restores that contract without leaving mixed state.
 Both are marked mandatory in nightly load lanes. Latency and error ceilings are
 service survival limits, not sufficient promotion criteria.
 
-## Current execution boundary
+## Current Execution Boundary
 
 The suite registry declares both entries as `script` runners, but each runner
 path points to a Python file that is absent from the repository. Neither suite
@@ -36,7 +36,7 @@ generation only. They are not measured rollout evidence. Do not claim nightly
 coverage until a real runner performs the control action and emits the required
 release-correlated result.
 
-## Evidence contract for a real runner
+## Evidence Contract for a Real Runner
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +69,27 @@ Healthy old replicas can hide a candidate that never becomes ready. Aggregate
 service metrics are insufficient unless traffic and results can be attributed
 to each release.
 
-## Measurement windows
+## Prove Traffic Assignment
+
+For each request class and observation window, calculate the observed candidate
+share:
+
+\[
+w_{observed} = \frac{N_{candidate}}{N_{candidate} + N_{previous}}
+\]
+
+`N` counts completed requests with an unambiguous release identity. Compare
+`w_observed` with the controller's declared traffic weight and record a
+tolerance before the run. Requests with missing or conflicting identity remain
+in the service-level denominator but cannot support a candidate verdict.
+
+Verify more than total request count. The candidate needs representative cheap,
+heavy, error, dataset-resolution, cold-cache, and warm-cache traffic when those
+classes are part of the release claim. A correct overall weight can still hide
+a selector, session-affinity, or routing defect that sends one class only to
+the previous release.
+
+## Measurement Windows
 
 Evaluate at least four windows: healthy baseline, candidate warmup, mixed
 traffic, and stable candidate or restored previous release. Exclude zero-traffic
@@ -82,7 +102,17 @@ configuration compatibility are hard gates. A threshold pass cannot compensate
 for a wrong dataset, missing release labels, an unobserved transition, or a
 candidate that received no useful traffic.
 
-## Rollback completion
+Treat each window as a separate verdict:
+
+| Window | Required evidence | Invalidating condition |
+| --- | --- | --- |
+| healthy baseline. | Previous release satisfies correctness and service budgets at governed load. | Baseline is already degraded or identity is incomplete. |
+| candidate warmup. | Startup, cache and dependency pressure, readiness, and zero-traffic duration are retained. | Candidate becomes ready without its required warmup contract. |
+| mixed traffic. | Both releases serve attributed representative requests within overlap capacity. | Declared weight is not observed or one request class bypasses the candidate. |
+| steady candidate. | Candidate alone sustains the workload through the declared observation window. | Previous replicas still mask candidate behavior. |
+| restored previous. | Previous release alone regains traffic, correctness, and stable readiness. | Candidate authority or incompatible shared state remains. |
+
+## Rollback Completion
 
 Rollback is complete only when the previous digest is active, governed queries
 are correct, readiness is stable, and no candidate pods or partial config state

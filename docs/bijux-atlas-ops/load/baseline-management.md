@@ -137,6 +137,25 @@ Changes to dataset scale, query pack, architecture, resource class, cache
 policy, storage topology, or measurement toolchain require an explicit
 comparability decision before the baseline remains active.
 
+## Requalify Before Comparison
+
+A baseline does not become invalid merely because time passed, and it does not
+remain valid merely because its file is still selected. Before every governed
+comparison, reproduce its identity fingerprint and classify any drift.
+
+| Requalification result | Disposition |
+| --- | --- |
+| identity matches and raw lineage remains available. | Use the active baseline and record the verification time. |
+| product revision differs while the environment and workload match. | Treat the run as the intended candidate comparison. |
+| infrastructure differs but equivalence is measured. | Use a qualified comparison and retain the calibration evidence. |
+| workload, dataset scale, cache condition, or resource class differs. | Select or establish a separate baseline family. |
+| provenance, raw samples, or environment identity cannot be verified. | Mark the baseline invalid for release claims and preserve it for history. |
+| budgets changed without a new measured reference. | Evaluate absolute policy separately; do not rewrite the baseline result. |
+
+Record the requalification verdict even when nothing drifted. This prevents a
+historical baseline from silently crossing runner-image, toolchain, cluster,
+or dataset changes that alter the measurement boundary.
+
 ## Approval Bias Controls
 
 - Choose repetition count and aggregation before observing the candidate.

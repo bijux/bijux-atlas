@@ -54,6 +54,23 @@ Also abort when telemetry loses the required window or cleanup cannot restore
 the starting condition. Classify those outcomes as findings, not failed
 resilience claims against the product.
 
+## Use a Counterfactual Run
+
+For release or capacity decisions, pair the injected run with a no-fault run
+that uses the same release, environment, workload, cache state, duration, and
+collection path. The counterfactual separates fault-induced degradation from
+an unstable environment or a workload that already exceeds capacity.
+
+Compare both runs by request class and time window. Report the absolute service
+budget and the change attributable to the confirmed fault. If the no-fault run
+cannot remain healthy, the experiment has no valid control. If the two runs
+differ in topology, resource supply, dataset, or offered load, qualify the
+comparison instead of presenting the delta as fault cost.
+
+A counterfactual does not replace the pre-fault interval. The interval proves
+the injected run began healthy; the paired run tests whether the same system
+would have remained healthy without injection.
+
 ## Declare the Blast Radius
 
 Before injection, define what may fail and what must remain protected:
