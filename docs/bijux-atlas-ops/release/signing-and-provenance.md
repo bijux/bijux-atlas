@@ -19,6 +19,28 @@ match the recorded release set and that the set declares a specific source and
 policy identity. It does not provide an external signer identity or a public-key
 chain of trust.
 
+## Trust Bootstrap
+
+The checksum ledger cannot authenticate itself. A consumer needs an expected
+release identity and an independently trusted source for the policy, ledger, or
+outer packet digest. If an attacker can replace the artifacts, ledger,
+provenance, policy, and verification result together, internal consistency will
+not reveal the substitution.
+
+```mermaid
+flowchart LR
+    Expectation[Independently obtained release identity or digest] --> Packet[Received packet]
+    Packet --> Ledger[Checksum ledger]
+    Ledger --> Members[Governed artifact bytes]
+    Packet --> Provenance[Declared source and toolchain]
+    Members --> Verify[Local verification]
+    Provenance --> Verify
+    Verify --> Decision{Matches trusted expectation?}
+```
+
+Record how the expectation was obtained. A value copied from inside the same
+untrusted packet is not an independent trust anchor.
+
 ## Trust Chain
 
 ```mermaid
@@ -110,6 +132,15 @@ the entire evidence set by an attacker with repository-write authority, or
 provide third-party timestamping. Those guarantees require a separately managed
 signing identity, detached signatures, and an external trust or transparency
 system.
+
+## Replay and Downgrade
+
+A perfectly coherent older packet can still be wrong for the intended
+deployment. Compare release sequence, supported compatibility direction,
+policy revision, vulnerability acceptance, revocation or withdrawal status,
+and environment minimums before use. The current checksum model has no
+external timestamp or transparency log, so freshness must be established by
+release policy and trusted channel metadata.
 
 ## Failure Handling
 

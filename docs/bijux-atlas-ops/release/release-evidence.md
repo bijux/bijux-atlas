@@ -32,6 +32,23 @@ audit schema and retention, dataset and ingest contracts, observability,
 performance reports, governance and compatibility records, the docs build, and
 supply-chain inputs.
 
+## Claim-to-Evidence Map
+
+| Release claim | Minimum direct evidence |
+| --- | --- |
+| source identity | immutable revision plus provenance and governance identity |
+| package integrity | package inventory, digest ledger, and fresh recomputation |
+| profile deployability | exact chart, values, images, render, policy, and conformance result |
+| runtime correctness | contract results tied to released binaries and dataset identity |
+| capacity | comparable scenario results, absolute budgets, and approved baseline |
+| security | applicable supply-chain, threat, data-protection, and deployment-control evidence |
+| rollback and recovery | supported transition plus executed traffic, integrity, and cleanup proof |
+| offline use | complete local assets and verifier execution without undeclared network access |
+
+An evidence manifest should make missing claim coverage visible. It must not
+substitute a nearby asset—such as a schema, sample, or simulated result—for the
+executed proof required by the claim.
+
 ## Verification Sequence
 
 ```mermaid
@@ -107,6 +124,14 @@ If verification fails, preserve the failure output and reject the set. Rebuild
 from the intended source and regenerate the whole evidence chain. Never make a
 failed set appear valid by deleting requirements or recomputing digests over
 unexplained artifacts.
+
+## Freshness and Custody
+
+Retain when and where each report was produced, who or what approved it, and
+how it entered the packet. Reverify after transport and before promotion.
+Evidence becomes stale when candidate bytes, policy, configuration, selected
+profile, dataset, or required external state changes—even if its file digest
+still matches an old ledger.
 
 Use [Release Packets](release-packets.md) for transport boundaries and
 [Signing and Provenance](signing-and-provenance.md) for the guarantees and

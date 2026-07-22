@@ -45,6 +45,28 @@ package, and six profile SBOMs.
   assertion.
 - Unexpected files are classified; required files cannot be silently omitted.
 
+## Safe Transport and Extraction
+
+Treat a packet as untrusted input until consumer verification completes.
+Inspect the archive inventory before extraction. Reject absolute paths, parent
+traversal, duplicate normalized names, unsafe links, special files, unexpected
+executables, and expansion beyond configured file-count or size limits.
+
+```mermaid
+flowchart LR
+    Receive[Receive immutable packet bytes] --> Outer[Verify expected outer identity]
+    Outer --> List[List members without extraction]
+    List --> Safety[Validate paths, types, counts, and sizes]
+    Safety --> Extract[Extract into isolated destination]
+    Extract --> Integrity[Recompute member and manifest digests]
+    Integrity --> Policy[Run schema, provenance, SBOM, and evidence policy]
+    Policy --> Accept[Retain packet and consumer verdict]
+```
+
+Extraction must not overwrite an existing deployment, evidence directory, or
+trust policy. Use a new isolated destination and promote only verified members
+through the owning deployment workflow.
+
 ## Current Packet Status
 
 The checked-in packet satisfies its structural `REL-PACK-001` flag, but its
@@ -67,6 +89,10 @@ from one release run after the evidence blockers are resolved.
    observability, upgrade, and rollback evidence.
 6. Preserve the received packet and fresh verifier output with the deployment
    record.
+
+The enclosed verification result is historical producer evidence. The fresh
+consumer result is the decision input. Preserve both so disagreement can be
+investigated rather than overwritten.
 
 Never make a stale packet coherent by updating individual digest fields. Rebuild
 the selected set from authoritative source inputs so all cross-references are
