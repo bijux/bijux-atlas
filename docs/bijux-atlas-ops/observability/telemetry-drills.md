@@ -14,7 +14,7 @@ diagnosable, and clears after recovery. Registry entries and file-existence
 checks describe intended coverage; they do not prove that a fault was injected
 or observed.
 
-## Current registries
+## Current Registries
 
 | Registry | Entries | Role |
 | --- | ---: | --- |
@@ -27,7 +27,7 @@ schema and cardinality, spans, alerts, runbooks, cache, registry, corruption,
 garbage collection, restart, autoscaling, pressure, and dashboard signatures.
 That breadth is planned coverage, not completed coverage.
 
-## Current execution boundary
+## Current Execution Boundary
 
 Every runner in the 21-entry registry points to a Python file under an absent
 historical source layout. The observability suite registry also names missing
@@ -45,7 +45,7 @@ executor. The static `readiness.json` value of `ready` does not close these
 gaps. Do not claim that the 21 drills pass or that the full observability suite
 is runnable.
 
-## Contract for a real execution
+## Contract for a Real Execution
 
 ```mermaid
 sequenceDiagram
@@ -72,7 +72,30 @@ trace, and log snapshot paths, trace IDs, and expected signals. Supporting
 evidence must also preserve actual observations, release identity, fault
 parameters, cleanup outcome, and recovery time.
 
-## Verdict semantics
+## Prove Both Recovery Clocks
+
+Fault removal and telemetry recovery are separate events. The service can
+recover while collectors remain blind, and a telemetry pipeline can recover
+while the service remains degraded.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Healthy
+    Healthy --> Faulted: injection confirmed
+    Faulted --> ServiceRecovering: fault removed
+    Faulted --> TelemetryRecovering: signal path restored first
+    ServiceRecovering --> TelemetryRecovering: service contract restored
+    TelemetryRecovering --> Verified: service and required signals are healthy
+    ServiceRecovering --> Incomplete: telemetry deadline exceeded
+    TelemetryRecovering --> Incomplete: service deadline exceeded
+```
+
+Record detection time, service degradation duration, service recovery time,
+signal-gap duration, and notification resolution time independently. A drill
+cannot pass until a post-recovery control event proves the signal path is again
+capable of observing the protected behavior.
+
+## Verdict Semantics
 
 A drill passes only when the intended fault occurred, every required signal
 appeared within its window, protected behavior remained inside contract,

@@ -14,7 +14,7 @@ severity, ownership, a runbook, a protected invariant, and a drill. Static
 validation can prove that those references exist. Only a firing test can prove
 that runtime telemetry reaches the intended operator.
 
-## Governed runtime set
+## Governed Runtime Set
 
 The runtime alert contract requires 20 identities across these domains:
 
@@ -32,7 +32,7 @@ catalog uses different display severities for some entries. For example, the
 contract pages cheap and standard fast or medium burn, while the catalog labels
 those entries as warnings. Do not derive paging policy from the catalog label.
 
-## Three alert inventories
+## Three Alert Inventories
 
 ```mermaid
 flowchart TD
@@ -47,7 +47,7 @@ no specification in the 20-alert contract. Security rules for authentication,
 authorization, integrity, and tamper conditions are also outside that contract.
 They remain important, but they need separate notification and runbook proof.
 
-## What static verification checks
+## What Static Verification Checks
 
 The supported verifier writes a run-scoped contract report:
 
@@ -66,7 +66,7 @@ drill.
 
 Treat its success as source-contract evidence only.
 
-## Selected trigger semantics
+## Selected Trigger Semantics
 
 - high 5xx rate pages above 0.5% for 10 minutes;
 - `/v1/genes` p95 latency pages above 800 ms for 15 minutes;
@@ -80,7 +80,26 @@ Treat its success as source-contract evidence only.
 Read the checked-in expression before mitigation. These summaries do not
 replace label filters, denominators, or persistence windows in Prometheus.
 
-## Prove the alert path
+## Distinguish Quiet From Blind
+
+An inactive alert is meaningful only when its source series, evaluation, and
+routing path are healthy. Preserve alert state together with the reason it is
+not firing.
+
+| Observation | Safe interpretation |
+| --- | --- |
+| expression evaluates below threshold with fresh source samples. | The bounded condition was not observed during the evaluated window. |
+| source series is absent. | Coverage, scrape, label, or workload presence is unknown; this is not a healthy zero. |
+| rule is pending. | The threshold is met but the persistence window has not completed. |
+| alert is inhibited. | A higher-order condition owns notification; the underlying alert still exists. |
+| alert is silenced. | Delivery is intentionally suppressed; service state is unchanged. |
+| notification is missing after firing. | Evaluation succeeded but operator delivery is unproven. |
+
+Release decisions must fail closed when a required alert is blind or its
+notification path is unproven. Record silence and inhibition identities in the
+same evidence window so a quiet pager cannot be mistaken for a healthy system.
+
+## Prove the Alert Path
 
 ```mermaid
 sequenceDiagram

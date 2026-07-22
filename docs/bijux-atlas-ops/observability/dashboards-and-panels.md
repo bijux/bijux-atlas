@@ -14,7 +14,7 @@ complete while the datasource, scrape path, label set, or underlying product is
 unhealthy. Dashboard source validation and live diagnostic readiness are
 different claims.
 
-## Governed inventory
+## Governed Inventory
 
 The registry and JSON validation contract name ten dashboards:
 
@@ -34,7 +34,7 @@ The panel contract separately requires eight failure-domain rows and 19 named
 panels covering store, cache, SQLite, bulkheads, Kubernetes pressure, traffic,
 SLO burn, and drills.
 
-## Static verifier limitations
+## Static Verifier Limitations
 
 `observe dashboards verify` checks the ten contract paths. For each existing
 JSON file, it records whether top-level `title`, `uid`, and a non-empty `panels`
@@ -55,7 +55,7 @@ Review the generated rows directly and use the dedicated contracts before
 accepting a dashboard change. Do not call the generated readiness file live
 operational readiness.
 
-## Diagnose with a dashboard
+## Diagnose With a Dashboard
 
 ```mermaid
 flowchart TD
@@ -77,7 +77,27 @@ A blank panel may mean zero events, missing metrics, query drift, label drift,
 a scrape outage, or a broken datasource. Resolve that ambiguity with a raw
 query and collector health before concluding the system is quiet.
 
-## Change acceptance
+## Read Panels as Questions
+
+Each operational panel should answer one bounded question and expose enough
+context to disprove the obvious interpretation. A visually convincing graph
+without population, identity, units, or missing-data semantics is not a safe
+decision surface.
+
+| Panel contract | Operator must be able to recover |
+| --- | --- |
+| population. | Profile, release, dataset, route class, replica scope, and exclusions. |
+| measure. | Metric names, units, aggregation, denominator, and evaluation window. |
+| identity. | Datasource, dashboard revision, variable values, and query text. |
+| absence. | Difference between a true zero, an absent series, and an unhealthy datasource. |
+| comparison. | Baseline or peer cohort using the same units and time boundary. |
+| action limit. | What the panel supports, what corroboration is required, and when to stop. |
+
+During an incident, preserve the variable state and raw query before changing
+the dashboard. A later panel revision may improve diagnosis, but it must not
+rewrite the evidence used for the original decision.
+
+## Change Acceptance
 
 Accept a dashboard change only after:
 
