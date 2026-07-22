@@ -97,6 +97,24 @@ When a command exits successfully but its acceptance signal is missing, treat
 the workflow as incomplete. When the signal exists but identifies different
 state, stop at that boundary instead of allowing the mismatch to propagate.
 
+## Retry at the Owning Boundary
+
+Retries are safe only when the workflow can identify existing state and avoid
+turning partial completion into a second authority.
+
+| Failed boundary | Inspect before retry | Safe retry rule |
+| --- | --- | --- |
+| ingest | candidate root, manifest, findings, and source identity | rebuild an explicit disposable candidate; never merge unexplained output |
+| verification | exact candidate hashes and referenced members | repeat against unchanged bytes or rebuild from governed inputs |
+| publication | final and staging objects, lock, manifest, and backend receipt | continue only when existing immutable state is absent or proves identical |
+| catalog promotion | current generation and selected dataset tuple | promote one verified payload; never hide a conflicting tuple |
+| server startup | effective configuration, store endpoint, and cache root | restart without treating stale cache state as publication evidence |
+| query | request, dataset tuple, cursor, and request identity | retry the same scientific request without silently changing the dataset |
+
+Preserve the first failure before removing disposable state. A clean rerun can
+prove the corrected path, but it cannot reconstruct evidence erased from the
+original failure.
+
 ## Exact Surfaces and Production Operations
 
 Flags, environment variables, endpoints, output shapes, and error behavior are

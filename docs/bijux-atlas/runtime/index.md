@@ -9,21 +9,23 @@ last_reviewed: 2026-07-22
 
 # Runtime
 
-The Atlas runtime resolves immutable dataset releases and executes bounded
-queries through CLI and HTTP delivery surfaces. It composes domain policy,
-application use cases, store adapters, caches, configuration, security, and
-telemetry without moving release authority into a running process.
+Atlas product execution resolves immutable dataset releases and runs bounded
+queries through CLI and HTTP delivery surfaces. The CLI and server are separate
+composition roots. They reuse runtime configuration, policy, store ports, and
+domain semantics without moving release authority into a running process.
 
 ```mermaid
-flowchart LR
-    Config[Validated runtime configuration] --> Compose[Runtime composition]
-    Catalog[Published catalog state] --> Compose
-    Store[Immutable artifact store] --> Compose
-    Compose --> CLI[CLI delivery]
-    Compose --> HTTP[HTTP delivery]
-    CLI --> Query[Bounded query execution]
-    HTTP --> Query
-    Query --> Evidence[Structured result and telemetry]
+flowchart TB
+    Runtime["runtime foundation<br/>config + policy + store ports"] --> CLI["CLI composition root"]
+    Runtime --> Server["server composition root"]
+    Ingest["ingest capabilities"] --> CLI
+    Store["store publication"] --> CLI
+    Query["query capabilities"] --> CLI
+    API["API contracts"] --> Server
+    Query --> Server
+    Catalog["published catalog + immutable store"] --> Runtime
+    CLI --> Output["structured command result"]
+    Server --> HTTP["HTTP result + telemetry"]
 ```
 
 ## Runtime Invariants
@@ -39,6 +41,23 @@ flowchart LR
   execution.
 - Successful output preserves enough release and request context to be
   interpreted against the owning contract.
+
+## Execution Ownership
+
+| Boundary | Owner | Responsibility |
+| --- | --- | --- |
+| command workflow | CLI crate | argument parsing, workflow selection, command output, and direct use-case composition |
+| HTTP service | server crate | routing, middleware, request admission, dataset and response caches, and telemetry |
+| shared process foundation | runtime crate | configuration, policy, security domains, store ports and adapters, and cluster semantics |
+| biological meaning | model and core crates | dataset, feature, region, transcript, and shared contract identity |
+| dataset construction | ingest crate | source validation, normalization, and candidate artifact generation |
+| query meaning | query crate | planning and execution over verified artifact paths |
+| publication | store crate | immutable payload and catalog transitions |
+
+This map matters when behavior disagrees. A response-cache incident belongs to
+the server path; a query-ordering dispute belongs to the query contract; a
+store-port failure may cross server and runtime code without making the runtime
+crate the owner of HTTP behavior.
 
 ## Runtime Admission Model
 
@@ -58,8 +77,8 @@ flowchart LR
 
 | Admission | Establishes | Does not establish |
 | --- | --- | --- |
-| process | effective configuration is valid and selected adapters can be composed | catalog freshness, target capacity, or caller authority |
-| traffic | the instance meets the configured readiness contract for its current catalog mode | every route is authorized or every query will succeed |
+| process | server configuration is valid and selected adapters can be composed | catalog freshness, target capacity, or caller authority |
+| traffic | the server meets the configured readiness contract for its catalog mode | every route is authorized or every query will succeed |
 | request | the caller, dataset selection, and work estimate satisfy the applicable policy | biological correctness beyond the selected published artifact |
 
 Treat these as state transitions, not synonyms for “healthy.” A live process

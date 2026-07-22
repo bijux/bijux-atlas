@@ -33,7 +33,9 @@ flowchart LR
 | identify an HTTP route | [API Endpoint Index](api-endpoint-index.md) | router and generated OpenAPI |
 | integrate an API client | [OpenAPI and API Usage](openapi-and-api-usage.md) | API DTOs, errors, and OpenAPI contract |
 | start and inspect the server | [Server Workflows](server-workflows.md) | server executable and runtime composition |
-| resolve flags, files, and environment | [Configuration and Output](configuration-and-output.md), [Runtime Config Reference](runtime-config-reference.md), and [Environment Variables](environment-variables.md) | runtime configuration model and allowlist |
+| understand configuration precedence and output | [Configuration and Output](configuration-and-output.md) | runtime configuration model |
+| find runtime settings | [Runtime Config Reference](runtime-config-reference.md) | configuration registry |
+| find environment names | [Environment Variables](environment-variables.md) | environment allowlist |
 | interpret structured failures | [Error Codes and Exit Codes](error-codes-and-exit-codes.md) | owning error and output contracts |
 | review guarded runtime behavior | [Feature Flags](feature-flags.md) and [Policy Workflows](policy-workflows.md) | feature and policy contracts |
 
@@ -56,6 +58,22 @@ Resolve the exact installed or deployed version before assuming a field,
 route, flag, or default. Documentation describes the governed release surface;
 the producer version and generated contract identify the concrete instance a
 consumer is using.
+
+## Preserve Consumer Identity
+
+Every interface result needs the identities relevant to its boundary:
+
+| Boundary | Identity to retain | Why |
+| --- | --- | --- |
+| command | binary version, command path, effective flags, and exit code | distinguishes command behavior from shell or installation drift |
+| HTTP | server version, request ID, route, status, error code, and dataset tuple | correlates a wire result with server and data identity |
+| OpenAPI | generated document digest and producer version | prevents current documentation from standing in for an older deployment |
+| configuration | source set, precedence, redacted effective value, and configuration digest | distinguishes authored input from resolved behavior |
+| structured data | schema or contract version, dataset identity, and artifact provenance | makes results comparable without parsing prose |
+
+Human-readable messages provide context but do not replace these fields.
+Likewise, an HTTP success cannot identify the command contract, and installed
+help cannot prove which configuration a running server resolved.
 
 ## Boundary Rules
 
