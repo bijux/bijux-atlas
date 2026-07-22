@@ -153,10 +153,12 @@ publication, and release evidence. A schema-valid fixture proves a contract
 shape; only an executed check or scenario proves observed behavior; only a
 coherent release packet binds that evidence to distributed artifacts.
 
-## One Product, Three Decision Surfaces
+## Three Decision Surfaces, One Trust Model
 
 Atlas is easier to trust when its major concerns stay explicit instead of
-being collapsed into one generic idea of "the runtime".
+being collapsed into one generic idea of "the runtime". Product, operations,
+and maintenance each own decisions. Evidence and trust cross all three; they
+are not a fourth implementation surface.
 
 ```mermaid
 flowchart TB
@@ -165,7 +167,7 @@ flowchart TB
     atlas --> runtime[Runtime and product]
     atlas --> maintainer[Maintainer control plane]
     atlas --> ops[Operations]
-    atlas --> trust[Evidence and trust]
+    trust[Evidence and trust]
 
     runtime --> runtime_a[Datasets and releases]
     runtime --> runtime_b[CLI, HTTP, and OpenAPI surfaces]
@@ -179,10 +181,20 @@ flowchart TB
     ops --> ops_b[Rollout safety and recovery]
     ops --> ops_c[Observability and load]
 
+    runtime -. produces and consumes .-> trust
+    ops -. produces and consumes .-> trust
+    maintainer -. validates and preserves .-> trust
+
     trust --> trust_a[Provenance and reproducibility]
     trust --> trust_b[Policy enforcement and drift control]
     trust --> trust_c[Release confidence and safe change]
 ```
+
+The arrows into the trust model are deliberately bidirectional in meaning.
+Each surface produces evidence, but each also consumes evidence before making
+a stronger claim. Product code cannot declare its own publication complete;
+operations cannot infer capacity from readiness; maintenance cannot infer
+compatibility from repository shape alone.
 
 ## Operations Are Part of the Release
 

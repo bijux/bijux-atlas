@@ -106,6 +106,7 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 ## Table of Contents
 
 * [Why Atlas Exists](#why-atlas-exists)
+* [Follow One Dataset End to End](#follow-one-dataset-end-to-end)
 * [Declared Release Surface](#declared-release-surface)
 * [How to Verify an Atlas Claim](#how-to-verify-an-atlas-claim)
 * [Choose the Right Surface](#choose-the-right-surface)
@@ -150,6 +151,39 @@ flowchart LR
 This is the center of gravity for the repository: Atlas does not primarily own
 mutable runtime state. It owns the path from governed inputs to immutable
 artifacts and then from immutable artifacts to stable delivery surfaces.
+
+---
+
+## Follow One Dataset End to End
+
+The shortest useful evaluation is not a `--help` command or a health check. It
+is the committed `tiny` dataset moving through every release boundary and then
+answering an identity-bearing query:
+
+| Boundary | Action | Result worth inspecting |
+| --- | --- | --- |
+| build | ingest the committed GFF3, FASTA, and FAI fixture | candidate manifest, SQLite payload, QC output, and exact dataset tuple |
+| verify | validate structure, then run deep integrity verification | findings for the candidate bytes and references |
+| publish | copy the verified payload into an immutable serving store | store lock, checksums, publication marker, and lifecycle record |
+| promote | add the published tuple to the catalog | discoverable `release/species/assembly` identity |
+| serve | start the server against the serving store, not the build directory | readiness, version, catalog, and query responses |
+
+The [local Atlas walkthrough](docs/bijux-atlas/workflows/run-atlas-locally.md)
+connects those boundaries without hiding them behind a bootstrap script. It
+uses repository-owned fixtures and keeps disposable state under
+`artifacts/getting-started/`. The walkthrough is evidence of the documented
+local path only; it is not a production capacity, remote-store, security, or
+failover qualification.
+
+```mermaid
+flowchart LR
+    Fixture[Committed tiny fixture] --> Candidate[Candidate dataset]
+    Candidate --> Verified[Verified artifact set]
+    Verified --> Published[Immutable store payload]
+    Published --> Catalog[Promoted catalog identity]
+    Catalog --> Runtime[Ready runtime]
+    Runtime --> Query[Identity-bearing query]
+```
 
 ---
 
