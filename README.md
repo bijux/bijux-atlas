@@ -6,43 +6,17 @@
 GFF3 and FASTA inputs into immutable query artifacts, stable APIs, and
 auditable operational evidence.**
 
-The workspace declares three installable command surfaces, eleven publishable
-Rust crates, and one repository-only maintainer crate. Registry badges below
-report live channel state; repository manifests define intended ownership and
-must not be mistaken for proof that a particular release was published.
-
-Declared commands:
-
-* `bijux-atlas`, owned by `bijux-atlas-cli`,
-* `bijux-atlas-server`, owned by `bijux-atlas-server`,
-* `bijux-atlas-openapi`, owned by `bijux-atlas-api`.
-
-Publishable crates:
-
-* `bijux-atlas-core`: runtime-independent primitives and invariants,
-* `bijux-atlas-model`: stable dataset and contract value types,
-* `bijux-atlas-query`: query parsing, planning, cursoring, and execution,
-* `bijux-atlas-ingest`: ingest normalization and artifact-build ownership,
-* `bijux-atlas-store`: immutable publication and storage-backend contracts,
-* `bijux-atlas-api`: API DTOs, OpenAPI ownership, and the `bijux-atlas-openapi` binary,
-* `bijux-atlas-runtime`: canonical orchestration library composition,
-* `bijux-atlas`: compatibility alias crate for the historical `bijux_atlas` Rust import path,
-* `bijux-atlas-cli`: direct owner of the installed `bijux-atlas` command,
-* `bijux-atlas-server`: direct owner of the installed `bijux-atlas-server` command,
-* `bijux-atlas-ops`: operations-contract crate for stack, load, observability, and release support.
-
-Repository-only crate:
-
-* `bijux-atlas-dev`: maintainer control plane with `publish = false`.
-
-The repeated `bijux-atlas` name is intentional but easy to misread. The
-installed `bijux-atlas` command comes from `bijux-atlas-cli`, while the
-`bijux-atlas` library crate is a separate compatibility alias.
-
 Atlas is built around one public promise: the same release should describe what
 was ingested, what was published, what can be queried, and what evidence
 supports operating it. The repository exists to make those claims reviewable
 instead of implicit.
+
+Three binaries expose that promise: `bijux-atlas` for dataset workflows,
+`bijux-atlas-server` for HTTP serving, and `bijux-atlas-openapi` for the wire
+contract. Eleven publishable crates own the product and operations boundaries;
+the repository-only `bijux-atlas-dev` crate owns maintenance and release
+automation. Registry badges report live channel state. Source manifests report
+intended ownership, not proof that a release was published.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -100,32 +74,6 @@ Source docs spine: [`docs/index.md`](docs/index.md)
 > `artifacts/` is disposable local output and is not part of the repository contract.
 > Published artifacts and `v*` git tags define the public release line.
 > Untagged checkout builds stay anchored to the latest real tag while the source tree can still be preparing the next release.
-
----
-
-## Table of Contents
-
-* [Why Atlas Exists](#why-atlas-exists)
-* [Follow One Dataset End to End](#follow-one-dataset-end-to-end)
-* [Operate the Released Dataset](#operate-the-released-dataset)
-* [Trust Boundaries](#trust-boundaries)
-* [Declared Release Surface](#declared-release-surface)
-* [How to Verify an Atlas Claim](#how-to-verify-an-atlas-claim)
-* [Choose the Right Surface](#choose-the-right-surface)
-* [How Atlas Fits With Bijux CLI](#how-atlas-fits-with-bijux-cli)
-* [Key Features](#key-features)
-* [Installation](#installation)
-* [Verify Installed Surfaces](#verify-installed-surfaces)
-* [Maintainer Control Plane](#maintainer-control-plane)
-* [Packages, Configs, and Ops](#packages-configs-and-ops)
-* [What Does Not Ship Yet](#what-does-not-ship-yet)
-* [Project Tree](#project-tree)
-* [Release Line & Stability](#release-line--stability)
-* [Docs & Resources](#docs--resources)
-* [Contributing](#contributing)
-* [License](#license)
-
----
 
 ## Why Atlas Exists
 
@@ -259,37 +207,25 @@ for the implemented deployment and runtime controls.
 
 ---
 
-## Declared Release Surface
+## Surface Ownership
 
-The workspace and release manifests declare:
+Atlas separates product behavior, operational qualification, and repository
+maintenance so that a public binary does not silently acquire release or
+governance responsibilities.
 
-* a runtime CLI named `bijux-atlas`, owned by `bijux-atlas-cli`,
-* a server binary named `bijux-atlas-server`, owned by `bijux-atlas-server`,
-* an OpenAPI export binary named `bijux-atlas-openapi`, owned by `bijux-atlas-api`,
-* eleven publishable crates with explicit ownership split across core, model, query, ingest, store, API, runtime, compatibility, CLI, server, and operations contracts,
-* one repository-only crate, `bijux-atlas-dev`, with `publish = false` for maintainer automation and release policy,
-* governed `configs/`, `ops/`, `docs/`, and `makes/` trees that are validated together,
-* and release inputs for crates, OCI release bundles, docs, and operations
-  evidence.
+| Surface | Direct owner | Public responsibility |
+| --- | --- | --- |
+| `bijux-atlas` | `bijux-atlas-cli` | dataset build, publication, and query workflows |
+| `bijux-atlas-server` | `bijux-atlas-server` | HTTP lifecycle and service entrypoint |
+| `bijux-atlas-openapi` | `bijux-atlas-api` | versioned HTTP contract export |
+| Rust orchestration | `bijux-atlas-runtime` | ingest, store, query, API, and policy composition |
+| historical import | `bijux-atlas` crate | compatibility for the `bijux_atlas` name |
+| operations | `bijux-atlas-ops` | deployment, telemetry, load, recovery, and release models |
+| maintenance | `bijux-atlas-dev` | repository-only validation and release automation |
 
-```mermaid
-flowchart TD
-    Workspace[Repository workspace] --> Runtime[bijux-atlas-runtime crate]
-    Workspace --> CLI[bijux-atlas-cli crate]
-    Workspace --> ServerCrate[bijux-atlas-server crate]
-    Workspace --> API[bijux-atlas-api crate]
-    Workspace --> Alias[bijux-atlas alias crate]
-    Workspace --> ControlPlane[bijux-atlas-dev crate]
-    CLI --> RuntimeCLI[bijux-atlas]
-    ServerCrate --> Server[bijux-atlas-server]
-    API --> OpenAPI[bijux-atlas-openapi]
-    Alias --> Compat[bijux_atlas import path]
-    Workspace --> Docs[Numbered docs spine]
-    Workspace --> Governance[configs and ops validation]
-```
-
-Runtime binaries, compatibility libraries, operational contracts, and
-repository maintenance have separate owners and release obligations.
+The [crate boundary contract](docs/bijux-atlas/foundations/crate-boundary-contract.md)
+maps the supporting core, model, query, ingest, and store crates to these
+surfaces.
 
 ## How to Verify an Atlas Claim
 
@@ -336,38 +272,6 @@ Start with the surface that matches the job in front of you:
 | stack, load, and observability contracts | `bijux-atlas-ops` | owns operator-facing reference and release-support surfaces |
 | maintainer automation and repository law | `bijux-atlas-dev` | owns governance, docs validation, release planning, and reports |
 
-### Release Surface Directory
-
-| Surface | Ownership | Release contract |
-| --- | --- | --- |
-| `bijux-atlas` | `bijux-atlas-cli` | direct end-user CLI binary |
-| `bijux-atlas-server` | `bijux-atlas-server` | direct HTTP runtime binary |
-| `bijux-atlas-openapi` | `bijux-atlas-api` | direct OpenAPI export binary |
-| `bijux-atlas-runtime` | `bijux-atlas-runtime` | canonical Rust orchestration crate |
-| `bijux-atlas` crate | `crates/bijux-atlas/` | compatibility alias for the historical `bijux_atlas` Rust import path |
-| `bijux-atlas-ops` | `bijux-atlas-ops` | operations-contract crate |
-| `bijux-atlas-dev` | `bijux-atlas-dev` | repository-only maintainer control plane with `publish = false` |
-
-## Crate Boundary Map
-
-Atlas currently enforces a twelve-crate workspace boundary:
-
-* `crates/bijux-atlas-core/`: runtime-independent primitives and invariants
-* `crates/bijux-atlas-model/`: stable dataset, gene, diff, and policy types
-* `crates/bijux-atlas-query/`: query parsing, planning, cursoring, and SQLite execution
-* `crates/bijux-atlas-ingest/`: ingest normalization, anomaly handling, and artifact build execution
-* `crates/bijux-atlas-store/`: immutable artifact publication and backend contracts
-* `crates/bijux-atlas-api/`: API DTOs, Rust client surface, OpenAPI generation, and the `bijux-atlas-openapi` binary
-* `crates/bijux-atlas-runtime/`: canonical runtime composition crate with orchestration, policies, runtime config, and cache wiring
-* `crates/bijux-atlas/`: compatibility alias crate for the historical `bijux_atlas` Rust import path
-* `crates/bijux-atlas-cli/`: direct `bijux-atlas` binary owner plus CLI contract tests
-* `crates/bijux-atlas-server/`: direct `bijux-atlas-server` binary owner plus server-facing integration tests and benchmarks
-* `crates/bijux-atlas-ops/`: repository-owned operational path, Kubernetes, load, and release-support contracts
-* `crates/bijux-atlas-dev/`: maintainer-only control plane for governance and repository operations
-
-The boundary contract for this map lives at
-[`docs/bijux-atlas/foundations/crate-boundary-contract.md`](docs/bijux-atlas/foundations/crate-boundary-contract.md).
-
 ---
 
 ## How Atlas Fits With Bijux CLI
@@ -387,34 +291,7 @@ product contract.
 
 ---
 
-## Key Features
-
-### Immutable Dataset Delivery
-
-Atlas treats dataset builds as release artifacts with explicit manifests, provenance, and reproducible packaging inputs.
-
-### Split Runtime Surfaces With Clear Ownership
-
-`bijux-atlas` is owned by `bijux-atlas-cli`.
-`bijux-atlas-server` is owned by `bijux-atlas-server`.
-`bijux-atlas-openapi` remains a user-facing Atlas binary, but it is API-owned and built from `bijux-atlas-api`.
-The installed umbrella runtime namespace is `bijux atlas ...`.
-The maintainer namespace is `bijux dev atlas ...`, backed by the `bijux-atlas-dev` binary.
-
-### Governed Repository Inputs
-
-`configs/`, `ops/`, `docs/`, and `makes/` are checked together so release, policy, and operating guidance can stay aligned with the code that uses them.
-
-### Thin Makes Wrapper Layer
-
-GNU Make exists as a boring convenience layer rooted at [`makes/root.mk`](makes/root.mk).
-Orchestration logic belongs in Rust commands, not in shell-heavy wrapper files.
-
-### Honest Release Evidence
-
-The release story includes checked manifests, compatibility tables, docs deployment, crates.io publication, and GitHub release automation instead of one-off manual steps.
-
-### Operations as a Governed System
+## Operations Are a Governed System
 
 The `ops/` contract system is not a collection of deployment examples. It owns
 profile intent, Helm and Kubernetes contracts, network and workload security,
@@ -568,62 +445,32 @@ release evidence out of the runtime binaries that end users depend on.
 
 ---
 
-## Packages, Configs, and Ops
+## Repository Boundaries
 
-Atlas carries more release-facing material in-repo than a typical single-crate project.
-That is intentional, but the boundaries stay explicit:
+Atlas is broader than a single Rust crate because its release contract includes
+the product, the deployment model, and the evidence needed to operate it.
 
-* `crates/` owns the publishable Atlas crate set plus the repository-only maintainer control plane crate,
-* `configs/` owns policy, schema, registry, and repository inputs,
-* `ops/` owns deployment, observability, release, and scenario data,
-* `docs/` owns the package handbooks and contract references,
-* `makes/` owns the thin wrapper surface over governed commands.
-
-The goal is not “everything is public API.”
-The goal is one honest source of truth for each governed concern.
-
-```mermaid
-flowchart TD
-    Repo[Repository] --> Crates[crates]
-    Repo --> Configs[configs]
-    Repo --> Ops[ops]
-    Repo --> Docs[docs]
-    Repo --> Makes[makes]
-    Docs --> Handbook[Product and operations handbook]
-    Configs --> Policy[Policy and schema sources]
-    Ops --> RuntimeOps[Operational inputs]
-```
-
-This repository map helps explain why Atlas looks broader than a single-crate project. The extra
-trees are not incidental clutter; they are part of the governed release and operations surface.
-
----
-
-## What Does Not Ship Yet
-
-Atlas is deliberately explicit about non-shipped scope:
-
-* there is no published `bijux-atlas-python` package yet,
-* there is no mutable lab workflow engine inside the runtime,
-* and `artifacts/` is not a source-of-truth tree.
-
-If a surface is planned, internal, or future-facing, it should be described as such instead of being implied by README language.
-
----
-
-## Project Tree
-
-| Path | Purpose |
+| Path | Authority |
 | --- | --- |
-| `crates/bijux-atlas/` | Compatibility alias crate for the historical `bijux_atlas` import path |
-| `crates/bijux-atlas-runtime/` | Canonical runtime orchestration crate |
-| `crates/bijux-atlas-dev/` | Repository-only maintainer control plane for docs, checks, governance, release, configs, and ops |
-| `crates/bijux-atlas-ops/` | Published operational contract and stack-support crate |
-| `configs/` | Repository-owned policy, schemas, registries, and examples |
-| `ops/` | Release specs, scenarios, deployment inputs, observability, and contracts |
-| `makes/` | Thin GNU Make wrapper surface |
-| `docs/` | Product, operations, and maintainer handbook |
-| `artifacts/` | Generated local outputs and evidence |
+| `crates/` | publishable product and operations crates plus the private maintainer crate |
+| `configs/` | policies, schemas, registries, budgets, and governed defaults |
+| `ops/` | Kubernetes, stack, telemetry, security, load, recovery, and release inputs |
+| `docs/` | product, operations, and maintainer handbooks |
+| `makes/` | thin wrappers over governed Rust commands |
+| `artifacts/` | disposable local outputs and run evidence |
+
+The `ops/` tree is an operational contract system, not a folder of deployment
+examples. Its checked-in inventories establish intended coverage; only an
+executed, identity-bound result establishes that a deployment or scenario
+passed.
+
+## Current Public Limits
+
+* Atlas does not publish a Python package.
+* The runtime does not contain a mutable lab workflow engine.
+* `artifacts/` is not a source-of-truth tree.
+* Checked-in release inputs may describe a candidate that is not available in
+  every public channel; verify the registry and release records before use.
 
 ---
 
