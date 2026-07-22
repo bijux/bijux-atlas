@@ -61,6 +61,32 @@ source revision, cluster context, capture timestamp, checksums, redaction
 result, or incident identifier. Preserve those associations in the surrounding
 run evidence; do not infer them from this schema.
 
+## Bind the Capture to a Cluster
+
+Before collection, record the intended kubeconfig source, current context,
+cluster identity, namespace, and workload selector. The collector's `kind`
+field describes the supported cluster family; it does not prove which Kind
+cluster received the commands.
+
+Capture identity and content under one run ID:
+
+```mermaid
+sequenceDiagram
+    participant Operator
+    participant Context as Kubernetes context
+    participant Cluster
+    participant Run as Run artifact root
+    Operator->>Context: resolve current context and namespace
+    Context-->>Run: record non-secret cluster identity
+    Operator->>Cluster: collect logs, descriptions, events, resources
+    Cluster-->>Run: write raw category files
+    Operator->>Run: record command status and file membership
+    Operator->>Run: checksum, review, and redact distributable copy
+```
+
+If the context differs from the incident target, stop. A complete bundle from
+the wrong cluster is misleading evidence.
+
 ## Capture Before State Disappears
 
 Collect diagnostics before restarting pods, changing a rollout, or deleting a
@@ -93,6 +119,11 @@ redaction. Before sharing or attaching a bundle:
 An unreviewed bundle is local diagnostic material, not distributable incident
 evidence.
 
+Keep the raw capture access-restricted when incident policy permits it. Produce
+a separate distributable copy after review, and record its hashes plus the
+redaction decision. Never modify the raw files in place and continue using the
+original hashes.
+
 ## Completeness and Failure Semantics
 
 A category report with `status: ok` means that collection action returned and
@@ -100,6 +131,21 @@ the file was written. It does not mean the incident is explained, all four
 categories exist, or the evidence archive was built. Conversely, a failed
 collection attempt should remain visible; replacing it with an empty successful
 report destroys the reason the evidence is incomplete.
+
+## Bundle Acceptance
+
+| Property | Minimum evidence |
+| --- | --- |
+| attribution | run ID, incident ID, context, cluster, namespace, selector, and capture time |
+| integrity | checksum inventory for raw files and report files |
+| completeness | requested categories, successes, failures, and supplemental resources |
+| confidentiality | reviewer, redaction method, exclusions, and distributable-copy hashes |
+| reproducibility | collector version, command arguments, and relevant tool versions |
+| custody | capture location, access boundary, archive identity, and retention decision |
+
+An archive is acceptable only for the claim its evidence supports. Four
+successful category reports can establish collection completeness. They cannot
+establish root cause, safe disclosure, or recovery.
 
 ## Authorities
 

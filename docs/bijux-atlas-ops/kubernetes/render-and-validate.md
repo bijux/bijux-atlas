@@ -12,6 +12,8 @@ last_reviewed: 2026-07-22
 Rendering turns values into the exact Kubernetes objects under review.
 Validation asks whether those objects satisfy Atlas and Kubernetes contracts.
 Neither step contacts a cluster unless the selected command explicitly does so.
+Validation is layered. Each check has a bounded authority. Preserve every
+failure instead of relying on a later, broader-looking success.
 
 ## Preflight Sequence
 
@@ -51,9 +53,9 @@ bijux-atlas-dev --repo-root "$PWD" ops validate \
   --format json
 ```
 
-The control plane requires subprocess permission when it invokes Helm or
-another external validator. Writing reports or governed output requires the
-separate write capability. Grant only the effects the selected operation needs.
+The control plane requires subprocess permission to invoke Helm or another
+external validator. Writing reports or governed output requires a separate
+write capability. Grant only the effects the selected operation needs.
 
 ## Inspect the Rendered Release
 
@@ -73,6 +75,43 @@ Review the rendered objects as a connected system:
 Use a resource-level diff against the approved release for upgrade and rollback
 review. A summary that hides deleted policy, probe, or identity fields is not
 sufficient.
+
+## Validation Coverage
+
+```mermaid
+flowchart TD
+    Values[Values and schema] --> Render[Helm render]
+    Render --> Parse[YAML and Kubernetes schema]
+    Parse --> Policy[Atlas security and topology policy]
+    Policy --> Diff[Approved-release semantic diff]
+    Diff --> Server[Server-side dry run where available]
+    Server --> Exercise[Conformance in selected cluster profile]
+```
+
+| Check | Detects | Does not detect |
+| --- | --- | --- |
+| values schema | invalid types, enums, and declared relationships | template branches that emit wrong objects |
+| Helm render | template and input failures | API-server admission or runtime behavior |
+| Kubernetes schema | invalid resource fields for a selected API set | Atlas-specific security or topology intent |
+| policy validation | governed workload, network, and security violations | dependency reachability or image execution |
+| semantic diff | unexpected change from the approved release | whether an intended change works |
+| server-side dry run | admission and cluster-version rejection | successful rollout or steady-state behavior |
+| conformance | selected behavioral requirements | behavior outside the exercised profile and duration |
+
+Passes are cumulative. A later check does not erase a failed earlier one, and
+no single validator covers the whole deployment contract.
+
+## Bind the Render to Installation
+
+Retain the chart identity, values hashes, Helm version, and target Kubernetes
+version. Also record enabled API capabilities, image digest,
+rendered-manifest hash, and run ID. Install the exact reviewed render. If the
+installer renders again, prove it reproduced the same bytes from the same
+inputs.
+
+Helm rendering can vary with capabilities and Kubernetes version. A render for
+one target is not automatically evidence for another. Record the capability
+set whenever templates branch on API availability.
 
 ## Evidence and Interpretation
 

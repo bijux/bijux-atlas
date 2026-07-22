@@ -44,6 +44,13 @@ exist, `cache.cachedOnlyMode` overrides `server.cachedOnlyMode`, and
 `server.readinessRequiresCatalog`. Avoid setting both locations differently;
 the rendered ConfigMap is the decisive view.
 
+Log level requires special attention. The runtime environment contract lists
+both `ATLAS_LOG_LEVEL` and `BIJUX_LOG_LEVEL`, while the checked-in ConfigMap
+template emits neither. If a deployment needs an explicit level, add the
+runtime-consumed key through a reviewed environment source and confirm it in
+the effective pod specification. Schema membership alone does not prove that
+the chart emits a key or that the server consumes both names identically.
+
 ## High-Impact Controls
 
 | Concern | Values | Rendered runtime input | Operational consequence |
@@ -90,6 +97,40 @@ access evidence.
 
 Configuration is ready for promotion only when the values source, rendered
 environment, runtime parser, and observed behavior agree.
+
+## Effective Configuration Receipt
+
+Retain a configuration receipt with the deployment evidence:
+
+| Identity | Required value |
+| --- | --- |
+| source | chart version or digest and selected values-file hashes |
+| render | Helm version, complete invocation, and rendered-manifest hash |
+| workload | image digest, ConfigMap identity, Secret references, and service account |
+| runtime | accepted `ATLAS_*` keys and configuration-validation result |
+| behavior | probe, limit, cache, catalog, and security observations affected by the change |
+
+Do not place secret values in the receipt. Record Secret names, keys, versions,
+or provider identities according to the environment's disclosure policy. The
+receipt must let a reviewer reconstruct precedence without exposing
+credentials.
+
+```mermaid
+flowchart TD
+    Values[Chart and profile values] --> Rendered[Rendered pod environment]
+    Secrets[Secret and extra environment sources] --> Rendered
+    Rendered --> Parsed[Runtime-accepted configuration]
+    Parsed --> Observed[Observed startup and behavior]
+    Values -. hash .-> Receipt[Configuration receipt]
+    Rendered -. hash .-> Receipt
+    Parsed -. result .-> Receipt
+    Observed -. evidence .-> Receipt
+```
+
+A mismatch stops rollout at the owning boundary. Fix values or templates when
+rendering is wrong. Fix runtime configuration when parsing is wrong. Investigate
+the workload when accepted configuration does not produce the expected
+behavior.
 
 ## Diagnostic Questions
 
