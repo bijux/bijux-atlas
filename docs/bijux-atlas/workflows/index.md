@@ -14,14 +14,27 @@ published release. Each path ends with an observable checkpoint so completion
 does not depend on an operator interpreting silence as success.
 
 ```mermaid
-flowchart LR
-    Install[Verify binaries] --> Ingest[Validate and ingest]
-    Ingest --> Artifact[Inspect artifact identity]
-    Artifact --> Publish[Publish store and catalog state]
-    Publish --> Serve[Start runtime]
-    Serve --> Query[Run structured queries]
-    Query --> Observe[Retain result and diagnostics]
+flowchart TB
+    subgraph Dataset[Dataset publication]
+        Source[Validate source] --> Ingest[Build artifact set]
+        Ingest --> Verify[Verify manifest and evidence]
+        Verify --> Publish[Publish store and catalog state]
+    end
+    subgraph Service[Service qualification]
+        Install[Verify software identity] --> Start[Start against explicit profile]
+        Start --> Ready[Verify readiness and dataset selection]
+        Ready --> Query[Run representative structured queries]
+        Query --> Observe[Retain result and diagnostics]
+    end
+    Publish --> Ready
+    Observe --> Decision[Bounded local or deployment decision]
 ```
+
+The dataset and service paths may advance independently until readiness joins
+them. A published dataset can exist without a qualified deployment. A healthy
+process can exist while its catalog is stale or its selected dataset is wrong.
+The join is successful only when the observed service reports the intended
+dataset identity and representative queries satisfy their contracts.
 
 ## Choose a Path
 

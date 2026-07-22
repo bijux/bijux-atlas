@@ -25,7 +25,7 @@ An Atlas response is interpretable only when three identities remain distinct:
 | --- | --- | --- |
 | scientific source. | Which upstream records and coordinate system contributed to the result? | Input hashes, source metadata, species, assembly, and normalization policy. |
 | published release. | Which immutable bytes and catalog selection supplied the result? | Dataset identity, manifest, artifact checksums, and publication state. |
-| request execution. | Which software, policy, principal, and path produced this observation? | Runtime release, effective configuration, request ID, route, query plan, and status. |
+| request execution. | Which software, policy and path produced this observation? | Runtime, config, principal, request, route, plan and status. |
 
 Scientific source identity cannot be reconstructed from a process version.
 Request success cannot prove that the upstream source was biologically correct.
@@ -42,6 +42,32 @@ flowchart LR
 This separation lets the same release be served by several runtime versions
 without changing its data identity, and lets one runtime serve several named
 releases without inventing an implicit current dataset.
+
+## Dataset and Software Releases Advance Independently
+
+Atlas has two immutable release axes and one environment-specific decision.
+Calling all three “the release” hides which authority changed.
+
+| Identity | Changes when | Remains valid when |
+| --- | --- | --- |
+| dataset release | governed sources, normalization, schema or artifact content changes | runtime software changes without changing the published bytes |
+| software release | binaries, images, chart or public software contracts change | an existing dataset remains compatible and verified |
+| deployment qualification | target, profile, policy, dependencies, dataset selection or observation window changes | producer artifacts remain immutable and reusable |
+
+```mermaid
+flowchart LR
+    Dataset[verified dataset release] --> Join{target composition}
+    Software[verified software release] --> Join
+    Profile[target, profile, policy and dependencies] --> Join
+    Join --> Observe[observe correctness and operating envelope]
+    Observe --> Qualification[deployment qualification]
+```
+
+A new software release does not republish unchanged genomic data. A new dataset
+does not prove that every deployed software version can serve it. Promotion
+joins exact dataset and software identities with target-bound evidence; rollback
+must say whether it reverses software, deployment configuration or dataset
+selection.
 
 ## The Product Boundary
 

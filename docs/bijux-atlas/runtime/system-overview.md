@@ -27,7 +27,7 @@ request identity to reconstruct one execution.
 ## End-to-End Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Build[Release construction]
         Source[GFF3 and FASTA] --> Ingest[bijux-atlas-ingest]
         Model[bijux-atlas-model] --> Ingest
@@ -37,11 +37,15 @@ flowchart LR
         Artifacts --> Store[bijux-atlas-store]
         Store --> Catalog[Published catalog state]
     end
-    subgraph Runtime[Serving]
-        Catalog --> Orchestrator[bijux-atlas-runtime]
-        Query[bijux-atlas-query] --> Orchestrator
-        Orchestrator --> CLI[bijux-atlas-cli]
-        Orchestrator --> Server[bijux-atlas-server]
+    subgraph Delivery[Composition roots]
+        Query[bijux-atlas-query] --> CLI[bijux-atlas-cli]
+        Query --> Server[bijux-atlas-server]
+        Runtime[bijux-atlas-runtime<br/>shared ports, cache, policy, config] --> CLI
+        Runtime --> Server
+        Ingest --> CLI
+        Store --> CLI
+        Catalog --> Server
+        Store --> Server
         API[bijux-atlas-api] --> Server
     end
     Server --> Clients[HTTP clients]
@@ -49,8 +53,11 @@ flowchart LR
 ```
 
 No delivery interface owns genomic truth. The model and leaf crates define
-domain behavior. The runtime composes them. The CLI and server translate user
-requests. The store and catalog establish which immutable release is serveable.
+domain behavior. The CLI and server are independent composition roots: both
+depend directly on the leaf crates they execute. `bijux-atlas-runtime` supplies
+shared ports, cache contracts, adapters, policy, configuration and cluster
+semantics; it is not a central dispatcher through which every query passes.
+The store and catalog establish which immutable release is serveable.
 
 ## One Request Across Owners
 
@@ -58,28 +65,27 @@ requests. The store and catalog establish which immutable release is serveable.
 sequenceDiagram
     participant Client
     participant Server as bijux-atlas-server
-    participant Runtime as bijux-atlas-runtime
-    participant Catalog
-    participant Store as bijux-atlas-store
+    participant Cache as Server cache manager
+    participant Store as Runtime store port
     participant Query as bijux-atlas-query
     Client->>Server: Versioned request + dataset selector
-    Server->>Runtime: Authenticated request context
-    Runtime->>Catalog: Resolve published dataset identity
-    Catalog-->>Runtime: Manifest and artifact identity
-    Runtime->>Store: Open and verify governed artifact
-    Store-->>Runtime: Verified database and sequence handles
-    Runtime->>Query: Bounded query plan
-    Query-->>Runtime: Typed domain result
-    Runtime-->>Server: Result + dataset + execution context
+    Server->>Server: Authenticate, classify, admit, and bind context
+    Server->>Cache: Resolve published dataset identity
+    Cache->>Store: Fetch catalog or governed artifacts
+    Store-->>Cache: Catalog, manifest, and verified bytes
+    Cache-->>Server: Verified database and sequence handles
+    Server->>Query: Execute bounded typed request
+    Query-->>Server: Typed domain result
     Server-->>Client: Structured response + correlation identity
 ```
 
 Each arrow crosses a contract. The server owns transport, authentication
-placement, middleware, and response mapping. The runtime owns use-case policy
-and composition. Catalog and store resolution establish data identity. Query
-owns selection, ordering, cursor, and SQLite execution semantics. Failure at
-one boundary must retain its owner instead of collapsing into an untyped
-internal error.
+placement, admission, middleware, cache-manager composition and response
+mapping. Runtime contracts supply configuration, store ports and shared policy
+semantics used by that composition. Catalog and store resolution establish data
+identity. Query owns selection, ordering, cursor and SQLite execution semantics.
+Failure at one boundary must retain its owner instead of collapsing into an
+untyped internal error.
 
 ## Product Invariants Across Components
 
@@ -135,7 +141,7 @@ one cannot be inferred reliably from the other.
 | `bijux-atlas-ingest` | normalization, anomaly policy, and artifact construction | serving or catalog publication policy |
 | `bijux-atlas-query` | parsing, planning, ordering, cursoring, and SQLite query execution | HTTP or process lifecycle |
 | `bijux-atlas-store` | artifact-store ports, backend capabilities, integrity, and publication contracts | query semantics |
-| `bijux-atlas-runtime` | application use cases, policy, cache, ports, and canonical composition | installed command or HTTP route ownership |
+| `bijux-atlas-runtime` | shared policy, cache contracts, ports, adapters, configuration and cluster semantics | query execution, installed command or HTTP route ownership |
 | `bijux-atlas-api` | DTOs, API errors, client contracts, OpenAPI, and `bijux-atlas-openapi` | server process lifecycle |
 | `bijux-atlas-cli` | installed `bijux-atlas` command and presentation | reusable domain implementation |
 | `bijux-atlas-server` | HTTP router, middleware, runtime state, telemetry, and `bijux-atlas-server` | artifact construction |
@@ -147,21 +153,28 @@ one cannot be inferred reliably from the other.
 
 ```mermaid
 flowchart TB
-    Contracts[Contracts and configuration] --> App[Application use cases and ports]
-    Domain[Domain policy and cluster semantics] --> App
-    Adapters[Store and SQLite adapters] --> App
-    App --> Composition[Runtime composition]
-    Composition --> Delivery[CLI and server processes]
+    Contracts[Runtime contracts and configuration] --> Shared[Shared ports and cache contracts]
+    Domain[Policy and cluster semantics] --> Shared
+    Adapters[Store adapters] --> Shared
+    Shared --> CLI[CLI composition root]
+    Shared --> Server[Server composition root]
+    Ingest[Ingest leaf crate] --> CLI
+    Query[Query leaf crate] --> CLI
+    Query --> Server
+    API[API contracts] --> Server
+    CLI --> Delivery[Installed command]
+    Server --> Delivery[HTTP process]
     Delivery --> Telemetry[Structured output, metrics, logs, and traces]
 ```
 
 - Contracts define stable configuration, errors, and boundary shapes.
 - Domain code owns policy, security, placement, routing, and topology semantics.
-- Application code coordinates ingest, query, caching, and outbound ports.
-- Adapters implement storage and database boundaries without redefining domain
-  meaning.
-- Runtime composition selects concrete implementations and process settings.
-- Delivery crates own parsing, middleware, presentation, and process lifecycle.
+- Runtime application code owns shared cache behavior and outbound ports.
+- Runtime adapters implement storage boundaries without redefining data meaning.
+- CLI and server select their direct leaf dependencies and concrete runtime
+  support independently.
+- Delivery crates own parsing, orchestration, middleware, presentation and
+  process lifecycle.
 
 ## Data and Control Planes
 
