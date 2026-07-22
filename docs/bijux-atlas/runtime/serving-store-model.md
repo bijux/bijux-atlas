@@ -10,10 +10,10 @@ last_reviewed: 2026-07-22
 # Serving Store Model
 
 The serving store is the durable boundary between artifact publication and
-query traffic. Ingest produces immutable dataset artifacts. Publication places
-those artifacts into a named layout, verifies their integrity, and makes them
-discoverable through the catalog. Runtime caches can accelerate reads, but they
-never replace the published state.
+query traffic. Ingest produces dataset candidates. Publication places verified
+artifacts into a named store layout. A separate catalog promotion makes the
+identity discoverable. Runtime caches can accelerate reads, but they never
+replace published state.
 
 ## Publication and Read Path
 
@@ -22,15 +22,16 @@ flowchart LR
     B["Built dataset artifacts"] --> L["Acquire publication lock"]
     L --> W["Write manifest, SQLite, and integrity records"]
     W --> V["Verify SHA-256 digests"]
-    V --> C["Merge catalog entry"]
+    V --> M["Record immutable payload"]
+    M --> C["Promote catalog entry"]
     C --> D["Runtime discovers dataset"]
     D --> Q["Query resolves immutable content"]
     Q --> H["Transient cache accelerates reads"]
 ```
 
-Publication changes catalog visibility only after the dataset payload and its
-integrity records are coherent. Readers therefore resolve a named release,
-rather than observing arbitrary build directories or partially written files.
+Publication and catalog promotion are separate commands and authorities.
+Promote only after the dataset payload and its integrity records are coherent.
+Readers then resolve a named release instead of an arbitrary build directory.
 
 ## Dataset Layout
 
@@ -61,9 +62,21 @@ allows a serving process to receive only the authority it needs.
 - `S3LikeStore` supports object-storage publication and reads under the same
   feature.
 
-Backend choice changes transport and operational failure modes. It does not
-change dataset identity, layout keys, checksum expectations, or catalog
-semantics.
+Backend choice does not change dataset identity, layout keys, checksum
+expectations, or catalog semantics. It does change publication guarantees:
+
+| Capability | Local filesystem | HTTP read-only | S3-like |
+| --- | --- | --- | --- |
+| list and read datasets | yes | yes | yes |
+| publish payload | yes | no | yes |
+| per-dataset local lock | yes | no | no |
+| reject readable existing dataset | yes | not applicable | yes |
+| local immutability and lifecycle records | yes | read if present | no |
+| cache-backed reads | runtime concern | backend support | optional backend cache |
+
+The S3-like implementation is an object transport adapter, not a distributed
+transaction coordinator. Serialize publishers through deployment controls and
+inspect object state after interrupted writes.
 
 ## Runtime Boundary
 
@@ -89,10 +102,11 @@ cannot be parsed, or a recorded digest differs from the bytes read. Treat those
 conditions as integrity failures; do not rebuild the lock around unexplained
 content.
 
-Publication failures must leave the previous catalog-visible release usable.
-Retry policy may address transient backend errors, while store instrumentation
-records reads, writes, failures, and latency. Persistent integrity, permission,
-or layout failures require operator action.
+Because catalog promotion is separate, a failed payload publication should not
+change catalog visibility. Retry policy may address transient backend errors,
+while store instrumentation records reads, writes, failures, and latency.
+Persistent integrity, concurrency, permission, or layout failures require
+operator action.
 
 The result is a stable read contract: a query names a published dataset, the
 runtime resolves verified immutable content, and caches remain disposable.
