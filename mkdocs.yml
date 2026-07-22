@@ -251,8 +251,11 @@ nav:
           - Render and Validate: bijux-atlas-ops/kubernetes/render-and-validate.md
           - Conformance Suites: bijux-atlas-ops/kubernetes/conformance-suites.md
           - Rollout Safety: bijux-atlas-ops/kubernetes/rollout-safety.md
-          - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
           - Debug Bundles: bijux-atlas-ops/kubernetes/debug-bundles.md
+      - Security:
+          - Security Assurance: bijux-atlas-ops/security/index.md
+          - Threat Model and Control Coverage: bijux-atlas-ops/security/threat-model-and-control-coverage.md
+          - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
           - Admin Endpoints Exceptions: bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md
       - Release:
           - Release: bijux-atlas-ops/release/index.md

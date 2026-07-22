@@ -1,0 +1,100 @@
+---
+title: Security Assurance
+audience: operators
+type: index
+status: canonical
+owner: atlas-docs
+last_reviewed: 2026-07-22
+---
+
+# Security Assurance
+
+Atlas security assurance connects governed threats to preventive controls,
+runtime enforcement, detection, recovery, and release-bound evidence. It spans
+the dataset, request, workload, network, dependency, audit, and artifact trust
+boundaries. No single scanner, policy file, or deployment setting establishes
+the whole claim.
+
+## Security System
+
+```mermaid
+flowchart LR
+    Assets["assets and data classes"] --> Threats["threats and abuse paths"]
+    Threats --> Controls["mitigations and compliance controls"]
+    Controls --> Product["runtime and data enforcement"]
+    Controls --> Platform["workload, network, and secret enforcement"]
+    Product --> Detection["audit, metrics, logs, and traces"]
+    Platform --> Detection
+    Detection --> Response["containment and recovery"]
+    Response --> Evidence["release and incident evidence"]
+```
+
+Atlas keeps intent and observation separate. A threat registry describes the
+risk. A mitigation identifies the expected control. Configuration and code
+implement it. Positive and negative tests show behavior. Audit and operational
+signals make use and failure attributable. Release evidence binds accepted
+results to distributed bytes.
+
+## Security Boundaries
+
+| Boundary | Governing concern | Required proof |
+| --- | --- | --- |
+| dataset | source admission, manifest integrity, immutable publication, cache identity | rejected invalid input, verified artifact hashes, and identity-bearing reads |
+| request | authentication, principal propagation, authorization, limits, route classification | allowed and denied requests with action, resource, policy, and correlation evidence |
+| administrative | route registration, operator authority, network isolation, exceptional access | complete route inventory, classifier parity, negative checks, and bounded reachability |
+| workload | pod security, service account, RBAC, filesystem, process configuration | rendered intent, admission result, and observed runtime identity |
+| network | ingress, egress, service exposure, dependency reachability | policy inventory plus allowed and denied connectivity checks |
+| secrets | issuance, reference, delivery, rotation, revocation, redaction | versioned non-secret identifiers and controlled positive and negative checks |
+| supply chain | dependency sources, image and package identity, SBOM, provenance, release integrity | immutable references, policy results, fresh checksum verification, and consumer trust anchor |
+| evidence | audit completeness, retention, tamper detection, incident custody | schema-valid records, gap detection, checksum binding, and retained decision history |
+
+## Evidence Strength
+
+```mermaid
+flowchart LR
+    Intent["policy and control intent"] --> Render["resolved or rendered state"]
+    Render --> Admit["platform admission"]
+    Admit --> Exercise["positive and negative exercise"]
+    Exercise --> Observe["audit and detection evidence"]
+    Observe --> Bind["release or incident binding"]
+```
+
+Each level answers a stronger question. A schema-valid policy proves accepted
+shape. A rendered object proves intended deployment state. Admission proves
+the platform accepted that state. Live exercises prove selected behavior.
+Detection evidence proves the outcome was attributable. Release binding proves
+which distributed artifacts the observation supports.
+
+## Known Qualification Boundaries
+
+Atlas documents limitations as security decisions:
+
+- administrative endpoint registration and authorization classification do
+  not currently agree for all enabled routes; keep the route group disabled for
+  security-qualified profiles unless isolated exception evidence covers the
+  complete set;
+- the release trust model currently uses an internal SHA-256 checksum ledger
+  and declared provenance, not detached signatures or an external signer
+  identity;
+- repository security lanes do not prove target ingress identity, live secret
+  delivery, storage encryption, network enforcement, or production retention;
+- checked-in policies, scenarios, and example reports define contracts and
+  test paths; only fresh, candidate-bound execution supports promotion.
+
+These limits narrow claims. They are not permission to weaken the missing
+control or infer an unobserved pass.
+
+## Route by Decision
+
+| Decision | Read |
+| --- | --- |
+| connect governed threats to controls and evidence | [Threat Model and Control Coverage](threat-model-and-control-coverage.md) |
+| render and qualify runtime, workload, network, and secret controls | [Security Operations](../kubernetes/security-operations.md) |
+| govern exceptional administrative-route exposure | [Admin Endpoint Exceptions](../kubernetes/admin-endpoints-exceptions.md) |
+| investigate a suspected security event | [Incident Response](../observability/incident-response.md) |
+| understand checksum and provenance guarantees | [Signing and Provenance](../release/signing-and-provenance.md) |
+| review release-bound security assets | [Release Evidence](../release/release-evidence.md) |
+
+Security acceptance requires the evidence appropriate to the selected exposure
+model and release profile. A private local evaluation and a production
+deployment do not have the same threat surface or proof burden.

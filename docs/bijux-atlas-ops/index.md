@@ -126,6 +126,13 @@ Owns chart schema, values profiles, installation, upgrade, rollback, network
 policy, and workload security. Rendered inventory, conformance reports, rollout
 records, and debug bundles provide the evidence.
 
+### [Security](security/index.md)
+
+Owns threat and control coverage, request identity, authorization, audit,
+workload and network confinement, secret custody, and artifact trust. Evidence
+must connect governed intent to live positive and negative checks, detection,
+and release binding.
+
 ### [Observability](observability/index.md)
 
 Owns health, readiness, overload, alerts, dashboards, logs, metrics, traces, and
@@ -144,7 +151,7 @@ Owns version manifests, distribution, checksums, provenance, evidence bundles,
 and recovery. Verification results, release packets, SBOMs, and rollback
 evidence support promotion.
 
-Cross-cutting inventory, schema, policy, security, drift, dataset, and
+Cross-cutting inventory, schema, policy, drift, dataset, and
 reproducibility contracts live under `ops/`. They connect these domains and
 prevent one domain from making an isolated promotion claim.
 
@@ -195,11 +202,13 @@ flowchart TD
     Change[Proposed operational change] --> Scope{Owning surface}
     Scope --> Stack[Topology or dependency]
     Scope --> K8s[Chart, values, profile, rollout]
+    Scope --> Security[Threat, identity, exposure, artifact trust]
     Scope --> Observe[Signal, alert, dashboard, drill]
     Scope --> Load[Scenario, threshold, baseline]
     Scope --> Release[Artifact, provenance, recovery]
     Stack --> Cross[Cross-domain evidence review]
     K8s --> Cross
+    Security --> Cross
     Observe --> Cross
     Load --> Cross
     Release --> Cross
@@ -250,7 +259,8 @@ release-bound proof; local design review often needs only the owning contract.
   and [Service Topology](stack/service-topology.md)
 - render, install, or upgrade: [Kubernetes](kubernetes/index.md) and
   [Rollout Safety](kubernetes/rollout-safety.md)
-- secure a profile: [Security Operations](kubernetes/security-operations.md)
+- qualify a security boundary: [Security Assurance](security/index.md) and
+  [Security Operations](kubernetes/security-operations.md)
 - investigate availability: [Health, Readiness, and Drain](observability/health-readiness-and-drain.md)
   and [Incident Response](observability/incident-response.md)
 - qualify performance: [Performance and Load](load/performance-and-load.md)
