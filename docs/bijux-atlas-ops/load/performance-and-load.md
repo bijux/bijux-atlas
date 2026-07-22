@@ -40,6 +40,22 @@ is `ops/load/queries/pinned-v1.json`.
 A run without these identities can still help exploration, but it is not
 comparable release evidence.
 
+## Choose the Executing Surface
+
+Atlas currently exposes two load command families with different authority.
+Their similarly named operations must not be treated as equivalent evidence.
+
+| Surface | Current behavior | Safe claim |
+| --- | --- | --- |
+| `ops load plan/run/report --suite ...`. | Reads `ops/load/load.toml`; `run` invokes the selected K6 script and `report` evaluates its run artifacts. | Measured evidence for one of the three suites present in that manifest, when the environment and result are valid. |
+| `load baseline/run/compare`. | Uses the Rust harness model and writes deterministic synthetic measurements plus derived artifacts. | Command, schema, comparison, and rejection-path behavior; not empirical service capacity. |
+| `ops/load/suites/suites.json`. | Declares the broader 40-scenario acceptance catalog and lane intent. | Intended coverage and thresholds; not proof that every runner exists or executed. |
+
+Name the exact command family in every report. A synthetic `load run` result
+cannot become a measured candidate merely because it has latency, throughput,
+and resource fields. A K6 result cannot claim the 40-scenario catalog unless
+the executed manifest and retained scenario list establish that coverage.
+
 ## Measurement Phases
 
 ```mermaid

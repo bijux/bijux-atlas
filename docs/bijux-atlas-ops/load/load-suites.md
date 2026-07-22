@@ -53,6 +53,31 @@ The registry uses the pinned request set at
 `ops/load/queries/pinned-v1.json`. A workload with different requests is a
 different experiment and cannot silently reuse the same baseline.
 
+## Current Executable Boundary
+
+The 40-entry registry contains 37 K6 entries and three specialized `script`
+entries. It is broader than the manifest consumed by `ops load run`:
+`ops/load/load.toml` currently wires only `mixed`, `diff_heavy`, and
+`hpa_validation_short` to K6 scripts.
+
+The three specialized registry entries are `cold-start-prefetch-5pods`,
+`load-under-rollout`, and `load-under-rollback`. Their runner paths point to
+Python files under an absent historical source layout. They are specifications,
+not executable runners in the current repository.
+
+```mermaid
+flowchart LR
+    Catalog[40-entry suite registry] --> Declared[Lane and threshold intent]
+    Manifest[3-suite load.toml] --> OpsRun[ops load run]
+    OpsRun --> K6[Measured K6 execution]
+    Catalog -. only shared names are runnable .-> Manifest
+    Missing[3 absent specialized runners] --> Gap[Declared coverage gap]
+```
+
+Before reporting lane coverage, intersect the requested registry members with
+the executable manifest and verify every referenced file. A generated catalog
+summary can be complete while the execution surface remains much smaller.
+
 ## Scenario Families
 
 - Core service: `mixed`, `cheap-only-survival`, warm steady state, and cold

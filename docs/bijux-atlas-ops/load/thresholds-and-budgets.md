@@ -150,6 +150,29 @@ The regression command sequence is `load baseline`, `load run`, then
 `load compare`, each with JSON output. Contract failure exits with code `2`, so
 automation can distinguish a rejected candidate from a successful comparison.
 
+The current non-`ops` `load baseline` and `load run` commands generate
+deterministic synthetic measurements from the Rust harness model. Their
+comparison proves calculation, artifact, and exit-code behavior. It does not
+prove that a running Atlas service met the budgets. Bind an empirical release
+decision to measured K6 or equivalent raw results, then apply the same absolute
+and regression policy to that retained population.
+
+## Bind Budgets to Raw Measurements
+
+Every verdict needs an unbroken mapping from contract to observed population:
+
+| Binding | Required identity |
+| --- | --- |
+| workload. | Scenario, query pack, traffic model, rate or concurrency, cache state, and duration. |
+| measurement. | Raw samples, failures, timeouts, rejections, achieved load, and collection window. |
+| policy. | Exact scenario threshold and regression-contract digests. |
+| baseline. | Approved reference identity and comparability verdict. |
+| evaluation. | Tool version, calculation method, raw precision, and machine-readable outcome. |
+
+Reject a summary whose displayed values cannot be recalculated from retained
+inputs. Re-running a synthetic model or copying a threshold into a result is
+not a measurement lineage.
+
 When a value lands exactly on a boundary, apply the comparison operator from
 the owning machine-readable contract. Documentation summaries must not invent
 rounding or tolerance. Preserve raw precision so display formatting cannot
