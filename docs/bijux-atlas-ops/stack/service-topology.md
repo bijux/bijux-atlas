@@ -116,6 +116,32 @@ profiles. The observability components are non-critical dependencies in the
 service contract, but they are required to claim full operational evidence for
 the `kind` profile.
 
+## Failure Amplification Paths
+
+```mermaid
+flowchart LR
+    CacheLoss[Cache unavailable] --> Misses[Store and disk misses rise]
+    Misses --> Saturation[Queueing and saturation]
+    Saturation --> Rejection[Admission and overload rejection]
+    CatalogLoss[Catalog unavailable] --> RefreshFail[New resolution fails]
+    RefreshFail --> CachedOnly[Bounded cached-only service, if permitted]
+    StoreLoss[Store unavailable] --> ArtifactMiss[Uncached artifact failure]
+    ArtifactMiss --> NotReady[Readiness or traffic removal]
+    TelemetryLoss[Telemetry unavailable] --> Blind[Decision confidence falls]
+    Blind --> Hold[Promotion held]
+```
+
+A dependency can fail without corrupting release truth and still create a
+second-order outage. Cache loss shifts demand to authoritative storage. Catalog
+loss blocks new discovery even when retained artifacts remain valid. Telemetry
+loss can leave requests successful while removing the evidence required to
+promote or safely tune capacity.
+
+Contain the first changed boundary before increasing retries or replicas.
+Unbounded retries can multiply store pressure; scaling a blind workload can
+multiply bad requests; clearing every cache can turn a localized stale entry
+into a fleet-wide cold start.
+
 ## Failure Isolation
 
 - A Redis outage is not a store outage. Response-cache failures should fall

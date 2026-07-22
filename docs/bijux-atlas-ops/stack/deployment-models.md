@@ -97,6 +97,25 @@ Evidence is reusable when the authority and unchanged inputs are identical.
 Environment-dependent conclusions are not portable merely because the runtime
 binary is the same.
 
+## External Dependency Handoff
+
+The Atlas profile controls only the assets it owns. A production decision must
+also name the operator for every service supplied by the environment:
+
+| Dependency | Atlas needs | Environment owner must establish |
+| --- | --- | --- |
+| object store | immutable object reads and catalog access | durability, credentials, encryption, backup, restore, and consistency behavior |
+| ingress and DNS | stable routing to eligible instances | TLS policy, name ownership, timeout behavior, and traffic rollback |
+| workload identity | least-privilege access to dependencies | principal lifecycle, credential rotation, revocation, and audit trail |
+| telemetry backend | accepted logs, metrics, and traces | retention, query availability, access control, and loss detection |
+| cluster services | scheduling, storage, metrics, and network enforcement | supported versions, capacity, admission policy, and failure ownership |
+
+Record the provider, service identity, escalation route, recovery objective,
+and evidence source for each dependency. “Managed elsewhere” is a deployment
+fact, not an ownership answer. If an external service is required for
+readiness, correctness, or promotion evidence, its failure policy belongs in
+the target profile's operating record.
+
 ## Non-Negotiable Boundaries
 
 - Serve from published store state, never directly from an ingest build root.

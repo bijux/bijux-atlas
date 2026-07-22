@@ -142,6 +142,37 @@ disk pressure, rejection behavior, and cheap-route survival. Recovery is not
 complete merely because the cache reconnects: the backend pressure accumulated
 during misses must drain without violating correctness or overload policy.
 
+## Miss-Storm Containment
+
+```mermaid
+stateDiagram-v2
+    [*] --> Normal
+    Normal --> Cold: eviction, restart, or cache outage
+    Cold --> Bounded: admission and concurrency limits hold
+    Cold --> Saturated: misses exceed store budget
+    Bounded --> Warming: verified results repopulate cache
+    Saturated --> Shed: reject expensive work and protect cheap paths
+    Shed --> Warming: backend pressure returns inside budget
+    Warming --> Normal: hit ratio and latency stabilize
+```
+
+Before rewarming, set an explicit offered-load ceiling, store concurrency
+budget, retry limit, and abort threshold. Rewarm only entries derived from a
+verified release identity. Preserve a cheap request path so operators can
+distinguish total process failure from overload on expensive queries.
+
+| Signal | Continue warming when | Stop or shed when |
+| --- | --- | --- |
+| store latency and errors | stable inside the scenario budget | latency climbs with sustained errors or timeouts |
+| cache hit ratio | increases without correctness findings | remains flat while backend pressure grows |
+| queue and concurrency | drain remains bounded | work accumulates faster than completion |
+| cheap-route behavior | remains responsive and correct | cheap work is starved by expensive misses |
+| artifact verification | every populated entry binds to verified bytes | any hash, schema, or release identity is uncertain |
+
+The repository's 60% hit-ratio threshold is a governed cache-policy input, not
+a universal recovery target. The selected scenario and environment determine
+whether that threshold is meaningful for the traffic mix being restored.
+
 ## Evidence
 
 For cache incidents, retain hit and miss ratios, evictions, entry identity,
