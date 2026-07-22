@@ -9,338 +9,119 @@ last_reviewed: 2026-07-22
 
 # bijux-atlas-ops
 
-Atlas operations is a governed contract system for deploying immutable dataset
-releases and deciding whether a runtime is safe to promote, keep serving, or
-roll back. Its contracts cover topology, Kubernetes, security, observability,
-load, resilience, drift, recovery, and release evidence.
+Atlas operations governs the path from an immutable dataset release to a
+defensible decision: promote it, keep it serving, hold it, drain traffic, or
+recover a known-good state. That path spans topology, Kubernetes, security,
+observability, load, and release custody. A healthy process or a successful
+Helm render is useful evidence, but neither is a complete operating verdict.
 
-The published `bijux-atlas-ops` crate provides reusable models, validators, and
-repository path contracts. The repository-only `bijux-atlas-dev` command owns
-executable orchestration. The `ops/` tree owns Helm, profiles, scenarios,
-policies, schemas, dashboards, runbooks, and evidence inputs. None of these
-surfaces alone is the complete operations system.
+The system has three cooperating surfaces:
 
-## Four Surfaces, Four Kinds of Authority
+| Surface | Authority |
+| --- | --- |
+| `ops/` | Profiles, charts, policies, schemas, scenarios, thresholds, dashboards, runbooks, and evidence inputs |
+| `bijux-atlas-ops` | Reusable models, path contracts, deterministic validation, and explicit adapters to external state |
+| `bijux-atlas-dev ops` | Repository orchestration, effect gates, and report emission |
 
-Atlas operations is larger than the published crate because policy, execution,
-and evidence have different owners:
+Generated reports record observations. They do not rewrite the policies or
+release identities that produced them.
 
-| Surface | Owns | Does not prove alone |
+## The operating ledger
+
+Every operating decision should be traceable through five records:
+
+```mermaid
+flowchart LR
+    Desired["Desired<br/>release + profile + policy"] --> Rendered["Rendered<br/>exact resources"]
+    Rendered --> Admitted["Admitted<br/>target accepted"]
+    Admitted --> Observed["Observed<br/>behavior measured"]
+    Observed --> Qualified["Qualified<br/>evidence joined"]
+    Qualified --> Decision{"promote, hold,<br/>drain, recover"}
+```
+
+| Record | Question it answers | Invalidated by |
 | --- | --- | --- |
-| `ops/` | authored inventories, schemas, profiles, charts, scenarios, thresholds, runbooks and release inputs | that an environment executed or passed them |
-| `bijux-atlas-ops` | typed models, path contracts, deterministic validation and explicit external-state adapters | that a caller granted effects or retained the result |
-| `bijux-atlas-dev ops` | routing, effect gates and report emission | that every declared item has a runner |
-| generated run and release evidence | observed target, inputs, result, timing, identities and artifact binding | truth beyond the named check, scenario and observation window |
+| desired | What is intended to run, under which policy? | A changed release, profile, policy, or target |
+| rendered | What exact resources would those inputs create? | A changed chart, values chain, image pin, or render tool |
+| admitted | What did the target accept? | A new workload revision, mutation, or target identity |
+| observed | How did that admitted state behave? | A changed serving identity or a new observation window |
+| qualified | Which decision does the joined evidence support? | A broken identity join, failed requirement, or unrecorded exception |
 
-```mermaid
-flowchart LR
-    source["ops/ authored authority"] --> library["bijux-atlas-ops models + validators"]
-    library --> command["bijux-atlas-dev ops execution"]
-    command --> evidence["run evidence"]
-    evidence --> packet["incident or release packet"]
-    packet --> decision{"promote, hold, drain, recover"}
-```
+Retain failed ledger paths. They explain why a release was held and prevent an
+observation from one workload or dataset from being attached to another.
 
-The chain is intentionally one-way. Generated evidence does not rewrite
-authored policy; command availability does not expand the crate's contract;
-and inventory presence does not imply executable coverage. Review a decision
-from the final packet back to the selected inputs and release identity.
+## Decision identity
 
-## The Operational Ledger
+A promotion packet needs stable join keys across six authorities:
 
-Operations advances one release through five distinct records. Each record is
-append-only evidence about a boundary crossing; none replaces the authority
-that produced the preceding record.
+| Authority | Identity to retain |
+| --- | --- |
+| product | Runtime revision and immutable artifact digest |
+| dataset | Release, species, assembly, manifest, and payload hashes |
+| deployment | Chart, values digest, profile, namespace, and workload revision |
+| target | Cluster, dependency composition, and observation boundary |
+| execution | Command or scenario, tool versions, start time, and run ID |
+| decision | Policy, verdict, reviewer, exceptions, and packet digest |
 
-| Record | Question answered | Created from | Required before continuing |
-| --- | --- | --- | --- |
-| desired | what is intended to run? | release, dataset, profile, policy and target | mutable inputs resolve to immutable identities or exceptions |
-| rendered | what exact resources would those inputs create? | deterministic composition and manifest rendering | schema, inventory, namespace, image-pin and policy checks pass |
-| admitted | what did the target accept? | API admission and controller state | context, namespace, live object and workload revision bind to the intended target |
-| observed | how did the system behave? | probes, traffic, signals and scenarios | release-scoped measurements satisfy policy |
-| qualified | what decision is supported? | verified evidence packet | artifact, dataset, deployment, target and execution identities join without ambiguity |
+Telemetry and scenario reports can carry compact join keys rather than every
+field. If those keys cannot recover the target and release identities, the
+result is diagnostic material rather than promotion evidence.
 
-```mermaid
-flowchart LR
-    Desired[desired record] --> Rendered[rendered record]
-    Rendered --> Admitted[admitted record]
-    Admitted --> Observed[observed record]
-    Observed --> Qualified[qualified record]
-    Qualified --> Decision{"promote, hold, drain, recover"}
-    Policy[authored policy] -. constrains .-> Desired
-    Policy -. evaluates .-> Qualified
-```
+## Operational domains
 
-A retry after an identity-changing correction starts a new ledger path. For
-example, a changed values digest invalidates the previous render, and a changed
-workload revision starts a new observation window. Retain failed paths: they
-explain why a release was held and prevent evidence from one identity being
-attached to another.
+| Domain | Governs | Begin with |
+| --- | --- | --- |
+| topology | Components, dependencies, profiles, pins, and failure roles | [Stack](stack/index.md) |
+| delivery | Rendering, admission, rollout, rollback, and confinement | [Kubernetes](kubernetes/index.md) |
+| assurance | Threats, identity, authorization, audit, and artifact trust | [Security](security/index.md) |
+| signals | Health, readiness, overload, metrics, logs, traces, alerts, and drills | [Observability](observability/index.md) |
+| capacity | Workloads, thresholds, baselines, concurrency, churn, and outages | [Load](load/index.md) |
+| custody | Distribution, checksums, provenance, evidence bundles, and recovery | [Release](release/index.md) |
 
-## Operating Model
+The domains share identity but not authority. A rendered manifest cannot prove
+readiness. A passing load scenario cannot prove rollback. A complete telemetry
+inventory cannot prove that signals arrived during the decision window.
 
-```mermaid
-flowchart LR
-    Release[Verified dataset and runtime release] --> Profile[Select environment profile]
-    Profile --> Render[Render and validate deployment]
-    Render --> Install[Install or upgrade]
-    Install --> Observe[Evaluate health, metrics, logs, and traces]
-    Observe --> Exercise[Run available scenarios and record coverage gaps]
-    Exercise --> Decide{Evidence satisfies policy?}
-    Decide -->|yes| Promote[Promote or continue serving]
-    Decide -->|no| Hold[Hold, drain, or roll back]
-    Promote --> Packet[Retain release packet and provenance]
-    Hold --> Incident[Retain diagnostics and decision evidence]
-```
-
-An installation is not considered safe because Helm rendered successfully.
-Rendering proves shape. Probes establish process and traffic state. Telemetry
-shows runtime behavior. Executed governed scenarios can test performance and
-survival. A registered scenario without an executable route proves only intent.
-Release evidence binds the final decision to the exact artifacts and policy.
-
-## Operational Architecture
-
-Atlas operations spans three planes with different failure semantics:
+## Operator control loops
 
 ```mermaid
 flowchart TB
-    subgraph Control[Control plane]
-        Profile[Profiles and policy] --> Render[Render and admission]
-        Render --> Rollout[Install, upgrade, drain, rollback]
-    end
-    subgraph Data[Data plane]
-        Client[Client traffic] --> Runtime[Atlas runtime]
-        Runtime --> Catalog[Catalog]
-        Runtime --> Store[Immutable store]
-        Runtime --> Cache[Disposable cache]
-    end
-    subgraph Evidence[Evidence plane]
-        Probes[Health and readiness]
-        Signals[Metrics, logs, and traces]
-        Scenarios[Load and resilience]
-        Packet[Release and incident evidence]
-    end
-    Rollout --> Runtime
-    Runtime --> Probes
-    Runtime --> Signals
-    Runtime --> Scenarios
-    Probes --> Packet
-    Signals --> Packet
-    Scenarios --> Packet
-    Packet --> Decision{Promote, hold, drain, or recover}
+    A[Admit exact inputs] --> B[Roll out and observe]
+    B --> C[Exercise capacity and failure behavior]
+    C --> D{Policy satisfied?}
+    D -->|yes| E[Promote and retain packet]
+    D -->|no| F[Hold, drain, or recover]
+    F --> G[Retain incident and decision evidence]
 ```
 
-The control plane can request a rollout but cannot declare serving correctness.
-The data plane can answer traffic while the evidence plane is blind. The
-evidence plane can retain observations but cannot mutate release truth. Safe
-operation requires explicit agreement across all three.
+Use `bijux dev atlas ops --help` for the installed maintainer interface, or
+`cargo run --locked -p bijux-atlas-dev -- ops --help` from a checkout. Inspect
+the selected subcommand before granting subprocess, network, cluster, or write
+effects. Command availability identifies a mechanism; environment policy still
+decides which checks and observation windows are required.
 
-| Plane failure | Immediate risk | Safe response |
-| --- | --- | --- |
-| control | state cannot be changed predictably | stop mutation; preserve workload identity |
-| data | intended dataset cannot be served correctly | remove traffic; restore verified state |
-| evidence | behavior cannot be measured or attributed | hold promotion and retain local diagnostics |
-| cross-plane identity | release, profile, or dataset differs | reject the incoherent packet |
+## Start by outcome
 
-## Operating Packet Identity
-
-Every operational result must identify both what ran and where it ran. The
-minimum join spans six authorities:
-
-| Authority | Identity retained |
-| --- | --- |
-| product | runtime revision and immutable artifact digest |
-| dataset | release, species, assembly, manifest, and payload hashes |
-| deployment | chart, values digest, profile, namespace, and workload revision |
-| target | cluster, dependency composition, and observation boundary |
-| execution | command or scenario, tool versions, start time, and run ID |
-| decision | reviewer, policy, verdict, exceptions, and packet digest |
-
-```mermaid
-flowchart LR
-    Product[product] --> Join{"identity join"}
-    Dataset[dataset] --> Join
-    Deployment[deployment] --> Join
-    Target[target] --> Join
-    Execution[execution] --> Join
-    Join --> Decision[attributable decision]
-```
-
-Telemetry labels, scenario reports, and release records do not need to repeat
-every field inline, but they must carry stable join keys. A result that cannot
-be joined back to its target and release is diagnostic material, not promotion
-evidence.
-
-## Operational Domains
-
-### [Stack](stack/index.md)
-
-Owns component roles, dependencies, profiles, versions, and local and Kind
-topology. Its primary evidence is the stack index, dependency graph, and version
-manifest.
-
-### [Kubernetes](kubernetes/index.md)
-
-Owns chart schema, values profiles, installation, upgrade, rollback, network
-policy, and workload security. Rendered inventory, conformance reports, rollout
-records, and debug bundles provide the evidence.
-
-### [Security](security/index.md)
-
-Owns threat and control coverage, request identity, authorization, audit,
-workload and network confinement, secret custody, and artifact trust. Evidence
-must connect governed intent to live positive and negative checks, detection,
-and release binding.
-
-### [Observability](observability/index.md)
-
-Owns health, readiness, overload, alerts, dashboards, logs, metrics, traces, and
-drills. Evidence comes from the telemetry index, rule validation, dashboard
-checks, and drill results.
-
-### [Load](load/index.md)
-
-Owns scenario identity, query packs, thresholds, baselines, concurrency, churn,
-and outage workloads. Load summaries, threshold evaluations, and baseline
-comparisons record the decisions.
-
-### [Release](release/index.md)
-
-Owns version manifests, distribution, checksums, provenance, evidence bundles,
-and recovery. Verification results, release packets, SBOMs, and rollback
-evidence support promotion.
-
-Cross-cutting inventory, schema, policy, drift, dataset, and
-reproducibility contracts live under `ops/`. They connect these domains and
-prevent one domain from making an isolated promotion claim.
-
-## Executable Routes and Ownership
-
-The installed maintainer route is `bijux dev atlas ops ...`; a checkout can use
-`cargo run --locked -p bijux-atlas-dev -- ops ...`. The command family is broad,
-but its subcommands still have narrow proof boundaries:
-
-| Route | Primary use | Strongest safe claim from success alone |
-| --- | --- | --- |
-| `ops stack plan` | resolve composition | profile and planned components are inspectable |
-| `ops stack status` | inspect local services | named services were observed at that time |
-| `ops k8s render`, `validate` | check Kubernetes input | shape passed implemented validators |
-| `ops k8s conformance` | inspect readiness | current deployment, pod, and HPA snapshot passed |
-| `ops obs verify` | verify selected signals | that observability verification completed |
-| `ops load plan`, `run`, `evaluate` | run a load contract | measurements satisfy that scenario and threshold |
-| `ops evidence collect`, `verify` | check evidence binding | packet passed implemented binding checks |
-
-The executable observability subcommand is named `obs`. Documentation uses the
-full domain name “observability” for readers, but command examples must preserve
-the compiled route. Always inspect `--help` for the selected subcommand before
-granting cluster, subprocess, network, or write authority.
-
-Commands expose mechanisms, not a universal promotion recipe. An environment's
-policy decides which routes, observation windows, scenarios, and recovery proof
-are required for its decision.
-
-## Operator Control Loops
-
-| Loop | Input | Decision | Evidence to retain |
-| --- | --- | --- | --- |
-| admission | desired and rendered records | permit target mutation | versions, values digest, policy, inventory, target guard |
-| rollout | admitted and observed records | continue, drain, roll back | object revisions, events, readiness, error, saturation |
-| capacity | scenario, concurrency, baseline | accept or reject envelope | release-scoped measurements and threshold evaluation |
-| incident | symptoms, changes, dependencies | mitigate, recover, escalate | affected ledger path, timeline, diagnostics, recovery result |
-| promotion | complete ledger and artifact proof | promote or refuse | verified packet bound to artifacts and decision policy |
-
-The loops share release and environment identity but answer different
-questions. Admission cannot stand in for runtime observation. A load result
-cannot stand in for rollback proof. Incident evidence should preserve facts
-even when no release decision follows.
-
-## Decision Boundaries
-
-```mermaid
-flowchart TD
-    Change[Proposed operational change] --> Scope{Owning surface}
-    Scope --> Stack[Topology or dependency]
-    Scope --> K8s[Chart, values, profile, rollout]
-    Scope --> Security[Threat, identity, exposure, artifact trust]
-    Scope --> Observe[Signal, alert, dashboard, drill]
-    Scope --> Load[Scenario, threshold, baseline]
-    Scope --> Release[Artifact, provenance, recovery]
-    Stack --> Cross[Cross-domain evidence review]
-    K8s --> Cross
-    Security --> Cross
-    Observe --> Cross
-    Load --> Cross
-    Release --> Cross
-    Cross --> Decision[Promote, hold, drain, or roll back]
-```
-
-The owning contract defines the first validation path. Cross-domain review is
-required when effects escape that boundary. A chart change can affect network
-policy, probes, dashboards, capacity, and rollback. A store change can affect
-readiness, cache behavior, failure scenarios, and release reproducibility.
-
-## Evidence Chain
-
-Operators should be able to answer five questions for every promotion:
-
-1. Which runtime, dataset release, chart, profile, values, and dependency
-   versions were selected?
-2. Which rendered resources and policy checks established deployability?
-3. Which health, readiness, overload, telemetry, and user-path signals were
-   observed?
-4. Which load, churn, outage, upgrade, and rollback expectations were exercised?
-5. Which checksums, provenance record, evidence manifest, and verification
-   result bind the decision to the released artifacts?
-
-Missing evidence is itself an operational finding. It must not be converted
-into a pass because the runtime appears healthy at one instant.
-
-## Evidence Strength
-
-Operational assets answer different questions and are not interchangeable.
-
-| Asset | Safe conclusion | Unsafe conclusion |
-| --- | --- | --- |
-| schema, policy, or threshold | the required shape and decision rule are explicit | the environment passed |
-| sample or golden file | representative validator target exists | runtime matches the sample |
-| rendered manifest | values produce a resource shape | workload became ready or survived |
-| telemetry inventory | expected signals have names and owners | signals were emitted and retained |
-| scenario report | named behavior was observed | another target behaves identically |
-| verified release packet | evidence and artifact identities agree | unrecorded operational assumptions are safe |
-
-Use the weakest artifact that can answer an inspection question and the
-strongest evidence required by the decision. Promotion needs observed,
-release-bound proof; local design review often needs only the owning contract.
-
-## Start by Outcome
-
-- deploy or inspect a topology: [Deployment Models](stack/deployment-models.md)
-  and [Service Topology](stack/service-topology.md)
-- render, install, or upgrade: [Kubernetes](kubernetes/index.md) and
+- choose a composition: [Deployment Models](stack/deployment-models.md) and
+  [Service Topology](stack/service-topology.md)
+- render or change a deployment: [Kubernetes](kubernetes/index.md) and
   [Rollout Safety](kubernetes/rollout-safety.md)
-- qualify a security boundary: [Security Assurance](security/index.md) and
+- qualify an exposure boundary: [Security](security/index.md) and
   [Security Operations](kubernetes/security-operations.md)
-- investigate availability: [Health, Readiness, and Drain](observability/health-readiness-and-drain.md)
+- investigate serving behavior: [Health, Readiness, and Drain](observability/health-readiness-and-drain.md)
   and [Incident Response](observability/incident-response.md)
-- qualify performance: [Performance and Load](load/performance-and-load.md)
-  and [Thresholds and Budgets](load/thresholds-and-budgets.md)
-- verify distribution: [Signing and Provenance](release/signing-and-provenance.md)
+- establish an operating envelope: [Load](load/index.md) and
+  [Thresholds and Budgets](load/thresholds-and-budgets.md)
+- verify release custody: [Signing and Provenance](release/signing-and-provenance.md)
   and [Release Evidence](release/release-evidence.md)
 
-## Current Proof Boundaries
+## Current proof boundary
 
-Checked-in policies, schemas, inventories, scenarios, and samples define the
-expected operational system. They do not claim that a cluster is running or
-that a scenario executed. Generated and captured reports become operational
-evidence only when they record the selected profile, environment, release,
-inputs, timestamps, result, and artifact binding required by their contract.
-
-The Kubernetes conformance catalog declares 79 checks and five suite
-selections, but the current `ops k8s conformance` implementation performs a
-narrow workload-readiness snapshot over deployments, pods, and HPA metrics API
-availability. It does not execute the catalog manifest. Treat the catalog as
-declared coverage and the command report as readiness evidence until a runner
-binds the selected check IDs, suite policy, and results end to end. See
-[Kubernetes Conformance Suites](kubernetes/conformance-suites.md) for the exact
-boundary.
+Checked-in contracts describe the intended system; they do not claim that a
+target ran or passed them. In particular, the Kubernetes conformance catalog
+declares 79 checks and five suite selections, while the current
+`ops k8s conformance` command performs a narrower readiness snapshot over
+deployments, pods, and HPA metrics API availability. Treat the catalog as
+declared coverage and the command output as snapshot evidence until execution
+binds selected check IDs, policy, and results end to end. See
+[Kubernetes Conformance Suites](kubernetes/conformance-suites.md).
