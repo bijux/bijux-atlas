@@ -22,15 +22,18 @@ flowchart LR
     P --> S["Values schema and risk policy"]
     S --> H["Helm render"]
     H --> V["Manifest and Kubernetes validation"]
-    V --> C["Conformance suite"]
+    V --> W["Workload readiness snapshot"]
+    W --> C["Executable selected checks"]
     C --> O["Live probes and observability"]
     O --> R{"Promote or roll back"}
 ```
 
 Each layer narrows uncertainty. Schema validation rejects malformed or unsafe
-input. Rendering exposes the actual objects. Conformance checks workload and
-service shape. Live probes show whether the installed release admits traffic
-and emits the required signals.
+input. Rendering exposes the actual objects. The current Kubernetes
+conformance command checks deployment and pod readiness plus HPA custom-metrics
+availability. Live probes show whether the installed release admits traffic
+and emits the required signals. The larger check catalog is not evidence until
+its selected checks have an executable runner and recorded results.
 
 ## Rollout State Model
 
@@ -38,7 +41,7 @@ and emits the required signals.
 stateDiagram-v2
     [*] --> Declared: release and profile selected
     Declared --> Rendered: schema and render pass
-    Rendered --> Admitted: policy and conformance pass
+    Rendered --> Admitted: policy and API admission pass
     Admitted --> Progressing: install or upgrade begins
     Progressing --> Ready: readiness and traffic criteria pass
     Progressing --> Held: timeout, error, or saturation trigger
@@ -49,9 +52,10 @@ stateDiagram-v2
 ```
 
 `Rendered`, `Admitted`, `Ready`, and `Promoted` are distinct states. A render
-report proves resource shape. Admission proves selected policy. Readiness
-proves current traffic eligibility. Promotion additionally requires the named
-observation and evidence policy for the environment.
+report proves resource shape. Admission proves selected policy and cluster API
+acceptance. Workload readiness proves only the current deployment, pod, and HPA
+snapshot covered by the command. Promotion additionally requires the named
+behavioral checks, observation window, and evidence policy for the environment.
 
 ## Desired, Rendered, and Observed State
 
@@ -101,6 +105,21 @@ performance, with explicit previous-chart and workspace-head identities.
 The matrix records supported evidence routes; it does not imply that every
 profile has identical availability, security, or performance promises.
 
+## Conformance Coverage Boundary
+
+Atlas currently has two similarly named surfaces:
+
+| Surface | Current scope | Safe claim |
+| --- | --- | --- |
+| `bijux-atlas-dev ops k8s conformance` | `kubectl` snapshots of deployments and pods, plus custom-metrics API presence when HPA exists | workload-readiness snapshot for the fixed `bijux-atlas` namespace |
+| `ops/k8s/tests/manifest.json` and `suites.json` | 79 declared checks selected by five suite definitions | intended check inventory and grouping, not execution |
+
+No current runner connects a selected suite to all declared scripts and emits
+per-check results. A promotion record must therefore name which additional
+checks were actually invoked and how their outputs were bound. The generic
+`k8s_conformance` report cannot be used as proof that `smoke`, `resilience`,
+`graceful-degradation`, `api-protection`, or `full` completed.
+
 ## Safety Boundaries
 
 - Production-oriented profiles must run as non-root according to the profile
@@ -147,7 +166,9 @@ green status cannot be reproduced or attributed to the release under review.
 - rollout decisions: `ops/k8s/rollout-safety-contract.json`
 - security posture: `ops/k8s/profile-security-contract.json` and the
   administrative-endpoint exception ledger
-- executable conformance: `ops/k8s/tests/`
+- declared conformance catalog: `ops/k8s/tests/`
+- current readiness command:
+  `crates/bijux-atlas-ops/src/kubernetes/conformance.rs`
 
 Keep the rendered manifests and reports with the release evidence. They are the
 reviewable record of what Kubernetes was asked to run.

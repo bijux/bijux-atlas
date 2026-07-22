@@ -9,10 +9,16 @@ last_reviewed: 2026-07-22
 
 # bijux-atlas-ops
 
-Atlas operations is a governed control plane for deploying immutable dataset
+Atlas operations is a governed contract system for deploying immutable dataset
 releases and deciding whether a runtime is safe to promote, keep serving, or
 roll back. Its contracts cover topology, Kubernetes, security, observability,
 load, resilience, drift, recovery, and release evidence.
+
+The published `bijux-atlas-ops` crate provides reusable models, validators, and
+repository path contracts. The repository-only `bijux-atlas-dev` command owns
+executable orchestration. The `ops/` tree owns Helm, profiles, scenarios,
+policies, schemas, dashboards, runbooks, and evidence inputs. None of these
+surfaces alone is the complete operations system.
 
 ## Operating Model
 
@@ -22,7 +28,7 @@ flowchart LR
     Profile --> Render[Render and validate deployment]
     Render --> Install[Install or upgrade]
     Install --> Observe[Evaluate health, metrics, logs, and traces]
-    Observe --> Exercise[Run load, churn, outage, and rollback scenarios]
+    Observe --> Exercise[Run available scenarios and record coverage gaps]
     Exercise --> Decide{Evidence satisfies policy?}
     Decide -->|yes| Promote[Promote or continue serving]
     Decide -->|no| Hold[Hold, drain, or roll back]
@@ -32,7 +38,8 @@ flowchart LR
 
 An installation is not considered safe because Helm rendered successfully.
 Rendering proves shape. Probes establish process and traffic state. Telemetry
-shows runtime behavior. Governed scenarios test performance and survival.
+shows runtime behavior. Executed governed scenarios can test performance and
+survival. A registered scenario without an executable route proves only intent.
 Release evidence binds the final decision to the exact artifacts and policy.
 
 ## Operational Architecture
@@ -207,3 +214,12 @@ expected operational system. They do not claim that a cluster is running or
 that a scenario executed. Generated and captured reports become operational
 evidence only when they record the selected profile, environment, release,
 inputs, timestamps, result, and artifact binding required by their contract.
+
+The Kubernetes conformance catalog declares 79 checks and five suite
+selections, but the current `ops k8s conformance` implementation performs a
+narrow workload-readiness snapshot over deployments, pods, and HPA metrics API
+availability. It does not execute the catalog manifest. Treat the catalog as
+declared coverage and the command report as readiness evidence until a runner
+binds the selected check IDs, suite policy, and results end to end. See
+[Kubernetes Conformance Suites](kubernetes/conformance-suites.md) for the exact
+boundary.
