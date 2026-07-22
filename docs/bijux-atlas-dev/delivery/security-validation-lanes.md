@@ -74,6 +74,24 @@ does not establish an internally passing result. Review the generated statuses
 and findings before accepting security evidence, and require downstream gates
 to fail closed on invalid or failed content.
 
+## Carry Findings to Closure
+
+Every non-passing security observation needs a durable disposition. Workflow
+completion and artifact upload are transport events, not dispositions.
+
+| Finding state | Acceptance rule |
+| --- | --- |
+| open. | The protected claim remains blocked or explicitly narrowed. |
+| accepted exception. | Scope, authority, expiry, compensating control, and removal path are recorded. |
+| false positive. | The detector, affected evidence, and reproducible disproof are retained. |
+| remediated. | The fix revision and a fresh execution of the owning check both pass. |
+| superseded. | A named policy or control replaces the finding and preserves historical lineage. |
+
+Do not infer remediation because a later run omitted the finding. Confirm that
+the same detector, policy revision, and target surface executed. A changed
+path filter, tolerated command, or missing artifact can make a finding
+disappear without changing the risk.
+
 ## Trigger, Execution, and Acceptance
 
 ```mermaid

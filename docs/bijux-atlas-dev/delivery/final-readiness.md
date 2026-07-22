@@ -60,6 +60,31 @@ validation must demonstrate that a governance failure cannot become a green
 readiness verdict. Artifact upload uses `if: always()`, so artifact presence
 also does not imply job success.
 
+## Reconstruct the Verdict
+
+The uploaded artifact contains `artifacts/audit/`, but the system-simulation
+record is produced under `artifacts/system/simulation/` and is not uploaded by
+this workflow. A reviewer downloading only the named artifact cannot inspect
+that upstream record from the bundle alone.
+
+Treat the workflow run, checked-out revision, command logs, simulation output,
+and uploaded audit tree as one evidence graph:
+
+```mermaid
+flowchart LR
+    Run[Workflow run and source revision] --> Log[Command log and exit behavior]
+    Run --> Sim[System simulation record]
+    Run --> Audit[Uploaded audit tree]
+    Sim --> Verdict[Reconstructed readiness verdict]
+    Audit --> Verdict
+    Log --> Verdict
+```
+
+Preserve the simulation record separately or include it in the retained bundle
+before claiming the artifact is self-contained. Recalculate the verdict from
+internal report statuses; do not use artifact existence or the workflow badge
+as a substitute.
+
 ## Readiness Decision
 
 Accept the workflow as scoped evidence only when:

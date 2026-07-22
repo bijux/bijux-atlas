@@ -48,17 +48,37 @@ can provide latency, throughput, saturation, failure, or recovery evidence.
 
 Freeze the source revision, binary or image digest, dataset, query pack,
 scenario, thresholds, profile, resources, topology, cache state, tool versions,
-and run ID before execution. Then use the governed load sequence:
+and run ID before execution. Plan and execute one of the suites wired into
+`ops/load/load.toml`:
 
 ```bash
-bijux-atlas-dev --repo-root "$PWD" load baseline --help
-bijux-atlas-dev --repo-root "$PWD" load run --help
-bijux-atlas-dev --repo-root "$PWD" load compare --help
+bijux-atlas-dev ops load plan mixed \
+  --repo-root "$PWD" \
+  --format json
+
+bijux-atlas-dev ops load run mixed \
+  --repo-root "$PWD" \
+  --run-id candidate-load \
+  --allow-subprocess \
+  --allow-network \
+  --allow-write \
+  --format json
+
+bijux-atlas-dev ops load report mixed \
+  --repo-root "$PWD" \
+  --run-id candidate-load \
+  --format json
 ```
 
-Use `--help` to select explicit inputs for the installed version. Store raw and
-derived results under the run's `artifacts/` directory. Do not replace raw K6,
-Criterion, resource, or telemetry data with a console summary.
+The manifest currently exposes only `mixed`, `diff_heavy`, and
+`hpa_validation_short`. The broader 40-entry suite registry is not fully wired
+to this executor. Record that scope instead of reporting the registry as run.
+
+The separate `load baseline`, `load run`, and `load compare` commands emit
+deterministic synthetic harness measurements. They are suitable for command and
+comparison-contract tests, not candidate performance evidence. Store raw and
+derived K6 results under the run's `artifacts/` directory. Do not replace raw
+K6, Criterion, resource, or telemetry data with a console summary.
 
 For microbenchmarks, execute the owned target only when the environment is
 suited to measurement. Record CPU model, frequency policy, memory, storage,
