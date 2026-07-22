@@ -126,4 +126,6 @@ Silences need a narrow matcher, owner, justification, start, expiry, and review
 trail. An acknowledgement is not a resolution, and a silence is not a repair.
 
 Continue with [Telemetry drills](telemetry-drills.md) for current execution
-limits and [Incident response](incident-response.md) for containment.
+limits, [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md)
+for burn semantics, and [Incident response](incident-response.md) for
+containment.

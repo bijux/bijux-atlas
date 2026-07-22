@@ -282,6 +282,7 @@ nav:
           - Telemetry Drills: bijux-atlas-ops/observability/telemetry-drills.md
           - Tracing Pipelines: bijux-atlas-ops/observability/tracing-pipelines.md
           - Metrics Packages: bijux-atlas-ops/observability/metrics-packages.md
+          - Service Objectives and Error Budgets: bijux-atlas-ops/observability/service-objectives-and-error-budgets.md
           - Logging Contracts: bijux-atlas-ops/observability/logging-contracts.md
           - Operational Evidence Reports: bijux-atlas-ops/observability/operational-evidence-reports.md
       - Load:

@@ -10,7 +10,7 @@
         "log:store_outage",
         "trace:error"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -25,7 +25,7 @@
         "metric:bijux_http_requests_total",
         "log:prom_outage"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -56,7 +56,7 @@
         "metric:bijux_store_breaker_open",
         "log:store_latency"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -72,7 +72,7 @@
         "metric:atlas_shed_total",
         "log:policy_rejection"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 180,
       "parallel_policy": "serial",
       "warmup": true,
@@ -142,7 +142,7 @@
       "expected_signals": [
         "validator:runbook_mapping"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -156,7 +156,7 @@
       "expected_signals": [
         "metric:bijux_cheap_queries_served_while_overloaded_total"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -170,7 +170,7 @@
       "expected_signals": [
         "metric:bijux_dataset_cache_misses_total"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 120,
       "parallel_policy": "serial",
       "warmup": true,
@@ -184,7 +184,7 @@
       "expected_signals": [
         "validator:readiness_catalog_refresh"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -198,7 +198,7 @@
       "expected_signals": [
         "validator:dataset_corruption"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -212,7 +212,7 @@
       "expected_signals": [
         "validator:gc_under_load"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 240,
       "parallel_policy": "serial",
       "warmup": true,
@@ -226,7 +226,7 @@
       "expected_signals": [
         "validator:rolling_restart"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -240,7 +240,7 @@
       "expected_signals": [
         "validator:hpa_scale"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -254,7 +254,7 @@
       "expected_signals": [
         "validator:disk_pressure"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,
@@ -268,7 +268,7 @@
       "expected_signals": [
         "validator:cpu_throttle"
       ],
-      "runbook": "docs/04-operations/incident-response.md",
+      "runbook": "docs/bijux-atlas-ops/observability/incident-response.md",
       "timeout_seconds": 300,
       "parallel_policy": "serial",
       "warmup": true,

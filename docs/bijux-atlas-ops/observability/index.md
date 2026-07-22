@@ -107,6 +107,7 @@ path.
 | Which runtime path is failing? | [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md) | Localize request, store, cache, or policy behavior. |
 | What must a structured event contain? | [Logging Contracts](logging-contracts.md) | Validate event identity, required fields, and data handling. |
 | Which metric and labels are governed? | [Metrics Packages](metrics-packages.md) | Validate metric ownership and cardinality. |
+| Are service objectives within budget? | [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md) | Hold, mitigate, or continue a release decision. |
 | How does trace context move? | [Tracing Pipelines](tracing-pipelines.md) | Validate propagation, correlation, and exporter behavior. |
 | Does a signal require action? | [Alert Rules](alert-rules.md) | Page, investigate, or monitor. |
 | Which view explains the impact? | [Dashboards and Panels](dashboards-and-panels.md) | Correlate service, dependency, and saturation signals. |

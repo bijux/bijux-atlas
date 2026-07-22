@@ -117,5 +117,7 @@ dashboard queries, alerts, recording rules, and SLO expressions. Then capture a
 runtime scrape and stored query result showing resolved labels, values, and
 freshness for the candidate release.
 
-See [Dashboards and Panels](dashboards-and-panels.md) for diagnostic consumers
-and [Alert Rules](alert-rules.md) for action thresholds.
+See [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md)
+for indicator and budget semantics, [Dashboards and Panels](dashboards-and-panels.md)
+for diagnostic consumers, and [Alert Rules](alert-rules.md) for action
+thresholds.
