@@ -7,12 +7,11 @@ owner: atlas-docs
 last_reviewed: 2026-07-22
 ---
 
-# Documentation Map
+# Atlas Decision Map
 
-Atlas documentation follows three reader journeys: using the product,
-operating a deployment, and maintaining the repository. Start with the journey
-that owns your decision, then move from concepts to a workflow and finally to
-the exact interface, contract, or evidence reference.
+Atlas has three authority boundaries: product use, deployment operation, and
+repository maintenance. Choose the boundary that owns the decision, then
+follow its workflow to the exact interface, contract, or evidence record.
 
 ```mermaid
 flowchart TD
@@ -27,9 +26,23 @@ flowchart TD
     Dev --> Control[Checks, suites, governance, and release control plane]
 ```
 
-## Product Documentation
+## Authority and Handoffs
 
-The `bijux-atlas` domain has five complementary sections:
+| Decision boundary | Authority | Receives from | Hands off |
+| --- | --- | --- | --- |
+| product use | CLI, HTTP, configuration, artifact and compatibility contracts | verified installation and dataset | results and consumer expectations |
+| deployment operation | profiles, target state and operating evidence | product and dataset identities | promotion, rollback and incident records |
+| repository maintenance | source, checks, reports, governance and publication | proposed repository change | reviewed source and release artifacts |
+
+Product documentation cannot establish that a cluster enforced its policy.
+Operations evidence cannot redefine a public response or artifact contract.
+Maintainer validation cannot replace consumer verification. Cross the boundary
+with an identity-bearing receipt rather than an assumed pass.
+
+## Use and Integrate Atlas
+
+The `bijux-atlas` domain connects product concepts to runnable workflows and
+stable consumer surfaces:
 
 | Section | Use it for | Continue when |
 | --- | --- | --- |
@@ -39,10 +52,9 @@ The `bijux-atlas` domain has five complementary sections:
 | [Runtime](../runtime/index.md) | cache, serving, security, observability, and process architecture | you need deployment behavior or operational proof |
 | [Contracts](../contracts/index.md) | public shape, ownership, versioning, and compatibility | you need candidate-specific evidence |
 
-## Operations Documentation
+## Deploy and Operate Atlas
 
-The `bijux-atlas-ops` domain owns deployment and operational decisions. Route
-there for:
+The `bijux-atlas-ops` domain owns deployment and operational decisions:
 
 - containers, Kubernetes, Helm, overlays, and profiles;
 - configuration and secret delivery;
@@ -54,7 +66,7 @@ there for:
 A product contract can define readiness semantics, but only target-bound
 operations evidence can show that a deployment satisfied them.
 
-## Maintainer Documentation
+## Change and Govern the Repository
 
 The `bijux-atlas-dev` domain owns repository change mechanics:
 
@@ -79,13 +91,13 @@ runtime interfaces, even when they inspect product artifacts.
 | Which check, workflow, or report supports a repository claim? | the `bijux-atlas-dev` automation and governance sections |
 | What proves a deployment is safe under load or failure? | the `bijux-atlas-ops` load, resilience, security, and evidence sections |
 
-## Authority Ladder
+## Evidence Strength
 
-Concept pages define vocabulary. Workflow pages connect supported interfaces in
-an executable order. Interface pages enumerate observed surfaces. Contract and
-schema artifacts define consumer commitments. Release, deployment, or audit
-claims additionally require evidence tied to the exact revision, artifact,
-profile, and target.
+Concepts establish vocabulary. Workflows connect supported interfaces in an
+executable order. Interface references enumerate observable surfaces.
+Contracts and schemas define consumer commitments. Release, deployment, and
+audit claims additionally require evidence tied to the exact revision,
+artifact, profile and target.
 
 Examples teach shape. Generated references describe a specific build. Neither
 substitutes for candidate-bound validation when the decision is operational or

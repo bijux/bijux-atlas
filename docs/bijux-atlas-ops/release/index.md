@@ -80,6 +80,40 @@ succeeded, their immutable references, the failed operation, and the retry or
 withdrawal decision. Do not rerun successful mutable-tag publication blindly;
 reconcile the remote state against the original candidate first.
 
+## Release Custody Ledger
+
+Release integrity is preserved across handoffs, not only inside the producer's
+workspace. Each custodian appends a receipt while the immutable candidate
+identity remains unchanged.
+
+| Custodian | Accepts | Must verify | Emits |
+| --- | --- | --- | --- |
+| builder | source and dependencies | revision, toolchain, inputs and build | artifacts and build receipt |
+| assembler | artifacts and evidence | membership, schema, policy and identity | packet, provenance, SBOMs and checksums |
+| publisher | verified candidate | channel policy, reference and remote digest | channel receipt or partial record |
+| consumer | channel references and packet | bytes, trust, compatibility and target policy | consumer verification receipt |
+| operator | consumer-verified artifacts | render, admission, correctness and operating evidence | target qualification packet |
+| decision owner | producer and target evidence | exceptions, observation window and reversal authority | promotion, hold or withdrawal record |
+
+```mermaid
+flowchart LR
+    Build[build receipt] --> Assemble[packet receipt]
+    Assemble --> Publish[channel receipts]
+    Publish --> Consume[consumer receipt]
+    Consume --> Qualify[target qualification]
+    Qualify --> Decide[promotion record]
+    Identity[immutable candidate identity] -. binds .-> Build
+    Identity -. binds .-> Assemble
+    Identity -. binds .-> Publish
+    Identity -. binds .-> Consume
+    Identity -. binds .-> Qualify
+```
+
+A custodian may reject or hold the candidate but must not repair upstream
+evidence silently. Changed bytes create a new candidate. Changed target,
+profile, dataset or policy creates a new consumer qualification, even when the
+producer packet remains reusable and unchanged.
+
 ## Match Evidence to the Release Decision
 
 One coherent packet can support several decisions, but each decision needs a
@@ -90,7 +124,7 @@ installability, operating fitness, and promotion into one release status.
 | --- | --- | --- |
 | bytes received intact | packet inventory, checksums, provenance, and immutable channel reference | fresh member hashes and trust-policy verdict |
 | release can be installed | chart, images, values, schemas, compatibility declarations | target render, admission result, dependency resolution, and rollback target |
-| release can serve correctly | product contracts, dataset schemas, and governed test evidence | target dataset identity, representative queries, readiness, and response correctness |
+| release can serve correctly | product contracts, dataset schemas and test evidence | dataset identity, representative queries, readiness and correct responses |
 | release meets operating envelope | declared SLO, load, security, failure, and recovery contracts | target-specific telemetry, capacity, fault, rollout, and recovery results |
 | release may be promoted | complete candidate packet and producer acceptance | owned consumer decision, exceptions, observation window, and reversal authority |
 

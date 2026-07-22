@@ -116,6 +116,37 @@ If the same logical command behaves differently through the direct binary and
 umbrella route, preserve both observations and treat route parity as failed.
 Do not choose whichever route happens to pass.
 
+## Effects Are Granted Per Run
+
+The control plane distinguishes pure inspection from four effect classes:
+filesystem write, subprocess, Git and network. A route declares its required
+effects; the run grants them explicitly; the executor refuses or skips work
+whose requirement is not granted. A profile or suite name does not grant an
+effect by implication.
+
+```mermaid
+flowchart LR
+    Contract[registered command contract] --> Required[required effect set]
+    Request[run arguments and profile] --> Granted[granted effect set]
+    Required --> Gate{required is subset of granted?}
+    Granted --> Gate
+    Gate -->|no| Denied[structured denied or skipped result]
+    Gate -->|yes| Execute[owned adapter executes]
+    Execute --> Receipt[result with capabilities and target identity]
+```
+
+| Effect | Boundary crossed | Receipt requirement |
+| --- | --- | --- |
+| filesystem write | repository or artifact bytes change | owned paths, before/after identity and generated status |
+| subprocess | another executable participates | executable identity, arguments, exit status and result |
+| Git | history, index or remote metadata is used | repository, revision, worktree state and operation |
+| network | result depends on an external endpoint | endpoint, trust policy, retrieved identity and time |
+
+Capability presence proves only that execution was permitted. The report must
+still show that the effect occurred against the intended target and produced a
+complete result. Denied effects and missing tools remain visible findings; an
+empty output is not converted into successful evidence.
+
 ## Command, Report, and Decision Boundaries
 
 The control plane separates inspection, execution, and promotion so that a
@@ -147,10 +178,10 @@ security proof.
 
 | Owner | Governed surface | Evidence it can supply | Evidence it cannot supply alone |
 | --- | --- | --- | --- |
-| security model | threats, assets, mitigations, controls, classifications, and exceptions | internally consistent control intent and residual-risk records | implementation behavior or target enforcement |
-| product and operations implementation | request policy, runtime controls, chart values, RBAC, NetworkPolicy, audit, release, and recovery behavior | code and rendered control surfaces tied to a revision | execution in a named environment |
-| maintainer control plane | focused validators, contract tests, reports, and workflow selection | reproducible observations for exact inputs and tool identities | edge identity, live reachability, external secret delivery, or production admission |
-| reviewer or release authority | required claims, accepted findings, target policy, and artifact binding | an attributable accept, reject, or exception decision | new technical evidence absent from the underlying runs |
+| security model | threats, controls and exceptions | consistent intent and residual-risk records | implementation or target enforcement |
+| product and operations | runtime, chart, policy and recovery | revision-bound code and rendered controls | target execution |
+| maintainer control plane | validators, tests, reports and workflows | observations for exact inputs and tools | edge identity or production admission |
+| decision authority | required claims, findings, target policy and artifact binding | attributable accept, reject or exception | evidence absent from the underlying runs |
 
 ```mermaid
 flowchart LR
