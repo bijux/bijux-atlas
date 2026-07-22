@@ -30,6 +30,36 @@ Broad simultaneous changes destroy diagnostic value. Stabilize user impact
 with the smallest reversible control. Then repair the boundary that owns the
 failure.
 
+## Run Two Tracks in Parallel
+
+Response must protect users without destroying the state needed to understand
+the incident. The mitigation track changes service state; the evidence track
+captures the before-and-after record.
+
+```mermaid
+flowchart LR
+    signal["incident signal"] --> snapshot["identity + evidence snapshot"]
+    snapshot --> mitigate["smallest reversible mitigation"]
+    snapshot --> hypothesis["bounded diagnosis"]
+    mitigate --> effect["observe intended and unintended effects"]
+    hypothesis --> repair["repair owning boundary"]
+    effect --> repair
+    repair --> validate["representative service + integrity checks"]
+    validate --> close["close or escalate with evidence gaps"]
+```
+
+| Before changing | Capture | After changing |
+| --- | --- | --- |
+| traffic or drain state | endpoints, probe transitions, route volume and in-flight work | whether impact fell and which requests moved |
+| workload revision | pod identity, image, configuration, events and candidate-scoped signals | readiness, dataset identity and behavior of the restored revision |
+| cache state | hit/miss/eviction evidence, object identity and store pressure | cheap-path survival, refill load and object freshness |
+| catalog or dataset pointer | active tuple, epoch, manifest, hashes and serving observations | restored tuple plus representative identity-bearing queries |
+| credentials or network policy | principal class, decision logs, policy revision and exposure | required success, forbidden denial and audit continuity |
+
+When immediate safety prevents a full snapshot, record exactly which evidence
+was sacrificed and why. A successful mitigation can establish reduced impact;
+it cannot retroactively establish the original cause.
+
 ## Command and Decision Control
 
 Name an incident lead and one active mitigation at a time. Record the expected

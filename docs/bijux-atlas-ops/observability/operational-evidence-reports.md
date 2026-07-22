@@ -56,6 +56,34 @@ An incident record adds detection time, first user impact, containment actions,
 recovery time, and integrity assessment. It also preserves the evidence that
 ruled out competing causes.
 
+## Preserve the Decision Ledger
+
+The evidence packet needs the reasoning between raw signals and the final
+action. Record each entry as one of four types so later review does not promote
+a hypothesis into a fact:
+
+| Entry type | Required content | Closure rule |
+| --- | --- | --- |
+| observation | source, query or command, target identity, event window, capture time and retained object digest | immutable once cited by a decision |
+| hypothesis | suspected boundary, supporting observations, predicted signal and disconfirming evidence | supported, rejected or explicitly unresolved |
+| action | authorizer, executor, target, exact change, start time, expected effect and reversal condition | linked to an observed result or recorded as abandoned |
+| decision | admitted facts, policy or threshold, selected action, alternatives rejected, uncertainty and owner | superseded only by a later linked decision |
+
+```mermaid
+flowchart LR
+    observation["observation"] --> hypothesis["bounded hypothesis"]
+    hypothesis --> action["authorized action"]
+    action --> outcome["observed outcome"]
+    outcome --> decision["decision + uncertainty"]
+    decision -. "references" .-> observation
+```
+
+Sequence identifiers and timestamps establish order; digests establish retained
+content. Neither proves causality by itself. State causal interpretation in the
+decision entry and retain evidence that could contradict it. If a later result
+changes the diagnosis, append a superseding decision rather than rewriting the
+earlier ledger.
+
 ## Evidence Lineage
 
 ```mermaid

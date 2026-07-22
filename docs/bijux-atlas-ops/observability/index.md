@@ -149,4 +149,24 @@ localizing a request path. Traces without metrics can explain examples without
 establishing prevalence. Logs without a reliable window can retain events
 without proving what was absent.
 
+## Operate Through Partial Blindness
+
+Signal loss is an operational state with its own decision limits. Use surviving
+sources to reduce harm, but do not promote or close an incident on evidence the
+collection path could not have produced.
+
+| Missing boundary | Surviving evidence can establish | Decision that must remain blocked |
+| --- | --- | --- |
+| metrics delivery | individual failures from logs, traces, probes and client observations | population rate, saturation trend or SLO compliance |
+| trace export | rates and event classes from metrics and logs | causal localization across request, cache, store and dependency spans |
+| centralized logs | aggregate health and sampled request paths | complete discrete-event, audit or policy-decision history |
+| alert notification | rule evaluation state and direct backend queries | that the assigned owner received or acted on the page |
+| dashboard rendering | raw query results and validated panel definition | that the operator view displayed the same window correctly |
+| all telemetry backends | client captures, Kubernetes state, bounded pod output, catalog and store integrity checks | promotion, security closure, or a claim that no hidden failures occurred |
+
+Restoring the missing path is not retrospective proof for the blind interval.
+Record the gap, the collection and source clocks, any emergency observation
+method, and the exact time normal evidence resumed. Start a new qualification
+window when the decision requires continuous coverage.
+
 For incident execution, continue to [Incident Response](incident-response.md).
