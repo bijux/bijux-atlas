@@ -9,58 +9,83 @@ last_reviewed: 2026-07-22
 
 # Local Stack Profiles
 
-Profiles name an operating intention. Each binds permitted effects, tools,
-dependencies, cluster shape, namespace scope, and service expectations. The
-names are not interchangeable labels for the same installation.
+A stack profile binds an operating intent to tools, permitted effects,
+namespaces, services, and a Kind cluster shape. Select a profile by the claim
+the run must support, then retain the resolved profile with the evidence.
 
-## Policy Profiles
+## Profile contract
 
-| Profile | Intended use | Safety | Required runtime services | Notable prerequisite |
+| Profile | Safety | Required services | Kind class | Intended claim |
 | --- | --- | --- | --- | --- |
-| `minimal` | Smallest contract-coverage footprint | restricted | API | Small Kind cluster and rendered manifests |
-| `small` | Reduced local validation | restricted | API and query | Small Kind cluster and rendered manifests |
-| `ci` | Deterministic validation | restricted | API and query | Helm, Kubeconform, and no network effect |
-| `kind` | Baseline local cluster and smoke checks | standard | API, query, Redis | Health endpoint |
-| `dev` | Iterative local development | standard | API, query, Redis | Network, filesystem write, and subprocess effects |
-| `developer` | Workstation cluster defaults | standard | API, query, Redis | Same effect class as `dev` |
-| `perf` | Load and autoscaling evidence | strict | API, query, Redis, metrics | Metrics server and health endpoint |
+| `minimal` | restricted | API | small | smallest installation contract |
+| `small` | restricted | API, query | small | constrained local behavior |
+| `ci` | restricted | API, query | small | deterministic validation |
+| `kind` | standard | API, query, Redis | normal | baseline cluster and smoke behavior |
+| `dev` | standard | API, query, Redis | normal | iterative local development |
+| `developer` | standard | API, query, Redis | normal | workstation cluster defaults |
+| `perf` | strict | API, query, Redis, metrics | perf | capacity, load, and autoscaling evidence |
 
-The policy registry also limits namespaces and lists optional components. The
-performance profile is the only stage-class entry; the remaining profiles are
-development-class and must not be promoted into production by name alone.
+The intent registry allows subprocess and filesystem effects for every profile.
+Network is additionally allowed for `kind`, `dev`, `developer`, and `perf`.
+The profile registry further constrains required tools, allowed namespaces, and
+optional components. Both registries matter; neither replaces the other.
 
-## Profile Selection
+## Select and inspect
+
+List and explain profiles before running a stack mutation:
+
+```bash
+cargo run -p bijux-atlas-dev -- ops profile list --format json
+cargo run -p bijux-atlas-dev -- ops profile explain kind --format json
+```
 
 ```mermaid
 flowchart TD
-    Claim{"What must the run prove?"}
-    Claim -->|render and API contract| Restricted["minimal, small, or ci"]
-    Claim -->|local service behavior| Local["kind, dev, or developer"]
-    Claim -->|capacity and autoscaling| Perf["perf"]
-    Restricted --> Evidence["Record profile, effects, tools, and graph"]
-    Local --> Evidence
-    Perf --> Evidence
+    Need{"Evidence needed"}
+    Need -->|render or API contract| Restricted["minimal, small, or ci"]
+    Need -->|local runtime behavior| Standard["kind, dev, or developer"]
+    Need -->|capacity or autoscaling| Performance["perf"]
+    Restricted --> Inspect["inspect effective profile and graph"]
+    Standard --> Inspect
+    Performance --> Inspect
+    Inspect --> Plan["plan before applying effects"]
 ```
 
-Choose the narrowest profile that can prove the intended claim. Do not use
-`perf` to compensate for an undefined workload, or `dev` to claim restricted
-execution. A profile result is invalid when the run exceeds its registered
-effects, namespaces, tools, or services. Any exception must be declared.
+Use the narrowest profile that contains the required services and effects. The
+`perf` profile does not make an undefined workload valid. The `dev` profile
+does not make a permissive run suitable for restricted evidence.
 
-## Composition Boundary
+## Keep the registries distinct
 
-`ops/stack/profiles.json` maps seven names to Kind cluster configurations. The
-generated dependency graph and `stack.toml` cover only `ci`, `kind`, and
-`local`. Here, `local` is a generated stack composition that uses the small
-cluster; it is not one of the policy-registry profiles.
+Atlas currently has several related profile authorities:
 
-Record both identities when they differ. The policy profile explains allowed
-behavior. The composition graph explains which services were assembled. Do not
-infer full component membership from a cluster configuration alone.
+- `ops/stack/profiles.json` maps seven policy names to Kind classes and files;
+- `ops/stack/profile-intent.json` declares intended use, effects, and required
+  dependencies;
+- `ops/stack/profile-registry.json` declares safety, tools, namespaces, and
+  required or optional services;
+- `stack.toml` and the generated dependency graph describe stack composition;
+- Kubernetes values define the rendered application configuration.
 
-## Evidence Record
+The generated stack graph covers `ci`, `kind`, and `local`. `local` is a
+composition identifier that uses the small cluster; it is not one of the seven
+policy profiles. Record both identifiers when a run combines them.
 
-Preserve the profile ID, composition ID, cluster configuration digest, allowed
-effects, namespaces, tool versions, component graph, rendered values, health
-results, and any exception. This makes local, CI, and performance results
-comparable without pretending they exercised identical environments.
+## Plan, execute, and accept
+
+Start with a plan so missing components and effect requirements are visible.
+Execution commands require explicit effect flags and enforce the expected Kind
+context before cluster mutation.
+
+A profile run is acceptable only when:
+
+- its effective effects stayed within profile intent;
+- its tools and namespaces match the registry;
+- its cluster config and rendered values are identified by digest;
+- required services reached their defined readiness conditions;
+- optional components are reported as present or absent;
+- the observed result supports the stated claim.
+
+Profile validation proves registry and configuration coherence. It does not
+prove a live cluster, application readiness, load capacity, or production
+suitability. Carry those observations as separate evidence.
