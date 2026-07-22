@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Dataset Model
@@ -12,56 +12,68 @@ last_reviewed: 2026-06-28
 Atlas treats a dataset as a release-shaped serving unit, not as a loose bundle
 of files.
 
+Its identity combines release, species, and assembly. The same identity follows
+the dataset through admission, artifact creation, store publication, catalog
+promotion, query resolution, comparison, and rollback. A path on disk or a
+server's in-memory selection is not a substitute for that identity.
+
 ```mermaid
-flowchart TD
-    Inputs[Source inputs] --> Build[Dataset build]
-    Build --> Identity[Dataset identity]
-    Identity --> Artifacts[Release-scoped artifact set]
-    Artifacts --> Published[Published dataset]
-    Published --> Queryable[Discoverable and queryable state]
-    Identity --> Species[Species]
-    Identity --> Assembly[Assembly]
-    Identity --> Release[Release]
+stateDiagram-v2
+    [*] --> Source: governed GFF3 and FASTA
+    Source --> Candidate: validate and normalize
+    Candidate --> Verified: build and verify artifacts
+    Verified --> Published: commit immutable store payload
+    Published --> Discoverable: promote catalog entry
+    Discoverable --> Selected: runtime resolves identity
+    Selected --> Discoverable: request completes
 ```
 
-The dataset is the unit that ties together ingest, publication, catalog
-visibility, query routing, and rollback reasoning. If the dataset boundary is
-fuzzy, readers start confusing source input, build output, published release
-state, and runtime-serving state.
+Each transition adds a distinct fact. Verification establishes that a
+candidate is internally coherent. Publication establishes that immutable bytes
+exist under the store contract. Promotion establishes discoverability. Runtime
+selection establishes which published dataset answered one request.
 
-The stable identity usually combines release, species, and assembly. That
-identity is the anchor for ingest, publication, catalog lookup, query routing,
-diff workflows, and rollback reasoning.
+## Dataset States
 
-## What A Dataset Owns
+| State | Durable facts | What is still unproven |
+| --- | --- | --- |
+| source | input identity, provenance, and admission policy | normalized content or usable artifacts |
+| candidate | normalized records and build inputs under one dataset identity | artifact integrity and publication |
+| verified | required files, hashes, statistics, and manifest agree | store presence and catalog visibility |
+| published | immutable payload is committed to the selected store | discoverability through the catalog |
+| discoverable | catalog maps the identity to the published payload | observation by every running instance |
+| selected | one request resolved the catalog and opened the payload | health or freshness of other instances |
 
-- source-derived validated content
-- immutable release artifacts
-- catalog-visible identity
-- queryable runtime state after publication
+State may advance only when the evidence for the next boundary exists. A
+completed ingest directory cannot be served as though it were published, and a
+published store prefix cannot be queried by discovery until catalog promotion
+has succeeded.
 
-## Why It Matters
+## Identity and Immutability
 
-If the dataset boundary stays clear, Atlas can keep ingest, serving, and
-operations honest about what is actually being changed.
+Within one release identity:
+
+- manifest identity and catalog identity must agree;
+- required artifact hashes must resolve to the published bytes;
+- publication must not replace an existing payload with different content;
+- responses must expose the identity actually resolved by the runtime;
+- rollback selects an earlier published identity rather than mutating the
+  current release in place.
+
+Mutable caches and process-local handles may accelerate access, but they do not
+own dataset truth. Losing them may affect latency or availability; it must not
+change the meaning of the published dataset.
 
 ## Repository Authorities
 
-- dataset domain logic: `crates/bijux-atlas-model/src/dataset/`
+- dataset identities and catalog values:
+  [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
 - ingest-time dataset construction:
-  `crates/bijux-atlas-ingest/src/engine/`
+  [`crates/bijux-atlas-ingest/src/engine/`](../../../crates/bijux-atlas-ingest/src/engine/)
 - manifest and serving-shape contracts:
-  `configs/schemas/contracts/datasets/manifest.schema.json` and
-  `configs/sources/runtime/datasets/manifest.yaml`
+  [`manifest.schema.json`](../../../configs/schemas/contracts/datasets/manifest.schema.json)
+  and [`manifest.yaml`](../../../configs/sources/runtime/datasets/manifest.yaml)
 
-## Main Takeaway
-
-A dataset is not just “some data Atlas can read.” It is the release-shaped unit
-Atlas knows how to validate, publish, catalog, and serve. Treating it that way
-keeps the product model coherent across workflows, runtime behavior, and
-contracts.
-
-## Reading Rule
-
-Use this page when Atlas steps still make sense individually but the thing
-being built, published, and served does not yet feel like one clear unit.
+The [release model](release-model.md) defines the wider software and dataset
+release boundary. [Artifact and store contracts](../contracts/artifact-and-store-contracts.md)
+define the publication rules in detail.

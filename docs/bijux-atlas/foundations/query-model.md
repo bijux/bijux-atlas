@@ -4,7 +4,7 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Query Model
@@ -15,64 +15,64 @@ That matters because query behavior is not just an endpoint shape. It is a
 combination of dataset selection, request validation, cost control, and
 structured response rules.
 
-## Query Model
-
 ```mermaid
-flowchart TD
-    Client[Client query] --> Dataset[Choose explicit dataset state]
-    Dataset --> Validate[Validate selectors and limits]
-    Validate --> Execute[Run query semantics]
-    Execute --> Shape[Shape structured response]
-    Shape --> Return[Return contract-backed output]
+flowchart LR
+    Request[Request] --> Resolve[Resolve dataset identity]
+    Resolve --> Parse[Parse selectors and cursor]
+    Parse --> Admit[Apply limits and cost policy]
+    Admit --> Plan[Build deterministic plan]
+    Plan --> Execute[Read immutable artifacts]
+    Execute --> Shape[Shape rows, paging, and metadata]
+    Shape --> Response[Return identity-bound response]
 ```
 
-This diagram is the core frame for the page. Atlas query behavior
-starts with dataset identity, passes through validation and policy, and only
-then turns into the response shape a client sees.
+Dataset resolution occurs before execution so the answer cannot silently drift
+between releases. Validation and admission occur before expensive reads so an
+invalid or disallowed request does not become partial work. Response shaping
+occurs after execution so CLI and HTTP adapters can preserve the same domain
+meaning while using different transports.
 
-## Query Boundary
+## Query Contract
 
-- clients ask for explicit dataset state
-- policy and limits validate the request
-- runtime executes against immutable published content
-- responses follow documented output contracts
+| Stage | Contract | Failure outcome |
+| --- | --- | --- |
+| resolve | select one catalog-visible release, species, and assembly | stable not-found or ambiguity error |
+| parse | accept only supported selectors, cursor shape, and value types | structured validation error |
+| admit | enforce limits and reject prohibited cost combinations | policy error before execution |
+| plan | produce deterministic ordering and access strategy | planning error with no partial response |
+| execute | read only the resolved immutable artifact set | store or integrity error bound to dataset identity |
+| shape | apply response schema, paging metadata, and structured errors | contract failure rather than best-effort output |
+
+The query boundary does not authorize publication, change catalogs, or mutate
+artifacts. It consumes published state. This makes retries and comparisons
+meaningful: the same admitted request against the same dataset identity is
+evaluated over the same release content.
+
+## Ordering, Paging, and Cursors
+
+Stable paging requires more than a page-size parameter. Atlas must preserve a
+deterministic order, bind continuation state to the relevant query and dataset
+identity, and reject cursors that cannot be decoded or do not belong to the
+requested context. Clients should treat cursors as opaque values and should not
+construct or edit their payloads.
+
+A cursor is continuation state, not a new dataset selector. If the caller
+changes the dataset identity or query semantics, it must begin a new traversal.
 
 ## Repository Authority Map
 
-- query semantics and domain rules live under [`crates/bijux-atlas-query/src/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-query/src)
-- query execution logic is organized under [`crates/bijux-atlas-query/src/engine/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-query/src/engine)
-- HTTP transport and endpoint routing live under [`crates/bijux-atlas-server/src/adapters/inbound/http/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http)
-- route ownership is declared in [`crates/bijux-atlas-server/src/adapters/inbound/http/router.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/router.rs:1)
-- response-shape promises are enforced in [`crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs:1)
-- generated public API shape is published in [`configs/generated/openapi/v1/openapi.json`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi/v1/openapi.json:1)
+- query parsing, planning, cursoring, and execution:
+  [`crates/bijux-atlas-query/src/`](../../../crates/bijux-atlas-query/src/)
+- HTTP routing and transport adaptation:
+  [`crates/bijux-atlas-server/src/adapters/inbound/http/`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/)
+- route composition:
+  [`router.rs`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/router.rs)
+- HTTP response contract checks:
+  [`response_contract.rs`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs)
+- generated public API contract:
+  [`openapi.json`](../../../configs/generated/openapi/v1/openapi.json)
 
-## What Belongs To Query Semantics
-
-- dataset selection such as release, species, and assembly
-- validation of selector combinations, limits, and expensive request patterns
-- execution over published immutable content
-- stable response meaning for rows, paging, and structured errors
-
-## What Does Not Belong Here
-
-- HTTP transport details that only describe routing or middleware plumbing
-- operator-only serving concerns such as deployment and cluster behavior
-- ingest-time normalization or artifact-build internals
-
-Those matter elsewhere in the docs, but the query model page should stay focused
-on request meaning rather than swallowing every adjacent runtime concern.
-
-## Reading Rule
-
-If a question is about request semantics, response shape, or API expectations,
-it belongs here rather than in the operations docs.
-
-Use this page when an endpoint is already known but the real question is what a
-query means before transport details get involved.
-
-## Main Takeaway
-
-The query model is the contract-shaped path from explicit dataset identity to a
-validated, policy-checked, structured answer. The repo expresses that path
-across domain query code, HTTP adapters, and generated API artifacts, and this
-page should help those pieces read as one coherent surface.
+The [query workflow](../workflows/query-workflows.md) shows the supported
+commands. [Query architecture](../runtime/query-architecture.md) traces the
+runtime execution path, while [API compatibility](../contracts/api-compatibility.md)
+defines which HTTP changes require compatibility treatment.

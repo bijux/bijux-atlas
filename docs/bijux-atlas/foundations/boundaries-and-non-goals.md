@@ -4,67 +4,59 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Boundaries and Non-Goals
 
-Atlas becomes easier to trust when its boundaries are explicit. This page
-explains what Atlas owns, what it depends on, and what it intentionally does
-not try to be.
+Atlas owns the conversion of supported genomic inputs into immutable release
+artifacts and the contract-backed delivery of those releases. It depends on
+upstream data providers and deployment infrastructure without claiming their
+correctness as its own.
 
 ## Atlas System Boundary
 
 ```mermaid
 flowchart LR
-    Inputs[External source inputs] --> Atlas[Atlas validation and artifact build]
-    Atlas --> Store[Artifact store and catalog]
-    Store --> Clients[CLI and HTTP clients]
-    Ops[External deployment and infrastructure] --> Atlas
+    Provider[External data provider] --> Sources[Governed source inputs]
+    Sources --> Atlas[Atlas admission, build, and publication]
+    Atlas --> Store[Immutable store and catalog]
+    Store --> Runtime[Atlas serving runtime]
+    Runtime --> Clients[CLI and HTTP clients]
+    Platform[External compute, network, and storage platform] --> Runtime
+    Platform --> Store
 ```
 
-This system-boundary view makes the ownership model visible. Atlas owns how
-supported inputs become artifacts and how those artifacts are served, but it
-does not pretend to own every upstream or infrastructure concern around them.
+| Boundary | Atlas owns | Atlas requires but does not own |
+| --- | --- | --- |
+| source | supported format validation, input identity, provenance capture, and admission result | biological correctness, provider availability, and upstream curation decisions |
+| build | normalization, artifact construction, manifest generation, and verification | host resources and tool availability named by the build contract |
+| publication | immutable payload layout, integrity checks, and catalog promotion semantics | durability and availability supplied by the configured storage platform |
+| serving | dataset resolution, query semantics, API shape, errors, and runtime telemetry | network, scheduler, volume, and identity services supplied by the deployment platform |
+| operations | chart, profile, policy, evidence, and rollback contracts shipped by Atlas | an operator's environment, credentials, capacity, and incident authority |
 
-Atlas owns:
-
-- validation and normalization of supported data inputs.
-- artifact generation and release-shaped dataset workflows.
-- catalog and serving integration over built artifacts.
-- runtime and operational behavior of the Atlas server.
-- documented contracts for stable surfaces.
-
-Atlas does not own:
-
-- upstream data source correctness.
-- external infrastructure guarantees outside documented operational assumptions.
-- arbitrary ad hoc data transforms outside supported workflows.
-- undocumented helper behavior as a public promise.
-- repository-maintenance automation as part of the end-user runtime surface.
+An external dependency can fail inside an Atlas workflow without becoming an
+Atlas-owned guarantee. Atlas must detect, classify, and expose the failure at
+its boundary; it cannot prove the external system's correctness.
 
 ## Public Boundary Model
 
 ```mermaid
-flowchart TD
-    Product[Product surface] --> CLI[CLI]
-    Product --> API[HTTP API]
-    Product --> Config[Runtime config]
-    Product --> Errors[Structured errors]
-    Internal[Internal surface] --> Helpers[Helper functions]
-    Internal --> Benches[Bench-only utilities]
-    Internal --> Tests[Test support code]
+flowchart TB
+    Contract[Supported product contract] --> CLI[Installed CLI]
+    Contract --> API[Versioned HTTP and OpenAPI]
+    Contract --> Config[Governed runtime configuration]
+    Contract --> Artifacts[Published artifact and store formats]
+    Internal[Implementation detail] --> Modules[Internal modules]
+    Internal --> Diagnostics[Debug presentation and logs]
+    Internal --> Fixtures[Test helpers and fixtures]
 ```
 
-This boundary model keeps documentation promises honest. It distinguishes the
-surfaces someone may reasonably rely on from internal code that can change
-during normal maintenance.
-
-The key distinction is between supported surfaces and implementation detail. Atlas tries to keep that distinction boring:
-
-- commands, endpoints, and contracts are public-facing.
-- helpers, shims, and internal glue are not.
-- maintainer control-plane workflows are real, but they are not the same product surface as runtime ingest and query behavior.
+A checked-in path is not automatically public. Consumers may rely on installed
+commands, versioned API and schema contracts, documented configuration, and
+published artifact formats within their stated stability class. Internal Rust
+modules, test fixtures, debug messages, and repository-maintenance commands do
+not become product API merely because they are visible in the repository.
 
 ## What Atlas Is Not Trying to Be
 
@@ -74,45 +66,24 @@ Atlas is not:
 - a generic workflow runner.
 - a mutable operational database where runtime writes redefine release state.
 - a shell-script-first control plane.
-- a compatibility promise for every internal Rust path.
+- a compatibility promise for every internal Rust path or log line.
 - a claim that local shortcuts and production workflows are interchangeable.
 
-## Why These Non-Goals Matter
+## Boundary Test
 
-```mermaid
-flowchart LR
-    NonGoal[Non-goal clarity] --> LessDrift[Less architectural drift]
-    LessDrift --> BetterOps[Safer operations]
-    LessDrift --> BetterDocs[Clearer docs]
-    LessDrift --> BetterChanges[Cleaner code review]
-```
+Classify a proposed dependency or behavior before treating it as stable:
 
-This is why non-goals deserve a dedicated page. A system becomes easier to
-change when teams keep saying no to scope that would blur ownership, runtime
-behavior, and compatibility promises.
+1. Name the object: source, candidate, artifact, catalog entry, request,
+   runtime state, or operational evidence.
+2. Name its owner and governing artifact: crate, schema, generated contract,
+   chart, policy, or runbook.
+3. Identify who may change it: producer, Atlas, operator, or external platform.
+4. State the failure behavior at the boundary and the evidence that exposes it.
+5. Depend only on the subset explicitly covered by a public stability class.
 
-When a system tries to be everything, documentation, code ownership, and contracts all blur together. Atlas does better when it stays narrow:
+If no authority or failure contract can be named, the behavior is incidental.
+It should not become a compatibility dependency.
 
-- artifacts are durable truth.
-- contracts are explicit truth.
-- runtime code serves or validates that truth.
-
-## Boundary Questions to Ask During Changes
-
-1. Does this change alter a public surface or only an implementation detail?
-2. Does this belong to artifact state, runtime state, or operational procedure?
-3. Is the change making Atlas broader than it needs to be?
-4. Would a user or operator reasonably expect this to be stable?
-
-If the answer to the last question is yes, the change probably belongs in a contract-aware path and should be documented as such.
-
-## Boundary Checks That Save Time
-
-- ask whether the change affects users, operators, or only maintainers.
-- ask whether the change belongs to artifacts, runtime behavior, or repository automation.
-- ask whether a future release would need to preserve the behavior intentionally.
-
-## Reading Rule
-
-Use this page when a proposed feature, workflow, or compatibility claim feels
-plausible but you need to decide whether it actually belongs inside Atlas.
+Continue with [Guarantees and Stability](guarantees-and-stability.md) for the
+public stability classes and [Package Ownership](package-ownership.md) for the
+crate and control-plane split.
