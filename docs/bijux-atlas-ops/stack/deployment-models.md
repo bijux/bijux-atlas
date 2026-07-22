@@ -32,6 +32,39 @@ defines why a profile exists and which effects it permits.
 and source paths. `ops/k8s/install-matrix.json` binds Kubernetes values to
 install, upgrade, rollback, and validation suites.
 
+## Bind the Profile to a Real Target
+
+Profile selection ends when the effective target is identified, not when a
+profile name is parsed. Two clusters using the same values can differ in
+admission mutation, storage, scheduling, identity, network enforcement, and
+external dependency behavior.
+
+| Target property | Why it belongs in qualification |
+| --- | --- |
+| cluster identity and Kubernetes version | prevents evidence from moving between unrelated or incompatible control planes |
+| node classes and failure domains | bounds scheduling, capacity, churn, and availability claims |
+| storage classes and object-store service | establishes persistence, consistency, latency, backup, and recovery ownership |
+| ingress, DNS, and network enforcement | identifies the actual client path, TLS boundary, timeouts, and isolation behavior |
+| workload identity and secret providers | establishes principals, credential generations, rotation, and revocation paths |
+| telemetry destinations and retention | establishes whether required evidence is queryable for the decision window |
+| admission and policy controllers | exposes defaults or mutations between rendered intent and admitted objects |
+
+```mermaid
+flowchart LR
+    Profile[Named Atlas profile] --> Render[Rendered intent]
+    Target[Target capability record] --> Admit[Admission and deployment]
+    Render --> Admit
+    Admit --> Observe[Observed resources and service]
+    Observe --> Qualify{Target-specific evidence passes?}
+    Qualify -->|yes| Accepted[Bound deployment claim]
+    Qualify -->|no| Hold[Hold or narrow the claim]
+```
+
+The target capability record must be versioned with the evidence it qualifies.
+An environment label such as `prod` or `kind` is not a substitute for these
+observations. Requalify after a cluster upgrade, storage migration, ingress or
+identity change, admission-policy change, or failure-domain redesign.
+
 ## Local and Validation Profiles
 
 | Profile | Intended use | Required dependencies | Evidence limit |

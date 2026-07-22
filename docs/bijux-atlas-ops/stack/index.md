@@ -34,6 +34,37 @@ graph is narrower and currently covers `ci`, `kind`, and `local`. `local` is a
 composition identity in `stack.toml`; it is not an entry in the seven-profile
 policy registry.
 
+## Effective Stack Receipt
+
+A profile name does not identify a running stack. Before mutation, resolve the
+authorities that select behavior; after mutation, record what the cluster
+actually admitted and what the runtime consumed.
+
+```mermaid
+flowchart LR
+    Intent[Policy profile and allowed effects] --> Plan[Resolved stack plan]
+    Composition[Composition and dependency graph] --> Plan
+    Delivery[Chart, values, images, and tools] --> Plan
+    Target[Cluster, namespace, storage, network, and identity] --> Apply[Apply and admit]
+    Plan --> Apply
+    Apply --> Observe[Workload and dependency observations]
+    Observe --> Receipt[Effective stack receipt]
+```
+
+| Receipt boundary | Minimum identity |
+| --- | --- |
+| intent | policy profile, safety level, allowed effects, and registry hashes |
+| composition | `stack.toml` profile, generated dependency graph, component set, and criticality contract |
+| delivery | chart package, values chain, image and platform digests, tool versions, and rendered-manifest digest |
+| target | cluster and context UID, namespace, Kubernetes version, node classes, storage classes, network policy, and workload identity |
+| admitted state | controller revision, live-object digest, defaulting and mutation result, and resolved secret or config identities without secret values |
+| observed service | release, dataset, catalog, dependency health, readiness, and telemetry-source identities |
+
+The receipt makes similarly named profiles distinguishable across machines and
+clusters. It also exposes when the admitted state differs from the rendered
+plan. Do not repair that disagreement by treating live objects as the new
+source of truth; classify the mutation or drift through its owning authority.
+
 ## Supported Composition Graphs
 
 | Composition | Cluster shape | Required components | Optional components included |

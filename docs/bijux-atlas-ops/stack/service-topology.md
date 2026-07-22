@@ -59,6 +59,37 @@ they do not publish it. Telemetry reports what happened but does not authorize
 a catalog or deployment change. Keeping these flows separate makes rollback
 scope explicit.
 
+## Join the Identities at the Serving Boundary
+
+A request is attributable only when the runtime can connect its deployment
+identity to the selected dataset and the emitted evidence. Hostname and pod
+reachability are insufficient because several releases, profiles, or datasets
+may coexist.
+
+```mermaid
+flowchart LR
+    Deploy[Image, chart, values, and config] --> Runtime[Runtime instance]
+    Dataset[Release, species, assembly, manifest, and catalog generation] --> Runtime
+    Dependency[Store endpoint, credential scope, and cache namespace] --> Runtime
+    Runtime --> Response[Response contract and request ID]
+    Runtime --> Signal[Release-labeled logs, metrics, and traces]
+    Response --> Receipt[Serving identity receipt]
+    Signal --> Receipt
+```
+
+| Join | Failure if missing |
+| --- | --- |
+| runtime to deployment | behavior cannot be attributed to the promoted image and configuration |
+| runtime to dataset | a correct-looking response may come from the wrong release tuple |
+| runtime to store | retrieved bytes cannot be tied to the intended immutable object authority |
+| runtime to cache | an entry may cross release, query-contract, or policy boundaries |
+| runtime to telemetry | dashboards and traces cannot support a release- or dataset-specific decision |
+
+Expose these identities through bounded diagnostic surfaces and evidence
+labels without leaking secrets or unbounded dataset cardinality. If an
+identity cannot be emitted safely as a metric label, retain it in a correlated
+deployment or request receipt instead of omitting the join.
+
 ## Trust Boundaries
 
 | Boundary | Required identity | Verification before use |

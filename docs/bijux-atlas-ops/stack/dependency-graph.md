@@ -47,6 +47,26 @@ can invalidate a rollout, incident, or SLO claim even while queries succeed.
 Criticality describes stack viability; the evidence required for a particular
 decision may be stricter.
 
+## Composition Criticality Is Not Runtime Authority
+
+The checked-in graph marks Redis critical for the `ci`, `kind`, and `local`
+compositions because those compositions promise to assemble and verify the
+Redis component. The Atlas serving model still treats Redis response state as
+optional and non-authoritative. These statements answer different questions.
+
+| Question | Owning contract | Redis answer |
+| --- | --- | --- |
+| Was the declared local composition assembled completely? | stack dependency contract | Redis must exist and its health surface must pass. |
+| Can Atlas preserve correct results without response-cache acceleration? | runtime cache policy and degraded-service evidence | Atlas may bypass Redis when policy and capacity allow. |
+| Does Redis determine dataset release truth? | catalog, manifest, and store contracts | No; cached entries must remain bound to verified authority. |
+| Can a release claim full local-stack evidence while Redis is absent? | selected composition and evidence receipt | No; the environment differs from the declared composition. |
+
+Do not weaken the composition report to hide a missing component, and do not
+make application readiness depend on cache content merely because the local
+composition requires the Redis service. A deployment that intentionally omits
+Redis needs a different resolved composition identity and a qualified cold-path
+capacity result.
+
 ## Dependency Roles
 
 ```mermaid
