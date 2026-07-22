@@ -4,68 +4,81 @@ audience: maintainer
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Decision Records and Ownership
 
-Atlas stays reviewable when ownership is explicit and non-local decisions are recorded where future maintainers can find them.
+Atlas stays reviewable when the authority that makes a decision, the reviewers
+responsible for it, and the record explaining a durable trade-off are all
+discoverable. These are related signals, not substitutes for one another.
 
 ## Decision Classes
 
 ```mermaid
 flowchart TD
-    Change[Proposed change] --> Local[Local to one area]
-    Change --> Cross[Cross-domain integration]
-    Change --> Contract[Contract or compatibility change]
-    Cross --> Record[Record rationale]
-    Contract --> Record
+    Change[Proposed change] --> Observable{Changes a durable contract?}
+    Observable -->|no| Local[Keep rationale with code and review]
+    Observable -->|yes| Reversible{Easy to reverse without consumer migration?}
+    Reversible -->|yes| Contract[Update owning contract and evidence]
+    Reversible -->|no| ADR[Record context, decision, alternatives, and consequences]
+    ADR --> Owner[Update ownership and review routes]
+    Contract --> Owner
 ```
 
-This decision-class diagram helps maintainers decide when informal reasoning is no longer enough. A
-cross-domain or contract-affecting change deserves a durable record other people can find later.
-
-Use local judgment for isolated implementation work. When the change crosses domains or alters a
-documented promise, capture the decision in a durable record instead of leaving it in chat or commit
-lore.
+An ADR is appropriate when future maintainers must understand why a costly or
+cross-domain choice was made. It is unnecessary for routine implementation
+details that remain obvious from the owning contract and tests.
 
 ## Ownership Signals
 
-The most reliable ownership signals in this repository are:
+Atlas exposes several ownership signals:
 
-- page-level `owner` metadata in canonical docs.
-- registry or schema ownership fields in `configs/`.
-- suite, report, and runnable ownership metadata emitted by `bijux-atlas-dev`.
-- repository review boundaries in `.github/CODEOWNERS`.
+| Signal | Answers | Does not prove |
+| --- | --- | --- |
+| page `owner` metadata | who maintains the narrative surface | GitHub approval or runtime ownership |
+| registry and schema ownership | who governs a machine-readable contract | that generated consumers are current |
+| runnable and report metadata | who owns automation identity and evidence | that a named run executed successfully |
+| `.github/CODEOWNERS` | who GitHub requests for review | expertise, approval, or enforcement outside GitHub |
+| ADR metadata | who accepted a durable architectural decision | that the implementation still matches the decision |
 
 If those signals disagree, resolve the ownership drift before merging the change.
 
-That rule matters because ambiguous ownership leads to slow reviews, duplicated rules, and
-undocumented handoffs.
+When signals disagree, stop treating ownership as resolved. Find the authority
+that makes the affected decision, correct stale routes in the same change, and
+record intentional exceptions explicitly.
 
 ## Governance Rules
 
 Atlas governance stays honest when one checked-in source owns each durable rule.
 
-- public behavior belongs in canonical docs and contracts, not in ad hoc notes.
-- generated evidence must point back to the checked-in source that defines it.
-- ownership changes should update the owning registry or metadata in the same.
-  change
+- public behavior belongs in canonical docs and contracts, not ad hoc notes;
+- generated evidence points back to the checked-in source that defines it;
+- ownership changes update the owning registry, metadata, and review route in
+  the same coherent change;
+- ADRs explain decisions but do not become alternate configuration or policy
+  authorities.
 
 ## ADR Template
 
 Use this minimum structure when a decision needs durable recordkeeping:
 
 ```md
-# ADR: <clear decision title>
+# ADR-NNNN: <clear decision title>
+
+Status: <proposed | accepted | superseded>
+Date: YYYY-MM-DD
+Owners: <durable owner identifiers>
 
 ## Context
 
 ## Decision
 
+## Alternatives Considered
+
 ## Consequences
 
-## Source-of-Truth Files
+## Owning Contracts and Evidence
 ```
 
 ## When to Record a Decision
@@ -76,6 +89,8 @@ Capture a durable decision record when you:
 - move a boundary between crates, domains, docs, configs, or ops.
 - introduce a new canonical automation surface or retire an old one.
 - change a workflow that other contributors will need to repeat.
+- accept a security, reliability, data-integrity, or operational trade-off that
+  is not obvious from the resulting code.
 
 ## Practical Commands
 
@@ -85,23 +100,26 @@ cargo run -q -p bijux-atlas-dev -- governance list --format json
 cargo run -q -p bijux-atlas-dev -- governance doctor --format json
 ```
 
-Use these commands to inspect the current governance state before you add another layer of implied process.
+`governance adr index` indexes the checked-in ADR set and can write its report
+under `artifacts/governance/`. It does not create an ADR, decide whether one is
+needed, validate the implementation against the decision, or reconcile owner
+metadata automatically. `governance list` and `governance doctor` cover broader
+governance inventory and diagnostics; read their findings at their stated
+scope.
 
 ## Maintainer Rule
 
-Never rely on "the owner probably knows" or "the context is in the PR" as the only governance
-mechanism. If future readers need the decision to understand why the repository is shaped this way,
-record it in a canonical file.
+Never rely on “the owner probably knows” or “the context is in the PR” as the
+only governance mechanism. If future readers need the decision to understand
+why the repository is shaped this way, record it in a canonical file and link
+the owning contracts.
 
 ## A Good Ownership Check
 
-- can you point to the owner in docs, config metadata, or CODEOWNERS?
-- can a future maintainer find the decision without reading chat history?
-
-## Purpose
-
-This page explains the Atlas material for decision records and ownership and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+- can you point to the authority that makes the decision?
+- do registry, documentation, automation, and review routing name compatible
+  owners?
+- can a future maintainer find the rationale without reconstructing chat or
+  pull-request history?
+- does focused evidence show the implementation still honors the accepted
+  decision?

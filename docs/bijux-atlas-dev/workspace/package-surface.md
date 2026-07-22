@@ -44,6 +44,21 @@ those observable contracts remain stable. A private Rust symbol becomes a
 compatibility concern only when another supported repository surface consumes
 it as an authority.
 
+## Consumer Map
+
+| Consumer | Supported dependency | Unsupported shortcut |
+| --- | --- | --- |
+| contributor | direct binary help, documented command, and structured report | importing private command handlers |
+| Make target | command, arguments, capabilities, and status | reproducing domain logic in Make |
+| GitHub workflow | locked direct invocation and retained artifacts | parsing terminal prose as a report contract |
+| umbrella CLI | explicit delegation contract | silently changing capabilities or defaults |
+| generated reference | registry, source set, and generator | copying output without provenance checks |
+
+The maintainer crate may expose Rust items for its own binaries and tests. That
+does not turn those items into a published library promise. External Rust
+consumers should use the product or operations crate that owns the needed
+behavior.
+
 ## Command Authorities
 
 The compiled CLI in `crates/bijux-atlas-dev/src/interfaces/cli/` is the
@@ -70,8 +85,10 @@ does not, provided direct CLI, umbrella, Make, and workflow routes retain their
 claimed parity. See [Automation Command Surface](../automation/automation-command-surface.md)
 for command selection and report discovery.
 
-## Stability
+## Compatibility Boundary
 
 The crate is not published to crates.io, so its stability is repository
 contract stability rather than a public library SemVer promise. Checked-in
-consumers and documented maintainer commands define the support burden.
+consumers and documented maintainer commands define the support burden. A
+consumer that reaches into internal modules creates coupling to remove, not an
+automatic expansion of the supported surface.

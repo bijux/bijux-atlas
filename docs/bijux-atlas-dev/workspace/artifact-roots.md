@@ -30,11 +30,11 @@ flowchart TD
 
 | Root | Intended contents | Trust rule |
 | --- | --- | --- |
-| `artifacts/<run-id>/` | reports, logs, summaries, bundles, and captured receipts for one run | bind claims to the run identifier, source revision, command, and target identity |
-| `artifacts/isolates/<lane>/` | lane-local temporary directories and, in some workflows, Cargo home or target state | disposable execution state; never cite cache presence as proof a check ran |
+| `artifacts/<run-id>/` | reports and receipts for one run | bind claims to run, revision, command, and target |
+| `artifacts/isolates/<lane>/` | temporary lane and Cargo state | disposable; cache presence is not run proof |
 | `.cache/` or an explicitly configured Cargo root | compiler and dependency caches | performance optimization only |
-| `artifacts/docs/site/` | built documentation site | generated publication input; verify the build and site contract separately |
-| `ops/_generated.example/` | checked-in example outputs | fixture or reference material; never present it as a live cluster or release result |
+| `artifacts/docs/site/` | built documentation site | publication input; verify its build separately |
+| `ops/_generated.example/` | checked-in example output | fixture, never live run evidence |
 
 Workflows do not use one universal Cargo cache location. For example,
 `ops-validate` places Cargo state beneath its isolate, while
@@ -57,6 +57,24 @@ write reports and logs under that root, summarize key paths, and upload the run
 directory. Individual commands can also write domain-specific paths elsewhere
 under `artifacts/`; workflow capture must make those paths explicit.
 
+## Retention and Promotion
+
+Moving a file from disposable output into a governed location changes its
+contract. Make that transition only when a registry names the destination,
+producer, source inputs, validation command, and consumer. Preserve the
+generated header or schema identity required by that registry.
+
+| Lifecycle action | Required evidence |
+| --- | --- |
+| retain a run | run identity, revision, command, inputs, result, and artifact manifest |
+| upload from CI | workflow and job identity, retention period, complete root, and checksum or platform receipt |
+| compare with a baseline | scenario identity, environment class, metric semantics, and compatibility decision |
+| publish as release evidence | artifact identity, provenance, checksum binding, and consumer verification |
+| promote into a governed source location | owning registry, deterministic generator, freshness check, and review |
+
+Copying a report into a release packet does not strengthen the report. The
+packet must preserve its status, scope, input identity, and evidence gaps.
+
 ## Repository Boundary
 
 `configs/sources/repository/repo-laws.json` declares runtime artifacts
@@ -64,8 +82,10 @@ ephemeral outside governed examples. Generated output is committed only when a
 registry or source contract names the governed destination. Otherwise it stays
 untracked and disposable.
 
-## Stability
+## Path Compatibility
 
 Report paths named by workflows, registries, or consumer automation are
 compatibility surfaces. Cache and temporary paths are not, unless a checked-in
-consumer incorrectly promotes them into a contract.
+consumer incorrectly promotes them into a contract. Change a governed path
+with its producers and consumers; do not retain an obsolete location by
+silently duplicating outputs.

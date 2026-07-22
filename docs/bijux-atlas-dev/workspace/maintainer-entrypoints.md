@@ -31,10 +31,10 @@ flowchart LR
 
 | Route | Prefer it when | Evidence boundary |
 | --- | --- | --- |
-| `bijux dev atlas ...` | the Bijux umbrella is installed | delegation must preserve arguments, capabilities, output, and exit status |
-| `cargo run --locked -q -p bijux-atlas-dev -- ...` | working directly from a checkout | identifies the repository source and lockfile used by the invocation |
-| `make <target>` | invoking a governed convenience lane | covers commands selected by the current Make definition, not the whole domain |
-| `.github/workflows/*.yml` | hosted merge, audit, or release behavior matters | binds results to the revision, workflow, permissions, runner, and artifact set |
+| `bijux dev atlas ...` | umbrella is installed | preserve arguments, authority, output, and status |
+| `cargo run --locked ...` | working from a checkout | binds source and lockfile to the invocation |
+| `make <target>` | invoking a curated lane | proves only the commands selected by that target |
+| GitHub workflow | hosted behavior matters | binds revision, permissions, runner, and artifacts |
 
 Use `--format json` for evidence consumed by automation. Human output is for
 interactive diagnosis and may omit fields that are present in the structured
@@ -65,7 +65,23 @@ Record the route, arguments, revision, capabilities, report path, and exit
 status. Include any external target identity. Shell aliases or scratch commands
 that omit these details are unsuitable as shared evidence.
 
-## Stability
+## Wrapper Failure Semantics
+
+| Observation | Interpretation |
+| --- | --- |
+| direct command is absent | the binary and documentation are out of sync; a wrapper cannot repair the missing route |
+| wrapper selects different arguments | route parity is broken even if both invocations exit successfully |
+| report fails but wrapper exits zero | the wrapper hid failure and cannot support a pass claim |
+| wrapper grants broader capabilities | the effective authorization changed and requires explicit review |
+| hosted run lacks expected artifact | the handoff is incomplete even if the log shows successful execution |
+
+Compare the resolved command and retained report, not only the wrapper target
+name. A route is trustworthy when it preserves selection, authority, output,
+and exit behavior.
+
+## Compatibility Boundary
 
 The direct binary is the executable authority. Other routes are supported when
-their checked-in delegation preserves the command contract.
+their checked-in delegation preserves the command contract. Command names,
+selectors, capability flags, structured output, and exit semantics require
+consumer review when changed.
