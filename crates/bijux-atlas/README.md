@@ -16,6 +16,22 @@ It is not the Atlas executable and it is not a monolithic implementation. The
 `bijux-atlas` command comes from `bijux-atlas-cli`; the service process comes
 from `bijux-atlas-server`.
 
+```mermaid
+flowchart TD
+    App["consumer crate"] --> Facade["bijux-atlas facade"]
+    Facade --> API["bijux-atlas-api"]
+    Facade --> Ingest["bijux-atlas-ingest"]
+    Facade --> Query["bijux-atlas-query"]
+    Facade --> Runtime["bijux-atlas-runtime"]
+    Runtime --> Store["bijux-atlas-store"]
+    Runtime --> Model["bijux-atlas-model and core"]
+```
+
+This is the dependency cost of the compact namespace: selecting the facade
+selects all four direct owner crates even when an application imports only one
+re-exported domain. The facade declares no Cargo features with which to remove
+individual owners.
+
 ## Add the Facade
 
 ```toml
@@ -98,6 +114,18 @@ stable merely because the facade depends on that crate.
 Applications that require the smallest semver and compile-time surface should
 depend on owner crates directly. Applications preserving existing
 `bijux_atlas::...` paths should use this facade.
+
+## Upgrade the facade deliberately
+
+A facade upgrade is compatible only when both layers remain compatible: the
+owner crate must preserve its contract and this crate must preserve the
+re-export path. Before upgrading, compile the application's actual imports,
+review owner-crate release notes for the domains in use, and test serialized or
+wire contracts at their canonical owners.
+
+Do not infer runtime compatibility from a successful import alone. Compilation
+proves that a symbol remains reachable; it does not prove that dataset schemas,
+query behavior, configuration defaults, or HTTP contracts are unchanged.
 
 ## Documentation
 

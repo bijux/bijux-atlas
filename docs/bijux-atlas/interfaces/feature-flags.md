@@ -33,8 +33,8 @@ does not reveal which features were used to build a binary.
 | Crate | Default features | Optional features | Effect |
 | --- | --- | --- | --- |
 | `bijux-atlas` | none declared | none | compatibility re-exports only |
-| `bijux-atlas-runtime` | `serde`, `backend-local` | `backend-s3`, `bench-ingest-throughput`, `jemalloc` | serialization helpers, store backend graph, benchmark surface, allocator |
-| `bijux-atlas-store` | `backend-local` | `backend-s3` | local publication by default; S3-like HTTP support adds `reqwest` and retains local support |
+| `bijux-atlas-runtime` | `serde`, `backend-local` | `backend-s3`, `bench-ingest-throughput`, `jemalloc` | serialization helpers and store backend graph; the benchmark marker has no current source consumer, and `jemalloc` adds a dependency without installing a global allocator |
+| `bijux-atlas-store` | `backend-local` | `backend-s3` | local publication by default; S3-like and read-only HTTP support add `reqwest` and retain local support |
 | `bijux-atlas-server` | none | `jemalloc` | optional process allocator |
 | `bijux-atlas-core` | none | `serde` | cursor/JSON support and feature-gated contracts or benchmarks |
 | `bijux-atlas-dev` | none | `kind_integration` | repository-only Kind integration code |
@@ -51,10 +51,12 @@ names are workspace-global.
   `bijux-atlas-store/backend-s3`.
 - `bijux-atlas-store/backend-s3` includes local support and adds the optional
   HTTP client dependency.
-- `jemalloc` is declared separately by the runtime and server. Enabling it for
-  one crate does not imply that another binary owner selected it.
-- `bench-ingest-throughput` and `kind_integration` are not production runtime
-  configuration switches.
+- `jemalloc` is declared separately by the runtime and server. The server
+  feature installs the allocator in its binary; the runtime feature only adds
+  the optional dependency.
+- `bench-ingest-throughput` currently has no runtime source consumer, and
+  `kind_integration` is repository integration code. Neither is a production
+  runtime configuration switch.
 
 ## Capability selection is not runtime policy
 

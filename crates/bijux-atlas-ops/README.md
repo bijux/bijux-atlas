@@ -21,6 +21,38 @@ consumers typed access to those assets and the rules that connect them.
 It does not install an operator CLI or run the Atlas server. Executable
 orchestration belongs to the repository-only `bijux-atlas-dev` control plane.
 
+## The operations system
+
+Atlas operations is a governed system rather than a deployment wrapper. The
+crate models stable relationships; the `ops/` tree owns concrete policy and
+assets; the maintainer control plane evaluates plans and performs explicitly
+selected effects.
+
+```mermaid
+flowchart TB
+    Assets["ops/ governed assets"] --> Library["bijux-atlas-ops models and validators"]
+    Library --> Control["bijux-atlas-dev orchestration"]
+    Control --> Target["local stack or named cluster"]
+    Target --> Signals["runtime and infrastructure observations"]
+    Signals --> Evidence["load, security, resilience, and release evidence"]
+    Evidence --> Decision["admit, hold, drain, rollback, or restore"]
+    Assets --> Decision
+```
+
+| Operational plane | Governed material | Decision supported |
+| --- | --- | --- |
+| stack and environment | component manifests, profiles, pins, and dependency inventory | what should run together |
+| Kubernetes | chart, values, render rules, access guards, and conformance | what may be applied to which target |
+| security | threat model, scenarios, posture checks, and reports | whether identity and exposure controls hold |
+| traffic and load | suites, scenarios, thresholds, baselines, and raw measurements | whether capacity and shedding claims are comparable |
+| observability | metrics, traces, logs, alerts, dashboards, SLOs, and runbooks | whether runtime behavior is visible and actionable |
+| resilience and release | drills, simulations, compatibility, custody, and evidence packets | whether change and reversal are supportable |
+
+No plane substitutes for another. A valid Helm render is not runtime
+readiness; passing load thresholds are not a security result; a release bundle
+is not trustworthy unless its component evidence remains bound to the tested
+target and release.
+
 ## Add the Library
 
 ```toml
