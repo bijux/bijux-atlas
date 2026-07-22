@@ -123,6 +123,25 @@ can shadow ConfigMap-provided values in the container environment. Reject
 duplicates unless the override is the reviewed intent and appears in the
 configuration receipt. Prefer one authoritative source for each runtime key.
 
+## Unknown-Key Enforcement
+
+At startup, Atlas checks every `ATLAS_*` and `BIJUX_*` environment variable
+against `configs/schemas/contracts/env.schema.json`. An unknown prefixed key is
+a configuration error, including a key introduced through `extraEnv`, a Secret,
+or a platform injector. Helm values validation cannot replace this runtime
+check because those sources extend the rendered environment after the primary
+values contract.
+
+`ATLAS_DEV_ALLOW_UNKNOWN_ENV=1` disables the rejection for local development.
+It is an explicit reduction in configuration safety, not a compatibility mode.
+Production and shared validation profiles must leave it absent or false, and
+the admitted pod specification must prove that no injector enabled it.
+
+The enforcement boundary is deliberately prefix-scoped. An unrelated platform
+variable is outside this Atlas contract; an unknown `ATLAS_*` or `BIJUX_*` key
+is not. Preserve the rejected key name and source in diagnostics, but never log
+its value when the source may be secret.
+
 ## Pre-Rollout Proof
 
 1. Merge the selected profile with chart defaults.

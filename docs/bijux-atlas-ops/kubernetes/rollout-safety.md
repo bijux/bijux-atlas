@@ -152,6 +152,27 @@ configuration, catalog, or dataset state. Resolve those compatibility
 directions during preflight. If shared state changed unexpectedly, freeze the
 state and investigate rather than cycling releases.
 
+## Isolate the Rollout Decision
+
+A rollback can restore a workload revision; it cannot reliably undo an
+unrelated catalog promotion, credential rotation, admission-policy change, or
+storage mutation. Freeze independent control-plane changes from preflight
+until the release is promoted or recovered. This preserves one causal change
+and one usable rollback target.
+
+| Concurrent change | Default during rollout | Exception proof |
+| --- | --- | --- |
+| catalog or dataset publication | freeze the active pointer and published object set | publication is the explicit release subject and both compatibility directions are proven |
+| credential or trust-root rotation | keep overlap credentials valid | old and new releases authenticate throughout overlap and revocation has a separate gate |
+| NetworkPolicy or admission policy | freeze policy revision | policy change is isolated in the rendered diff and denial telemetry is release-scoped |
+| autoscaling policy or resource limits | keep the approved capacity model | the rollout is the capacity experiment and abort thresholds account for overlap |
+| cache purge or store maintenance | defer until recovery is complete | the action is required to recover and its store-load budget is independently bounded |
+
+If an emergency change breaks this freeze, record its exact time and identity,
+hold promotion, and restart the observation window after the system reaches a
+known state. Do not attribute a clean aggregate metric to the candidate when
+multiple authorities changed underneath it.
+
 ## Required Record
 
 Preserve the baseline and target release identities, selected profile, rendered

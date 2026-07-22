@@ -172,6 +172,25 @@ Helm rendering can vary with capabilities and Kubernetes version. A render for
 one target is not automatically evidence for another. Record the capability
 set whenever templates branch on API availability.
 
+## Triage Render Drift
+
+When a reviewed release cannot be reproduced, compare the evidence identities
+in order. Do not normalize or re-render the mismatch away: the first differing
+identity locates the boundary that lost determinism.
+
+| Observation | Likely boundary | Next proof |
+| --- | --- | --- |
+| identical values produce different manifest bytes. | Helm version, chart dependency, API capability, or nondeterministic template input. | Compare tool versions, dependency locks, capability sets, and canonical object inventories. |
+| identical manifest bytes receive different admission results. | Kubernetes version, admission policy, installed CRDs, or namespace policy. | Compare server versions, admission responses, CRD identities, and policy revisions. |
+| an expected object is absent. | Profile merge or conditional template branch. | Inspect merged values and the condition that owns the object. |
+| an unexpected object is present. | Stale override, implicit default, or additional values source. | Reconstruct values precedence and remove the unowned source. |
+| objects exist but selectors do not connect. | Label or release-identity drift. | Trace selectors from workload to Service, monitor, policy, and disruption budget. |
+| image, Secret, or ConfigMap identity differs after admission. | Mutating admission or installer re-render. | Compare admitted objects with the reviewed manifest and preserve the mutation record. |
+
+A byte-identical render is necessary but still does not prove that the cluster
+stored the same object. Capture admitted object identity whenever a mutating
+webhook, image policy, or installer can change the submitted manifest.
+
 ## Evidence and Interpretation
 
 Render and validation reports belong under the repository artifact root for
