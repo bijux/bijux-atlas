@@ -94,6 +94,47 @@ The enclosed verification result is historical producer evidence. The fresh
 consumer result is the decision input. Preserve both so disagreement can be
 investigated rather than overwritten.
 
+## Producer Packet and Consumer Receipt
+
+```mermaid
+flowchart LR
+    Producer[Producer packet] --> Receive[Consumer receives immutable bytes]
+    Receive --> Verify[Consumer verification]
+    Verify --> Receipt[Consumer receipt]
+    Receipt --> Deploy[Deployment decision]
+    PacketId[packet digest + source + release] --> Receipt
+    Policy[consumer policy + verifier version] --> Receipt
+    Environment[target profile + dependency identity] --> Receipt
+```
+
+The producer packet carries candidate evidence. The consumer receipt records
+what was actually received and judged. Keep them separate so transport damage,
+policy differences, verifier changes, and environment-specific rejection are
+visible.
+
+At minimum, a receipt records:
+
+- packet digest, release, source revision, and retrieval channel;
+- retrieval time and immutable remote reference;
+- verifier and trust-policy versions;
+- member inventory and checksum verdict;
+- provenance, SBOM, schema, compatibility, and evidence verdicts;
+- target profile and any evidence not applicable to that consumer;
+- final accept, reject, or qualified decision with owner and timestamp; and
+- the deployment or rollback record that consumed the decision.
+
+A receipt is not a replacement manifest and must not rewrite producer claims.
+It binds the consumer's observation and policy to the immutable packet.
+
+## Packet Exposure Boundary
+
+Release evidence can contain environment names, internal locations, logs, or
+security findings even when secrets are forbidden. Apply the packet's
+distribution classification before upload, and create an explicitly governed
+redacted derivative when audiences differ. The derivative needs its own digest
+and a lineage link to the restricted packet; silently deleting members breaks
+coherence.
+
 Never make a stale packet coherent by updating individual digest fields. Rebuild
 the selected set from authoritative source inputs so all cross-references are
 generated together.

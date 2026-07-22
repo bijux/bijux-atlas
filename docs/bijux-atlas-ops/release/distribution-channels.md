@@ -78,6 +78,40 @@ not prove chart availability; a GitHub release does not prove an offline
 install; a GHCR tag does not prove its media type or digest matches another
 manifest.
 
+## Channel Completion States
+
+| State | Evidence | Promotion consequence |
+| --- | --- | --- |
+| planned | channel, artifact, version, and expected identity are declared | no publication claim |
+| uploaded | producer reports a successful upload | retrieval and remote identity still unproven |
+| resolved | consumer can retrieve the immutable reference and recompute its identity | channel delivery established |
+| cross-checked | version, digest, provenance, and packet records agree with required sibling channels | channel can participate in release completion |
+| failed | upload, retrieval, identity, or policy check fails | release remains partial and promotion is held |
+
+Use immutable digests or registry checksums for completion. A mutable tag, web
+page, or package search result is useful for discovery but cannot by itself
+bind the received bytes to the release packet.
+
+## Partial Publication Reconciliation
+
+```mermaid
+flowchart TD
+    Attempt[Publish required channels] --> Inventory[Record each remote result]
+    Inventory --> Complete{All required identities resolve?}
+    Complete -->|yes| Cross[Cross-channel coherence check]
+    Complete -->|no| Hold[Hold promotion]
+    Hold --> Inspect[Inspect immutable successes and failed channel]
+    Inspect --> Decide{Same candidate can be resumed safely?}
+    Decide -->|yes| Resume[Publish only missing safe operations]
+    Decide -->|no| Withdraw[Record withdrawal or superseding release]
+    Cross --> Consumer[Consumer verification]
+```
+
+Do not delete the record of a partial attempt. It explains why some registries
+contain a version that was never promoted. Before resuming, prove that local
+candidate bytes still match already published immutable references and that
+the channel permits the remaining operation without overwriting history.
+
 ## Current Manifest Limit
 
 The workspace version is `0.2.2`, while several checked-in release and
@@ -94,6 +128,10 @@ not be cited as the distribution manifest for the current workspace version.
 5. Verify the consumer retrieval path, not only the producer upload path.
 6. Compare version and digest identities across every channel being promoted.
 7. Retain a verifier result that fails on missing or mismatched artifacts.
+
+Also record the required-channel set. Optional channels may legitimately lag,
+but that policy must be declared before publication; reclassifying a failed
+required channel as optional after the fact weakens the release contract.
 
 ## Authorities
 

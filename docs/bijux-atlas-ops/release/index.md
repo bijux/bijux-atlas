@@ -54,6 +54,32 @@ Consumer verification establishes that the received bytes, trust policy,
 target profile, and supported transition agree. Neither replaces live
 deployment, workload, or recovery evidence in the consumer environment.
 
+## Release State Model
+
+```mermaid
+stateDiagram-v2
+    [*] --> Assembled
+    Assembled --> ProducerVerified: packet and evidence pass fresh verification
+    ProducerVerified --> Publishing: immutable channel uploads begin
+    Publishing --> Published: required channels resolve exact identities
+    Publishing --> Partial: one or more required channels fail or disagree
+    Published --> ConsumerVerified: retrieval and policy checks pass
+    ConsumerVerified --> Promoted: target environment evidence passes
+    Partial --> Held: publication state recorded and promotion blocked
+    Published --> Held: integrity or identity concern discovered
+    Promoted --> Held: incident or withdrawal decision
+```
+
+`Published` means every channel required by the release plan is retrievable and
+identity-coherent. It does not mean the release is safe for every environment.
+`Promoted` is a consumer-environment decision and therefore follows retrieval,
+verification, installation, and observation.
+
+Partial publication is a first-class state. Preserve which channel operations
+succeeded, their immutable references, the failed operation, and the retry or
+withdrawal decision. Do not rerun successful mutable-tag publication blindly;
+reconcile the remote state against the original candidate first.
+
 ## Current Checked-In Evidence
 
 The repository carries release-contract examples and generated evidence for
@@ -133,3 +159,18 @@ consumer environment, verifier and policy versions, evidence manifest,
 exceptions, observation window, verdict, and rollback target. A release can be
 validly packaged yet rejected for one environment because a required
 deployment, capacity, or recovery claim is missing.
+
+## Hold and Withdrawal
+
+When a post-publication concern appears, stop further promotion and preserve
+the exact channel references under review. Classify whether the concern affects
+transport integrity, source attribution, runtime behavior, deployment policy,
+or dataset state. The corrective action may be a new release, channel
+withdrawal, deployment rollback, or dataset-pointer rollback; those actions
+are not interchangeable.
+
+Never reuse a published version to replace suspect bytes. Record the affected
+identities, consumer impact, last trusted release, and verification needed to
+resume. A mutable convenience tag may be redirected only under its channel
+policy; immutable digests and historical evidence remain part of the incident
+record.
