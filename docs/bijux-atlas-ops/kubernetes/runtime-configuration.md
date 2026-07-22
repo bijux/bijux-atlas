@@ -106,6 +106,35 @@ server must explicitly reload it before a live update has effect. Unless a
 specific reload contract is documented and observed, treat mounted changes as
 restart-required.
 
+## Bind Configuration to the Pod Revision
+
+The checked-in Deployment template does not place a ConfigMap or Secret
+content checksum on the pod template. A change to either object can therefore
+leave the workload revision unchanged and serving pods on their original
+environment. Helm reporting an updated ConfigMap is not proof of runtime
+convergence.
+
+```mermaid
+flowchart LR
+    Values[Reviewed values and secret identities] --> Fingerprint[Effective configuration fingerprint]
+    Fingerprint --> PodTemplate[Pod template revision]
+    PodTemplate --> Pods[Replacement pods]
+    Pods --> Startup[Startup validation]
+    Startup --> Fleet[One fingerprint across serving fleet]
+```
+
+For every restart-required change, bind a non-secret fingerprint of the
+effective configuration to the candidate revision or execute an explicit,
+recorded restart. The fingerprint may include ConfigMap content and Secret
+resource identities, but must never expose credential values. Verify
+convergence by pod UID and container start time, then prove all ready endpoints
+belong to replicas created from the intended revision.
+
+During credential overlap, distinguish “new Secret object exists,” “new pods
+reference it,” and “the running process authenticated with it.” Revoke the old
+credential only after the last old process has drained and the new identity has
+been exercised through the real dependency path.
+
 ## Secrets and Mounted Configuration
 
 `envFromSecrets` references Kubernetes Secrets; `configMounts` adds governed

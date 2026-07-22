@@ -148,6 +148,37 @@ evidence references. Those details must accompany the change review, but they
 are not recoverable from the registry alone. Do not claim that the current JSON
 record provides a complete exception rationale.
 
+## Bind an Exception to One Exposure
+
+The three registry fields do not identify a release, namespace, cluster,
+runtime route inventory, or admitted network boundary. An approved record can
+therefore be copied to a different deployment while remaining schema-valid.
+Treat the registry as eligibility metadata and retain a separate exposure
+receipt for the actual activation.
+
+| Binding | Required receipt value |
+| --- | --- |
+| executable | runtime image digest and hash of the registered admin-route inventory |
+| deployment | cluster, namespace, release name, profile, workload revision, and pod identities |
+| reachability | Service, ingress or port-forward path, NetworkPolicy revision, and source identities allowed |
+| authorization | authentication mode, authorization policy revision, positive principal, and denied principals |
+| custody | activation time, operator, reason, owner, expiry, and removal action |
+| observation | request, denial, audit, and route-absence evidence tied to the deployment |
+
+```mermaid
+flowchart LR
+    Registry[Eligible profile, owner, and expiry] --> Receipt[Bound exposure receipt]
+    Runtime[Runtime and route inventory] --> Receipt
+    Deployment[Cluster, namespace, and revision] --> Receipt
+    Controls[Reachability and authorization] --> Receipt
+    Receipt --> Activate[Bound activation]
+    Activate --> Remove[Removal and absence proof]
+```
+
+Renewal must produce a fresh binding. Reusing the old receipt after the image,
+route set, target, profile, network policy, or authorization policy changes
+turns a bounded exception into an unreviewed new exposure.
+
 ## Approval Standard
 
 Approve an exception only when all of these conditions hold:

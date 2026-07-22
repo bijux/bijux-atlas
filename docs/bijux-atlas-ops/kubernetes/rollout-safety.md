@@ -72,12 +72,42 @@ Do not promote on pod phase alone. Promotion requires readiness to stabilize,
 traffic to reach the new release, expected telemetry to arrive, and the
 selected load or resilience evidence to remain inside budget.
 
-The default canary sequence sends 10% traffic, pauses for 60 seconds, sends 50%,
-then pauses for 120 seconds. Those values are routing instructions, not an
-observation policy. A profile must declare enough request volume and time at
-each weight to exercise cheap, heavy, error, and dataset-resolution paths. Low
-traffic may require longer pauses or synthetic probes to produce meaningful
-evidence.
+The default canary sequence declares weights of 10% and 50%, with pauses of 60
+and 120 seconds. The checked-in Rollout does not declare `trafficRouting`,
+`stableService`, `canaryService`, or an analysis template. Its weights therefore
+must not be described as proof that exactly those request fractions reached the
+candidate. A profile must measure the actual candidate request share and allow
+enough request volume and time to exercise cheap, heavy, error, and
+dataset-resolution paths. Low traffic may require longer pauses or synthetic
+probes to produce meaningful evidence.
+
+## Prove the Traffic Split
+
+Without a traffic router, canary weight is implemented through replica
+proportions and a shared Service can distribute requests unevenly because of
+connection reuse, endpoint readiness, topology, and client behavior. Preserve
+both controller intent and observed routing:
+
+| Evidence | Required identity |
+| --- | --- |
+| desired canary state | Rollout revision, declared weight, replica counts, and pause interval |
+| eligible endpoints | pod UID, release identity, readiness interval, and Service membership |
+| actual requests | candidate and stable request counts by route class and observation window |
+| decision quality | minimum sample, latency and error comparison, saturation, and missing-signal treatment |
+
+```mermaid
+flowchart LR
+    Weight[Declared canary weight] --> Replicas[Stable and candidate replicas]
+    Replicas --> Endpoints[Ready Service endpoints]
+    Endpoints --> Requests[Observed requests by release]
+    Requests --> Compare[Route-class comparison]
+    Compare --> Decision{Promote, hold, or abort}
+```
+
+If release-scoped request counts cannot be obtained, the rollout can exercise
+availability but cannot support a percentage-based canary claim. Record that
+limitation and use a separately addressable candidate path or another delivery
+mode with observable routing.
 
 ## Decision Gates
 
