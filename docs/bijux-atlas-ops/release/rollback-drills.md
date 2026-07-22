@@ -38,6 +38,37 @@ state changes that a startup-failure rehearsal cannot reach.
 If any precondition is missing, record a blocked drill. Do not improvise a
 different target after the failure begins.
 
+## Restore One Coherent Identity
+
+Rollback is complete only when every release-bearing plane agrees:
+
+```mermaid
+flowchart LR
+    Decision[Supported rollback target] --> Deploy[Chart and image identity]
+    Decision --> Config[Configuration and Secret references]
+    Decision --> Data[Catalog and dataset identity]
+    Deploy --> Runtime[Running workload]
+    Config --> Runtime
+    Data --> Runtime
+    Runtime --> Traffic[Governed traffic]
+    Runtime --> Signals[Release-labeled telemetry]
+    Traffic --> Proof[Restoration evidence]
+    Signals --> Proof
+```
+
+| Plane | Restoration check |
+| --- | --- |
+| deployment | expected chart, image digest, workload revision, and replica state |
+| configuration | target values, ConfigMap, Secret references, and runtime parse result |
+| data | supported catalog pointer and exact dataset tuple with verified hashes |
+| traffic | intended route receives requests and rejects unsupported paths correctly |
+| behavior | correctness probes, latency, error rate, overload, and dependency checks |
+| telemetry | logs, metrics, and traces identify the restored release |
+
+A healthy pod with candidate configuration is not a restored baseline. Neither
+is a previous image serving a candidate dataset unless that combination is an
+explicitly supported target.
+
 ## Drill Timeline
 
 ```mermaid
@@ -69,6 +100,11 @@ Record at least these timestamps:
 
 Derive detection, decision, execution, readiness, and total service-restoration
 durations from retained timestamps. Do not reconstruct them later from memory.
+
+Measure recovery time from the first violated invariant to restored governed
+service, not only the duration of `helm rollback`. If durable data can change,
+also declare the recovery point objective and verify which writes or catalog
+changes were retained, reversed, or lost.
 
 ## Evidence Package
 
@@ -119,6 +155,20 @@ Stop the drill and enter incident handling when:
 Do not cycle between releases to mask an unresolved state problem. Preserve the
 failed evidence and follow [Backup and Recovery](backup-and-recovery.md) when
 durable state is implicated.
+
+## Declare the Drill Result
+
+- **passed**: the exact supported target was restored within budget, all planes
+  agreed, correctness returned, and cleanup completed;
+- **failed**: execution completed but any required restoration criterion or
+  time budget failed;
+- **blocked**: a prerequisite, target artifact, authority, or safe execution
+  environment was unavailable; or
+- **aborted**: the exercise crossed a safety threshold and entered incident
+  handling.
+
+Preserve partial evidence for every outcome. Reclassifying a failed or blocked
+drill as a successful command result hides the recovery risk.
 
 ## Current Readiness
 

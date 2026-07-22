@@ -85,6 +85,50 @@ Artifact-specific normalization matters. A deterministic JSON report does not
 make a tar archive deterministic, and equal chart sources do not prove equal
 packaged chart bytes.
 
+## Compare the Right Equivalence
+
+Byte equality is the strongest result when the artifact format permits it.
+When canonicalization is necessary, define the transformation before building
+and retain both original outputs. A post hoc rule created to erase an observed
+difference is not reproducibility evidence.
+
+| Artifact | Identity to pin | Differences to control or explain |
+| --- | --- | --- |
+| Rust packages | source, lockfile, Rust toolchain, target, feature set | archive metadata, compiler inputs, native dependencies |
+| OCI image | source, base-image digest, builder, platform | layer ordering, timestamps, labels, package repositories |
+| Helm chart | chart source, dependency locks, Helm version | archive order, modes, timestamps, generated metadata |
+| documentation site | source, documentation toolchain, theme and plugin versions | generated timestamps, search indexes, asset ordering |
+| release bundle | complete member inventory and member hashes | archive metadata, ordering, signing and provenance attachments |
+
+```mermaid
+flowchart TD
+    Spec[Predeclared scenario and normalization] --> BuildA[Isolated build A]
+    Spec --> BuildB[Isolated build B]
+    BuildA --> OriginalA[Original artifact and provenance]
+    BuildB --> OriginalB[Original artifact and provenance]
+    OriginalA --> Compare{Byte-equal?}
+    OriginalB --> Compare
+    Compare -- yes --> Exact[Exact reproducibility result]
+    Compare -- no --> Normalize[Apply predeclared canonicalization]
+    Normalize --> Canonical{Canonical outputs equal?}
+    Canonical -- yes --> Explained[Canonical reproducibility plus original difference report]
+    Canonical -- no --> Fail[Classified reproducibility failure]
+```
+
+The result must say whether equality was exact or canonicalized. It must also
+name every ignored field and retain the unexplained-difference report.
+
+## Independence and Custody
+
+Two invocations in one populated workspace can reuse caches, generated files,
+credentials, or mutable dependencies. Prefer isolated builders with separate
+output roots and controlled differences. Record network policy, dependency
+source, cache policy, locale, timezone, platform, and environment allowlist.
+
+Bind each output hash to its source and builder provenance. Store the comparison
+result with both artifact identities. A signed statement can protect custody,
+but signing two different artifacts does not make them reproducible.
+
 ## Decision Boundary
 
 Use current `reproduce` output as repository metadata and lineage evidence.

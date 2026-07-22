@@ -43,6 +43,24 @@ The checked-in drift simulation defines five negative fixtures:
 These fixtures prove expected detector inputs. They do not show the current
 repository or a deployment is drift-free.
 
+## Name the Baseline Before Comparing
+
+Every drift result needs two identities: the observed subject and its expected
+baseline. “Different from main” or “different from production” is insufficient
+when either reference can move.
+
+| Surface | Baseline identity | Observation identity |
+| --- | --- | --- |
+| source and generated files | source revision plus generator and control hashes | checkout revision plus generated-file hashes |
+| release packet | packet manifest and evidence-set digest | candidate packet digest |
+| Kubernetes deployment | approved rendered-manifest and image digests | cluster, namespace, workload revision, and live-object digest |
+| runtime configuration | approved effective-configuration receipt | pod and configuration identities plus parsed result |
+| dataset | release, species, assembly, manifest, and payload hashes | resolved runtime dataset identity and verified bytes |
+| telemetry | release-labeled signal contract and deployment identity | scrape, log, and trace source identities |
+
+Capture both sides before remediation. If the baseline cannot be identified,
+classify the comparison as indeterminate rather than clean.
+
 ## Current Evidence Boundary
 
 The repository contains example drift reports under `ops/_generated.example/`,
@@ -71,6 +89,28 @@ rationale, expiry, and evidence that the divergence is safe.
 Any drift that changes installed resources, security posture, dataset identity,
 recovery authority, or consumer-verifiable evidence blocks promotion. Preserve
 the raw comparison, classification, owner, decision, and final corrected state.
+
+## Close a Drift Finding
+
+```mermaid
+flowchart TD
+    Detect[Detect difference] --> Attribute[Bind baseline and observation]
+    Attribute --> Classify[Classify owning surface and impact]
+    Classify --> Decision{Expected and authorized?}
+    Decision -- no --> Contain[Block promotion or contain deployment]
+    Contain --> Repair[Repair through owning authority]
+    Decision -- yes --> Govern[Update governed baseline]
+    Repair --> Recheck[Repeat original comparison]
+    Govern --> Recheck
+    Recheck --> Evidence[Retain finding, decision, and closure evidence]
+```
+
+A finding is closed only when the original comparison passes against the
+intended baseline or an authorized baseline change explains the difference.
+An ignore rule suppresses a detector result; it does not reconcile state.
+
+After repair, also verify downstream consumers. Regenerating a manifest does
+not prove a release packet, deployment, or runtime refreshed to that identity.
 
 See [Environment Overlays](../stack/environment-overlays.md) for execution
 identity and [Release Packets](release-packets.md) for transport coherence.
