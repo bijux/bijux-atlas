@@ -32,6 +32,12 @@ Until the contracts converge, preserve the validator and schema results
 separately. Do not claim complete logging conformance from a pass against only
 one of them.
 
+Consumers must not silently translate `msg` to `message` or `ts` to
+`timestamp` and then report the source stream as conformant. A normalized view
+can support investigation, but retain the source record and identify the
+normalization rule. Contract repair belongs at the producer and governance
+boundary.
+
 ## Event Semantics
 
 The field contract registers six events: request start, request end, policy
@@ -67,11 +73,61 @@ and personal name fields. The validator additionally blocks password, secret,
 and token content. These sets are cumulative. Sensitive values must be excluded
 before emission, not scrubbed only when evidence is packaged.
 
+## From Emission to Evidence
+
+```mermaid
+flowchart LR
+    Code[Instrumented code path] --> Record[Structured source record]
+    Record --> Validate[Format, event, and safety validation]
+    Validate --> Collect[Collector or log transport]
+    Collect --> Store[Access-controlled retention]
+    Store --> Query[Incident query]
+    Query --> Snapshot[Run-bound evidence snapshot]
+```
+
+Every arrow can lose or alter information. Producer success does not prove
+collector intake. Collector intake does not prove retention. A query result
+does not prove completeness unless its time range, filters, tenant, index, and
+ingestion delay are known.
+
+For an incident snapshot, retain:
+
+- runtime, deployment, dataset, and configuration identities;
+- event-time and ingestion-time bounds;
+- query text, filters, tenant, and result count;
+- collector and backend health for the same interval;
+- original structured records or a content-addressed export; and
+- any normalization or redaction applied after emission.
+
+Use `request_id` or `trace_id` for a single request. Use bounded fields such as
+route, status, event class, release, and time window to discover a population.
+Do not promote high-cardinality biological identifiers into metric-like log
+aggregation without an explicit data and retention review.
+
+## Interpret Missing Logs
+
+```mermaid
+flowchart TD
+    Missing[Expected event absent] --> Executed{Code path executed?}
+    Executed -- no --> Behavior[Investigate request or control flow]
+    Executed -- yes --> Emitted{Producer emitted?}
+    Emitted -- no --> Instrumentation[Instrumentation or filtering defect]
+    Emitted -- yes --> Collected{Collector accepted?}
+    Collected -- no --> Transport[Transport or collector failure]
+    Collected -- yes --> Retained{Backend retained and query can see it?}
+    Retained -- no --> Backend[Retention, indexing, tenancy, or query failure]
+    Retained -- yes --> Search[Correct correlation and time bounds]
+```
+
+An absent event is not proof that the event did not occur. Classify the missing
+boundary before using log absence in a release or incident decision.
+
 ## Acceptance
 
 Validate syntax, both required-field contracts, event-specific context,
 classification, redaction, and correlation. Include successful and failing
-samples for request, policy, store, and query paths. Reject unknown events,
+samples for request, policy, store, and query paths. Exercise collector intake
+and retrieval after the required retention interval. Reject unknown events,
 missing identifiers, ambiguous field aliases, or secret-bearing records.
 
 See [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md) for

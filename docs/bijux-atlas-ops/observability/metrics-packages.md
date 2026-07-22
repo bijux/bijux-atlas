@@ -32,6 +32,31 @@ Each specification names its owning crate and module. A change is incomplete
 when runtime emission changes without updating the contract, golden scrape,
 dashboards, alerts, and SLO maps that consume it.
 
+## Signal Delivery Chain
+
+```mermaid
+flowchart LR
+    Runtime[Runtime instrumentation] --> Endpoint[Metrics endpoint]
+    Endpoint --> Scrape[Prometheus scrape]
+    Scrape --> Series[Stored time series]
+    Series --> Recording[Recording rules]
+    Recording --> Alert[Alerts and SLOs]
+    Series --> Dashboard[Dashboards]
+```
+
+Each boundary needs its own evidence. A metric present in source code may never
+be emitted. A sample at the endpoint may never be scraped. A stored series may
+be invisible to a rule because labels or units differ. A rendered dashboard
+may query an empty or stale series.
+
+| Claim | Evidence |
+| --- | --- |
+| instrumented | owned emitter and contract entry |
+| emitted | runtime scrape containing the expected type, unit, and labels |
+| collected | target health plus stored sample for the exact release |
+| usable | query result over the required interval and label population |
+| decision-bearing | recording rule, alert, or SLO result tied to release and profile |
+
 ## Cardinality Controls
 
 ```mermaid
@@ -52,6 +77,11 @@ contract. The separate label policy allows a broader vocabulary and caps it at
 200 values. Both the per-metric series limits and global vocabulary policy must
 pass.
 
+Estimate the cartesian product of dynamic labels before accepting a metric.
+Several individually bounded labels can still exceed a series budget when
+combined. Validate the observed label population under representative load.
+Include scrape size, series count, and memory impact in the change evidence.
+
 ## Registry Snapshot Limitation
 
 `ops/observe/metrics/registry.snapshot.json` currently contains only metadata:
@@ -68,12 +98,24 @@ records per second over 10 minutes. Their recording expressions evaluate every
 30 seconds. A metric rename or label change can silently invalidate these
 calculations even when raw samples still exist.
 
+## Freshness and Absence
+
+A zero sample, a missing series, and a stale series mean different things. Zero
+is a measured value. Missing can mean no matching target, no emission, label
+drift, or query mismatch. Stale means collection stopped after earlier samples.
+
+When an alert is unexpectedly quiet, inspect target health, last scrape time,
+release labels, raw series, recording rules, and alert evaluation in that
+order. Never convert missing data to healthy zero unless the metric contract
+defines that behavior.
+
 ## Accepting a Metric Change
 
 Require a stable name and meaning, owner, type and unit, bounded labels,
 per-metric budget, golden sample, and applicable endpoint coverage. Validate
 dashboard queries, alerts, recording rules, and SLO expressions. Then capture a
-runtime scrape showing the resolved labels and values.
+runtime scrape and stored query result showing resolved labels, values, and
+freshness for the candidate release.
 
 See [Dashboards and Panels](dashboards-and-panels.md) for diagnostic consumers
 and [Alert Rules](alert-rules.md) for action thresholds.

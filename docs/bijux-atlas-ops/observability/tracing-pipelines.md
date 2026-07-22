@@ -33,6 +33,10 @@ remote backend, retention, or a Grafana trace datasource. The local stack can
 prove emission and collector intake; it cannot by itself prove historical
 search or durable trace availability.
 
+The debug exporter may expose span attributes in collector output. Treat that
+output as diagnostic data subject to the same access, redaction, and retention
+controls as structured logs.
+
 ## Request-Path Contract
 
 Every governed request trace has a `request_root` span with request ID, route,
@@ -65,12 +69,53 @@ When a span is missing, distinguish instrumentation loss, sampling, exporter
 failure, collector failure, and a code path that never executed. An empty
 backend is not proof that no request occurred.
 
+## Parentage and Sampling
+
+A valid trace is more than a set of span names. The request root must own the
+request lifecycle. Child spans must preserve parentage across asynchronous
+boundaries, and error status must attach to the failing operation. Orphaned
+spans can satisfy a name inventory while failing to explain latency or
+causality.
+
+```mermaid
+flowchart TD
+    Request[Incoming request] --> Decision{Sampling decision}
+    Decision --> Root[request_root identity]
+    Root --> Admission[admission]
+    Root --> Dataset[dataset resolution]
+    Dataset --> Cache[cache lookup]
+    Dataset --> Store[store fetch]
+    Root --> Query[SQLite query]
+    Root --> Serialize[response serialization]
+    Root --> Export[OTLP export]
+```
+
+Record head or tail sampling mode, probability or policy, error-retention
+rules, attribute limits, and propagation format. A sampled successful trace
+cannot prove that errors are retained. A forced sample is useful for path
+coverage, but it does not measure normal production sampling behavior.
+
+## Trace Evidence Boundary
+
+| Observation | Safe conclusion |
+| --- | --- |
+| runtime created a span | instrumentation executed for that operation |
+| exporter reports success | the exporter accepted the batch |
+| collector debug output contains the trace | collector intake and processing occurred |
+| backend query returns the trace | backend ingestion and query path worked |
+| trace remains after the incident window | configured retention preserved it for that interval |
+| logs join on request or trace ID | cross-signal propagation worked for that request |
+
+Do not use one trace to claim route coverage. Select representative routes and
+both successful and failing outcomes according to the endpoint observability
+contract.
+
 ## Acceptance
 
 For a release claim, retain the runtime and collector versions, effective
 collector configuration, sampling policy, representative successful and
-failing trace IDs, required-span validation, exporter health, and correlation
-to logs and metrics. If durable trace investigation is required, also prove
+failing trace IDs, parentage validation, exporter health, and correlation to
+logs and metrics. If durable trace investigation is required, also prove
 backend ingestion, retention, access control, and retrieval after the incident
 window.
 
