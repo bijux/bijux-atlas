@@ -80,6 +80,34 @@ succeeded, their immutable references, the failed operation, and the retry or
 withdrawal decision. Do not rerun successful mutable-tag publication blindly;
 reconcile the remote state against the original candidate first.
 
+## Match Evidence to the Release Decision
+
+One coherent packet can support several decisions, but each decision needs a
+different consumer-side observation. Do not collapse packet integrity,
+installability, operating fitness, and promotion into one release status.
+
+| Decision | Producer evidence | Consumer evidence |
+| --- | --- | --- |
+| bytes received intact | packet inventory, checksums, provenance, and immutable channel reference | fresh member hashes and trust-policy verdict |
+| release can be installed | chart, images, values, schemas, compatibility declarations | target render, admission result, dependency resolution, and rollback target |
+| release can serve correctly | product contracts, dataset schemas, and governed test evidence | target dataset identity, representative queries, readiness, and response correctness |
+| release meets operating envelope | declared SLO, load, security, failure, and recovery contracts | target-specific telemetry, capacity, fault, rollout, and recovery results |
+| release may be promoted | complete candidate packet and producer acceptance | owned consumer decision, exceptions, observation window, and reversal authority |
+
+```mermaid
+flowchart LR
+    Packet[Verified producer packet] --> Integrity[Consumer integrity verdict]
+    Integrity --> Install[Target install and admission]
+    Install --> Correct[Correctness and dataset identity]
+    Correct --> Operate[Capacity, security, telemetry, and recovery]
+    Operate --> Promote{Consumer promotion decision}
+```
+
+A later decision may reuse unchanged immutable evidence, but it must not reuse
+environment observations after the target, profile, dataset, dependency, or
+policy identity changes. Preserve the receipt at every boundary so a rejection
+names the missing claim instead of marking the entire release vaguely bad.
+
 ## Current Checked-In Evidence
 
 The repository carries release-contract examples and generated evidence for

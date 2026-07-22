@@ -134,6 +134,38 @@ flowchart TD
 The result must say whether equality was exact or canonicalized. It must also
 name every ignored field and retain the unexplained-difference report.
 
+## Triage a Rebuild Divergence
+
+A mismatch is the start of attribution, not permission to expand the ignored
+field list. Preserve both original artifacts and compare from the outside in:
+
+```mermaid
+flowchart TD
+    Mismatch[Output hashes differ] --> Inventory{Member inventory equal?}
+    Inventory -->|no| Inputs[Trace source, dependency, feature, and packaging inputs]
+    Inventory -->|yes| Metadata{Only predeclared metadata differs?}
+    Metadata -->|yes| Canonical[Apply declared canonicalization and retain originals]
+    Metadata -->|no| Content[Locate first content or layer difference]
+    Content --> Builder[Compare toolchain, platform, environment, and execution]
+    Canonical --> Verdict{Canonical outputs equal?}
+    Builder --> Finding[Classified reproducibility failure]
+    Verdict -->|yes| Qualified[Canonical reproducibility result]
+    Verdict -->|no| Finding
+```
+
+| Divergence class | Investigation focus |
+| --- | --- |
+| member set | omitted or additional build input, feature, generated file, or packaging rule |
+| content bytes | source snapshot, dependency resolution, compiler, native library, platform, or nondeterministic execution |
+| ordering or archive metadata | declared packaging and canonicalization rules |
+| image layers or platform manifest | builder, base and package digests, target platform, labels, timestamps, and layer construction |
+| signature or provenance attachment | signer identity, signing mode, attachment order, and whether signatures are inside the compared payload |
+
+Run the diagnosis from retained outputs rather than rebuilding repeatedly until
+two samples happen to match. Repeated attempts belong in the evidence series;
+intermittent equality indicates nondeterminism, not a successful reproducible
+build.
+
 ## Independence and Custody
 
 Two invocations in one populated workspace can reuse caches, generated files,

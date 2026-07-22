@@ -74,6 +74,36 @@ The checked-in ignore rules are also an example. They suppress an unknown
 profile finding by path and message. Do not activate an ignore without owner,
 rationale, expiry, and evidence that the divergence is safe.
 
+## Account for Detection Coverage and Blind Time
+
+A clean comparison says nothing about the interval before or after it. Every
+drift claim needs the surfaces observed, comparison cadence, last successful
+baseline, current observation time, and any gap where collection or comparison
+was unavailable.
+
+```mermaid
+flowchart LR
+    Baseline[Approved baseline] --> Compare[Scheduled or event-driven comparison]
+    Observation[Observed state] --> Compare
+    Compare --> Result{Difference found?}
+    Result -->|yes| Finding[Classify and contain]
+    Result -->|no| Clean[Bounded clean receipt]
+    Gap[Collector or comparison gap] --> Unknown[Unknown drift interval]
+```
+
+| Coverage property | Required record |
+| --- | --- |
+| scope | source, generated, packet, deployment, runtime, dataset, and telemetry surfaces actually compared |
+| trigger | schedule, deployment event, catalog promotion, policy change, or incident action |
+| freshness | baseline identity, observation time, and maximum accepted age |
+| continuity | successful comparison sequence and missing intervals |
+| enforcement | alert, promotion hold, containment action, and owner |
+
+After an observation gap, compare the complete governed state before declaring
+the environment clean. Resuming a collector proves only that collection
+returned; it cannot show whether an unauthorized change occurred during the
+gap. Preserve the unknown interval in incident and promotion evidence.
+
 ## Classification and Action
 
 - Source changed, generated output stale: regenerate from the authoritative

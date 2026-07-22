@@ -99,6 +99,36 @@ The closure result is distinct from integrity. A packet can have internally
 consistent digests and still be unusable because its verifier, schema, policy,
 or referenced artifact is available only in the producer environment.
 
+## Establish the Consumer Trust Bootstrap
+
+Packet verification begins from inputs the packet does not get to define for
+itself: expected outer identity, accepted trust roots, verifier distribution,
+and consumer policy. Acquire and retain those inputs through an independently
+governed channel.
+
+| Bootstrap input | Consumer requirement |
+| --- | --- |
+| expected packet identity | release, channel, immutable reference, outer digest, and retrieval context |
+| trust roots | key or identity set, validity and revocation state, source, and accepted policy scope |
+| verifier | immutable binary or package identity, provenance, supported schema range, and invocation contract |
+| consumer policy | required evidence classes, allowed exceptions, target profile, and decision owner |
+
+```mermaid
+flowchart LR
+    Channel[Immutable channel reference and expected digest] --> Receive[Received packet]
+    Trust[Independent trust roots] --> Judge[Consumer verification]
+    Verifier[Independently identified verifier] --> Judge
+    Policy[Consumer policy] --> Judge
+    Receive --> Judge
+    Judge --> Receipt[Consumer receipt]
+```
+
+Do not execute a verifier or trust a key merely because it is enclosed in the
+packet under review. The packet may carry a copy for portability, but the
+consumer must match it to the independently accepted identity before use. When
+trust has rotated, record which generation verifies the release and whether
+the rollback release remains verifiable under the retained policy.
+
 ## Current Packet Status
 
 The checked-in packet satisfies its structural `REL-PACK-001` flag, but its
