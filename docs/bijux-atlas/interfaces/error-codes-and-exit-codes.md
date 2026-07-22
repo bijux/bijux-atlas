@@ -4,7 +4,7 @@ audience: mixed
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Error Codes and Exit Codes
@@ -45,7 +45,7 @@ infer a code by matching message text.
 
 ## HTTP Status and Code Families
 
-| Status | Stable codes | Client interpretation |
+| Status | Codes observed through that mapping | Client interpretation |
 | ---: | --- | --- |
 | `400` | `InvalidQueryParameter`, `InvalidCursor`, `MissingDatasetDimension`, `RangeTooLarge`, `ValidationFailed` | Correct request shape, cursor, or dataset identity before retrying. |
 | `401` | `AuthenticationRequired` | Supply valid authentication under the deployment policy. |
@@ -54,13 +54,34 @@ infer a code by matching message text.
 | `413` | `PayloadTooLarge`, `ResponseTooLarge` | Reduce request or response scope. |
 | `422` | `QueryRejectedByPolicy`, `QueryTooExpensive` | Change the request or governing policy; an identical retry is not corrective. |
 | `429` | `RateLimited` | Respect `Retry-After` and retry only when the operation is safe to repeat. |
-| `503` | `NotReady`, `UpstreamStoreUnavailable`, `Timeout` | Respect `Retry-After`, then re-evaluate readiness and dependency state. |
-| `500` | `Internal`, integrity and quarantine codes, or an unmapped internal failure | Preserve the request ID and escalate; do not hide it with unlimited retries. |
+| `409` | `ArtifactCorrupted`, `ArtifactQuarantined` on dataset-open paths | Stop using the affected artifact and preserve quarantine or corruption evidence. |
+| `503` | `NotReady`, `UpstreamStoreUnavailable`, and `Timeout` through the shared default mapping | Respect `Retry-After`, then re-evaluate readiness and dependency state. |
+| `504` | `Timeout` on the gene request deadline path | Treat the request as timed out; do not assume backend unavailability. |
+| `500` | `Internal`, integrity or quarantine codes through the default mapping, or another unmapped internal failure | Preserve the request ID and escalate; do not hide it with unlimited retries. |
 
 The shared code registry also contains ingest validation codes. Their presence
 in the type and OpenAPI enum does not mean every runtime endpoint can emit each
 one. The generated registry and endpoint response contracts remain the exact
 authority.
+
+HTTP status expresses the endpoint's transport decision; the stable code
+expresses the failure category. The mapping is therefore not globally
+one-to-one. `Timeout` can appear as the shared `503` mapping or as `504` on the
+gene request deadline, while artifact integrity codes can be `409` on dataset
+open paths even though the shared fallback maps them to `500`.
+
+```mermaid
+flowchart LR
+    Cause["domain or dependency failure"] --> Code["stable error code"]
+    Code --> Endpoint["endpoint context"]
+    Endpoint --> Status["HTTP status + headers"]
+    Status --> Policy["client retry or correction policy"]
+    Code --> Correlate["request ID, logs, and traces"]
+```
+
+Clients should branch on both code and status, retain unknown codes, and apply
+retry only when the operation itself is safe to repeat. A new endpoint mapping
+must not be inferred from another endpoint that happens to emit the same code.
 
 ## Retry Decision
 
@@ -94,3 +115,10 @@ string map of `details`. Shell automation should branch on the numeric exit
 class, refine handling with the machine code, and retain stderr or JSON detail
 for diagnosis. An internal exit must remain visible; converting it to success
 because a report file exists destroys the failure contract.
+
+The current product CLI classifies many action failures into validation,
+dependency, or internal exits by inspecting normalized error text. This is a
+compatibility-sensitive boundary: changing producer wording can change the
+numeric class even when the underlying cause is unchanged. Preserve the full
+machine error in automation, and treat changes to classification phrases as
+exit-contract changes until action failures carry a typed category end to end.

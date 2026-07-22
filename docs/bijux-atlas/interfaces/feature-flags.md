@@ -56,6 +56,35 @@ names are workspace-global.
 - `bench-ingest-throughput` and `kind_integration` are not production runtime
   configuration switches.
 
+## Capability selection is not runtime policy
+
+A Cargo feature changes the compiled graph for a crate target. It does not
+authorize a caller, select a backend for a running process, or prove that an
+optional path was exercised. Those are separate decisions with separate
+evidence.
+
+| Question | Authority | Evidence |
+| --- | --- | --- |
+| could this binary contain the capability? | resolved Cargo features | package, target, feature arguments, lockfile, and toolchain |
+| did startup select the capability? | runtime configuration and validation | redacted effective config and startup outcome |
+| did a request use the capability? | runtime routing and operation result | correlated request, backend, and outcome telemetry |
+| may this principal use it? | authentication and authorization policy | identity, decision, and audit record |
+
+```mermaid
+flowchart LR
+    Cargo["Cargo feature resolution"] --> Binary["compiled capability"]
+    Binary --> Startup{"valid runtime selection?"}
+    Startup -- no --> Refuse["startup refusal or unavailable path"]
+    Startup -- yes --> Route["selected operation"]
+    Identity["caller identity + policy"] --> Route
+    Route --> Evidence["correlated operation evidence"]
+```
+
+Do not use feature presence as a security boundary. Conversely, when a
+deployment requires an optional backend or allocator, verify the candidate
+artifact's feature provenance before rollout; a valid environment value cannot
+repair a binary built without the required capability.
+
 ## Reproducible Builds
 
 Record the package, target, Cargo feature arguments, default-feature decision,

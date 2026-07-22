@@ -56,6 +56,36 @@ families explain ownership without duplicating the full generated allowlist:
 Representative names are navigation aids, not a substitute for the environment
 schema or the generated runtime configuration reference.
 
+## Admission does not imply consumption
+
+The allowlist controls which governed names may enter the process environment.
+It does not prove that the server reads every admitted name. Consumption is
+owned by the binary and command path.
+
+| Variable | Admitted scope | Current consumer boundary |
+| --- | --- | --- |
+| `ATLAS_S3_ENDPOINT` | environment contract | remote ingest input handling in the product CLI, not server store selection |
+| `ATLAS_STORE_ACCESS_KEY_ID` | environment contract | no direct server runtime-config consumer |
+| `ATLAS_STORE_SECRET_ACCESS_KEY` | environment contract | no direct server runtime-config consumer |
+| `ATLAS_STORE_S3_BASE_URL` | environment contract | server S3-like store configuration |
+| `ATLAS_STORE_S3_BEARER` | environment contract | server S3-like store bearer configuration |
+
+The two access-key names may be supplied to surrounding platform tooling, but
+their presence must not be presented as proof that the Atlas server used them.
+For any setting, distinguish four states:
+
+```mermaid
+flowchart LR
+    Declared["name appears in contract"] --> Admitted["environment accepted"]
+    Admitted --> Parsed["owning component parsed value"]
+    Parsed --> Activated["resolved behavior selected"]
+    Activated --> Observed["operation exercised behavior"]
+```
+
+Evidence for a later state cannot be inferred from an earlier one. This is
+especially important for credentials and emergency controls, where a present
+but unconsumed variable can create false confidence.
+
 ## Secrets
 
 Secret-bearing variables include API keys, HMAC material, token signing
