@@ -130,5 +130,31 @@ Retain both rendered inventories when changing shared helpers or pod fields.
 Testing only the controller selected by the default values leaves the alternate
 production path unqualified.
 
+## Account for Extension APIs
+
+Most chart objects use built-in Kubernetes APIs, but three template families
+depend on APIs supplied by other controllers. Their successful Helm render is
+not evidence that the target cluster can admit or reconcile them.
+
+| Chart object | External capability | Required target evidence |
+| --- | --- | --- |
+| `Rollout` | Argo Rollouts CRD and controller | served API version, controller identity, reconciliation status, and rollback behavior |
+| `ServiceMonitor` | Prometheus Operator CRD and controller | admitted object, selected Service, discovered target, and successful scrape |
+| `PrometheusRule` | Prometheus Operator CRD and rule evaluator | admitted object, loaded rule status, query validity, and alert delivery path |
+
+```mermaid
+flowchart LR
+    Render[Rendered custom resource] --> Discover[Target API discovery]
+    Discover --> Admit[Admission and policy]
+    Admit --> Reconcile[Controller reconciliation]
+    Reconcile --> Effect[Observed operational effect]
+```
+
+Record each required group, version, and kind in the target capability receipt.
+When a capability is intentionally absent, the selected values must suppress
+its objects or the installation must fail before mutation. A cluster accepting
+an unserved or unreconciled custom resource cannot be treated as a degraded
+success: the workload, telemetry, or rollout contract is incomplete.
+
 Continue with [Helm Values Model](helm-values-model.md) for configuration
 semantics and [Render and Validate](render-and-validate.md) for the proof path.

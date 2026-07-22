@@ -68,6 +68,38 @@ include:
 Invalid combinations must fail before installation. An operator warning is not
 an adequate substitute for a relationship the schema can enforce.
 
+## Resolve Compatibility-Shaped Values Once
+
+The chart currently accepts several old and nested representations for the
+same effective behavior. Templates resolve those representations explicitly:
+
+| Effective behavior | Accepted inputs | Resolution boundary |
+| --- | --- | --- |
+| cached-only serving | `server.cachedOnlyMode`, optionally overridden by `cache.cachedOnlyMode` | runtime ConfigMap |
+| catalog-dependent readiness | `server.readinessRequiresCatalog`, optionally overridden by `cache.readinessRequiresCatalog` | runtime ConfigMap |
+| container security | `containerSecurityContext`, with `securityContext` as fallback | workload pod specification |
+| ServiceMonitor policy | `metrics.serviceMonitor`, with top-level `serviceMonitor` as fallback | monitor and HPA templates |
+| HPA CPU target | `hpa.cpuUtilization`, optionally overridden by `hpa.cpu.targetAverageUtilization` | HPA template |
+
+These are precedence rules, not independent controls. If more than one
+representation is present, compute and record the effective value and reject
+contradictory intent in production review. A schema-valid overlay can still be
+misleading when a lower-precedence value appears to express the opposite
+behavior.
+
+```mermaid
+flowchart LR
+    Baseline[Baseline representation] --> Resolve[Template precedence]
+    Overlay[Profile or site representation] --> Resolve
+    Resolve --> Effective[One effective value]
+    Effective --> Runtime[Rendered object or runtime setting]
+```
+
+Keep new profiles on the preferred nested surface and treat fallback keys as
+compatibility inputs. Remove a fallback only through the published
+compatibility process, after inventories show that no supported profile or
+consumer depends on it.
+
 ## High-Risk Values
 
 The high-risk policy names nine top-level areas:

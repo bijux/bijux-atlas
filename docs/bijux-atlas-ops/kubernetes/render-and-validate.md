@@ -191,6 +191,36 @@ A byte-identical render is necessary but still does not prove that the cluster
 stored the same object. Capture admitted object identity whenever a mutating
 webhook, image policy, or installer can change the submitted manifest.
 
+## Compare Submitted, Admitted, and Reconciled State
+
+Kubernetes can default fields, mutate objects, and create controller-owned
+children after the reviewed manifest leaves Helm. Preserve three distinct
+views instead of calling all of them the render:
+
+| View | Evidence | Question answered |
+| --- | --- | --- |
+| submitted | canonical Helm object inventory and digest | what exact intent was sent? |
+| admitted | stored API objects, defaults, mutations, managed fields, and admission responses | what did the API server accept and change? |
+| reconciled | workload revision, ReplicaSets or Rollout children, endpoints, policies, and controller conditions | what operational state did controllers produce? |
+
+```mermaid
+flowchart LR
+    Submitted[Submitted inventory] --> Admission[Defaulting, policy, and mutation]
+    Admission --> Admitted[Admitted inventory]
+    Admitted --> Controllers[Controller reconciliation]
+    Controllers --> Reconciled[Observed children and conditions]
+    Submitted --> Compare[Identity-aware comparison]
+    Admitted --> Compare
+    Reconciled --> Compare
+```
+
+Compare by API identity and semantic fields, not raw YAML alone. Remove
+server-populated timestamps, resource versions, UIDs, and status only under a
+declared canonicalization policy; preserve every policy-relevant mutation,
+including images, service accounts, security contexts, selectors, sidecars,
+volumes, and scheduling constraints. An unexplained mutation blocks promotion
+even when reconciliation later becomes healthy.
+
 ## Evidence and Interpretation
 
 Render and validation reports belong under the repository artifact root for
