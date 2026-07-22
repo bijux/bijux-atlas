@@ -161,6 +161,37 @@ contain a version that was never promoted. Before resuming, prove that local
 candidate bytes still match already published immutable references and that
 the channel permits the remaining operation without overwriting history.
 
+## Verify Retention After Publication
+
+Consumer resolution immediately after upload does not prove that bytes remain
+available through replication, retention, garbage collection, or credential
+changes. Each required channel needs a durability observation appropriate to
+its failure model.
+
+| Channel surface | Later failure to test | Durable evidence |
+| --- | --- | --- |
+| package registry | yanked or unavailable version, missing dependency, changed access | clean dependency resolution plus package checksums at the declared retention interval |
+| OCI registry | tag movement, manifest deletion, unreferenced-layer collection, platform loss | immutable index and platform digests resolved by a clean consumer |
+| GitHub release | asset deletion, replacement, visibility change, or release-state change | asset identity, byte length, digest, and release state from the public path |
+| documentation | wrong revision, broken canonical URL, or stale compatibility guidance | deployed revision and critical-route checks |
+| offline bundle | missing transitive asset, expired trust material, or unusable local registry import | disconnected verification and install from retained media |
+
+```mermaid
+flowchart LR
+    Publish[Producer publication] --> Immediate[Immediate consumer receipt]
+    Immediate --> Retain[Retention and replication interval]
+    Retain --> Later[Independent later resolution]
+    Later --> Durable{Same immutable identity?}
+    Durable -->|yes| Available[Channel remains available]
+    Durable -->|no| Incident[Withdrawal, retention, or integrity incident]
+```
+
+Declare the required retention window and who observes it. When a channel
+intentionally withdraws a release, preserve the immutable identity, withdrawal
+reason, observation time, affected consumers, and replacement. Disappearance
+without a retained state transition is a distribution incident, not routine
+cleanup.
+
 ## Current Manifest Limit
 
 The workspace version is `0.2.2`, while several checked-in release and

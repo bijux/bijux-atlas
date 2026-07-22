@@ -127,6 +127,36 @@ service, not only the duration of `helm rollback`. If durable data can change,
 also declare the recovery point objective and verify which writes or catalog
 changes were retained, reversed, or lost.
 
+## Prove Candidate Reachability Is Gone
+
+Restoring the baseline controller revision does not guarantee that clients have
+stopped reaching the candidate. Existing connections, stale endpoints, ingress
+state, jobs, sidecars, and external caches can outlive the rollback command.
+
+| Residual surface | Absence or reconciliation proof |
+| --- | --- |
+| Service endpoints | every eligible endpoint belongs to the restored release; no candidate pod remains ready |
+| long-lived connections | existing keep-alive, stream, and proxy pools reconnect or prove baseline identity |
+| ingress and external routing | backend, route, and load-balancer state resolve only to the restored release |
+| jobs and controllers | candidate warmup, publication, migration, and analysis work is complete, cancelled, or isolated |
+| cache and catalog | entries and selection state are compatible with the restored runtime and dataset |
+| telemetry | new requests, logs, metrics, and traces carry the restored release identity after the drain window |
+
+```mermaid
+flowchart LR
+    Rollback[Baseline revision restored] --> Drain[Drain candidate connections and work]
+    Drain --> Endpoints[Reconcile endpoints and routing]
+    Endpoints --> Clients[Exercise existing and fresh clients]
+    Clients --> Identity[Observe only restored release identity]
+    Identity --> Complete[Rollback complete]
+```
+
+Set a candidate-absence window at least as long as the longest relevant client,
+proxy, drain, and controller timeout. Exercise both a fresh client and a client
+that held a connection across the rollback. Any candidate response after the
+declared cutoff is a failed cleanup criterion, even when aggregate availability
+remains green.
+
 ## Evidence Package
 
 A credible drill record connects all of the following to one run ID:

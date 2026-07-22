@@ -150,6 +150,34 @@ These are release blockers, not documentation caveats. The snapshot is useful
 for exercising contracts and negative paths. It must not be described or
 distributed as verified production evidence.
 
+## Propagate Evidence Invalidation
+
+Evidence forms a dependency graph. When an upstream identity changes, every
+downstream result that consumed it becomes stale even if those report bytes are
+unchanged.
+
+```mermaid
+flowchart LR
+    Source[Source and dependency identity] --> Build[Packages, images, and chart]
+    Build --> Render[Profile render and admission]
+    Render --> Operate[Correctness, security, load, and recovery evidence]
+    Operate --> Packet[Evidence packet and checksums]
+    Packet --> Consumer[Consumer verification and promotion]
+```
+
+| Changed identity | Evidence requiring re-evaluation |
+| --- | --- |
+| source, dependency, compiler, or build policy | built artifacts, SBOMs, provenance, and all behavior derived from those bytes |
+| image, chart, profile, or cluster capability | render, admission, security, rollout, observability, load, and recovery evidence |
+| dataset, catalog, store, or query pack | correctness, compatibility, capacity, cache, and recovery evidence |
+| threshold, exception, or acceptance policy | verdicts and promotion decisions; raw measurements may remain reusable when their identity is complete |
+| packet inventory, ledger, or trust root | packet integrity and consumer verification |
+
+Do not regenerate only the final checksum ledger after an upstream change.
+Traverse the graph to the first changed authority, mark dependent verdicts
+stale, and rerun the required observations. Preserve the superseded graph so a
+consumer can explain which evidence supported the earlier decision.
+
 ## Acceptance Checklist
 
 Before promotion, require all of the following from one newly generated run:
