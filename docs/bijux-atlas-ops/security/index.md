@@ -89,6 +89,7 @@ control or infer an unobserved pass.
 | Decision | Read |
 | --- | --- |
 | connect governed threats to controls and evidence | [Threat Model and Control Coverage](threat-model-and-control-coverage.md) |
+| qualify principal, route, authorization, and audit behavior | [Identity, Authorization, and Audit](identity-authorization-and-audit.md) |
 | render and qualify runtime, workload, network, and secret controls | [Security Operations](../kubernetes/security-operations.md) |
 | govern exceptional administrative-route exposure | [Admin Endpoint Exceptions](../kubernetes/admin-endpoints-exceptions.md) |
 | investigate a suspected security event | [Incident Response](../observability/incident-response.md) |

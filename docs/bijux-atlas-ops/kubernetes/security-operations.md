@@ -125,6 +125,13 @@ also fail closed. Authentication-exempt service routes still require network
 exposure review because exemption changes application authorization, not who can
 reach the service.
 
+For release or exposure decisions, preserve an authorization trace rather than
+only a route response: authentication mode, non-secret principal identity,
+route class, action, resource kind and identity, policy version, allow or deny
+verdict, request correlation, runtime release, and dataset identity where
+applicable. The [Identity, Authorization, and Audit](../security/identity-authorization-and-audit.md)
+guide defines the positive, negative, rotation, and audit-continuity cases.
+
 ## Administrative Surfaces
 
 Debug, cluster, recovery, failure-injection, chaos, and echo routes are only
@@ -219,5 +226,6 @@ boundary, and distinguish policy failure from identity spoofing or network
 exposure. Temporary exceptions must be governed and removed after containment.
 
 Continue with [Admin Endpoint Exceptions](admin-endpoints-exceptions.md),
+[Identity, Authorization, and Audit](../security/identity-authorization-and-audit.md),
 [Runtime Configuration](runtime-configuration.md), and
 [Signing and Provenance](../release/signing-and-provenance.md).

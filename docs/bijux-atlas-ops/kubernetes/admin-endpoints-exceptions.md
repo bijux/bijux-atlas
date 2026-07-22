@@ -47,6 +47,34 @@ disabled for security-qualified profiles. Any exceptional use needs isolated
 reachability and explicit tests for all 26 routes, including unauthorized
 negative cases for the eight omitted classifier entries.
 
+## Complete Exposure Proof
+
+An exception must prove the entire enabled route group because the feature flag
+does not register one route at a time.
+
+```mermaid
+flowchart LR
+    Register["26 registered routes"] --> Classify["action and resource classification"]
+    Classify --> Expose["Service, Ingress, and network reachability"]
+    Expose --> Exercise["authorized and unauthorized checks"]
+    Exercise --> Audit["attributable use and denial evidence"]
+    Audit --> Remove["disable, roll out, and prove absence"]
+```
+
+| Proof boundary | Acceptance condition |
+| --- | --- |
+| registration | the observed route set matches the runtime version under review |
+| classification | every route has the intended exemption, action, resource kind, and principal treatment |
+| exposure | only the named operator path and network can reach the service |
+| authorization | permitted and forbidden cases are tested for every reachable route |
+| audit | use, denial, release, policy, and request correlation are retained without credentials |
+| removal | the flag, workload, Service, Ingress, NetworkPolicy, and live route probes all show closure |
+
+Failure at any boundary invalidates the exception claim. A network-isolated but
+misclassified route is still a policy defect. A correctly denied route with no
+audit record is still an evidence gap. A registry removal with reachable routes
+is still active exposure.
+
 ## Exception Lifecycle
 
 ```mermaid
@@ -164,3 +192,7 @@ exception ledger into permanent exposure and is not a renewal.
 - `ops/k8s/charts/bijux-atlas/templates/configmap.yaml`
 - `ops/k8s/profile-security-contract.json`
 - `crates/bijux-atlas-server/src/adapters/inbound/http/router.rs`
+
+See [Identity, Authorization, and Audit](../security/identity-authorization-and-audit.md)
+for the request-decision evidence required by the positive and negative route
+checks.
