@@ -48,7 +48,7 @@ survive regeneration is not a durable repository change.
 | Change | Read before editing |
 | --- | --- |
 | local setup or command discovery | [Local Development](local-development.md) and [Maintainer Entrypoints](maintainer-entrypoints.md) |
-| crate ownership or dependency direction | [Package Surface](package-surface.md), [Crate Boundary Status](crate-boundary-status.md), and [Runtime Ownership Boundary](runtime-ownership-boundary.md) |
+| crate ownership or dependency direction | [Package Surface](package-surface.md), [Crate Boundary Review](crate-boundary-review.md), and [Runtime Ownership Boundary](runtime-ownership-boundary.md) |
 | generated or checked-in derived content | [Generated Files](generated-files.md) and [Inventory Registry](inventory-registry.md) |
 | local outputs or retained evidence | [Artifact Roots](artifact-roots.md) |
 | cross-cutting ownership decision | [Decision Records and Ownership](decision-records-and-ownership.md) |

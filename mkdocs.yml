@@ -304,6 +304,8 @@ nav:
           - Contributor Workflow: bijux-atlas-dev/workspace/contributor-workflow.md
           - Decision Records and Ownership: bijux-atlas-dev/workspace/decision-records-and-ownership.md
           - Package Surface: bijux-atlas-dev/workspace/package-surface.md
+          - Crate Boundary Review: bijux-atlas-dev/workspace/crate-boundary-review.md
+          - Runtime Ownership Boundary: bijux-atlas-dev/workspace/runtime-ownership-boundary.md
           - Maintainer Entrypoints: bijux-atlas-dev/workspace/maintainer-entrypoints.md
           - Repository Laws: bijux-atlas-dev/workspace/repository-laws.md
           - Artifact Roots: bijux-atlas-dev/workspace/artifact-roots.md
