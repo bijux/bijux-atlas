@@ -52,6 +52,35 @@ No delivery interface owns genomic truth. The model and leaf crates define
 domain behavior. The runtime composes them. The CLI and server translate user
 requests. The store and catalog establish which immutable release is serveable.
 
+## One Request Across Owners
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server as bijux-atlas-server
+    participant Runtime as bijux-atlas-runtime
+    participant Catalog
+    participant Store as bijux-atlas-store
+    participant Query as bijux-atlas-query
+    Client->>Server: Versioned request + dataset selector
+    Server->>Runtime: Authenticated request context
+    Runtime->>Catalog: Resolve published dataset identity
+    Catalog-->>Runtime: Manifest and artifact identity
+    Runtime->>Store: Open and verify governed artifact
+    Store-->>Runtime: Verified database and sequence handles
+    Runtime->>Query: Bounded query plan
+    Query-->>Runtime: Typed domain result
+    Runtime-->>Server: Result + dataset + execution context
+    Server-->>Client: Structured response + correlation identity
+```
+
+Each arrow crosses a contract. The server owns transport, authentication
+placement, middleware, and response mapping. The runtime owns use-case policy
+and composition. Catalog and store resolution establish data identity. Query
+owns selection, ordering, cursor, and SQLite execution semantics. Failure at
+one boundary must retain its owner instead of collapsing into an untyped
+internal error.
+
 ## Product Invariants Across Components
 
 | Invariant | Established by | Preserved by | Exposed to consumers by |

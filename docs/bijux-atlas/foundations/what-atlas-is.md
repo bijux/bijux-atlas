@@ -17,6 +17,32 @@ CLI, HTTP, and OpenAPI surfaces serve that published state.
 The central rule is simple: a runtime may select and query a release, but it
 does not mutate release truth.
 
+## One Result Has Three Identities
+
+An Atlas response is interpretable only when three identities remain distinct:
+
+| Identity | Answers | Anchored by |
+| --- | --- | --- |
+| scientific source. | Which upstream records and coordinate system contributed to the result? | Input hashes, source metadata, species, assembly, and normalization policy. |
+| published release. | Which immutable bytes and catalog selection supplied the result? | Dataset identity, manifest, artifact checksums, and publication state. |
+| request execution. | Which software, policy, principal, and path produced this observation? | Runtime release, effective configuration, request ID, route, query plan, and status. |
+
+Scientific source identity cannot be reconstructed from a process version.
+Request success cannot prove that the upstream source was biologically correct.
+A release comparison needs the published identity; an incident investigation
+also needs the request execution identity.
+
+```mermaid
+flowchart LR
+    Source[Scientific source identity] --> Release[Published release identity]
+    Release --> Request[Request execution identity]
+    Request --> Result[Structured result and provenance]
+```
+
+This separation lets the same release be served by several runtime versions
+without changing its data identity, and lets one runtime serve several named
+releases without inventing an implicit current dataset.
+
 ## The Product Boundary
 
 ```mermaid

@@ -93,6 +93,25 @@ that the correct bucket, catalog, cache namespace, metrics source, or API
 version is available. Health surfaces should test the narrowest semantics
 needed by the dependent runtime without performing destructive work.
 
+## Retain a Dependency Receipt
+
+For every selected edge, retain enough identity to distinguish the intended
+dependency from a reachable substitute:
+
+| Receipt field | Why it matters |
+| --- | --- |
+| logical role. | Separates serving authority, acceleration, evidence, and delivery dependencies. |
+| endpoint and namespace. | Identifies the actual network and tenancy boundary used by the profile. |
+| version or digest. | Prevents a healthy but incompatible service from satisfying the edge. |
+| credential identity and scope. | Proves least-privilege access without retaining secret values. |
+| semantic health result. | Demonstrates the required bucket, catalog, cache namespace, or telemetry path. |
+| timeout and retry owner. | Makes the caller deadline and amplification budget reviewable. |
+| degradation and recovery result. | Shows what happened when the edge failed and when it returned. |
+
+Bind the receipt to the profile, release, cluster, and observation window.
+Reusing a health result after an endpoint, credential, version, or policy
+change creates a new unverified edge even when the dependency name is the same.
+
 ## Failure Ownership
 
 | Failure | Primary owner | Cross-domain impact |
