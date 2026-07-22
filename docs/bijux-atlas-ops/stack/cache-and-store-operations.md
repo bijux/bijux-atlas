@@ -9,27 +9,35 @@ last_reviewed: 2026-07-22
 
 # Cache and Store Operations
 
-Atlas separates immutable serving truth from disposable acceleration state. The
-store owns released artifacts and catalog-backed dataset identity. The cache
-may reduce latency, but losing it must not redefine which data exists or make a
-partial result authoritative.
+Atlas separates immutable serving truth from several disposable acceleration
+layers. The catalog selects an admissible release, the store owns released
+artifact bytes, the server's dataset cache holds verified local artifacts, and
+its response caches avoid repeated query work. Losing any cache must not
+redefine which data exists or make a partial result authoritative.
 
 ## Data Authority
 
 ```mermaid
 flowchart LR
-    Release["Published release artifacts"] --> Store["Serving store"]
-    Store --> Resolve["Dataset resolution"]
-    Resolve --> Query["Query execution"]
-    Query --> Cache["Disposable cache entry"]
-    Cache --> Response["Response"]
-    Cache -. miss or eviction .-> Resolve
+    Catalog["Catalog<br/>selection authority"] --> Manager["Server dataset cache manager"]
+    Store["Artifact store<br/>byte authority"] --> Manager
+    Manager --> Local["Verified local artifact cache"]
+    Local --> Query["Query execution"]
+    Query --> Hot["In-process response cache"]
+    Query --> Redis["Optional Redis response cache"]
+    Hot --> Response["Response"]
+    Redis --> Response
+    Hot -. miss .-> Query
+    Redis -. miss or bypass .-> Query
 ```
 
-| Surface | Authority | Loss mode | Recovery requirement |
-| --- | --- | --- | --- |
-| Serving store | Released artifact bytes and catalog identity | Availability or correctness incident | Verify integrity and restore the governed release set. |
-| Runtime cache | Recomputable acceleration state | Latency and dependency pressure | Rebuild from verified store data without changing results. |
+| Surface | Stored identity | Authority | Loss mode | Recovery requirement |
+| --- | --- | --- | --- | --- |
+| catalog cache | generation and freshness metadata | none; governed catalog selects | stale selection or catalog pressure | refresh; reject without an admissible generation |
+| dataset artifact cache | hash, manifest, indexes, and dataset mapping | none; store owns bytes | cold download, open, and derivation | verify generation before atomic admission |
+| in-process response cache | normalized query key, response bytes, ETag, and TTL | none | repeated local query execution | recompute from the selected verified dataset |
+| Redis gene cache | dataset hash, gene ID, fields, response, and TTL | none | cross-instance hit loss and store pressure | bypass or refill within breaker and capacity policy |
+| serving store | immutable objects and manifests | released byte authority | availability or correctness incident | verify and restore the governed release set |
 
 ## Read-Path Authority
 
@@ -37,21 +45,33 @@ flowchart LR
 stateDiagram-v2
     [*] --> ResolveDataset
     ResolveDataset --> Reject: catalog cannot select an admissible release
-    ResolveDataset --> CheckCache: release identity resolved
-    CheckCache --> VerifyEntry: matching entry exists
-    CheckCache --> FetchStore: miss or eviction
-    VerifyEntry --> Respond: entry identity and contract match
-    VerifyEntry --> FetchStore: stale or incompatible entry
+    ResolveDataset --> CheckArtifact: release identity resolved
+    CheckArtifact --> VerifyArtifact: matching local artifact exists
+    CheckArtifact --> FetchStore: miss or eviction
+    VerifyArtifact --> CheckResponse: artifact identity and checksums match
     FetchStore --> VerifyArtifact: bytes retrieved
     VerifyArtifact --> Quarantine: hash, manifest, or schema fails
-    VerifyArtifact --> PopulateCache: authoritative artifact passes
-    PopulateCache --> Respond
+    CheckResponse --> Respond: reusable response identity matches
+    CheckResponse --> Execute: miss, expiry, or incompatible entry
+    Execute --> PopulateResponse: query succeeds
+    PopulateResponse --> Respond
 ```
 
-Cache lookup happens only after dataset resolution, and a hit is usable only
-when its release and output-contract identity match the request. Store bytes
-become servable only after manifest, checksum, and schema verification. A fast
-response from an unbound entry is a correctness failure, not a cache success.
+Dataset resolution precedes artifact and response reuse. A local artifact is
+admitted under its manifest artifact hash, with a checksum fallback only for
+legacy identity handling; a response hit is usable only when dataset and
+output-contract inputs match the request. Store bytes become servable only
+after manifest, checksum, and schema verification. A fast response from an
+unbound entry is a correctness failure, not a cache success.
+
+## Composition Ownership
+
+The server is the composition root for these layers. It constructs the selected
+local, HTTP, S3-like, or federated store backend behind the runtime
+`DatasetStoreBackend` port; owns `DatasetCacheManager`; executes queries; and
+owns the in-process and optional Redis response caches. The runtime crate
+provides store ports, configuration, policy, and shared failure semantics. It
+does not sit between every request and every cache as a separate service.
 
 ## Checked-In Local Dependencies
 
@@ -141,10 +161,10 @@ stateDiagram-v2
 | --- | --- | --- |
 | store unavailable | released bytes cannot currently be read | reject or use an explicitly qualified cached-only mode; do not recast absence as a cache miss |
 | artifact checksum mismatch | the named object cannot establish released truth | quarantine the object and restore a coherent release set |
-| catalog names missing or different bytes | selection and byte authority disagree | stop promotion, reconcile the catalog to verified immutable artifacts, and repeat resolution checks |
+| catalog names missing or different bytes | selection and byte authority disagree | stop promotion, reconcile to verified artifacts, and repeat resolution checks |
 | cache entry identity is absent or mismatched | acceleration state is untrusted | isolate or evict the entry and prove the cold result from the verified release |
-| cache is empty but the store verifies | correctness may hold while capacity is degraded | bound offered load and refill concurrency, then qualify latency, errors, and cheap-path survival |
-| store credential or key generation is unavailable | the bytes may exist but are not recoverable through the governed access path | restore the matching access generation and record its custody; do not bypass authentication or encryption |
+| cache is empty but the store verifies | correctness may hold with degraded capacity | bound load and refill concurrency; qualify latency, errors, and cheap paths |
+| store credential or key generation is unavailable | bytes are unreachable through governed access | restore the matching access generation and custody; never bypass controls |
 
 Record the handoff as a lineage, not a collection of green checks: selected
 release and manifest, store object identity, catalog generation, isolated cache
@@ -187,18 +207,21 @@ when release identity, store topology, cache policy, or capacity changes.
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Runtime
+    participant Server
+    participant ArtifactCache as Dataset cache
     participant Catalog
     participant Store
-    participant Cache
-    Client->>Runtime: Query with no reusable entry
-    Runtime->>Catalog: Resolve admissible release
-    Catalog-->>Runtime: Release and manifest identity
-    Runtime->>Store: Fetch named immutable artifact
-    Store-->>Runtime: Bytes and integrity metadata
-    Runtime->>Runtime: Verify and execute
-    Runtime->>Cache: Publish identity-bound result
-    Runtime-->>Client: Correct response
+    participant ResponseCache as Response caches
+    Client->>Server: Query with no reusable entry
+    Server->>Catalog: Resolve admissible release
+    Catalog-->>Server: Release and manifest identity
+    Server->>ArtifactCache: Open verified generation
+    ArtifactCache->>Store: Fetch named immutable artifact on miss
+    Store-->>ArtifactCache: Bytes and integrity metadata
+    ArtifactCache-->>Server: Verified local paths
+    Server->>Server: Execute query
+    Server->>ResponseCache: Publish identity-bound result
+    Server-->>Client: Correct response
 ```
 
 | Cold-path proof | Evidence to retain | Unsafe result |
@@ -226,14 +249,14 @@ sequenceDiagram
     participant Publisher
     participant Store
     participant Catalog
-    participant Runtime
-    participant Cache
+    participant Server
+    participant ArtifactCache as Dataset cache
     Publisher->>Store: Write immutable members and manifest
     Publisher->>Store: Read back and verify named generation
     Publisher->>Catalog: Promote complete release identity
-    Runtime->>Catalog: Resolve promoted generation
-    Runtime->>Store: Read and verify exact members
-    Runtime->>Cache: Admit generation-bound entries
+    Server->>Catalog: Resolve promoted generation
+    Server->>Store: Read and verify exact members
+    Server->>ArtifactCache: Admit generation-bound artifacts
 ```
 
 | Boundary | Unsafe shortcut | Required fence |

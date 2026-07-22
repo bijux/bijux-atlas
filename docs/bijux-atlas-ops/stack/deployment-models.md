@@ -32,6 +32,37 @@ defines why a profile exists and which effects it permits.
 and source paths. `ops/k8s/install-matrix.json` binds Kubernetes values to
 install, upgrade, rollback, and validation suites.
 
+## Resolve One Deployment Identity
+
+A shared profile name is a join key, not a complete deployment description.
+For example, `kind` appears in the intent, cluster-footprint, registry, and
+Kubernetes sources, while `local` appears in the concrete service composition
+without appearing in the intent registry. Operators must resolve the sources
+that actually participate in the run and retain their content identities.
+
+```mermaid
+flowchart LR
+    Intent["Intent and allowed effects"] --> Identity["Resolved deployment identity"]
+    Footprint["Cluster footprint"] --> Identity
+    Registry["Tools, namespaces, and services"] --> Identity
+    Values["Helm values and install suite"] --> Identity
+    Composition["Concrete dependency graph"] --> Identity
+    Target["Target capability record"] --> Identity
+    Identity --> Receipt["Qualification receipt"]
+```
+
+The receipt should contain the selected name plus the digests or commit identity
+of every resolved source, the rendered-resource digest, cluster identity,
+allowed-effect grant, and evidence window. A run is not equivalent merely
+because two commands accepted the same profile string.
+
+| Mismatch | Correct interpretation |
+| --- | --- |
+| intent exists but no concrete composition exists | the policy is selectable, but no checked-in service graph proves its assembled topology |
+| composition exists but no intent entry exists | the topology can be assembled, but its effect policy must be supplied and recorded separately |
+| registry services differ from the generated graph | the profile contract and observed composition disagree; qualification must stop |
+| values or target capability change under the same name | a new deployment identity requires new target-dependent evidence |
+
 ## Bind the Profile to a Real Target
 
 Profile selection ends when the effective target is identified, not when a
@@ -124,10 +155,10 @@ actually establish.
 
 | Model | What is held authoritative | Suitable conclusions | Conclusions that require another model |
 | --- | --- | --- | --- |
-| repository and render validation | source, schema, profiles, chart inputs, and rendered objects | deterministic configuration, policy conformance, and dependency declaration | runtime behavior, storage behavior, or recovery |
-| `ci` composition | pinned local composition and restricted automated effects | repeatable install and targeted integration behavior | full observability, target capacity, and external-service ownership |
-| `kind` composition | local cluster, expanded observability stack, MinIO, Redis, and selected profile | Kubernetes lifecycle, local dependency integration, probes, telemetry, and bounded load experiments | target durability, identity, network, and failure-domain behavior |
-| target environment | observed target resources plus owned and external dependency contracts | target security, capacity, availability, rollout, rollback, and recovery claims exercised there | behavior in a different target or an unexercised failure domain |
+| repository and render validation | source, schema, profiles, chart inputs, and rendered objects | deterministic inputs, policy, and dependencies | runtime or recovery behavior |
+| `ci` composition | pinned local composition and restricted effects | repeatable install and targeted integration | full telemetry, target capacity, or external ownership |
+| `kind` composition | local cluster, telemetry, MinIO, Redis, and profile | lifecycle, probes, and local load | target durability, identity, network, or failure domains |
+| target environment | observed resources and dependency contracts | security, capacity, rollout, rollback, and recovery | another target or unexercised failure domain |
 
 ```mermaid
 flowchart LR

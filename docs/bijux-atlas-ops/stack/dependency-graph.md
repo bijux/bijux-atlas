@@ -57,7 +57,7 @@ optional and non-authoritative. These statements answer different questions.
 | Question | Owning contract | Redis answer |
 | --- | --- | --- |
 | Was the declared local composition assembled completely? | stack dependency contract | Redis must exist and its health surface must pass. |
-| Can Atlas preserve correct results without response-cache acceleration? | runtime cache policy and degraded-service evidence | Atlas may bypass Redis when policy and capacity allow. |
+| Can Atlas remain correct without response-cache acceleration? | runtime cache policy and degradation evidence | Atlas may bypass Redis within policy and capacity. |
 | Does Redis determine dataset release truth? | catalog, manifest, and store contracts | No; cached entries must remain bound to verified authority. |
 | Can a release claim full local-stack evidence while Redis is absent? | selected composition and evidence receipt | No; the environment differs from the declared composition. |
 
@@ -71,14 +71,14 @@ capacity result.
 
 ```mermaid
 flowchart LR
-    Runtime[Atlas runtime] --> Serving[Serving dependencies]
-    Runtime --> Acceleration[Acceleration dependencies]
-    Runtime --> Evidence[Evidence dependencies]
-    Runtime --> Delivery[Delivery dependencies]
+    Server[Atlas server] --> Serving[Serving dependencies]
+    Server --> Acceleration[Acceleration dependencies]
+    Server --> Evidence[Evidence dependencies]
+    Delivery[Delivery controller] --> Registry[Chart, image, package, and policy sources]
     Serving --> Catalog[Catalog and object store]
-    Acceleration --> Cache[Local cache and optional Redis]
+    Acceleration --> Local[Dataset and response caches]
+    Acceleration --> Redis[Optional Redis response cache]
     Evidence --> Telemetry[Collector, metrics, logs, traces]
-    Delivery --> Registry[Chart, image, package, and policy sources]
 ```
 
 The declared stack graph is a composition graph, not the whole dependency
@@ -93,6 +93,25 @@ inventory instead of adding false runtime edges to the generated graph.
 | acceleration | bypass or shed within policy; never substitute different data |
 | operational evidence | continue serving only within the environment's telemetry-degradation policy; hold claims requiring missing evidence |
 | delivery and recovery | block new promotion or recovery when immutable artifact or trust identity cannot be resolved |
+
+## Edge Contracts
+
+A node inventory cannot explain who spends the deadline, amplifies traffic, or
+decides that a recovered dependency is safe. Record each selected edge from the
+caller's point of view.
+
+| Edge | Caller-owned contract | Failure boundary | Recovery proof |
+| --- | --- | --- | --- |
+| server to catalog | generation, freshness, timeout, and fallback policy | no admissible dataset selection | expected generation resolves through serving credentials |
+| server to artifact store | identity, integrity, concurrency, retry, and breaker budget | bytes unavailable or untrusted | named object verifies inside operating budgets |
+| server to Redis | lookup, fill, namespace, TTL, cardinality, and bypass limits | shared acceleration degraded | cold path stays correct; return causes no miss storm |
+| server to telemetry path | export queue, timeout, loss, retention, and evidence need | decision evidence incomplete | signals remain queryable for the decision window |
+| delivery controller to registry | digest, trust, credential scope, and offline source | artifact identity unavailable | immutable artifact resolves and passes trust policy |
+
+The generated service graph proves membership and health-surface selection for
+the checked-in composition. The edge contract supplies direction, caller
+ownership, and failure semantics. Both are required before a reachable service
+can satisfy a deployment claim.
 
 ## Dependency States
 
