@@ -49,6 +49,24 @@ An evidence manifest should make missing claim coverage visible. It must not
 substitute a nearby asset—such as a schema, sample, or simulated result—for the
 executed proof required by the claim.
 
+## Security Evidence Closure
+
+Security evidence is complete only when preventive intent, enforcement,
+detection, and release binding agree for each required boundary.
+
+| Boundary | Preventive evidence | Behavioral and detective evidence | Release binding |
+| --- | --- | --- | --- |
+| source and dependency | allowed source and dependency policy, lock state, toolchain identity | dependency audit and exception findings | source revision, package inventory, SBOM, and provenance |
+| artifact integrity | immutable layout, expected hashes, publication policy | deep verification, tamper or mismatch result | evidence manifest and checksum ledger |
+| identity and authorization | authentication model, roles, actions, resources, default-deny policy | permitted and denied route cases plus audit decisions | policy snapshot, runtime release, and report identity |
+| workload and network | profile values, security context, RBAC, NetworkPolicy, secret references | admission, workload identity, and allowed and denied reachability | chart, values, image or bundle identity, and conformance evidence |
+| audit and data protection | field classification, redaction, sink, retention, rotation | secret scanning, audit continuity, gap detection, and recovery | audit reports, retention policy, and checksum binding |
+| vulnerability and withdrawal | severity, exception, minimum-version, and channel policy | fresh scan, affected-consumer inventory, and withdrawal observation | SBOM, immutable channel digest, decision, and replacement identity |
+
+An empty report collection, example file, tolerated failing command, or
+untriggered workflow does not close a boundary. Record the gap and reject or
+narrow the release claim.
+
 ## Verification Sequence
 
 ```mermaid
@@ -163,4 +181,6 @@ still matches an old ledger.
 
 Use [Release Packets](release-packets.md) for transport boundaries and
 [Signing and Provenance](signing-and-provenance.md) for the guarantees and
-limits of the checksum-ledger trust model.
+limits of the checksum-ledger trust model. Use
+[Supply Chain and Artifact Trust](../security/supply-chain-and-artifact-trust.md)
+for consumer authorization and withdrawal.

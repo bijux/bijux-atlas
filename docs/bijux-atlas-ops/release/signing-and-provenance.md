@@ -74,6 +74,24 @@ contains.
 Do not compress these into “signed” or “verified.” State which claim passed and
 which trust anchor supplied it.
 
+## Substitution and Replay Analysis
+
+The verifier's result depends on which inputs an attacker or stale channel can
+replace together.
+
+| Event | Detected by the current mechanism? | Additional authority needed |
+| --- | --- | --- |
+| one governed member changes while the ledger remains trusted | yes, recomputed SHA-256 differs | none beyond the trusted ledger expectation |
+| manifest, provenance, or packet disagrees with other governed members | yes, when the applicable cross-record check executes | fresh verifier and complete policy coverage |
+| member and its ledger entry are replaced together | not from the replaced ledger alone | independently trusted ledger or outer packet digest |
+| the entire coherent packet, ledger, provenance, and verifier result are replaced | no | external signer, independently trusted digest, or equivalent channel authentication |
+| a valid older release is replayed | not by integrity verification | freshness, minimum-version, withdrawal, and compatibility policy |
+| a mutable tag resolves to different bytes | only after resolving and comparing immutable digest identity | channel reconciliation and immutable reference policy |
+
+Preserve the resolved immutable identity before verification. Otherwise a later
+channel lookup may observe different bytes while appearing to repeat the same
+human-readable release request.
+
 ## Trust Chain
 
 ```mermaid
@@ -208,3 +226,6 @@ verification.
 
 The authoritative records are under `ops/release/signing/`,
 `ops/release/evidence/`, and `ops/release/provenance.json`.
+
+See [Supply Chain and Artifact Trust](../security/supply-chain-and-artifact-trust.md)
+for dependency, channel, withdrawal, and consumer-authorization boundaries.
