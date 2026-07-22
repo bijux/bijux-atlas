@@ -61,6 +61,25 @@ also carrying a governed exception that permits the disabled policy mode until
 2027-03-03. Verify the rendered policy rather than inferring isolation from the
 profile name.
 
+## Prove Closure, Not Cache Luck
+
+Exercise the bundle in a clean disconnected environment with empty image,
+package, chart, and dataset caches. Pre-existing producer caches can hide a
+missing member and create a false offline pass.
+
+| Boundary | Closure proof |
+| --- | --- |
+| container images. | Every image resolves locally by digest after external registries are unreachable. |
+| chart and schemas. | Render and validation use only transported packages and local schema inputs. |
+| dataset and catalog. | Startup and representative queries resolve the pinned release without remote discovery. |
+| verification tools. | Checksums, provenance, policy, and packet verification run from retained local binaries and inputs. |
+| rollback. | The previous supported release and its data/configuration dependencies remain locally available. |
+| egress. | Network observation covers installation, startup, queries, recovery, and rollback. |
+
+A DNS failure alone is not an egress proof, and successful installation alone
+does not prove rollback closure. Retain both the denied external path and the
+successful local resolution for each required class.
+
 ## Acceptance
 
 Accept an offline claim only when one coherent release version is present,

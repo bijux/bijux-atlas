@@ -14,7 +14,7 @@ They do not choose Atlas release bytes, chart resources, dataset identity, or a
 production topology. The overlay name is therefore never sufficient evidence
 of where or how a run executed.
 
-## Current envelopes
+## Current Envelopes
 
 | Overlay | Namespace | Cluster profile | Filesystem write | Subprocess | Network mode |
 | --- | --- | --- | ---: | ---: | --- |
@@ -28,7 +28,7 @@ the `prod` overlay still selects the `atlas-e2e` namespace and Kind profile. It
 is a restricted execution envelope, not a production deployment definition.
 Do not cite its name as production evidence.
 
-## Overlay, profile, and composition are different
+## Overlay, Profile, and Composition Are Different
 
 ```mermaid
 flowchart TD
@@ -47,7 +47,7 @@ registry does that. The stack graph records what was assembled. Kubernetes
 values and release manifests bind deployable state. Preserve each identity
 instead of collapsing them into an environment label.
 
-## Resolve effects before execution
+## Resolve Effects Before Execution
 
 An operation that writes evidence, invokes Helm, calls kubectl, creates a Kind
 cluster, or reaches a network dependency needs the corresponding effects.
@@ -65,7 +65,27 @@ claim under review.
 A command-line effect flag does not rewrite the overlay. If the effective run
 exceeds the selected envelope, the evidence must say so or the run must stop.
 
-## Review changes as capability changes
+## Record Capability Escalation
+
+When a run adds `--allow-write`, `--allow-subprocess`, or `--allow-network`,
+record the requested effect, owning operation, target, and observed use. An
+unused grant is still excess authority; a used but unrecorded grant breaks the
+overlay claim.
+
+```mermaid
+flowchart LR
+    Envelope[Declared envelope] --> Grant[Explicit effect grants]
+    Grant --> Operation[Executed operation]
+    Operation --> Observed[Observed subprocess, writes, network, and mutation]
+    Observed --> Receipt[Capability receipt]
+    Envelope --> Receipt
+```
+
+The receipt must distinguish authorization from occurrence. Permission to use
+the network does not prove a network request occurred, while a zero-request
+claim requires independent observation rather than an omitted flag.
+
+## Review Changes as Capability Changes
 
 Changes to `allow_write`, `allow_subprocess`, or `network_mode` expand or narrow
 what automation may do. Review namespace and cluster-profile changes as target
