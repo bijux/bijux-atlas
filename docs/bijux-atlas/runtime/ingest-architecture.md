@@ -88,6 +88,31 @@ flowchart TD
     Verify --> Publish["explicit dataset publication"]
 ```
 
+## A database commit is not a dataset commit
+
+The SQLite writer uses a transaction for the rows and indexes it owns. That
+transaction protects database consistency; it cannot make the complete build
+root atomic. Reports, source facts, canonical evidence, shard databases, and
+the manifest are separate files produced around that database.
+
+Treat completion as a chain of increasingly stronger claims:
+
+```mermaid
+flowchart LR
+    Rows["SQLite transaction committed"] --> Files["declared artifacts written"]
+    Files --> Closure["manifest closes over hashes and paths"]
+    Closure --> Deep["deep verification succeeds"]
+    Deep --> Candidate["candidate is admissible"]
+    Candidate --> Store["store publication succeeds"]
+    Store --> Catalog["catalog makes identity discoverable"]
+```
+
+No earlier state implies a later one. In particular, a valid SQLite file does
+not prove that evidence is complete, and a deeply verified candidate is not
+yet a published dataset. Automation should retain the command outcome and
+verification result together rather than inferring success from selected
+files.
+
 ## Failure and replay rules
 
 An output root may contain partial files after a failed process. Its mere

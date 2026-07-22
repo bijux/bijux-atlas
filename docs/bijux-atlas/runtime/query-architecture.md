@@ -44,6 +44,29 @@ decision without inferring it from latency or a later database error.
 Classification controls policy and concurrency decisions. It is not a promise
 of a fixed response time.
 
+## Estimated work is an admission signal
+
+Work units are a deterministic estimate derived from query shape, requested
+limit, and—when present—region span. They let the planner compare a request to
+configured limits before execution. They are not elapsed time, rows actually
+visited, memory consumption, or a billing unit.
+
+```mermaid
+flowchart LR
+    Normalized["normalized query contract"] --> Estimate["estimated work units"]
+    Estimate --> Admit{"within policy?"}
+    Admit -- no --> Reject["reject before SQLite"]
+    Admit -- yes --> Execute["execute indexed plan"]
+    Execute --> Observe["runtime latency and outcome"]
+    Observe --> Tune["review limits and cost coefficients"]
+    Tune --> Estimate
+```
+
+Operational analysis should correlate the normalized contract hash, selected
+plan node, estimated work, dataset identity, and observed outcome. A slow
+accepted request remains an accepted request; observation can justify a later
+policy change, but must not rewrite the historical planner decision.
+
 ## Limits are enforced before execution
 
 The planner checks requested row limits, region span, prefix length, prefix

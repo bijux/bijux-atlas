@@ -68,6 +68,33 @@ already retained objects when the live backend is unavailable. A cache miss in
 that mode is not permission to fall back to an unverified directory or another
 dataset.
 
+## Backend capabilities are part of the contract
+
+The store trait gives backends one vocabulary, not identical guarantees. Atlas
+currently distinguishes three backend kinds:
+
+| Backend | Read path | Publication path | Concurrency boundary |
+| --- | --- | --- | --- |
+| local filesystem | manifest lock validates manifest and SQLite bytes | hash-check, write and sync temporary files, rename, then write immutable lifecycle state | exclusive dataset publish-lock file |
+| read-only HTTP | fetched lock validates the manifest; SQLite is checked against that manifest by verified reads | unsupported | publication locking unsupported |
+| S3-like | fetched lock validates the manifest; verified reads check SQLite bytes | rejects an existing identity, validates caller-provided hashes, then writes temporary and final objects | local publish-lock guard unsupported |
+
+The HTTP and S3-like kinds are compiled only with the backend feature; local
+storage is always available. Callers must validate the selected kind at
+startup and must surface `unsupported` or `conflict` outcomes. They must not
+simulate missing locking or write support in a higher layer.
+
+```mermaid
+flowchart TD
+    Select["configured backend kind"] --> Compiled{"compiled capability?"}
+    Compiled -- no --> Refuse["refuse startup"]
+    Compiled -- yes --> Operation{"requested operation"}
+    Operation -- read --> Verify["backend read + integrity verification"]
+    Operation -- publish --> Native{"backend supports publication semantics?"}
+    Native -- no --> Unsupported["return unsupported"]
+    Native -- yes --> Publish["use backend-native conflict and commit rules"]
+```
+
 ## Classify Storage Failures
 
 | Symptom | Boundary to inspect | Evidence |
