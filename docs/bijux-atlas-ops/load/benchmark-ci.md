@@ -85,6 +85,17 @@ particular:
 - a scheduled workflow is not automatically a benchmark if its steps do not
   execute a workload
 
+## Require Candidate Freshness
+
+A measured workflow must reject reused results whose candidate, environment,
+or policy identity differs from the checked-out revision. Cache hits may reuse
+compiled inputs, but they must not reuse the measurement verdict.
+
+Retain source and binary digests, workflow run identity, runner image, dataset,
+scenario, raw-result hash, threshold hash, baseline identity, and measurement
+time. A green re-evaluation of an old candidate file proves only that the old
+file still parses under the current evaluator.
+
 ## Authorities
 
 - `.github/workflows/load-system-ci.yml`

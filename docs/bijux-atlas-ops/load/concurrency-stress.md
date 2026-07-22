@@ -14,7 +14,7 @@ admission, CPU, store access, cache space, and database work. The useful result
 is a repeatable operating envelope and controlled overload behavior, not a peak
 request count.
 
-## Declared scenario shapes
+## Declared Scenario Shapes
 
 `ops/load/generated/concurrency-stress-scenarios.json` catalogs three shapes:
 
@@ -32,7 +32,7 @@ run` cannot execute these IDs directly.
 Do not treat the generated file as performance evidence. A governed experiment
 must add the missing parameters and preserve the actual harness result.
 
-## Build the saturation curve
+## Build the Saturation Curve
 
 ```mermaid
 flowchart LR
@@ -58,7 +58,19 @@ For each point, record:
 - replica count, HPA actions, and workload distribution;
 - query correctness and response-size bounds.
 
-## Protected behavior under overload
+## Attribute the First Bottleneck
+
+At the first unstable point, identify the resource that saturated before
+changing capacity. CPU throttling, memory pressure, queue depth, store latency,
+connection pools, cache misses, and load-generator limits can produce similar
+latency curves but require different actions.
+
+Repeat the boundary after changing only the suspected constraint. If the knee
+does not move as predicted, keep the diagnosis open. Scaling replicas without
+checking store and cache amplification can increase failure rather than
+capacity.
+
+## Protected Behavior Under Overload
 
 Atlas separates cheap and heavy query admission. Saturation evidence should
 show that heavy work is rejected with the declared policy response while cheap
@@ -69,7 +81,7 @@ After load stops, verify that queues drain, overload state clears, memory and
 cache settle inside expected bounds, and normal requests recover. A service
 that meets peak thresholds but does not recover has failed the experiment.
 
-## Make a capacity claim
+## Make a Capacity Claim
 
 Report three regions: normal operation, onset of contention, and controlled
 overload. Use the lowest repeatable boundary across valid repetitions. Bind the
