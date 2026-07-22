@@ -84,6 +84,42 @@ Repository compatibility policy defines the deprecation window for governed
 surfaces. It does not promote internal modules, fixtures, log lines, or
 maintainer implementation details into public API.
 
+## Compatibility Has More Than One Dimension
+
+A release can preserve syntax while breaking meaning or operations. Review the
+dimensions that apply to the consumer:
+
+| Dimension | Example incompatible change | Evidence to compare |
+| --- | --- | --- |
+| identity | interpreting the same dataset selector as a different release | dataset and catalog contracts |
+| shape | removing a response field or changing its type | JSON Schema or OpenAPI diff |
+| semantics | retaining a field while changing its unit or ordering | contract text and behavioral fixtures |
+| artifacts | changing required paths, hashes, or manifest interpretation | artifact schema and compatibility report |
+| configuration | changing precedence, default, or accepted value | generated configuration reference and validation |
+| operations | weakening readiness, overload, recovery, or telemetry expectations | profile and candidate-bound operational evidence |
+
+The correct compatibility question is therefore not merely “does it parse?”
+It is “does the supported consumer observe the same governed meaning and
+failure behavior?”
+
+## Assess a Proposed Dependency
+
+```mermaid
+flowchart TD
+    Need[Behavior a consumer needs] --> Authority{Named governing artifact?}
+    Authority -- no --> Incidental[Do not make it a compatibility dependency]
+    Authority -- yes --> Version[Record contract and version]
+    Version --> Semantics[Identify shape, meaning, and failure behavior]
+    Semantics --> Evidence[Run candidate-specific validation]
+    Evidence --> Decision{Compatible for this consumer?}
+    Decision -- yes --> Adopt[Depend on governed subset]
+    Decision -- no --> Migrate[Reject or migrate explicitly]
+```
+
+Record the authority alongside the dependency. That makes later compatibility
+review a comparison of named contracts instead of a reconstruction of what a
+consumer happened to observe.
+
 ## Claims That Require Release Evidence
 
 The existence of a contract is not proof that a release satisfies it. Before a

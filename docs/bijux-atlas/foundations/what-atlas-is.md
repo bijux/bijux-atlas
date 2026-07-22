@@ -9,10 +9,10 @@ last_reviewed: 2026-07-22
 
 # What Atlas Is
 
-Atlas is an artifact-first genomics delivery system. It validates governed GFF3
-and FASTA sources and constructs immutable dataset releases. Publication moves
-a complete release into an explicit store and catalog. Rust, CLI, HTTP, and
-OpenAPI surfaces serve that published state.
+Atlas is an artifact-first genomics delivery system. It validates governed
+GFF3 and FASTA sources. It then constructs immutable dataset releases.
+Publication moves a complete release into an explicit store and catalog. Rust,
+CLI, HTTP, and OpenAPI surfaces serve that published state.
 
 The central rule is simple: a runtime may select and query a release, but it
 does not mutate release truth.
@@ -30,10 +30,9 @@ flowchart LR
     Catalog --> Serve[Serve queries and metadata]
 ```
 
-Build output and serving state are deliberately separate. Publication is the
-boundary that establishes a complete, discoverable release. Serving directly
-from an intermediate build root would bypass catalog identity, store integrity,
-and rollback semantics.
+Build output and serving state are deliberately separate. Publication
+establishes a complete, discoverable release. Serving an intermediate build
+root would bypass catalog identity, store integrity, and rollback semantics.
 
 ## Durable Objects
 
@@ -63,8 +62,8 @@ flowchart TB
 
 The product system owns data meaning and runtime behavior. The operations
 system owns deployment, observation, stress testing, promotion, and rollback.
-The maintainer control plane governs changes to code, contracts, configuration,
-and release evidence. These systems meet through explicit artifacts. They do
+The maintainer control plane governs code, contracts, configuration, and
+release evidence. These systems meet through explicit artifacts. They do
 not share mutable authority.
 
 ## What Atlas Optimizes For
@@ -78,15 +77,14 @@ not share mutable authority.
 
 ## Appropriate Uses
 
-Atlas fits systems that publish versioned genomic reference data. It can show
-which source, build, release, dataset, and policy produced a result. Supported
-workflows cover genes, transcripts, sequences, regions, counts, and release
-comparisons over explicit dataset identity.
+Atlas fits systems that publish versioned genomic reference data. It can trace
+a result to its source, build, release, dataset, and policy. Supported workflows
+cover genes, transcripts, sequences, regions, counts, and release comparisons.
 
-Atlas is not a generic transformation framework, a mutable transactional
-database, or an authority for the biological correctness of upstream data. It
-validates supported boundaries and preserves provenance; it cannot establish
-truth that was absent from the source.
+Atlas is not a generic transformation framework or mutable transactional
+database. Nor is it an authority for the biological correctness of upstream
+data. It validates supported boundaries and preserves provenance. It cannot
+establish truth that was absent from the source.
 
 ## What Atlas Refuses
 
@@ -123,6 +121,27 @@ Use the returned dataset identity first. Resolve it through the catalog, then
 inspect the manifest for the exact artifact hashes, input provenance, and build
 statistics. A result without that chain may still be locally useful, but it is
 not sufficient evidence for release comparison, audit, or rollback decisions.
+
+## The Trust Chain Is Directional
+
+Atlas does not infer release truth backward from a running process. A healthy
+server, a populated cache, or a successful query demonstrates an observation
+about one runtime. Release trust flows in the other direction: governed inputs
+produce verified artifacts; publication establishes catalog visibility; the
+runtime resolves that published identity; and a response carries the identity
+forward to the consumer.
+
+| Observation | What it establishes | What it does not establish |
+| --- | --- | --- |
+| ingest completed | the producer emitted a candidate artifact set | the set is complete, verified, or published |
+| artifact hashes match | the checked bytes match the recorded manifest | the upstream biological source is correct |
+| catalog lists a dataset | the release is discoverable through that catalog | every runtime has refreshed to it |
+| readiness succeeds | the instance passed its configured readiness checks | the selected dataset is the one a caller intended |
+| query succeeds | the runtime answered for the returned dataset identity | a different release would answer identically |
+
+This directionality is why dataset identity belongs in results and operational
+evidence. It prevents runtime availability from being mistaken for data
+provenance.
 
 ## Stability Boundary
 
