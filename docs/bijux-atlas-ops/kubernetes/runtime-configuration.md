@@ -160,6 +160,33 @@ its value when the source may be secret.
 Configuration is ready for promotion only when the values source, rendered
 environment, runtime parser, and observed behavior agree.
 
+## Reconcile Configuration Drift
+
+Configuration can diverge at four independently inspectable layers. Diagnose
+the first mismatch instead of changing later layers until the symptom clears:
+
+| Comparison | Evidence | Mismatch owner |
+| --- | --- | --- |
+| intended values to rendered objects | merged values, Helm invocation, rendered ConfigMap, Secret references and workload diff | chart, profile or override source |
+| rendered objects to admitted objects | manifest digest, API-server response and live object revision | admission mutation, controller or cluster policy |
+| admitted pod spec to process input | pod UID, container restart, environment-source identities and startup validation | rollout, Secret/ConfigMap propagation or platform injection |
+| accepted process input to observed behavior | configuration-validation result, probe transitions, representative requests and release-scoped telemetry | runtime implementation or an external dependency |
+
+```mermaid
+flowchart LR
+    intended["intended values"] --> rendered["rendered objects"]
+    rendered --> admitted["admitted pod spec"]
+    admitted --> parsed["process-accepted environment"]
+    parsed --> behavior["observed behavior"]
+    behavior -. "compare receipts" .-> intended
+```
+
+Do not “repair” drift by editing a live object without updating the owning
+profile and receipt. That produces an unrepeatable deployment and makes the
+next render look like a regression. Emergency mutation must be recorded as a
+separate authority change, followed by reconciliation back into the governed
+source or explicit removal.
+
 ## Effective Configuration Receipt
 
 Retain a configuration receipt with the deployment evidence:

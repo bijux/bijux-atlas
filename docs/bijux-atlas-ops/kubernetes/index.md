@@ -79,6 +79,38 @@ A comparison must cross each boundary. Matching desired and rendered state does
 not prove the cluster admitted those bytes. Matching rendered and live object
 shape does not prove pods loaded the intended configuration or dataset.
 
+## Deployment Handoffs
+
+Every handoff changes both the owner and the evidence needed to continue:
+
+```mermaid
+sequenceDiagram
+    participant Policy as Profile and policy
+    participant Helm as Helm renderer
+    participant API as Kubernetes API
+    participant Pod as Atlas workload
+    participant Evidence as Evidence plane
+    Policy->>Helm: chart, values, image and dataset intent
+    Helm-->>Policy: rendered inventory and digest
+    Helm->>API: admitted object request
+    API-->>Pod: scheduled revision and effective pod spec
+    Pod-->>Evidence: probes, traffic, metrics, logs and traces
+    Evidence-->>Policy: promotion or recovery inputs
+```
+
+| Handoff | Reject continuation when |
+| --- | --- |
+| profile to render | unsupported combination, unknown value, unpinned image or missing rollback target |
+| render to API admission | object inventory, namespace, security or dependency policy differs from intent |
+| API admission to workload | scheduled pod spec, image, configuration or service routing differs from the admitted revision |
+| workload to traffic | readiness lacks the required dataset, dependency, warmup or drain semantics |
+| traffic to promotion | release-scoped request, correctness, saturation or telemetry evidence is absent |
+
+An operator may repeat a failed handoff after correcting its owning input, but
+must not silently reinterpret evidence from the previous identity. A new
+render digest, workload revision, dataset pointer or policy result starts a new
+promotion record and observation window.
+
 ## Traffic Eligibility Is Conditional
 
 Readiness answers the probe contract configured for one instance. It does not

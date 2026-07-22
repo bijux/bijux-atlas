@@ -173,6 +173,30 @@ hold promotion, and restart the observation window after the system reaches a
 known state. Do not attribute a clean aggregate metric to the candidate when
 multiple authorities changed underneath it.
 
+## Prove Every Reversal Boundary
+
+“Roll back” can name several different actions. Record which authority changed
+and prove its reversal independently:
+
+| Changed authority | Reversal action | Completion evidence |
+| --- | --- | --- |
+| workload revision | restore the approved image and pod template | old revision serves representative traffic with expected probes and signals |
+| runtime configuration | restore prior values and restart every affected process | rendered digest, pod environment and behavioral checks match the prior receipt |
+| catalog pointer | restore the prior promoted dataset tuple | catalog and identity-bearing query agree on the restored release |
+| immutable store availability | restore access to the previously verified payload | checksum and deep-read checks succeed through the serving path |
+| credential or trust material | restore overlap credentials or complete the intended rotation | old and new authentication paths have explicit acceptance or revocation results |
+| network or admission policy | restore the approved policy revision | required flows succeed and forbidden flows remain denied |
+
+A workload controller can reverse only the first row. If the incident crosses
+another row, routine automatic rollback is incomplete even when pods become
+ready. Freeze mutation, preserve the candidate evidence, and transfer control
+to the recovery or incident process until every changed authority has a known
+final state.
+
+After reversal, repeat the same representative query, dataset identity,
+telemetry, and capacity checks used before the change. Recovery is demonstrated
+behavior, not the controller's `RolledBack` label.
+
 ## Required Record
 
 Preserve the baseline and target release identities, selected profile, rendered
