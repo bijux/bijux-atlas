@@ -92,15 +92,15 @@ unchanged.
 ## Repository Authority Map
 
 - query parsing, planning, cursoring, and execution:
-  [`crates/bijux-atlas-query/src/`](../../../crates/bijux-atlas-query/src/)
+  [`crates/bijux-atlas-query/src/`](https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-query/src/)
 - HTTP routing and transport adaptation:
-  [`crates/bijux-atlas-server/src/adapters/inbound/http/`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/)
+  [`crates/bijux-atlas-server/src/adapters/inbound/http/`](https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-server/src/adapters/inbound/http/)
 - route composition:
-  [`router.rs`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/router.rs)
+  [`router.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-server/src/adapters/inbound/http/router.rs)
 - HTTP response contract checks:
-  [`response_contract.rs`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs)
+  [`response_contract.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-server/src/adapters/inbound/http/response_contract.rs)
 - generated public API contract:
-  [`openapi.json`](../../../configs/generated/openapi/v1/openapi.json)
+  [`openapi.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/generated/openapi/v1/openapi.json)
 
 The [query workflow](../workflows/query-workflows.md) shows the supported
 commands. [Query architecture](../runtime/query-architecture.md) traces the

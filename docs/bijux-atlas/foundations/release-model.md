@@ -96,13 +96,13 @@ help classify change; they cannot manufacture directional evidence.
 
 ## Repository Authority Map
 
-- release policy: [`configs/sources/release/`](../../../configs/sources/release/)
+- release policy: [`configs/sources/release/`](https://github.com/bijux/bijux-atlas/tree/main/configs/sources/release/)
 - version policy:
-  [`version-policy.json`](../../../configs/sources/release/version-policy.json)
+  [`version-policy.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/release/version-policy.json)
 - reproducibility policy:
-  [`reproducibility-policy.json`](../../../configs/sources/release/reproducibility-policy.json)
-- release schemas: [`configs/schemas/contracts/release/`](../../../configs/schemas/contracts/release/)
-- runtime references: [`configs/generated/runtime/`](../../../configs/generated/runtime/)
+  [`reproducibility-policy.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/release/reproducibility-policy.json)
+- release schemas: [`configs/schemas/contracts/release/`](https://github.com/bijux/bijux-atlas/tree/main/configs/schemas/contracts/release/)
+- runtime references: [`configs/generated/runtime/`](https://github.com/bijux/bijux-atlas/tree/main/configs/generated/runtime/)
 - distribution and recovery handbook: [Atlas Release Operations](../../bijux-atlas-ops/release/index.md)
 
 The [dataset model](dataset-model.md) defines dataset state transitions.

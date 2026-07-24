@@ -31,7 +31,7 @@ flowchart LR
 ```
 
 The workflow is defined in
-[`.github/workflows/final-readiness.yml`](../../../.github/workflows/final-readiness.yml).
+[`final-readiness.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/final-readiness.yml).
 It runs on manual dispatch and on pull requests that touch its selected audit,
 documentation, operations, or workflow paths.
 

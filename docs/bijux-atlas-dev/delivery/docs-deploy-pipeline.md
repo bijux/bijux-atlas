@@ -69,6 +69,6 @@ tool versions, verification result, Pages artifact identity, deployment URL,
 and workflow run. A public-site incident can then distinguish stale source,
 build drift, incomplete assets, Pages failure, and routing failure.
 
-Workflow authority: [`.github/workflows/deploy-docs.yml`](../../../.github/workflows/deploy-docs.yml).
+Workflow authority: [`.github/workflows/deploy-docs.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/deploy-docs.yml).
 Repository documentation checks are described in
 [Docs Governance Workflow](../workflow-ownership/docs-governance-workflow.md).

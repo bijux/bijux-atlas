@@ -69,8 +69,8 @@ wrapper parity, generated references, and maintainer expectations.
 ## Repository Anchors
 
 - CLI families and parser ownership:
-  [`interfaces/cli/mod.rs`](../../../crates/bijux-atlas-dev/src/interfaces/cli/mod.rs)
+  [`interfaces/cli/mod.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs)
 - governed family catalog:
-  [`cli-dev-command-surface.json`](../../../configs/sources/governance/governance/cli-dev-command-surface.json)
+  [`cli-dev-command-surface.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/governance/governance/cli-dev-command-surface.json)
 - public discovery model: [Automation Command Surface](automation-command-surface.md)
 - report identities and schemas: [Automation Reports Reference](automation-reports-reference.md)

@@ -69,6 +69,6 @@ still require evidence from the owning workflow.
 ## Source Anchors
 
 - generated-file registry:
-  [`generated-files-registry.json`](../../../configs/sources/repository/docs/generated-files-registry.json)
+  [`generated-files-registry.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/repository/docs/generated-files-registry.json)
 - generated-file ownership and modes: [Generated Files](../workspace/generated-files.md)
 - generated command catalog: [Automation Command Surface](automation-command-surface.md)

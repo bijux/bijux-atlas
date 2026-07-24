@@ -124,9 +124,9 @@ deferred, why, and how the residual risk is contained.
 
 ## Authorities
 
-- [version policy](../../../configs/sources/release/version-policy.json)
-- [compatibility policy](../../../configs/sources/governance/governance/compatibility.yaml)
-- [deprecation registry](../../../configs/sources/governance/governance/deprecations.yaml)
-- [required status checks](../../../.github/required-status-checks.md)
-- [release notes template](../../../.github/release-notes-template.md)
+- [version policy](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/release/version-policy.json)
+- [compatibility policy](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/governance/governance/compatibility.yaml)
+- [deprecation registry](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/governance/governance/deprecations.yaml)
+- [required status checks](https://github.com/bijux/bijux-atlas/blob/main/.github/required-status-checks.md)
+- [release notes template](https://github.com/bijux/bijux-atlas/blob/main/.github/release-notes-template.md)
 - [version manifests](../../bijux-atlas-ops/release/version-manifests.md)

@@ -74,7 +74,7 @@ rule; a mismatched policy identity or incorrect error contract is a separate
 defect.
 
 Implementation authority:
-[`crates/bijux-atlas-cli/src/adapters/inbound/cli/policy.rs`](../../../crates/bijux-atlas-cli/src/adapters/inbound/cli/policy.rs).
+[`crates/bijux-atlas-cli/src/adapters/inbound/cli/policy.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-cli/src/adapters/inbound/cli/policy.rs).
 Continue with [Query Model](../foundations/query-model.md) for request admission
 and [Error Codes and Exit Codes](error-codes-and-exit-codes.md) for failure
 interpretation.

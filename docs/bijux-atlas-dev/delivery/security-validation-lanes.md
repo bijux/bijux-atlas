@@ -17,9 +17,9 @@ but protect different boundaries and have different trigger coverage.
 
 | Lane | Trigger | Primary evidence |
 | --- | --- | --- |
-| [supply chain](../../../.github/workflows/security-supply-chain-validation.yml) | every pull request and pushes to `main` | governance artifacts, security validation, dependency audit, and command contract test |
-| [threat model](../../../.github/workflows/security-threat-model-validation.yml) | manual dispatch and selected model, implementation, CLI, workflow, or public security documentation paths | threat-registry verification plus positive and negative command contracts |
-| [data protection](../../../.github/workflows/security-data-protection-validation.yml) | every pull request and pushes to `main` | runtime data-protection contracts, governance evidence, and security control validation |
+| [supply chain](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/security-supply-chain-validation.yml) | every pull request and pushes to `main` | governance artifacts, security validation, dependency audit, and command contract test |
+| [threat model](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/security-threat-model-validation.yml) | manual dispatch and selected model, implementation, CLI, workflow, or public security documentation paths | threat-registry verification plus positive and negative command contracts |
+| [data protection](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/security-data-protection-validation.yml) | every pull request and pushes to `main` | runtime data-protection contracts, governance evidence, and security control validation |
 
 ```mermaid
 flowchart TD

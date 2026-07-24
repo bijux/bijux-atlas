@@ -65,10 +65,10 @@ as a runnable container image.
 
 ## Workflow Anchors
 
-- crates.io workflow: [`.github/workflows/release-crates.yml`](../../../.github/workflows/release-crates.yml)
-- GHCR OCI workflow: [`.github/workflows/release-ghcr.yml`](../../../.github/workflows/release-ghcr.yml)
-- shared bundle builder: [`.github/workflows/release-artifacts.yml`](../../../.github/workflows/release-artifacts.yml)
-- release policy: [`configs/sources/release/`](../../../configs/sources/release/)
+- crates.io workflow: [`.github/workflows/release-crates.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/release-crates.yml)
+- GHCR OCI workflow: [`.github/workflows/release-ghcr.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/release-ghcr.yml)
+- shared bundle builder: [`.github/workflows/release-artifacts.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/release-artifacts.yml)
+- release policy: [`configs/sources/release/`](https://github.com/bijux/bijux-atlas/tree/main/configs/sources/release/)
 
 [Distribution Channels](../../bijux-atlas-ops/release/distribution-channels.md)
 defines the consumer-facing channel model. [Signing and Provenance](../../bijux-atlas-ops/release/signing-and-provenance.md)

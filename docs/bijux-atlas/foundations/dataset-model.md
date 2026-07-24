@@ -82,12 +82,12 @@ Within one identity:
 ## Where the contract lives
 
 - identity and catalog models:
-  [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
+  [`crates/bijux-atlas-model/src/dataset/`](https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-model/src/dataset/)
 - ingest construction:
-  [`crates/bijux-atlas-ingest/src/engine/`](../../../crates/bijux-atlas-ingest/src/engine/)
+  [`crates/bijux-atlas-ingest/src/engine/`](https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-ingest/src/engine/)
 - manifest schema and serving source:
-  [`manifest.schema.json`](../../../configs/schemas/contracts/datasets/manifest.schema.json)
-  and [`manifest.yaml`](../../../configs/sources/runtime/datasets/manifest.yaml)
+  [`manifest.schema.json`](https://github.com/bijux/bijux-atlas/blob/main/configs/schemas/contracts/datasets/manifest.schema.json)
+  and [`manifest.yaml`](https://github.com/bijux/bijux-atlas/blob/main/configs/sources/runtime/datasets/manifest.yaml)
 
 Continue with the [Serving Store Model](../runtime/serving-store-model.md) for
 publication and read semantics, and [Artifact and Store Contracts](../contracts/artifact-and-store-contracts.md)
