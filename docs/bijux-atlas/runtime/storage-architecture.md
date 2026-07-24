@@ -4,61 +4,109 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Storage Architecture
 
-Storage architecture in Atlas separates three things on purpose: build output,
-serving-store state, and transient runtime cache behavior.
+Atlas separates candidate construction, durable publication, discovery, and
+read acceleration. Each layer answers a different question and carries a
+different failure policy.
+
+Authority moves in one direction. Builds feed stores. Catalogs expose
+identities. Runtimes read. Caches accelerate. None of those downstream layers
+may rewrite upstream release truth.
 
 ## Storage Layers
 
 ```mermaid
-flowchart TD
-    BuildRoot[Build root] --> Publish[Publish]
-    Publish --> ServingStore[Serving store]
-    ServingStore --> Runtime[Runtime access]
-    Runtime --> Cache[Transient cache]
+flowchart LR
+    BuildRoot[Candidate build root] --> Verify[Validation and integrity]
+    Verify --> Store[Immutable store payload]
+    Store --> Catalog[Catalog discovery]
+    Catalog --> Runtime[Runtime resolution]
+    Runtime --> Cache[Transient read acceleration]
+    Cache --> Query[Query execution]
 ```
 
-This storage-layer diagram shows the order Atlas expects readers to preserve.
-The runtime reads published store state, and the cache sits downstream as
-acceleration rather than as a second source of truth.
+The arrows describe authority, not merely file movement. A cache entry can
+accelerate bytes already authorized by store and catalog identity. It cannot
+publish, promote, or redefine them.
 
-## Durable vs Transient
+## Layer Ownership
+
+| Layer | Owns | Must not become |
+| --- | --- | --- |
+| build root | candidate artifacts and producer evidence | a runtime store selected by convenience |
+| serving store | immutable payloads and integrity material | a mutable workspace or scratch directory |
+| catalog | discoverable dataset identities and locations | proof that payload bytes are valid |
+| runtime adapter | verified reads and backend translation | a writer of release truth |
+| cache | disposable copies and request acceleration | catalog, integrity authority, or backup |
+
+Store presence and catalog visibility are different facts. Verify both. A
+runtime can also lag behind a promoted catalog. Observe its resolved identity.
+A warm cache is useful for continuity, but it is not proof of freshness.
+
+## Read Authority
 
 ```mermaid
-flowchart LR
-    Durable[Durable state] --> Store[Serving store and catalog]
-    Transient[Transient state] --> Cache[Cache and in-memory acceleration]
+flowchart TD
+    Request[Request with dataset identity] --> CatalogLookup{Catalog resolves identity?}
+    CatalogLookup -- no --> Missing[Return governed missing-dataset outcome]
+    CatalogLookup -- yes --> CacheLookup{Verified bytes cached?}
+    CacheLookup -- yes --> ReadCache[Read retained bytes]
+    CacheLookup -- no --> ReadStore[Fetch store payload]
+    ReadStore --> Integrity{Integrity passes?}
+    Integrity -- no --> Reject[Reject as integrity failure]
+    Integrity -- yes --> Populate[Populate disposable cache]
+    ReadCache --> Execute[Execute query]
+    Populate --> Execute
 ```
 
-This durable-versus-transient split is worth making explicit because storage
-bugs become much easier to classify when everyone uses the same boundary
-language.
+Cached-only mode is an explicit degraded path. It can preserve reads for
+already retained objects when the live backend is unavailable. A cache miss in
+that mode is not permission to fall back to an unverified directory or another
+dataset.
 
-## Architectural Rules
+## Backend capabilities are part of the contract
 
-- build roots are validated outputs, not serving truth.
-- serving stores hold published artifacts and catalog state.
-- caches accelerate reads but do not redefine durable truth.
+The store trait gives backends one vocabulary, not identical guarantees. Atlas
+currently distinguishes three backend kinds:
 
-## Why This Separation Matters
+| Backend | Read path | Publication path | Concurrency boundary |
+| --- | --- | --- | --- |
+| local filesystem | manifest lock validates manifest and SQLite bytes | hash-check, write and sync temporary files, rename, then write immutable lifecycle state | exclusive dataset publish-lock file |
+| read-only HTTP | fetched lock validates the manifest; SQLite is checked against that manifest by verified reads | unsupported | publication locking unsupported |
+| S3-like | fetched lock validates the manifest; verified reads check SQLite bytes | rejects an existing identity, validates caller-provided hashes, then writes temporary and final objects | local publish-lock guard unsupported |
 
-Without these storage boundaries, it becomes too easy to:
+The HTTP and S3-like kinds are compiled only with the backend feature; local
+storage is always available. Callers must validate the selected kind at
+startup and must surface `unsupported` or `conflict` outcomes. They must not
+simulate missing locking or write support in a higher layer.
 
-- point the runtime at the wrong directory.
-- confuse publication state with build state.
-- debug cache symptoms as if they were store corruption.
+```mermaid
+flowchart TD
+    Select["configured backend kind"] --> Compiled{"compiled capability?"}
+    Compiled -- no --> Refuse["refuse startup"]
+    Compiled -- yes --> Operation{"requested operation"}
+    Operation -- read --> Verify["backend read + integrity verification"]
+    Operation -- publish --> Native{"backend supports publication semantics?"}
+    Native -- no --> Unsupported["return unsupported"]
+    Native -- yes --> Publish["use backend-native conflict and commit rules"]
+```
 
-## A Storage Question Worth Asking
+## Classify Storage Failures
 
-When a storage-related issue appears, ask first whether the problem is in build output, serving
-store state, catalog discoverability, or cache behavior. Those are different failure classes.
+| Symptom | Boundary to inspect | Evidence |
+| --- | --- | --- |
+| build files missing | producer and build root | ingest result and candidate manifest |
+| payload absent after publication | backend write path | publication result, keys or paths, and expected hashes |
+| dataset absent from listing | catalog | catalog identity and promotion result |
+| manifest rejected | integrity | manifest lock, actual bytes, and structured store error |
+| backend unavailable, cache hit | degraded read path | cache identity, age, and cached-only status |
+| backend unavailable, cache miss | continuity limit | missing key and retry evidence |
+| stale result after promotion | runtime refresh | catalog revision, refresh age, and resolved dataset identity |
 
-## Reading Rule
-
-Use this page when Atlas has the right files somewhere on disk but it is still
-unclear whether the problem belongs to build output, the serving store, or
-cache behavior.
+Always identify the dataset tuple and selected backend before changing state.
+Deleting a cache may reveal a store failure; rewriting a catalog may hide one.
+Preserve the original observation and repair the owning boundary.

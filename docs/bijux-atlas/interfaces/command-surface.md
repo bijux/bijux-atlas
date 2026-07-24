@@ -4,101 +4,151 @@ audience: mixed
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Command Surface
 
-This page summarizes the user-facing Atlas command families. It does not
-document the repository control plane; that lives in [Automation Command
-Surface](../../bijux-atlas-dev/automation/automation-command-surface.md).
+Atlas separates product commands from repository maintenance. Use
+`bijux atlas ...` through the Bijux umbrella, or invoke the product binary as
+`bijux-atlas ...`. Repository checks and release automation belong to
+`bijux dev atlas ...` and are not product subcommands.
 
-The installed runtime namespace is `bijux atlas ...`.
-The direct Atlas binaries remain `bijux-atlas`, `bijux-atlas-server`, and `bijux-atlas-openapi`.
+## Choose the Executable
 
-## Top-Level Command Map
-
-```mermaid
-flowchart TD
-    CLI[bijux atlas / bijux-atlas] --> Version[version]
-    CLI --> Completion[completion]
-    CLI[bijux atlas / bijux-atlas] --> Config[config]
-    CLI --> Catalog[catalog]
-    CLI --> Dataset[dataset]
-    CLI --> Query[query]
-    CLI --> Inspect[inspect]
-    CLI --> Export[export]
-    CLI --> Diff[diff]
-    CLI --> Gc[gc]
-    CLI --> Policy[policy]
-    CLI --> Ingest[ingest]
-```
-
-This command map is the quickest way to orient yourself in the runtime CLI. It
-groups the public families exposed by the product surface.
-
-## Runtime Companions
+| Executable | Owns | Does not own |
+| --- | --- | --- |
+| `bijux atlas` / `bijux-atlas` | dataset construction, publication, inspection, querying, export, and policy | server lifecycle and repository governance. |
+| `bijux-atlas-server` | serving published datasets over HTTP | dataset construction and repository checks. |
+| `bijux-atlas-openapi` | generation of the HTTP API contract | starting a server or querying a dataset. |
+| `bijux dev atlas` / `bijux-atlas-dev` | maintainer validation, reports, evidence, and release automation | the installed product interface. |
 
 ```mermaid
 flowchart LR
-    AtlasCLI[bijux atlas / bijux-atlas] --> UserWorkflows[User workflows]
-    ServerCLI[bijux-atlas-server] --> Runtime[Runtime server]
-    OpenAPICLI[bijux-atlas-openapi or openapi generate] --> Contracts[OpenAPI generation]
+    User[User or client] --> Product[bijux atlas]
+    Operator[Runtime operator] --> Server[bijux-atlas-server]
+    ClientBuild[API client build] --> OpenAPI[bijux-atlas-openapi]
+    Maintainer[Repository maintainer] --> Dev[bijux dev atlas]
+    Product --> Artifacts[Dataset and query artifacts]
+    Server --> HTTP[HTTP service]
+    OpenAPI --> Contract[OpenAPI document]
+    Dev --> Evidence[Validation and release evidence]
 ```
 
-Atlas exposes more than one runtime binary. This view keeps server startup, CLI
-workflows, and OpenAPI generation from collapsing into one indistinct surface.
+## Public Product Families
 
-Use this page when you are asking, "Which runtime-facing binary or subcommand
-family should I use?"
+The governed product registry exposes twelve top-level families:
 
-Use the automation reference when you are asking, "Which repository command checks docs, release state, or governance rules?"
+| Family | Use it to |
+| --- | --- |
+| `catalog` | validate catalog state and manage dataset discoverability. |
+| `completion` | generate shell completion definitions. |
+| `config` | print resolved Bijux config paths, cache location, and selected environment values. |
+| `dataset` | verify, package, publish, and inspect dataset release state. |
+| `diff` | create a structured comparison between dataset releases. |
+| `export` | export OpenAPI or bounded query rows. |
+| `gc` | plan or apply garbage collection against managed artifacts. |
+| `ingest` | validate GFF3, FASTA, and FAI inputs and build dataset artifacts. |
+| `inspect` | inspect dataset, provenance, and database structure. |
+| `policy` | validate or explain the active data policy. |
+| `query` | run or explain bounded dataset queries. |
+| `version` | report product version identity. |
 
-## Top-Level Families
+Use `bijux-atlas <family> --help` for the arguments provided by the installed
+release. Treat hidden compatibility and diagnostic commands as internal even
+when they are visible in source or a binary string table.
 
-- `version`: print CLI version information
-- `completion`: generate shell completions
-- `config`: inspect config behavior
-- `catalog`: validate and mutate catalog state
-- `dataset`: validate, verify, publish, and pack dataset state
-- `query`: run and explain bounded gene queries
-- `inspect`: inspect dataset artifacts and SQLite layout
-- `export`: export OpenAPI specs and query result rows
-- `diff`: build dataset diff artifacts
-- `gc`: plan and apply garbage collection
-- `policy`: validate and explain active policy
-- `ingest`: build validated dataset state from source inputs
+## Common Workflows
 
-## Code Authority
+### Build and publish a dataset
 
-- command tree and runtime-facing binary behavior:
-  `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`
-- runtime binaries:
-  `crates/bijux-atlas-cli/src/bin/bijux-atlas.rs`,
-  `crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs`, and
-  `crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs`
-- generated command references: `configs/generated/docs/command-index.json` and
-  `configs/generated/docs/configs-command-list.txt`
+```mermaid
+flowchart LR
+    Ingest[ingest] --> Verify[dataset verify]
+    Verify --> Evidence[dataset evidence-verify]
+    Evidence --> Publish[dataset publish]
+    Publish --> Promote[catalog promote]
+```
 
-## Main Takeaway
+Run dry-run or explain modes before mutating release or catalog state when the
+subcommand provides them. Publication and catalog promotion are distinct: a
+release can be built and verified without becoming the selected catalog entry.
 
-This page should be read as the public command map for the product runtime.
-When the command tree changes, this page, the Clap structures, and the generated
-command references should all continue to agree.
+### Inspect before querying
 
-## Stability Rule
+```bash
+bijux-atlas inspect dataset --help
+bijux-atlas inspect provenance --help
+bijux-atlas query explain --help
+bijux-atlas query run --help
+```
 
-- `bijux atlas ...`, `bijux-atlas`, `bijux-atlas-server`, and documented command families are user-facing surfaces
-- structured output, error behavior, and OpenAPI are only as stable as the documented contracts behind them
-- debug-only or repository-only commands should not be inferred from this page
+Inspection establishes dataset and provenance identity. Query explanation
+shows the bounded execution plan. Query execution produces the result.
 
-## Related Binaries
+### Export a contract or result set
 
-- `bijux-atlas`
-- `bijux-atlas-server`
-- `bijux-atlas-openapi`
+```bash
+bijux-atlas export openapi --help
+bijux-atlas export query --help
+```
 
-## Reading Rule
+Use the dedicated OpenAPI binary when a build process needs only the API
+contract. Use the product export family when the export belongs to a wider
+Atlas workflow.
 
-Use this page when the hard part is not the exact flag or argument, but which
-runtime binary or command family owns the task.
+## Global Output Controls
+
+The product CLI accepts these global controls before or after a command family:
+
+| Flag | Behavior |
+| --- | --- |
+| `--json` | emit canonical compact JSON for normal command results and structured errors. |
+| `--quiet` | suppress normal success output where the invoked command honors quiet mode. |
+| `--verbose` | increase diagnostic verbosity; the flag may be repeated. |
+| `--trace` | request trace-level diagnostics for supported execution paths. |
+| `--print-config-paths` | print resolved workspace config, user config, and cache paths. |
+
+Machine consumers must combine structured output with the process exit code.
+See [Structured Output Contracts](../contracts/structured-output-contracts.md)
+before binding automation to fields.
+
+## Invocation Contract
+
+```mermaid
+flowchart LR
+    Args[Executable, global flags, family, and arguments] --> Parse[Parse and normalize]
+    Parse --> Resolve[Resolve config, policy, and dataset identity]
+    Resolve --> Execute[Execute owned operation]
+    Execute --> Encode[Encode result or structured error]
+    Encode --> Stdout[Standard output]
+    Execute --> Diagnostics[Diagnostics and telemetry]
+    Encode --> Exit[Process exit code]
+```
+
+Automation should retain the executable identity, complete argument vector with
+secrets redacted, producer version, structured standard output, diagnostics,
+and exit code. A JSON document with an unexpected exit status is not a
+successful command result. Conversely, an empty success stream is valid only
+when the invoked command explicitly defines silence as success.
+
+Global flags belong to the invocation, not the domain result. Repeated
+`--verbose`, `--trace`, or presentation changes must not be treated as domain
+schema fields.
+
+## Surface Authority
+
+The public family list is governed by
+`configs/sources/governance/governance/cli-user-command-surface.json`. The Clap
+command tree implements the executable surface. Generated command references
+record the observed build. All three must agree before a newly exposed family
+is treated as public.
+
+When they disagree, the installed command tree determines what can execute,
+the registry determines intended public governance, and the generated
+reference records what its build observed. Report the mismatch instead of
+silently selecting the broadest surface.
+
+For maintainer commands, continue with [Automation Command
+Surface](../../bijux-atlas-dev/automation/automation-command-surface.md). For
+runtime startup, see [Configuration and Output](configuration-and-output.md).

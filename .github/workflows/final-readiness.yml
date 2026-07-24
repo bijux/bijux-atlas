@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: 1.86.0
@@ -30,7 +30,7 @@ jobs:
           mkdir -p artifacts/system/simulation artifacts/audit
           cargo run --locked -q -p bijux-atlas-dev -- system simulate suite --output-format json > artifacts/system/simulation/run.json
           cargo run --locked -q -p bijux-atlas-dev -- docs health-dashboard --allow-write --format json > artifacts/audit/docs-health.json
-          cargo run --locked -q -p bijux-atlas-dev -- governance validate --output-format json > artifacts/audit/governance-validate.json || true
+          cargo run --locked -q -p bijux-atlas-dev -- governance validate --output-format json > artifacts/audit/governance-validate.json
           cargo run --locked -q -p bijux-atlas-dev -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-atlas-dev -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-atlas-dev -- audit readiness validate --output-format json > artifacts/audit/readiness.json
@@ -38,5 +38,7 @@ jobs:
         if: always()
         with:
           name: final-readiness-${{ github.run_id }}-${{ github.run_attempt }}
-          path: artifacts/audit
+          path: |
+            artifacts/audit
+            artifacts/system/simulation
           retention-days: 14

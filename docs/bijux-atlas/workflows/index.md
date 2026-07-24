@@ -4,89 +4,121 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Workflows
 
-`bijux-atlas/workflows` is where Atlas becomes a sequence of concrete product
-tasks.
+Atlas workflows preserve the boundary between building a dataset and serving a
+published release. Each path ends with an observable checkpoint so completion
+does not depend on an operator interpreting silence as success.
 
 ```mermaid
-flowchart TD
-    Workflows[Workflows section] --> Install[Install and verify]
-    Workflows --> Build[Build or load dataset state]
-    Workflows --> Serve[Start the server]
-    Workflows --> Query[Run queries]
-    Workflows --> Troubleshoot[Troubleshoot early problems]
-    Install --> Path[Practical task path]
-    Build --> Path
-    Serve --> Path
-    Query --> Path
-    Troubleshoot --> Path
+flowchart TB
+    subgraph Dataset[Dataset publication]
+        Source[Validate source] --> Ingest[Build artifact set]
+        Ingest --> Verify[Verify manifest and evidence]
+        Verify --> Publish[Publish store and catalog state]
+    end
+    subgraph Service[Service qualification]
+        Install[Verify software identity] --> Start[Start against explicit profile]
+        Start --> Ready[Verify readiness and dataset selection]
+        Ready --> Query[Run representative structured queries]
+        Query --> Observe[Retain result and diagnostics]
+    end
+    Publish --> Ready
+    Observe --> Decision[Bounded local or deployment decision]
 ```
 
-Workflows are where the product path becomes directly usable. These pages show
-the right order of actions, the checkpoints that prove a step worked, and the
-boundaries that keep build state, serving state, and runtime state from being
-mixed by accident.
+The dataset and service paths may advance independently until readiness joins
+them. A published dataset can exist without a qualified deployment. A healthy
+process can exist while its catalog is stale or its selected dataset is wrong.
+The join is successful only when the observed service reports the intended
+dataset identity and representative queries satisfy their contracts.
 
-Use this section when you need to do product work with Atlas rather than study
-its architecture.
+## Choose a Path
 
-## Reader Paths
+| Outcome | Workflow | Completion signal |
+| --- | --- | --- |
+| verify an installation | [Install and Verify](install-and-verify.md) | expected command identity and version output |
+| exercise the product locally | [Run Atlas Locally](run-atlas-locally.md) | runtime starts against explicit local state |
+| learn with governed sample data | [Load a Sample Dataset](load-a-sample-dataset.md) | artifact and dataset identities are inspectable |
+| build release-shaped data | [Ingest Workflows](ingest-workflows.md) | validation succeeds and a complete manifest exists |
+| inspect or select datasets | [Dataset Workflows](dataset-workflows.md) | requested dataset resolves unambiguously |
+| publish discoverable identity | [Catalog Workflows](catalog-workflows.md) | catalog and serving store agree on the release |
+| start HTTP serving | [Start the Server](start-the-server.md) | health and readiness report the intended state |
+| query published content | [Query Workflows](query-workflows.md) | structured output identifies the resolved release |
+| verify the first user path | [Run Your First Queries](run-your-first-queries.md) | representative lookup and sequence results succeed |
+| diagnose an early failure | [Troubleshoot Early Problems](troubleshoot-early-problems.md) | failed boundary and corrective action are identified |
 
-Choose the path that matches your goal:
+## Checkpoints That Matter
 
-- first local setup: [Install and Verify](install-and-verify.md) -> [Run Atlas Locally](run-atlas-locally.md) -> [Load a Sample Dataset](load-a-sample-dataset.md)
-- first serving flow: [Start the Server](start-the-server.md) -> [Run Your First Queries](run-your-first-queries.md)
-- ingest and catalog work: [Ingest Workflows](ingest-workflows.md) -> [Dataset Workflows](dataset-workflows.md) -> [Catalog Workflows](catalog-workflows.md)
-- debugging early failures: [Troubleshoot Early Problems](troubleshoot-early-problems.md)
+A workflow result should preserve enough identity to answer:
 
-If you already know the task, go straight to that workflow page. This section
-mainly keeps the first Atlas steps in the right order.
+- which binary and configuration were used;
+- which source inputs and validation policy were admitted;
+- which artifact manifest and hashes were produced;
+- which catalog entry and store location were selected;
+- which release a query resolved; and
+- which output or diagnostic established the result.
 
-## Workflow Boundary
+Success at one boundary does not imply success at the next. In particular, an
+ingest directory is not a serving store, an artifact manifest is not a catalog
+publication record, and process health is not query correctness.
 
-These pages describe how users and integrators move through the product-facing
-runtime path. They do not replace:
+## Identity Carried Across the Journey
 
-- `bijux-atlas-ops` for deployment, rollout, observability, and load guidance
-- `bijux-atlas-dev` for repository validation, release automation, and
-  maintainer-only checks
+```mermaid
+flowchart LR
+    Source[Source inputs] --> Dataset[release + species + assembly]
+    Dataset --> Artifact[manifest + artifact hashes]
+    Artifact --> Publication[store location + catalog epoch]
+    Publication --> Runtime[binary + config + profile]
+    Runtime --> Result[request ID + resolved dataset + contract version]
+```
 
-## What This Section Is For
+The identity becomes richer as work moves toward serving. The dataset tuple
+names biological content; manifests and hashes name immutable output;
+publication adds discoverability; runtime identity names the code and policy
+that served it. Preserve all of them when a result must be reproducible.
 
-Use workflows when you need the product task path in order: install, verify,
-load data, start the server, run queries, and debug early mistakes. When the
-question becomes “what exact flag is this?” or “where does this logic live in
-code?”, move to interfaces or runtime instead of forcing workflow pages to do
-everything.
+## Workflow Contract
 
-## Lifecycle View
+Every workflow has four parts:
 
-Atlas workflow material follows the normal artifact-first lifecycle:
+| Part | Reader question | Example |
+| --- | --- | --- |
+| Preconditions | What must already be true? | binaries resolve and source inputs validate |
+| Mutation | What state can change? | build output, store content, or catalog selection |
+| Acceptance | What proves completion? | manifest validation, catalog resolution, or query response |
+| Evidence boundary | What remains unproven? | production durability, capacity, or another release identity |
 
-1. install and verify the runtime surface
-2. build or load dataset state
-3. publish or point at a serving store
-4. start the server or use the CLI
-5. run queries and inspect outputs
+When a command exits successfully but its acceptance signal is missing, treat
+the workflow as incomplete. When the signal exists but identifies different
+state, stop at that boundary instead of allowing the mismatch to propagate.
 
-## Pages
+## Retry at the Owning Boundary
 
-- [Catalog Workflows](catalog-workflows.md)
-- [Dataset Workflows](dataset-workflows.md)
-- [Ingest Workflows](ingest-workflows.md)
-- [Install and Verify](install-and-verify.md)
-- [Load a Sample Dataset](load-a-sample-dataset.md)
-- [Query Workflows](query-workflows.md)
-- [Run Atlas Locally](run-atlas-locally.md)
-- [Run Your First Queries](run-your-first-queries.md)
-- [Start the Server](start-the-server.md)
-- [Troubleshoot Early Problems](troubleshoot-early-problems.md)
+Retries are safe only when the workflow can identify existing state and avoid
+turning partial completion into a second authority.
 
-## Related Sections
+| Failed boundary | Inspect before retry | Safe retry rule |
+| --- | --- | --- |
+| ingest | candidate root, manifest, findings, and source identity | rebuild an explicit disposable candidate; never merge unexplained output |
+| verification | exact candidate hashes and referenced members | repeat against unchanged bytes or rebuild from governed inputs |
+| publication | final and staging objects, lock, manifest, and backend receipt | continue only when existing immutable state is absent or proves identical |
+| catalog promotion | current generation and selected dataset tuple | promote one verified payload; never hide a conflicting tuple |
+| server startup | effective configuration, store endpoint, and cache root | restart without treating stale cache state as publication evidence |
+| query | request, dataset tuple, cursor, and request identity | retry the same scientific request without silently changing the dataset |
 
-- move to [Interfaces](../interfaces/index.md) when you need exact flags, env vars, or endpoint details
-- move to [Runtime](../runtime/index.md) when a workflow question turns into an architecture question
+Preserve the first failure before removing disposable state. A clean rerun can
+prove the corrected path, but it cannot reconstruct evidence erased from the
+original failure.
+
+## Exact Surfaces and Production Operations
+
+Flags, environment variables, endpoints, output shapes, and error behavior are
+defined under [Interfaces](../interfaces/index.md). Architecture and lifecycle
+ownership are under [Runtime](../runtime/index.md). Deployment, security,
+observability, load, rollback, and retained operational evidence are governed
+by the [Operations handbook](../../bijux-atlas-ops/index.md).

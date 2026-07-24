@@ -4,61 +4,102 @@ audience: operators
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Observability
 
-`bijux-atlas-ops/observability` explains how Atlas turns logs, metrics, traces,
-dashboards, alerts, drills, and evidence outputs into an operable signal pack.
+Atlas observability connects runtime events to an operator decision. Metrics
+quantify scope, traces localize request paths, and structured logs explain
+discrete events and policy outcomes. None is sufficient alone. Release,
+dataset, profile, route class, and time must remain joinable across the
+evidence window.
 
-## Purpose
+## Correlation spine
 
-Use this section to understand how runtime instrumentation connects to alerting,
-readiness, SLO measurement, incident response, and release or rollout evidence.
+```mermaid
+flowchart TD
+    Event[Request or lifecycle event] --> Request[Request + trace identity]
+    Event --> Release[Runtime + dataset identity]
+    Event --> Context[Profile + instance + route class]
+    Request --> Logs[Structured logs]
+    Request --> Traces[Trace and spans]
+    Release --> Metrics[Metrics and SLO window]
+    Context --> Metrics
+    Logs --> Window[Correlated evidence window]
+    Traces --> Window
+    Metrics --> Window
+    Window --> Decision{admit, drain, mitigate, promote}
+```
 
-## Source of Truth
+High-cardinality request and trace identifiers belong in logs and traces.
+Metrics use bounded dimensions defined by their contracts. A signal that
+cannot be joined to the release and observation window is diagnostic material,
+not promotion evidence.
 
-- `ops/observe/alerts/` and `ops/observe/alert-catalog.json`
-- `ops/observe/dashboards/` and `ops/observe/dashboard-registry.json`
-- `ops/observe/contracts/`
-- `ops/observe/metrics/`
-- `ops/observe/tracing/`
-- `ops/observe/drills/`, `ops/observe/drills.json`, and
-  `ops/observe/telemetry-drills.json`
-- `ops/observe/generated/telemetry-index.json`
+## Qualify each signal path
 
-## Observability Operating Model
+```mermaid
+flowchart LR
+    Instrument[Instrumented] --> Emit[Emitted]
+    Emit --> Deliver[Delivered]
+    Deliver --> Query[Queried]
+    Query --> Exercise[Rule + notification exercised]
+    Exercise --> Retain[Decision evidence retained]
+```
 
-Atlas observability has three primary signals:
+| Level | Evidence | Claim supported |
+| --- | --- | --- |
+| declared | Registry, rule, dashboard, or drill validates | Intended signal, dimensions, and owner are specified |
+| emitted | A known event produces the expected signal | Instrumentation is active for that path |
+| delivered | A backend query returns the signal with expected identity and time | Transport, ingestion, and retention worked for the window |
+| exercised | A controlled condition reaches rule, notification, view, and correlated context | The response path worked in the named environment |
+| retained | Immutable evidence binds the exercise to release, dataset, profile, and time | The decision can be reconstructed after live data expires |
 
-- logs capture structured events and error context
-- metrics capture aggregate behavior, SLO measurements, and alert triggers
-- traces capture request-level path and correlation
+Qualification is per required path. A latency metric cannot establish audit
+completeness; one delivered trace cannot establish a population error rate.
+Promotion policy must name the minimum level for every required signal.
 
-Those signals are packaged with dashboards, alert rules, drills, and generated
-indexes so operators can validate not only that telemetry exists, but that it is
-usable during rollout and failure.
+## Signal-loss decisions
 
-## Evidence Produced
+| Missing boundary | Surviving evidence can establish | Claim that remains blocked |
+| --- | --- | --- |
+| metrics delivery | Individual failures from logs, traces, probes, and clients | Population rate, saturation trend, or SLO compliance |
+| trace export | Rates and event classes from metrics and logs | Causal localization across runtime and dependencies |
+| centralized logs | Aggregate health and sampled paths | Complete event, audit, or policy-decision history |
+| alert notification | Rule state and direct backend queries | That the assigned owner received and acted on the page |
+| dashboard rendering | Raw queries and validated panel definitions | That the operator view rendered the same window |
+| all telemetry backends | Clients, Kubernetes, pod output, and integrity checks | Promotion, security closure, or absence of hidden failures |
 
-This section points operators to:
+Restoring a path is not retrospective evidence for its blind interval. Record
+source and collection clocks, the gap, emergency observation methods, and the
+time normal evidence resumed. Start a new continuous qualification window when
+policy requires one.
 
-- alert catalogs and rule packs
-- dashboard registry and validation outputs
-- readiness and SLO measurement artifacts
-- telemetry drill definitions and schema-backed results
-- generated telemetry indexes used in change review
+## Contracted surface
 
-## Pages
+The checked-in contracts define 15 HTTP endpoint entries, 39 required metrics,
+structured event fields, six request-path spans, ten lifecycle span identities,
+20 governed alerts, and two telemetry-path drills. The generated telemetry
+index proves that these contracts are discoverable. It does not prove that a
+deployed collector, backend, rule engine, dashboard, or notification route is
+working.
 
-- [Alert Rules](alert-rules.md)
-- [Dashboards and Panels](dashboards-and-panels.md)
-- [Health, Readiness, and Drain](health-readiness-and-drain.md)
-- [Incident Response](incident-response.md)
-- [Logging Contracts](logging-contracts.md)
-- [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md)
-- [Metrics Packages](metrics-packages.md)
-- [Operational Evidence Reports](operational-evidence-reports.md)
-- [Telemetry Drills](telemetry-drills.md)
-- [Tracing Pipelines](tracing-pipelines.md)
+## Route by operating question
+
+| Question | Read |
+| --- | --- |
+| May an instance receive traffic? | [Health, Readiness, and Drain](health-readiness-and-drain.md) |
+| Which runtime path is failing? | [Logging, Metrics, and Tracing](logging-metrics-and-tracing.md) |
+| What must a structured event retain? | [Logging Contracts](logging-contracts.md) |
+| Which metric dimensions are governed? | [Metrics Packages](metrics-packages.md) |
+| Is the service within budget? | [Service Objectives and Error Budgets](service-objectives-and-error-budgets.md) |
+| How does context cross process boundaries? | [Tracing Pipelines](tracing-pipelines.md) |
+| Which signal requires action? | [Alert Rules](alert-rules.md) |
+| Which view explains impact? | [Dashboards and Panels](dashboards-and-panels.md) |
+| Can the evidence path survive failure? | [Telemetry Drills](telemetry-drills.md) |
+| What must accompany a decision? | [Operational Evidence Reports](operational-evidence-reports.md) |
+
+Preserve the observation window, release and dataset identities, rule and
+dashboard revisions, representative trace IDs, structured events, gaps, and
+decision record. Missing telemetry is an operating finding, not an empty pass.

@@ -9,8 +9,8 @@
       "sha": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9"
     },
     "actions/checkout": {
-      "ref": "v7.0.0",
-      "sha": "9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0"
+      "ref": "v7.0.1",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
     },
     "actions/configure-pages": {
       "ref": "v6",
@@ -25,12 +25,12 @@
       "sha": "cd2ce8fcbc39b97be8ca5fce6e763baed58fa128"
     },
     "actions/setup-node": {
-      "ref": "v4.4.0",
-      "sha": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e"
+      "ref": "v7.0.0",
+      "sha": "820762786026740c76f36085b0efc47a31fe5020"
     },
     "actions/setup-python": {
-      "ref": "v6.3.0",
-      "sha": "ece7cb06caefa5fff74198d8649806c4678c61a1"
+      "ref": "v7.0.0",
+      "sha": "5fda3b95a4ea91299a34e894583c3862153e4b97"
     },
     "Swatinem/rust-cache": {
       "ref": "v2.9.1",
@@ -65,16 +65,16 @@
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
-      "ref": "v2.3.3",
-      "sha": "6cbd405e2c4e67a21c47fa9e383d020e4e28b836"
+      "ref": "v3.0.2",
+      "sha": "3d0d9888cb7fd7b750713d6e236d1fcb99157228"
     },
     "actions/github-script": {
       "ref": "v9.0.0",
       "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
     },
     "astral-sh/setup-uv": {
-      "ref": "v8.2.0",
-      "sha": "fac544c07dec837d0ccb6301d7b5580bf5edae39"
+      "ref": "v8.3.2",
+      "sha": "11f9893b081a58869d3b5fccaea48c9e9e46f990"
     },
     "actions/setup-java": {
       "ref": "v5",

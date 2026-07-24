@@ -13,7 +13,7 @@ GH_RELEASE_CI_APPEARANCE_GRACE_SECONDS ?= 20
 GH_TEST_CARGO_NEXTEST_VERSION ?= 0.9.100
 CRATES_IO_API_USER_AGENT ?= bijux-atlas-release-check/1
 
-.PHONY: gh-fmt gh-lint gh-security gh-test gh-test-install-rust-tools gh-docs-install \
+.PHONY: gh-fmt gh-lint gh-security gh-security-evidence gh-test gh-test-install-rust-tools gh-docs-install \
 	gh-release-plan-github gh-release-plan-crates gh-release-require-cargo-token \
 	gh-release-wait-for-ci
 
@@ -21,7 +21,7 @@ gh-fmt: fmt ## Run GitHub formatting checks without modifying files
 
 gh-lint: lint ## Run GitHub lint checks
 
-gh-security: ## Run GitHub security checks through the Rust control plane
+gh-security-evidence:
 	@mkdir -p artifacts/governance "$(CARGO_TARGET_DIR)" "$(CARGO_HOME)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
 	@cargo run --locked -q -p bijux-atlas-dev -- governance exceptions validate --repo-root "$(CURDIR)" --format json || true
 	@cargo run --locked -q -p bijux-atlas-dev -- governance deprecations validate --repo-root "$(CURDIR)" --format json || true
@@ -39,6 +39,9 @@ gh-security: ## Run GitHub security checks through the Rust control plane
 		artifacts/governance/institutional-delta-inputs.json; do \
 		test -f "$${file}" || { echo "missing governance evidence file: $${file}" >&2; exit 1; }; \
 	done
+
+gh-security: ## Run GitHub security checks through the Rust control plane
+	@$(MAKE) gh-security-evidence
 	@cargo run --locked -q -p bijux-atlas-dev -- security validate --format json
 	@cargo run --locked -q -p bijux-atlas-dev -- security dependency-audit --format json
 

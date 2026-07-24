@@ -4,47 +4,228 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Signing and Provenance
 
-Release integrity depends on declared signing and provenance inputs rather than
-after-the-fact manual notes.
+Atlas release verification currently uses a deterministic SHA-256 checksum
+ledger and repository-governed provenance. The policy names this mechanism
+`internal-checksum-ledger` in `keyless-local` mode. Detached cryptographic
+signatures are not yet part of this trust model.
 
-## Purpose
+That distinction matters. The current evidence can prove that governed files
+match the recorded release set and that the set declares a specific source and
+policy identity. It does not provide an external signer identity or a public-key
+chain of trust.
 
-Use this page to verify the release trust chain before any distribution or
-installation claim is made.
+## Trust Bootstrap
 
-## Source of Truth
+The checksum ledger cannot authenticate itself. A consumer needs an expected
+release identity and an independently trusted source for the policy, ledger, or
+outer packet digest. If an attacker can replace the artifacts, ledger,
+provenance, policy, and verification result together, internal consistency will
+not reveal the substitution.
 
-- `ops/release/signing/checksums.json`
-- `ops/release/signing/release-sign.json`
-- `ops/release/signing/release-verify.json`
-- `ops/release/provenance.json`
-- `ops/release/signing/policy.yaml`
+```mermaid
+flowchart LR
+    Expectation[Independently obtained release identity or digest] --> Packet[Received packet]
+    Packet --> Ledger[Checksum ledger]
+    Ledger --> Members[Governed artifact bytes]
+    Packet --> Provenance[Declared source and toolchain]
+    Members --> Verify[Local verification]
+    Provenance --> Verify
+    Verify --> Decision{Matches trusted expectation?}
+```
+
+Record how the expectation was obtained. A value copied from inside the same
+untrusted packet is not an independent trust anchor.
+
+## Govern Withdrawal and Replacement
+
+Integrity remains true for bytes that are no longer safe or authorized. A
+consumer therefore needs release-state information outside the packet: active,
+superseded, withdrawn, or revoked. The current checksum ledger contains no
+external timestamp, revocation service, or transparency entry.
+
+| Event | Consumer action |
+| --- | --- |
+| routine supersession. | Apply compatibility and minimum-version policy; retain the older packet for supported rollback only. |
+| vulnerability withdrawal. | Reject new deployment even when checksums pass, and identify affected installed releases. |
+| trust-channel compromise. | Replace the independently trusted digest or policy through a separate recovery channel. |
+| provenance correction. | Issue a new release identity and packet; never rewrite the old provenance in place. |
+| signer introduction or rotation. | Define overlap, trusted identities, verification policy, and retirement before requiring the new mechanism. |
+
+Preserve the release-state source and observation time in the consumer receipt.
+A packet cannot authoritatively declare itself unrevoked using only records it
+contains.
+
+## Separate the Trust Claims
+
+| Claim | Current mechanism | Current boundary |
+| --- | --- | --- |
+| integrity | SHA-256 ledger over governed members | detects byte changes relative to the received ledger |
+| internal coherence | manifest, provenance, ledger, bundle, and verifier checks | detects disagreement inside one release set |
+| source attribution | declared Git SHA and governance revision | describes origin but does not authenticate the producer |
+| authenticity | no detached signature or external signer identity | must come from an independently trusted channel or outer digest |
+| freshness | release policy and trusted channel metadata | no external timestamp or transparency-log proof |
+| deployment authorization | environment policy and operator decision | not granted by checksum verification alone |
+
+Do not compress these into “signed” or “verified.” State which claim passed and
+which trust anchor supplied it.
+
+## Substitution and Replay Analysis
+
+The verifier's result depends on which inputs an attacker or stale channel can
+replace together.
+
+| Event | Detected by the current mechanism? | Additional authority needed |
+| --- | --- | --- |
+| one governed member changes while the ledger remains trusted | yes, recomputed SHA-256 differs | none beyond the trusted ledger expectation |
+| manifest, provenance, or packet disagrees with other governed members | yes, when the applicable cross-record check executes | fresh verifier and complete policy coverage |
+| member and its ledger entry are replaced together | not from the replaced ledger alone | independently trusted ledger or outer packet digest |
+| the entire coherent packet, ledger, provenance, and verifier result are replaced | no | external signer, independently trusted digest, or equivalent channel authentication |
+| a valid older release is replayed | not by integrity verification | freshness, minimum-version, withdrawal, and compatibility policy |
+| a mutable tag resolves to different bytes | only after resolving and comparing immutable digest identity | channel reconciliation and immutable reference policy |
+
+Preserve the resolved immutable identity before verification. Otherwise a later
+channel lookup may observe different bytes while appearing to repeat the same
+human-readable release request.
 
 ## Trust Chain
 
-The release trust chain currently ties together:
+```mermaid
+flowchart LR
+    S["Source revision and governance identity"] --> P["provenance.json"]
+    C["Chart, policy, audit, SBOM, and evidence assets"] --> L["checksums.json"]
+    M["evidence manifest"] --> L
+    T["evidence bundle.tar"] --> L
+    Y["signing policy"] --> P
+    P --> V["release-verify.json"]
+    L --> V
+    T --> V
+    V --> D{"status: ok?"}
+    D -->|yes| R["Integrity evidence accepted"]
+    D -->|no| X["Release rejected"]
+```
 
-- the checksum inventory for governed release artifacts
-- the signing output generated for the release
-- the verification output, which records contract checks and overall status
-- provenance that binds the release to Git identity, policy path, and toolchain
+## Governed Artifacts
 
-## Operator Verification Path
+The signing policy requires checksums for more than the application package.
+Its release set includes:
 
-Before distribution, confirm:
+- the packaged Atlas Helm chart and evidence tarball;
+- the evidence manifest and profile-specific SPDX SBOMs;
+- authorization model and access-policy snapshots;
+- audit schema, retention policy, and audit verification reports;
+- governance exceptions, deprecations, compatibility warnings, breaking-change
+  reports, and institutional-delta evidence.
 
-- `checksums.json` covers the required release artifacts
-- `release-verify.json` reports `status: ok`
-- provenance points to the expected release identity and signing policy
-- the evidence manifest and checksums still agree on the artifact set
+This binds deployable material to the policies and reports used to approve it.
+`ops/release/signing/checksums.json` records each path, artifact kind, and SHA-256
+digest.
 
-## Related Contracts and Assets
+## Provenance Identity
 
-- `ops/release/signing/`
-- `ops/release/evidence/`
-- `ops/release/provenance.json`
+`ops/release/provenance.json` records:
+
+- the release ID and source Git SHA;
+- the governance revision;
+- the checksum ledger and evidence-manifest paths;
+- the signing-policy path;
+- the toolchain inventory used by the release process;
+- the generator that produced the record.
+
+Treat those fields as one identity. A checksum match against provenance from a
+different revision is not sufficient release evidence.
+
+## Offline Verification
+
+The policy requires a local-only verification path and marks air-gapped
+verification as supported:
+
+```bash
+bijux-atlas-dev ops evidence verify \
+  ops/release/evidence/bundle.tar \
+  --format json
+```
+
+Before promotion or distribution:
+
+1. Obtain the evidence bundle, checksum ledger, provenance, policy, and
+   verification report from the same release set.
+2. Confirm the expected release ID, Git SHA, governance revision, and toolchain
+   inventory in `provenance.json`.
+3. Verify every required item in `checksums.json`; missing and unexpected paths
+   require investigation.
+4. Verify the evidence bundle and manifest agree on their governed assets.
+5. Require `ops/release/signing/release-verify.json` to report `status: ok`, no
+   errors, and successful `REL-MAN`, `REL-OPS`, `REL-PROV`, `REL-SIGN`, and
+   `REL-TAR` contract checks.
+6. Preserve the verified records with the promoted release.
+
+The verifier reads local evidence files, so it does not depend on network
+availability or a remote transparency service.
+
+## Consumer Verification Receipt
+
+Retain a local receipt with the expected release identity, source of that
+expectation, packet or outer digest, verifier version, policy digest, ledger
+digest, verification time, findings, and final deployment decision. Store the
+receipt outside the received packet or protect it with a separate custody
+boundary.
+
+```mermaid
+flowchart LR
+    Channel[Trusted channel expectation] --> Receipt[Consumer receipt]
+    Packet[Received release packet] --> Verify[Local verifier]
+    Policy[Locally trusted policy or digest] --> Verify
+    Verify --> Receipt
+    Receipt --> Authorize{Environment policy authorizes deployment?}
+    Authorize -- yes --> Deploy[Deploy exact verified bytes]
+    Authorize -- no --> Quarantine[Quarantine and investigate]
+```
+
+Verification is an input to authorization. An internally coherent packet can
+still be revoked, too old, incompatible, or disallowed in the target
+environment.
+
+## What Verification Establishes
+
+A successful verification establishes that:
+
+- required governed artifacts are present;
+- their bytes match the recorded SHA-256 digests;
+- the evidence bundle, manifest, and checksum ledger are internally consistent;
+- provenance declares the expected release, source, governance, policy, and
+  toolchain identities;
+- the release verification contracts passed when the report was generated.
+
+It does not establish who produced the files, protect against replacement of
+the entire evidence set by an attacker with repository-write authority, or
+provide third-party timestamping. Those guarantees require a separately managed
+signing identity, detached signatures, and an external trust or transparency
+system.
+
+## Replay and Downgrade
+
+A perfectly coherent older packet can still be wrong for the intended
+deployment. Compare release sequence, supported compatibility direction,
+policy revision, vulnerability acceptance, revocation or withdrawal status,
+and environment minimums before use. The current checksum model has no
+external timestamp or transparency log, so freshness must be established by
+release policy and trusted channel metadata.
+
+## Failure Handling
+
+Reject the release when a digest differs, a required item is absent, provenance
+does not match the intended revision, or the verification report is not clean.
+Do not regenerate checksums over unexplained artifacts. Rebuild the release from
+the intended source, collect a new coherent evidence set, and repeat
+verification.
+
+The authoritative records are under `ops/release/signing/`,
+`ops/release/evidence/`, and `ops/release/provenance.json`.
+
+See [Supply Chain and Artifact Trust](../security/supply-chain-and-artifact-trust.md)
+for dependency, channel, withdrawal, and consumer-authorization boundaries.

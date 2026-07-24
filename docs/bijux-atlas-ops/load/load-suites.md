@@ -4,54 +4,176 @@ audience: operators
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Load Suites
+# Load Suite Catalog
 
-Load suites under `ops/load/suites/` define the named workload families Atlas
-uses for operational verification.
+The load suite registry is the executable acceptance catalog for Atlas
+performance and resilience. It currently declares 40 scenarios. Thirty-nine are
+must-pass; `redis-optional` is comparative rather than release-blocking.
 
-## Purpose
+## Lane Coverage
 
-Use the load suites registry to understand which workload families are must-pass,
-which lanes they run in, and which metrics and thresholds govern the result.
+| Lane | Declared scenarios | Intended decision |
+| --- | ---: | --- |
+| `smoke` | 2 | Fast mixed-traffic and cheap-path survival confidence |
+| `pr` | 2 | Pull-request regression signal for the same focused surface |
+| `load-ci` | 2 | Dedicated CI execution of the focused load gate |
+| `full` | 32 | Broad capacity, pressure, resilience, and delivery review |
+| `hpa-validation` | 1 | Focused autoscaling behavior |
+| `nightly` | 40 | Complete scheduled load catalog |
+| `load-nightly` | 40 | Complete dedicated load lane |
 
-## Source of Truth
+Lane membership is declared per scenario in
+`ops/load/suites/suites.json`. Do not infer that a scenario ran because a lane
+name sounds broad; preserve the selected scenario list in the report.
 
-- `ops/load/suites/suites.json`
-- `ops/load/k6/suites/`
-- `ops/load/contracts/suite-schema.json`
-- `ops/load/generated/load-summary.json`
+## Suite Contract
 
-## Suite Taxonomy
+```mermaid
+flowchart LR
+    N["Name and purpose"] --> R["Scenario or specialized runner"]
+    R --> L["Execution lanes"]
+    L --> M["Required metrics"]
+    M --> T["Scenario thresholds"]
+    T --> V["Must-pass verdict"]
+```
 
-`ops/load/suites/suites.json` defines suite entries with:
+Each registry entry binds:
 
-- a `name`
-- a `purpose`
-- a `kind`, such as `k6` or a specialized script runner
-- a scenario or runner binding
-- `must_pass` status
-- the CI or review lanes in `run_in`
-- expected metrics and inline threshold expectations
+- a durable scenario name and operating question;
+- a K6 script or specialized runner;
+- the lanes in which it must execute;
+- metrics that must be present for evidence to be complete;
+- absolute latency, failure, startup, memory, or survival budgets;
+- whether failure blocks the suite.
 
-Representative suite families include:
+The registry uses the pinned request set at
+`ops/load/queries/pinned-v1.json`. A workload with different requests is a
+different experiment and cannot silently reuse the same baseline.
 
-- baseline confidence checks such as `mixed` and `cheap-only-survival`
-- latency and warmup checks such as `warm-steady-state-p99`,
-  `cold-start-p99`, and `cold-start-prefetch-5pods`
-- resilience checks such as `stampede`, `store-outage-under-spike`,
-  `noisy-neighbor-cpu-throttle`, and `pod-churn`
-- workload-specific families such as `mixed-workload`,
-  `ingest-query-workload`, `heavy-query-workload`, `read-heavy-workload`, and
-  `write-heavy-workload`
+## Current Executable Boundary
 
-## Evidence Produced
+The 40-entry registry contains 37 K6 entries and three specialized `script`
+entries. It is broader than the manifest consumed by `ops load run`:
+`ops/load/load.toml` currently wires only `mixed`, `diff_heavy`, and
+`hpa_validation_short` to K6 scripts.
 
-Suite execution should produce:
+The three specialized registry entries are `cold-start-prefetch-5pods`,
+`load-under-rollout`, and `load-under-rollback`. Their runner paths point to
+Python files under an absent historical source layout. They are specifications,
+not executable runners in the current repository.
 
-- the selected suite list
-- scenario coverage against `ops/load/generated/load-summary.json`
-- the expected metrics for each suite
-- the pass or fail result relative to thresholds
+```mermaid
+flowchart LR
+    Catalog[40-entry suite registry] --> Declared[Lane and threshold intent]
+    Manifest[3-suite load.toml] --> OpsRun[ops load run]
+    OpsRun --> K6[Measured K6 execution]
+    Catalog -. only shared names are runnable .-> Manifest
+    Missing[3 absent specialized runners] --> Gap[Declared coverage gap]
+```
+
+Before reporting lane coverage, intersect the requested registry members with
+the executable manifest and verify every referenced file. A generated catalog
+summary can be complete while the execution surface remains much smaller.
+
+## Reconcile Declared and Executed Coverage
+
+A lane name is a selection request, not proof of execution. Reconciliation must
+join the requested registry members to runnable implementations and then to
+records emitted by the same run.
+
+```mermaid
+flowchart LR
+    Requested["requested scenario IDs"] --> Runnable{"runner exists and is wired?"}
+    Runnable -- no --> Incomplete["coverage incomplete"]
+    Runnable -- yes --> Executed{"execution record present?"}
+    Executed -- no --> Incomplete
+    Executed -- yes --> Verdict{"required metrics and verdict present?"}
+    Verdict -- no --> Incomplete
+    Verdict -- yes --> Passed{"scenario passed?"}
+    Passed -- no --> Failed["lane failed"]
+    Passed -- yes --> Complete["scenario complete"]
+```
+
+| Evidence set | Required meaning | Failure meaning |
+| --- | --- | --- |
+| Requested | Exact selected registry members | Selection is unknown |
+| Runnable | Every member has a wired runner | Coverage is not executable |
+| Executed | Every runner has a record | Execution or reporting stopped |
+| Metrics | Every required metric is present | Execution is incomplete |
+| Verdicts | Policy evaluated every metric record | Acceptance is undecided |
+
+The absent specialized runners currently prevent complete execution of
+`full`, `nightly`, and `load-nightly`. A report for any of those lanes must name
+the missing IDs and fail coverage; silently reducing the selected set changes
+the experiment.
+
+Classify each incomplete member as unresolved runner, runner start failure,
+interrupted execution, missing metric, invalid record, or threshold failure.
+Preserve every attempt. Replacing a failed attempt with a successful retry
+removes evidence about instability and is not an acceptable reconciliation.
+
+## Restore Scenario Preconditions
+
+Scenarios in one lane can change cache contents, HPA replicas, pod revisions,
+catalog state, dependency health, and background work. The next scenario is
+valid only after its declared starting condition is observed, not merely after
+the prior process exits.
+
+| Precondition | Evidence before the scenario starts |
+| --- | --- |
+| release and dataset | exact runtime, catalog, store, and dataset identities match the plan |
+| cache | required cold, warm, pinned, or empty state is observed and generation-bound |
+| capacity | replica count, resource limits, HPA state, node pressure, and generator headroom match the profile |
+| dependencies | store, Redis, catalog, DNS, and telemetry have the required healthy or injected-failure state |
+| background work | prior rollout, warmup, recovery, compaction, and request drain have completed or are intentionally part of the scenario |
+| observation | required metrics, logs, traces, clocks, and release labels are available before offered load begins |
+
+```mermaid
+stateDiagram-v2
+    [*] --> Reconcile
+    Reconcile --> Ready: all declared preconditions observed
+    Reconcile --> Incomplete: state cannot be established
+    Ready --> Execute
+    Execute --> Preserve: results and residual state retained
+    Preserve --> Reconcile: next scenario
+```
+
+Use isolated targets when restoration cannot be proven cheaply or when a fault
+may leave ambiguous state. Preserve residual state from the previous scenario
+as evidence; resetting without recording it can hide slow recovery, leaked
+work, or persistent corruption. Lane ordering must not become an undocumented
+input to the result.
+
+## Scenario Families
+
+- Core service: `mixed`, `cheap-only-survival`, warm steady state, and cold
+  start.
+- Cache and store: stampede, cache thrashing, artifact reload, dataset churn,
+  Redis comparison, and store outage.
+- Query shape: sharded fanout, hot spots, diff-heavy, cursor stress, and mixed
+  gene/sequence traffic.
+- Capacity: read-heavy, write-heavy, ingest/query, CPU, disk I/O, and thread
+  exhaustion.
+- Delivery: pod churn, rollout, rollback, HPA validation, and multi-release
+  access.
+- Endurance: long-running stability, memory-leak detection, and soak.
+- Security: response abuse, denial-of-service resilience, malicious input,
+  injection, penetration simulation, and regression suites.
+
+## Accepting a Suite Result
+
+A suite result is valid only when the scenario identity, runner, query pack,
+profile, required metrics, and threshold version are recorded together. Missing
+metrics fail completeness even if the process exits successfully. Must-pass
+scenarios block the enclosing lane when their contract fails.
+
+`ops/load/generated/load-summary.json` currently reports complete scenario
+coverage and a deterministic seed of `11001`. That generated inventory proves
+registry coverage; it does not prove that a particular workload execution
+passed.
+
+Use [Thresholds and Budgets](thresholds-and-budgets.md) for pass semantics and
+[Baseline Management](baseline-management.md) for regression comparisons.

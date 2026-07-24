@@ -1,104 +1,182 @@
 ---
 title: Upgrades and Rollback
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Upgrades and Rollback
 
-Atlas upgrades should preserve two invariants:
+An Atlas upgrade changes a named software and deployment release while
+preserving governed API behavior, published dataset access, telemetry, and
+explicit configuration semantics. Runtime rollback restores the supported
+previous software/deployment release. Dataset-pointer rollback and durable data
+recovery are different procedures.
 
-- contract-owned surfaces remain understood and validated
-- serving state stays recoverable if a rollout goes wrong
+## Decide Which Plane Failed
 
-## Upgrade Flow
+| Symptom | Recovery plane | First authority |
+| --- | --- | --- |
+| candidate image, chart, config, readiness, or request regression | runtime and deployment rollback | Helm release history, compatibility table, and candidate evidence. |
+| wrong dataset promoted while immutable artifacts remain intact | dataset-pointer rollback | catalog history, `manifest.lock`, promotion rules, and dataset index. |
+| missing or corrupt catalog/artifact bytes | backup and recovery | backup manifest, integrity evidence, and restore procedure. |
+| incompatible client contract | stop promotion or restore compatible runtime | OpenAPI/API compatibility result and client support policy. |
 
-```mermaid
-flowchart TD
-    Validate[Validate runtime and contracts] --> Rollout[Roll out new runtime]
-    Rollout --> Observe[Observe health and load]
-    Observe --> Keep[Keep rollout]
-    Observe --> Rollback[Rollback if needed]
-```
+Do not roll back immutable dataset artifacts because runtime code fails. Do not
+use Helm rollback as a substitute for restoring corrupt durable state.
 
-This upgrade flow keeps rollout discipline visible. Atlas upgrades should be validated, observed,
-and explicitly kept or rolled back rather than treated as one-way jumps.
+## Compatibility Directions
 
-## Rollback Flow
+| Boundary | Forward question | Reverse question |
+| --- | --- | --- |
+| API and clients | Can supported clients consume the candidate? | Do clients still work after runtime rollback? |
+| configuration | Can the candidate read the selected configuration? | Can the previous runtime read state left by the candidate? |
+| chart and values | Can the candidate render and become ready? | Can the previous chart and values be restored coherently? |
+| catalog and artifacts | Can the candidate serve the published release? | Can the previous runtime serve the same selected release? |
+| cache and transient state | Can entries be reused or rebuilt safely? | Can candidate-created entries be ignored or invalidated? |
+| telemetry | Are candidate signals complete and attributable? | Can recovery be proven with previous-release signals? |
+
+Forward compatibility permits rollout. Reverse compatibility permits routine
+rollback. A supported forward transition without a supported reverse path
+requires a different recovery plan and must be visible before traffic changes.
+
+## Bind Baseline and Candidate
+
+Before changing traffic, record:
+
+- source revision, product version, chart digest, and image digest for both
+  baseline and candidate;
+- exact values/profile identity and effective runtime configuration;
+- published dataset IDs, catalog selection, and manifest-lock digests;
+- supported transition row from the compatibility table;
+- API and configuration migration results;
+- readiness, correctness, telemetry, security, and load thresholds;
+- immutable rollback artifacts and the operator decision deadline.
 
 ```mermaid
 flowchart LR
-    Problem[Operational problem] --> Scope[Determine runtime vs store scope]
-    Scope --> RuntimeRollback[Rollback runtime]
-    Scope --> StoreRollback[Rollback serving state if required]
+    Baseline[Verified baseline] --> Candidate[Deploy candidate]
+    Candidate --> Traffic[Prove candidate receives traffic]
+    Traffic --> Observe[Evaluate invariants and budgets]
+    Observe -->|pass| Promote[Promote and retain baseline]
+    Candidate -->|startup failure| Rollback[Restore supported previous release]
+    Observe -->|regression| Rollback
+    Rollback --> Verify[Verify identity, traffic, correctness, and cleanup]
+    Verify -->|pass| Restored[Restored baseline]
+    Verify -->|fail| Incident[Enter incident or data recovery]
 ```
 
-This rollback flow explains one of the most important operator distinctions in Atlas: not every
-incident needs store-state rollback, and not every rollback should start there.
+Readiness without traffic is not candidate validation. Aggregate metrics without
+release labels can hide a failed candidate behind healthy baseline replicas.
 
-## Operator Guidance
+## Record Candidate State Changes
 
-- separate runtime rollback from store-state rollback in your thinking
-- verify health, readiness, and key query paths after rollout
-- keep rollback paths explicit before you need them
-- use compatibility and contract evidence as rollout input, not only hope and manual spot checks
+Before traffic begins, create a ledger of every boundary the candidate may
+change. Update it from observed actions during rollout. The ledger decides
+whether controller rollback is sufficient or another recovery plane is needed.
 
-## What to Watch During Upgrade
+| Boundary | Reverse-path requirement |
+| --- | --- |
+| Kubernetes objects. | Previous objects render coherently, regain ownership, and leave no candidate-only resource active. |
+| runtime configuration. | Previous parser accepts the effective values and Secret references after candidate removal. |
+| credentials and trust. | Overlap material remains valid until previous replicas serve traffic; revocation is separately gated. |
+| cache entries. | Keys are version-compatible or the candidate namespace can be discarded without store overload. |
+| catalog pointer. | The previous runtime supports the selected pointer, or an explicit dataset-pointer decision is recorded. |
+| immutable artifacts. | Candidate use creates no mutation; any integrity concern enters durable-data recovery. |
+| policy and telemetry. | Previous release regains required admission, audit, metric, log, and trace coverage. |
 
-- readiness instability
-- unusual rejection or error patterns
-- metrics or traces indicating saturation changes
-- catalog or dataset discoverability regressions
+For each touched boundary, retain the before identity, candidate identity,
+rollback action, and restored identity. An unplanned shared-state mutation
+stops routine promotion even when request metrics remain within budget.
 
-## Rollout Question That Saves Time
+## Repository Planning Checks
 
-Ask first whether the change affected runtime behavior, serving-store state, or both. That answer
-usually determines the safest rollback path.
+The repository contains hidden release-planning helpers. They are useful for
+inspecting checked-in policy, but they are not deployment execution or release
+proof.
 
-## Purpose
+```bash
+bijux-atlas-dev release compatibility-check \
+  --from-version 0.2.0 \
+  --to-version 0.1.1 \
+  --format json
 
-This page explains the Atlas material for upgrades and rollback and points readers to the canonical checked-in workflow or boundary for this topic.
+bijux-atlas-dev release rollback-plan \
+  --from-version 0.2.0 \
+  --to-version 0.1.1 \
+  --format json
+```
 
-## Source of Truth
+Run compatibility checking separately. The current rollback-plan implementation
+returns a plan with `status: ok` without verifying that the supplied version
+pair exists in the compatibility table. It also loads the
+`rollback-after-successful-upgrade` step list regardless of the supplied pair.
+Never interpret plan status as transition support.
 
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/k8s/install-matrix.json`
-- `ops/release/evidence/manifest.json`
-- `ops/report/generated/readiness-score.json`
-- `ops/e2e/scenarios/upgrade/upgrade-patch.json`
-- `ops/e2e/scenarios/upgrade/upgrade-minor.json`
-- `ops/e2e/scenarios/upgrade/rollback-after-failed-upgrade.json`
-- `ops/e2e/scenarios/upgrade/rollback-after-successful-upgrade.json`
+## Simulation Boundary
 
-## Upgrade Path in This Repository
+`ops helm upgrade` and `ops helm rollback` currently target the kind simulation
+path. Rollback supports only `--to previous` and requires subprocess, write, and
+network capability grants. It does not constitute a production-cluster
+rollback interface.
 
-A real Atlas upgrade path is not only “deploy the new version.” It is:
+```bash
+bijux dev atlas ops helm rollback \
+  --cluster kind \
+  --profile kind \
+  --to previous \
+  --allow-subprocess \
+  --allow-write \
+  --allow-network \
+  --evidence \
+  --format json
+```
 
-1. confirm the install matrix and rollout safety contract for the target profile
-2. verify the release evidence manifest for the candidate
-3. apply the upgrade scenario that matches the version change type
-4. review readiness, health, and load or observability signals during rollout
-5. keep or roll back based on evidence, not instinct
+Use a unique run ID and artifact root for an executed rehearsal. Retain the
+command output together with Helm history, Kubernetes rollout state, request
+checks, release-labeled telemetry, and cleanup inspection.
 
-## Required Signals During Upgrade
+## Dataset-Pointer Rollback
 
-Operators should treat these as first-class upgrade inputs:
+The governed dataset rollback strategy is `manifest-lock-pointer`:
 
-- readiness and health stabilization
-- unusual error or rejection patterns
-- latency or overload changes under real traffic
-- evidence that the target release identity is the one actually serving
+1. select a previous dataset ID;
+2. validate its `manifest.lock` integrity;
+3. publish the previous pointer without mutating old artifacts.
 
-## Main Takeaway
+The policy permits a maximum depth of three and requires the manifest lock,
+promotion rules, and dataset index. Exceeding that boundary is not a deeper
+runtime rollback; it requires an explicit recovery decision.
 
-An upgrade is safe only when the target release, the rollout path, and the live
-signals all agree. If release evidence says one thing and readiness or traffic
-behavior says another, the system is telling the operator to stop and resolve
-the disagreement before promotion.
+## Current Evidence Limits
 
-## Stability
+The compatibility matrix supports adjacent transitions: `0.1.0` to `0.1.1`,
+`0.1.1` to `0.2.0`, and their reverse rollback paths. Both checked-in rollback
+scenario files declare `0.2.0` to `0.1.0`, which is absent from the matrix.
 
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+The OCI transition evidence is marked `simulated` and uses repeated-digit chart
+and image digests. The installation evidence bundle is marked `placeholder`.
+The rollback report schema requires only profile, cluster, namespace, and
+status; it does not require release identity, request correctness, traffic,
+timings, telemetry, or cleanup proof. These assets are specifications and
+fixtures, not evidence of a completed supported transition.
+
+## Acceptance
+
+Promote only when the candidate receives governed traffic and all declared
+compatibility, migration, dataset, correctness, readiness, telemetry, security,
+and load checks pass. Accept rollback only when the supported previous release
+identity is restored, serves traffic, returns correct results, preserves the
+selected dataset, and leaves no candidate-owned partial state.
+
+Preserve the first violated signal and every recovery action. If the previous
+release cannot recover or shared state is damaged, stop cycling releases and
+enter [Backup and Recovery](backup-and-recovery.md). Use [Rollback
+Drills](rollback-drills.md) to build the missing execution evidence.
+
+An aborted rollout is not automatically a successful rollback. Record whether
+the candidate changed shared configuration, catalog pointers, caches, or other
+state before it was removed. Verify each touched boundary against the restored
+release rather than relying only on controller status.

@@ -4,67 +4,87 @@ audience: maintainers
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Inventory Registry
 
-The inventory registry under `ops/inventory/registry.toml` turns checks and
-surface claims into auditable data.
+`ops/inventory/registry.toml` is the executable catalog for Atlas development
+checks and suites. It is not the inventory for every operations asset; the
+surrounding `ops/inventory/` directory contains separate authorities for
+contracts, ownership, layers, gates, surfaces, policies, pins, and stack data.
 
-## Inventory Model
+The current registry declares 124 checks and 21 suites. Of those checks, 22 are
+public and 102 are internal.
 
 ```mermaid
-flowchart TD
-    Inventory[Inventory registry] --> Surfaces[Surfaces]
-    Inventory --> Packages[Packages]
-    Inventory --> Contracts[Contracts]
-    Inventory --> Reports[Reports]
-    Inventory --> Workflows[Workflows]
-    Inventory --> Assets[Assets]
-
-    Surfaces --> Awareness[Registry-backed repository awareness]
-    Packages --> Awareness
-    Contracts --> Awareness
-    Reports --> Awareness
-    Workflows --> Awareness
-    Assets --> Awareness
+flowchart LR
+    Registry[registry.toml] --> Parse[Typed loader]
+    Parse --> Validate[Identity and reference validation]
+    Validate --> Select[Suite and selector expansion]
+    Select --> Capability[Effect authorization]
+    Capability --> Runner[Built-in check implementation]
+    Runner --> Evidence[Per-check result]
 ```
 
-The purpose of this page is to help maintainers see inventory as repository memory, not as another
-incidental metadata file. Atlas uses inventories so claims about checks, surfaces, and authorities
-can be inspected and validated later.
+## Check Contract
 
-## Source Anchor
+Every check row declares its ID, domain, title, documentation path, tags, suite
+memberships, required effects, time budget, and visibility. Owner, severity,
+mode, rationale, fix hint, and evidence paths may be explicit; the loader fills
+documented defaults when they are omitted.
 
-- [`ops/inventory/registry.toml`](/Users/bijan/bijux/bijux-atlas/ops/inventory/registry.toml:1)
+That distinction affects review. A value visible from `check explain` may be a
+loader default rather than text authored in `registry.toml`. Consumers should
+rely on the loaded check model for execution and on the source row when
+reviewing whether an intent was explicitly declared.
 
-## What Lives In The Registry
+Effects also determine the default mode: checks needing only `fs_read` are
+static; any other effect makes the inferred mode effectful. Execution refuses
+missing capabilities rather than silently granting them.
 
-The current registry records governed checks with fields such as:
+## Suite Contract
 
-- `id`
-- `domain`
-- `title`
-- `docs`
-- `tags`
-- `suites`
-- `effects_required`
-- `budget_ms`
-- `visibility`
+A suite can select checks by explicit IDs, domains, and tags. Expansion is a
+union of explicit matches and filter matches, deduplicated and ordered by check
+ID. Selecting a suite still applies visibility, slow-check, domain, severity,
+mode, tag, title, and ID selectors from the invocation.
 
-That structure means a check is not only runnable code. It is also a named surface with a docs
-anchor, runtime classification, and suite placement.
+Internal checks and checks tagged `slow` are excluded unless explicitly
+included. A suite name alone therefore does not describe the complete executed
+set; the invocation and selected IDs belong in the evidence.
 
-## Why Maintainers Should Care
+## Registry Validation
 
-- inventory-backed surfaces are easier to audit than hidden assumptions in scripts
-- docs can point to named checks and suites instead of fuzzy descriptions
-- governance can validate drift between declared surfaces and the live repository
-- release, docs, and ops work all benefit from the same shared registry vocabulary
+The loader rejects malformed domains, effects, visibility, modes, severities,
+tags, check IDs, and suite IDs. It also rejects duplicate check identities,
+duplicate normalized titles, zero budgets, empty required effects, unknown
+suite members, and tags outside the declared vocabulary.
 
-## Main Takeaway
+The registry doctor adds two checks that ordinary loading does not:
 
-The inventory registry is how Atlas turns repository self-knowledge into data. When a maintainer
-adds or changes a governed surface, updating the registry is part of making that change legible to
-the rest of the system.
+- checks and suites must be sorted by ID; and
+- every registered check must have exactly one built-in implementation, with no
+  unregistered built-in checks.
+
+Some repository checks validate additional relationships, including docs paths
+for required suites. The core loader itself stores a docs path as a string and
+does not verify that every referenced page exists.
+
+## Inspect the Catalog
+
+```bash
+bijux-atlas-dev check list \
+  --repo-root . \
+  --include-internal \
+  --include-slow \
+  --format json
+bijux-atlas-dev check explain checks_repo_law_metadata_complete_and_unique \
+  --repo-root . \
+  --format json
+bijux-atlas-dev check doctor --repo-root . --format json
+```
+
+Use the stable check ID as the automation identity. Titles and terminal layout
+are for people; suite expansion, effect declarations, structured results, and
+exit status determine what a run actually established.

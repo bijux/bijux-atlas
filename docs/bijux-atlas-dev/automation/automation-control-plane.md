@@ -4,177 +4,155 @@ audience: maintainer
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Automation Control Plane
 
-Atlas uses `bijux dev atlas ...` as the canonical installed automation surface for repository
-checks, docs workflows, governance validation, and machine-readable evidence. The direct binary that
-backs that namespace is `bijux-atlas-dev`, and `make` remains the convenience wrapper for the most
-common maintainer lanes.
+`bijux dev atlas ...` is the installed maintainer interface for Atlas. The
+`bijux-atlas-dev` binary implements the same control plane inside the repository.
+It discovers governed checks and suites, enforces effect capabilities, and
+writes structured evidence under the selected artifact root.
 
-## Why This Exists
+The control plane coordinates repository work. It does not redefine product
+contracts, waive policy, or turn a generated report into its own authority.
+
+## Sources of Authority
 
 ```mermaid
 flowchart LR
-    Scripts[Ad hoc scripts] --> Drift[Behavior drift]
-    Drift --> HiddenRules[Hidden policy]
-    HiddenRules --> FragileCI[Fragile CI]
-    ControlPlane[bijux dev atlas] --> SharedRules[Shared command surface]
-    SharedRules --> Evidence[Deterministic evidence]
-    Evidence --> Reviewable[Reviewable automation]
+    CommandRegistry[Dev command registry] --> CLI[Maintainer CLI]
+    CheckRegistry[Check registry] --> Selection[Check selection]
+    SuiteRegistry[Suite registries] --> Scheduling[Suite scheduling]
+    ReportRegistry[Report registry] --> Validation[Report validation]
+    CLI --> Run[Execution]
+    Selection --> Run
+    Scheduling --> Run
+    Run --> Evidence[Run-scoped evidence]
+    Validation --> Evidence
 ```
 
-The goal is simple: one execution surface, one capability model, and one place to document automation behavior.
+| Concern | Governing source | What it decides |
+| --- | --- | --- |
+| public top-level commands | `configs/sources/governance/governance/cli-dev-command-surface.json` | which command families belong to the maintainer surface. |
+| registered checks | `configs/sources/governance/governance/checks.registry.json` | check identity, owner, severity, mode, tags, suites, budgets, and evidence paths. |
+| executable suites | `configs/sources/governance/governance/suites/` | suite membership, ordering, execution mode, and report declarations. |
+| governed reports | `configs/registry/reports/reports.registry.json` | report identity, version, schema, and example path. |
+| common lane wrappers | `makes/ci.mk` and domain make fragments | reviewed shortcuts to exact control-plane commands. |
 
-This contrast diagram explains why Atlas invests in a control plane instead of accumulating scripts.
-Shared commands and explicit capabilities keep local runs, CI, and docs closer to the same truth.
+Generated indexes and reports observe those sources. When an index disagrees
+with its registry, fix or regenerate the derived artifact; do not treat the
+index as a competing rule set.
 
-## Surface Model
+## Select the Narrowest Surface
+
+| Question | Command |
+| --- | --- |
+| What checks exist for this domain or tag? | `bijux dev atlas check list --domain <domain> --format json`. |
+| Why does one check exist? | `bijux dev atlas check explain <check-id> --format json`. |
+| Can I rerun only one check? | `bijux dev atlas check run --id <check-id> --format json`. |
+| What executable suites exist? | `bijux dev atlas suites list --format json`. |
+| What belongs to a suite? | `bijux dev atlas suites describe --suite <suite> --format json`. |
+| Which report contracts are registered? | `bijux dev atlas reports list --format json`. |
+| Are the public docs structurally valid? | `bijux dev atlas docs validate --format json`. |
+| Is the governed threat registry internally coherent? | `bijux dev atlas security threats verify --format json`. |
+
+There are two distinct uses of the word *suite*. `check run --suite ci_fast`
+filters the check registry by lane membership. `suites run --suite checks`
+executes the named suite registry with scheduling and suite-result artifacts.
+Inspect the selected surface before assuming the two are interchangeable.
+
+## Capabilities Are Explicit
+
+Effectful operations fail closed unless the invocation grants the required
+capability.
+
+| Capability | Flag | Typical effect |
+| --- | --- | --- |
+| subprocess | `--allow-subprocess` | invoke compilers, MkDocs, scanners, or other tools. |
+| filesystem write | `--allow-write` | generate, update, or remove governed outputs. |
+| Git | `--allow-git` | inspect repository history or state beyond ordinary file reads. |
+| network | `--allow-network` | reach registries, links, services, or remote dependencies. |
 
 ```mermaid
 flowchart TD
-    Make[make wrappers] --> DevAtlas[bijux dev atlas]
-    DevAtlas --> Suites[suites]
-    DevAtlas --> Checks[check]
-    DevAtlas --> Docs[docs]
-    DevAtlas --> Governance[governance]
-    DevAtlas --> Reports[reports]
-    Suites --> Artifacts[artifacts and reports]
-    Checks --> Artifacts
-    Docs --> Artifacts
-    Governance --> Artifacts
-    Reports --> Artifacts
+    Select[Select check or command] --> Declared[Read declared effects]
+    Declared --> Granted{Capabilities granted?}
+    Granted -- no --> Refuse[Fail with missing-capability evidence]
+    Granted -- yes --> Execute[Execute exact selection]
+    Execute --> Record[Record capabilities and result]
 ```
 
-This surface model shows how `make` and `bijux dev atlas` relate. `make` is the ergonomic wrapper;
-the control plane is the authoritative execution surface.
+A capability flag authorizes an effect; it does not make every effect happen.
+Retained evidence should record both the declared requirements and the granted
+capabilities so another maintainer can reproduce the run.
 
-Use `make` for the common lane wrappers and `bijux dev atlas ...` when you need narrower selection or deeper inspection.
+## Make Wrappers
 
-## Governance Boundaries
+Make targets are curated shortcuts, not a second execution engine:
+
+```bash
+make ci-fast       # check run --suite ci_fast
+make ci-pr         # check run --suite ci_pr with Git access
+make ci-nightly    # check run --suite ci_nightly
+make ci-docs       # check run --suite docs_required
+make docs-build    # docs sync plus capability-gated docs build
+```
+
+Use a wrapper when its complete lane is the question. Use a focused control-plane
+command when one contract, page family, check, or report is the question. A
+focused pass does not claim the broader lane passed.
+
+## Security Selection and Evidence Custody
+
+Security automation has two selections: which change triggers a lane, and
+which contracts execute inside it. Both selections are part of the evidence.
 
 ```mermaid
 flowchart LR
-    Control[Control plane] --> Coordinates[Coordinates repository workflows]
-    Control --> Policy[Loads policy]
-    Control --> Checks[Runs checks]
-    Control --> Reports[Produces reports]
-
-    MustNot[Control plane must not] --> Truth[Redefine product truth]
-    MustNot --> Effects[Hide side effects]
-    MustNot --> Bypass[Bypass governance]
-
-    Reports --> Evidence[Decision-supporting evidence]
+    Change[Changed governed surface] --> Trigger[Workflow path selection]
+    Trigger --> Command[Exact security command]
+    Command --> Contracts[Positive and negative contracts]
+    Contracts --> Status[Internal status and findings]
+    Status --> Receipt[Run and artifact identities]
+    Receipt --> Decision[Review or release decision]
 ```
 
-This governance diagram captures the promise and the restraint. The control plane is the place
-where maintainers ask the repository to do work, not the place where repository truth is invented
-or policy is quietly weakened.
+The threat-model lane watches the governed model, command implementation and
+routing, and the public security pages that state its controls. It runs
+`security threats verify` and the `security_threat_` contract selector. The
+selector covers both accepted registry linkage and rejection of a mismatched
+registry.
 
-## Authority Chain
+Preserve these distinctions during triage:
 
-- `make ci-fast`, `make ci-pr`, `make ci-nightly`, and `make docs-build` are curated maintainer shortcuts
-- `bijux dev atlas ...` is the canonical installed namespace for repository automation
-- `cargo run -q -p bijux-atlas-dev -- ...` is the direct binary path when you need exact command parity inside the repo
-- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the command families and global flags
-- [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed top-level command surface
-- generated reports and indexes are evidence outputs; they are not a substitute for the authored rules they summarize
+| Observation | Meaning |
+| --- | --- |
+| path did not trigger the lane | no lane observation exists for that revision |
+| command did not execute | lane execution is incomplete even if another step passed |
+| test filter ran zero tests | selector matched no contract and supplies no behavioral evidence |
+| report exists with non-passing status | findings were transported, not accepted |
+| model verification passed | governed records agree; live enforcement remains outside this command |
 
-## Lane and Selection Rules
+When a public security claim changes without a model or implementation change,
+the documentation path still triggers the threat lane. This guards consistency
+between published control claims and the governed registry, but it does not
+prove the prose itself through runtime execution. Reviewers must compare the
+claim with the report and the implementation evidence it cites.
 
-The broad workflow is:
+## Failure Triage
 
-- `make ci-fast` for fast local feedback
-- `make ci-pr` for the pull-request lane
-- `make ci-nightly` for broader and slower coverage
-- `make docs-build` for docs-specific build validation
+1. Preserve the failing command, exit code, selected IDs, and artifact root.
+2. Read the structured failure and the owning check or report registry entry.
+3. Re-run the smallest matching selector with the same capabilities.
+4. Correct the governing input or implementation, not the generated symptom.
+5. Re-run the focused selector before returning to its containing lane.
 
-The narrow workflow is:
+Do not broaden a run merely to discover which check failed; the control plane
+already exposes IDs, owners, rationale, fix hints, budgets, and evidence paths.
 
-```bash
-bijux dev atlas suites list
-bijux dev atlas check list
-cargo run -q -p bijux-atlas-dev -- suites list
-cargo run -q -p bijux-atlas-dev -- check run --suite ci_pr --include-internal --include-slow --allow-git --format json
-cargo run -q -p bijux-atlas-dev -- check list
-cargo run -q -p bijux-atlas-dev -- check run --tag lint --format json
-```
-
-Pick the smallest surface that matches the question you are answering. Do not bypass required lanes by inventing a different command path.
-
-## Static and Effect Boundaries
-
-Some workflows are pure reads, while others intentionally require effects.
-
-- `check run` declares `static` versus `effect` execution modes
-- `suites run` can be constrained with `--mode pure`, `--mode effect`, or `--mode all`
-- docs commands that spawn tools or write artifacts require explicit capability flags such as `--allow-subprocess`, `--allow-write`, and `--allow-network`
-
-Commands should fail closed when a required capability is missing. Quietly downgrading behavior would make CI and local evidence diverge.
-
-## How Maintainers Should Choose A Path
-
-Use this quick routing model when you are deciding where to start:
-
-- choose `make` when the question is "run the standard lane"
-- choose `bijux dev atlas suites ...` when the question is "run the maintained group of checks"
-- choose `bijux dev atlas check ...` when the question is "inspect or rerun one governed check"
-- choose `bijux dev atlas governance ...` or `... reports ...` when the question is "show me the rule state or the evidence set"
-- choose the direct `cargo run -q -p bijux-atlas-dev -- ...` form when you need repo-local parity, debugging, or a command that has not been installed globally
-
-The main discipline is to keep command choice aligned with the question you are answering. Fast
-feedback, governed suites, focused checks, and evidence lookup are different maintainer jobs and
-deserve different entrypoints.
-
-## A Useful Control-Plane Question
-
-Ask whether you need a lane wrapper, a suite, a focused check, or a report lookup. Picking the
-smallest correct control-plane surface keeps automation both honest and fast.
-
-## Triage Workflow
-
-When automation fails:
-
-1. Re-run the matching wrapper or suite first.
-2. Prefer JSON output when the lane consumes structured reports.
-3. Inspect the named check, suite, or report before changing code.
-4. Apply the smallest fix that restores the documented contract.
-5. Re-run the focused command and then the broader lane.
-
-Common entry points:
-
-```bash
-make ci-pr
-make docs-build
-cargo run -q -p bijux-atlas-dev -- governance check --format json
-cargo run -q -p bijux-atlas-dev -- reports index --format json
-```
-
-## Operational Guardrails
-
-- repository automation should be routed through `bijux dev atlas ...`, not ad hoc root scripts
-- expensive or environment-sensitive validations belong in the correct lane, not hidden inside fast feedback loops
-- external tools and capability requirements should fail with remediation, not with mystery
-- evidence should describe the failure, the rerun command, and the relevant artifact path
-
-## Main Takeaway
-
-Treat the control plane as Atlas's maintainer operating console. It coordinates checks, docs work,
-governance review, and evidence generation, but it must stay visibly bound to authored policy,
-declared capabilities, and reviewable outputs.
-
-## Where to Go Next
-
-- [Contributor Workflow](../workspace/contributor-workflow.md)
-- [Testing and Evidence](../governance/testing-and-evidence.md)
-- [Automation Command Surface](automation-command-surface.md)
-
-## Purpose
-
-This page explains the Atlas material for automation control plane and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Continue with [Automation Command Surface](automation-command-surface.md) for
+command families and [Automation Reports Reference](automation-reports-reference.md)
+for evidence interpretation. Use
+[Security Validation Lanes](../delivery/security-validation-lanes.md) for
+trigger, selector, and acceptance boundaries.

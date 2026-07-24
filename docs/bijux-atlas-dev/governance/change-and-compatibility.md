@@ -4,59 +4,90 @@ audience: maintainer
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Change and Compatibility
 
-Atlas changes should be classified before they are implemented. That prevents accidental breaking changes from sneaking in under the label of simple refactoring.
-
-## Change Classification
+Compatibility is determined by what a consumer can observe, not by whether an
+implementation diff looks like a refactor. Classify the affected surface before
+choosing the implementation and release path.
 
 ```mermaid
 flowchart TD
-    Change[Change proposal] --> Internal[Internal refactor]
-    Change --> Surface[Public surface change]
-    Surface --> Compatible[Compatible evolution]
-    Surface --> Breaking[Breaking change]
+    Change[Proposed change] --> Observe{Externally observable?}
+    Observe -->|no| Internal[Internal implementation change]
+    Observe -->|yes| Surface[Identify every contract surface]
+    Surface --> Preserve{Old behavior retained?}
+    Preserve -->|yes| Compatible[Compatible evolution]
+    Preserve -->|during window| Deprecated[Announced deprecation]
+    Preserve -->|no| Breaking[Breaking change]
+    Compatible --> Evidence[Focused compatibility evidence]
+    Deprecated --> Evidence
+    Breaking --> Release[Explicit release and migration decision]
 ```
 
-This classification diagram exists so compatibility thinking happens before implementation momentum
-takes over. Atlas wants breaking and compatible changes to be intentional, not discovered late.
+## Observable Surfaces
 
-## Compatibility Questions
+- CLI commands, flags, exit codes, and structured output
+- HTTP routes, request and response fields, OpenAPI shape, and error codes
+- environment variables, runtime configuration, chart values, and profiles
+- artifact layouts, manifests, report schemas, and check identifiers
+- crate APIs, feature flags, binaries, and package ownership
+- published documentation URLs and redirect behavior
+- operational defaults, safety policy, and release-channel identities
 
-```mermaid
-flowchart LR
-    Surface[Surface] --> Docs[Documented?]
-    Docs --> Tests[Tested?]
-    Tests --> Promise[Actually promised?]
-```
+Tests and documentation are evidence that a surface matters, but absence from
+either does not make an observed behavior internal. Automation, operators, and
+external clients can depend on behavior that lacks adequate coverage; that is a
+documentation and test gap, not permission to break it silently.
 
-This compatibility-question chain is the quickest way to determine how seriously to treat a change.
-If the surface is documented, tested, and promised, compatibility review is not optional.
+## Classification Record
 
-## Maintainer Checklist
+For each affected surface, record:
 
-- is this surface documented?
-- is it contract-owned?
-- do tests enforce the promise?
-- does the change alter user, operator, or automation expectations?
+1. the owning crate, registry, schema, or workflow;
+2. the previous and proposed observable behavior;
+3. whether old and new forms coexist;
+4. the governed deprecation window and removal target, when applicable;
+5. focused evidence for both preserved and new behavior;
+6. documentation, redirect, or migration guidance required for consumers.
 
-## Rule of Thumb
+The [Compatibility Matrix](../delivery/compatibility-matrix.md) defines concrete
+rules for environment keys, chart values, profile keys, report schemas, check
+identifiers, and documentation URLs. API and package surfaces carry their own
+contract tests and versioning obligations in addition to that matrix.
 
-If users, operators, or CI would notice the change without reading source code, treat it as a compatibility question first and an implementation question second.
+## Trace Change Fan-Out
 
-## A Useful Compatibility Habit
+One source edit can alter several public contracts. Review the downstream
+surfaces before deciding that a change is isolated:
 
-- classify the surface before coding.
-- say “internal,” “compatible,” or “breaking” explicitly in review language.
-- update docs and evidence in the same change when the answer is not purely internal.
+| Changed authority | Commonly affected consumers |
+| --- | --- |
+| runtime configuration | startup, environment, generated reference, chart values, profiles |
+| API DTO or router | HTTP clients, OpenAPI, examples, compatibility snapshots, observability labels |
+| artifact schema or path | ingest, store, catalog, backup, recovery, fixtures, and release packets |
+| command or report schema | umbrella routing, Make, CI parsing, docs examples, and retained evidence |
+| profile or safety policy | rendering, admission, rollout, load scenario selection, and release qualification |
+| documentation URL | navigation, repository links, search results, redirects, and external consumers |
 
-## Purpose
+The owning source determines behavior; the fan-out identifies migration and
+evidence obligations. Generated consumers are updated from that source rather
+than patched individually.
 
-This page explains the Atlas material for change and compatibility and points readers to the canonical checked-in workflow or boundary for this topic.
+## Automation Boundary
 
-## Stability
+`bijux-atlas-dev audit readiness validate` checks that its audit bundle and
+compliance report are successful and that a fixed set of readiness documents
+exists. It does not interpret those documents, compare runtime behavior, or
+prove backward compatibility. Compatibility still depends on surface-specific
+tests, overlap evidence, and review of the actual consumer contract.
 
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+## Decision Boundary
+
+An internal boundary remains freely changeable only while no supported client,
+operator, workflow, or artifact observes it. Once a surface is published or
+machine-consumed, its owning compatibility policy governs removal and rename
+behavior. When observability is uncertain, inspect repository consumers and
+published references before classifying the change as internal.

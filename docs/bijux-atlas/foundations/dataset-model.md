@@ -4,64 +4,91 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
-# Dataset Model
+# Dataset model
 
-Atlas treats a dataset as a release-shaped serving unit, not as a loose bundle
-of files.
+An Atlas dataset is one immutable, queryable release of biological data. It is
+identified by three values—release, species, and assembly—and carries that
+identity from source admission to every query response.
+
+For example, `110/homo_sapiens/GRCh38` means Ensembl release `110`, human, and
+the GRCh38 assembly. It is not interchangeable with another assembly, another
+release, or different source bytes published under a similar directory name.
+
+## Lifecycle
 
 ```mermaid
-flowchart TD
-    Inputs[Source inputs] --> Build[Dataset build]
-    Build --> Identity[Dataset identity]
-    Identity --> Artifacts[Release-scoped artifact set]
-    Artifacts --> Published[Published dataset]
-    Published --> Queryable[Discoverable and queryable state]
-    Identity --> Species[Species]
-    Identity --> Assembly[Assembly]
-    Identity --> Release[Release]
+stateDiagram-v2
+    [*] --> Source: governed GFF3 + FASTA
+    Source --> Candidate: validate + normalize
+    Candidate --> Verified: build + hash artifacts
+    Verified --> Published: commit immutable payload
+    Published --> Discoverable: promote catalog entry
+    Discoverable --> Selected: request resolves identity
+    Selected --> Discoverable: request completes
 ```
 
-The dataset is the unit that ties together ingest, publication, catalog
-visibility, query routing, and rollback reasoning. If the dataset boundary is
-fuzzy, readers start confusing source input, build output, published release
-state, and runtime-serving state.
+| State | What is true | What is not yet true |
+| --- | --- | --- |
+| source | Provenance and admission inputs are known | Normalized content and serving artifacts exist |
+| candidate | Normalized records and build inputs share one identity | Required artifacts and hashes have passed verification |
+| verified | Manifest, files, statistics, and hashes agree | A serving store contains the payload |
+| published | Immutable payload exists under the store contract | A catalog advertises it |
+| discoverable | A catalog maps the identity to published bytes | Every runtime instance has observed it |
+| selected | One request resolved and opened that exact identity | Other requests or instances are healthy or current |
 
-The stable identity usually combines release, species, and assembly. That
-identity is the anchor for ingest, publication, catalog lookup, query routing,
-diff workflows, and rollback reasoning.
+These boundaries prevent two unsafe shortcuts: serving an ingest directory as
+though it were published, and discovering a catalog entry before its payload
+is complete.
 
-## What A Dataset Owns
+## Identity forms
 
-- source-derived validated content
-- immutable release artifacts
-- catalog-visible identity
-- queryable runtime state after publication
+| Representation | Example | Used for |
+| --- | --- | --- |
+| canonical release ID | `110/homo_sapiens/GRCh38` | Manifests, logs, fingerprints, and internal joins |
+| dataset key | `release=110&species=homo_sapiens&assembly=GRCh38` | Explicit selectors and public interfaces |
 
-## Why It Matters
+Release values are numeric strings. Persisted species names use lowercase
+snake case. Assembly names preserve meaningful case and accept letters,
+digits, dots, and underscores. Admission may normalize `Homo-sapiens` to
+`homo_sapiens`; published identities remain strict after that boundary.
 
-If the dataset boundary stays clear, Atlas can keep ingest, serving, and
-operations honest about what is actually being changed.
+## Names are not enough
 
-## Repository Authorities
+```mermaid
+flowchart LR
+    Name[Release + species + assembly] --> Identity[Dataset identity]
+    Source[Source fingerprint] --> Identity
+    Build[Build fingerprint] --> Identity
+    Artifacts[Artifact fingerprint] --> Identity
+    Identity --> Hash[Canonical metadata hash]
+```
 
-- dataset domain logic: `crates/bijux-atlas-model/src/dataset/`
-- ingest-time dataset construction:
-  `crates/bijux-atlas-ingest/src/engine/`
-- manifest and serving-shape contracts:
-  `configs/schemas/contracts/datasets/manifest.schema.json` and
-  `configs/sources/runtime/datasets/manifest.yaml`
+`DatasetIdentity` joins the three-part name with SHA-256 fingerprints for the
+source, build inputs, and artifact inventory. Reusing the name with different
+source or artifact bytes is an identity violation, not another copy of the
+same release.
 
-## Main Takeaway
+Within one identity:
 
-A dataset is not just “some data Atlas can read.” It is the release-shaped unit
-Atlas knows how to validate, publish, catalog, and serve. Treating it that way
-keeps the product model coherent across workflows, runtime behavior, and
-contracts.
+- manifest, catalog, and response identities agree;
+- required hashes resolve to the published bytes;
+- publication never replaces readable content with different bytes;
+- rollback selects an earlier published identity instead of mutating one;
+- caches accelerate access without becoming dataset authority.
 
-## Reading Rule
+## Where the contract lives
 
-Use this page when Atlas steps still make sense individually but the thing
-being built, published, and served does not yet feel like one clear unit.
+- identity and catalog models:
+  [`crates/bijux-atlas-model/src/dataset/`](../../../crates/bijux-atlas-model/src/dataset/)
+- ingest construction:
+  [`crates/bijux-atlas-ingest/src/engine/`](../../../crates/bijux-atlas-ingest/src/engine/)
+- manifest schema and serving source:
+  [`manifest.schema.json`](../../../configs/schemas/contracts/datasets/manifest.schema.json)
+  and [`manifest.yaml`](../../../configs/sources/runtime/datasets/manifest.yaml)
+
+Continue with the [Serving Store Model](../runtime/serving-store-model.md) for
+publication and read semantics, and [Artifact and Store Contracts](../contracts/artifact-and-store-contracts.md)
+for the durable interface.

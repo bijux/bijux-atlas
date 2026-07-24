@@ -4,96 +4,98 @@ audience: user
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
-# Server Workflows
+# Server workflows
 
-Server workflows cover the product-facing runtime surface: starting the
-server, checking health, and using the main HTTP routes as intended.
+The Atlas server exposes immutable dataset releases over HTTP. Start it only
+after a serving store exists, then distinguish process health, traffic
+eligibility, dataset discovery, and successful query behavior. These are
+separate observations.
 
-This guide is about normal runtime usage after a valid serving store exists. It
-is not the operator runbook for deployment, scaling, or incident response.
-
-## Server Workflow Model
-
-```mermaid
-flowchart TD
-    Store[Serving store] --> Start[Start server]
-    Start --> Health[Health and readiness]
-    Health --> Query[Query traffic]
-    Query --> Observe[Metrics and diagnostics]
-```
-
-This server workflow model keeps the runtime path simple: start from a serving
-store, establish health, serve traffic, and then observe the process. Startup
-and successful traffic are not the same proof.
-
-## Main Server Surfaces
+## Runtime path
 
 ```mermaid
 flowchart LR
-    Runtime[Server runtime] --> Health[Health and readiness routes]
-    Runtime --> Metrics[Metrics route]
-    Runtime --> Version[Version route]
-    Runtime --> Data[Dataset and query routes]
-    Runtime --> OpenAPI[OpenAPI route]
+    Config[Validated configuration] --> Server[Atlas server]
+    Store[Published store + catalog] --> Server
+    Server --> Health[Health + readiness]
+    Server --> Discovery[Dataset discovery]
+    Server --> Queries[Query routes]
+    Server --> Signals[Metrics + traces + logs]
 ```
 
-This surface map clarifies that the running server exposes more than one kind
-of endpoint. Health, metrics, product queries, and contract endpoints do not
-answer the same question.
+| Surface | Question answered |
+| --- | --- |
+| `/healthz` | Is the process alive enough to answer? |
+| `/readyz` | Does this replica currently consider itself traffic-eligible? |
+| `/v1/version` | Which server release answered? |
+| `/v1/datasets` | Which dataset identities are discoverable? |
+| query routes | Can an explicit dataset answer the requested operation? |
+| `/metrics` | What governed measurements does this process expose? |
+| `/v1/openapi.json` | Which HTTP contract does this release publish? |
 
-Not every surface has the same audience:
+Readiness does not establish release-wide capacity or query correctness. A
+reachable OpenAPI document does not establish dataset availability.
 
-- `/healthz`, `/readyz`, and `/metrics` are primarily operational surfaces
-- `/v1/version`, `/v1/datasets`, and query routes are product-facing runtime surfaces
-- `/v1/openapi.json` is a contract and integration surface
-
-## Common Day-to-Day Actions
-
-- validate config before startup
-- bind to a local or service address
-- check health and readiness before sending traffic
-- verify dataset discovery through `/v1/datasets`
-- confirm API identity through `/v1/version`
-- use metrics and OpenAPI deliberately rather than as substitutes for actual query validation
-
-## Practical Startup
+## Start from a checkout
 
 ```bash
-cargo run -p bijux-atlas-server --bin bijux-atlas-server -- \
+cargo run --locked -p bijux-atlas-server --bin bijux-atlas-server -- \
   --bind 127.0.0.1:8080 \
   --store-root artifacts/getting-started/tiny-store \
   --cache-root artifacts/getting-started/server-cache
 ```
 
-## Important Everyday Checks
+For a configured deployment, validate and inspect effective configuration
+before binding a listener:
 
 ```bash
-curl -s http://127.0.0.1:8080/healthz
-curl -s http://127.0.0.1:8080/readyz
-curl -s http://127.0.0.1:8080/metrics
-curl -s http://127.0.0.1:8080/v1/openapi.json
+bijux-atlas-server --config ./atlas.toml --validate-config
+bijux-atlas-server --config ./atlas.toml --print-effective-config
+bijux-atlas-server --config ./atlas.toml
 ```
 
-Those checks answer different questions. A healthy metrics endpoint does not prove that the expected
-dataset is published. A reachable OpenAPI document does not prove that an environment is
-production-ready.
+Keep secrets out of command history. Replicas intended to be equivalent should
+resolve the same release, backend mode, policy, and dataset configuration.
 
-## Everyday Interpretation Rule
+## Establish serving behavior in order
 
-- health answers “is the process alive enough to answer?”
-- readiness answers “does the process consider itself ready?”
-- product endpoints answer “can the server resolve and serve dataset state?”
+```bash
+curl --fail --silent http://127.0.0.1:8080/healthz
+curl --fail --silent http://127.0.0.1:8080/readyz
+curl --fail --silent http://127.0.0.1:8080/v1/version
+curl --fail --silent http://127.0.0.1:8080/v1/datasets
+```
 
-## Operational Boundary
+1. Confirm process health.
+2. Confirm the replica is ready for traffic.
+3. Record server release identity.
+4. Confirm the intended release, species, and assembly are discoverable.
+5. Execute a representative query against that explicit identity.
+6. Preserve request ID, response provenance, status, latency, and relevant
+   runtime signals.
 
-This guide explains normal usage of the runtime surface. For deployment,
-rollback, resource tuning, and incident handling, move to
-[bijux-atlas-ops](../../bijux-atlas-ops/index.md).
+A discovery success proves catalog visibility, not artifact correctness for
+every query. A representative query adds request-path evidence but does not
+replace capacity, security, rollout, or recovery qualification.
 
-## Reading Rule
+## Interpret failures by boundary
 
-Use this page when the serving store already exists and the question is how to
-use the running server surface in the intended order.
+| Observation | Likely boundary |
+| --- | --- |
+| health fails | Process bootstrap or fatal runtime state |
+| health passes, readiness fails | Store, catalog, warmup, dependency, drain, or overload policy |
+| readiness passes, dataset absent | Catalog selection or expected identity |
+| dataset exists, query fails | Artifact integrity, store access, query policy, or execution |
+| request succeeds without expected signals | Telemetry instrumentation or delivery path |
+
+Administrative and debug routes are separate privileged surfaces. Keep them
+disabled unless deployment policy explicitly isolates and qualifies their
+complete route set.
+
+For deployment, scaling, incident response, and release promotion, continue to
+the [Atlas operations handbook](../../bijux-atlas-ops/index.md). For request and
+error contracts, use [OpenAPI and API Usage](openapi-and-api-usage.md) and
+[Error Codes and Exit Codes](error-codes-and-exit-codes.md).

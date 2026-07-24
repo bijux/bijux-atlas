@@ -1,140 +1,227 @@
 ---
 title: Deployment Models
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Deployment Models
 
-Atlas can run locally for development or in managed environments for shared access, but the core
-deployment principle stays the same: the runtime should serve from an explicit store root with
-explicit catalog state and explicit runtime configuration.
+Atlas deployment models are defined by profile intent, concrete values,
+required tools and services, allowed effects, cluster shape, and evidence. They
+are not maturity labels. Every supported model preserves the same publication
+boundary: the runtime serves an explicit catalog and immutable store state.
 
-## Deployment Shapes
-
-```mermaid
-flowchart LR
-    Local[Local single-node runtime] --> Shared[Shared service runtime]
-    Shared --> Managed[Managed production deployment]
-```
-
-This deployment-shape diagram is not a maturity ladder. It shows the main operational contexts in
-which Atlas can run while preserving the same core boundary: a runtime serving from explicit
-published store state and explicit configuration.
-
-These models describe operational shape, not a maturity badge. The real boundary is whether artifact
-publication, runtime config, observability, and rollback are handled deliberately enough for the
-environment you are serving.
-
-## Model 1: Local Development Runtime
-
-Use this when:
-
-- validating local workflow changes.
-- testing a built sample store.
-- checking endpoint behavior quickly.
-
-Characteristics:
-
-- local bind address.
-- local artifact store under `artifacts/`.
-- minimal operational complexity.
-- useful for validating workflow shape, not for proving production readiness.
-
-## Model 2: Shared Internal Service
-
-Use this when:
-
-- a team needs a stable shared query surface.
-- artifact publication is handled by a controlled pipeline.
-- health, readiness, and observability matter across users.
-
-Characteristics:
-
-- stable network address.
-- managed artifact store.
-- runtime config treated as controlled deployment input.
-- enough observability and rollback discipline that other people can depend on it.
-
-## Model 3: Managed Production Service
-
-Use this when:
-
-- uptime, rollback, and incident response are formal concerns.
-- capacity and security boundaries matter.
-- releases and runtime configuration are governed operationally.
+## Profile Selection
 
 ```mermaid
 flowchart TD
-    Build[Build and publish artifacts] --> Deploy[Deploy runtime]
-    Deploy --> Observe[Observe health and load]
-    Observe --> Upgrade[Upgrade or rollback]
+    Need[Operational intent] --> Profile[Select named profile]
+    Profile --> Inputs[Resolve cluster config, values, tools, services, effects]
+    Inputs --> Render[Render Helm resources]
+    Render --> Validate[Schema, policy, and conformance checks]
+    Validate --> Install[Install, upgrade, or rollback scenario]
+    Install --> Evidence[Probe, telemetry, load, and rollout evidence]
 ```
 
-This managed-service flow matters because Atlas does not erase the normal operator lifecycle. A
-production deployment still needs rollout discipline, observability, and rollback planning around
-the runtime.
+`ops/stack/profiles.json` defines local stack footprint. `profile-intent.json`
+defines why a profile exists and which effects it permits.
+`profile-registry.json` adds safety level, required tools, namespaces, services,
+and source paths. `ops/k8s/install-matrix.json` binds Kubernetes values to
+install, upgrade, rollback, and validation suites.
 
-This model assumes the operator owns the surrounding infrastructure story. Atlas defines the
-runtime, contract, and artifact boundaries, but it does not replace environment-specific security,
-networking, storage, or incident policy.
+## Resolve One Deployment Identity
 
-## What Does Not Change Across Models
+A shared profile name is a join key, not a complete deployment description.
+For example, `kind` appears in the intent, cluster-footprint, registry, and
+Kubernetes sources, while `local` appears in the concrete service composition
+without appearing in the intent registry. Operators must resolve the sources
+that actually participate in the run and retain their content identities.
 
-- the runtime serves from published artifacts, not ingest build roots.
-- the catalog remains the discoverability boundary.
-- health and readiness remain first-class concerns.
-- runtime config should be explicit and reviewable.
+```mermaid
+flowchart LR
+    Intent["Intent and allowed effects"] --> Identity["Resolved deployment identity"]
+    Footprint["Cluster footprint"] --> Identity
+    Registry["Tools, namespaces, and services"] --> Identity
+    Values["Helm values and install suite"] --> Identity
+    Composition["Concrete dependency graph"] --> Identity
+    Target["Target capability record"] --> Identity
+    Identity --> Receipt["Qualification receipt"]
+```
 
-## What These Models Are Not
+The receipt should contain the selected name plus the digests or commit identity
+of every resolved source, the rendered-resource digest, cluster identity,
+allowed-effect grant, and evidence window. A run is not equivalent merely
+because two commands accepted the same profile string.
 
-- a license to serve directly from ingest build roots.
-- a promise that local filesystem habits scale unchanged into managed environments.
-- a substitute for operator-owned capacity, security, backup, or compliance decisions.
+| Mismatch | Correct interpretation |
+| --- | --- |
+| intent exists but no concrete composition exists | the policy is selectable, but no checked-in service graph proves its assembled topology |
+| composition exists but no intent entry exists | the topology can be assembled, but its effect policy must be supplied and recorded separately |
+| registry services differ from the generated graph | the profile contract and observed composition disagree; qualification must stop |
+| values or target capability change under the same name | a new deployment identity requires new target-dependent evidence |
 
-## Choosing a Model
+## Bind the Profile to a Real Target
 
-If you are unsure, start with the simplest model that still preserves:
+Profile selection ends when the effective target is identified, not when a
+profile name is parsed. Two clusters using the same values can differ in
+admission mutation, storage, scheduling, identity, network enforcement, and
+external dependency behavior.
 
-- explicit artifact ownership.
-- observable health behavior.
-- safe rollback of runtime or store state.
+| Target property | Why it belongs in qualification |
+| --- | --- |
+| cluster identity and Kubernetes version | prevents evidence from moving between unrelated or incompatible control planes |
+| node classes and failure domains | bounds scheduling, capacity, churn, and availability claims |
+| storage classes and object-store service | establishes persistence, consistency, latency, backup, and recovery ownership |
+| ingress, DNS, and network enforcement | identifies the actual client path, TLS boundary, timeouts, and isolation behavior |
+| workload identity and secret providers | establishes principals, credential generations, rotation, and revocation paths |
+| telemetry destinations and retention | establishes whether required evidence is queryable for the decision window |
+| admission and policy controllers | exposes defaults or mutations between rendered intent and admitted objects |
 
-## What Operators Should Carry Across Models
+```mermaid
+flowchart LR
+    Profile[Named Atlas profile] --> Render[Rendered intent]
+    Target[Target capability record] --> Admit[Admission and deployment]
+    Render --> Admit
+    Admit --> Observe[Observed resources and service]
+    Observe --> Qualify{Target-specific evidence passes?}
+    Qualify -->|yes| Accepted[Bound deployment claim]
+    Qualify -->|no| Hold[Hold or narrow the claim]
+```
 
-- serve from a store root, not directly from an ingest build root.
-- keep catalog state explicit and reviewable.
-- make runtime configuration understandable to another operator.
+The target capability record must be versioned with the evidence it qualifies.
+An environment label such as `prod` or `kind` is not a substitute for these
+observations. Requalify after a cluster upgrade, storage migration, ingress or
+identity change, admission-policy change, or failure-domain redesign.
 
-## Purpose
+## Local and Validation Profiles
 
-This page explains the Atlas material for deployment models and points readers to the canonical checked-in workflow or boundary for this topic.
+| Profile | Intended use | Required dependencies | Evidence limit |
+| --- | --- | --- | --- |
+| `minimal` | smallest supported contract footprint | Kind cluster and rendered manifests | not production or resilience proof |
+| `small` | quick constrained local validation | Kind cluster and rendered manifests | no full telemetry claim |
+| `ci` | deterministic automated validation | Kind cluster and rendered manifests | restricted effects; targeted install evidence |
+| `kind` | baseline local cluster and smoke checks | cluster, rendered manifests, health endpoint | standard local integration evidence |
+| `dev` | iterative local development | cluster, rendered manifests, health endpoint | allows networked local workflows |
+| `developer` | workstation cluster with standard ergonomics | cluster, rendered manifests, health endpoint | development evidence only |
+| `perf` | performance baseline and autoscaling checks | cluster, rendered manifests, metrics server, health endpoint | strict profile; requires load and metrics evidence |
 
-## Source of Truth
+The concrete stack manifest currently expands `ci` and `local` with the Atlas
+chart, operations namespace, MinIO, and Redis. The `kind` stack adds Prometheus,
+Grafana, and OpenTelemetry. A profile appearing in an intent registry does not
+mean every operational component is present; the generated dependency graph is
+the resolved component evidence.
 
-- `ops/stack/profiles.json`.
-- `ops/stack/profile-intent.json`.
-- `ops/stack/profile-registry.json`.
-- `ops/stack/stack.toml`.
+## Kubernetes Delivery Profiles
 
-## Supported Model Matrix
+The install matrix also covers `ingress`, `multi-registry`, `offline`, and
+`prod` values. These are Kubernetes delivery concerns rather than extra local
+stack classes.
 
-| Profile class | Intent | Required components | Observability minimum | Not supported |
-| --- | --- | --- | --- | --- |
-| `minimal` and `small` | lightweight contract coverage | chart, namespace, MinIO, Redis | basic health only | treating as production-like rollout proof |
-| `kind`, `dev`, `developer` | realistic local cluster verification | chart, namespace, MinIO, Redis, plus broader local ergonomics | health, readiness, optional metrics | skipping explicit cluster or values ownership |
-| `perf` | performance and autoscaling validation | chart, namespace, MinIO, Redis, metrics prerequisites | metrics and readiness are mandatory | using mutable or underspecified runtime identity |
+| Delivery concern | Required proof |
+| --- | --- |
+| baseline install | schema-valid values, rendered resources, install suite |
+| ingress | explicit ingress values, routing and security review, nightly evidence |
+| multi-registry | pinned image sources and pull behavior across registries |
+| offline | locally available images and artifacts, no hidden network dependency |
+| performance | metrics prerequisites, autoscaling configuration, governed load evidence |
+| production | security context, network policy, resource, availability, backup, and rollback review |
 
-## Main Takeaway
+## Promotion Is Not Inheritance
 
-Atlas deployment models should be described by real profile classes and their
-required components, not by abstract maturity labels. A deployment model is only
-supported when its profile, cluster config, and operational evidence all line
-up.
+```mermaid
+flowchart LR
+    Local[Local or CI evidence] --> Candidate[Release candidate]
+    Candidate --> Rendered[Target-profile render]
+    Rendered --> Security[Security and policy validation]
+    Security --> Runtime[Target-environment probes and telemetry]
+    Runtime --> Load[Relevant load and failure scenarios]
+    Load --> Rollback[Upgrade and rollback evidence]
+    Rollback --> Promote[Promotion decision]
+```
 
-## Stability
+Evidence from a smaller profile proves only that profile's contract. It cannot
+be inherited as production readiness. Promotion requires the target profile's
+rendered identity and all evidence demanded by its security, telemetry,
+capacity, and recovery posture.
 
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+## Qualification Boundary by Model
+
+The same runtime can move through several deployment models while the
+environmental claim changes. Use each model for the conclusions it can
+actually establish.
+
+| Model | What is held authoritative | Suitable conclusions | Conclusions that require another model |
+| --- | --- | --- | --- |
+| repository and render validation | source, schema, profiles, chart inputs, and rendered objects | deterministic inputs, policy, and dependencies | runtime or recovery behavior |
+| `ci` composition | pinned local composition and restricted effects | repeatable install and targeted integration | full telemetry, target capacity, or external ownership |
+| `kind` composition | local cluster, telemetry, MinIO, Redis, and profile | lifecycle, probes, and local load | target durability, identity, network, or failure domains |
+| target environment | observed resources and dependency contracts | security, capacity, rollout, rollback, and recovery | another target or unexercised failure domain |
+
+```mermaid
+flowchart LR
+    R["Repository and render evidence"] --> C["CI composition evidence"]
+    C --> K["Kind lifecycle and integration evidence"]
+    K --> T["Target-environment evidence"]
+    R -. unchanged inputs may transfer .-> T
+    C -. environment conclusions must be repeated .-> T
+    K -. local dependency conclusions must be repeated .-> T
+```
+
+Transfer a result only when its authority and relevant inputs remain unchanged.
+For example, schema validity may transfer with identical bytes, while storage
+durability, workload identity, ingress behavior, and capacity must be
+established against the services and failure domains that own those properties.
+
+## Evidence Transfer
+
+| Earlier evidence | Reusable conclusion | Must be repeated for the target |
+| --- | --- | --- |
+| source and schema validation | authored inputs satisfy repository contracts | target-specific values and overlays |
+| deterministic render for another profile | chart templates can produce valid objects | target resource inventory and policy result |
+| local functional result | product path works for recorded local dependencies | target networking, storage, identity, and traffic path |
+| lower-scale load result | scenario and query pack can execute | target capacity, autoscaling, saturation, and recovery budgets |
+| prior release rollback | recovery workflow has a known shape | candidate-to-previous compatibility in the target profile |
+
+Evidence is reusable when the authority and unchanged inputs are identical.
+Environment-dependent conclusions are not portable merely because the runtime
+binary is the same.
+
+## External Dependency Handoff
+
+The Atlas profile controls only the assets it owns. A production decision must
+also name the operator for every service supplied by the environment:
+
+| Dependency | Atlas needs | Environment owner must establish |
+| --- | --- | --- |
+| object store | immutable object reads and catalog access | durability, credentials, encryption, backup, restore, and consistency behavior |
+| ingress and DNS | stable routing to eligible instances | TLS policy, name ownership, timeout behavior, and traffic rollback |
+| workload identity | least-privilege access to dependencies | principal lifecycle, credential rotation, revocation, and audit trail |
+| telemetry backend | accepted logs, metrics, and traces | retention, query availability, access control, and loss detection |
+| cluster services | scheduling, storage, metrics, and network enforcement | supported versions, capacity, admission policy, and failure ownership |
+
+Record the provider, service identity, escalation route, recovery objective,
+and evidence source for each dependency. “Managed elsewhere” is a deployment
+fact, not an ownership answer. If an external service is required for
+readiness, correctness, or promotion evidence, its failure policy belongs in
+the target profile's operating record.
+
+## Non-Negotiable Boundaries
+
+- Serve from published store state, never directly from an ingest build root.
+- Keep runtime, dataset, chart, values, dependency, and toolchain identity
+  reviewable together.
+- Treat readiness as traffic admission, not as complete performance proof.
+- Record relaxed security, network, or admin behavior as an explicit exception.
+- Prove rollback against the same release and profile identities used for
+  promotion.
+
+The selected model should also document who owns external dependencies. A
+managed object store, ingress, identity provider, or telemetry backend may sit
+outside the Atlas composition while remaining inside the release decision.
+
+Continue with [Install Matrix](../kubernetes/install-matrix.md),
+[Render and Validate](../kubernetes/render-and-validate.md), and
+[Rollout Safety](../kubernetes/rollout-safety.md).

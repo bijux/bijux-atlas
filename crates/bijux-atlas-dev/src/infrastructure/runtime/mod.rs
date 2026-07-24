@@ -77,13 +77,14 @@ mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
     use tempfile::{Builder, TempDir};
 
-    fn external_fixture_parent() -> PathBuf {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(Path::parent)
-            .and_then(Path::parent)
-            .unwrap_or_else(|| panic!("workspace fixture parent"))
-            .to_path_buf()
+    #[cfg(unix)]
+    fn system_temp_root() -> &'static Path {
+        Path::new("/tmp")
+    }
+
+    #[cfg(not(unix))]
+    fn system_temp_root() -> PathBuf {
+        std::env::temp_dir()
     }
 
     fn temp_repo_root() -> TempDir {
@@ -93,7 +94,7 @@ mod tests {
             .as_nanos();
         Builder::new()
             .prefix(&format!("bijux-atlas-dev-adapter-io-{suffix}-"))
-            .tempdir_in(external_fixture_parent())
+            .tempdir_in(system_temp_root())
             .unwrap_or_else(|err| panic!("create temp repo root failed: {err}"))
     }
 

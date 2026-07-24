@@ -4,100 +4,90 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Contracts and Boundaries
 
-Atlas relies on boundaries to keep the codebase teachable and on contracts to
-keep stable promises explicit.
+An architectural boundary answers where behavior is owned. A contract answers
+what a consumer may rely on. Atlas uses both: boundaries keep implementation
+dependencies legible, while contracts make compatibility and evidence
+reviewable.
 
-## Boundary Model
+Boundaries are dependency rules. Contracts are consumer rules. Review both
+when a change crosses ownership and alters observable behavior.
 
 ```mermaid
 flowchart LR
-    Contracts[Contracts] --> APIs[API schemas]
-    Contracts --> Configs[Runtime config]
-    Contracts --> Errors[Errors and outputs]
-    Domain[Domain] --> App[App]
-    App --> Adapters[Adapters]
-    Runtime[Runtime] --> App
-    Runtime --> Adapters
+    Consumer[CLI, HTTP, config, artifact consumer] --> Contract[Versioned contract]
+    Contract --> App[Application behavior]
+    App --> Domain[Domain policy and types]
+    App --> Port[Owned port]
+    Adapter[Inbound or outbound adapter] --> Port
+    Runtime[Composition and startup] --> App
+    Runtime --> Adapter
+    Schema[Schema or registry] --> Contract
+    Test[Compatibility evidence] --> Contract
 ```
 
-This boundary model shows the relationship between code placement and stable
-promises. Contracts define what outside consumers can rely on, while the
-architectural layers decide where behavior should live internally.
+## Runtime Code Boundaries
 
-## Contract Purpose
+| Boundary | Responsibility | Must not become |
+| --- | --- | --- |
+| `domain/` | policy, security, and cluster concepts independent of transport | HTTP or CLI request handling |
+| `app/` | use cases, cache and query coordination, and ports | concrete network or storage ownership |
+| `adapters/outbound/` | implementations of external storage and service ports | the source of domain rules |
+| `runtime/` | configuration, composition, packaged state, and lifecycle | an accidental public API merely because startup uses it |
+| server inbound adapters | HTTP routing, middleware, request policy, and response translation | domain semantics duplicated at the transport edge |
+| `contracts/` | explicitly exported config artifacts and machine error shapes | a catch-all for internal helpers |
 
-```mermaid
-flowchart TD
-    Contract[Contract] --> Promise[Stable promise]
-    Promise --> Docs[Documentation]
-    Promise --> Tests[Compatibility tests]
-    Promise --> Release[Release confidence]
-```
+The server crate also has its own `app/` and inbound/outbound adapter split.
+Crate ownership matters alongside directory naming. The runtime library owns
+reusable runtime behavior. The server owns HTTP hosting and target-bound
+composition.
 
-This contract-purpose diagram matters because a contract is more than a page in
-the docs. It should connect documentation, enforcement, and release
-confidence.
+## Contract Authorities
 
-## The Main Architectural Idea
+Atlas contracts appear in several forms:
 
-Boundaries decide where code should live.
+- Clap surfaces and structured CLI output;
+- HTTP routes, OpenAPI, status codes, headers, and error envelopes;
+- environment variables, config files, defaults, and generated schemas;
+- dataset manifests, reports, release evidence, and other versioned artifacts;
+- governance registries that bind IDs to owners, runners, suites, and report
+  paths.
 
-Contracts decide what the outside world can rely on.
+No directory makes a surface stable by itself. `configs/schemas/contracts/`
+contains machine-readable authorities, while `configs/generated/` contains
+derived indexes and snapshots. A schema proves shape only when a producer or
+validator applies it. A registry row proves declaration. Its enforcement
+depends on a live runner and evidence path.
 
-Those are related, but they are not the same thing.
+## Classify a Change
 
-## Typical Failure Modes
+Ask these questions in order:
 
-- duplicated contract ownership.
-- broad barrels hiding the real source of truth.
-- runtime or adapter logic bleeding into domain surfaces.
-- undocumented helper paths becoming accidental API.
+1. Which component owns the behavior?
+2. Which consumer observes the change?
+3. What is the exact authority: code, schema, registry, or generated mirror?
+4. Which compatibility rule applies?
+5. Which focused evidence proves the old and new behavior?
 
-## Healthy Boundary Behavior
+An internal refactor can cross directories without changing a consumer
+contract. Dependency direction and public behavior must remain intact. A
+one-line default, field, route, error, or exit-code change can still be a
+breaking contract event.
 
-- ownership is obvious from the tree.
-- contracts have one owner path.
-- compatibility is test-backed.
-- internal refactors do not quietly redefine public promises.
+## Failure Patterns
 
-## Two Questions That Prevent Drift
+- transport types leaking into domain policy;
+- application code depending directly on a replaceable adapter;
+- duplicate contract ownership across code and generated files;
+- undocumented helper output becoming a machine consumer's de facto API;
+- a generated snapshot being edited instead of its authority;
+- a schema cited as enforcement when no runtime or validator evaluates it; and
+- a broad passing suite used to claim a contract it did not select.
 
-- where should this code live?
-- what, if anything, should an outside consumer be able to rely on?
-
-Those questions sound similar, but Atlas treats them differently on purpose.
-
-## Reading Rule
-
-## Repository-Specific Boundary Failures
-
-- domain logic placed in `src/adapters/` instead of `src/domain/`.
-- transport semantics from HTTP or CLI leaking into domain types.
-- runtime startup behavior being documented as if it were a public contract by.
-  default
-- helper or generated artifact paths being treated as stable API without a.
-  contract owner
-
-## Enforcement Anchors
-
-- code placement boundaries: `crates/bijux-atlas-runtime/src/domain/`,.
-  `crates/bijux-atlas-runtime/src/app/`,
-  `crates/bijux-atlas-runtime/src/adapters/outbound/`,
-  `crates/bijux-atlas-runtime/src/runtime/`, and
-  `crates/bijux-atlas-server/src/adapters/inbound/http/`
-- stable contract implementation: `crates/bijux-atlas-runtime/src/contracts/`.
-- machine-checked shape: `configs/schemas/contracts/` and `configs/generated/`.
-
-## Main Takeaway
-
-Atlas stays teachable when boundary rules answer “where should this live?” and
-contracts answer “what may an outside consumer rely on?”. Mixing those two
-questions is one of the fastest ways to create accidental public surfaces.
-
-Use this page when a change is plausible in code but you still need to decide
-whether it changes placement, public promises, or both.
+A healthy change leaves one durable owner, an explicit consumer promise, a
+coordinated compatibility decision, and evidence whose scope matches the
+claim.

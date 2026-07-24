@@ -4,65 +4,80 @@ audience: maintainers
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Required Status Checks
 
-Required status checks define the merge gate, so they belong in maintainer
-documentation rather than being implicit in branch settings alone.
+The `main` ruleset requires four status contexts. The checked-in declaration
+and ruleset currently agree:
 
-## Gate Model
+| Required context | Workflow authority | Purpose |
+| --- | --- | --- |
+| `policy / github` | `github-policy.yml` | protected GitHub configuration policy |
+| `policy / pr approval` | `pr-approval-policy.yml` | pull-request approval policy |
+| `std / standard` | `bijux-std.yml` | shared-standard conformance |
+| `std / report` | `bijux-std.yml` | shared-standard report |
+
+These are baseline governance checks. Repository CI, documentation, operations,
+security, performance, and release workflows provide additional evidence, but
+they are not required contexts in the checked-in `main` ruleset today.
 
 ```mermaid
 flowchart TD
-    Gate[PR or release gate] --> Checks[Required status checks]
-    Checks --> Formatting[Formatting or lint]
-    Checks --> Tests[Tests]
-    Checks --> Security[Security or policy]
-    Checks --> Docs[Docs or generated integrity]
-
-    Formatting --> Mandatory[Mandatory gate set]
-    Tests --> Mandatory
-    Security --> Mandatory
-    Docs --> Mandatory
-
-    Mandatory --> Merge[No merge without required green state]
+    PR["pull request"] --> Policy["policy / github"]
+    PR --> Approval["policy / pr approval"]
+    PR --> Standard["std / standard"]
+    PR --> Report["std / report"]
+    Policy --> Merge{"all required contexts pass?"}
+    Approval --> Merge
+    Standard --> Merge
+    Report --> Merge
+    Merge -- yes --> ReviewThreads["review threads resolved"]
+    ReviewThreads --> Main["merge commit to main"]
+    Merge -- no --> Block["merge blocked"]
 ```
 
-This page exists because branch protection only shows the outcome. Maintainers still need a durable
-reference that explains which checks are required, why they exist, and what has to be updated when a
-workflow name changes.
+## Ruleset semantics
 
-## Source Anchor
+The ruleset also blocks branch deletion and non-fast-forward updates. It
+requires pull requests, resolved review threads, strict status checks against
+the current base, and merge commits. It currently requires zero approving
+reviews and does not require Code Owner approval. Do not describe those reviews
+as enforced until the ruleset changes.
 
-[`.github/required-status-checks.md`](/Users/bijan/bijux/bijux-atlas/.github/required-status-checks.md:1)
-is the source of truth for the named required checks and the rule that workflow and job renames must
-update that file in the same change.
+The repository declaration says main-branch bypass is not allowed. Verify the
+live GitHub ruleset when auditing enforcement because repository files describe
+the intended configuration; they cannot prove that server-side settings have
+not drifted.
 
-## Current Required Checks
+## Changing a required context
 
-The current branch-protection gate for `main` includes:
+GitHub matches the exact reported context string. A workflow or job rename can
+strand pull requests if the ruleset still waits for the old name.
 
-- `ci-pr / minimal-root-policies`.
-- `ci-pr / validate-pr`.
-- `ci-pr / supply-chain`.
-- `ci-pr / workflow-policy`.
-- `docs-only / docs`.
-- `ops-validate / validate`.
+Change these surfaces together:
 
-Optional and nightly lanes exist as supporting signals, but they are not the same thing as the
-required merge gate.
+1. the producing workflow and job name;
+2. `.github/required-status-checks.md`;
+3. `.github/rulesets/main-branch-protection.json`;
+4. any standards source that owns generated GitHub content;
+5. the live repository ruleset after the reviewed change is accepted.
 
-## Maintainer Rules
+Because shared GitHub governance is synchronized from `bijux-std`, do not
+hand-edit a generated consumer workflow to force a context rename. Change the
+owning standard and refresh the consumer through the governed sync path.
 
-- when a workflow name or job name changes, update the required-status document in the same change.
-- do not infer branch protection from memory; use the checked-in file.
-- treat required checks as repository policy, not as CI implementation trivia.
-- keep optional or nightly lanes clearly labeled so reviewers do not confuse advisory coverage with merge requirements.
+## Review checklist
 
-## Main Takeaway
+Before merging a gate change, confirm that each required context:
 
-Required status checks are the declared merge contract between code review and CI. Atlas keeps that
-contract in the repository so maintainers can review, evolve, and audit the gate instead of leaving
-it hidden in settings or memory.
+- runs on every pull request and merge queue event where it is required;
+- reports the exact declared name;
+- cannot succeed by skipping its protected evaluation;
+- has least-privilege permissions;
+- fails closed when its evidence is absent or malformed;
+- is present in both the repository declaration and ruleset.
+
+Optional lanes should remain visible in review, but their success must not be
+mistaken for satisfaction of a required context.

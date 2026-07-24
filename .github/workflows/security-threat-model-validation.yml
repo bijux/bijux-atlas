@@ -7,14 +7,21 @@ on:
       - "crates/bijux-atlas-dev/src/application/security.rs"
       - "crates/bijux-atlas-dev/src/domains/security/**"
       - "crates/bijux-atlas-dev/src/interfaces/cli/mod.rs"
-      - "docs/04-operations/security-operations.md"
+      - "crates/bijux-atlas-dev/README.md"
+      - "docs/bijux-atlas-ops/security/**"
+      - "docs/bijux-atlas-ops/kubernetes/security-operations.md"
+      - "docs/bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md"
+      - "docs/bijux-atlas-dev/index.md"
+      - "docs/bijux-atlas-dev/automation/automation-control-plane.md"
+      - "docs/bijux-atlas-dev/delivery/security-validation-lanes.md"
+      - ".github/workflows/security-threat-model-validation.yml"
   workflow_dispatch:
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
@@ -22,6 +29,6 @@ jobs:
       - name: Threat model command verification
         run: |
           cargo run --locked -p bijux-atlas-dev -- security threats verify --format json
-      - name: Threat model governance tests
+      - name: Threat model command contracts
         run: |
-          cargo test --locked -p bijux-atlas-dev threat_model_governance_contracts -- --nocapture
+          cargo test --locked -p bijux-atlas-dev security_threat_ -- --nocapture

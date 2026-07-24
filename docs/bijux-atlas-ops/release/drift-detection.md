@@ -4,51 +4,143 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Drift Detection
 
-Atlas tracks drift deliberately so rendered values, declared inventory, and
-operational expectations do not diverge silently.
+Drift is a disagreement between an authoritative input, a derived artifact, a
+deployed state, or the evidence used to explain either one. Atlas classifies
+drift by ownership so operators can correct the source rather than normalize an
+unexplained difference.
+
+## Drift Chain
+
+```mermaid
+flowchart LR
+    Source["Governed source"] --> Generated["Generated manifest or inventory"]
+    Generated --> Packet["Release packet"]
+    Packet --> Deployed["Rendered and deployed state"]
+    Deployed --> Observed["Runtime observation"]
+    Source -. compare .-> Generated
+    Generated -. compare .-> Packet
+    Packet -. compare .-> Deployed
+    Deployed -. compare .-> Observed
+```
+
+## Governed Classes
+
+The checked-in drift simulation defines five negative fixtures:
+
+| Drift class | Fixture mutation | Risk exposed |
+| --- | --- | --- |
+| Configuration | Changes inventory schema version | Producer and consumer interpret different shape |
+| Artifact | Manifest references a missing file | Release inventory cannot be materialized |
+| Registry | Adds an unknown invariant | Policy references an unowned identity |
+| Runtime configuration | Offline values name an unknown dataset | Cached-only runtime cannot establish data authority |
+| Operations profile | Install matrix names an unknown profile | Deployment intent has no governed profile contract |
+
+These fixtures prove expected detector inputs. They do not show the current
+repository or a deployment is drift-free.
+
+## Name the Baseline Before Comparing
+
+Every drift result needs two identities: the observed subject and its expected
+baseline. “Different from main” or “different from production” is insufficient
+when either reference can move.
+
+| Surface | Baseline identity | Observation identity |
+| --- | --- | --- |
+| source and generated files | source revision plus generator and control hashes | checkout revision plus generated-file hashes |
+| release packet | packet manifest and evidence-set digest | candidate packet digest |
+| Kubernetes deployment | approved rendered-manifest and image digests | cluster, namespace, workload revision, and live-object digest |
+| runtime configuration | approved effective-configuration receipt | pod and configuration identities plus parsed result |
+| dataset | release, species, assembly, manifest, and payload hashes | resolved runtime dataset identity and verified bytes |
+| telemetry | release-labeled signal contract and deployment identity | scrape, log, and trace source identities |
+
+Capture both sides before remediation. If the baseline cannot be identified,
+classify the comparison as indeterminate rather than clean.
+
+## Current Evidence Boundary
+
+The repository contains example drift reports under `ops/_generated.example/`,
+but no current configuration, control-plane, fixture, registry, schema, or stack
+drift reports under `ops/_generated/`. The active generated directory contains
+only a control-plane surface list. A generated readiness score that says
+`inventory_drift: none` is not a substitute for the absent reports because it
+does not preserve their comparisons or findings.
+
+The checked-in ignore rules are also an example. They suppress an unknown
+profile finding by path and message. Do not activate an ignore without owner,
+rationale, expiry, and evidence that the divergence is safe.
+
+## Account for Detection Coverage and Blind Time
+
+A clean comparison says nothing about the interval before or after it. Every
+drift claim needs the surfaces observed, comparison cadence, last successful
+baseline, current observation time, and any gap where collection or comparison
+was unavailable.
+
+```mermaid
+flowchart LR
+    Baseline[Approved baseline] --> Compare[Scheduled or event-driven comparison]
+    Observation[Observed state] --> Compare
+    Compare --> Result{Difference found?}
+    Result -->|yes| Finding[Classify and contain]
+    Result -->|no| Clean[Bounded clean receipt]
+    Gap[Collector or comparison gap] --> Unknown[Unknown drift interval]
+```
+
+| Coverage property | Required record |
+| --- | --- |
+| scope | source, generated, packet, deployment, runtime, dataset, and telemetry surfaces actually compared |
+| trigger | schedule, deployment event, catalog promotion, policy change, or incident action |
+| freshness | baseline identity, observation time, and maximum accepted age |
+| continuity | successful comparison sequence and missing intervals |
+| enforcement | alert, promotion hold, containment action, and owner |
+
+After an observation gap, compare the complete governed state before declaring
+the environment clean. Resuming a collector proves only that collection
+returned; it cannot show whether an unauthorized change occurred during the
+gap. Preserve the unknown interval in incident and promotion evidence.
+
+## Classification and Action
+
+- Source changed, generated output stale: regenerate from the authoritative
+  source and review the complete diff.
+- Generated output changed without source change: reject it and investigate the
+  generator or provenance.
+- Packet differs from verified evidence: reject and rebuild the release set.
+- Deployment differs from packet: contain the environment and reconcile through
+  the deployment authority.
+- Observation differs from declared state: confirm telemetry identity, then
+  treat the result as runtime or configuration drift.
+
+Any drift that changes installed resources, security posture, dataset identity,
+recovery authority, or consumer-verifiable evidence blocks promotion. Preserve
+the raw comparison, classification, owner, decision, and final corrected state.
+
+## Close a Drift Finding
 
 ```mermaid
 flowchart TD
-    Declared[Declared state] --> Compare[Drift comparison]
-    Rendered[Rendered state] --> Compare
-    Inventory[Inventory state] --> Compare
-    Evidence[Operational evidence] --> Compare
-    Compare --> Divergence{Divergence detected?}
-    Divergence -- No --> Coherent[State remains coherent]
-    Divergence -- Yes --> Classify[Classify drift type]
-    Classify --> Fix[Fix source or regenerate outputs]
+    Detect[Detect difference] --> Attribute[Bind baseline and observation]
+    Attribute --> Classify[Classify owning surface and impact]
+    Classify --> Decision{Expected and authorized?}
+    Decision -- no --> Contain[Block promotion or contain deployment]
+    Contain --> Repair[Repair through owning authority]
+    Decision -- yes --> Govern[Update governed baseline]
+    Repair --> Recheck[Repeat original comparison]
+    Govern --> Recheck
+    Recheck --> Evidence[Retain finding, decision, and closure evidence]
 ```
 
-Drift review matters because Atlas has many generated and declared surfaces that
-can appear healthy in isolation while disagreeing with each other. Operators
-need to know not just that drift exists, but whether it is tolerated noise or a
-release-blocking inconsistency.
+A finding is closed only when the original comparison passes against the
+intended baseline or an authorized baseline change explains the difference.
+An ignore rule suppresses a detector result; it does not reconcile state.
 
-## Source of Truth
+After repair, also verify downstream consumers. Regenerating a manifest does
+not prove a release packet, deployment, or runtime refreshed to that identity.
 
-- `ops/drift/`.
-- `ops/drift/scenarios/`.
-- `ops/_generated/configs-drift-report.json`.
-- `ops/_generated/control-plane-drift-report.json`.
-- `ops/_generated/stack-drift-report.json`.
-
-## Drift Classes
-
-Review drift in these buckets:
-
-- configuration drift between declared overlays, values, or runtime inputs.
-- documentation drift between stated operator behavior and current repo assets.
-- rendered output drift between authored sources and generated manifests.
-- release metadata drift between manifests, packets, provenance, and evidence.
-- dependency drift between pinned and actually used stack or toolchain inputs.
-
-## Release-Blocking Meaning
-
-Treat drift as release-blocking when it changes what operators would install,
-trust, or recover, or when it breaks the explanation chain between source,
-generated output, and release evidence.
+See [Environment Overlays](../stack/environment-overlays.md) for execution
+identity and [Release Packets](release-packets.md) for transport coherence.

@@ -8,61 +8,127 @@
 [![rust-docs](https://img.shields.io/badge/rust--docs-bijux--atlas-DEA584?logo=rust&logoColor=white)](https://docs.rs/bijux-atlas/latest/bijux_atlas/)
 [![docs-atlas](https://img.shields.io/badge/docs-atlas-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas/)
 
-`bijux-atlas` is the published compatibility alias library crate for the Atlas
-workspace.
+`bijux-atlas` is the published compatibility facade for the Atlas Rust library
+family. It preserves the compact `bijux_atlas::...` namespace while ownership
+and implementation remain in focused crates.
 
-Use this crate when you want the durable `bijux_atlas` import path while the
-canonical implementation stays split across `bijux-atlas-runtime` and the leaf
-owner crates.
+It is not the Atlas executable and it is not a monolithic implementation. The
+`bijux-atlas` command comes from `bijux-atlas-cli`; the service process comes
+from `bijux-atlas-server`.
 
-This crate does not install the `bijux-atlas` command. The installed command is
-owned by `bijux-atlas-cli`.
+```mermaid
+flowchart TD
+    App["consumer crate"] --> Facade["bijux-atlas facade"]
+    Facade --> API["bijux-atlas-api"]
+    Facade --> Ingest["bijux-atlas-ingest"]
+    Facade --> Query["bijux-atlas-query"]
+    Facade --> Runtime["bijux-atlas-runtime"]
+    Runtime --> Store["bijux-atlas-store"]
+    Runtime --> Model["bijux-atlas-model and core"]
+```
 
-## What It Does
+This is the dependency cost of the compact namespace: selecting the facade
+selects all four direct owner crates even when an application imports only one
+re-exported domain. The facade declares no Cargo features with which to remove
+individual owners.
 
-- re-exports runtime-owned modules such as `bijux_atlas::adapters` and
-  `bijux_atlas::runtime`
-- preserves compatibility paths such as `bijux_atlas::query`,
-  `bijux_atlas::api`, and `bijux_atlas::domain::ingest`
-- keeps compatibility shims out of `bijux-atlas-runtime`, so the runtime crate
-  does not pretend to own leaf crates
-- keeps the public crate name short while internal workspace ownership stays
-  explicit
+## Add the Facade
 
-## Compatibility Contract
+```toml
+[dependencies]
+bijux-atlas = "0.2"
+```
 
-If this works:
+The facade supports compatibility imports such as:
+
+```rust
+use bijux_atlas::query::Region;
+use bijux_atlas::domain::ingest::*;
+```
+
+The directly owned equivalents remain available from their leaf crates:
 
 ```rust
 use bijux_atlas_query::Region;
 ```
 
-the alias crate is expected to support the same import through:
+Choose the facade when a stable, compact import path is more important than a
+minimal dependency graph. Choose a leaf crate when the application needs only
+one domain or when precise ownership is preferable.
 
-```rust
-use bijux_atlas::query::Region;
-```
+## Exported Surface
 
-Command dispatch, HTTP delivery, ingest normalization, and query planning still
-belong to the owning Atlas crates:
+| Facade path | Canonical owner |
+| --- | --- |
+| `bijux_atlas::api::*` | `bijux-atlas-api` |
+| `bijux_atlas::query::*` | `bijux-atlas-query` |
+| `bijux_atlas::domain::ingest::*` | `bijux-atlas-ingest` |
+| `bijux_atlas::domain::{canonical, cluster, policy, security, time}` | `bijux-atlas-runtime` |
+| `bijux_atlas::{adapters, app, contracts, packaged, runtime}` | `bijux-atlas-runtime` |
 
-- `bijux-atlas-runtime`: canonical runtime library
-- `bijux-atlas-cli`: `bijux-atlas` binary owner
-- `bijux-atlas-server`: `bijux-atlas-server` binary owner
-- `bijux-atlas-api`: `bijux-atlas-openapi` binary owner
-- `bijux-atlas-query`: canonical query types and planning surface
-- `bijux-atlas-ingest`: canonical ingest normalization and artifact building
+The facade also re-exports runtime identity, environment, hashing, version, and
+no-randomness-policy symbols. Rust API documentation is the authoritative list
+for a published version.
 
-## Choose This Crate When
+## Ownership Boundaries
 
-- you are preserving an existing `bijux_atlas::...` import path
-- you want one short compatibility dependency while the implementation remains
-  split across owner crates
-- you need compatibility without pretending the runtime crate owns every leaf
-  surface
+- `bijux-atlas-runtime` composes the product library and owns runtime contracts.
+- `bijux-atlas-api` owns API types and OpenAPI generation.
+- `bijux-atlas-query` owns query types and planning.
+- `bijux-atlas-ingest` owns normalization and immutable artifact construction.
+- `bijux-atlas-cli` owns end-user command dispatch.
+- `bijux-atlas-server` owns HTTP delivery.
+- `bijux-atlas-ops` owns operational contracts and repository surface models.
+
+These boundaries prevent a convenience import from obscuring the component
+that defines behavior. Compatibility additions belong here only when they
+preserve an intentional public path; new domain behavior belongs in its owner
+crate.
+
+## Facade Trust Boundary
+
+The facade changes import ergonomics, not authority. Re-exporting a type does
+not move the contract, validation, or security decision into this crate.
+
+| Imported concern | Authority remains with |
+| --- | --- |
+| dataset and query meaning | `bijux-atlas-model` and `bijux-atlas-query` |
+| ingest normalization and artifact construction | `bijux-atlas-ingest` |
+| store integrity and publication capability | `bijux-atlas-store` |
+| runtime policy, identity propagation, and composition | `bijux-atlas-runtime` |
+| HTTP authentication, authorization placement, and route exposure | `bijux-atlas-server` and `bijux-atlas-api` |
+| deployment, load, evidence, and release contracts | `bijux-atlas-ops` |
+
+Applications must still configure and enforce the owning runtime and
+deployment boundaries. Depending on `bijux-atlas` does not enable an
+authentication mode, authorize a principal, verify a dataset, or qualify a
+deployment.
+
+## Compatibility Policy
+
+The facade and its leaf dependencies share the Atlas workspace version. A
+facade re-export is part of the public Rust surface and follows the repository's
+compatibility policy. Internal module layout in an owner crate is not made
+stable merely because the facade depends on that crate.
+
+Applications that require the smallest semver and compile-time surface should
+depend on owner crates directly. Applications preserving existing
+`bijux_atlas::...` paths should use this facade.
+
+## Upgrade the facade deliberately
+
+A facade upgrade is compatible only when both layers remain compatible: the
+owner crate must preserve its contract and this crate must preserve the
+re-export path. Before upgrading, compile the application's actual imports,
+review owner-crate release notes for the domains in use, and test serialized or
+wire contracts at their canonical owners.
+
+Do not infer runtime compatibility from a successful import alone. Compilation
+proves that a symbol remains reachable; it does not prove that dataset schemas,
+query behavior, configuration defaults, or HTTP contracts are unchanged.
 
 ## Documentation
 
 - Atlas handbook: <https://bijux.io/bijux-atlas/>
-- Rust API docs: <https://docs.rs/bijux-atlas/latest/bijux_atlas/>
-- Source repository: <https://github.com/bijux/bijux-atlas>
+- Rust API: <https://docs.rs/bijux-atlas/latest/bijux_atlas/>
+- source: <https://github.com/bijux/bijux-atlas>

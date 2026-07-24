@@ -4,92 +4,104 @@ audience: maintainer
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Automation Architecture
 
-This page explains how `bijux-atlas-dev` is organized as Atlas's development control plane.
-
-## Architectural Zones
+`bijux-atlas-dev` is the repository-only Rust control plane for validation,
+generation, operational orchestration, and evidence encoding. It turns a CLI
+request into a typed route, resolves governed metadata, authorizes effects, and
+returns a structured report.
 
 ```mermaid
 flowchart LR
-    Interfaces[interfaces and ui] --> Application[application entrypoints]
-    Application --> Domains[domain registrations]
-    Domains --> Engine[engine]
-    Domains --> Registry[registry]
+    CLI[interfaces/cli] --> App[application]
+    App --> Domain[domains]
+    Domain --> Registry[registry]
+    Domain --> Engine[engine]
+    Registry --> Engine
     Engine --> Model[model]
-    Engine --> Runtime[infrastructure runtime]
-    Registry --> Core[core data and checks]
-    Runtime --> Ports[ports and adapters]
+    Engine --> Ports[ports]
+    Ports --> Runtime[infrastructure/runtime]
+    Runtime --> Effects[filesystem, process, git, network]
+    Engine --> Report[structured report]
 ```
 
-The intent is to keep command parsing, orchestration, registry lookup, and host effects in visibly separate places.
+## Ownership Zones
 
-This architectural zone map explains why `bijux-atlas-dev` does not look like a pile of shell
-wrappers. The control plane stays reviewable by giving command parsing, registry logic, execution,
-and host effects different homes.
+| Zone | Owns | Does not own |
+| --- | --- | --- |
+| `interfaces/cli` and `ui/terminal` | argument parsing and human rendering | repository policy or host effects |
+| `application` | command-family dispatch and workflow composition | durable domain registration |
+| `domains` | registered runnable definitions | direct terminal behavior |
+| `registry` | registry loading, suite expansion, route validation, and report catalogs | executing subprocesses |
+| `engine` | selection, execution coordination, rendering, and report encoding | concrete filesystem or network access |
+| `model` and `core` | stable identifiers, serialized shapes, and reusable checks | orchestration |
+| `ports` | traits for effects supplied by the host | concrete implementations |
+| `infrastructure/runtime` | filesystem, process, git, network, and workspace-root effects | policy selection |
 
-## Main Responsibilities
+The zones are dependency boundaries, not merely directory labels. Command code
+describes intent; the runtime world performs host interactions after capability
+checks. Keeping that division visible makes dry execution, deterministic
+selection, and structured failure reporting possible.
 
-- `interfaces/cli` and `ui/terminal` expose command parsing and human-facing rendering
-- `application/` wires command families such as docs, ops, configs, and control-plane flows
-- `domains/` registers the durable extension surfaces: configs, docs, docker, governance, ops, perf, release, security, and tutorials
-- `engine/` owns runnable selection, execution, rendering, and report encoding
-- `registry/` owns registry loading, suite expansion, route validation, and report catalogs
-- `model/` holds stable types, identifiers, and serialization-friendly shapes
-- `infrastructure/runtime` owns filesystem, process, git, network, and workspace-root effects
-- `ports/` defines the host-effect traits that the runtime implementations satisfy
-
-## Effect Boundary
+## Capability Flow
 
 ```mermaid
-flowchart TD
-    Cli[CLI flags and selection] --> Engine[Engine execution]
-    Engine --> Registry[Registry lookups]
-    Engine --> World[Runtime world]
-    World --> Fs[filesystem]
-    World --> Proc[subprocess]
-    World --> Git[git]
-    World --> Net[network]
+sequenceDiagram
+    participant U as Maintainer
+    participant C as CLI
+    participant E as Engine
+    participant R as Registry
+    participant W as Runtime world
+    U->>C: command, selector, capability flags
+    C->>E: typed request
+    E->>R: resolve route and metadata
+    R-->>E: runnable plan
+    E->>W: authorized effects only
+    W-->>E: outcomes and diagnostics
+    E-->>U: versioned report and exit status
 ```
 
-This effect boundary is the key design constraint for the control plane. Commands should describe
-intent while the runtime world owns the actual host interactions.
+Missing write, subprocess, network, or git authority must fail at the effect
+boundary. A command must not silently acquire capability because a wrapper or
+workflow invoked it.
 
-The critical boundary is that host effects are mediated through the runtime world and its capability model instead of being scattered through command code.
+## Extend the Control Plane
 
-## Extension Rules
+1. Put parsing and presentation in the interface layer.
+2. Register durable behavior in the owning domain and registry.
+3. Keep cross-domain sequencing in `application`.
+4. Use the engine for selection and report production.
+5. Add host interaction through a port and runtime adapter.
+6. Define stable identifiers and serialized fields in model-owned surfaces.
+7. Prove direct CLI, Make, and workflow routes select the same behavior when
+   they claim parity.
 
-When you add new automation behavior:
+The adjacent [Automation Control Plane](../automation/automation-control-plane.md)
+describes the operator-facing command model, while
+[Command Routing](../automation/command-routing.md) defines route identity and
+effect parity.
 
-- prefer registering it through an existing or new domain instead of hard-coding it in a wrapper
-- keep report schemas and runnable metadata in the registry-oriented surfaces
-- treat `application/` as orchestration and dispatch, not as the place where validation rules live
-- keep effectful behavior behind runtime adapters so selection, tests, and contracts can stay deterministic
+## Failure Containment
 
-## Why This Shape Matters
+| Failure | Owning boundary | Expected behavior |
+| --- | --- | --- |
+| unknown command or selector | CLI and registry | reject before domain execution |
+| invalid governed input | owning domain validator | emit attributable findings without host mutation |
+| missing capability | engine and runtime world | deny the effect and preserve a structured failure |
+| external tool failure | runtime adapter | retain tool identity, exit status, and bounded output |
+| report serialization failure | engine and model | fail the run rather than emit a success without evidence |
+| wrapper parity failure | route integration | identify the diverging arguments, authority, output, or status |
 
-This structure lets Atlas keep one control plane for docs, governance, checks, suites, and report
-validation without turning the crate into an unreviewable pile of scripts and special cases.
+Domain code should not catch an infrastructure failure and replace it with a
+successful empty report. The report is the handoff contract; missing evidence
+must remain missing or failed all the way to the process exit status.
 
-## Maintainer Shortcut
+## Compatibility Boundary
 
-When you are unsure where new control-plane behavior belongs, ask whether you are adding interface,
-orchestration, registry knowledge, execution logic, stable types, or host effects. That answer
-usually points to the right zone immediately.
-
-## Where to Go Next
-
-- [System Overview](../../bijux-atlas/runtime/system-overview.md)
-- [Contracts and Boundaries](../../bijux-atlas/contracts/contracts-and-boundaries.md)
-- [Automation Control Plane](../automation/automation-control-plane.md)
-
-## Purpose
-
-This page explains the Atlas material for automation architecture and points readers to the canonical checked-in workflow or boundary for this topic.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+CLI flags, route identifiers, report schemas, and registry identifiers can be
+consumed outside the crate and require compatibility review. Internal module
+placement is an implementation detail only while moves preserve those observed
+surfaces and the effect boundary.

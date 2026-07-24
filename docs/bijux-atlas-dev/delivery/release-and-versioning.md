@@ -1,144 +1,132 @@
 ---
 title: Release and Versioning
-audience: maintainer
+audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Release and Versioning
 
-Release work is where local correctness becomes public responsibility.
+An Atlas release is a compatibility decision, a set of built artifacts, and a
+verifiable evidence packet tied to one source revision. Changing a number
+without reconciling those three layers does not create a release.
 
-## Release Flow
-
-```mermaid
-flowchart TD
-    Changes[Validated changes] --> Version[Version and release decisions]
-    Version --> Evidence[Compatibility and test evidence]
-    Evidence --> Release[Release]
-```
-
-This release flow reminds maintainers that versioning is downstream of validated change analysis and
-evidence. Release is the public expression of work that was already classified and proven.
-
-## Versioning Model
+## Release Decision Flow
 
 ```mermaid
-flowchart TD
-    Change[Change set] --> Impact[Classify impact]
-    Impact --> Internal[Internal only]
-    Impact --> Additive[Additive surface]
-    Impact --> Breaking[Breaking surface]
-    Impact --> Packaging[Packaging or docs-only]
-
-    Internal --> None[No public version shift]
-    Additive --> Compatible[Compatible version evolution]
-    Breaking --> Major[Breaking-release decision]
-    Packaging --> Metadata[Release metadata review]
-
-    None --> Story[Consistent version story]
-    Compatible --> Story
-    Major --> Story
-    Metadata --> Story
+flowchart LR
+    Change[Classify changed surfaces] --> Compat[Evaluate compatibility]
+    Compat --> Version[Choose semantic version]
+    Version --> Build[Build channel artifacts]
+    Build --> Evidence[Collect focused evidence]
+    Evidence --> Bind[Bind checksums and provenance]
+    Bind --> Verify{Packet coherent?}
+    Verify -->|yes| Publish[Publish selected channels]
+    Verify -->|no| Hold[Hold release]
 ```
 
-This versioning model is more useful for maintainers because it starts with the shape of the change,
-not with the release label. Release naming comes after impact classification, compatibility review,
-and evidence assembly.
+## Version Authority
 
-## Source Authorities
+The root workspace version is inherited by the Atlas crates. Tags use semantic
+versioning with a required `v` prefix; `rc`, `beta`, and `alpha` prerelease
+identifiers are allowed. The chart has its own `version` and `appVersion`, and
+release manifests repeat version identity for their owned artifacts.
 
-- [`configs/sources/governance/governance/compatibility.yaml`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/compatibility.yaml:1) defines what counts as breaking and what rename windows are required
-- [`configs/sources/governance/governance/deprecations.yaml`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/deprecations.yaml:1) records active deprecations and their removal targets
-- `.github/workflows/release-candidate.yml`, `release-github.yml`, `release-crates.yml`, and `final-readiness.yml` govern the release lanes and promotion checkpoints
-- `.github/release-notes-template.md` defines the public release narrative and evidence checklist expected at publish time
+Before a release, these values must tell one deliberate story. The current
+checkout does not: the workspace is `0.2.2`, while the chart and several
+checked-in release manifests remain at `0.2.0`. That is a release blocker, not a
+documentation detail.
 
-## Maintainer Priorities
+## Classify by Governed Surface
 
-- understand which surfaces changed
-- understand whether the change is compatible
-- ensure release evidence matches the level of change
-
-## Surface-Based Release Review
-
-Use this table to turn a change set into a release decision:
-
-| Changed surface | Typical compatibility reading | Maintainer expectation |
+| Changed surface | Compatibility question | Required response |
 | --- | --- | --- |
-| internal refactor with no user, operator, report, or docs-url change | internal only | keep release metadata honest, but do not invent public impact |
-| additive CLI, docs, report, or config surface | compatible evolution | update docs and evidence so the new surface is discoverable and proven |
-| renamed or removed governed key, check id, report field, or docs URL | potentially breaking | follow the compatibility and deprecation rules before promotion |
-| docs-only clarification with no changed contract claim | packaging or docs-only | verify the release notes and docs deploy still match reality |
+| Rust public API | Was a public item removed or changed incompatibly? | API snapshot, semantic-version check, migration guidance |
+| CLI or HTTP contract | Did commands, routes, fields, errors, or defaults change? | contract diff, generated reference, consumer evidence |
+| environment key | Was a key removed, renamed, or made required? | 180-day overlap, registry entry, docs, allowlist coverage |
+| chart or profile key | Did type, safety default, or accepted alias change? | 180-day overlap, warning, schema and render evidence |
+| report schema or check ID | Can automation still parse or invoke the old identity? | 180-day overlap and compatibility notice |
+| documentation URL | Does the old public location still resolve? | redirect maintained for 365 days |
+| internal implementation | Is every public and operational contract unchanged? | focused evidence; no invented user-facing impact |
 
-The important habit is that release review should speak in repository surfaces, not in vague
-severity language. Atlas already records which classes of surface require overlap windows, redirects,
-or compatibility entries.
+The compatibility rules define breaking changes by surface. Do not reduce them
+to one generic “major/minor/patch” judgment before identifying the owner and
+consumer.
 
-## Release Types
+## Active Deprecations
 
-- planned release: normal delivery of accumulated compatible work
-- patch release: correctness, regression, or security fixes with narrow scope
-- emergency release: urgent mitigation for a high-severity incident or exploit
+The deprecation registry currently carries five chart-value migrations with a
+removal target of `2026-09-01` and two documentation URL redirects with a
+removal target of `2027-03-03`. Removal is admissible only after the recorded
+target and after the required overlap, warning, redirect, communication, and
+evidence obligations are satisfied.
 
-Each release type still needs explicit evidence. Urgency changes the path length, not the obligation to prove what shipped.
+A date alone does not remove a compatibility obligation. The release must show
+that the replacement existed, consumers had the governed window, and the old
+surface now fails or redirects exactly as policy requires.
 
-## Support and Deprecation Model
+## Maintainer Commands
 
-- the latest supported minor line receives normal maintenance
-- the previous supported minor line is the fallback window for critical or security fixes
-- older lines are unsupported unless the repository explicitly documents an extension
-
-For deprecations:
-
-1. introduce the replacement first
-2. record the deprecation in `configs/sources/governance/governance/deprecations.yaml`
-3. keep compatibility shims or redirects for the supported window
-4. remove the deprecated surface only after the planned removal point and updated evidence
-
-## Compatibility Windows In Practice
-
-The compatibility registry currently sets different windows for different surfaces. For example:
-
-- `env_keys`, `chart_values`, `profile_keys`, `report_schemas`, and `check_ids` carry a 180-day deprecation window
-- `docs_urls` carry a 365-day redirect and compatibility window
-
-That means a rename is never "just a rename." It becomes release work only when the overlap,
-warning, redirect, and documentation obligations have been met for the owning surface.
-
-## Practical Governance Checks
-
-Review deprecation entries in `configs/sources/governance/governance/deprecations.yaml` as part of
-release preparation, and use this command to inspect the broader governance state:
+Inspect the current release surface before generating or publishing anything:
 
 ```bash
-cargo run -q -p bijux-atlas-dev -- governance doctor --format json
+cargo run -q -p bijux-atlas-dev -- release plan --format json
+cargo run -q -p bijux-atlas-dev -- release version check --format json
+cargo run -q -p bijux-atlas-dev -- release check --profile kind --format json
 ```
 
-For release preparation, also confirm that the required branch-protection and promotion workflows
-still line up with the release story in [`.github/required-status-checks.md`](/Users/bijan/bijux/bijux-atlas/.github/required-status-checks.md:1).
+Then use the channel-specific `release crates`, `release images`, `release ops`,
+manifest, checksums, signing, packet, and verification commands needed by the
+selected release. A broad successful command does not replace a failed
+channel-specific verifier.
 
-## Practical Mindset
+## Evidence by Release Concern
 
-Release discipline is not only a packaging step. It is the final check that the documented story, tested story, and shipped story still match.
+| Concern | Evidence needed |
+| --- | --- |
+| source and version | immutable revision, clean inputs, workspace/chart/manifest agreement |
+| compatibility | affected-surface diff, active deprecations, migration and negative tests |
+| packages and OCI | built artifacts, registry checksums or digests, dependency closure |
+| operations | chart render, profile policy, conformance, install, upgrade, rollback |
+| performance and resilience | fresh named scenario runs with comparable baselines |
+| provenance | checksums, signatures, SBOMs, builder and source attestations |
+| publication | consumer retrieval and verification for each promoted channel |
 
-## Release Questions Worth Asking
+## Workflow Semantics
 
-- which user, operator, or automation surfaces changed?
-- what evidence proves the release story still matches the docs?
-- does the versioning decision reflect the actual compatibility impact?
+`release-candidate.yml` collects useful reports, but several nonzero checks are
+serialized as warning artifacts so the job can continue. Read the inner report
+status and exit code; a green workflow shell is not sufficient evidence that
+docs completeness, reproducibility, release checks, or operations readiness
+passed.
 
-## Main Takeaway
+Publication workflows also resolve enablement and matrices at runtime. A
+workflow that resolves to no packages or skips publication is not proof that a
+channel was published. Retain the resolved plan and published immutable
+identifiers.
 
-Release versioning in Atlas is not a naming ritual. It is the final repository judgment that change
-classification, compatibility policy, deprecation windows, workflow gates, and public release notes
-still describe the same truth.
+## Release Hold Conditions
 
-## Purpose
+Hold the release when any of these is true:
 
-This page explains the Atlas material for release and versioning and points readers to the canonical checked-in workflow or boundary for this topic.
+- version-bearing manifests disagree without an approved compatibility reason
+- a required deprecation or redirect window is incomplete
+- a required report is missing, stale, warning-only, or tied to another source
+- checksums, provenance, or packet entries do not match distributed bytes
+- a declared runner, artifact, or channel cannot be resolved
+- consumer retrieval has not been verified
 
-## Stability
+Urgency can shorten coordination, but it cannot turn missing evidence into a
+pass. An emergency release should state which checks were completed, which were
+deferred, why, and how the residual risk is contained.
 
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+## Authorities
+
+- [version policy](../../../configs/sources/release/version-policy.json)
+- [compatibility policy](../../../configs/sources/governance/governance/compatibility.yaml)
+- [deprecation registry](../../../configs/sources/governance/governance/deprecations.yaml)
+- [required status checks](../../../.github/required-status-checks.md)
+- [release notes template](../../../.github/release-notes-template.md)
+- [version manifests](../../bijux-atlas-ops/release/version-manifests.md)

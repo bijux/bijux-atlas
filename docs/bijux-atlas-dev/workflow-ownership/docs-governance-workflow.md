@@ -4,58 +4,99 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Docs Governance Workflow
+# Documentation Governance Workflow
 
-Atlas keeps dedicated docs governance validation so navigation, redirects,
-reference generation, and artifact honesty are enforced together.
+Documentation changes are governed by the contract they affect. Prose,
+navigation, redirects, generated references, command examples, and published
+site output have different failure modes and need different evidence.
 
-## Docs Governance Decision Model
+## Classify the change
 
 ```mermaid
 flowchart TD
-    Change[Documentation change] --> Classify[Classify change]
-    Classify --> Editorial[Editorial correction]
-    Classify --> Structural[Structural navigation change]
-    Classify --> Contract[Contract or governance-impacting change]
-
-    Editorial --> Light[Light review path]
-    Structural --> Redirect[Navigation and redirect review]
-    Contract --> Governance[Governance and compatibility review]
-
-    Light --> Merge[Merge]
-    Redirect --> Merge
-    Governance --> Merge
+    Change["documentation change"] --> Class{"affected authority"}
+    Class -->|reader wording only| Editorial["validate content and links"]
+    Class -->|path or navigation| Navigation["nav and redirect integrity"]
+    Class -->|generated reference| Generated["regenerate and verify parity"]
+    Class -->|public contract| Contract["owner and compatibility review"]
+    Class -->|site pipeline| Delivery["build, artifact, and deploy review"]
+    Editorial --> Evidence["attach focused evidence"]
+    Navigation --> Evidence
+    Generated --> Evidence
+    Contract --> Evidence
+    Delivery --> Evidence
 ```
 
-This diagram helps maintainers avoid the most common docs mistake: treating every docs edit like the
-same kind of change. Atlas separates simple prose fixes from navigation moves and from changes that
-alter contracts, redirects, or governance meaning.
+Reader-facing pages must explain the product or operation directly. Workspace
+agreements, editorial instructions, and assistant-facing control text do not
+belong in the published MkDocs tree.
 
-## Repository Anchors
+## Repository surfaces
 
-- [`.github/PULL_REQUEST_TEMPLATE/docs-governance.md`](/Users/bijan/bijux/bijux-atlas/.github/PULL_REQUEST_TEMPLATE/docs-governance.md:1) records the docs-specific PR obligations
-- [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) records the shared validation and source-of-truth obligations
-- docs validation and redirect commands under the maintainer control plane are the execution surface for structural checks
+The default pull-request template asks for the user or operator outcome,
+changed surfaces, targeted validation, contract changes, generated artifacts,
+docs, release risk, and rollback. There is no checked-in docs-specific pull
+request template today. Do not refer contributors to one.
 
-## What This Workflow Protects
+The principal documentation authorities are:
 
-- curated docs spine placement
-- redirect integrity when pages move or rename
-- alignment between authored docs and generated references
-- honesty about what is source of truth versus derived artifact
+- authored pages under `docs/`;
+- navigation and redirect mappings in `mkdocs.yml`;
+- redirect source data under `configs/sources/repository/docs/`;
+- generated reference ownership in the maintainer control plane;
+- site build settings in `.github/docs-deploy.env`;
+- scheduled or manual audit behavior in `docs-audit.yml`;
+- the reusable or manual deployment workflow in `deploy-docs.yml`.
 
-## Practical Maintainer Rules
+## Focused validation
 
-- use the light path for editorial corrections that do not move meaning, placement, or contract claims
-- use the navigation path when URLs, section homes, or redirects change
-- use governance review when docs redefine a maintained promise, compatibility expectation, or workflow obligation
-- never treat a docs move as complete until redirects and generated navigation stay aligned
+Use the narrowest checks that match the change, then escalate for structural or
+delivery changes:
 
-## Main Takeaway
+```bash
+cargo run -p bijux-atlas-dev -- docs validate --format json
+cargo run -p bijux-atlas-dev -- docs lint --format json
+cargo run -p bijux-atlas-dev -- docs nav-integrity --format json
+cargo run -p bijux-atlas-dev -- docs reference check \
+  --allow-subprocess \
+  --format json
+```
 
-Docs governance is Atlas's way of protecting reader trust. The workflow exists so maintainers can
-distinguish a harmless wording improvement from a docs change that silently breaks navigation,
-compatibility promises, or repository truth.
+When a page moves, update the redirect source and synchronize generated redirect
+maps through `docs redirects sync --allow-write`. Review the generated diff and
+verify both the former URL and the destination.
+
+Generated references must be changed at their source. A parity check that fails
+after a handwritten edit is evidence that the wrong artifact was modified.
+
+## Automation coverage and limits
+
+The weekly or manual docs audit installs the docs toolchain, runs Markdown lint,
+checks external links, verifies generated references, builds a strict preview,
+and writes an audit packet. The preview is retained for five days and audit
+evidence for 14 days.
+
+That workflow does not run on every pull request. The deploy workflow is manual
+or reusable and consumes repository-configured install, build, and site paths.
+The checked-in `main` ruleset does not currently require a docs-specific status
+context. Maintainers must not infer per-PR documentation coverage from the
+existence of scheduled audit and deployment workflows.
+
+## Acceptance rules
+
+A documentation change is complete when:
+
+- the public claim matches current code, configuration, and evidence;
+- commands and paths exist and use supported interfaces;
+- local filesystem paths and editorial narration are absent from public pages;
+- navigation, redirects, and generated references remain coherent;
+- diagrams clarify real ownership or sequence;
+- focused validation passes and any broader deferred check is named;
+- the pull request records compatibility and rollback impact where relevant.
+
+Site deployment success proves that an artifact was built and published. It
+does not prove every product claim in that artifact is true; source review and
+domain evidence still own that decision.

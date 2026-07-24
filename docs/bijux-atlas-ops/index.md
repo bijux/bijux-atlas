@@ -4,97 +4,124 @@ audience: operators
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # bijux-atlas-ops
 
-`bijux-atlas-ops` is the operator handbook for Atlas. It explains how stack
-assets, Kubernetes delivery, observability signals, load evidence, and release
-controls fit together when operators need to decide whether a change is safe
-to install, promote, or roll back.
+Atlas operations governs the path from an immutable dataset release to a
+defensible decision: promote it, keep it serving, hold it, drain traffic, or
+recover a known-good state. That path spans topology, Kubernetes, security,
+observability, load, and release custody. A healthy process or a successful
+Helm render is useful evidence, but neither is a complete operating verdict.
 
-## Purpose
+The system has three cooperating surfaces:
 
-Use this handbook to understand the Atlas operating model, choose the right
-validation path for a proposed change, and gather the evidence required for
-promotion, rollback, or incident review.
+| Surface | Authority |
+| --- | --- |
+| `ops/` | Profiles, charts, policies, schemas, scenarios, thresholds, dashboards, runbooks, and evidence inputs |
+| `bijux-atlas-ops` | Reusable models, path contracts, deterministic validation, and explicit adapters to external state |
+| `bijux-atlas-dev ops` | Repository orchestration, effect gates, and report emission |
 
-## Source of Truth
+Generated reports record observations. They do not rewrite the policies or
+release identities that produced them.
 
-- `ops/stack/` defines the runtime dependency shape, local and Kind profiles,
-  component manifests, and generated version or dependency views.
-- `ops/k8s/` governs Helm values, chart structure, install profiles, rollout
-  safety, and Kubernetes conformance evidence.
-- `ops/observe/` defines the observability pack, alerting rules, dashboards,
-  telemetry drills, and signal contracts.
-- `ops/load/` defines scenario identity, thresholds, suites, baselines, k6
-  scripts, and generated load summaries.
-- `ops/release/` governs release manifests, evidence bundles, packets, signing,
-  provenance, and rollback readiness.
+## The operating ledger
 
-## How to Use This Handbook
+Every operating decision should be traceable through five records:
 
-Read the handbook in the same order operators usually make decisions:
+```mermaid
+flowchart LR
+    Desired["Desired<br/>release + profile + policy"] --> Rendered["Rendered<br/>exact resources"]
+    Rendered --> Admitted["Admitted<br/>target accepted"]
+    Admitted --> Observed["Observed<br/>behavior measured"]
+    Observed --> Qualified["Qualified<br/>evidence joined"]
+    Qualified --> Decision{"promote, hold,<br/>drain, recover"}
+```
 
-1. Start with [Stack](stack/index.md) to understand component roles, topology,
-   profiles, and environment assumptions.
-2. Move to [Kubernetes](kubernetes/index.md) for chart values, rendered
-   manifests, install paths, rollout controls, and cluster-specific evidence.
-3. Use [Observability](observability/index.md) to understand the signal pack
-   that validates readiness, health, saturation, and incident triage.
-4. Use [Load](load/index.md) to confirm performance, resilience, and regression
-   expectations under governed scenarios.
-5. Finish with [Release](release/index.md) to package the evidence, verify the
-   trust chain, and decide whether a build can be distributed or rolled back.
+| Record | Question it answers | Invalidated by |
+| --- | --- | --- |
+| desired | What is intended to run, under which policy? | A changed release, profile, policy, or target |
+| rendered | What exact resources would those inputs create? | A changed chart, values chain, image pin, or render tool |
+| admitted | What did the target accept? | A new workload revision, mutation, or target identity |
+| observed | How did that admitted state behave? | A changed serving identity or a new observation window |
+| qualified | Which decision does the joined evidence support? | A broken identity join, failed requirement, or unrecorded exception |
 
-## What Is Governed
+Retain failed ledger paths. They explain why a release was held and prevent an
+observation from one workload or dataset from being attached to another.
 
-This handbook governs the operator-facing reading of the Atlas control plane:
+## Decision identity
 
-- supported runtime and dependency layouts
-- Kubernetes values, profiles, manifests, and rollout invariants
-- observability signals, drills, dashboards, and evidence outputs
-- load scenarios, thresholds, baselines, and regression gates
-- release manifests, packets, signing outputs, provenance, and recovery
+A promotion packet needs stable join keys across six authorities:
 
-## Operator Workflow
+| Authority | Identity to retain |
+| --- | --- |
+| product | Runtime revision and immutable artifact digest |
+| dataset | Release, species, assembly, manifest, and payload hashes |
+| deployment | Chart, values digest, profile, namespace, and workload revision |
+| target | Cluster, dependency composition, and observation boundary |
+| execution | Command or scenario, tool versions, start time, and run ID |
+| decision | Policy, verdict, reviewer, exceptions, and packet digest |
 
-1. Identify the change surface in `ops/stack`, `ops/k8s`, `ops/observe`,
-   `ops/load`, or `ops/release`.
-2. Read the matching handbook page to confirm the owning contract, validation
-   path, and failure modes.
-3. Run or inspect the governed checks for that surface.
-4. Collect the generated evidence before promotion, rollback approval, or
-   incident closure.
-5. Cross-check related sections when a decision crosses domain boundaries, such
-   as rollout under load or rollback during an observability incident.
+Telemetry and scenario reports can carry compact join keys rather than every
+field. If those keys cannot recover the target and release identities, the
+result is diagnostic material rather than promotion evidence.
 
-## Evidence Produced
+## Operational domains
 
-The handbook does not generate artifacts by itself, but it points operators to
-the evidence that matters for each domain:
+| Domain | Governs | Begin with |
+| --- | --- | --- |
+| topology | Components, dependencies, profiles, pins, and failure roles | [Stack](stack/index.md) |
+| delivery | Rendering, admission, rollout, rollback, and confinement | [Kubernetes](kubernetes/index.md) |
+| assurance | Threats, identity, authorization, audit, and artifact trust | [Security](security/index.md) |
+| signals | Health, readiness, overload, metrics, logs, traces, alerts, and drills | [Observability](observability/index.md) |
+| capacity | Workloads, thresholds, baselines, concurrency, churn, and outages | [Load](load/index.md) |
+| custody | Distribution, checksums, provenance, evidence bundles, and recovery | [Release](release/index.md) |
 
-- stack indexes, dependency graphs, and version manifests
-- rendered manifest inventories and Kubernetes conformance reports
-- telemetry indexes, dashboard validation outputs, readiness reports, and drill
-  results
-- load summaries, baseline comparisons, and threshold regressions
-- release manifests, evidence bundles, signed checksums, and verification
-  outputs
+The domains share identity but not authority. A rendered manifest cannot prove
+readiness. A passing load scenario cannot prove rollback. A complete telemetry
+inventory cannot prove that signals arrived during the decision window.
 
-## What This Handbook Does Not Cover
+## Operator control loops
 
-This handbook is not the place for application feature semantics, dataset
-authoring rules, or API consumer integration guidance. Those surfaces live in
-their own documentation and contracts. `bijux-atlas-ops` is specifically for
-operators who need to reason about deployment safety, runtime behavior,
-evidence, and failure handling.
+```mermaid
+flowchart TB
+    A[Admit exact inputs] --> B[Roll out and observe]
+    B --> C[Exercise capacity and failure behavior]
+    C --> D{Policy satisfied?}
+    D -->|yes| E[Promote and retain packet]
+    D -->|no| F[Hold, drain, or recover]
+    F --> G[Retain incident and decision evidence]
+```
 
-## Sections
+Use `bijux dev atlas ops --help` for the installed maintainer interface, or
+`cargo run --locked -p bijux-atlas-dev -- ops --help` from a checkout. Inspect
+the selected subcommand before granting subprocess, network, cluster, or write
+effects. Command availability identifies a mechanism; environment policy still
+decides which checks and observation windows are required.
 
-- [Stack](stack/index.md)
-- [Kubernetes](kubernetes/index.md)
-- [Release](release/index.md)
-- [Observability](observability/index.md)
-- [Load](load/index.md)
+## Start by outcome
+
+- choose a composition: [Deployment Models](stack/deployment-models.md) and
+  [Service Topology](stack/service-topology.md)
+- render or change a deployment: [Kubernetes](kubernetes/index.md) and
+  [Rollout Safety](kubernetes/rollout-safety.md)
+- qualify an exposure boundary: [Security](security/index.md) and
+  [Security Operations](kubernetes/security-operations.md)
+- investigate serving behavior: [Health, Readiness, and Drain](observability/health-readiness-and-drain.md)
+  and [Incident Response](observability/incident-response.md)
+- establish an operating envelope: [Load](load/index.md) and
+  [Thresholds and Budgets](load/thresholds-and-budgets.md)
+- verify release custody: [Signing and Provenance](release/signing-and-provenance.md)
+  and [Release Evidence](release/release-evidence.md)
+
+## Current proof boundary
+
+Checked-in contracts describe the intended system; they do not claim that a
+target ran or passed them. In particular, the Kubernetes conformance catalog
+declares 79 checks and five suite selections, while the current
+`ops k8s conformance` command performs a narrower readiness snapshot over
+deployments, pods, and HPA metrics API availability. Treat the catalog as
+declared coverage and the command output as snapshot evidence until execution
+binds selected check IDs, policy, and results end to end. See
+[Kubernetes Conformance Suites](kubernetes/conformance-suites.md).

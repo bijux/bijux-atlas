@@ -1,122 +1,139 @@
 ---
 title: Backup and Recovery
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Backup and Recovery
+# Backup and recovery
 
-Atlas recovery planning should focus on the durable serving store and the ability to reconstruct runtime state safely.
+Atlas recovery restores a coherent set of dataset artifacts, catalog state,
+release metadata, configuration, policy, and access custody. Cache state is
+disposable. Runtime rollback and dataset-pointer rollback are useful controls,
+but neither replaces a durable backup and exercised restore.
 
-```mermaid
-flowchart TD
-    Loss[Failure or loss event] --> Durable[Identify durable assets]
-    Durable --> Store[Serving store and datasets]
-    Durable --> Release[Release metadata and provenance]
-    Durable --> Evidence[Evidence and manifests]
-    Store --> Restore[Restore or reconstruct]
-    Release --> Restore
-    Evidence --> Restore
-    Restore --> Verify[Verify correctness and readiness]
-    Verify --> Resume[Resume service safely]
-```
-
-This page is about recoverability as an operational claim, not a comforting
-idea. Atlas is only recoverable when operators can restore the durable serving
-surface, prove the restored release identity, and show the service is ready to
-serve the right data again.
-
-## Recovery Priority
+## Identify the recovery domain
 
 ```mermaid
 flowchart TD
-    Recover[Recovery planning] --> Store[Serving store]
-    Recover --> Catalog[Catalog state]
-    Recover --> Runtime[Runtime config]
-    Recover --> Cache[Cache state if useful]
+    Loss{What was lost or corrupted?}
+    Loss -->|runtime| Runtime[Restore supported runtime release]
+    Loss -->|selection| Pointer[Select previous verified dataset pointer]
+    Loss -->|artifact or catalog| Store[Restore durable store + catalog]
+    Loss -->|policy or evidence| Control[Restore config + policy + provenance]
+    Runtime --> Verify[Identity + correctness + readiness + bounded traffic]
+    Pointer --> Verify
+    Store --> Verify
+    Control --> Verify
 ```
 
-This recovery-priority diagram keeps the durable pieces at the center. Atlas recovery should start
-from serving store state, catalog state, and runtime configuration before anyone worries about cache
-warmth.
+| Durable class | Protection | Recovery proof |
+| --- | --- | --- |
+| dataset artifacts and manifest lock | Immutable replicated copy with checksum verification | Payload hashes pass and representative queries agree |
+| catalog and index | Versioned copy or deterministic rebuild inputs | Expected identities are discoverable |
+| release packet and provenance | Retained outside the failed target | Fresh consumer verification passes |
+| configuration and policy | Versioned governed inputs | Render, admission, and runtime identity agree |
+| secrets and trust roots | Independent protected custody | Least-privilege access, rotation, and revocation pass |
+| caches | No authoritative backup | Rebuild from verified store without result drift |
 
-## What Matters Most
-
-- published manifests and SQLite artifacts.
-- catalog state that exposes those published datasets.
-- the runtime configuration needed to serve them correctly.
-
-## Recovery Model
+## Recover one coherent point
 
 ```mermaid
-flowchart LR
-    Backup[Backed up store and config] --> Restore[Restore store root and config]
-    Restore --> Validate[Validate discoverability and readiness]
-    Validate --> Serve[Resume service]
+flowchart TD
+    Point[Named recovery point] --> Artifacts[Artifacts + manifest]
+    Point --> Catalog[Catalog + dataset index]
+    Point --> Release[Runtime + release metadata]
+    Point --> Config[Config + policy]
+    Point --> Access[Keys + credentials + trust policy]
+    Artifacts --> Bind{Identity and hashes agree?}
+    Catalog --> Bind
+    Release --> Bind
+    Config --> Bind
+    Access --> Bind
+    Bind -->|no| Reject[Reject incoherent restore]
+    Bind -->|yes| Exercise[Representative workload]
 ```
 
-This recovery model emphasizes validation after restore. A restored file tree is not yet a recovered
-service until discoverability and readiness checks say so.
+The recovery unit is this set, not an archive in isolation. A current catalog
+with stale artifacts is incoherent. Encrypted bytes without recoverable keys
+are unavailable. A cache rebuilt from unverified state is not recovery evidence.
 
-## Practical Advice
+Define recovery point and recovery time per durable class. Measure the recovery
+point from the latest included mutation to the earliest excluded mutation.
+Measure recovery time from declared incident start to recorded authority
+transfer, preserving detection, isolation, restore, qualification, and failover
+timestamps separately.
 
-- back up the serving store, not only a build root.
-- treat catalog integrity as part of recoverability.
-- keep recovery procedures separate from cache rewarming procedures.
-- verify readiness after restore rather than assuming successful file copy equals successful service recovery.
+## Keep trust inputs independent
 
-## What Recovery Is Not
+| Trust input | Independent requirement |
+| --- | --- |
+| encryption key | Separately governed generation, quorum, or break-glass custody |
+| storage credential | Audited least-privilege restore identity with bounded lifetime |
+| expected release | Outer digest or identity stored outside the recovered packet |
+| verifier policy | Current roots, withdrawals, policy, and reliable time source |
+| target authority | Named approver for restore, traffic transfer, and writer activation |
 
-Recovery is not “copy whatever is in the cache and hope for the best.” Cache loss may hurt performance, but store loss is what threatens durable serving ability.
+Use separate identities to read backups, materialize an isolated target,
+verify it, and activate service. Revoke temporary access after its boundary
+completes. Break-glass use requires an attributable audit record.
 
-## Recovery Questions to Answer Before an Incident
+## Restore without split authority
 
-- where is the authoritative backup of the serving store?
-- how is catalog integrity preserved or rebuilt?
-- what checks prove the recovered instance is ready to serve again?
+```mermaid
+stateDiagram-v2
+    [*] --> Present
+    Present --> Restorable: inventory + access + integrity pass
+    Restorable --> Restored: coherent set materialized in isolation
+    Restored --> Candidate: runtime starts with expected identities
+    Candidate --> Qualified: correctness + bounded traffic pass
+    Candidate --> Rejected: identity, correctness, or capacity fails
+    Qualified --> Authoritative: governed traffic and writer transfer
+```
 
-## Purpose
+Freeze the failed writer path before restore. Expose the candidate only to
+verification traffic. Transfer one catalog pointer, runtime endpoint, and
+writer authority in a recorded decision. Confirm that stale endpoints,
+credentials, jobs, and publishers cannot mutate retired state.
 
-This page explains the Atlas material for backup and recovery and points readers to the canonical checked-in workflow or boundary for this topic.
+If any class restores partially, stop before serving. Preserve the partial
+result, return to a known restorable point, and repeat the complete chain. A
+failed restore must not overwrite the last verified recovery point.
 
-## Source of Truth
+## Acceptance exercise
 
-- `ops/release/evidence/manifest.json`.
-- `ops/release/packet/packet.json`.
-- `ops/release/provenance.json`.
-- `ops/datasets/rollback-policy.json`.
+1. Select and independently identify the recovery point.
+2. Isolate failed state and fence mutation.
+3. Restore access, artifacts, catalog, release metadata, config, and policy.
+4. Verify manifests, payload hashes, catalog selection, and consumer trust.
+5. Start without normal traffic and confirm effective identities.
+6. Exercise representative cheap and heavy queries plus dependency behavior.
+7. Transfer authority, observe bounded traffic, and record residual data loss.
+8. Test failure paths such as unreadable media, missing keys, partial catalogs,
+   stale manifests, and unavailable rollback targets.
 
-## What Must Be Restorable
+Independent review of manifest/catalog binding, query results, and traffic
+readiness is preferred. Record when the restore executor also makes the
+acceptance decision.
 
-To claim Atlas is recoverable, operators must be able to restore or reconstruct:
+## Current repository boundary
 
-- the serving dataset and manifest surface.
-- the release metadata that proves what version is being restored.
-- the evidence and provenance that let another operator trust the restored state.
-- the runtime configuration needed to make the service discoverable and ready.
+The repository defines a dataset-pointer rollback policy with maximum depth
+three and retains release manifest, packet, and provenance contracts. It does
+not include an operational backup configuration, schedule, storage-retention
+policy, restore runner, or completed recovery result.
 
-## Durable Versus Reconstructable
+The checked-in MinIO stack is a single-replica fixture with development
+credentials and no persistent volume. The current release packet is stale and
+its evidence bundle does not pass fresh verification. Atlas therefore provides
+reconstruction inputs and rollback policy—not a proven disaster-recovery
+system.
 
-- durable and worth backing up directly: dataset manifests, release manifests,.
-  evidence identity, provenance, and package references
-- reconstructable but still review-relevant: generated summaries, dashboard.
-  snapshots, and some validation outputs if the source evidence survives
-- disposable: caches and other acceleration surfaces that do not define durable.
-  serving truth
+An environment claiming recoverability must supply and exercise off-target
+backup, retention, restore, credential, key, and authority-transfer controls.
+Do not resume writes or promotion while integrity is uncertain.
 
-## Recovery Drill Success Criteria
-
-A recovery drill is successful only when it proves:
-
-- the restored service exposes the expected release identity.
-- the dataset surface is discoverable and governed by the expected rollback.
-  policy
-- readiness and key query paths pass after restore.
-- the recovered state can be explained from release evidence, not guesswork.
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+See [Cache and Store Operations](../stack/cache-and-store-operations.md) and
+[Release Evidence](release-evidence.md).

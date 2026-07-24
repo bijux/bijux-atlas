@@ -1,114 +1,114 @@
 ---
 title: Security Operations
-audience: operator
+audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Security Operations
+# Security operations
 
-Security operations in Atlas are about making runtime boundaries, authentication behavior, and sensitive data handling explicit and reviewable.
-
-## Security Surface
+Atlas security is an end-to-end deployment property. Exposure, caller
+identity, route authorization, workload identity, network policy, secret
+delivery, dataset integrity, audit, and artifact trust must agree for one named
+profile and target.
 
 ```mermaid
 flowchart LR
-    Requests[Incoming requests] --> Auth[Authentication and authorization]
-    Auth --> Policy[Policy enforcement]
-    Policy --> Data[Access to dataset surfaces]
+    Client[Caller] --> Edge[Ingress or private boundary]
+    Edge --> Identity[Authentication]
+    Identity --> Authz[Action + resource authorization]
+    Authz --> Runtime[Atlas workload]
+    Runtime --> Store[Verified dataset store]
+    Workload[Pod + service account + RBAC] --> Runtime
+    Network[Ingress + egress policy] --> Runtime
+    Runtime --> Audit[Audit + telemetry]
 ```
 
-This security surface diagram keeps request handling honest. Security decisions happen before access
-to dataset surfaces, and they should be explainable from explicit runtime behavior rather than
-deployment folklore.
+Built-in authentication does not turn a public deployment into a complete edge
+security design. Exposure beyond a private trusted network requires a governed
+ingress identity boundary, service mesh, or equivalent institutional control.
 
-## Security Operations Model
+## Follow each control to live behavior
 
-```mermaid
-flowchart TD
-    Config[Security-related runtime config] --> Runtime[Runtime enforcement]
-    Runtime --> Logs[Audit and security-relevant logs]
-    Runtime --> Health[Operational visibility]
-```
+| Boundary | Question | Evidence |
+| --- | --- | --- |
+| declared | Does selected policy require the control? | Values, source digest, policy, and exception ledger |
+| rendered | Did merged inputs create the intended objects? | Manifest inventory and semantic diff |
+| admitted | Did the cluster accept the same claim-bearing fields? | Admission result and stored-object identity |
+| effective | Does the workload use the intended identity, privilege, and reachability? | Live positive and negative checks |
+| observable | Are allowed, denied, rotated, and exceptional actions attributable? | Correlated audit, logs, metrics, and traces |
+| recoverable | Can rollback, revocation, or restoration re-establish the control? | Reversal exercise and restored-state evidence |
 
-This operations model shows that security is not just about accepting or rejecting requests. It also
-depends on configuration clarity, auditability, and the ability to observe the runtime safely.
+A rendered NetworkPolicy proves intent. Admission plus connectivity tests prove
+the selected target enforced it. A denied request proves little without route,
+principal, action, resource, policy, and audit identity.
 
-## Operator Priorities
+## Keep principals separate
 
-- understand which routes are intentionally exempt from auth
-- understand how boundary identity headers are expected in proxied modes
-- review policy and runtime config together, not in isolation
-- treat logs and traces as part of security investigation, not only uptime investigation
+| Principal | Established by | Does not prove |
+| --- | --- | --- |
+| caller | API key, token, proxy, OIDC, or mTLS | Workload access to dependencies |
+| authorization | Route class, action, resource, role, and policy | An upstream identity provider asserted an operator role |
+| workload | Service account, RBAC, and pod identity | The caller was authorized |
+| dependency | Store, Redis, registry, or telemetry credential | Another dependency has equivalent privilege |
 
-## Practical Advice
+`ATLAS_AUTH_MODE` supports API key, token, OIDC, and mTLS modes. Authentication
+establishes caller context; authorization evaluates action and resource under
+default-deny policy. Invalid embedded authorization contracts fail closed.
 
-- use explicit runtime configuration for security-sensitive behavior
-- avoid undocumented assumptions about reverse proxies or header injection
-- verify health routes and protected routes separately
-- preserve auditability when diagnosing incidents
+## Administrative-route boundary
 
-## Useful Security Checks
+Enabling administrative endpoints registers 26 debug, cluster, replica,
+recovery, fault, chaos, and echo routes at once. The current classifier marks
+only 18 as administrative. Four replica routes, two recovery routes, failure
+injection, and chaos execution fall through to `dataset.read` instead of
+`ops.admin`.
 
-- confirm which routes are intentionally unauthenticated
-- confirm which headers or proxy assumptions are required in your environment
-- confirm that security-relevant logs are present before an incident happens
+Recognized administrative routes are assigned the embedded `operator`
+principal after configured authentication checks. That is an application
+classification result, not proof of an externally asserted operator role.
 
-## Purpose
+Keep the route group disabled for security-qualified profiles. Any exceptional
+activation must isolate reachability and exercise all 26 routes with permitted,
+forbidden, audit, and removal evidence. The checked-in exception ledger is
+currently empty.
 
-This page explains the Atlas material for security operations and points readers to the canonical checked-in workflow or boundary for this topic.
+## Workload and credential review
 
-## Source of Truth
+Production-oriented profiles—`prod`, `prod-minimal`, `prod-ha`, and
+`prod-airgap`—require `podSecurityContext.runAsNonRoot=true`. Review the
+effective combination of:
 
-- `ops/k8s/profile-security-contract.json`
-- `ops/k8s/admin-endpoints-exceptions.json`
-- `ops/k8s/examples/networkpolicy/`
-- `ops/k8s/values/profiles.json`
-- `ops/k8s/values/prod-airgap.yaml`
-- `ops/k8s/values/perf.yaml`
+- container and pod security contexts;
+- service account and RBAC;
+- volumes, filesystem, and secret references;
+- ingress, egress, and dependency reachability;
+- administrative-route posture;
+- image, chart, dataset, SBOM, checksum, and provenance identity.
 
-## What Is Governed
+Credential evidence records issuer, principal, scope, non-secret version,
+delivery target, rotation overlap, old-version denial, revocation, and disposal.
+Never retain bearer tokens, API keys, private keys, or secret values as proof.
 
-The Kubernetes security surface is governed by profile rules, network policy
-examples, values restrictions, and explicit exception tracking. For example,
-`ops/k8s/profile-security-contract.json` currently requires
-`podSecurityContext.runAsNonRoot=true` for production-oriented profiles such as
-`prod`, `prod-minimal`, `prod-ha`, and `prod-airgap`.
+Air-gapped qualification must show that installation and verification tools,
+not only runtime images, resolve locally without hidden network calls.
 
-## Secure Deploy Checklist
+## Acceptance sequence
 
-- confirm the selected profile satisfies the profile security contract
-- verify debug or admin surfaces are disabled unless there is a governed
-  exception
-- confirm the network policy mode matches the intended environment
-- verify the service account and RBAC scope stayed aligned with the chart’s
-  least-privilege assumptions
-- confirm observability coverage exists for authentication, policy, and audit
-  signals
+1. Resolve profile, overlays, target, and exposure model.
+2. Render and inspect workload, identity, secrets, network, ingress, and egress.
+3. Compare rendered, admitted, and effective claim-bearing fields.
+4. Exercise service, dataset, and administrative route classes separately.
+5. Verify allowed and denied audit records without secret material.
+6. Prove credential rotation or revocation and rollback where required.
+7. Bind security results, exceptions, SBOMs, and hashes to the release packet.
 
-## Secure Review Checklist
+A non-root pod is not a security verdict. Any unverified boundary is an
+explicit exception or a failed promotion condition.
 
-- inspect changes to `networkPolicy`, `serviceAccount`, `rbac`, `securityContext`,
-  `podSecurityContext`, `envFromSecrets`, and `audit`
-- review `ops/k8s/examples/networkpolicy/cluster-aware.yaml`,
-  `custom.yaml`, `disabled.yaml`, and `internet-only.yaml` against the profile
-  intent before allowing broader egress or ingress
-- confirm any admin endpoint exception is explicit, bounded, and reviewed
-- escalate high-risk profile changes in `perf`, `prod`, or air-gapped paths
-
-## Security Incident Triage
-
-When a security issue lands in the Kubernetes slice:
-
-1. confirm whether the affected profile violated the security contract or used
-   an approved exception
-2. inspect the rendered network and identity resources
-3. capture a debug bundle if cluster state may change during investigation
-4. review observability evidence for audit trails and exposure scope
-5. remove or expire temporary exceptions once the incident is contained
-
-## Stability
-
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Continue with [Admin Endpoint Exceptions](admin-endpoints-exceptions.md),
+[Identity, Authorization, and Audit](../security/identity-authorization-and-audit.md),
+[Data Protection and Cryptographic Custody](../security/data-protection-and-cryptographic-custody.md),
+and [Signing and Provenance](../release/signing-and-provenance.md).

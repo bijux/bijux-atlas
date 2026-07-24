@@ -4,18 +4,15 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Bijux Atlas
 
-`bijux-atlas` is a release-shaped genomics delivery product. It validates raw
-domain inputs, builds immutable artifacts, publishes serving state, and then
-exposes that state through product, operations, and maintainer surfaces.
-
-The shortest accurate reading path is:
-validate inputs -> build artifacts -> publish serving state -> serve and
-operate with evidence.
+Bijux Atlas turns governed GFF3 and FASTA inputs into immutable genomic dataset
+releases and serves them through Rust libraries, command workflows, and a
+versioned HTTP API. Its documentation follows the decisions needed to build,
+publish, operate, and trust those releases.
 
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -57,244 +54,102 @@ operate with evidence.
 [![Maintainer docs](https://img.shields.io/badge/docs-maintainer-2563EB?logo=materialformkdocs&logoColor=white)](https://bijux.io/bijux-atlas/bijux-atlas-dev/)
 <!-- bijux-atlas-badges:generated:end -->
 
-## What Atlas Actually Is
+## Choose by Outcome
 
-Atlas is not a single executable with some supporting docs around it. It is a
-product model with three linked handbooks:
-- product truth for datasets, contracts, and runtime behavior
-- operator truth for stack, rollout, observability, and release evidence
-- maintainer truth for governance, automation, and repository law
+| Outcome | Handbook |
+| --- | --- |
+| understand dataset construction, publication, queries, and interfaces | [Atlas product](bijux-atlas/index.md) |
+| run the complete committed sample journey | [Run Atlas locally](bijux-atlas/workflows/run-atlas-locally.md) |
+| deploy, secure, observe, load-test, or recover a target | [Atlas operations](bijux-atlas-ops/index.md) |
+| interpret release evidence or distribution trust | [Release operations](bijux-atlas-ops/release/index.md) |
+| change repository automation, policy, or delivery | [Maintainer control plane](bijux-atlas-dev/index.md) |
 
-```mermaid
-flowchart LR
-    source[Governed GFF3 and FASTA inputs] --> validate[Validation and normalization]
-    validate --> build[Deterministic artifact build]
-    build --> release[Immutable release artifacts]
-    release --> publish[Catalog and store publish]
-    publish --> serve[CLI and HTTP runtime surfaces]
-    serve --> observe[Observability and release evidence]
-```
+## Understand the System
 
-## Why That Split Matters
-
-Atlas exists to avoid a common failure mode in data systems: mixing raw inputs,
-intermediate files, and mutable serving state into one opaque process.
-
-Atlas keeps those boundaries explicit so teams can answer high-stakes questions
-without guessing:
-
-- what was actually built
-- what was actually published
-- what is currently served
-- what evidence supports promotion, rollback, or incident decisions
-
-Atlas is strongest when teams need trusted serving of governed release data
-rather than a convenient but opaque runtime that quietly mutates its own truth.
-
-```mermaid
-flowchart LR
-    subgraph avoid[What Atlas avoids]
-        raw[Raw inputs]
-        intermediate[Intermediate files]
-        mutable[Mutable runtime truth]
-        opaque[Opaque operational decisions]
-        raw --- intermediate
-        intermediate --- mutable
-        mutable --- opaque
-    end
-
-    avoid --> boundary
-
-    subgraph boundary[What Atlas enforces]
-        governed[Governed inputs]
-        validated[Validated build boundary]
-        immutable[Immutable release artifacts]
-        serving[Published serving state]
-        evidence[Operational and release evidence]
-        governed --> validated --> immutable --> serving --> evidence
-    end
-```
-
-## What It Guarantees
-
-- deterministic build behavior from governed inputs
-- immutable release artifacts as the delivery unit
-- explicit runtime, API, and configuration contracts
-- release and operations evidence that can be reviewed and repeated
-
-## What Atlas Does Not Pretend To Be
-
-Atlas is not a generic mutable runtime that rewrites release truth in place.
-It is not a replacement for source governance, and it is not a shortcut around
-validation, publication, and release evidence.
-
-## Atlas Has Four Linked Concerns
-
-Atlas is easier to trust when its major concerns stay explicit instead of
-being collapsed into one generic idea of "the runtime".
+Atlas has two independent lifecycles that meet at a serving decision.
 
 ```mermaid
 flowchart TB
-    atlas[Bijux Atlas]
-
-    atlas --> runtime[Runtime and product]
-    atlas --> maintainer[Maintainer control plane]
-    atlas --> ops[Operations]
-    atlas --> trust[Security and trust]
-
-    runtime --> runtime_a[Datasets and releases]
-    runtime --> runtime_b[CLI, HTTP, and OpenAPI surfaces]
-    runtime --> runtime_c[Runtime contracts]
-
-    maintainer --> maintainer_a[Ownership and workflow control]
-    maintainer --> maintainer_b[Automation and governance]
-    maintainer --> maintainer_c[Delivery and compatibility]
-
-    ops --> ops_a[Deployment and stack]
-    ops --> ops_b[Rollout safety and recovery]
-    ops --> ops_c[Observability and load]
-
-    trust --> trust_a[Provenance and reproducibility]
-    trust --> trust_b[Policy enforcement and drift control]
-    trust --> trust_c[Release confidence and safe change]
+    subgraph Dataset["Dataset lifecycle"]
+        Source["governed source"] --> Build["build + verify"]
+        Build --> Publish["publish immutable artifacts"]
+        Publish --> Catalog["promote catalog identity"]
+    end
+    subgraph Service["Service lifecycle"]
+        Software["software release"] --> Render["profile + render + admission"]
+        Render --> Run["running server"]
+        Run --> Qualify["security + telemetry + load + recovery"]
+    end
+    Catalog --> Identity["resolved serving identity"]
+    Run --> Identity
+    Identity --> Result["CLI or HTTP result"]
+    Qualify --> Decision["promotion or recovery decision"]
 ```
 
-### Runtime and Product
+A published dataset may have no qualified deployment. A healthy deployment may
+observe the wrong catalog generation. A trustworthy result therefore binds:
 
-This is the product face readers usually mean when they say "Atlas":
-datasets, releases, queries, interfaces, and contracts.
+- the dataset tuple `release/species/assembly`;
+- manifest and artifact hashes;
+- software, configuration, chart, profile, and target identity; and
+- the request, observation window, or scenario that produced the evidence.
 
-### Maintainer Control Plane
+## Read by Ownership
 
-Atlas is not meant to be changed through informal repository habits. The
-maintainer surface exists so ownership, workflow control, automation, and
-compatibility policy stay explicit instead of tribal.
+The documentation is divided by who makes the decision:
 
-### Operations
+| Surface | Owns | Does not own |
+| --- | --- | --- |
+| [product](bijux-atlas/index.md) | data model, ingest, publication, query, runtime, and interfaces | deployment qualification |
+| [operations](bijux-atlas-ops/index.md) | topology, Kubernetes, security, signals, load, recovery, and release trust | product semantics |
+| [maintenance](bijux-atlas-dev/index.md) | repository validation, generation, governance, and delivery automation | user-facing runtime behavior |
 
-Atlas is a real deployed system, not just a local Rust binary. Deployment,
-rollout safety, observability, load, recovery, and release evidence are part of
-the product model.
+Evidence crosses these surfaces without transferring ownership. A maintainer
+command can validate a chart contract but cannot declare a target healthy. An
+operator can observe a correct query but cannot redefine the dataset identity
+or wire contract.
 
-### Security and Trust
+## Match Evidence to the Claim
 
-Trust is not only vulnerability scanning. It covers provenance,
-reproducibility, drift detection, controlled exceptions, and whether a release
-can actually be believed.
+| Evidence | Establishes | Does not establish |
+| --- | --- | --- |
+| schema, policy, or registry | declared structure and required fields | that behavior ran |
+| checked-in fixture | validator and serialization shape | target fitness |
+| execution report | observed behavior for named inputs and a run | release binding unless identities are included |
+| checksums and provenance | artifact membership and lineage | operational fitness |
+| consumer verification receipt | coherence and authorization of exact received bytes | upstream biological correctness |
 
-## Operations and Trust Are Part of the Product
+When evidence is missing, narrow the claim rather than filling the gap with a
+later green check. Readiness does not prove capacity; a load result does not
+prove recovery; an internally coherent release packet does not provide an
+independent trust anchor.
 
-`bijux-atlas-ops` is where deployment, rollout safety, observability, load
-budgets, and release trust are explained.
+## Current Qualification Boundaries
 
-If your question is about running Atlas safely in real environments, operations
-is the primary handbook.
+The documentation records limitations that affect present claims:
 
-The same is true of trust. Security and release assurance are not side checks
-after the runtime is done. They are part of how Atlas proves what was built,
-what was promoted, and what should be rolled back.
-## Release Confidence Signals
+- production-oriented overlays are not all represented in executable lifecycle
+  scenarios;
+- registered rollout-under-load suites do not currently have executable control
+  runners;
+- administrative endpoint classification does not cover every registered route;
+- the repository defines recovery contracts but does not provide an operational
+  production backup schedule or restore runner; and
+- the GHCR release path publishes compressed bundles as OCI artifacts, not
+  evidence of runnable container images.
 
-Primary publication and confidence lanes:
+These are decision boundaries, not documentation footnotes. Follow the linked
+operations pages before describing a deployment or release as qualified.
 
-- `repo/ci`
-- `deploy-docs`
-- `release-crates`
-- `release-ghcr`
-- `release-github`
+## Continue with a Concrete Question
 
-These lanes are represented in the badges above, but the important point is not
-the badges themselves. Atlas uses them to decide whether a release is ready to
-promote, hold, or roll back.
-```mermaid
-flowchart TB
-    source[Source changes] --> ci[repo and ci]
-    ci --> docs[Docs and contract visibility]
-    docs --> package[Release packaging]
-    package --> crates[release-crates]
-    package --> ghcr[release-ghcr]
-    package --> github[release-github]
-    crates --> confidence[Confidence signals]
-    ghcr --> confidence
-    github --> confidence
-    confidence --> decisions[Promotion, rollback, and incident decisions]
-```
-
-Atlas is not complete when it merely builds. It is complete when build, docs,
-contracts, publication channels, and operational evidence line up tightly
-enough that release decisions are reviewable instead of improvised.
-## Published and Repository-Only Crates
-
-Atlas `0.2.2` publishes eleven Rust crates and keeps one maintainer crate
-repository-only.
-
-Published crates: `bijux-atlas`, `bijux-atlas-api`, `bijux-atlas-cli`,
-`bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`,
-`bijux-atlas-ops`, `bijux-atlas-query`, `bijux-atlas-runtime`,
-`bijux-atlas-server`, and `bijux-atlas-store`.
-
-Repository-only crate: `bijux-atlas-dev`.
-
-Use this split when deciding where to start:
-- product runtime and release behavior: `bijux-atlas`, `bijux-atlas-runtime`,
-  `bijux-atlas-cli`, `bijux-atlas-server`, `bijux-atlas-api`
-- leaf implementation contracts: `bijux-atlas-core`, `bijux-atlas-model`,
-  `bijux-atlas-query`, `bijux-atlas-ingest`, `bijux-atlas-store`
-- operational surfaces: `bijux-atlas-ops`
-- repository governance and maintainer workflows: `bijux-atlas-dev`
-
-## Start From the Right Handbook
-
-The three handbook surfaces are separated on purpose because they answer
-different classes of questions.
-
-If you want one rule for reading the docs: start from the handbook that owns
-the decision you need to make, not from the directory that happens to look
-closest.
-
-### Repository
-
-Use [Repository](bijux-atlas/index.md) when the question is about the Atlas
-product itself: datasets, releases, workflows, interfaces, runtime
-architecture, and compatibility contracts.
-
-### Operations
-
-Use [Operations](bijux-atlas-ops/index.md) when the question is about how Atlas
-runs safely: deployment, rollout safety, observability, load, recovery, and
-release operations.
-
-### Maintainer
-
-Use [Maintainer](bijux-atlas-dev/index.md) when the question is about how Atlas
-changes safely: ownership, automation, workflow control, delivery, and
-governance.
-
-### Read Next
-
-- product model and core boundaries: [What Atlas Is](bijux-atlas/foundations/what-atlas-is.md)
-- runtime architecture, interfaces, workflows, and contracts:
-  [Repository](bijux-atlas/index.md)
-- deployment, rollout, observability, load, and release operations:
-  [Operations](bijux-atlas-ops/index.md)
-- governance, control-plane automation, and maintainer ownership:
-  [Maintainer](bijux-atlas-dev/index.md)
-
-## Purpose
-
-This page explains Atlas as a whole system before readers dive into the
-repository, operations, or maintainer handbooks. It is the high-level contract
-for what Atlas is for, why its boundaries exist, and how the major handbook
-surfaces fit together.
-
-## Stability
-
-This page is part of the canonical docs spine. Keep it aligned with the current
-Atlas release model, runtime surfaces, operations surface, and maintainer
-control plane.
-
-## Reference Surfaces
-
-- [Badge Catalog](bijux-atlas-dev/governance/badge-catalog.md)
-- [Shell JavaScript Ownership](assets/javascripts/shell/README.md)
-- [Shell CSS Ownership](assets/styles/README.md)
+- [What Atlas is](bijux-atlas/foundations/what-atlas-is.md)
+- [Dataset and query workflows](bijux-atlas/workflows/index.md)
+- [CLI, HTTP, OpenAPI, and configuration](bijux-atlas/interfaces/index.md)
+- [Runtime and storage architecture](bijux-atlas/runtime/index.md)
+- [Deployment and service topology](bijux-atlas-ops/stack/index.md)
+- [Kubernetes delivery](bijux-atlas-ops/kubernetes/index.md)
+- [Security assurance](bijux-atlas-ops/security/index.md)
+- [Observability](bijux-atlas-ops/observability/index.md)
+- [Load and resilience](bijux-atlas-ops/load/index.md)
+- [Release and recovery](bijux-atlas-ops/release/index.md)

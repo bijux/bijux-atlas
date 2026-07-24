@@ -4,68 +4,122 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Operational Evidence Reports
+# Operational evidence reports
 
-Generated reports under `ops/report/generated/` and related evidence outputs
-turn runtime and platform checks into reviewable artifacts.
+Operational evidence freezes the identities, observations, and reasoning behind
+a promotion, hold, mitigation, recovery, or closure decision. It must remain
+reviewable after live telemetry expires.
+
+## Evidence classes are not substitutes
+
+| Class | Establishes | Does not establish |
+| --- | --- | --- |
+| telemetry index | Expected assets are discoverable | A deployed signal path works |
+| dashboard validation | Panel structure and query shape validate | Queries return current data |
+| readiness declaration | Required asset families exist | Collectors, rules, and notifications were exercised |
+| SLO definition | Objective, population, and measurement are declared | A candidate met the objective |
+| drill definition | Fault, signals, timeout, and cleanup are specified | The drill ran |
+| drill result | One identified execution produced evidence | Other targets or releases behave the same |
+
+## Packet structure
 
 ```mermaid
 flowchart TD
-    Candidate[Runtime or release candidate] --> Signals[Telemetry signals]
-    Signals --> Dashboards[Dashboard validation]
-    Signals --> Drills[Drill results]
-    Signals --> SLOs[SLO measurement]
-    Signals --> Ready[Readiness reports]
-    Dashboards --> Evidence[Observability evidence set]
-    Drills --> Evidence
-    SLOs --> Evidence
-    Ready --> Evidence
-    Evidence --> Review[Change or incident review]
+    Identity[Release + dataset + target] --> Manifest[Evidence manifest]
+    Timeline[Events + identity transitions] --> Manifest
+    Signals[Metrics + logs + traces + probes] --> Manifest
+    Changes[Deploy + traffic + policy actions] --> Manifest
+    Integrity[Catalog + store + artifact checks] --> Manifest
+    Ledger[Observations + hypotheses + decisions] --> Manifest
+    Manifest --> Verify[Digest + lineage verification]
+    Verify --> Decision[Promotion, recovery, closure, escalation]
 ```
 
-This page is about turning observability from something an operator sees live
-into something a reviewer can inspect later. The evidence set needs to preserve
-not only that telemetry existed, but which alerts, dashboards, drill outputs,
-SLO measurements, and readiness checks supported the decision.
+| Object | Minimum identity |
+| --- | --- |
+| raw signal | Source, exact query, event window, capture time, and digest |
+| workload state | Cluster, namespace, workload revision, and observation time |
+| data state | Dataset tuple, catalog epoch, manifest, and payload hashes |
+| change event | Authorizer, executor, target, old state, new state, and time |
+| hypothesis | Predicted and disconfirming evidence plus disposition |
+| recovery result | Selected authority, checks, observation window, and residual risk |
 
-## Purpose
+Keep raw captures immutable. Redaction, normalization, correction, and summary
+produce child objects with their own digests and parent links. A later diagnosis
+can supersede an earlier decision but must not rewrite what was known then.
 
-Use this page when assembling observability evidence for a rollout review,
-release decision, or incident record.
+## Decision ledger
 
-## Source of Truth
+| Entry | Required content | Closure |
+| --- | --- | --- |
+| observation | Source, target, query or command, window, capture time, digest | Immutable once cited |
+| hypothesis | Suspected boundary, support, prediction, and disconfirming evidence | Supported, rejected, or unresolved |
+| action | Authorizer, executor, target, exact change, expected effect, reversal | Linked to outcome or abandoned explicitly |
+| decision | Admitted facts, policy, alternatives, selected action, uncertainty, owner | Superseded only by a linked later decision |
 
-- `ops/observe/generated/telemetry-index.json`
-- `ops/observe/dashboard-registry.json`
-- `ops/observe/drills/result.schema.json`
-- `ops/observe/slo-measurement.json`
-- `ops/observe/readiness.json`
+Timestamps establish order. Digests establish retained content. Neither proves
+causality by itself; causal interpretation belongs in the decision.
 
-## Observability Evidence Set
+## Identity, custody, and time
 
-Operators should expect the observability evidence surface to include:
+Every object records source system, stable ID, producer version, event window,
+capture time, collection time, time zone, known clock skew, digest, and
+relationship to derived objects or decisions.
 
-- the telemetry index, which enumerates the key observability assets
-- dashboard validation outputs and the registry of accepted dashboards
-- telemetry drill definitions and drill result artifacts
-- SLO measurement definitions and related alert surfaces
-- readiness reports that confirm the observability pack itself is ready
+If rollout, request, metric, log, trace, and fault times cannot be ordered,
+mark correlation uncertain. Do not infer event absence from a retention gap,
+sampling gap, or unqueried interval.
 
-## Main Takeaway
+Redaction must remove credentials and sensitive payloads while preserving
+release, dataset, principal class, route class, decision, time, and trace
+correlation. Hash the retained representation.
 
-The value of observability evidence is not volume. It is traceability. Another
-operator should be able to follow the evidence set and understand why a change
-was approved, why an incident was diagnosed the way it was, and which signal
-surfaces were trustworthy at the time.
+## Qualify negative evidence
 
-## How Operators Use the Reports
+“No errors occurred” is defensible only when the observation path could have
+found them.
 
-- during change review, confirm the required dashboards, alerts, and readiness
-  artifacts still exist
-- during incident review, attach drill results, readiness evidence, and signal
-  snapshots that explain what the operator saw
-- during release review, show that observability coverage still matches the
-  runtime and rollout surface
+| Qualification | Required proof |
+| --- | --- |
+| population | Release, route class, dataset, status family, and traffic volume |
+| interval | Event and query windows, evaluation time, skew, and retention overlap |
+| instrumentation | Expected event, metric, or span was active on the exercised path |
+| delivery | Scrape, export, ingestion, retention, and query paths remained healthy |
+| selection | Filters, sampling, aggregation, and exclusions preserve the target condition |
+| control | A known event or healthy source proves the query can return data |
+
+Without these facts, say “no matching evidence retrieved.” A zero-valued
+series, an empty query result, and an absent series are different observations.
+
+## Decision depth
+
+| Decision | Minimum evidence |
+| --- | --- |
+| local investigation | Bounded signal window and identities sufficient to test a hypothesis |
+| containment | Timeline, affected boundary, mitigation, reversal, and evidence gaps |
+| rollout continuation | Probes, request paths, error and saturation windows, rollout identity |
+| release promotion | Conformance, SLO, load, recovery, raw references, verdict, artifact binding |
+| security response | Exposure, identity, authorization, audit, containment, integrity |
+
+Structural validity and decision sufficiency are separate verdicts. A packet
+can be schema-valid yet stale, weakly identified, or too narrow for its claim.
+
+## Current evidence boundary
+
+The generated telemetry index inventories six artifact classes. Static
+readiness becomes `ready` when SLO definitions, alert catalog, telemetry drills,
+and dashboard index exist. That does not establish scrape freshness, trace
+retention, alert delivery, dashboard population, or drill execution.
+
+No schema-valid drill result is checked in under `ops/observe/`. Release
+evidence has empty drill and simulation summary collections. Until execution
+produces immutable candidate-bound captures and results, static readiness is
+not promotion evidence.
+
+Preserve failed and partial packets. Reject mutable release references, missing
+windows, absent raw signals, unresolved redaction, or verdicts disconnected
+from thresholds. Continue with [Telemetry Drills](telemetry-drills.md) and
+[Release Evidence](../release/release-evidence.md).

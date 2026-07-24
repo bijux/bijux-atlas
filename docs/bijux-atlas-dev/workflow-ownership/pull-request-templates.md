@@ -4,70 +4,69 @@ audience: maintainers
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Pull Request Templates
 
-Pull request templates encode review expectations for docs, ops, and general
-repository changes.
-
-## Template Value Model
+Atlas provides two pull-request templates under
+`.github/PULL_REQUEST_TEMPLATE/`: `default.md` for general changes and
+`release-change.md` for publication and artifact-pipeline work. There is no
+root `.github/pull_request_template.md` and no checked-in docs- or ops-specific
+template.
 
 ```mermaid
-flowchart TD
-    PR[Pull request opened] --> Fill[Fill template]
-    Fill --> Describe[Describe change]
-    Fill --> Impact[State impact]
-    Fill --> Evidence[Attach evidence]
-    Fill --> Risk[Call out risk areas]
-
-    Describe --> Review[Reviewer has context]
-    Impact --> Review
-    Evidence --> Review
-    Risk --> Review
+flowchart LR
+    Change[Proposed change] --> Template{Change surface}
+    Template -- General --> Default[Default template]
+    Template -- Release or publication --> Release[Release template]
+    Default --> Review[Scope, validation, contracts, risk]
+    Release --> Review
+    Evidence[Run and artifact evidence] --> Review
+    Policy[Approval and branch policy] --> Decision[Merge decision]
+    Review --> Decision
 ```
 
-This is the real job of a PR template in Atlas: to force the change story, the evidence story, and
-the risk story into one place before reviewer time gets spent.
+## General Change Template
 
-## Source Anchors
+The general template asks for:
 
-- [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) is the default repository template
-- [`.github/PULL_REQUEST_TEMPLATE/docs-governance.md`](/Users/bijan/bijux/bijux-atlas/.github/PULL_REQUEST_TEMPLATE/docs-governance.md:1) adds docs-specific governance checks
-- [`.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md`](/Users/bijan/bijux/bijux-atlas/.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md:1) adds boundary checks for ops end-to-end work
+- a user- or operator-facing outcome and an owning issue, incident, or decision
+  record;
+- changed surfaces, non-goals, and intentionally untouched areas;
+- fast checks, targeted tests, and a CI link;
+- contract, schema, generated-artifact, and user-documentation impact; and
+- breaking-change and rollback disclosures.
 
-## What The Default Template Forces Into View
+These are author attestations. Checking a box does not replace the command
+output, report, workflow run, or reviewer analysis that supports it.
 
-- a plain-language summary of the visible repository change
-- validation expectations such as `make ci-fast`, `make ci-pr`, and focused command reruns
-- source-of-truth checks for contracts, generated artifacts, redirects, and docs alignment
-- risk disclosures for breaking changes and ops boundary changes
+## Release Change Template
 
-## Why This Matters
+The release template focuses on `release.env`, workflow parity, explicit
+package and crate scope, YAML parsing, shared-standard parity, dry-run evidence,
+duplicate publication, gates, and fallback behavior.
 
-Without the template, important maintainer facts stay implicit:
+It does not cover every release obligation. Immutable source identity,
+provenance, signing, channel-specific receipts, partial publication, and
+rollback constraints still come from the release contracts and workflows.
 
-- whether the author changed the owning source before the docs
-- whether generated artifacts were refreshed
-- whether a moved docs page got its redirect update
-- whether a workflow or ops change crossed the wrong boundary
+## Approval Boundary
 
-The template turns those from reviewer guesswork into author-declared evidence.
+Templates collect a change narrative; they do not enforce approval. Atlas's
+pull-request approval workflow separately requires an owner-authored pull
+request to carry the `owner-self-signoff` label. A non-owner change requires
+the latest owner review state accepted by that workflow. Branch protection and
+required status contexts remain separate decisions.
 
-## When To Update A Template
+## Ownership
 
-Update PR templates when the repository changes what must be proven for merge, such as:
+Both templates are synchronized shared-standard files and are named in the
+repository standards checksum. Make durable template changes at their upstream
+authority, then refresh and validate the synchronized content. A local edit can
+be overwritten by the next standards synchronization and must not be treated as
+an independent repository policy change.
 
-- new required validation lanes
-- new source-of-truth locations
-- new docs governance obligations
-- new ops boundary rules
-
-Do not update templates casually for stylistic preference alone. A template change is a review-model
-change and should stay durable and repo-wide.
-
-## Main Takeaway
-
-PR templates are part of Atlas governance, not repository decoration. They define the minimum story
-a maintainer must tell about a change before review can be efficient, consistent, and honest.
+Select the template that matches the dominant risk, then add any domain evidence
+the template does not ask for. Template completeness is an intake condition,
+not proof that the change is safe to merge.

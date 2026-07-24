@@ -4,53 +4,122 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Offline Assets
 
-Offline install and validation paths need declared assets and explicit
-distribution inputs, not implicit access to public registries.
+An offline Atlas installation is a closed artifact set plus evidence that the
+installation made no undeclared network request. Cached-only runtime values are
+necessary, but they do not prove that images, charts, datasets, schemas, and
+tools were transported or verified.
+
+## Offline Trust Boundary
 
 ```mermaid
-flowchart TD
-    Need[Need offline install] --> Prepare[Prepare offline asset set]
-    Prepare --> Images[Images and base locks]
-    Prepare --> Bundles[Release bundles and packets]
-    Prepare --> Values[Offline values and air-gapped profiles]
-    Images --> Install[Offline installation path]
-    Bundles --> Install
-    Values --> Install
-    Install --> Verify[Verify no public registry dependency]
+flowchart LR
+    Online["Connected preparation environment"] --> Lock["Resolve and lock inputs"]
+    Lock --> Bundle["Assemble chart, images, datasets, SBOMs, and checksums"]
+    Bundle --> Transfer["Controlled transfer"]
+    Transfer --> Verify["Offline integrity verification"]
+    Verify --> Prewarm["Load images and pinned datasets"]
+    Prewarm --> Install["Install with egress disabled"]
+    Install --> Probe["Prove readiness and zero external fetches"]
 ```
 
-Offline claims are easy to fake in prose and hard to prove in practice. This
-page exists to make the artifact set explicit: if the required images, packet,
-bundle metadata, and offline profile values are not present, the install is not
-honestly offline.
+## Required Asset Classes
 
-## Source of Truth
+- the chart package and exact values profile;
+- the Atlas image and every init, sidecar, and dependency image by digest;
+- pinned dataset artifacts, catalog metadata, and their checksums;
+- SBOMs, provenance, checksum ledger, and evidence policy;
+- Kubernetes schemas and the tools needed for local rendering and validation;
+- base-image locks and build inputs when building inside the boundary; and
+- rollback artifacts for the previous supported release.
 
-- `ops/e2e/scenarios/ops-distribution/offline-install-from-bundle.json`
-- `ops/docker/`
-- `ops/release/packet/`
-- `ops/docker/airgap-policy.json`
-- `ops/docker/bases.lock`
-- `ops/release/ops-release-bundle-manifest.json`
-- `ops/k8s/values/offline.yaml`
-- `ops/k8s/values/prod-airgap.yaml`
+`offline.yaml` and `prod-airgap.yaml` select cached-only service behavior. They
+disable catalog readiness, external store endpoints, DNS egress, and declared
+Redis, MinIO, catalog, and telemetry dependencies. Both prewarm dataset
+`110/homo_sapiens/GRCh38` before serving.
 
-## Exact Offline Asset Set
+## Bootstrap Trust Inside the Boundary
 
-An honest offline install path should include:
+An offline bundle cannot verify itself by assertion. The disconnected
+environment needs an independently acquired trust root, verifier identity, and
+policy version before it can judge transported bytes.
 
-- digest-pinned base image information from `ops/docker/bases.lock`
-- the air-gap policy that forbids uncontrolled network fetch behavior
-- the release packet and release bundle manifest
-- the offline or air-gapped Kubernetes values files that define runtime intent
+```mermaid
+flowchart LR
+    Trust[Prepositioned trust roots and policy] --> Verify[Offline verifier]
+    Verifier[Verifier binary and digest] --> Verify
+    Packet[Transported packet and outer digest] --> Verify
+    Verify --> Inventory[Member, signature, provenance, and SBOM verdicts]
+    Inventory --> Install[Admit verified local artifacts]
+```
 
-## Main Takeaway
+Retain how each trust root and verifier entered the boundary, its immutable
+identity, validity interval, revocation state at transfer time, and the person
+or process that accepted it. A verifier bundled only inside the packet it is
+meant to authenticate cannot independently establish that packet's origin.
 
-Offline readiness is an artifact claim, not a deployment mood. If the asset set
-cannot be assembled and verified without public network assumptions, the path is
-not ready to be called offline.
+Plan trust rotation and emergency revocation for disconnected operation. The
+procedure must distinguish a newer authorized trust set from a malicious or
+accidental replacement, and it must preserve enough prior trust to verify the
+rollback release. When revocation freshness cannot be established offline,
+state the maximum accepted age and the decision owner rather than implying a
+live revocation check occurred.
+
+## Current Repository Evidence
+
+The checked-in offline distribution record is a simulation, not an executed
+air-gapped installation. It references a `v0.1.0` bundle while the current
+operations release manifest declares workspace and chart version `0.2.0`. Its
+chart and image digests are repeated-digit fixtures. The offline and production
+air-gap values also use repeated-digit image digests.
+
+The Docker air-gap policy requires digest-pinned bases and locked or vendored
+inputs. It forbids `curl`, `wget`, and `git` in the build path, but still permits
+specific `apt-get` and locked Cargo build tokens. That policy describes an
+air-gap-capable build contract; it is not proof that a particular build used no
+network.
+
+The production air-gap values enable network policy and disable egress, while
+also carrying a governed exception that permits the disabled policy mode until
+2027-03-03. Verify the rendered policy rather than inferring isolation from the
+profile name.
+
+## Prove Closure, Not Cache Luck
+
+Exercise the bundle in a clean disconnected environment with empty image,
+package, chart, and dataset caches. Pre-existing producer caches can hide a
+missing member and create a false offline pass.
+
+| Boundary | Closure proof |
+| --- | --- |
+| container images. | Every image resolves locally by digest after external registries are unreachable. |
+| chart and schemas. | Render and validation use only transported packages and local schema inputs. |
+| dataset and catalog. | Startup and representative queries resolve the pinned release without remote discovery. |
+| verification tools. | Checksums, provenance, policy, and packet verification run from retained local binaries and inputs. |
+| rollback. | The previous supported release and its data/configuration dependencies remain locally available. |
+| egress. | Network observation covers installation, startup, queries, recovery, and rollback. |
+
+A DNS failure alone is not an egress proof, and successful installation alone
+does not prove rollback closure. Retain both the denied external path and the
+successful local resolution for each required class.
+
+## Acceptance
+
+Accept an offline claim only when one coherent release version is present,
+every image and dataset resolves locally by immutable digest, the release
+packet verifies inside the disconnected boundary, installation and rollback
+complete without registry or catalog access, and network observation records
+no undeclared egress.
+
+Preserve the transported inventory, digests, transfer record, verification
+result, loaded-image inventory, rendered manifests, network-policy result,
+readiness evidence, and rollback outcome. Until those conditions pass with
+non-fixture identities, describe the checked-in path as simulated coverage.
+
+See [Release Evidence](../release/release-evidence.md) for current packet
+limitations and [Security Operations](../kubernetes/security-operations.md) for
+rendered network-policy review.

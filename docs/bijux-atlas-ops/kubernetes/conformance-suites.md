@@ -4,102 +4,162 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Conformance Suites
+# Kubernetes Conformance Suites
 
-Kubernetes conformance is backed by declared suites and manifest-driven test
-ownership.
+Atlas declares a Kubernetes check catalog with 79 entries and five suite
+selections. That catalog is a coverage design, not current end-to-end execution
+evidence. The implemented `ops k8s conformance` command is a narrower
+workload-readiness snapshot and does not select or run the catalog entries.
 
-## Purpose
+## Evidence Layers
 
-Use this page when you need to understand which Kubernetes checks Atlas runs,
-what each suite is meant to prove, and which outputs become release evidence.
+```mermaid
+flowchart LR
+    Catalog[79 declared checks] --> Selection[Five suite selections]
+    Selection -. runner missing .-> PerCheck[Per-check execution]
+    Command[ops k8s conformance] --> Snapshot[Deployment, pod, and HPA snapshot]
+    Snapshot --> Report[k8s_conformance report]
+    PerCheck --> SuiteReport[Suite and check result report]
+```
 
-## Source of Truth
+`manifest.json` owns intended check metadata. `suites.json` selects checks by
+group. `ownership.json` declares failure routing. The conformance report schema
+accepts generic named sections, but the current command emits only a
+`workload_readiness` section with `suite_id: k8s_conformance`.
 
-- `ops/k8s/tests/manifest.json`
-- `ops/k8s/tests/suites.json`
-- `ops/k8s/tests/ownership.json`
-- `ops/k8s/tests/goldens/k8s-conformance-report.sample.json`
-- `ops/schema/k8s/conformance-report.schema.json`
+## Implemented Command
 
-## What Is Governed
+The current command:
 
-The Kubernetes conformance program has three governing layers:
+1. reads deployments and pods from the fixed `bijux-atlas` namespace through
+   `kubectl`;
+2. fails when a deployment has fewer ready replicas than desired;
+3. fails when a pod phase is neither `Running` nor `Succeeded`;
+4. checks for a custom metrics API only when an HPA object is present; and
+5. optionally writes `ops/k8s/generated/conformance-report.json`.
 
-- `manifest.json` defines the test inventory, timeout budget, expected failure
-  modes, group membership, and quarantine rules
-- `suites.json` groups those tests into operator-facing validation lanes such as
-  `smoke`, `resilience`, `graceful-degradation`, `api-protection`, and `full`
-- `ownership.json` maps each script family to a responsible domain such as
-  `chart`, `server`, `store`, `observability`, or `stack`
+It does not load `manifest.json`, select a suite from `suites.json`, invoke the
+declared scripts, enforce suite budgets or fail-fast policy, evaluate
+quarantines, or emit per-check results. Its pass supports a workload-readiness
+claim only.
 
-## Suite Taxonomy
+## Required Suite Evidence
 
-Atlas currently defines these suite classes:
+A future or external suite execution is usable only when it binds:
 
-- `smoke` is the fast install and invariant gate for readiness, autoscaling,
-  observability wiring, PodDisruptionBudget coverage, and basic sanity
-- `resilience` focuses on availability, disruption tolerance, rolling restart
-  safety, and autoscaling behavior
-- `graceful-degradation` proves survival behaviors such as cached-only mode and
-  store outage handling
-- `api-protection` checks rate limiting, admission control, and overload
-  protection paths
-- `full` is the broad integration suite used when release confidence requires
-  the whole declared test surface
+- suite and manifest revision;
+- selected check IDs and groups;
+- source revision, runtime, image, chart, and profile;
+- cluster, namespace, and relevant dependency versions;
+- start, end, timeout, retry, and quarantine state;
+- section results, raw output locations, and owning domain; and
+- final verdict plus any evidence gaps.
 
-## Operator Workflow
+Without the selected check inventory, a suite name cannot show what ran.
+Without release and environment identity, a passing report cannot support the
+deployment under review. The current `k8s_conformance` report does not contain
+these identities and must not be promoted into a full-suite result.
 
-1. Start from `ops/k8s/install-matrix.json` to identify the suite expected for
-   the target profile.
-2. Use `ops/k8s/tests/manifest.json` to confirm which scripts cover the change
-   surface and what failure modes they are expected to catch.
-3. Use `ops/k8s/tests/ownership.json` to route failures to the correct owner.
-4. Record the resulting report in the schema-backed conformance format.
-5. Treat missing or failing release-gate suites as blockers for promotion.
+## Prove Selection Completeness
 
-## How to Read the Evidence
+For a selected suite, every check ID must end in exactly one governed outcome:
+passed, failed, blocked, or validly quarantined. Missing results and duplicate
+results are report failures, not implicit skips.
 
-The sample report in
-`ops/k8s/tests/goldens/k8s-conformance-report.sample.json` shows the canonical
-evidence shape:
+```mermaid
+flowchart LR
+    Suite[Selected suite revision] --> IDs[Resolved check IDs]
+    IDs --> Results[One result per ID]
+    Results --> Policy[Budget, retry, fail-fast, and quarantine policy]
+    Policy --> Verdict[Complete suite verdict]
+    IDs --> Missing[Missing or duplicate IDs]
+    Missing --> Reject[Reject completeness]
+```
 
-- `run_id` identifies the validation attempt
-- `suite_id` names the suite that ran
-- `status` is the top-level verdict
-- `failed_sections` lists broken sections that need review
-- `sections.*` records pass or fail results for areas such as `configmap`,
-  `networkpolicy`, `pdb`, `probes`, and observability wiring
+Retain the resolved ID list before execution. This prevents a changed selector
+or manifest from shrinking coverage after failures are known.
 
-Pass means the governed contract still holds for the suite scope. Fail means the
-surface is unsafe or ambiguous and must be fixed, quarantined with an issue, or
-explicitly removed from the release decision.
+## Suite Catalog
 
-## Failure Modes
+| Suite | Groups and operating question | Budget |
+| --- | --- | ---: |
+| `smoke` | install, readiness, sanity, autoscaling, PDB, and observability wiring | 10 min |
+| `resilience` | availability, autoscaling, PDB, rolling restart, and resilience | 20 min |
+| `graceful-degradation` | load, readiness, and resilience during cached-only or store failure | not declared |
+| `api-protection` | admission control, rate limiting, and Redis-backed protection | not declared |
+| `full` | every declared test group | 60 min |
 
-- a required script is missing from the manifest for a changed resource
-- a script is quarantined without an issue or beyond the allowed TTL
-- a suite passes informally but no schema-backed report is produced
-- ownership is unclear, so release-blocking failures bounce across teams
-- the changed template surface is not represented in the selected suite
+These are declared policies. `smoke` and `resilience` request fail-fast, and
+`full` requests progress logs. A missing budget does not grant unlimited
+execution; it means the suite registry does not declare one. None of these
+policies is enforced by the current readiness command.
 
-## Evidence Produced
+The `install-gate`, `k8s-suite`, and `nightly` names in the install matrix are
+broader delivery lanes. They are not entries in this five-suite conformance
+catalog. Record both the delivery lane and the conformance suite when both are
+part of the evidence.
 
-Each conformance run should produce:
+## Claim Matrix
 
-- the suite selection and run identifier
-- a report that matches `ops/schema/k8s/conformance-report.schema.json`
-- section-level failures or missing coverage notes
-- ownership mapping for follow-up
-- release review notes when a suite is release-blocking
+| Evidence | Safe claim | Unsafe claim |
+| --- | --- | --- |
+| valid manifest and suites files | check metadata and grouping satisfy their configuration contract | any check ran |
+| passing `ops k8s conformance` report | observed deployments and pods met its readiness rules; HPA metrics API was present when checked | any named catalog suite passed |
+| individual script output | that script observed its recorded target | selected suite completeness |
+| per-check report bound to selected manifest and suite | recorded checks produced the stated results | another profile or release behaves the same |
 
-## Related Contracts and Assets
+Before relying on a suite pass, confirm the changed resource is covered by a
+selected check, every selected check has a result, budgets and quarantine rules
+were applied, the report validates against its schema, and source, release,
+profile, cluster, and tool identities agree.
 
-- `ops/k8s/tests/manifest.json`
-- `ops/k8s/tests/ownership.json`
-- `ops/schema/k8s/conformance-report.schema.json`
-- `ops/k8s/tests/suites.json`
-- `ops/k8s/tests/goldens/k8s-conformance-report.sample.json`
+## Failure Taxonomy
+
+| Failure | Interpretation |
+| --- | --- |
+| assertion | observed behavior violated the selected contract |
+| timeout | the check did not establish a verdict inside its budget |
+| setup | the environment could not reach the intended starting state |
+| capability | a required executable, network, or cluster operation was unavailable |
+| telemetry | required evidence could not be captured or correlated |
+| quarantine-policy | the check disposition is expired, ownerless, or issue-less |
+| report | the result is absent, incomplete, or schema-invalid |
+
+Only an assertion failure directly establishes a behavior violation. The other
+classes still block the scoped conformance claim because required evidence was
+not obtained. The current readiness command reports errors but does not encode
+this full taxonomy.
+
+## Current Quarantine Risk
+
+The manifest's flake policy requires an issue and limits quarantine to 14 days.
+Four checks currently carry `quarantine_until: 2026-03-31` without an issue
+field: catalog refresh readiness, readiness semantics, JSON logging, and store
+reachability. As of this review, those entries are expired and do not satisfy
+the declared quarantine policy.
+
+Do not count an expired quarantine as passing evidence. Restore the check or
+record a current issue-backed disposition before using a suite result for
+release confidence.
+
+## Promotion Boundary
+
+Block any claim of full Kubernetes conformance until a runner selects the
+catalog entries, invokes them, applies budgets and quarantine policy, and emits
+identity-bound per-check results. The readiness command remains useful and
+should continue to block when its snapshot fails, but it cannot close the
+catalog execution gap.
+
+Authorities:
+
+- declared checks: `ops/k8s/tests/manifest.json`
+- suite selections: `ops/k8s/tests/suites.json`
+- failure ownership: `ops/k8s/tests/ownership.json`
+- report schema: `ops/schema/k8s/conformance-report.schema.json`
+- implemented readiness command:
+  `crates/bijux-atlas-ops/src/kubernetes/conformance.rs`
+- emitted report builder:
+  `crates/bijux-atlas-ops/src/kubernetes/conformance_report.rs`

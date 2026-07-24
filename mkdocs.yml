@@ -248,11 +248,18 @@ nav:
           - Helm Values Model: bijux-atlas-ops/kubernetes/helm-values-model.md
           - Chart Layout: bijux-atlas-ops/kubernetes/chart-layout.md
           - Install Matrix: bijux-atlas-ops/kubernetes/install-matrix.md
+          - Production Qualification: bijux-atlas-ops/kubernetes/production-qualification.md
           - Render and Validate: bijux-atlas-ops/kubernetes/render-and-validate.md
           - Conformance Suites: bijux-atlas-ops/kubernetes/conformance-suites.md
           - Rollout Safety: bijux-atlas-ops/kubernetes/rollout-safety.md
-          - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
           - Debug Bundles: bijux-atlas-ops/kubernetes/debug-bundles.md
+      - Security:
+          - Security Assurance: bijux-atlas-ops/security/index.md
+          - Threat Model and Control Coverage: bijux-atlas-ops/security/threat-model-and-control-coverage.md
+          - Identity Authorization and Audit: bijux-atlas-ops/security/identity-authorization-and-audit.md
+          - Data Protection and Cryptographic Custody: bijux-atlas-ops/security/data-protection-and-cryptographic-custody.md
+          - Supply Chain and Artifact Trust: bijux-atlas-ops/security/supply-chain-and-artifact-trust.md
+          - Security Operations: bijux-atlas-ops/kubernetes/security-operations.md
           - Admin Endpoints Exceptions: bijux-atlas-ops/kubernetes/admin-endpoints-exceptions.md
       - Release:
           - Release: bijux-atlas-ops/release/index.md
@@ -276,6 +283,7 @@ nav:
           - Telemetry Drills: bijux-atlas-ops/observability/telemetry-drills.md
           - Tracing Pipelines: bijux-atlas-ops/observability/tracing-pipelines.md
           - Metrics Packages: bijux-atlas-ops/observability/metrics-packages.md
+          - Service Objectives and Error Budgets: bijux-atlas-ops/observability/service-objectives-and-error-budgets.md
           - Logging Contracts: bijux-atlas-ops/observability/logging-contracts.md
           - Operational Evidence Reports: bijux-atlas-ops/observability/operational-evidence-reports.md
       - Load:
@@ -299,6 +307,8 @@ nav:
           - Contributor Workflow: bijux-atlas-dev/workspace/contributor-workflow.md
           - Decision Records and Ownership: bijux-atlas-dev/workspace/decision-records-and-ownership.md
           - Package Surface: bijux-atlas-dev/workspace/package-surface.md
+          - Crate Boundary Review: bijux-atlas-dev/workspace/crate-boundary-review.md
+          - Runtime Ownership Boundary: bijux-atlas-dev/workspace/runtime-ownership-boundary.md
           - Maintainer Entrypoints: bijux-atlas-dev/workspace/maintainer-entrypoints.md
           - Repository Laws: bijux-atlas-dev/workspace/repository-laws.md
           - Artifact Roots: bijux-atlas-dev/workspace/artifact-roots.md

@@ -4,75 +4,115 @@ audience: maintainer
 type: contract
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-03-15
+last_reviewed: 2026-07-22
 ---
 
 # Automation Contracts
 
-This page defines the stable promises around the Atlas development control plane, especially `bijux-atlas-dev`, suite execution, and governed report artifacts.
+The Atlas development control plane is a maintained interface for repository
+work. Its contract covers discoverable command identity, explicit selection,
+default-deny effects, structured run evidence, and versioned report families.
+It does not give every internal command or JSON payload the same stability.
 
-## Contract Scope
+## Contract Layers
+
+| Layer | Authority | Consumer may rely on |
+| --- | --- | --- |
+| command family | dev command registry plus matching Clap surface | documented family name and global invocation boundary. |
+| check | check registry | stable check ID, owner, severity, mode, selectors, rationale, and declared evidence path. |
+| suite | suite registry and suites index | suite ID, membership, execution metadata, and declared reports. |
+| capability | effect declaration plus invocation flags | refusal unless filesystem write, subprocess, Git, or network access is granted. |
+| report | report registry plus exact JSON Schema | registered identity, version, required shape, and additional-property policy. |
+| run | emitted run result and process exit code | what was selected, granted, executed, skipped, passed, or failed in that run. |
 
 ```mermaid
 flowchart LR
-    Automation[Automation contracts] --> Commands[Command families]
-    Automation --> Capabilities[Capability gating]
-    Automation --> Reports[Report schemas]
-    Automation --> Lanes[Suites and wrappers]
+    Registry[Governed identity] --> Selection[Explicit selection]
+    Selection --> Capability[Capability decision]
+    Capability --> Execution[Execution]
+    Execution --> Report[Versioned evidence]
+    Report --> Exit[Process outcome]
 ```
 
-This contract-scope diagram shows the four parts of the control plane Atlas treats as stable enough
-to document for maintainers and automation consumers.
+Skipping a layer weakens the claim. Terminal text without run identity is not
+run evidence. A report without its schema is not a stable parser target. A zero
+exit code from a narrower selection is not evidence for its containing lane.
 
-## Main Promises
+## Selection Contract
 
-- repository automation remains discoverable through `bijux-atlas-dev` and documented wrapper entrypoints
-- effectful commands fail closed when required capabilities are not explicitly allowed
-- governed reports use versioned JSON schemas under `configs/schemas/contracts/reports/`
-- suite and check execution expose explicit selection inputs instead of hidden lane behavior
-- structured consumers can rely on documented report fields more than terminal formatting
+Automation must state what it intends to run. Check selection exposes suite,
+domain, severity, mode, tag, name, and ID. Suite selection exposes suite, mode,
+group, and tag. Slow and internal inclusion is explicit.
 
-## Report Schema Promise
+The result must make omitted and refused work distinguishable from passing
+work. Consumers must inspect counts and selected IDs, not only the process exit
+code. An empty selection must never be promoted into evidence that a domain is
+healthy.
 
-For governed report families, the shared report contract includes:
+## Effect Contract
 
-- `report_id`
-- `version`
-- `inputs`
-- `summary`
-- `evidence`
+Read-only discovery and static checks run without effect grants. A command that
+requires a subprocess, filesystem write, Git access, or network access must
+receive its matching capability flag. Missing authority causes refusal rather
+than silent downgrade.
 
-Report-specific fields may evolve, but breaking schema changes require a version bump and matching documentation, schema, and fixture updates.
+Capability grants are part of run provenance. They say what the invocation was
+allowed to do, not that every allowed effect occurred.
 
-That rule matters because reports are consumed by automation. Schema drift without versioning would
-turn review and CI behavior into guesswork.
+## Output Contract
 
-## Compatibility Rules
+Use the local `--format` accepted by the selected command or the supported
+global `--output-format`. Do not assume all families share the same vocabulary:
+ordinary commands commonly use `text`, `json`, or `jsonl`, while suite commands
+use `human`, `json`, or `both`.
 
-- additive fields should be safe for tolerant consumers
-- breaking report changes require explicit schema-version change
-- wrapper commands such as `make ci-pr` and `make docs-build` should remain thin public entrypoints over the documented control-plane surface
-- lane selection must stay explicit enough that contributors can reproduce CI behavior locally
+Machine consumers must bind to an exact command or report schema and combine
+the payload with process exit status. Human wording, line order, color, help
+layout, and debug diagnostics may change without a report-schema event.
 
-## Non-Promise Areas
+## Report Compatibility
 
-These details may change without becoming compatibility commitments:
+For a governed report family:
 
-- internal crate module names
-- the exact number of runnables registered in a domain
-- human-readable terminal phrasing that is not part of a documented report contract
-- internal refactors that preserve command behavior, schema contracts, and documented wrappers
+- `report_id` identifies the family;
+- integer `version` identifies its schema version;
+- the registry points to the exact schema and example location;
+- the schema decides required fields, types, and whether additions are legal;
+- breaking field removal, type change, or identity change follows the
+  repository's 180-day report-schema deprecation window.
 
-## Related Pages
+All five reports in the current public report registry set
+`additionalProperties: false`. Adding a top-level field therefore requires a
+coordinated schema change; tolerant-consumer advice does not override the
+schema.
 
-- [Automation Command Surface](../automation/automation-command-surface.md)
-- [Automation Reports Reference](../automation/automation-reports-reference.md)
-- [Ownership and Versioning](../../bijux-atlas/contracts/ownership-and-versioning.md)
+## Known Contract Gaps
 
-## Purpose
+Two current limitations narrow what maintainers can claim:
 
-This page defines the Atlas contract expectations for automation contracts. Use it when you need the explicit compatibility promise rather than a workflow narrative.
+- the dev command registry and Clap surface disagree on `clients`, `contract`,
+  `demo`, `packages`, and `migrations`;
+- `reports validate` checks registered report identity and version, but does
+  not validate the complete payload against its JSON Schema.
 
-## Stability
+Treat mismatched command families as unavailable for stable automation. Treat a
+passing report-directory scan as identity validation only. Use the owning
+domain validator or an exact JSON Schema validator before making a payload
+conformance claim.
 
-This page is part of the checked-in contract surface. Changes here should stay aligned with tests, generated artifacts, and release evidence.
+## Compatible Change
+
+A compatible automation change preserves the governing identity and semantics,
+updates every coupled authority, and leaves existing consumers an explicit
+overlap path where policy requires one. A command change coordinates the Clap
+surface and command registry. A check rename coordinates the registry,
+compatibility entry, suite membership, evidence mapping, and 180-day overlap.
+A report change coordinates its producer, registry, schema, example, consumer,
+and compatibility note.
+
+Internal module layout, helper functions, scheduling implementation, and human
+diagnostic prose may evolve when these external contracts remain intact.
+
+See [Automation Command Surface](../automation/automation-command-surface.md)
+for invocation details and [Automation Reports
+Reference](../automation/automation-reports-reference.md) for validation depth.

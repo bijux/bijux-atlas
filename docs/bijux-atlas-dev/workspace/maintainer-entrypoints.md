@@ -4,64 +4,84 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Maintainer Entrypoints
 
-Maintainers enter the control plane through `cargo run -p bijux-atlas-dev`,
-`bijux dev atlas`, and curated `make` wrappers. This page exists to show which
-entrypoint is best for which kind of maintainer work.
-
-## Entrypoint Routing Model
+Atlas exposes one repository control plane through four routes. They are an
+installed umbrella, a direct crate binary, curated Make targets, and GitHub
+workflows. Choose by execution context. Retain the report produced by the
+command that actually ran.
 
 ```mermaid
-flowchart TD
-    Task[Maintainer task] --> Daily[Daily review]
-    Task --> Validation[Change validation]
-    Task --> Release[Release preparation]
-    Task --> Docs[Docs or governance changes]
-    Task --> Incident[Incident or failure investigation]
-
-    Daily --> Entry[Use maintainer entrypoint set]
-    Validation --> Entry
-    Release --> Entry
-    Docs --> Entry
-    Incident --> Entry
+flowchart LR
+    Intent[Maintainer intent] --> Installed[bijux dev atlas]
+    Intent --> Local[cargo run -p bijux-atlas-dev]
+    Intent --> Make[make target]
+    Intent --> GitHub[GitHub workflow]
+    Installed --> Control[bijux-atlas-dev control plane]
+    Local --> Control
+    Make --> Control
+    GitHub --> Control
+    Control --> Report[Structured report and exit status]
 ```
 
-This diagram is intentionally simple because the main lesson is practical: different maintainer jobs
-should still begin from the same governed entrypoint set, not from ad hoc scripts or directory-local
-shortcuts.
+## Route Selection
 
-## Canonical Entrypoints
+| Route | Prefer it when | Evidence boundary |
+| --- | --- | --- |
+| `bijux dev atlas ...` | umbrella is installed | preserve arguments, authority, output, and status |
+| `cargo run --locked ...` | working from a checkout | binds source and lockfile to the invocation |
+| `make <target>` | invoking a curated lane | proves only the commands selected by that target |
+| GitHub workflow | hosted behavior matters | binds revision, permissions, runner, and artifacts |
 
-- `bijux dev atlas ...` is the canonical installed namespace for maintainer automation
-- `cargo run -q -p bijux-atlas-dev -- ...` is the repo-local direct binary path for exact local parity
-- `make ci-fast`, `make ci-pr`, `make ci-nightly`, `make docs-build`, and other curated targets are the convenience layer for common workflows
-- GitHub workflows under [`.github/workflows`](/Users/bijan/bijux/bijux-atlas/.github/workflows) are the remote execution entrypoints once a change moves into CI or release automation
+Use `--format json` for evidence consumed by automation. Human output is for
+interactive diagnosis and may omit fields that are present in the structured
+report. Capability flags remain explicit regardless of route. A wrapper must
+not grant write, subprocess, network, or git authority implicitly.
 
-## Which Entrypoint To Prefer
+## Common Starting Points
 
-- use `make` when you want the standard maintainer lane with the least command memorization
-- use `bijux dev atlas` when you want a documented control-plane surface that maps cleanly to maintainer docs
-- use direct `cargo run -q -p bijux-atlas-dev -- ...` when you need an exact in-repo command, debug fidelity, or a command not exposed as a make wrapper
-- use GitHub workflows when the question is about merge gates, release promotion, or environment-specific CI behavior rather than local iteration
+```bash
+bijux dev atlas check list --domain docs --format json
+bijux dev atlas suites list --format json
+bijux dev atlas docs validate --format json
+bijux dev atlas ops validate --profile kind --format json
+```
 
-## What Not To Use As An Entrypoint
+For checkout-local parity, replace the prefix with:
 
-- ad hoc root scripts that bypass the Rust control plane
-- crate-local scratch commands that hide side effects or artifact paths
-- undocumented shell aliases that make evidence or reproduction harder for another maintainer
+```bash
+cargo run --locked -q -p bijux-atlas-dev --
+```
 
-## Repository Anchors
+Use targeted commands during development. `make ci-nightly` selects the broad
+nightly lane and is not the default proof for a documentation-only change.
 
-- [`crates/bijux-atlas-dev/src/interfaces/cli/mod.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs:1) defines the direct command surface
-- [`configs/sources/governance/governance/cli-dev-command-surface.json`](/Users/bijan/bijux/bijux-atlas/configs/sources/governance/governance/cli-dev-command-surface.json:1) records the governed command families
-- [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) records the validation evidence maintainers should bring back from those entrypoints
+## Reproducible Handoff
 
-## Main Takeaway
+Record the route, arguments, revision, capabilities, report path, and exit
+status. Include any external target identity. Shell aliases or scratch commands
+that omit these details are unsuitable as shared evidence.
 
-Maintainer entrypoints are part of repository governance. The right starting command should make the
-work reproducible, route to the right policy, and leave behind evidence another maintainer can
-understand without reconstructing your local habits.
+## Wrapper Failure Semantics
+
+| Observation | Interpretation |
+| --- | --- |
+| direct command is absent | the binary and documentation are out of sync; a wrapper cannot repair the missing route |
+| wrapper selects different arguments | route parity is broken even if both invocations exit successfully |
+| report fails but wrapper exits zero | the wrapper hid failure and cannot support a pass claim |
+| wrapper grants broader capabilities | the effective authorization changed and requires explicit review |
+| hosted run lacks expected artifact | the handoff is incomplete even if the log shows successful execution |
+
+Compare the resolved command and retained report, not only the wrapper target
+name. A route is trustworthy when it preserves selection, authority, output,
+and exit behavior.
+
+## Compatibility Boundary
+
+The direct binary is the executable authority. Other routes are supported when
+their checked-in delegation preserves the command contract. Command names,
+selectors, capability flags, structured output, and exit semantics require
+consumer review when changed.

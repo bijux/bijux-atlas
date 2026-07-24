@@ -6,7 +6,7 @@ on:
       - "configs/sources/operations/perf/**"
       - "ops/load/**"
       - "ops/report/generated/**"
-      - "docs/04-operations/performance-and-load.md"
+      - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
   push:
@@ -15,7 +15,7 @@ on:
       - "configs/sources/operations/perf/**"
       - "ops/load/**"
       - "ops/report/generated/**"
-      - "docs/04-operations/performance-and-load.md"
+      - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
   schedule:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Validate policy and generated assets
         run: |

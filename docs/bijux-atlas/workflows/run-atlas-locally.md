@@ -4,130 +4,127 @@ audience: mixed
 type: how-to
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Run Atlas Locally
 
-Running Atlas locally is easiest when you separate the workflow into three areas:
+A complete local Atlas run moves one immutable dataset identity through build,
+verification, publication, discovery, and query. It uses committed fixtures as
+inputs and keeps every disposable output under `artifacts/`.
 
-- source fixtures.
-- built artifacts.
-- runtime processes.
+```mermaid
+stateDiagram-v2
+    [*] --> Source: committed GFF3, FASTA, and FAI
+    Source --> Built: ingest
+    Built --> Validated: dataset validate
+    Validated --> Verified: dataset verify --deep
+    Verified --> Published: dataset publish
+    Published --> Discoverable: catalog promote
+    Discoverable --> Ready: server catalog refresh
+    Ready --> Queried: HTTP request
+```
 
-A good local run proves that your inputs, artifacts, store, and server wiring
-agree with each other. It does not prove that production infrastructure,
-scaling, or operational policy are already correct.
+## Keep Four Paths Distinct
 
-## Local Layout
+| Path | Role | Durable expectation |
+| --- | --- | --- |
+| `crates/bijux-atlas-ingest/tests/fixtures/tiny/` | committed source fixture | input bytes belong to the checkout |
+| `artifacts/getting-started/tiny-build/` | ingest candidate and verified dataset root | may be discarded and rebuilt |
+| `artifacts/getting-started/tiny-store/` | published serving store and catalog | runtime discovery source |
+| `artifacts/getting-started/server-cache/` | server-managed dataset artifact cache | disposable process state |
+
+The server store is not the ingest output directory. Publication copies the
+validated dataset into serving shape; promotion makes its exact
+`release/species/assembly` identity discoverable through the catalog.
+
+## Understand the Local Process Boundaries
+
+The local loop uses one repository and filesystem, but it still crosses real
+ownership boundaries.
 
 ```mermaid
 flowchart LR
-    Fixtures[crates/bijux-atlas-ingest/tests/fixtures] --> Build[Ingest and validation]
-    Build --> BuildRoot[artifacts/getting-started/tiny-build]
-    BuildRoot --> Publish[dataset publish and catalog promote]
-    Publish --> Store[artifacts/getting-started/tiny-store]
-    Store --> Server[bijux-atlas-server]
-    Server --> Client[curl or browser]
+    CLI["CLI workflow"] --> Ingest["Ingest candidate builder"]
+    Ingest --> Store["Published local store"]
+    CLI --> Catalog["Catalog promotion"]
+    Catalog --> Store
+    Client["HTTP client"] --> Server["Atlas server"]
+    Server --> Manager["Dataset cache manager"]
+    Manager --> StorePort["Runtime store port"]
+    StorePort --> Store
+    Server --> Query["Query capabilities"]
 ```
 
-This layout separates the main local concerns clearly: committed fixtures, a
-disposable build root, the serving store, and the running server. Keeping those
-paths distinct prevents a lot of avoidable local confusion.
+The CLI coordinates ingest, validation, publication, and promotion. The server
+constructs the local store backend behind the runtime store port, owns dataset
+and response caches, and invokes query capabilities. The `bijux-atlas-runtime`
+crate supplies configuration, policy, and store abstractions; it is not another
+daemon to start between the server and local store.
 
-## Prepare a Local Workspace
+## Run the Local Loop
+
+1. [Install and verify](install-and-verify.md) the checkout entrypoints and
+   fixture paths.
+2. [Load the sample dataset](load-a-sample-dataset.md) with release `110`,
+   species `homo_sapiens`, and assembly `GRCh38`.
+3. [Start the server](start-the-server.md) against `tiny-store`, not
+   `tiny-build`.
+4. [Run the first queries](run-your-first-queries.md) with the same dataset
+   identity.
+
+Stop at the first invalid boundary. A later success cannot repair an ingest,
+validation, verification, publication, or promotion failure. Keep the failed
+artifact root for diagnosis or remove only the explicit disposable root before
+rerunning.
+
+## Record Reproducibility
+
+Capture the checkout and toolchain with the local result:
 
 ```bash
-mkdir -p artifacts/getting-started/tiny-build
-mkdir -p artifacts/getting-started/tiny-store
-mkdir -p artifacts/getting-started/server-cache
+git rev-parse HEAD
+git status --short
+rustc --version
+cargo --version
 ```
 
-Keep all throwaway local outputs under `artifacts/`. Do not create crate-local scratch directories.
+Record the three fixture hashes when a result will be compared across
+revisions. Repository-relative paths identify source locations; they do not
+identify file bytes after the checkout changes.
 
-## Inspect the Main Surfaces
+For runtime evidence, retain the resolved dataset tuple, server bind address,
+redacted effective configuration, `/v1/version`, `/readyz`, and the exact query
+response. This separates product behavior from shell state and stale installed
+binaries.
 
-```bash
-cargo run -p bijux-atlas-cli --bin bijux-atlas -- --help
-cargo run -p bijux-atlas-server --bin bijux-atlas-server -- --help
-```
+## Interpret the Result
 
-## Understand the Local Loop
+| Passed boundary | Safe conclusion |
+| --- | --- |
+| ingest | the selected fixture was transformed into a candidate dataset root |
+| dataset validation | required dataset structure and metadata passed that validator |
+| deep verification | the selected integrity checks passed for the candidate |
+| publication and promotion | the serving store contains a catalog-discoverable dataset identity |
+| readiness and catalog listing | the running process can discover catalog state |
+| an explicit query | that endpoint served that request for that dataset snapshot |
 
-```mermaid
-flowchart TD
-    A[Build sample dataset] --> B[Validate dataset root]
-    B --> C[Publish into serving store]
-    C --> D[Promote into catalog]
-    D --> E[Start server with serving store]
-    E --> F[Query local endpoints]
-    F --> G[Inspect logs and metrics]
-```
+The loop does not prove production throughput, remote object-store behavior,
+multi-node convergence, authentication policy, failover, backup recovery, or
+capacity. Those claims belong to operations, security, load, and resilience
+evidence with their own targets.
 
-This local loop is the intended product path, even for development. It is meant
-to keep readers from treating an ingest output directory as if it were already
-ready-made serving state.
+## Local Failure Map
 
-The local development loop is not “start the server and hope.” It is:
+- Missing fixture: verify the checkout root and revision.
+- Missing dataset after ingest: verify identity flags and candidate paths.
+- Publication failure: do not manually copy partial files into the store.
+- `readyz` failure: inspect catalog refresh and catalog identity.
+- Empty query result: confirm the tuple and selector before treating it as a
+  runtime defect.
+- `400`, `422`, `429`, or `503`: inspect the structured error code; these
+  statuses represent different parsing, policy, admission, and availability
+  boundaries.
 
-1. build a sample dataset into an artifact root
-2. validate the resulting build root
-3. publish and promote into a serving store
-4. point the server at that serving store
-5. query the resulting release state
-
-## Why Atlas Prefers This Loop
-
-Atlas is artifact-centric. That means local runtime behavior should be tested against built dataset state, not against half-prepared source inputs or improvised mutable state.
-
-```mermaid
-flowchart LR
-    Bad[Build root directly treated as serving state] --> Drift[Confusion and drift]
-    Good[Build root published into serving store] --> Confidence[Deterministic local behavior]
-```
-
-This comparison diagram explains why Atlas prefers the longer-looking loop. The
-extra publication step is not ceremony for its own sake; it is the boundary
-that makes local runtime behavior match the serving model.
-
-## What This Local Loop Proves
-
-- ingest and validation accept the chosen fixture set.
-- publication creates a serving-shaped store and catalog state.
-- the runtime can boot from that store with explicit config.
-- query behavior matches the release state you just built.
-
-## What This Local Loop Does Not Prove
-
-- that a shared or production deployment is sized, secured, or observed correctly.
-- that local filesystem shortcuts are acceptable in managed environments.
-- that skipping publication into a serving store is safe just because a local test happened to work.
-
-## Recommended Local Sequence
-
-- follow [Load a Sample Dataset](load-a-sample-dataset.md).
-- then follow [Start the Server](start-the-server.md).
-- then follow [Run Your First Queries](run-your-first-queries.md).
-
-## Local Success Criteria
-
-You are running Atlas locally in the intended way when:
-
-- ingest outputs live under `artifacts/`.
-- dataset validation succeeds on the build root.
-- the serving store contains published artifacts plus catalog state.
-- the server points at the serving store rather than raw fixtures or the ingest build root.
-- queries return data for the release you just built.
-
-If any of those conditions are false, you may still have a working demo, but you do not yet have the Atlas workflow running in its intended shape.
-
-## A Good Local Smell Test
-
-- can you point to the fixture path, build root, store root, and cache root separately?
-- can you explain which step produced each of those paths?
-- can you restart the loop without manual cleanup outside `artifacts/`?
-
-## Reading Rule
-
-Use this page when Atlas commands work individually but you still need one
-clear local loop that turns fixtures into a running, queryable system.
+You have completed the intended local loop when every transition is attributable
+to one checkout and the final query targets the exact promoted dataset.

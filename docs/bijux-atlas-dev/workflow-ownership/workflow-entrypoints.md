@@ -4,62 +4,74 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Workflow Entrypoints
 
-GitHub workflow entrypoints are grouped by concern so docs, ops, security, and
-release lanes can be inspected deliberately. This page is the maintainer routing
-guide for the question, "which repository workflow should I touch, read, or run
-for the job in front of me?"
-
-## Workflow Selection Model
+Atlas workflows encode distinct policy, validation, audit, and publication
+decisions. Select a workflow by its trigger and claim, not by a similar filename
+or the presence of a green check.
 
 ```mermaid
 flowchart TD
-    Start[Maintainer starting point] --> Question{What are you trying to do?}
-    Question --> Automation[Add or change automation]
-    Question --> Release[Prepare release]
-    Question --> Validate[Validate ops or system behavior]
-    Question --> Docs[Change docs or governance]
-    Question --> Investigate[Investigate repository problem]
-
-    Automation --> AutomationPages[Automation section]
-    Release --> ReleaseFlows[Delivery and release-candidate workflows]
-    Validate --> ValidationFlows[Validation workflows]
-    Docs --> DocsFlows[Governance and docs workflows]
-    Investigate --> WorkspacePaths[Workspace and evidence paths]
+    Need[Repository decision] --> Merge[May this change merge?]
+    Need --> Domain[Does one domain contract hold?]
+    Need --> Audit[Has repository drift appeared?]
+    Need --> Release[May an artifact be promoted?]
+    Merge --> Policy[Policy and repository CI]
+    Domain --> Validation[Ops, security, load, benchmarks, simulation]
+    Audit --> Scheduled[Scheduled or dispatched audit]
+    Release --> Candidate[Candidate and readiness]
+    Candidate --> Publish[Crates, OCI bundle, GitHub release, docs]
 ```
-
-This routing diagram exists so maintainers do not guess from workflow filenames alone. Atlas keeps
-many workflows because they answer different repository questions, and good workflow ownership starts
-by choosing the right decision path.
 
 ## Workflow Families
 
-- automation changes usually start in the maintainer control plane and only then map to the owning CI workflow
-- release preparation flows through `.github/workflows/release-candidate.yml`, `final-readiness.yml`, and the publish workflows
-- ops and system validation flows through workflows such as `ops-validate.yml`, `system-simulation.yml`, and the load or security lanes
-- docs and governance changes flow through docs validation, redirect, and governance checks
-- repository investigation often starts with local control-plane commands and artifact inspection before escalating to CI workflow changes
+| Family | Principal workflows | Decision boundary |
+| --- | --- | --- |
+| merge policy | `policy / github`, `policy / pr approval`, `bijux-std`, `repo / ci` | branch rules, approval policy, shared standards, and repository checks are separate contexts |
+| domain validation | `ops-validate`, security validation lanes, load and benchmark lanes, layering boundaries, system simulation | proves only the triggered paths, selected commands, fixtures, and targets |
+| documentation | `docs-audit`, `deploy-docs` | audit is scheduled/manual; deployment is reusable/manual and has ref eligibility rules |
+| release preparation | `release-candidate`, `final-readiness`, `release-artifacts`, compatibility matrix | assembles and evaluates release inputs without implying channel publication |
+| publication | `release-crates`, `release-ghcr`, `release-github`, `deploy-docs` | each channel has its own credentials, identity, receipt, and failure boundary |
+| reusable implementation | `reusable-ci-rust-stack`, reusable Python workflows | callable workflow implementation; not an independent repository decision unless invoked |
 
-## Repository Anchors
+## Route a Change
 
-- [`.github/workflows`](/Users/bijan/bijux/bijux-atlas/.github/workflows) is the workflow root
-- [`.github/required-status-checks.md`](/Users/bijan/bijux/bijux-atlas/.github/required-status-checks.md:1) records the required merge gates
-- [`.github/CODEOWNERS`](/Users/bijan/bijux/bijux-atlas/.github/CODEOWNERS:1) records the review-routing boundaries around workflow changes
-- [`.github/pull_request_template.md`](/Users/bijan/bijux/bijux-atlas/.github/pull_request_template.md:1) records the evidence a maintainer should attach when workflow behavior changes
+1. Identify the observed surface and its owner.
+2. Read the workflow's `on` block to confirm the event and path filter.
+3. Follow delegated Make and `bijux-atlas-dev` commands to the executable
+   authority.
+4. Check permissions, environment, external targets, and capability flags.
+5. Locate reports and uploads, including behavior under failure.
+6. Compare the resulting context with the checked-in branch-protection list.
 
-## Practical Routing Rules
+Workflow filenames are not status-check identities. GitHub uses workflow and
+job names for contexts, and `.github/required-status-checks.md` currently lists
+only the universal policy and shared-standard baseline. A domain lane can be
+important evidence without being a required branch-protection context.
 
-- if you are changing command behavior, start with the automation pages before editing a workflow file
-- if you are proving a release candidate, start with the release-candidate and final-readiness workflows before touching publish automation
-- if you are changing docs governance, inspect redirect, docs-build, and governance validation expectations together
-- if you are debugging a failing workflow, identify the owned lane and the report artifact it is supposed to produce before changing the workflow logic
+## Publication Sequence
 
-## Main Takeaway
+```mermaid
+flowchart LR
+    Revision[Source revision] --> Candidate[Release candidate]
+    Candidate --> Ready[Final readiness]
+    Ready --> Artifacts[Release artifacts]
+    Artifacts --> Crates[Crate registry]
+    Artifacts --> OCI[OCI release bundle]
+    Artifacts --> GitHub[GitHub release]
+    Revision --> Docs[Documentation build and deploy]
+```
 
-Workflow entrypoints are not just a list of YAML files. They are the repository's named decision
-paths for release, validation, docs governance, and operational proof, and maintainers should choose
-them based on the question being answered rather than on which file looks closest.
+The arrows represent intended decision order, not one atomic transaction. A
+successful publication to one channel does not prove success or rollback on
+another. Retain channel-specific receipts and reconcile partial publication.
+
+## Stability
+
+Trigger filters, workflow/job names, delegated commands, permissions, report
+paths, and publication identities are reviewable contract surfaces. Reusable or
+standards-synchronized workflows must be changed at their owning source rather
+than patched locally.

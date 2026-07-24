@@ -49,20 +49,21 @@ mod tests {
     use super::WorkspaceRoot;
     use crate::runtime::AdapterError;
     use std::fs;
-    use std::path::{Path, PathBuf};
+    use std::path::Path;
     use std::sync::atomic::{AtomicU64, Ordering};
     use std::time::{SystemTime, UNIX_EPOCH};
     use tempfile::{Builder, TempDir};
 
     static TEMP_ROOT_COUNTER: AtomicU64 = AtomicU64::new(0);
 
-    fn external_fixture_parent() -> PathBuf {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(Path::parent)
-            .and_then(Path::parent)
-            .unwrap_or_else(|| panic!("workspace fixture parent"))
-            .to_path_buf()
+    #[cfg(unix)]
+    fn system_temp_root() -> &'static Path {
+        Path::new("/tmp")
+    }
+
+    #[cfg(not(unix))]
+    fn system_temp_root() -> std::path::PathBuf {
+        std::env::temp_dir()
     }
 
     fn temp_root() -> TempDir {
@@ -76,7 +77,7 @@ mod tests {
             .prefix(&format!(
                 "bijux-atlas-dev-workspace-root-{pid}-{suffix}-{counter}-"
             ))
-            .tempdir_in(external_fixture_parent())
+            .tempdir_in(system_temp_root())
             .unwrap_or_else(|err| panic!("tempdir failed: {err}"))
     }
 

@@ -4,51 +4,191 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Reproducibility
 
-Operational reproducibility is modeled explicitly through scenarios,
-fixtures, and release-shaped rebuild checks.
+Atlas declares reproducibility scenarios for crates, a Docker image, a Helm
+chart, the docs site, and the release bundle. The current repository-wide
+`reproduce` command validates metadata determinism and source lineage; it does
+not execute those five rebuilds.
 
-## Purpose
+## Declared Objective
 
-Use this page to understand which release-critical artifacts Atlas expects to
-rebuild deterministically and what counts as reproducible enough for release
-confidence.
+`ops/reproducibility/spec.json` requires three signal classes:
 
-## Source of Truth
+- `source_snapshot_hash`
+- `scenario_results`
+- `artifact_hashes`
 
-- `ops/reproducibility/scenarios.json`
+The catalog names five intended rebuild scenarios. Three fixtures identify
+known-good inputs for crates, docs, and chart packaging. The catalog and
+fixtures define vocabulary and expected shape; they are not completed rebuild
+evidence.
+
+```mermaid
+flowchart LR
+    Catalog[Five declared rebuild scenarios] --> Metadata[Current reproduce run]
+    Source[Tracked checkout] --> SourceHash[Source snapshot hash]
+    Controls[Cargo.lock and reproducibility controls] --> ControlHashes[Control-file hashes]
+    SourceHash --> Metadata
+    ControlHashes --> Metadata
+    Metadata --> DoubleRun[Generate metadata twice]
+    DoubleRun --> Verify[Compare normalized reports]
+    Rebuild[Build each artifact twice] -. not performed .-> Verify
+```
+
+## What the Current Commands Prove
+
+| Command | Current behavior | Safe conclusion |
+| --- | --- | --- |
+| `reproduce run` | hashes tracked source and selected control files; lists catalog scenarios | source/control identity was summarized |
+| `reproduce verify` | checks five scenario IDs exist and compares two normalized metadata payloads | metadata generation is deterministic for one checkout |
+| `reproduce lineage-validate` | requires hashes for `Cargo.lock` and three reproducibility control files | those lineage inputs were present and hashed |
+| `reproduce audit-report` | timestamps and persists the verification result | the metadata verification was recorded |
+| `reproduce metrics` | counts scenarios and hashed control files | inventory counts were emitted |
+
+`artifact_hashes` in this command refers to control files such as `Cargo.lock`
+and the reproducibility specifications. It does not contain hashes of rebuilt
+crate packages, OCI images, chart archives, the docs site, or a release bundle.
+
+The emitted `offline_safe: true` value is a static property of the report
+payload. The verification checks that value; it does not instrument or prove
+the absence of network access during an artifact rebuild.
+
+## Separate Repeatability, Reproducibility, and Hermeticity
+
+These properties answer different questions and need different experiments:
+
+| Property | Required experiment | Claim limit |
+| --- | --- | --- |
+| deterministic metadata. | Generate and normalize the same report twice in one checkout. | Report construction is stable for those inputs. |
+| build repeatability. | Build twice with the same builder, caches, and controlled environment. | One environment can repeat its own output. |
+| independent reproducibility. | Build the same source with isolated builders and independently acquired dependencies. | Separate builders agree on the governed artifact identity. |
+| hermeticity. | Deny undeclared filesystem, environment, clock, credential, and network inputs during the build. | The output depends only on the declared input closure. |
+| offline rebuild. | Populate a declared local dependency set, deny network access, and rebuild from it. | The retained local set is sufficient for that target. |
+
+Passing a weaker property does not imply a stronger one. In particular,
+offline execution can consume mutable local inputs, and a hermetic build can be
+non-reproducible when its declared inputs contain time or randomness.
+
+## Release-Specific Reproducibility
+
+The separate `release reproducibility report` command checks required build
+environment values, release-manifest build metadata, and a declared versus
+computed bundle hash. That is stronger for a concrete release bundle, but it
+still needs the referenced manifest and bundle to exist for the selected
+version.
+
+In `release-candidate.yml`, a nonzero result from that command is converted into
+a `warn` gate artifact and the workflow continues. The lane therefore records
+the failure but does not enforce reproducibility as a hard candidate gate.
+
+## Evidence Required for a Rebuild Claim
+
+To claim that a release artifact is reproducible, retain:
+
+1. an immutable source revision and clean input snapshot
+2. pinned toolchain, dependency, base-image, and environment identities
+3. two isolated builds with controlled environment differences
+4. canonicalization rules for timestamps, archive ordering, paths, and metadata
+5. hashes of the actual output artifacts from both builds
+6. a scenario result explaining equality or classified differences
+7. provenance binding the compared outputs to their builders and inputs
+
+Artifact-specific normalization matters. A deterministic JSON report does not
+make a tar archive deterministic, and equal chart sources do not prove equal
+packaged chart bytes.
+
+## Compare the Right Equivalence
+
+Byte equality is the strongest result when the artifact format permits it.
+When canonicalization is necessary, define the transformation before building
+and retain both original outputs. A post hoc rule created to erase an observed
+difference is not reproducibility evidence.
+
+| Artifact | Identity to pin | Differences to control or explain |
+| --- | --- | --- |
+| Rust packages | source, lockfile, Rust toolchain, target, feature set | archive metadata, compiler inputs, native dependencies |
+| OCI image | source, base-image digest, builder, platform | layer ordering, timestamps, labels, package repositories |
+| Helm chart | chart source, dependency locks, Helm version | archive order, modes, timestamps, generated metadata |
+| documentation site | source, documentation toolchain, theme and plugin versions | generated timestamps, search indexes, asset ordering |
+| release bundle | complete member inventory and member hashes | archive metadata, ordering, signing and provenance attachments |
+
+```mermaid
+flowchart TD
+    Spec[Predeclared scenario and normalization] --> BuildA[Isolated build A]
+    Spec --> BuildB[Isolated build B]
+    BuildA --> OriginalA[Original artifact and provenance]
+    BuildB --> OriginalB[Original artifact and provenance]
+    OriginalA --> Compare{Byte-equal?}
+    OriginalB --> Compare
+    Compare -- yes --> Exact[Exact reproducibility result]
+    Compare -- no --> Normalize[Apply predeclared canonicalization]
+    Normalize --> Canonical{Canonical outputs equal?}
+    Canonical -- yes --> Explained[Canonical reproducibility plus original difference report]
+    Canonical -- no --> Fail[Classified reproducibility failure]
+```
+
+The result must say whether equality was exact or canonicalized. It must also
+name every ignored field and retain the unexplained-difference report.
+
+## Triage a Rebuild Divergence
+
+A mismatch is the start of attribution, not permission to expand the ignored
+field list. Preserve both original artifacts and compare from the outside in:
+
+```mermaid
+flowchart TD
+    Mismatch[Output hashes differ] --> Inventory{Member inventory equal?}
+    Inventory -->|no| Inputs[Trace source, dependency, feature, and packaging inputs]
+    Inventory -->|yes| Metadata{Only predeclared metadata differs?}
+    Metadata -->|yes| Canonical[Apply declared canonicalization and retain originals]
+    Metadata -->|no| Content[Locate first content or layer difference]
+    Content --> Builder[Compare toolchain, platform, environment, and execution]
+    Canonical --> Verdict{Canonical outputs equal?}
+    Builder --> Finding[Classified reproducibility failure]
+    Verdict -->|yes| Qualified[Canonical reproducibility result]
+    Verdict -->|no| Finding
+```
+
+| Divergence class | Investigation focus |
+| --- | --- |
+| member set | omitted or additional build input, feature, generated file, or packaging rule |
+| content bytes | source snapshot, dependency resolution, compiler, native library, platform, or nondeterministic execution |
+| ordering or archive metadata | declared packaging and canonicalization rules |
+| image layers or platform manifest | builder, base and package digests, target platform, labels, timestamps, and layer construction |
+| signature or provenance attachment | signer identity, signing mode, attachment order, and whether signatures are inside the compared payload |
+
+Run the diagnosis from retained outputs rather than rebuilding repeatedly until
+two samples happen to match. Repeated attempts belong in the evidence series;
+intermittent equality indicates nondeterminism, not a successful reproducible
+build.
+
+## Independence and Custody
+
+Two invocations in one populated workspace can reuse caches, generated files,
+credentials, or mutable dependencies. Prefer isolated builders with separate
+output roots and controlled differences. Record network policy, dependency
+source, cache policy, locale, timezone, platform, and environment allowlist.
+
+Bind each output hash to its source and builder provenance. Store the comparison
+result with both artifact identities. A signed statement can protect custody,
+but signing two different artifacts does not make them reproducible.
+
+## Decision Boundary
+
+Use current `reproduce` output as repository metadata and lineage evidence.
+Use the release-specific report as bundle consistency evidence. Do not describe
+either as successful execution of all five declared rebuild scenarios until
+the commands actually build and compare those artifacts.
+
+## Authorities
+
 - `ops/reproducibility/spec.json`
+- `ops/reproducibility/scenarios.json`
 - `ops/reproducibility/fixtures/`
-- `ops/reproducibility/report.schema.json`
 - `ops/reproducibility/ci-scenario.json`
-
-## Reproducibility Program
-
-Atlas currently defines rebuild scenarios for:
-
-- crates
-- docker images
-- Helm chart packages
-- docs site output
-- the release bundle itself
-
-The reproducibility objective is to prove release-critical artifact identity
-through signals such as source snapshot hashes, scenario results, and artifact
-hashes.
-
-## What Counts as Reproducible Enough
-
-The release is reproducible enough when the governed scenarios complete with
-stable output identity and the report schema records an `ok` status for the
-artifacts under review.
-
-## Related Contracts and Assets
-
-- `ops/reproducibility/scenarios.json`
-- `ops/reproducibility/fixtures/`
-- `ops/reproducibility/spec.json`
-- `ops/reproducibility/report.schema.json`
+- `crates/bijux-atlas-dev/src/application/reproduce.rs`
+- `.github/workflows/release-candidate.yml`

@@ -4,119 +4,106 @@ audience: maintainer
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Automation Reports Reference
 
-This page describes the report artifacts exposed by the Atlas development control plane.
+Atlas reports are named evidence artifacts. A governed report has an identity,
+an integer version, a JSON Schema, and an example location recorded in
+`configs/registry/reports/reports.registry.json`.
 
-## Report Flow
+## Governed Catalog
 
-```mermaid
-flowchart TD
-    Run[Automation run] --> Produce[Produce report]
-    Produce --> Command[Command report]
-    Produce --> Validation[Validation report]
-    Produce --> Summary[Coverage or summary report]
-    Produce --> Reference[Generated reference artifact]
+The current report catalog contains five families:
 
-    Command --> Read[Maintainer reads evidence]
-    Validation --> Read
-    Summary --> Read
-    Reference --> Read
-```
+| Report ID | Evidence supplied | Example location |
+| --- | --- | --- |
+| `closure-index` | index of documentation closure evidence. | `artifacts/docs/generated/closure-index.json`. |
+| `docs-build-closure-summary` | build-closure status and checks for one docs gate run. | `artifacts/run/<run_id>/gates/docs/docs-build-closure-summary.json`. |
+| `docs-site-output` | rendered-site paths, counts, checks, and status. | `artifacts/run/<run_id>/gates/docs/site-output.json`. |
+| `helm-env` | the governed relationship between Helm inputs and runtime environment keys. | `artifacts/contracts/ops/helm/helm-env-subset.json`. |
+| `ops-profiles` | operational profile matrix, tool identity, and validation summary. | `artifacts/contracts/ops/profiles/full-matrix.json`. |
 
-This diagram is the key mental model for the page. Reports are not random files
-left behind by commands; they are named evidence products that help maintainers
-understand what happened, what was checked, and what another workflow may rely
-on next.
+Each registered schema fixes `report_id` and `version` and rejects additional
+top-level properties. The required payload fields differ by family. In
+particular, `helm-env` and `ops-profiles` do not use the same `evidence` header
+as the documentation closure reports. Consumers must validate the exact schema.
+
+The repository contains other report schemas, including suite, governance,
+compatibility, and exception reports. They are not currently entries in the
+`reports` catalog and therefore are not discoverable or accepted through this
+command family.
 
 ## Report Commands
 
-Use the `reports` command family for catalog and validation tasks:
-
 ```bash
-cargo run -q -p bijux-atlas-dev -- reports list --format json
-cargo run -q -p bijux-atlas-dev -- reports index --format json
-cargo run -q -p bijux-atlas-dev -- reports progress --format json
-cargo run -q -p bijux-atlas-dev -- reports validate --dir artifacts
+bijux dev atlas reports list --format json
+bijux dev atlas reports index --format json
+bijux dev atlas reports progress --format json
+bijux dev atlas reports validate \
+  --dir artifacts/contracts/ops \
+  --format json
 ```
 
-These commands belong together because the reports surface is both discoverable and governed. Readers
-should be able to list report families, inspect indexes, and validate report directories from one
-documented command family.
+| Command | What it establishes | What it does not establish |
+| --- | --- | --- |
+| `reports list` | the registry parses; registered schema files exist; schema constants match registered IDs and versions. | example existence, artifact payload conformance, or producer correctness. |
+| `reports index` | renders registry entries as Markdown. | validation beyond the registry load. |
+| `reports progress` | reports blank example paths and missing schema files. | whether a non-empty example path exists or contains a valid report. |
+| `reports validate --dir` | every JSON file has a registered string `report_id` and the registered integer `version`. | full JSON Schema validation, required payload fields, field types beyond ID/version, or evidence quality. |
 
-## Repository Anchors
+Use `reports validate` only on a directory intended to contain registered
+report artifacts. It recursively treats every JSON file in the selected tree as
+a report candidate.
 
-- command dispatch for the `reports` family lives in [`src/interfaces/cli/dispatch.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/interfaces/cli/dispatch.rs:951)
-- contract schemas for governed report families live under [`configs/schemas/contracts/reports/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts/reports)
-- docs-oriented report generation is implemented in [`src/docs/site_output.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/docs/site_output.rs:1)
-- ops-oriented report generation is implemented in [`src/ops/helm_env.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/ops/helm_env.rs:1) and [`src/ops/profiles_matrix.rs`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-dev/src/ops/profiles_matrix.rs:1)
+## Validation Depth
 
-## Shared Report Header
+```mermaid
+flowchart TD
+    Registry[Registry load] --> Catalog[Catalog identity check]
+    Catalog --> Identity[Artifact ID and version check]
+    Identity --> Schema[Full family schema validation]
+    Schema --> Meaning[Semantic and evidence validation]
+    Meaning --> Decision[Review or release decision]
+```
 
-Governed report schemas under `configs/schemas/contracts/reports/` consistently require these fields:
+The `reports` family currently implements the first three nodes through the
+artifact identity check; it does not implement the full family-schema node for
+arbitrary report directories. Domain commands and focused checks may provide
+deeper validation for the artifacts they own.
 
-- `report_id`: stable report family identifier
-- `version`: schema version for the report family
-- `inputs`: declared inputs used to produce the report
-- `summary`: top-level counters or state
-- `evidence`: supporting metadata needed to interpret the result
+Do not describe a directory as schema-valid solely because `reports validate`
+passes. Record which validator reached which depth.
 
-Report-specific payload fields appear after that shared header. For example, `docs-site-output` adds
-fields such as `docs_dir`, `site_dir`, `checks`, `counts`, `assets_directory`, and `status`.
+## Artifact Governance
 
-## Current Governed Report Families
+The hidden `artifacts report` surface performs a different repository-wide
+audit. Its validation checks report registration in the larger schema inventory,
+ownership, check mapping, summary/evidence presence, count limits, and byte
+budgets. It also does not replace exact JSON Schema validation.
 
-The current `reports list --format json` catalog exposes at least these report ids:
+These surfaces answer different questions:
 
-- `closure-index`
-- `docs-build-closure-summary`
-- `docs-site-output`
-- `helm-env`
-- `ops-profiles`
+- `reports ...` governs the small public report catalog;
+- `artifacts report ...` governs retained artifact discipline across a wider
+  inventory;
+- domain validators establish the semantics of the report they produce;
+- exact JSON Schema validation establishes payload shape.
 
-Each catalog entry points to both a schema in `configs/schemas/contracts/reports/` and an example artifact path.
+## Consume a Report
 
-These families already show the main report classes maintainers should expect:
+1. Identify `report_id` and `version` without coercion.
+2. Resolve the pair through the report registry.
+3. Validate the complete payload against the registered schema.
+4. Confirm the producer command, inputs, run ID, and artifact digest.
+5. Inspect report-specific status, summary, and evidence semantics.
+6. Retain the original bytes; do not edit a failing report into conformance.
 
-- docs and closure evidence such as `closure-index` and `docs-site-output`
-- environment and profile evidence such as `helm-env` and `ops-profiles`
-- summary-style reports that help another workflow or reviewer decide what to inspect next
+A valid shape does not prove a passing result. A passing status does not prove
+the artifact belongs to the candidate under review. Both shape and identity
+must be connected to the originating run.
 
-## Artifact Path Pattern
-
-Most generated reports live under workspace-controlled artifact roots such as:
-
-- `artifacts/run/<run_id>/...` for run-scoped execution outputs
-- `artifacts/contracts/ops/...` for contract-oriented artifacts
-- `artifacts/governance/...` for governance indexes such as the ADR catalog
-
-Treat those paths as report storage locations, not as new sources of truth. The contract lives in the schema and in the command that emits the report.
-
-## Validation Rules
-
-- schema changes must stay backward compatible unless the report version changes
-- consumers should key off structured fields, not terminal formatting
-- report validation should happen against a directory root, not through manual spot checks
-- unknown additive fields should not break tolerant consumers
-
-## Main Takeaway
-
-Automation reports are Atlas's evidence layer for maintainer work. The command
-surface, the schema contracts, and the generated report artifacts all have to
-stay aligned or the report stops being trustworthy as a decision input.
-
-## Related Pages
-
-- [Automation Command Surface](automation-command-surface.md)
-- [Automation Contracts](../governance/automation-contracts.md)
-
-## Purpose
-
-This page is the lookup reference for automation reports reference. Use it when you need the current checked-in surface quickly and without extra narrative.
-
-## Stability
-
-This page is a checked-in reference surface. Keep it synchronized with the repository state and generated evidence it summarizes.
+See [Automation Contracts](../governance/automation-contracts.md) for
+compatibility rules and [Testing and Evidence](../governance/testing-and-evidence.md)
+for the evidence chain.

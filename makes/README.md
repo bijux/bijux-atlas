@@ -70,7 +70,8 @@ domain.
 - `fmt`, `lint`, `audit`, `test`, and `test-all`: cargo-native repository gates aligned with the
   governed Rust toolchain and artifact contract.
 - `test-all-frozen`, `lint-frozen`, and `audit-frozen`: detached pinned-ref gate launchers that
-  materialize the exact source snapshot plus reports under `artifacts/<sha>/`.
+  materialize the exact source snapshot plus reports under `artifacts/<sha>/`. Select the commit
+  with `PINNED_REF`; `TEST_ALL_FROZEN_REF` remains supported for full-suite invocations.
 - `makes-target-list`: Regenerate `makes/target-list.json` for workflows, audits, and governance
   checks.
 - Internal `_internal-*` helpers in `makes/entrypoints.mk`: support CI drift detection and focused

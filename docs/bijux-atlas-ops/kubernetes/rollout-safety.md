@@ -4,87 +4,270 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Rollout Safety
 
-Rollout safety is documented as an explicit contract over values files,
-release flows, and supporting suites.
+A safe rollout preserves service admission, data availability, security
+posture, and recovery authority while the running release changes. Atlas makes
+these expectations profile-specific through
+`ops/k8s/rollout-safety-contract.json`.
 
-## Purpose
+## Profile Safety Modes
 
-Use this page to decide whether a profile is allowed to deploy as a plain
-deployment or a governed rollout, which readiness gates must hold, and when the
-operator must stop and roll back.
+| Profile | Delivery mode | Warmup required | Network policy | HPA |
+| --- | --- | ---: | --- | --- |
+| `ci` | Deployment | no | disabled | disabled |
+| `dev` | Deployment | no | disabled | disabled |
+| `kind` | Rollout | yes | cluster-aware | disabled |
+| `offline` | Deployment | yes | disabled | disabled |
+| `perf` | Rollout | no | cluster-aware | enabled |
+| `prod` | Rollout | no | cluster-aware | enabled |
 
-## Source of Truth
+Every profile requires a readiness path. Kind requires warmup before promotion;
+offline requires prewarming and pinned datasets while forbidding live-catalog
+readiness. Performance requires a digest-pinned image and service monitoring.
+Production requires HPA and cluster-aware dependency isolation.
 
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/schema/k8s/rollout-safety-contract.schema.json`
-- `ops/k8s/install-matrix.json`
-- `ops/e2e/scenarios/upgrade/`
+## Workload Parity Gate
 
-## What Is Governed
+Atlas can render either a Kubernetes Deployment or an Argo Rollout. These are
+different workload implementations, not interchangeable names. Before using a
+rollout-enabled profile, prove that its rendered pod template includes the same
+required runtime contract as the approved Deployment baseline:
 
-The rollout safety contract currently defines profile-level invariants such as:
+- command and image digest;
+- ConfigMap, Secret, and explicit environment sources;
+- startup, readiness, and liveness probes;
+- container and pod security contexts;
+- cache, temporary, audit, and configuration volumes;
+- service account, resource requests and limits, scheduling, and priority;
+- drain configuration and termination grace period;
+- labels and annotations consumed by Services, monitors, and policies.
 
-- `rollout_mode`, which separates simple deployment paths from governed rollout
-  paths
-- `warmup_required`, which determines whether startup data preparation must
-  finish before promotion
-- `readiness_path_required`, which keeps readiness endpoints mandatory for every
-  supported profile
-- `requiredToggles` and `forbiddenToggles`, which prevent risky runtime and
-  profile combinations
-- `networkPolicyModeRequired` and `hpaPolicyRequired`, which tie rollout safety
-  to isolation and scaling posture
+The checked-in Rollout template is a separate render path and currently
+exposes a smaller pod surface than the Deployment template. A
+successful Helm render therefore does not establish workload parity. Treat a
+rollout-enabled render as non-promotable when any required field above is
+absent, even if the Argo controller accepts it. Use a Deployment profile until
+the selected Rollout render proves the complete contract.
 
-## Rollout Invariants
+## Promotion State Machine
 
-Treat these as non-negotiable rules before promotion:
+```mermaid
+stateDiagram-v2
+    [*] --> Preflight
+    Preflight --> Deploying: render and contracts pass
+    Preflight --> Rejected: contract failure
+    Deploying --> Observing: new instances become ready
+    Deploying --> Rollback: readiness or warmup fails
+    Observing --> Promoted: service and load evidence pass
+    Observing --> Rollback: SLO, error, policy, or integrity regression
+    Rollback --> Recovered: previous release is ready
+    Rollback --> Incident: recovery contract fails
+```
 
-- readiness must reflect actual serving ability for the selected profile
-- drain and termination settings must allow in-flight requests to complete
-- warmup jobs must complete when the profile requires them
-- production-oriented rollout paths must keep their declared network and scaling
-  policies intact
-- rollback references must be explicit for upgrade and rollback scenarios
+Do not promote on pod phase alone. Promotion requires readiness to stabilize,
+traffic to reach the new release, expected telemetry to arrive, and the
+selected load or resilience evidence to remain inside budget.
+
+The default canary sequence declares weights of 10% and 50%, with pauses of 60
+and 120 seconds. The checked-in Rollout does not declare `trafficRouting`,
+`stableService`, `canaryService`, or an analysis template. Its weights therefore
+must not be described as proof that exactly those request fractions reached the
+candidate. A profile must measure the actual candidate request share and allow
+enough request volume and time to exercise cheap, heavy, error, and
+dataset-resolution paths. Low traffic may require longer pauses or synthetic
+probes to produce meaningful evidence.
+
+## Prove the Traffic Split
+
+Without a traffic router, canary weight is implemented through replica
+proportions and a shared Service can distribute requests unevenly because of
+connection reuse, endpoint readiness, topology, and client behavior. Preserve
+both controller intent and observed routing:
+
+| Evidence | Required identity |
+| --- | --- |
+| desired canary state | Rollout revision, declared weight, replica counts, and pause interval |
+| eligible endpoints | pod UID, release identity, readiness interval, and Service membership |
+| actual requests | candidate and stable request counts by route class and observation window |
+| decision quality | minimum sample, latency and error comparison, saturation, and missing-signal treatment |
+
+```mermaid
+flowchart LR
+    Weight[Declared canary weight] --> Replicas[Stable and candidate replicas]
+    Replicas --> Endpoints[Ready Service endpoints]
+    Endpoints --> Requests[Observed requests by release]
+    Requests --> Compare[Route-class comparison]
+    Compare --> Decision{Promote, hold, or abort}
+```
+
+If release-scoped request counts cannot be obtained, the rollout can exercise
+availability but cannot support a percentage-based canary claim. Record that
+limitation and use a separately addressable candidate path or another delivery
+mode with observable routing.
+
+## Join the Candidate Evidence
+
+Controller state, endpoint eligibility, and request telemetry must identify the
+same candidate. A timestamp-only correlation is too weak when pods restart,
+Services change membership, or a rollout revision is retried.
+
+```mermaid
+flowchart LR
+    Render["Rendered template digest"] --> Revision["Rollout revision"]
+    Revision --> Pod["Pod UID and image digest"]
+    Pod --> Endpoint["Endpoint membership interval"]
+    Endpoint --> Request["Release-scoped requests"]
+    Request --> Decision["Promotion observation window"]
+```
+
+| Join | Required key | What it excludes |
+| --- | --- | --- |
+| render to revision | template digest and controller revision | a controller accepting a different pod contract |
+| revision to pod | pod UID, image digest, and configuration identity | stale or replaced candidates |
+| pod to endpoint | pod UID and readiness membership interval | requests attributed outside traffic eligibility |
+| endpoint to request | release identity, route class, and request timestamp | stable traffic hidden inside candidate totals |
+| request to decision | observation-window identity and evidence digest | post-hoc metric selection from another interval |
+
+If any join is missing, narrow the result to the last established boundary. For
+example, eligible candidate endpoints prove rollout availability; they do not
+prove representative requests executed on the candidate.
+
+## Decision Gates
+
+| Gate | Required state | Failure action |
+| --- | --- | --- |
+| preflight | versions, digests, values, render, policy, and rollback target resolve | reject before mutation |
+| admission | workloads schedule with intended identity, security, and dependencies | hold or remove candidate |
+| readiness | candidate completes profile-specific startup and enters endpoints | roll back or diagnose readiness |
+| traffic | representative request classes reach the candidate | hold; do not infer behavior from idle pods |
+| observation | correctness, latency, errors, saturation, and telemetry remain acceptable | drain candidate and roll back |
+| recovery | previous release restores traffic and dataset behavior | escalate to incident response |
+
+Each gate has a different rollback cost. Rejecting at preflight avoids cluster
+mutation. Failing after traffic shift requires preserving candidate-scoped
+signals before draining it. Recovery failure ends the routine rollout path.
+
+## Protect Capacity During Overlap
+
+For a candidate fraction \(w\), observed candidate request rate should be close
+to \(w \times R\), where \(R\) is the total request rate for the same route
+class. Use this check to prove that service routing actually exercised the
+candidate. Compare per-release counts rather than assuming the controller's
+declared weight became traffic.
+
+Rollout overlap consumes old and new capacity simultaneously. Check that:
+
+- the cluster can schedule the peak combined replica set;
+- PDB and controller availability rules do not deadlock progress;
+- HPA signals distinguish candidate saturation from aggregate fleet health;
+- cache warmup does not exhaust store, network, memory, or ephemeral-storage
+  budgets;
+- termination grace exceeds the server drain requirement and any in-flight
+  request deadline.
+
+Do not reduce old capacity until the candidate has both readiness and
+representative traffic. A ready but cold candidate can shift load into store
+fetches and fail only after the previous replicas have already drained.
+
+## Observe During Change
+
+Track at least:
+
+- ready, live, draining, and overload states by release identity;
+- request rate, error rate, latency distributions, and heavy-work shedding;
+- restart, scheduling, image-pull, and dependency failures;
+- warmup and catalog discovery progress where required;
+- HPA decisions, replica availability, and PDB constraints;
+- audit, authentication, and network-policy failures;
+- store integrity and dataset-resolution errors.
+
+Compare the new and previous releases over the same observation window. A
+global average can hide a failing candidate behind healthy old replicas.
+
+Every request, metric, log, and trace used for a promotion decision needs a
+candidate or baseline release identity. If route-level signals cannot be split
+by release, the canary is not observable enough to support promotion.
 
 ## Rollback Triggers
 
-Start rollback review immediately when any of these happen:
+Begin rollback when the candidate cannot become ready within the declared
+window, loses required policy or configuration, violates latency or error
+budgets, cannot resolve governed datasets, or causes cheap-path survival to
+fail under load. Also roll back when required telemetry is absent: an
+unobservable candidate is not safe to promote.
 
-- readiness never stabilizes after the allowed rollout window
-- validation or conformance evidence shows broken probes, missing policy, or
-  failed rollout groups
-- latency or error behavior regresses during the rollout-under-load path
-- the running profile no longer satisfies its required toggles
+Stop automatic rollback and escalate to incident response when the previous
+release cannot recover, shared data or catalog state may be damaged, or the
+rollback would violate a known compatibility boundary.
 
-## How to Validate
+Rollback is not safe when the previous runtime cannot consume the current
+configuration, catalog, or dataset state. Resolve those compatibility
+directions during preflight. If shared state changed unexpectedly, freeze the
+state and investigate rather than cycling releases.
 
-1. Confirm the target profile entry in `ops/k8s/rollout-safety-contract.json`.
-2. Check the matching install or upgrade scenario in
-   `ops/k8s/install-matrix.json`.
-3. Run render, validate, and the required suite for that profile.
-4. Review the related upgrade or rollback scenario assets under
-   `ops/e2e/scenarios/upgrade/`.
-5. Carry observability and load evidence into the promotion decision for
-   rollout-based profiles.
+## Isolate the Rollout Decision
 
-## Evidence Produced
+A rollback can restore a workload revision; it cannot reliably undo an
+unrelated catalog promotion, credential rotation, admission-policy change, or
+storage mutation. Freeze independent control-plane changes from preflight
+until the release is promoted or recovered. This preserves one causal change
+and one usable rollback target.
 
-Rollout safety review should be backed by:
+| Concurrent change | Default during rollout | Exception proof |
+| --- | --- | --- |
+| catalog or dataset publication | freeze the active pointer and published object set | publication is the explicit release subject and both compatibility directions are proven |
+| credential or trust-root rotation | keep overlap credentials valid | old and new releases authenticate throughout overlap and revocation has a separate gate |
+| NetworkPolicy or admission policy | freeze policy revision | policy change is isolated in the rendered diff and denial telemetry is release-scoped |
+| autoscaling policy or resource limits | keep the approved capacity model | the rollout is the capacity experiment and abort thresholds account for overlap |
+| cache purge or store maintenance | defer until recovery is complete | the action is required to recover and its store-load budget is independently bounded |
 
-- render and validate reports for the exact profile
-- conformance suite evidence for the selected rollout path
-- upgrade or rollback scenario references
-- readiness, drain, and load evidence when the rollout mode is not a simple
-  deployment
+If an emergency change breaks this freeze, record its exact time and identity,
+hold promotion, and restart the observation window after the system reaches a
+known state. Do not attribute a clean aggregate metric to the candidate when
+multiple authorities changed underneath it.
 
-## Related Contracts and Assets
+## Prove Every Reversal Boundary
 
-- `ops/schema/k8s/rollout-safety-contract.schema.json`
-- `ops/e2e/scenarios/upgrade/`
-- `ops/k8s/rollout-safety-contract.json`
-- `ops/k8s/install-matrix.json`
+“Roll back” can name several different actions. Record which authority changed
+and prove its reversal independently:
+
+| Changed authority | Reversal action | Completion evidence |
+| --- | --- | --- |
+| workload revision | restore the approved image and pod template | old revision serves representative traffic with expected probes and signals |
+| runtime configuration | restore prior values and restart every affected process | rendered digest, pod environment and behavioral checks match the prior receipt |
+| catalog pointer | restore the prior promoted dataset tuple | catalog and identity-bearing query agree on the restored release |
+| immutable store availability | restore access to the previously verified payload | checksum and deep-read checks succeed through the serving path |
+| credential or trust material | restore overlap credentials or complete the intended rotation | old and new authentication paths have explicit acceptance or revocation results |
+| network or admission policy | restore the approved policy revision | required flows succeed and forbidden flows remain denied |
+
+A workload controller can reverse only the first row. If the incident crosses
+another row, routine automatic rollback is incomplete even when pods become
+ready. Freeze mutation, preserve the candidate evidence, and transfer control
+to the recovery or incident process until every changed authority has a known
+final state.
+
+After reversal, repeat the same representative query, dataset identity,
+telemetry, and capacity checks used before the change. Recovery is demonstrated
+behavior, not the controller's `RolledBack` label.
+
+## Required Record
+
+Preserve the baseline and target release identities, selected profile, rendered
+diff, conformance report, rollout timestamps, probe transitions, relevant
+metrics and traces, rollback decision, and final service state. For an upgrade
+or rollback claim, the install matrix must also declare the corresponding
+lifecycle scenario.
+
+Close the record with one of four explicit outcomes: promoted, recovered to the
+previous release, escalated with shared authority frozen, or incomplete. The
+last observed controller state is not a decision outcome, and a timed-out
+evidence join must remain incomplete rather than being inferred from healthy
+aggregate traffic.
+
+See [Health Readiness and Drain](../observability/health-readiness-and-drain.md)
+for endpoint semantics and [Rollout Under Load](../load/rollout-under-load.md)
+for traffic evidence.

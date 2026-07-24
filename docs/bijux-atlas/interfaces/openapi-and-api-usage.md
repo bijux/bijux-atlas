@@ -9,23 +9,30 @@ last_reviewed: 2026-03-15
 
 # OpenAPI and API Usage
 
-Atlas exposes its HTTP surface both as running endpoints and as a generated OpenAPI document. Those two views should reinforce each other.
-
-OpenAPI is useful, but it is not magic. It describes contract-owned API shape. It does not replace testing real requests against real published dataset state.
+Atlas exposes its HTTP contract as a checked-in generated document and from a
+running server. The two views answer different identity questions and should
+agree on the versioned API surface.
 
 ## OpenAPI Relationship
 
 ```mermaid
 flowchart LR
-    Contracts[API contracts] --> Generate[openapi generate]
-    Generate --> File[openapi.json]
-    Runtime[Running server] --> Endpoint[OpenAPI endpoint]
+    Contracts[API contract source] --> Generated[Checked-in generated JSON]
+    Generated --> Export[CLI canonical export]
+    Runtime[Running server build] --> Endpoint[Runtime OpenAPI endpoint]
+    Export --> File[Reviewable openapi.json]
     File --> Consumers[Client generation and review]
     Endpoint --> Consumers
 ```
 
-This relationship diagram shows why Atlas publishes OpenAPI in two forms. One is useful before a
-server exists, and the other is useful when you need to confirm what a running environment exposes.
+The CLI `openapi generate` command reads
+`configs/generated/openapi/v1/openapi.json`, canonicalizes it, and writes the
+requested output. It exports the checked-in generated contract; it does not
+inspect a live router or independently reconstruct the API from source.
+
+The runtime endpoint builds the API document from the `bijux-atlas-api`
+contract implementation and adds `info.x-build-id`. Compare the contractual
+surface after accounting for that runtime identity field.
 
 ## Two Ways to Access the API Description
 
@@ -66,6 +73,28 @@ The generated file is useful during code review, CI, and contract validation. Th
 
 If the two disagree, treat that as a real problem. Either the environment is not running what you think it is, or the contract-generation path has drifted.
 
+## Verification Sequence
+
+```mermaid
+flowchart TD
+    Identity[Read /v1/version] --> Runtime[Fetch runtime OpenAPI]
+    Source[Resolve expected source revision] --> Export[Export checked-in OpenAPI]
+    Runtime --> Compare[Normalize and compare contract surface]
+    Export --> Compare
+    Compare --> Match{Expected difference only?}
+    Match -->|yes| Exercise[Run representative success and error requests]
+    Match -->|no| Hold[Hold client generation or promotion]
+```
+
+Bind the comparison to `/v1/version`, including build, API contract, runtime
+policy, and artifact schema identity. A byte difference alone is not the final
+verdict because the runtime adds its build identifier; an unexplained route,
+schema, response, or error-code difference is contract drift.
+
+For generated clients, preserve the generator name and version, input contract
+digest, generation options, and target language runtime. Client code inherits
+the limits of both its generator and the contract snapshot used to create it.
+
 ## API Usage Guidance
 
 - treat OpenAPI as a description of the contract-owned surface, not as a substitute for operational understanding
@@ -73,11 +102,27 @@ If the two disagree, treat that as a real problem. Either the environment is not
 - use the generated contract during integration work and the runtime endpoint during environment verification
 - do not assume a documented route guarantees the requested dataset is actually published in your current store
 
+## Response and Error Discipline
+
+Successful dataset-aware responses carry API and contract identity together
+with the resolved dataset and provenance fields owned by that endpoint. Error
+responses use a structured envelope with a stable code, diagnostic message,
+details, and request ID. Clients should branch on the HTTP status and stable
+code, retain the request ID, and avoid parsing message text.
+
+Before a costly query, `/v1/query/validate` can expose the selected dataset,
+query class, work units, limits, and rejection reasons. Validation is advisory
+for a particular request and policy state; it does not reserve capacity or
+guarantee that dependencies remain available until execution.
+
 ## What OpenAPI Does Not Replace
 
 - real query tests against published dataset state
 - operational checks such as readiness, metrics, and policy behavior
 - compatibility review for changes that affect more than surface shape
+- authorization, rate-limit, overload, and dependency behavior under the
+  target deployment policy
+- provenance verification for the dataset bytes behind a successful response
 
 ## Where to Read More
 

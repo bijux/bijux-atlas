@@ -4,57 +4,160 @@ audience: operators
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
-# Concurrency Stress
+# Concurrency and Saturation
 
-Concurrency stress scenarios validate saturation behavior and the quality of
-Atlas limit enforcement under pressure.
+Concurrency testing locates the point where clients begin competing for Atlas
+admission, CPU, store access, cache space, and database work. The useful result
+is a repeatable operating envelope and controlled overload behavior, not a peak
+request count.
 
-## Purpose
+## Declared Scenario Shapes
 
-Use these scenarios to distinguish normal concurrency scaling from saturation,
-queueing, or overload behavior that should block rollout or capacity claims.
+`ops/load/generated/concurrency-stress-scenarios.json` catalogs three shapes:
 
-## Source of Truth
+| Scenario | Workload | Concurrency role |
+| --- | --- | --- |
+| `load-single-client-baseline` | query | low-contention reference |
+| `load-multi-client-concurrency` | mixed | shared-resource contention |
+| `load-saturation-stress` | mixed | pressure at or beyond intended limits |
 
-- `ops/load/generated/concurrency-stress-scenarios.json`
-- `ops/load/scenarios/`
-- `ops/load/contracts/k6-thresholds.v1.json`
+These records contain no target rate, duration, client count, query mix,
+dataset, resource profile, or threshold. They are catalog entries, not
+executable load suites. None is present in `ops/load/load.toml`, so `ops load
+run` cannot execute these IDs directly.
 
-## Scenario Taxonomy
+Do not treat the generated file as performance evidence. A governed experiment
+must add the missing parameters and preserve the actual harness result.
 
-The generated concurrency registry currently defines three scenario shapes:
+## Build the Saturation Curve
 
-- `load-single-client-baseline` for a low-contention reference point
-- `load-multi-client-concurrency` for realistic concurrent traffic
-- `load-saturation-stress` for pressure near or beyond the intended runtime
-  limit
+```mermaid
+flowchart LR
+    Base["single-client baseline"] --> Clients["increase client concurrency"]
+    Clients --> Rate["increase offered rate"]
+    Rate --> Observe["measure service and resources"]
+    Observe --> Boundary{"contention boundary stable?"}
+    Boundary -- no --> Clients
+    Boundary -- yes --> Overload["cross boundary deliberately"]
+    Overload --> Recover["remove pressure and prove recovery"]
+```
 
-## What These Scenarios Validate
+Change one pressure dimension at a time. Fix the release, dataset, query
+corpus, cache state, resources, and dependency versions. Report offered rate
+and completed throughput separately; queues can make them diverge sharply.
 
-- whether concurrency limits are enforced rather than bypassed
-- whether saturation raises bounded latency instead of silent correctness drift
-- whether queueing, shedding, or overload signals appear when expected
-- whether cheap or protected traffic classes stay available under pressure
+For each point, record:
 
-## Metrics That Matter
+- clients, arrival model, target rate, duration, and request-class mix;
+- p50, p95, and p99 latency plus status and error classes;
+- completed throughput, in-flight work, queues, and overload state;
+- CPU use and throttling, memory, cache growth, store latency, and connections;
+- replica count, HPA actions, and workload distribution;
+- query correctness and response-size bounds.
 
-Track at least:
+## Experiment Ledger
 
-- request latency percentiles
-- request failure rate
-- throughput under concurrent pressure
-- overload or queue-depth signals when the scenario is intended to saturate the
-  system
+Keep the demand placed on the system distinct from work the system completed.
+The ledger is the join key between the load generator, Atlas telemetry, and the
+recovery observation.
 
-Healthy limit enforcement means Atlas makes the pressure visible and keeps
-responses within declared degradation policy. Saturation becomes a failure when
-latency, error rate, or overload behavior moves beyond the threshold contract.
+| Record | Minimum fields |
+| --- | --- |
+| Candidate | revision, artifact, configuration, dataset, dependencies |
+| Generator | image, script, resources, location, clock source |
+| Offer | arrival model, clients, requested rate, duration, traffic mix |
+| Service | admitted, completed, rejected, failed, latency, correctness |
+| Resources | replicas, CPU, memory, queues, connections, cache, store |
+| Recovery | pressure removal, queue drain, convergence, probe restoration |
 
-## Related Contracts and Assets
+```mermaid
+flowchart LR
+    Offer["offered work"] --> Admission{"admission decision"}
+    Admission -- admitted --> Terminal{"terminal outcome"}
+    Admission -- rejected --> Controlled["controlled overload"]
+    Terminal -- correct_completion --> Capacity["completed throughput"]
+    Terminal -- error_or_timeout --> Instability["service instability"]
+    Capacity --> Recovery["post-load recovery"]
+    Controlled --> Recovery
+    Instability --> Recovery
+```
 
-- `ops/load/generated/concurrency-stress-scenarios.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
-- `ops/load/scenarios/`
+Throughput means completed, contract-correct work. Offered requests, accepted
+connections, and queued operations are demand indicators; none may substitute
+for completed throughput.
+
+Reject the measurement when the generator saturates before Atlas, clocks or
+measurement windows cannot be reconciled, autoscaling changes outside the
+declared envelope, or repetitions use different warm-up, cache state, dataset,
+or query mix. Those runs may diagnose the harness, but they cannot establish a
+capacity boundary.
+
+## Separate Static Capacity From Autoscaled Capacity
+
+Autoscaling changes resource supply while the experiment changes demand. A
+curve with HPA enabled therefore measures the controller, scheduling, startup,
+warmup, and dependency response together with Atlas request handling. It must
+not be compared directly with a fixed-replica curve as though only load
+changed.
+
+| Capacity view | Hold fixed | Evidence required |
+| --- | --- | --- |
+| per-replica | replica count, pod resources, placement, cache condition | request distribution, per-pod saturation, completed work, and first bottleneck |
+| fixed fleet | ready replicas and aggregate resource supply | fleet throughput, queueing, rejection, and dependency pressure |
+| autoscaled fleet | HPA policy, metric source, bounds, scheduling capacity | desired and observed replicas, scale decision, startup and readiness lag, work per replica, and stabilization |
+| post-scale recovery | reduced offer and unchanged scaling policy | scale-down timing, queue drain, cache and memory settlement, and absence of oscillation |
+
+```mermaid
+flowchart LR
+    Demand[Offered demand] --> Metric[Scaling signal]
+    Metric --> Decision[HPA decision]
+    Decision --> Schedule[Pod scheduling and startup]
+    Schedule --> Ready[Ready capacity]
+    Ready --> Distribution[Traffic distribution]
+    Distribution --> Outcome[Completed work and service budgets]
+```
+
+Record every control-loop delay separately. A higher eventual throughput does
+not prove useful autoscaling when the service violates its latency or error
+budget while capacity arrives. Conversely, deliberate shedding during that
+lag can be a valid result when protected routes survive and the rejection
+contract holds.
+
+## Attribute the First Bottleneck
+
+At the first unstable point, identify the resource that saturated before
+changing capacity. CPU throttling, memory pressure, queue depth, store latency,
+connection pools, cache misses, and load-generator limits can produce similar
+latency curves but require different actions.
+
+Repeat the boundary after changing only the suspected constraint. If the knee
+does not move as predicted, keep the diagnosis open. Scaling replicas without
+checking store and cache amplification can increase failure rather than
+capacity.
+
+## Protected Behavior Under Overload
+
+Atlas separates cheap and heavy query admission. Saturation evidence should
+show that heavy work is rejected with the declared policy response while cheap
+health, readiness, version, and catalog paths retain their contract. Observe
+the response code and error envelope; timeouts alone are uncontrolled failure.
+
+After load stops, verify that queues drain, overload state clears, memory and
+cache settle inside expected bounds, and normal requests recover. A service
+that meets peak thresholds but does not recover has failed the experiment.
+
+## Make a Capacity Claim
+
+Report three regions: normal operation, onset of contention, and controlled
+overload. Use the lowest repeatable boundary across valid repetitions. Bind the
+claim to its latency, error, resource, traffic-mix, and correctness conditions.
+
+Reject a result when parameters are missing, correctness changes, protected
+paths collapse, telemetry cannot identify the bottleneck, or repetitions move
+the boundary materially without explanation.
+
+Use [Baseline management](baseline-management.md) for comparison custody and
+[Thresholds and budgets](thresholds-and-budgets.md) for approval semantics.

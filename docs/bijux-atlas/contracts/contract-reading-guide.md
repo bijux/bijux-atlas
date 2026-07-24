@@ -4,47 +4,98 @@ audience: mixed
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Contract Reading Guide
 
-Not every Atlas page makes the same strength of promise.
+Atlas contracts describe behavior that another component, operator, or client
+may rely on. They must be read together with the authority that implements the
+behavior and the evidence that verifies it.
 
-Use the contract slice when you need an intentional stability statement. Use
-the foundations, workflows, interfaces, and runtime slices when you need
-mental models, task guidance, or current architecture.
+```mermaid
+flowchart LR
+    Promise[Narrative promise] --> Authority[Owning code, schema, registry, or workflow]
+    Authority --> Evidence[Focused validator or contract test]
+    Evidence --> Observation[Versioned report or runtime result]
+    Observation --> Decision[Compatibility or release decision]
+```
 
-## Reading Strength Model
+## Four Layers of a Contract
+
+| Layer | Question it answers | Typical Atlas source |
+| --- | --- | --- |
+| meaning | what consumers may rely on and what is excluded | pages in `docs/bijux-atlas/contracts/` |
+| authority | which implementation or declaration owns the behavior | crate code, checked-in registries, workflow definitions, and operational manifests |
+| shape | which fields, identifiers, and versions are machine-readable | `configs/schemas/contracts/`, generated OpenAPI, and runtime schemas |
+| evidence | what was executed against which revision or target | focused tests and versioned reports under `artifacts/` |
+
+These layers can disagree. A schema may accept data that the runtime rejects,
+or generated OpenAPI may omit a live route. That is contract drift. Do not
+resolve it by selecting whichever source is most convenient; identify the
+owner, correct the disagreement, and retain evidence for the corrected path.
+
+## Find the Right Contract
+
+- HTTP clients start with [API Compatibility](api-compatibility.md) and the
+  generated OpenAPI surface.
+- automation consumers start with
+  [Structured Output Contracts](structured-output-contracts.md) and the report
+  registry.
+- runtime configuration consumers start with
+  [Runtime Config Contracts](runtime-config-contracts.md).
+- artifact producers and stores start with
+  [Artifact and Store Contracts](artifact-and-store-contracts.md).
+- deployment and release consumers start with
+  [Operational Contracts](operational-contracts.md).
+- package owners start with
+  [Ownership and Versioning](ownership-and-versioning.md).
+
+Foundations explain the model, workflows teach procedures, interfaces describe
+current commands and APIs, and runtime pages explain composition. Those pages
+provide necessary context, but an explicit contract page defines the intended
+stability boundary.
+
+## Evaluate a Claim
+
+1. Identify the exact consumer and observable behavior.
+2. Locate the authority named by the contract.
+3. Check its schema or versioned identity where one exists.
+4. Find the focused test or validator and confirm what it actually exercises.
+5. Bind retained output to the source revision, configuration, and external
+   target.
+6. Read exclusions and degraded modes before treating a green status as a
+   broader guarantee.
+
+## Evidence Strength
+
+Configuration proves declared intent. A generated artifact proves derivation
+from a source at a revision. A validator proves only its implemented checks. A
+simulation proves model behavior under its fixture. A measured run proves an
+observation against its named target. Publication proof requires a channel
+receipt or immutable identity.
+
+## When Authorities Disagree
 
 ```mermaid
 flowchart TD
-    Question[Reader question] --> Promise{Need a stability promise?}
-    Promise -- Yes --> Contracts[Read contract pages]
-    Promise -- No --> Handbook[Read foundations, interfaces, runtime, or workflows]
-    Contracts --> Machine[Check schemas, snapshots, and generated artifacts]
-    Handbook --> Context[Use explanatory and task guidance pages]
+    Conflict[Contract sources disagree] --> Consumer[Name the affected consumer]
+    Consumer --> Owner[Identify the authority that owns the decision]
+    Owner --> Observe[Reproduce the observable behavior]
+    Observe --> Correct[Correct stale prose, code, schema, or generated output]
+    Correct --> Prove[Run focused compatibility evidence]
+    Prove --> Record[Retain revision and result]
 ```
 
-This page keeps the promise hierarchy clear. Atlas uses different
-documentation slices for different strengths of promise, and the contract
-slice is where stability claims become explicit.
+Do not average conflicting sources into a vague promise. Generated output may
+be stale, a schema may be broader than runtime validation, and a test may cover
+only one adapter. The owner is the surface that makes the disputed decision;
+the other sources must either align with it or explicitly narrow their claim.
 
-## Contract Authority Map
+## Change Review Boundary
 
-- narrative contract meaning is explained in [`docs/bijux-atlas/contracts/`](/Users/bijan/bijux/bijux-atlas/docs/bijux-atlas/contracts).
-- code-facing contract implementation lives under [`crates/bijux-atlas-runtime/src/contracts/`](/Users/bijan/bijux/bijux-atlas/crates/bijux-atlas-runtime/src/contracts).
-- machine-checked contract shape lives under [`configs/schemas/contracts/`](/Users/bijan/bijux/bijux-atlas/configs/schemas/contracts).
-- generated API and runtime contract artifacts live under [`configs/generated/openapi/`](/Users/bijan/bijux/bijux-atlas/configs/generated/openapi) and [`configs/generated/runtime/`](/Users/bijan/bijux/bijux-atlas/configs/generated/runtime).
-
-## Reading Rule
-
-- if downstream integrations rely on it, read the contract page.
-- if the question is exact compatibility or versioning, stay here.
-- if the question is how to use the product, move back to repository workflows.
-
-## Main Takeaway
-
-The contract slice is Atlas's explicit promise surface. Read it when the
-question is compatibility, versioning, or relied-on shape; read the other docs
-slices when the question is understanding, using, or navigating the product.
+Contract meaning, machine-consumed fields, identifiers, and public locations
+are compatibility surfaces. Explanatory prose may become clearer without
+changing the promise, but a change to relied-on behavior requires the owning
+compatibility process. Review the consumer-visible delta, not only the file
+type or implementation diff that carried it.

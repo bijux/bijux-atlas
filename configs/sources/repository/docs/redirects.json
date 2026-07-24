@@ -81,5 +81,6 @@
   "docs/runtime/index.md": "docs/bijux-atlas/index.md",
   "docs/runtime/packages/bijux-atlas/index.md": "docs/bijux-atlas/index.md",
   "docs/maintainer/packages/bijux-atlas-dev/index.md": "docs/bijux-atlas-dev/index.md",
-  "docs/repository/packages/index.md": "docs/bijux-atlas/index.md"
+  "docs/repository/packages/index.md": "docs/bijux-atlas/index.md",
+  "docs/bijux-atlas-dev/workspace/crate-boundary-status.md": "docs/bijux-atlas-dev/workspace/crate-boundary-review.md"
 }

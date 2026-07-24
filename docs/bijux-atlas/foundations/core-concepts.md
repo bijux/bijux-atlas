@@ -4,13 +4,14 @@ audience: mixed
 type: concept
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Core Concepts
 
-The rest of the Atlas docs assume a small vocabulary. If these concepts
-are clear, most commands, APIs, and runtime pages become much easier to read.
+Atlas separates data identity, artifact custody, discovery, and execution.
+Those boundaries let a consumer explain not only what was returned, but which
+published bytes and which release identity authorized the result.
 
 ## The Concept Map
 
@@ -25,11 +26,8 @@ flowchart TD
     Store --> Query[Query surface]
 ```
 
-This concept map shows the vocabulary Atlas keeps separate. If these terms blur
-together, later workflow pages become much harder to read correctly.
-
-The most common mistake is to collapse these boundaries into one idea. Atlas
-works better when you keep them distinct:
+The most common mistake is to collapse these boundaries into one idea. Keep
+them distinct:
 
 - source inputs are not yet release state
 - a build root is validated output, but not yet the serving store
@@ -37,16 +35,20 @@ works better when you keep them distinct:
 
 ## Build Root
 
-A build root is the validated output of ingest before publication into a serving store. It exists so
-Atlas can inspect and verify produced dataset state before the runtime starts depending on it.
+A build root is ingest output awaiting publication into a serving store. Atlas
+can inspect and verify that state before the runtime depends on it.
 
 Treat the build root as a staging boundary, not as the final public-serving shape.
 
 ## Dataset
 
-A dataset is the logical unit of released data. In Atlas docs, dataset identity is usually expressed
-by release, species, and assembly together. It is the thing you validate, publish, catalog, and
-later query.
+A dataset is the logical unit of released data. Its identity combines release,
+species, and assembly. Atlas validates, publishes, catalogs, and queries that
+unit.
+
+Treat `(release, species, assembly)` as one identity tuple. Changing any member
+selects a different dataset. A directory name, process default, or cache entry
+is not a substitute for the tuple.
 
 ## Release
 
@@ -58,7 +60,8 @@ A release is the versioned point in time for dataset content. Releases matter be
 
 ## Artifact
 
-An artifact is the durable, immutable output of a validated build process. Artifacts are the safe handoff point between ingest-time concerns and runtime serving concerns.
+An artifact is the durable, immutable output of a validated build. It provides
+a safe handoff between ingest and runtime serving.
 
 ```mermaid
 flowchart LR
@@ -68,25 +71,26 @@ flowchart LR
     Catalog --> Serve[Serving and lookup]
 ```
 
-This artifact path matters because it explains why Atlas has more than one boundary after ingest.
-The product deliberately creates room to verify and publish before the runtime depends on the data.
+This path explains why Atlas has more than one boundary after ingest. It leaves
+room to verify and publish before the runtime depends on the data.
 
 ## Catalog
 
-A catalog is the discoverable inventory of published datasets and their artifact locations or metadata. It answers two practical questions:
+A catalog is the discoverable inventory of published datasets. It also records
+their artifact locations or metadata. It answers two practical questions:
 
 - what published dataset identities exist
 - where the runtime should find their durable release state
 
 ## Store
 
-The store is the persistence layer for immutable artifacts and related content. Atlas can expose
-different store implementations, but the conceptual role is stable: hold durable artifact state, not
-transient request state and not raw ingest fixtures.
+The store persists immutable artifacts and related content. Atlas can expose
+different implementations. Their role remains stable: hold durable artifact
+state, not transient request state or raw ingest fixtures.
 
 ## Query
 
-A query is a request over published dataset state. Atlas query behavior is defined by:
+A query requests published dataset state. Its behavior is defined by:
 
 - explicit parameters
 - compatibility rules
@@ -101,26 +105,68 @@ flowchart LR
     Execute --> Response[Structured response]
 ```
 
-This query flow anchors later API and architecture pages. Atlas query behavior is not just “run SQL”
-or “hit an endpoint”; it is a validated request against explicit published dataset state.
+An Atlas query is more than running SQL or calling an endpoint. It is a
+validated request against explicit published dataset state.
 
 ## Runtime Configuration
 
-Runtime configuration controls how the server behaves, not what the released data means. That distinction matters:
+Runtime configuration controls server behavior. It does not change what the
+released data means. That distinction matters:
 
 - data artifacts define content state
 - runtime config defines server behavior around that state
 
 ## Contract
 
-A contract is a documented and test-backed promise about some stable surface. Atlas uses contracts for:
+A contract is a documented, test-backed promise about a stable surface. Atlas
+uses contracts for:
 
 - API schemas and endpoint behavior
 - runtime configuration
 - error codes and structured output
 - operational expectations
 
-## Why These Concepts Matter
+## Authority by Question
+
+| Question | Primary authority | Useful observation |
+| --- | --- | --- |
+| Which dataset is this? | explicit release, species, and assembly identity | response metadata or catalog lookup |
+| Which bytes implement it? | artifact manifest and checksum lock | verified store read |
+| May the runtime discover it? | published catalog entry | dataset-list response |
+| How may it be queried? | query and interface contracts | CLI or HTTP result |
+| How is the server behaving? | resolved runtime configuration and operational contracts | health, metrics, logs, and traces |
+| May a candidate be promoted? | release policy plus candidate-bound evidence | readiness decision record |
+
+An observation helps diagnose the system; it does not replace the authority.
+For example, a cached query can show that retained bytes remain readable while
+the catalog is unavailable, but it cannot authorize a newly published release.
+
+## Follow One Dataset Through Atlas
+
+```mermaid
+sequenceDiagram
+    participant Producer as Ingest producer
+    participant Build as Build root
+    participant Store as Serving store
+    participant Catalog
+    participant Runtime
+    participant Client
+    Producer->>Build: emit candidate for identity tuple
+    Build->>Build: validate and verify artifacts
+    Build->>Store: publish immutable payload
+    Store->>Catalog: expose complete release identity
+    Runtime->>Catalog: resolve requested dataset
+    Runtime->>Store: verify and open payload
+    Client->>Runtime: query explicit identity
+    Runtime-->>Client: result plus resolved identity
+```
+
+At each handoff, preserve identity and reject ambiguity. A build root becomes
+servable only after publication; a catalog entry becomes useful only when its
+payload verifies; and a response becomes auditable only when its resolved
+dataset is visible to the caller.
+
+## Boundary Mistakes
 
 Most Atlas confusion comes from mixing these layers:
 
@@ -135,13 +181,6 @@ When in doubt, ask three questions:
 2. Is this about runtime behavior or durable release content?
 3. Is this a contract-owned surface or an implementation detail?
 
-## Terms Worth Remembering
-
-- build root: validated ingest output before publication into a serving store
-- artifact: immutable durable release output
-- catalog: published discoverability layer for dataset identities
-- store: persistence layer for immutable artifacts used by the runtime
-
 ## Code And Config Authority
 
 - dataset: `crates/bijux-atlas-model/src/dataset/` and
@@ -154,14 +193,7 @@ When in doubt, ask three questions:
   `crates/bijux-atlas-runtime/src/runtime/config/` and
   `configs/generated/runtime/`
 
-## Main Takeaway
-
-These terms are not decorative vocabulary. They are the project’s architectural
-words. If a change cannot say whether it touches source input, build root,
-artifact, catalog, store, query, or runtime behavior, it is usually not yet
-described clearly enough.
-
-## Reading Rule
-
-Use this page when Atlas terms start to blur together and the real problem is
-not one command or endpoint, but the product model underneath them.
+When diagnosing a change or incident, name the boundary it touches: source,
+build root, artifact, store, catalog, query, or runtime behavior. That boundary
+identifies the relevant authority and prevents a downstream symptom from being
+treated as upstream truth.

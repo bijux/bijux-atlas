@@ -4,81 +4,60 @@ audience: mixed
 type: index
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-07-22
 ---
 
 # Foundations
 
-`bijux-atlas/foundations` explains the product model that the rest of Atlas
-builds on.
+Atlas is an artifact-first genomics delivery system. It transforms admitted
+sources into immutable dataset artifacts, publishes them through an explicit
+store and catalog, and serves queries without making process state the
+authority for release data.
 
 ```mermaid
-flowchart TD
-    Foundations[Foundations section] --> Identity[What Atlas is]
-    Foundations --> Boundaries[Boundaries and non-goals]
-    Foundations --> Concepts[Core concepts]
-    Foundations --> Stability[Guarantees and stability]
-    Identity --> Shared[Shared architectural language]
-    Boundaries --> Shared
-    Concepts --> Shared
-    Stability --> Shared
+flowchart LR
+    Source["governed source"] --> Candidate["validated candidate"]
+    Candidate --> Artifact["verified immutable artifacts"]
+    Artifact --> Store["serving-store publication"]
+    Store --> Catalog["catalog promotion"]
+    Catalog --> Result["identity-bearing result"]
 ```
 
-Foundations is where Atlas stops being a list of files and starts becoming a
-coherent product model. These pages define the terms and boundaries the rest of
-Atlas relies on.
+## Identities to Keep Separate
 
-Use this section when you are trying to answer:
+| Identity | Meaning |
+| --- | --- |
+| source | accepted GFF3, FASTA, configuration, provenance, and policy |
+| candidate | build output that has not yet gained publication authority |
+| dataset | logical `release/species/assembly` identity |
+| artifact | manifest and hashes binding a dataset to exact bytes |
+| catalog generation | discoverable selection of published datasets |
+| request execution | software, configuration, principal, route, and observation |
+| deployment qualification | target-bound evidence for serving and operating exact identities |
 
-- what Atlas is actually for
-- which product boundaries are intentional
-- which concepts and terms matter before you read exact interfaces
-- how datasets, queries, releases, and stability fit together
+Confusing these identities produces false conclusions. A candidate directory is
+not a release, a catalog entry is not proof that every server refreshed it, and
+a healthy process is not proof of capacity or recovery.
 
-## Recommended Reading Order
+## Read by Question
 
-Read these pages in this order when you are new to Atlas:
+| Question | Guide |
+| --- | --- |
+| What is Atlas designed to do? | [What Atlas Is](what-atlas-is.md) |
+| Which terms carry stable meaning? | [Core Concepts](core-concepts.md) |
+| How is dataset identity defined? | [Dataset Model](dataset-model.md) |
+| What makes a query comparable? | [Query Model](query-model.md) |
+| How do software and dataset releases differ? | [Release Model](release-model.md) |
+| What is deliberately outside Atlas? | [Boundaries and Non-Goals](boundaries-and-non-goals.md) |
+| Which compatibility promise applies? | [Guarantees and Stability](guarantees-and-stability.md) |
+| Which crate owns a behavior? | [Package Ownership](package-ownership.md) |
 
-1. [What Atlas Is](what-atlas-is.md)
-2. [Core Concepts](core-concepts.md)
-3. [Boundaries and Non-Goals](boundaries-and-non-goals.md)
-4. [Guarantees and Stability](guarantees-and-stability.md)
+Use the [Atlas Decision Map](documentation-map.md) when the question already
+crosses product, operations, or repository-maintenance ownership.
 
-After that, use the remaining pages as targeted follow-ups for specific
-product-model questions.
+## Evidence Boundary
 
-## What This Section Covers
-
-- product identity and repository fit
-- the conceptual model for datasets, releases, and query behavior
-- the difference between documented promises and current implementation detail
-- the handoff from product foundations into workflows, interfaces, runtime, and contracts
-
-## Boundary For This Section
-
-This section may define terms, architectural boundaries, and stability posture.
-It should not become a duplicate command reference, an API index, or an ops
-runbook. Once the question turns into exact runtime behavior or an exact
-user-facing surface, move on.
-
-## Pages
-
-- [Boundaries and Non-Goals](boundaries-and-non-goals.md)
-- [Core Concepts](core-concepts.md)
-- [Crate Boundary Contract](crate-boundary-contract.md)
-- [Dataset Model](dataset-model.md)
-- [Documentation Map](documentation-map.md)
-- [Guarantees and Stability](guarantees-and-stability.md)
-- [Package Ownership](package-ownership.md)
-- [Query Model](query-model.md)
-- [Release Model](release-model.md)
-- [Runtime Surfaces](runtime-surfaces.md)
-- [What Atlas Is](what-atlas-is.md)
-
-## What You Should Know Before Leaving
-
-Leave this section once you can answer three questions clearly:
-
-- what counts as Atlas product behavior versus operations or repository-governance behavior
-- what the runtime is serving and why artifacts matter
-- which surfaces are strong compatibility promises and which are only explanatory
+Concept pages define meaning. Interfaces and contracts define consumer
+surfaces. Generated references expose one resolved build. A claim about a
+particular dataset, deployment, or release additionally requires evidence tied
+to its exact identities and observation window.

@@ -4,97 +4,236 @@ audience: operator
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-04-13
+last_reviewed: 2026-07-22
 ---
 
 # Performance and Load
 
-Atlas performance should be evaluated in terms of query shape, artifact layout, cache behavior, and runtime limits, not only raw request-per-second numbers.
+Atlas treats performance as a release property, not a single requests-per-second
+number. A credible result identifies the dataset, query pack, cache state,
+deployment profile, concurrency, failure conditions, and acceptance budgets.
 
-## Performance Model
+The checked-in load system covers steady traffic, saturation, component failure,
+deployment churn, long-running stability, and deliberate abuse. It measures
+both how quickly Atlas answers and how predictably it degrades.
+
+## The Measurement Contract
 
 ```mermaid
 flowchart LR
-    QueryShape[Query shape] --> Cost[Work cost]
-    Cost --> Limits[Runtime limits]
-    Limits --> Latency[Latency and throughput]
-    Cache[Cache behavior] --> Latency
+    I["Pinned dataset and query pack"] --> S["Named scenario"]
+    S --> E["Declared environment and concurrency"]
+    E --> R["Measured result"]
+    R --> A["Absolute scenario budgets"]
+    R --> B["Approved baseline comparison"]
+    A --> D{"Release decision"}
+    B --> D
+    D -->|pass| P["Promotion evidence"]
+    D -->|fail| X["Investigation and rerun"]
 ```
 
-This performance model shows why Atlas performance cannot be summarized by one throughput number. The
-cost of work depends on query shape, limits, and cache behavior together.
+`ops/load/scenario-registry.json` owns scenario identity. The suite registry in
+`ops/load/suites/suites.json` binds each scenario to its purpose, runner,
+expected metrics, execution lanes, and pass budgets. The pinned request corpus
+is `ops/load/queries/pinned-v1.json`.
 
-## Load Model
+A run without these identities can still help exploration, but it is not
+comparable release evidence.
+
+## Choose the Executing Surface
+
+Atlas currently exposes two load command families with different authority.
+Their similarly named operations must not be treated as equivalent evidence.
+
+| Surface | Current behavior | Safe claim |
+| --- | --- | --- |
+| `ops load plan/run/report --suite ...`. | Reads `ops/load/load.toml`; `run` invokes the selected K6 script and `report` evaluates its run artifacts. | Measured evidence for one of the three suites present in that manifest, when the environment and result are valid. |
+| `load baseline/run/compare`. | Uses the Rust harness model and writes deterministic synthetic measurements plus derived artifacts. | Command, schema, comparison, and rejection-path behavior; not empirical service capacity. |
+| `ops/load/suites/suites.json`. | Declares the broader 40-scenario acceptance catalog and lane intent. | Intended coverage and thresholds; not proof that every runner exists or executed. |
+
+Name the exact command family in every report. A synthetic `load run` result
+cannot become a measured candidate merely because it has latency, throughput,
+and resource fields. A K6 result cannot claim the 40-scenario catalog unless
+the executed manifest and retained scenario list establish that coverage.
+
+## Measurement Phases
 
 ```mermaid
-flowchart TD
-    Traffic[Traffic] --> Classes[Cheap, medium, heavy classes]
-    Classes --> Concurrency[Concurrency controls]
-    Concurrency --> Overload[Overload behavior]
+stateDiagram-v2
+    [*] --> Preflight
+    Preflight --> Warmup: environment and dataset verify
+    Warmup --> Measure: cache and traffic state reach scenario target
+    Measure --> Recovery: load or fault interval completes
+    Recovery --> Complete: dependencies and service return to expected state
+    Preflight --> Invalid: identity or health mismatch
+    Warmup --> Invalid: target state not reached
+    Measure --> Failed: budget or correctness violation
+    Recovery --> Failed: service does not recover
 ```
 
-This load model explains why Atlas talks about traffic classes instead of treating all requests as
-equal. Different classes stress the runtime differently and can trigger different guardrails.
+Exclude preflight and warmup from a steady-state window unless the scenario is
+explicitly measuring startup. Preserve them as separate evidence because a
+candidate that takes too long to become measurable may still violate an
+operational objective.
 
-## What Usually Drives Performance
+## Workload Families
 
-- whether queries are explicit and selective
-- whether caches are warm
-- whether store access is healthy
-- whether runtime concurrency limits match actual traffic shape
+| Family | Representative scenarios | Question answered |
+| --- | --- | --- |
+| Fast confidence | `mixed`, `cheap-only-survival` | Are ordinary requests healthy, and do cheap routes survive overload? |
+| Cache and startup | `warm-steady-state-p99`, `cold-start-p99`, `stampede` | Are startup, warm-cache latency, and concurrent misses bounded? |
+| Resource pressure | `cpu-saturation`, `disk-io-saturation`, `thread-pool-exhaustion` | Does the runtime shed or queue work without uncontrolled collapse? |
+| Data shape | `sharded-fanout`, `shard-hot-spot`, `diff-heavy`, `mixed-gene-sequence` | How do shard locality and expensive query shapes affect service budgets? |
+| Dependency failure | `store-outage-under-spike`, `redis-optional` | Does the declared degradation policy hold when an optional or critical path fails? |
+| Delivery safety | `pod-churn`, `load-under-rollout`, `load-under-rollback`, `artifact-reload` | Can the service remain useful while its runtime or artifact set changes? |
+| Endurance | `long-running-stability`, `memory-leak-detection`, `soak-30m` | Do latency, errors, and memory remain bounded over time? |
+| Adversarial pressure | response abuse and the security suites | Do input and denial-of-service guardrails remain effective under traffic? |
 
-## Operator Advice
+The harness contract also names three workload kinds—query, ingest, and
+mixed—and three concurrency profiles: single client, multiple clients, and
+saturation. This prevents a result from hiding its traffic shape behind a
+generic benchmark label.
 
-- measure realistic request mixes, not only synthetic happy-path queries
-- observe overload and readiness under stress, not only average latency
-- correlate load results with request class and policy behavior
+## What a Valid Run Records
 
-## What Good Performance Means
+A comparable run must preserve:
 
-Good performance is not just “fast.” It is:
+- the Atlas revision and deployment profile;
+- dataset and release identity, including the pinned query set;
+- scenario name, duration, target rate, and concurrency profile;
+- cache state and the health of MinIO, Redis, and other active dependencies;
+- latency distributions, failure rate, throughput, and scenario-specific
+  signals;
+- the threshold set and approved baseline used for the decision;
+- logs, metrics, traces, and failure-injection timing when degradation is part
+  of the scenario.
 
-- predictable under expected traffic
-- explicit about overload behavior
-- observable during degradation
-- recoverable after stress
+Expected metrics are contractual. A run that omits a required signal is
+incomplete; the missing measurement must not be interpreted as a pass.
 
-## A Better Performance Question
+## Traffic and Measurement Validity
 
-Instead of asking only “how fast is Atlas,” ask “how predictable is Atlas under the traffic mix we
-actually expect to send?”
+The traffic model is part of the workload identity:
 
-## Purpose
+| Model | What remains fixed | Primary risk when interpreting it |
+| --- | --- | --- |
+| Closed loop | concurrent clients wait for a response before issuing more work | latency growth reduces offered load and can hide saturation |
+| Open loop | arrivals continue at the declared rate independently of response time | generator lag or dropped arrivals can hide the intended pressure |
+| Trace replay | request timing and mix follow a recorded corpus | the trace may not represent the target dataset or deployment |
 
-This page explains the Atlas material for performance and load and points readers to the canonical checked-in workflow or boundary for this topic.
+Record which model the runner implements. For rate-driven work, preserve both
+the intended and achieved arrival rate. For concurrency-driven work, preserve
+active clients, completed requests, and queueing. A candidate and baseline are
+not equivalent merely because they use the same nominal concurrency value.
 
-## Source of Truth
+Client health is also evidence. CPU saturation, connection exhaustion, clock
+skew, network limits, or backpressure in the load generator can cap the offered
+load before Atlas reaches its own limit. When that happens, classify the run as
+measurement-limited and move or resize the generator before drawing a capacity
+conclusion.
 
-- `ops/load/suites/suites.json`
-- `ops/load/scenario-registry.json`
-- `ops/load/queries/pinned-v1.json`
-- `ops/load/contracts/k6-thresholds.v1.json`
-- `ops/load/contracts/performance-regression-ci-contract.json`
-- `ops/load/contracts/performance-regression-thresholds.json`
-- `ops/load/baselines/`
+For latency, avoid coordinated-omission bias: the recorded population must
+account for work that arrived or should have arrived while the service was
+slow. Preserve timeouts and rejected requests as outcomes; excluding them
+changes the user population and can make a degraded service look healthy.
 
-## How to Run a Meaningful Performance Review
+## Invalidate Before Comparing
 
-1. choose the scenario family that matches the real workload under review
-2. use the pinned query pack in `ops/load/queries/pinned-v1.json` unless the
-   review explicitly requires another dataset or query shape
-3. confirm the suite thresholds and baseline before running the workload
-4. compare the candidate result against the approved baseline rather than
-   relying on one standalone run
-5. review observability and rollout evidence when the performance result will
-   influence promotion
+Stop the comparison and retain the run as diagnostic evidence when any of the
+following occurs:
 
-## Cross-Linked Control Surfaces
+- the target dataset, query corpus, deployment profile, or traffic model does
+  not match the approved baseline;
+- the generator misses its declared offer or becomes the bottleneck;
+- required latency, throughput, failure, resource, or recovery signals are
+  absent or have an ambiguous time window;
+- an unrelated dependency fault or rollout overlaps the measurement window;
+- warmup never reaches the scenario's required state; or
+- clocks cannot align load events with metrics, logs, traces, and injected
+  faults.
 
-- thresholds and budgets decide whether the candidate behavior is acceptable
-- baselines decide what “better,” “worse,” or “unchanged” means for a review
-- the scenario registry keeps workload identity stable
-- the regression contracts decide when CI should fail
+Invalidation protects the claim. It is not a mechanism for discarding an
+unfavorable product result: budget violations observed in a valid run remain
+failures and must stay in the retained series.
 
-## Stability
+## Reading Results
 
-This page is part of the canonical Atlas docs spine. Keep it aligned with the current repository behavior and adjacent contract pages.
+Judge each candidate twice:
+
+1. Compare it with the absolute budgets for its named scenario.
+2. Compare it with the approved baseline under the regression contract.
+
+A result passes only when both decisions pass. This catches a candidate that is
+inside a broad service limit but has regressed materially, and a candidate that
+matches a weak baseline while still violating the service budget.
+
+Interpret latency together with throughput and failure rate. A lower percentile
+is not an improvement if the server completed less work or rejected a larger
+share of requests. Under overload, also verify that heavy work was shed as
+declared and cheap health and catalog routes remained available.
+
+One run can establish a deterministic threshold failure, but a close
+candidate-versus-baseline decision should include repeated comparable runs and
+the full distribution. Report run-to-run spread and outliers rather than
+selecting the most favorable sample. Operational budgets remain hard
+boundaries even when average behavior looks better.
+
+For a capacity claim, increase load across multiple points and identify the
+knee where latency, queueing, rejection, or resource use changes materially.
+Report the last sustainable point and the first unsustainable point. A single
+high-load sample cannot show whether the result is stable, near a cliff, or
+already generator-limited.
+
+## Quantify Repeatability and Uncertainty
+
+Threshold evaluation answers whether each observed run crossed a policy
+boundary. It does not by itself show whether a close result is repeatable.
+Before measuring, declare the repetition count, sample duration, aggregation
+rule, and invalidation conditions. Retain every valid repetition and every
+invalid attempt with its classification.
+
+| Measurement | Repeatability evidence |
+| --- | --- |
+| latency percentiles | per-run population size and percentile, spread across runs, and compatible histogram or raw-sample lineage |
+| throughput | offered, admitted, completed, rejected, and timed-out work for every repetition |
+| failure rate | denominator and failure classes per window, including deliberate shedding |
+| resource use | per-replica samples, requests and limits, throttling, and the time alignment with workload |
+| recovery | confirmed injection and removal markers plus the restored invariant for each repetition |
+
+Do not average percentile values into a synthetic percentile or merge
+incompatible request populations. When a decision is close to a boundary,
+report the full run series and the chosen conservative statistic. A single
+favorable repetition cannot replace a predeclared aggregation rule, and a
+single unfavorable but valid repetition cannot be discarded as noise without
+an owned investigation.
+
+Run-to-run variance is itself an operational signal. If the candidate moves
+between accepted and rejected states under the same declared identity, the
+result is unstable even when its mean appears acceptable. Narrow the claim or
+resolve the uncontrolled variable before promotion.
+
+## Choosing an Execution Scope
+
+Use the smallest suite that answers the operational question:
+
+- `smoke` or `pr` for fast confidence in the mixed and cheap-survival paths;
+- `full` for scenario-specific capacity, resilience, or delivery decisions;
+- `nightly` and `load-nightly` for soak, memory growth, and broad stress
+  coverage.
+
+Do not use a smoke pass to support a production capacity claim. Conversely, a
+local documentation or configuration review does not need to repeat the whole
+load estate.
+
+## Evidence Locations
+
+- scenario registry: `ops/load/scenario-registry.json`
+- suite membership and expected metrics: `ops/load/suites/suites.json`
+- pinned requests: `ops/load/queries/pinned-v1.json`
+- absolute budgets: `ops/load/thresholds/` and
+  `ops/load/contracts/k6-thresholds.v1.json`
+- regression limits: `ops/load/contracts/performance-regression-thresholds.json`
+- approved references: `ops/load/baselines/`
+
+See [Thresholds and Budgets](thresholds-and-budgets.md) for the exact decision
+order and current global limits.
