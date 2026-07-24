@@ -159,7 +159,7 @@ fn frozen_gate_targets_delegate_to_pinned_ref_launcher() {
         "export PROJECT_ROOT=\"${pinned_repo_dir}\"",
         "artifact_execution_root=\"${pinned_repo_dir}/artifacts\"",
         "export ARTIFACT_ROOT=\"${artifact_execution_root}\"",
-        "expected_target=\"frozen-repo/artifacts/",
+        "expected_target=\"frozen-repo/artifacts\"",
         "artifact publication conflict:",
         "ln -s ",
     ] {
@@ -205,6 +205,8 @@ fn repository_adapter_replaces_copied_gate_implementations() {
         .expect("read Atlas Rust gate adapter");
     assert!(adapter.contains(".bijux/shared/bijux-makes-rs/scripts/rust_gate.sh"));
     assert!(adapter.contains("exec \"${shared_gate}\" \"$@\""));
+    assert!(adapter.contains("paste -sd ' ' - || true"));
+    assert!(adapter.contains("if [[ -n \"${audit_ignore_args}\" ]]; then"));
 
     for relative_path in [
         "makes/bin/nextest_expr.sh",

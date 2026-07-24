@@ -27,7 +27,8 @@ audit: audit-rs
 coverage: coverage-rs
 
 audit-policy-rs: ## Verify Atlas dependency-audit policy before Cargo advisory checks
-	@mkdir -p "$(RS_TARGET_DIR)"
+	@mkdir -p "$(ISO_ROOT)" "$(RS_TARGET_DIR)" "$(RS_CARGO_HOME)" "$(RS_TMP_DIR)" "$(TMPDIR)" "$(TMP)" "$(TEMP)"
+	@$(MAKE) gh-security-evidence
 	@CARGO_TARGET_DIR="$(RS_TARGET_DIR)" \
 		cargo run --locked -q -p bijux-atlas-dev -- \
 		security dependency-audit --repo-root "$(CURDIR)" --format json

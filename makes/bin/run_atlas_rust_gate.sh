@@ -16,9 +16,11 @@ if [[ "${1:-}" == "audit" ]]; then
       rg -o --no-line-number 'RUSTSEC-[0-9]{4}-[0-9]{4}' "${allowlist}" |
         sort -u |
         sed 's/^/--ignore /' |
-        paste -sd ' ' -
+        paste -sd ' ' - || true
     )"
-    export RUST_AUDIT_IGNORE_ARGS="${audit_ignore_args}"
+    if [[ -n "${audit_ignore_args}" ]]; then
+      export RUST_AUDIT_IGNORE_ARGS="${audit_ignore_args}"
+    fi
   fi
 fi
 
