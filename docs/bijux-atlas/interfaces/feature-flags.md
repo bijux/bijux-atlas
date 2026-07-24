@@ -95,8 +95,8 @@ two builds can select different features.
 
 Authorities:
 
-- [`bijux-atlas-runtime/Cargo.toml`](../../../crates/bijux-atlas-runtime/Cargo.toml)
-- [`bijux-atlas-store/Cargo.toml`](../../../crates/bijux-atlas-store/Cargo.toml)
-- [`bijux-atlas-server/Cargo.toml`](../../../crates/bijux-atlas-server/Cargo.toml)
-- [`bijux-atlas-core/Cargo.toml`](../../../crates/bijux-atlas-core/Cargo.toml)
-- [`bijux-atlas-dev/Cargo.toml`](../../../crates/bijux-atlas-dev/Cargo.toml)
+- [`bijux-atlas-runtime/Cargo.toml`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-runtime/Cargo.toml)
+- [`bijux-atlas-store/Cargo.toml`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-store/Cargo.toml)
+- [`bijux-atlas-server/Cargo.toml`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-server/Cargo.toml)
+- [`bijux-atlas-core/Cargo.toml`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-core/Cargo.toml)
+- [`bijux-atlas-dev/Cargo.toml`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-dev/Cargo.toml)

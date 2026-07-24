@@ -72,7 +72,7 @@ channel has separate credentials, payloads, and verification.
 
 ## Workflow Anchor
 
-- hosted release workflow: [`.github/workflows/release-github.yml`](../../../.github/workflows/release-github.yml)
-- artifact builder: [`.github/workflows/release-artifacts.yml`](../../../.github/workflows/release-artifacts.yml)
+- hosted release workflow: [`.github/workflows/release-github.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/release-github.yml)
+- artifact builder: [`.github/workflows/release-artifacts.yml`](https://github.com/bijux/bijux-atlas/blob/main/.github/workflows/release-artifacts.yml)
 - operator verification model: [Release Evidence](../../bijux-atlas-ops/release/release-evidence.md)
 - channel behavior: [Distribution Channels](../../bijux-atlas-ops/release/distribution-channels.md)

@@ -109,6 +109,6 @@ request readiness.
 - [Runtime Config Contracts](../contracts/runtime-config-contracts.md)
 
 Implementation authority:
-[`crates/bijux-atlas-runtime/src/runtime/config/settings.rs`](../../../crates/bijux-atlas-runtime/src/runtime/config/settings.rs).
+[`crates/bijux-atlas-runtime/src/runtime/config/settings.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-runtime/src/runtime/config/settings.rs).
 Generated startup reference:
-[`configs/generated/runtime/runtime-startup-config.md`](../../../configs/generated/runtime/runtime-startup-config.md).
+[`configs/generated/runtime/runtime-startup-config.md`](https://github.com/bijux/bijux-atlas/blob/main/configs/generated/runtime/runtime-startup-config.md).

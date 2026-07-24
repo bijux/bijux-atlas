@@ -63,15 +63,15 @@ boundary it owns.
 
 ## Repository Authority Map
 
-- CLI binary: [`bijux-atlas.rs`](../../../crates/bijux-atlas-cli/src/bin/bijux-atlas.rs)
+- CLI binary: [`bijux-atlas.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-cli/src/bin/bijux-atlas.rs)
 - server HTTP adapters:
-  [`crates/bijux-atlas-server/src/adapters/inbound/http/`](../../../crates/bijux-atlas-server/src/adapters/inbound/http/)
+  [`crates/bijux-atlas-server/src/adapters/inbound/http/`](https://github.com/bijux/bijux-atlas/tree/main/crates/bijux-atlas-server/src/adapters/inbound/http/)
 - server binary:
-  [`bijux-atlas-server.rs`](../../../crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs)
+  [`bijux-atlas-server.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-server/src/bin/bijux-atlas-server.rs)
 - OpenAPI exporter:
-  [`bijux-atlas-openapi.rs`](../../../crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs)
-- generated OpenAPI: [`configs/generated/openapi/v1/`](../../../configs/generated/openapi/v1/)
-- generated runtime references: [`configs/generated/runtime/`](../../../configs/generated/runtime/)
+  [`bijux-atlas-openapi.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-api/src/bin/bijux-atlas-openapi.rs)
+- generated OpenAPI: [`configs/generated/openapi/v1/`](https://github.com/bijux/bijux-atlas/tree/main/configs/generated/openapi/v1/)
+- generated runtime references: [`configs/generated/runtime/`](https://github.com/bijux/bijux-atlas/tree/main/configs/generated/runtime/)
 
 Continue with [Interfaces](../interfaces/index.md) for exact commands and wire
 surfaces, or [Request Lifecycle](../runtime/request-lifecycle.md) for the path

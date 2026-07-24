@@ -66,11 +66,11 @@ direct `bijux-atlas-dev` route.
 ## Repository Anchors
 
 - command surface and global capability flags:
-  [`interfaces/cli/mod.rs`](../../../crates/bijux-atlas-dev/src/interfaces/cli/mod.rs)
+  [`interfaces/cli/mod.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-dev/src/interfaces/cli/mod.rs)
 - registered effect declarations:
-  [`core/registry.rs`](../../../crates/bijux-atlas-dev/src/core/registry.rs)
+  [`core/registry.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-dev/src/core/registry.rs)
 - effect-mode enforcement and result capture:
-  [`engine/runner.rs`](../../../crates/bijux-atlas-dev/src/engine/runner.rs)
+  [`engine/runner.rs`](https://github.com/bijux/bijux-atlas/blob/main/crates/bijux-atlas-dev/src/engine/runner.rs)
 
 [Automation Control Plane](automation-control-plane.md) defines the wider
 inspection, planning, execution, and reporting boundary.
