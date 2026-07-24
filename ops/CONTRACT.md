@@ -13,7 +13,7 @@
 - Authored truth lives under domain directories and `ops/inventory/`; generated examples live under `ops/_generated.example/`.
 - Inventory files describe authorities, consumers, schemas, and command surfaces. They must not claim commands that the CLI does not expose.
 - Schema files under `ops/schema/` validate operational inputs and generated reports. `ops/schema/generated/schema-index.json` is the authoritative schema index.
-- Effectful operations require explicit opt-in flags such as `--allow-subprocess`, `--allow-network`, or `--allow-write`.
+- Operations that alter state require explicit opt-in flags such as `--allow-subprocess`, `--allow-network`, or `--allow-write`.
 - Human walkthroughs belong in `docs/04-operations/`, `docs/06-development/`, and `docs/07-reference/`; `ops/` stores operational data, contracts, inventories, schemas, fixtures, and generated examples.
 - Markdown inside `ops/` is limited to five root documents. Deep directories must stay boring and machine-readable.
 - Release readiness and runbook generation are proved by data authorities, not by nested prose files.

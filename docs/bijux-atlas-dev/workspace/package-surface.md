@@ -77,7 +77,7 @@ The registry also forbids `query` as a maintainer user-flow command. Product
 queries belong to `bijux atlas`, while repository validation and evidence
 remain under `bijux dev atlas`.
 
-## Compatibility Boundary
+## Repository Stability Contract
 
 Changing a command name, capability requirement, report schema, or governed
 artifact path requires consumer and workflow review. Moving internal modules
