@@ -126,8 +126,14 @@ fn only_repository_policy_runs_automatically_after_merge() {
 }
 
 #[test]
-fn release_preparation_and_docs_deployment_are_manual() {
-    for workflow_name in ["compatibility-matrix.yml", "release-candidate.yml"] {
+fn release_and_docs_entrypoints_are_manual() {
+    for workflow_name in [
+        "compatibility-matrix.yml",
+        "release-candidate.yml",
+        "release-crates.yml",
+        "release-ghcr.yml",
+        "release-github.yml",
+    ] {
         let document: Value = serde_yaml::from_str(&workflow_source(workflow_name))
             .unwrap_or_else(|error| panic!("invalid workflow {workflow_name}: {error}"));
         let events = workflow_events(&document);
