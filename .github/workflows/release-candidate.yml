@@ -10,9 +10,6 @@ on:
         description: "Run release doctor gate"
         required: true
         default: "true"
-  push:
-    tags:
-      - "v*"
 
 permissions:
   contents: read

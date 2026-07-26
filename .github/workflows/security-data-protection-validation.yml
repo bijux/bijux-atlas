@@ -1,12 +1,11 @@
 name: security-data-protection-validation
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 jobs:
   validate-data-protection:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout

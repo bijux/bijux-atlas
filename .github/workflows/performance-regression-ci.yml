@@ -9,21 +9,13 @@ on:
       - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
-  push:
-    branches: [main]
-    paths:
-      - "configs/sources/operations/perf/**"
-      - "ops/load/**"
-      - "ops/report/generated/**"
-      - "docs/bijux-atlas-ops/load/**"
-      - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
-      - ".github/workflows/performance-regression-ci.yml"
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
   performance-regression-gate:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -1,12 +1,11 @@
 name: security-supply-chain-validation
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 jobs:
   validate-supply-chain:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/security-supply-chain
