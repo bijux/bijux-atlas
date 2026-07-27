@@ -23,7 +23,7 @@ jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
 async-trait = "0.1"
-base64 = "0.22"
+base64 = "0.23"
 brotli = "8"
 hex = "0.4"
 hmac = "0.13"

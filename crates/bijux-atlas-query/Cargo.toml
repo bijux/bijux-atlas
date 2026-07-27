@@ -14,7 +14,7 @@ exclude = ["tests/fixtures/**"]
 keywords = ["bioinformatics", "genomics", "query", "sqlite", "planner"]
 
 [dependencies]
-base64 = "0.22"
+base64 = "0.23"
 bijux-atlas-core = { workspace = true, features = ["serde"] }
 bijux-atlas-model = { workspace = true }
 hmac = "0.13"
