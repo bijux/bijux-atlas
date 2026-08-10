@@ -115,7 +115,7 @@ jobs:
           components: rustfmt
 
       - name: Restore the Rust cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Run formatting checks
         run: ${{ inputs.fmt_command }}
@@ -143,7 +143,7 @@ jobs:
           components: clippy
 
       - name: Restore the Rust cache
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Run lint checks
         run: ${{ inputs.lint_command }}
@@ -177,7 +177,7 @@ jobs:
 
       - name: Restore the Rust cache
         if: ${{ !inputs.use_isolated_temp_roots }}
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
@@ -251,7 +251,7 @@ jobs:
 
       - name: Restore the Rust cache
         if: ${{ !inputs.use_isolated_temp_roots }}
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
