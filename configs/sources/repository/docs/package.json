@@ -10,8 +10,8 @@
     "cspell": "cspell lint --config cspell.config.json \"../../../../docs/04-operations/*.md\" \"../../../../docs/07-reference/*.md\" \"../../../../docs/08-contracts/*.md\" \"../../../../ops/*.md\""
   },
   "devDependencies": {
-    "cspell": "10.0.1",
-    "markdownlint-cli2": "0.23.1",
+    "cspell": "10.1.1",
+    "markdownlint-cli2": "0.23.2",
     "markdownlint-cli2-formatter-default": "0.0.6"
   },
   "overrides": {
