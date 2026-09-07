@@ -204,7 +204,7 @@ jobs:
 
       - name: Restore Rust cache
         if: ${{ steps.config.outputs.setup_rust == 'true' }}
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
 
       - name: Install docs toolchain
         if: ${{ steps.config.outputs.install_command != '' }}
@@ -325,4 +325,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
