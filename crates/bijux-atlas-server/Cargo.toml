@@ -17,21 +17,21 @@ default = []
 jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
-base64 = "0.22"
+base64 = "0.23"
 axum = "0.8"
 bijux-atlas-api.workspace = true
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
 bijux-atlas-query.workspace = true
 bijux-atlas-runtime.workspace = true
-brotli = "8"
+brotli = "9"
 clap = { version = "4", features = ["derive"] }
 flate2 = "1"
 hmac = "0.13"
 hex = "0.4"
-opentelemetry = "0.32"
-opentelemetry-otlp = { version = "0.32", features = ["http-proto", "reqwest-client"] }
-opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"] }
+opentelemetry = "0.33"
+opentelemetry-otlp = { version = "0.33", features = ["http-proto", "reqwest-client"] }
+opentelemetry_sdk = { version = "0.33.0", features = ["rt-tokio"] }
 redis.workspace = true
 rusqlite.workspace = true
 serde.workspace = true
@@ -40,7 +40,7 @@ serde_yaml = "0.9"
 sha2 = "0.11"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
 tracing = "0.1"
-tracing-opentelemetry = "0.33"
+tracing-opentelemetry = "0.34"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
 
 [dependencies.tikv-jemallocator]

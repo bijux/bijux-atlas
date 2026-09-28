@@ -21,7 +21,7 @@ rusqlite.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 unicode-normalization = "0.1"
-zstd = "0.13"
+zstd = "0.14"
 
 [dev-dependencies]
 criterion = "0.8"
