@@ -19,11 +19,22 @@ watch:
   - docs/hooks
 
 exclude_docs: |
+  /overrides/
+  /hooks/
   _drafts/**
   automation/**
   README.md
 
+validation:
+  links:
+    unrecognized_links: warn
+
 plugins:
+  - search
+  - autorefs
+  - git-revision-date-localized:
+      enable_creation_date: false
+      fallback_to_build_date: true
   - social:
       enabled: !ENV [ENABLE_SOCIAL_CARDS, false]
       cache_dir: artifacts/docs/.cache/social

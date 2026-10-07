@@ -4,7 +4,7 @@ audience: maintainer
 type: reference
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-06-28
+last_reviewed: 2026-10-08
 ---
 
 # Badge Catalog
@@ -45,6 +45,10 @@ Atlas is Rust-first, so the catalog focuses on:
 
 ## Runtime Package Summary
 
+These templates are source examples. Replace every placeholder before publishing
+a badge block in a package README or handbook.
+
+```markdown
 <!-- bijux-atlas-badges:runtime-package-summary:start -->
 [![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)]({{ crate_registry_url }})
 [![crates.io](https://img.shields.io/crates/v/{{ crate_name }}?logo=rust)]({{ crate_registry_url }})
@@ -52,6 +56,7 @@ Atlas is Rust-first, so the catalog focuses on:
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![GitHub Repository](https://img.shields.io/badge/github-bijux%2Fbijux--atlas-181717?logo=github)](https://github.com/bijux/bijux-atlas)
 <!-- bijux-atlas-badges:runtime-package-summary:end -->
+```
 
 ## Maintainer Summary
 
@@ -65,24 +70,32 @@ Atlas is Rust-first, so the catalog focuses on:
 
 ## Runtime Crate Badge
 
+```markdown
 <!-- bijux-atlas-badges:family-crate-badge:start -->
 [![{{ crate_name }}](https://img.shields.io/crates/v/{{ crate_name }}?label={{ crate_badge_label }}&logo=rust)]({{ crate_registry_url }})
 <!-- bijux-atlas-badges:family-crate-badge:end -->
+```
 
 ## Runtime Docs Badge
 
+```markdown
 <!-- bijux-atlas-badges:family-rust-docs-badge:start -->
 [![{{ crate_name }} rust-docs](https://img.shields.io/badge/rust--docs-{{ crate_badge_label }}-DEA584?logo=rust&logoColor=white)]({{ crate_docs_url }})
 <!-- bijux-atlas-badges:family-rust-docs-badge:end -->
+```
 
 ## GHCR Release Bundle Badge
 
+```markdown
 <!-- bijux-atlas-badges:family-ghcr-badge:start -->
 [![ghcr-{{ crate_badge_label }}](https://img.shields.io/badge/ghcr-{{ crate_badge_label }}-181717?logo=github)]({{ crate_ghcr_url }})
 <!-- bijux-atlas-badges:family-ghcr-badge:end -->
+```
 
 ## Handbook Docs Badge
 
+```markdown
 <!-- bijux-atlas-badges:family-docs-badge:start -->
 [![{{ docs_badge_alt }}](https://img.shields.io/badge/docs-{{ docs_badge_label }}-2563EB?logo=materialformkdocs&logoColor=white)]({{ docs_url }})
 <!-- bijux-atlas-badges:family-docs-badge:end -->
+```
