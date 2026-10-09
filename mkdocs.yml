@@ -19,12 +19,13 @@ watch:
   - docs/hooks
 
 exclude_docs: |
-  /overrides/
-  /hooks/
   _drafts/**
   automation/**
   README.md
-
+  /overrides/
+  /hooks/
+  /assets/styles/README.md
+  /assets/javascripts/shell/README.md
 validation:
   links:
     unrecognized_links: warn

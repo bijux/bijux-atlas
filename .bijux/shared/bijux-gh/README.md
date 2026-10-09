@@ -68,8 +68,8 @@ Repositories should not maintain ad hoc variants unless there is a repository-sp
 
 Canonical reusable release helper scripts are provided under `.github/scripts`.
 
-- `wait_for_ci.py`: waits for the configured CI workflow to complete for the release SHA.
-- `check_workflow_prerequisites.py`: holds auxiliary workflows until the required policy and standards workflows succeed, identifies governed workflows by stable path across display-name changes, ignores malformed or wrong-event runs for the same SHA, and fails fast when prerequisite policy checks conclude unsuccessfully.
+- `wait_for_ci.py`: observes the configured CI workflow once for the release SHA, succeeds for admitted terminal evidence, fails for a terminal rejection, and returns exit code `75` while the run is external and unfinished.
+- `check_workflow_prerequisites.py`: observes required policy and standards workflows once, identifies governed workflows by stable path across display-name changes, ignores malformed or wrong-event runs for the same SHA, fails fast on terminal rejection, and returns exit code `75` while evidence is external and unfinished.
 
 Repository-specific release prepare scripts may still exist in `.github/scripts`, but shared helpers should come from this canonical source.
 
@@ -103,7 +103,9 @@ Maturin mode keys:
 - `BIJUX_PYPI_WAIT_FOR_CI_COMMAND`
 - `BIJUX_PYPI_PLAN_COMMAND`
 - `BIJUX_PYPI_PREPARE_COMMAND`
-- `BIJUX_PYPI_PUBLISH_COMMAND`
+- `BIJUX_PYPI_PUBLISH_COMMAND` (optional explicit override for repositories that
+  intentionally replace the managed trusted-publisher/token-bootstrap publish
+  steps after wheel/sdist build)
 - `BIJUX_PYPI_SETUP_PYTHON`, `BIJUX_PYPI_PYTHON_VERSION`
 - `BIJUX_PYPI_SETUP_RUST`, `BIJUX_PYPI_RUST_TOOLCHAIN`
 - `BIJUX_PYPI_MATURIN_VERSION`
@@ -115,6 +117,11 @@ When `BIJUX_PYPI_RUST_TOOLCHAIN` is unset, the workflow inherits
 `BIJUX_RELEASE_RUST_TOOLCHAIN` before falling back to its built-in default.
 That keeps PyPI publication aligned with the rest of the release lanes without
 forcing each repo to duplicate the same toolchain pin in multiple places.
+
+When `BIJUX_PYPI_PUBLISH_COMMAND` is unset in `maturin` mode, the workflow
+publishes the generated distributions with PyPI trusted publishing first and
+falls back to token bootstrap only when the package does not yet exist and a
+repository explicitly provides `PYPI_API_TOKEN`.
 
 ## `release-crates.yml` configuration contract
 
@@ -235,3 +242,9 @@ The workflow validates and uploads the first detected directory containing
 3. `artifacts/site/bijux-masterclass`
 4. `artifacts/docs/site`
 5. `artifacts/root/docs/site`
+
+## Pull request history
+
+Record notable repository changes directly in `CHANGELOG.md`, with actual PR links
+and concise behavior summaries. Keep the newest PR first. Pending reviews do not
+claim a merge date; use verified GitHub dates when reconciling merged history.
