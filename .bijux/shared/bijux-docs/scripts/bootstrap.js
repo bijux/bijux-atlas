@@ -400,6 +400,7 @@
       shell.searchRecovery?.bind(lifetime.signal);
       shell.contentReflow?.bind(lifetime.signal);
       shell.externalLinks?.bind(lifetime.signal);
+      shell.navReveal?.bind(lifetime.signal);
       window.dispatchEvent(new Event("bijux:search-location"));
       shell.detailTabs?.runDetailTabsSync?.();
       shell.navReveal?.runDesktopNavigationSync?.();

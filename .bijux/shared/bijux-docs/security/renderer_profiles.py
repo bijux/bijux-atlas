@@ -321,6 +321,20 @@ def origins(root: Path, shared: Path, *, publication: bool, external_startup_sou
                 or (name=='sitecustomize' and path in external_paths),
                 "Renderer profile: loaded module outside reviewed runtime/source roots")
     owners=metadata.packages_distributions()
+    # Resolve each immutable distribution inventory once during this origin check.
+    # A later capture creates a fresh index and retains full physical validation.
+    distribution_members = {}
+
+    def distribution_identity(owner):
+        if owner not in distribution_members:
+            distribution = metadata.distribution(owner)
+            members = {
+                Path(distribution.locate_file(item)).resolve()
+                for item in distribution.files or [] if '..' not in item.parts
+            }
+            distribution_members[owner] = (distribution, members)
+        return distribution_members[owner]
+
     for name,module in list(sys.modules.items()):
         file=getattr(module,'__file__',None)
         if not file:continue
@@ -339,16 +353,14 @@ def origins(root: Path, shared: Path, *, publication: bool, external_startup_sou
             require(path.is_relative_to(stdlib),'Renderer profile: standard library import is shadowed')
         candidates=owners.get(top,[])
         if candidates:
-            members={Path(metadata.distribution(owner).locate_file(item)).resolve()
-                     for owner in candidates for item in metadata.distribution(owner).files or [] if '..' not in item.parts}
+            members = set().union(*(distribution_identity(owner)[1] for owner in candidates))
             require(path in members,'Renderer profile: installed producer namespace is shadowed: '+name+' at '+str(path))
     for name,distribution in [('mkdocs','mkdocs'),('material','mkdocs-material'),('jinja2','Jinja2'),('yaml','PyYAML')]:
         module=__import__(name)
         file=Path(module.__file__).resolve()
-        base=Path(metadata.distribution(distribution).locate_file('')).resolve()
+        owner, members = distribution_identity(distribution)
+        base=Path(owner.locate_file('')).resolve()
         require(base in installed and file.is_relative_to(base), "Renderer profile: loaded producer package is shadowed")
-        members={Path(metadata.distribution(distribution).locate_file(item)).resolve()
-                 for item in metadata.distribution(distribution).files or [] if '..' not in item.parts}
         require(file in members, "Renderer profile: loaded producer source absent installed inventory")
 
 

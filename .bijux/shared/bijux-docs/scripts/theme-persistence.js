@@ -199,13 +199,13 @@
     window.scrollTo(position.x, position.y);
   }
 
-  function applyOption(themeKey, option, persistGlobal) {
+  function applyOption(themeKey, option, persistGlobal, preserveScroll = true) {
     const index = paletteOptions().indexOf(option);
     if (index < 0) {
       return false;
     }
 
-    const scrollBeforeThemeChange = captureScrollPosition();
+    const scrollBeforeThemeChange = preserveScroll ? captureScrollPosition() : null;
 
     option.checked = true;
     const effective = modeFromOption(option) === "auto" ? optionByMode(window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light") || option : option;
@@ -226,10 +226,14 @@
       })
     );
 
-    // Keep the reader anchored while the palette and theme subscribers restyle.
-    restoreScrollPosition(scrollBeforeThemeChange);
-    requestAnimationFrame(() => restoreScrollPosition(scrollBeforeThemeChange));
-    setTimeout(() => restoreScrollPosition(scrollBeforeThemeChange), 80);
+    // Explicit palette changes keep the reader anchored while subscribers restyle.
+    // Startup preference application leaves native and diagram history restoration
+    // in control instead of reclaiming an earlier position in a delayed callback.
+    if (scrollBeforeThemeChange) {
+      restoreScrollPosition(scrollBeforeThemeChange);
+      requestAnimationFrame(() => restoreScrollPosition(scrollBeforeThemeChange));
+      setTimeout(() => restoreScrollPosition(scrollBeforeThemeChange), 80);
+    }
 
     return true;
   }
@@ -276,7 +280,7 @@
       if (savedChoice.signature) {
         const signedOption = findOptionBySignature(savedChoice.signature);
         if (signedOption) {
-          applyOption(themeKey, signedOption, false);
+          applyOption(themeKey, signedOption, false, false);
           return;
         }
       }
@@ -284,7 +288,7 @@
       if (savedChoice.mode) {
         const modeOption = optionByMode(savedChoice.mode);
         if (modeOption) {
-          applyOption(themeKey, modeOption, false);
+          applyOption(themeKey, modeOption, false, false);
           return;
         }
       }
@@ -293,7 +297,7 @@
         const legacyMode = savedChoice.scheme === "slate" ? "dark" : "light";
         const legacyOption = optionByMode(legacyMode);
         if (legacyOption) {
-          applyOption(themeKey, legacyOption, false);
+          applyOption(themeKey, legacyOption, false, false);
           return;
         }
       }
