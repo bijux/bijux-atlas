@@ -18,7 +18,13 @@ A conflicting shared script order can be adopted only when the entire plain
 `.github/standards/bijux-std.sha`. The current source must be a clean checkout
 of the exact official GitHub reference, and the copied current baseline must
 match its Git blob. The projector retrieves the previous baseline from that
-official origin only when an execution-order conflict actually needs it. It
+official origin only when an execution-order conflict actually needs it. The
+explicit predecessors `44e9153959f98bfc27444d6b740144146ed17a77` and
+`10f073dba1d3a9617c8847d72d2bf62bdf7e996d` predate that file and instead use `config/legacy-mkdocs-baselines.json` from the accepted
+current tree. This reviewed migration binds every recorded predecessor source
+digest. It separately declares the historical plain-list order, including the
+authored external-link predecessor; it does not claim the old contract specified
+that complete ordering. Other missing baselines fail closed. The projector
 accepts no predecessor override or untracked ownership receipt.
 
 This narrow recognition changes only the exact old default block. Custom

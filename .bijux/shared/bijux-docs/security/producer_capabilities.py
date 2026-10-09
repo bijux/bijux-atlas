@@ -94,8 +94,8 @@ def revision_history(configuration,root,*,publication=False):
     plugin=configuration.plugins.get('git-revision-date-localized')
     if plugin is None:return None
     import importlib.metadata as metadata
-    require(metadata.version('mkdocs-git-revision-date-localized-plugin') in {'1.5.3','1.6.0'},
-            'Producer capability: reviewed revision date plugin1.5.3 or1.6.0 required')
+    require(metadata.version('mkdocs-git-revision-date-localized-plugin') in {'1.5.1','1.5.3','1.6.0'},
+            'Producer capability: reviewed revision date plugin1.5.1,1.5.3 or1.6.0 required')
     require(type(plugin).__module__.startswith('mkdocs_git_revision_date_localized_plugin.'),
             'Producer capability: actual revision plugin source required')
     module=__import__(type(plugin).__module__,fromlist=[''])

@@ -332,6 +332,49 @@
     }
   }
 
+  function upgradeNativePaletteControls() {
+    for (const label of document.querySelectorAll("[data-md-component='palette'] label.md-header__button[for]")) {
+      const target = label.getAttribute("for");
+      const option = paletteOptions().find(candidate => candidate.id === target);
+      const palette = label.closest("[data-md-component='palette']");
+      if (!option || !palette.contains(option)) continue;
+
+      // Keep the native radio's next sibling and target identity: Material owns visibility.
+      const button = document.createElement("button");
+      for (const attribute of label.attributes) {
+        if (!["role", "tabindex"].includes(attribute.name)) button.setAttribute(attribute.name, attribute.value);
+      }
+      button.type = "button";
+      button.setAttribute("aria-controls", target);
+      if (!button.hasAttribute("aria-label")) button.setAttribute("aria-label", label.getAttribute("title") || label.textContent.trim());
+      button.replaceChildren(...label.childNodes);
+      button.addEventListener("keydown", event => {
+        // Material's form Enter handler focuses a hidden radio; native buttons activate themselves.
+        if (event.key === "Enter") event.stopPropagation();
+      });
+      let pointerHadFocus = false;
+      button.addEventListener("pointerdown", () => {
+        pointerHadFocus = document.activeElement === button;
+      });
+      button.addEventListener("pointercancel", () => { pointerHadFocus = false; });
+      button.addEventListener("click", event => {
+        // Some engines blur native buttons during pointer activation; retain only this control's focus.
+        const retainedPointerFocus = event.detail > 0 && pointerHadFocus && document.activeElement === document.body;
+        pointerHadFocus = false;
+        const current = paletteOptions().find(candidate => candidate.id === target);
+        if (!current || !palette.contains(current)) return;
+        const hadFocus = document.activeElement === button || retainedPointerFocus;
+        current.checked = true;
+        current.dispatchEvent(new Event("change", { bubbles: true }));
+        if (hadFocus && button.hidden) {
+          const successor = [...palette.querySelectorAll("button.md-header__button[for]")].find(candidate => !candidate.hidden);
+          successor?.focus({ preventScroll: true });
+        }
+      });
+      label.replaceWith(button);
+    }
+  }
+
   function bindThemeToggle(themeKey) {
     for (const button of document.querySelectorAll("[data-bijux-theme-toggle]")) {
       if (button.dataset.bijuxThemeToggleBound === "true") {
@@ -386,6 +429,7 @@
   function init() {
     const themeKey = resolveThemeKey();
     bindPaletteChanges(themeKey);
+    upgradeNativePaletteControls();
     bindThemeToggle(themeKey);
     initializeGlobalTheme(themeKey);
     bindCrossTabSync(themeKey);

@@ -44,6 +44,12 @@
 }
 
 @media screen and (min-width: 76.25em) {
+  /* Native in-flow disclosures need an owning desktop hit surface. Material's
+     zero-height sticky shell otherwise leaves the visible tree outside its box. */
+  .md-sidebar.md-sidebar--primary:has([data-bijux-nav-variant="complete"]) {
+    height: auto;
+  }
+
   .md-grid {
     max-width: min(calc(100vw - 3rem), var(--bijux-shell-width));
   }
@@ -146,6 +152,25 @@
   .md-header__title { margin-inline: 0.2rem; flex: 1; }
   .md-header__ellipsis { overflow: hidden; }
   .md-header__topic { position: static; }
+  /* Own spacing above Material's direction-specific title margins. Intrinsic
+     text and tool sizes may wrap instead of losing the site identity. */
+  .md-header[data-bijux-header-contract] .md-header__inner { flex-wrap: wrap; }
+  .md-header[data-bijux-header-contract] .md-header__title {
+    margin-inline: 0.1rem;
+    flex: 1 1 min-content;
+    min-inline-size: min-content;
+    height: auto;
+    line-height: 1.5;
+  }
+  .md-header[data-bijux-header-contract] .md-header__ellipsis {
+    height: auto;
+    overflow: visible;
+  }
+  .md-header[data-bijux-header-contract] [data-bijux-header-topic="site"] .md-ellipsis {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    overflow: visible;
+  }
   .bijux-header-tools { margin-inline-start: 0; }
   .bijux-header-tools .md-search__inner { width: 100%; }
   html { scroll-padding-top: 4rem; }
@@ -354,6 +379,20 @@ body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"
 body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"]) .md-overlay { display: none; }
 
 @media screen and (max-width: 76.2344em) {
+  /* Keep the native 44px target and its 5px outer focus extent on the
+     opaque header surface while allowing enlarged content to grow. */
+  body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"]) > header .md-header__inner {
+    min-block-size: 54px;
+    padding-block: 5px;
+    align-items: flex-start;
+  }
+
+  /* Native labels stay beside their fixed-size checkbox; an intrinsically
+     wider identity can take another row instead of a narrow word column. */
+  body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"]) > header .md-header__title {
+    flex-basis: auto;
+  }
+
   body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"]) #__drawer {
     display: block;
     position: fixed;
@@ -376,7 +415,7 @@ body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"
   body:has(> header[data-bijux-drawer-target]):not([data-bijux-drawer-ready="true"]) .bijux-native-drawer-label {
     display: inline-flex;
     align-items: center;
-    min-block-size: 2.2rem;
+    min-block-size: 44px;
     padding-inline-start: 50px;
     padding-inline-end: 0.3rem;
     font-size: 0.64rem;

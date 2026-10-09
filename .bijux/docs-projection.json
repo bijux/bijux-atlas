@@ -29,7 +29,7 @@
       "source": "bijux-docs/scripts/nav-sync.js"
     },
     "docs/assets/javascripts/shell/bootstrap.js": {
-      "sha256": "93415c347914140affbba42dea91a67d63f8b8b8555025107f095210a281439e",
+      "sha256": "02fa501857685bbccc70fd1870af46ba1f3de9201de05daf24ce7e4ef3207d9b",
       "source": "bijux-docs/scripts/bootstrap.js"
     },
     "docs/assets/javascripts/shell/content-reflow.js": {
@@ -53,7 +53,7 @@
       "source": "bijux-docs/scripts/search-recovery.js"
     },
     "docs/assets/javascripts/shell/theme-persistence.js": {
-      "sha256": "a9011e3aa0f3c5c0bb0979dbd7a59d6d2c8e257f387849a73a1ed6bf9215543b",
+      "sha256": "1d2720db1bf891381340b1f829e876752a683b059206bb54da3e669ff43823c1",
       "source": "bijux-docs/scripts/theme-persistence.js"
     },
     "docs/assets/javascripts/shell/viewport-profile.js": {
@@ -117,7 +117,7 @@
       "source": "bijux-docs/styles/07-utilities.css"
     },
     "docs/assets/styles/08-responsive.css": {
-      "sha256": "d0bb841ace436c229f0ff1ad58261ff83def1db436419778db919ae704d6c415",
+      "sha256": "e4958d971e8521b03755a1c9d3651901a6219323d546ddc4a6a2e52f2092a2a0",
       "source": "bijux-docs/styles/08-responsive.css"
     },
     "docs/assets/styles/extra.css": {
@@ -177,6 +177,6 @@
   "source": {
     "mode": "accepted-github",
     "origin": "https://github.com/bijux/bijux-std.git",
-    "sha": "b217864eeebd2fe3b14015625a3c4d8e76472f59"
+    "sha": "743ade28d558952fb45a0ce097032508a04ee4b6"
   }
 }
