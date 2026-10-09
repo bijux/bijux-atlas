@@ -1,5 +1,27 @@
 INHERIT: mkdocs.shared.yml
 
+theme:
+  # Preserve reader Back/Forward URLs; automatic anchor tracking is not enabled.
+  # MkDocs replaces inherited lists, so retain every other shared feature.
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.path
+    - navigation.instant
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.action.edit
+    - content.action.view
+
 site_name: Bijux Atlas
 site_description: Genomics dataset delivery docs for GFF3 and FASTA ingest, immutable gene-query artifacts, runtime APIs, and repository operations.
 site_url: !ENV [SITE_URL, https://bijux.io/bijux-atlas/]
