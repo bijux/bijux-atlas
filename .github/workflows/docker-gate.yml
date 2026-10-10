@@ -24,6 +24,14 @@ jobs:
       TEMP: artifacts/isolates/docker-gate/tmp
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Prepare declared temporary directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${TMPDIR:-}" ]]; then
+            mkdir -p "$TMPDIR"
+          fi
+
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
