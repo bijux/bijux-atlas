@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ---
 
+## Unreleased
+
+
+### Changed
+
+- Adopt trusted manual publication admission and accepted shared documentation policy ([#148](https://github.com/bijux/bijux-atlas/pull/148)).
 ## v0.2.2 – 2026-06-28
 
 ### Changed
