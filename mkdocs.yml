@@ -121,16 +121,18 @@ not_in_nav: |
   overrides/**
 
 extra_javascript:
-  - assets/javascripts/vendor/mermaid-11.6.0.min.js
   - assets/javascripts/mermaid-init.js
   - assets/javascripts/shell/theme-persistence.js
   - assets/javascripts/shell/viewport-profile.js
   - assets/javascripts/shell/nav-state.js
   - assets/javascripts/shell/detail-tabs.js
   - assets/javascripts/shell/nav-reveal.js
+  - assets/javascripts/shell/search-recovery.js
+  - assets/javascripts/shell/content-reflow.js
+  - assets/javascripts/external-links.js
   - assets/javascripts/shell/bootstrap.js
   - assets/javascripts/navigation-sync.js
-  - assets/javascripts/external-links.js
+  - assets/javascripts/navigation/offsite-targets.js
 
 extra:
   bijux:
