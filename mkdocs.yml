@@ -22,8 +22,13 @@ exclude_docs: |
   _drafts/**
   automation/**
   README.md
-
+  /overrides/
+  /hooks/
+  /assets/styles/README.md
+  /assets/javascripts/shell/README.md
 plugins:
+  - search
+  - autorefs
   - social:
       enabled: !ENV [ENABLE_SOCIAL_CARDS, false]
       cache_dir: artifacts/docs/.cache/social
