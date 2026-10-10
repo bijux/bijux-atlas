@@ -38,6 +38,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
   `softprops/action-gh-release` `v3.0.1`.
 
 ### Fixed
+
+- Resolve patched HTTP/2 and TLS dependencies for the repository dependency audit ([#148](https://github.com/bijux/bijux-atlas/pull/148)).
 - Realigned the checked-in toolchain inventory with the workflow pins actually
   executed by CI so release, policy, and supply-chain checks validate the same
   action set that GitHub runs.
