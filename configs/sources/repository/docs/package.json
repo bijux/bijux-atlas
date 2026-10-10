@@ -5,20 +5,22 @@
   "description": "Pinned docs lint and spelling tooling for CI",
   "license": "Apache-2.0",
   "scripts": {
-    "markdownlint": "markdownlint-cli2 \"../../../../docs/**/*.md\" \"../../../../ops/**/*.md\"",
+    "markdownlint": "node ../../../../makes/bin/docs/markdown_lint.mjs",
     "link-check": "cargo run -q -p bijux-atlas-dev -- docs external-links --repo-root ../../../.. --allow-network --allowlist configs/sources/repository/docs/external-link-allowlist.json --format json",
-    "cspell": "cspell lint --config cspell.config.json \"../../../../docs/04-operations/*.md\" \"../../../../docs/07-reference/*.md\" \"../../../../docs/08-contracts/*.md\" \"../../../../ops/*.md\""
+    "cspell": "cspell lint --config cspell.config.json \"../../../../docs/04-operations/*.md\" \"../../../../docs/07-reference/*.md\" \"../../../../docs/08-contracts/*.md\" \"../../../../ops/*.md\"",
+    "test": "node --test ../../../../makes/bin/docs/markdown_lint.test.mjs"
   },
   "devDependencies": {
-    "cspell": "10.0.1",
-    "markdownlint-cli2": "0.23.1",
-    "markdownlint-cli2-formatter-default": "0.0.6"
+    "cspell": "10.1.1",
+    "markdownlint": "0.41.1"
   },
   "overrides": {
     "flatted": "3.4.2",
     "picomatch": "2.3.2",
-    "js-yaml": "5.2.1",
+    "js-yaml": "5.4.3",
     "linkify-it": "5.0.2",
-    "markdown-it": "14.3.0"
+    "markdown-it": "14.3.1",
+    "smol-toml": "1.9.1",
+    "katex": "0.18.2"
   }
 }

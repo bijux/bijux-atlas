@@ -64,7 +64,7 @@
       "docs-build",
       "ci"
     ],
-    "configs/sources/repository/docs/.markdownlint-cli2.jsonc": [
+    "configs/sources/repository/docs/markdownlint.json": [
       "docs-build",
       "ci"
     ],
