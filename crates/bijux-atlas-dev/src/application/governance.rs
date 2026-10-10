@@ -3983,6 +3983,8 @@ pub(crate) fn run_governance_command(
                 let deprecations = load_deprecations_registry(&root)?;
                 let chart = read_chart_metadata(&root)?;
                 let chart_major = semver_major(&chart.version).unwrap_or(0);
+                let values_schema =
+                    read_json_value(&root.join("ops/k8s/charts/bijux-atlas/values.schema.json"))?;
                 let compat_warnings = read_json_value(&compat_warnings_path(&root))?;
                 let redirects =
                     read_json_value(&root.join("configs/sources/repository/docs/redirects.json"))?;
@@ -4113,7 +4115,9 @@ pub(crate) fn run_governance_command(
                             "category": "chart",
                             "surface": entry.surface,
                             "change": format!("{} -> {}", entry.old_name, entry.new_name),
-                            "breaking": removal_days <= today
+                            "removal_target_elapsed": removal_days <= today,
+                            // A removal target permits retirement; accepted aliases still carry compatibility.
+                            "breaking": !schema_supports_path(&values_schema, &entry.old_name)
                         }))
                     })
                     .collect::<Vec<_>>();
@@ -4173,6 +4177,7 @@ pub(crate) fn run_governance_command(
                             "artifacts/governance/compat-warnings.json",
                             "configs/sources/repository/docs/redirects.json",
                             "ops/k8s/charts/bijux-atlas/Chart.yaml",
+                            "ops/k8s/charts/bijux-atlas/values.schema.json",
                             "ops/release/notes/breaking.json"
                         ]
                     },
