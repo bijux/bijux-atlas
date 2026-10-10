@@ -11,6 +11,7 @@ on:
 
 jobs:
   docker-gate:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -80,7 +81,7 @@ jobs:
         with:
           path: .cache/cargo/target/docker-gate
           key: cargo-target-docker-gate-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: docker-gate-${{ env.RUN_ID }}

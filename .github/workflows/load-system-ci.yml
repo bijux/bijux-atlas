@@ -8,17 +8,10 @@ on:
       - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
       - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
       - ".github/workflows/load-system-ci.yml"
-  push:
-    branches: [main]
-    paths:
-      - "ops/load/**"
-      - "docs/bijux-atlas-ops/load/**"
-      - "crates/bijux-atlas-ops/tests/load_suite_manifest.rs"
-      - "crates/bijux-atlas-ops/tests/load_baseline_assets.rs"
-      - ".github/workflows/load-system-ci.yml"
 
 jobs:
   load-contracts-and-coverage:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
