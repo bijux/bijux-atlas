@@ -50,10 +50,6 @@ gh-test: test ## Run GitHub test suites
 gh-test-install-rust-tools: ## Install cargo-nextest that matches the pinned CI toolchain
 	@cargo install --locked cargo-nextest --version "$(GH_TEST_CARGO_NEXTEST_VERSION)"
 
-gh-docs-install: ## Install the documentation toolchain for GitHub Actions
-	@python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
-	@npm ci --prefix configs/sources/repository/docs
-
 gh-release-plan-github: ## Determine whether the tagged commit should publish a GitHub Release
 	@$(call require_var,GITHUB_OUTPUT)
 	@$(call require_var,TARGET_SHA)
@@ -138,3 +134,5 @@ gh-release-wait-for-ci: ## Wait for the latest CI run on the release SHA to succ
 	GH_RELEASE_CI_LOOKBACK_SECONDS="$(GH_RELEASE_CI_LOOKBACK_SECONDS)" \
 	GH_RELEASE_CI_APPEARANCE_GRACE_SECONDS="$(GH_RELEASE_CI_APPEARANCE_GRACE_SECONDS)" \
 	python3 .github/scripts/wait_for_ci.py
+
+include makes/docs-publication.mk
