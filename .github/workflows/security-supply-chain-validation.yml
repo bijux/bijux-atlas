@@ -1,12 +1,11 @@
 name: security-supply-chain-validation
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 jobs:
   validate-supply-chain:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/security-supply-chain
@@ -18,8 +17,16 @@ jobs:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
+      - name: Prepare declared temporary directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${TMPDIR:-}" ]]; then
+            mkdir -p "$TMPDIR"
+          fi
+
       - name: setup-rust
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: 1.86.0
 

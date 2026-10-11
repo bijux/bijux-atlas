@@ -14,6 +14,10 @@ releases and serves them through Rust libraries, command workflows, and a
 versioned HTTP API. Its documentation follows the decisions needed to build,
 publish, operate, and trust those releases.
 
+Start with the [Atlas product](bijux-atlas/index.md) handbook for the product
+model and interfaces, or follow [Run Atlas locally](bijux-atlas/workflows/run-atlas-locally.md)
+for the committed sample journey.
+
 <!-- bijux-atlas-badges:generated:start -->
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![CI](https://github.com/bijux/bijux-atlas/workflows/repo%20/%20ci/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml?query=branch%3Amain)

@@ -1,8 +1,14 @@
-{{- if .Values.hpa.enabled }}
+{{- $hpa := deepCopy .Values.hpa }}
+{{- $legacy := .Values.autoscaling | default dict }}
+{{- /* Canonical enabled configuration wins; legacy activation inherits governed defaults. */}}
+{{- if and (not $hpa.enabled) ($legacy.enabled | default false) }}
+{{- $hpa = mergeOverwrite $hpa $legacy }}
+{{- end }}
+{{- if $hpa.enabled }}
 {{- $serviceMonitor := (.Values.metrics.serviceMonitor | default .Values.serviceMonitor) }}
-{{- $cpuTarget := .Values.hpa.cpuUtilization }}
-{{- if and .Values.hpa.cpu (hasKey .Values.hpa.cpu "targetAverageUtilization") }}
-{{- $cpuTarget = .Values.hpa.cpu.targetAverageUtilization }}
+{{- $cpuTarget := $hpa.cpuUtilization }}
+{{- if and $hpa.cpu (hasKey $hpa.cpu "targetAverageUtilization") }}
+{{- $cpuTarget = $hpa.cpu.targetAverageUtilization }}
 {{- end }}
 {{- if not .Values.metrics.enabled }}
 {{- fail "hpa.enabled=true requires metrics.enabled=true" }}
@@ -10,7 +16,7 @@
 {{- if not .Values.metrics.customMetrics.enabled }}
 {{- fail "hpa.enabled=true requires metrics.customMetrics.enabled=true" }}
 {{- end }}
-{{- if gt (int .Values.hpa.minReplicas) (int .Values.hpa.maxReplicas) }}
+{{- if gt (int $hpa.minReplicas) (int $hpa.maxReplicas) }}
 {{- fail "hpa.minReplicas must be <= hpa.maxReplicas" }}
 {{- end }}
 {{- if or (lt (int $cpuTarget) 1) (gt (int $cpuTarget) 100) }}
@@ -36,8 +42,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "bijux-atlas.fullname" . }}
-  minReplicas: {{ .Values.hpa.minReplicas }}
-  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  minReplicas: {{ $hpa.minReplicas }}
+  maxReplicas: {{ $hpa.maxReplicas }}
   metrics:
     - type: Resource
       resource:
@@ -45,13 +51,13 @@ spec:
         target:
           type: Utilization
           averageUtilization: {{ $cpuTarget }}
-    {{- if and .Values.hpa.memory (hasKey .Values.hpa.memory "targetAverageUtilization") }}
+    {{- if and $hpa.memory (hasKey $hpa.memory "targetAverageUtilization") }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.memory.targetAverageUtilization }}
+          averageUtilization: {{ $hpa.memory.targetAverageUtilization }}
     {{- end }}
     - type: Pods
       pods:
@@ -59,14 +65,14 @@ spec:
           name: bijux_http_request_latency_p95_seconds
         target:
           type: AverageValue
-          averageValue: {{ .Values.hpa.p95LatencySeconds | quote }}
+          averageValue: {{ $hpa.p95LatencySeconds | quote }}
     - type: Pods
       pods:
         metric:
           name: bijux_inflight_heavy_queries
         target:
           type: AverageValue
-          averageValue: {{ .Values.hpa.heavyInflightAverageValue | quote }}
+          averageValue: {{ $hpa.heavyInflightAverageValue | quote }}
   behavior:
-    {{- toYaml .Values.hpa.behavior | nindent 4 }}
+    {{- toYaml $hpa.behavior | nindent 4 }}
 {{- end }}

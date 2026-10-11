@@ -119,7 +119,7 @@
       "name": "docs",
       "owner": "docs-governance",
       "public_files": [
-        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
+        "configs/sources/repository/docs/markdownlint.json",
         "configs/sources/repository/docs/.vale.ini",
         "configs/sources/repository/docs/*.json",
         "configs/sources/repository/docs/*.txt"

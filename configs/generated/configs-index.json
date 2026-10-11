@@ -143,29 +143,36 @@
     },
     {
       "counts": {
-        "covered": 17,
+        "covered": 24,
         "generated": 0,
         "internal": 1,
-        "public": 16,
+        "public": 23,
         "schemas": 3
       },
       "files": [
-        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
         "configs/sources/repository/docs/.vale.ini",
+        "configs/sources/repository/docs/allowed-non-docs-markdown.json",
         "configs/sources/repository/docs/artifact-link-allowlist.json",
         "configs/sources/repository/docs/codespell-ignore-words.txt",
         "configs/sources/repository/docs/cspell.config.json",
         "configs/sources/repository/docs/depth-budget.json",
+        "configs/sources/repository/docs/docs-spine.json",
         "configs/sources/repository/docs/external-link-allowlist.json",
         "configs/sources/repository/docs/generated-files-freshness-policy.json",
         "configs/sources/repository/docs/generated-files-registry.json",
+        "configs/sources/repository/docs/markdownlint.json",
+        "configs/sources/repository/docs/ops-markdown-classes.json",
+        "configs/sources/repository/docs/orphan-allowlist.json",
         "configs/sources/repository/docs/package-lock.json",
         "configs/sources/repository/docs/package.json",
         "configs/sources/repository/docs/quality-policy.json",
+        "configs/sources/repository/docs/redirect-registry.json",
+        "configs/sources/repository/docs/redirects.json",
         "configs/sources/repository/docs/requirements.lock.txt",
         "configs/sources/repository/docs/requirements.txt",
         "configs/sources/repository/docs/schemas/frontmatter.schema.json",
         "configs/sources/repository/docs/site-output-contract.json",
+        "configs/sources/repository/docs/stale-page-overrides.json",
         "configs/sources/repository/docs/tag-vocabulary.json"
       ],
       "name": "docs",
@@ -223,16 +230,17 @@
     },
     {
       "counts": {
-        "covered": 30,
+        "covered": 32,
         "generated": 0,
         "internal": 2,
-        "public": 28,
+        "public": 30,
         "schemas": 1
       },
       "files": [
         "configs/sources/governance/governance/allowed-nonrust.json",
         "configs/sources/governance/governance/check-groups.json",
         "configs/sources/governance/governance/check-policy-authority-map.json",
+        "configs/sources/governance/governance/checks-doctrine.json",
         "configs/sources/governance/governance/checks.registry.json",
         "configs/sources/governance/governance/cli-dev-command-surface.json",
         "configs/sources/governance/governance/cli-user-command-surface.json",
@@ -253,6 +261,7 @@
         "configs/sources/governance/governance/repo-bin-allowlist.txt",
         "configs/sources/governance/governance/repo-executable-allowlist.txt",
         "configs/sources/governance/governance/schemas/governance.schema.json",
+        "configs/sources/governance/governance/suite-membership-policy.json",
         "configs/sources/governance/governance/suites/baseline.json",
         "configs/sources/governance/governance/suites/checks.suite.json",
         "configs/sources/governance/governance/suites/contracts.suite.json",
@@ -400,7 +409,7 @@
       "schemas": [],
       "stability": "stable",
       "tool_entrypoints": [
-        "shellcheck",
+        "make lint-make",
         "bijux dev atlas configs validate"
       ]
     },
@@ -487,7 +496,7 @@
       "stability": "stable",
       "tool_entrypoints": [
         "bijux dev atlas configs validate",
-        "make"
+        "make help"
       ]
     },
     {
@@ -515,15 +524,13 @@
     },
     {
       "counts": {
-        "covered": 1,
+        "covered": 0,
         "generated": 0,
         "internal": 0,
-        "public": 1,
+        "public": 0,
         "schemas": 0
       },
-      "files": [
-        "configs/rust/nextest.toml"
-      ],
+      "files": [],
       "name": "nextest",
       "owner": "platform",
       "schema_owner": "platform",
@@ -770,14 +777,13 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
         "internal": 0,
-        "public": 3,
+        "public": 2,
         "schemas": 1
       },
       "files": [
-        "configs/rust/clippy.toml",
         "configs/sources/repository/rust-tooling/rustfmt.toml",
         "configs/sources/repository/rust-tooling/toolchain.json"
       ],
@@ -967,10 +973,10 @@
     },
     {
       "counts": {
-        "covered": 19,
+        "covered": 18,
         "generated": 0,
         "internal": 0,
-        "public": 19,
+        "public": 18,
         "schemas": 1
       },
       "files": [
@@ -979,7 +985,6 @@
         "configs/sources/security/auth-model.yaml",
         "configs/sources/security/data-classification.yaml",
         "configs/sources/security/data-protection.yaml",
-        "configs/rust/deny.toml",
         "configs/sources/security/dependency-source-policy.json",
         "configs/sources/security/event-monitoring-hooks.yaml",
         "configs/sources/security/forbidden-patterns.json",

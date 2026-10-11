@@ -31,12 +31,20 @@ jobs:
       TEMP: artifacts/isolates/docs-audit/tmp
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+      - name: Prepare declared temporary directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${TMPDIR:-}" ]]; then
+            mkdir -p "$TMPDIR"
+          fi
+
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: 1.86.0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.4.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: "22"
+          node-version: "24.21.0"
           cache: npm
           cache-dependency-path: configs/sources/repository/docs/package-lock.json
       - name: Prepare run artifact directory
@@ -66,6 +74,9 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/sources/repository/docs/requirements.lock.txt
           npm ci --prefix configs/sources/repository/docs
+      - name: Verify Markdown discovery and rule controls
+        shell: bash
+        run: npm --prefix configs/sources/repository/docs test
       - name: Run docs markdown lint
         shell: bash
         run: |
@@ -118,14 +129,14 @@ jobs:
         with:
           path: .cache/cargo/target/docs-audit
           key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: docs-preview-site-${{ env.RUN_ID }}
           path: artifacts/${{ env.RUN_ID }}/site-preview
           retention-days: 5
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: docs-audit-${{ env.RUN_ID }}

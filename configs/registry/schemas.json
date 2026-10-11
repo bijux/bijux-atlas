@@ -15,7 +15,7 @@
     "configs/registry/consumers.json": "configs/schemas/registry/configs-consumer-map.schema.json",
     "configs/registry/schema-versioning-policy.json": "configs/schemas/registry/schema-versioning-policy.schema.json",
     "configs/sources/repository/docs/*.json": "configs/schemas/contracts/inventory-configs.schema.json",
-    "configs/sources/repository/docs/.markdownlint-cli2.jsonc": "configs/schemas/contracts/inventory-configs.schema.json",
+    "configs/sources/repository/docs/markdownlint.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/examples/**/*.json": "configs/schemas/contracts/inventory-configs.schema.json",
     "configs/sources/repository/gates/*.json": "configs/schemas/contracts/inventory-commands.schema.json",
     "configs/sources/governance/governance/allowed-nonrust.json": "configs/schemas/contracts/inventory-configs.schema.json",

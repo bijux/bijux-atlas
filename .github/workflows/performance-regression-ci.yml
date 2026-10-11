@@ -9,21 +9,13 @@ on:
       - "docs/bijux-atlas-ops/load/**"
       - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
       - ".github/workflows/performance-regression-ci.yml"
-  push:
-    branches: [main]
-    paths:
-      - "configs/sources/operations/perf/**"
-      - "ops/load/**"
-      - "ops/report/generated/**"
-      - "docs/bijux-atlas-ops/load/**"
-      - "crates/bijux-atlas-ops/tests/performance_report_assets.rs"
-      - ".github/workflows/performance-regression-ci.yml"
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
   performance-regression-gate:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,7 +41,7 @@ jobs:
           jq . configs/schemas/contracts/perf/performance-metadata.schema.json > /dev/null
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: 1.86.0
 

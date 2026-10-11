@@ -304,7 +304,7 @@ pub(crate) fn docs_lint_payload(
     let docs_lint_root = ctx.repo_root.join("configs/sources/repository/docs");
     let required_lint_files = [
         "configs/sources/repository/docs/.vale.ini",
-        "configs/sources/repository/docs/.markdownlint-cli2.jsonc",
+        "configs/sources/repository/docs/markdownlint.json",
         "configs/sources/repository/docs/cspell.config.json",
         "configs/sources/repository/docs/package.json",
         "configs/sources/repository/docs/package-lock.json",

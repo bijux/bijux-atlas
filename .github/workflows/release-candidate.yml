@@ -10,9 +10,6 @@ on:
         description: "Run release doctor gate"
         required: true
         default: "true"
-  push:
-    tags:
-      - "v*"
 
 permissions:
   contents: read
@@ -53,7 +50,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "${ISO_ROOT}" "${CARGO_TARGET_DIR}" "${CARGO_HOME}" "${TMPDIR}"
-      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: 1.86.0
       - name: Run release candidate preflight
@@ -165,7 +162,7 @@ jobs:
           sha256sum "${report_root}/docs-completeness.json" > "${report_root}/docs-completeness.sha256"
           sha256sum "${report_root}/release-check.json" > "${report_root}/release-check.sha256"
           sha256sum "${report_root}/ops-readiness.json" > "${report_root}/ops-readiness.sha256"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: release-candidate-${{ env.RUN_ID }}

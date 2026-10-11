@@ -65,7 +65,10 @@ evidence obligations are satisfied.
 
 A date alone does not remove a compatibility obligation. The release must show
 that the replacement existed, consumers had the governed window, and the old
-surface now fails or redirects exactly as policy requires.
+surface now fails or redirects exactly as policy requires. Chart breaking evidence
+classifies removal from the accepted values schema; an elapsed target with a
+retained alias stays a deprecation notice. Helm rendering controls separately
+verify that accepted compatibility values still have their declared effect.
 
 ## Maintainer Commands
 

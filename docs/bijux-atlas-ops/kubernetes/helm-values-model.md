@@ -79,6 +79,7 @@ same effective behavior. Templates resolve those representations explicitly:
 | catalog-dependent readiness | `server.readinessRequiresCatalog`, optionally overridden by `cache.readinessRequiresCatalog` | runtime ConfigMap |
 | container security | `containerSecurityContext`, with `securityContext` as fallback | workload pod specification |
 | ServiceMonitor policy | `metrics.serviceMonitor`, with top-level `serviceMonitor` as fallback | monitor and HPA templates |
+| HPA activation | enabled `hpa` takes precedence; enabled `autoscaling` falls back to governed HPA defaults | HPA template |
 | HPA CPU target | `hpa.cpuUtilization`, optionally overridden by `hpa.cpu.targetAverageUtilization` | HPA template |
 
 These are precedence rules, not independent controls. If more than one

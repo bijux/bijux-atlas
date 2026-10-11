@@ -16,11 +16,12 @@ permissions:
 
 jobs:
   readiness:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+      - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
           toolchain: 1.86.0
       - name: Build audit and readiness artifacts
@@ -34,7 +35,7 @@ jobs:
           cargo run --locked -q -p bijux-atlas-dev -- audit bundle generate --output-format json > artifacts/audit/generate.json
           cargo run --locked -q -p bijux-atlas-dev -- audit compliance report --output-format json > artifacts/audit/compliance.json
           cargo run --locked -q -p bijux-atlas-dev -- audit readiness validate --output-format json > artifacts/audit/readiness.json
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: final-readiness-${{ github.run_id }}-${{ github.run_attempt }}

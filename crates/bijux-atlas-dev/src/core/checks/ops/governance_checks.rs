@@ -15,3 +15,7 @@ include!("governance_checks/portability_environment_contract_check.rs");
 include!("governance_checks/minimalism_and_deletion_safety_check.rs");
 include!("governance_checks/human_workflow_maturity_check.rs");
 include!("governance_checks/final_polish_contracts_check.rs");
+
+#[cfg(test)]
+#[path = "governance_checks/foundation_and_tooling_checks/workflow_action_inventory_tests.rs"]
+mod workflow_action_inventory_tests;

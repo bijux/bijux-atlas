@@ -205,7 +205,18 @@ fn is_full_sha(value: &str) -> bool {
 }
 
 fn normalize_workflow_action_spec(spec: &str) -> &str {
-    spec.split('#').next().unwrap_or(spec).trim()
+    spec.split('#')
+        .next()
+        .unwrap_or(spec)
+        .trim()
+        .trim_matches(['\"', '\''])
+}
+
+fn workflow_action_spec_from_line(line: &str) -> Option<&str> {
+    let trimmed = line.trim();
+    let entry = trimmed.strip_prefix("- ").unwrap_or(trimmed);
+    let (key, value) = entry.split_once(':')?;
+    (key.trim().trim_matches(['"', '\'']) == "uses").then(|| normalize_workflow_action_spec(value))
 }
 
 fn is_sha256_digest(value: &str) -> bool {
@@ -2281,14 +2292,9 @@ fn run_security_validate(args: SecurityValidateArgs) -> Result<(String, i32), St
         let text = fs::read_to_string(&file)
             .map_err(|err| format!("failed to read {}: {err}", file.display()))?;
         for (line_idx, line) in text.lines().enumerate() {
-            let trimmed = line.trim();
-            if !trimmed.starts_with("- uses:") && !trimmed.starts_with("uses:") {
-                continue;
-            }
-            let Some((_, spec_raw)) = trimmed.split_once(':') else {
+            let Some(spec) = workflow_action_spec_from_line(line) else {
                 continue;
             };
-            let spec = normalize_workflow_action_spec(spec_raw.trim());
             if spec.starts_with("docker://") {
                 continue;
             }
@@ -3177,7 +3183,7 @@ mod tests {
         run_security_authorization_roles, run_security_authorization_validate,
         run_security_config_validate, run_security_dependency_audit, run_security_diagnostics,
         run_security_policy_inspect, run_security_threats_explain, run_security_threats_list,
-        run_security_threats_verify,
+        run_security_threats_verify, workflow_action_spec_from_line,
     };
     use crate::cli::{
         FormatArg, SecurityPolicyInspectArgs, SecurityRoleAssignArgs, SecurityThreatExplainArgs,
@@ -3513,6 +3519,23 @@ threat_ids: []
                 "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0"
             ),
             "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        );
+    }
+
+    #[test]
+    fn workflow_action_report_retains_quoted_keys_values_and_source_lines() {
+        let pin = "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8";
+        for line in [
+            format!("- uses: {pin} # reviewed pin"),
+            format!("  uses: {pin}"),
+            format!("  \"uses\": \"{pin}\""),
+            format!("- 'uses': '{pin}'"),
+        ] {
+            assert_eq!(workflow_action_spec_from_line(&line), Some(pin));
+        }
+        assert_eq!(
+            workflow_action_spec_from_line("run: echo uses: unrelated"),
+            None
         );
     }
 
