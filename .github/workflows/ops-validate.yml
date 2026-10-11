@@ -21,7 +21,8 @@ env:
 
 jobs:
   validate:
-    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+    name: "${{ (github.event.pull_request.user.login == 'dependabot[bot]' || (github.event.pull_request.user.login == 'github-actions[bot]' && github.event.pull_request.head.ref == 'automation/dependency-lock-refresh')) && 'unverified dependency / ' || '' }}validate"
+    if: "${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.event_name != 'pull_request_review') || (github.event.pull_request.user.login != 'dependabot[bot]' && (github.event.pull_request.user.login != 'github-actions[bot]' || github.event.pull_request.head.ref != 'automation/dependency-lock-refresh'))) && (github.event.pull_request.user.login != 'dependabot[bot]') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
