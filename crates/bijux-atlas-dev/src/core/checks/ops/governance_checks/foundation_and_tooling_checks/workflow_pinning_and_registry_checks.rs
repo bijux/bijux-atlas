@@ -40,74 +40,7 @@ pub(super) fn checks_ops_workflows_github_actions_pinned(
         let Ok(text) = fs::read_to_string(&file) else {
             continue;
         };
-        for (line_idx, line) in text.lines().enumerate() {
-            let trimmed = line.trim();
-            if !trimmed.starts_with("- uses:") && !trimmed.starts_with("uses:") {
-                continue;
-            }
-            let Some((_, spec_raw)) = trimmed.split_once(':') else {
-                continue;
-            };
-            let spec = spec_raw
-                .split_once('#')
-                .map_or(spec_raw, |(before_comment, _)| before_comment)
-                .trim();
-            if spec.starts_with("docker://") {
-                continue;
-            }
-            if spec.starts_with("./") {
-                continue;
-            }
-            let Some((action_path, sha)) = spec.rsplit_once('@') else {
-                violations.push(violation(
-                    "WORKFLOW_ACTION_PIN_MISSING",
-                    format!(
-                        "workflow `{}` line {} uses action `{spec}` without an immutable SHA",
-                        rel.display(),
-                        line_idx + 1
-                    ),
-                    "pin GitHub Actions to full 40-hex commit SHAs",
-                    Some(rel),
-                ));
-                continue;
-            };
-            if sha.len() != 40 || !sha.chars().all(|ch| ch.is_ascii_hexdigit()) {
-                violations.push(violation(
-                    "WORKFLOW_ACTION_NOT_SHA_PINNED",
-                    format!(
-                        "workflow `{}` line {} action `{action_path}` is pinned to `{sha}`, not a 40-hex SHA",
-                        rel.display(),
-                        line_idx + 1
-                    ),
-                    "replace action version tags with immutable commit SHAs",
-                    Some(rel),
-                ));
-                continue;
-            }
-            match allowed_shas.get(action_path) {
-                Some(expected_sha) if expected_sha == sha => {}
-                Some(expected_sha) => violations.push(violation(
-                    "WORKFLOW_ACTION_SHA_MISMATCH",
-                    format!(
-                        "workflow `{}` line {} action `{action_path}` sha `{sha}` does not match ops/inventory/toolchain.json expected `{expected_sha}`",
-                        rel.display(),
-                        line_idx + 1
-                    ),
-                    "sync workflow action pin to the canonical toolchain github_actions pin set",
-                    Some(rel),
-                )),
-                None => violations.push(violation(
-                    "WORKFLOW_ACTION_NOT_ALLOWLISTED",
-                    format!(
-                        "workflow `{}` line {} action `{action_path}` is not declared in ops/inventory/toolchain.json github_actions",
-                        rel.display(),
-                        line_idx + 1
-                    ),
-                    "declare every workflow action in ops/inventory/toolchain.json github_actions before use",
-                    Some(rel),
-                )),
-            }
-        }
+        violations.extend(workflow_action_violations(&text, &allowed_shas, rel)?);
     }
     Ok(violations)
 }
@@ -198,4 +131,92 @@ pub(super) fn check_ops_internal_registry_consistency(
             Some(Path::new(crate::core::DEFAULT_REGISTRY_PATH)),
         )])
     }
+}
+
+fn workflow_action_specs(document: &serde_yaml::Value) -> Vec<&str> {
+    let Some(jobs) = document.get("jobs").and_then(serde_yaml::Value::as_mapping) else {
+        return Vec::new();
+    };
+    let mut specs = Vec::new();
+    for job in jobs.values() {
+        if let Some(spec) = job.get("uses").and_then(serde_yaml::Value::as_str) {
+            specs.push(spec);
+        }
+        if let Some(steps) = job.get("steps").and_then(serde_yaml::Value::as_sequence) {
+            specs.extend(
+                steps
+                    .iter()
+                    .filter_map(|step| step.get("uses").and_then(serde_yaml::Value::as_str)),
+            );
+        }
+    }
+    specs
+}
+
+fn workflow_action_violations(
+    text: &str,
+    allowed_shas: &BTreeMap<String, String>,
+    workflow_path: &Path,
+) -> Result<Vec<Violation>, CheckError> {
+    let document: serde_yaml::Value = serde_yaml::from_str(text).map_err(|error| {
+        CheckError::Failed(format!(
+            "parse workflow {}: {error}",
+            workflow_path.display()
+        ))
+    })?;
+    let mut violations = Vec::new();
+    for spec in workflow_action_specs(&document) {
+        if spec.starts_with("docker://") {
+            continue;
+        }
+        if spec.starts_with("./") {
+            continue;
+        }
+        let Some((action_path, sha)) = spec.rsplit_once('@') else {
+            violations.push(violation(
+                "WORKFLOW_ACTION_PIN_MISSING",
+                format!(
+                    "workflow `{}` uses action `{spec}` without an immutable SHA",
+                    workflow_path.display(),
+                ),
+                "pin GitHub Actions to full 40-hex commit SHAs",
+                Some(workflow_path),
+            ));
+            continue;
+        };
+        if sha.len() != 40 || !sha.chars().all(|ch| ch.is_ascii_hexdigit()) {
+            violations.push(violation(
+                "WORKFLOW_ACTION_NOT_SHA_PINNED",
+                format!(
+                    "workflow `{}` action `{action_path}` is pinned to `{sha}`, not a 40-hex SHA",
+                    workflow_path.display(),
+                ),
+                "replace action version tags with immutable commit SHAs",
+                Some(workflow_path),
+            ));
+            continue;
+        }
+        match allowed_shas.get(action_path) {
+                Some(expected_sha) if expected_sha == sha => {}
+                Some(expected_sha) => violations.push(violation(
+                    "WORKFLOW_ACTION_SHA_MISMATCH",
+                    format!(
+                        "workflow `{}` action `{action_path}` sha `{sha}` does not match ops/inventory/toolchain.json expected `{expected_sha}`",
+                        workflow_path.display(),
+                    ),
+                    "sync workflow action pin to the canonical toolchain github_actions pin set",
+                    Some(workflow_path),
+                )),
+                None => violations.push(violation(
+                    "WORKFLOW_ACTION_NOT_ALLOWLISTED",
+                    format!(
+                        "workflow `{}` action `{action_path}` is not declared in ops/inventory/toolchain.json github_actions",
+                        workflow_path.display(),
+                    ),
+                    "declare every workflow action in ops/inventory/toolchain.json github_actions before use",
+                    Some(workflow_path),
+                )),
+            }
+    }
+    Ok(violations)
 }
