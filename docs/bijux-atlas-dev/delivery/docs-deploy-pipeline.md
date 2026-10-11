@@ -4,7 +4,7 @@ audience: maintainers
 type: guide
 status: canonical
 owner: atlas-docs
-last_reviewed: 2026-07-22
+last_reviewed: 2026-10-11
 ---
 
 # Docs Deploy Pipeline
@@ -37,15 +37,29 @@ fails if no build command can be found. Python, uv, Node, and Rust setup are
 enabled according to the resolved repository shape unless explicitly
 configured.
 
-After the build, the workflow searches the configured site directory and known
-artifact roots for a directory containing `index.html`. If none is found, it
-may invoke the repository's `docs` Make target as a fallback. The selected
-directory is passed to the configured verification command, then checked for a
-directory and root `index.html` before upload.
+Publication is a manual `deploy-docs` dispatch on accepted `main`, authorized
+by the IaC publication controller. Its `accepted_commit` must match the exact
+workflow source and current accepted repository revision. Pull requests, tags,
+and other branches cannot publish.
 
-Deployment occurs only for a reusable workflow call, `main`, `master`, or a
-`v*` tag. Manual dispatch from another ref is rejected because it would build
-without reaching the deployment boundary.
+`make gh-docs-install` selects the source-owned `history` renderer recipe:
+Python 3.11.17 on Ubuntu 24.04 with the complete hash-locked documentation
+closure. It installs into `artifacts/docs/publication/python`; this environment
+is separate from ordinary documentation and application tools. Publication
+uses the reviewed git revision plugin 1.6.0 while the normal documentation lock
+remains independent.
+
+`make gh-docs-build` checks the exact fetched Std pin and generated projection,
+captures committed source identity, and renders the configured production
+artifact through the shared qualified producer. It records reconstruction,
+content security, routes and search verification before admitting the
+publication manifest. `make gh-docs-verify` rechecks that manifest and its
+source and bundle bytes without rebuilding.
+
+The only selected bundle is `artifacts/docs/site`, at
+`https://bijux.io/bijux-atlas/`. Missing artifacts, unqualified renderer profiles,
+changed source or incomplete evidence fail before Pages upload. There is no
+artifact-directory discovery or fallback render.
 
 ## Evidence Strength
 
@@ -57,10 +71,9 @@ without reaching the deployment boundary.
 | upload action passed | GitHub accepted the artifact | successful deployment and public fetch |
 | deploy action returned a URL | Pages reported a deployment | external route, asset, redirect, and cache checks when required |
 
-The shared workflow itself guarantees only the generic root `index.html` check
-unless the repository's resolved verify command enforces more. Asset, redirect,
-search, canonical URL, and public smoke-test claims must name the command or
-post-deploy observation that proves them.
+The qualified producer proves the selected source and rendered artifact. A
+successful Pages deployment and external site checks remain separate evidence;
+local qualification alone does not establish public reachability.
 
 ## Operational Record
 
