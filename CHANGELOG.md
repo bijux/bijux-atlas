@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ### Changed
 
+- Bound manual documentation publication to the canonical 60-minute hosted budget and verify common governance independently from the retained documentation source ([#156](https://github.com/bijux/bijux-atlas/pull/156)).
+
 - Keep repository new-tab warnings compact and accessible, and align catalogue input identities with independent publication admission ([#152](https://github.com/bijux/bijux-atlas/pull/152)).
 - Bind documentation render dates to committed source, permit repository-owned workflow badge images, and batch publication custody checks ([#151](https://github.com/bijux/bijux-atlas/pull/151)).
 - Adopt trusted manual publication admission and accepted shared documentation policy ([#148](https://github.com/bijux/bijux-atlas/pull/148)).
