@@ -11,7 +11,7 @@
     "test": "node --test ../../../../makes/bin/docs/markdown_lint.test.mjs"
   },
   "devDependencies": {
-    "cspell": "10.1.1",
+    "cspell": "10.3.6",
     "markdownlint": "0.41.1"
   },
   "overrides": {
