@@ -417,9 +417,9 @@ fn s3_store_uses_etag_cache_and_handles_304_for_catalog() {
     let second = store.list_datasets().expect("second catalog fetch");
     assert_eq!(second.len(), 1);
 
-    assert_eq!(catalog_requests.load(Ordering::Relaxed), 1);
     drop(store);
     handle.join().expect("server thread");
+    assert_eq!(catalog_requests.load(Ordering::Relaxed), 1);
 }
 
 #[test]
