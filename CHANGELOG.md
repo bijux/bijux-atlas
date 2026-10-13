@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ### Changed
 
+- Adopt accepted reader preference recovery, inert native search, truthful clipboard feedback, patched publication dependencies and authenticated workflow actions; retain the frozen documentation spelling dependency graph ([#158](https://github.com/bijux/bijux-atlas/pull/158)).
+
 - Bound manual documentation publication to the canonical 60-minute hosted budget and verify common governance independently from the retained documentation source ([#156](https://github.com/bijux/bijux-atlas/pull/156)).
 
 - Keep repository new-tab warnings compact and accessible, and align catalogue input identities with independent publication admission ([#152](https://github.com/bijux/bijux-atlas/pull/152)).
