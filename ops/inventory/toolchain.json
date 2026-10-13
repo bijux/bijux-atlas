@@ -73,8 +73,8 @@
       "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
     },
     "astral-sh/setup-uv": {
-      "ref": "v10.2.0",
-      "sha": "c18668ad3cf93ea998bef934396af7bb5c839dc7"
+      "ref": "v10.3.0",
+      "sha": "1c37ad07a6a961277cf70c0d37d6f313000f5884"
     },
     "actions/setup-java": {
       "ref": "v6.0.1",
