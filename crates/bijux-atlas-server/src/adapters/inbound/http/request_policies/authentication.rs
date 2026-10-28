@@ -5,7 +5,7 @@ use crate::app::server::observability::unix_time_millis;
 use crate::sha256_hex;
 use axum::http::HeaderMap;
 use base64::Engine as _;
-use hmac::{digest::KeyInit, Hmac, Mac};
+use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
 #[derive(Debug, Clone, PartialEq, Eq)]

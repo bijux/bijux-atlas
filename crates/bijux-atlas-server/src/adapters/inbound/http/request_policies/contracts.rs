@@ -6,7 +6,7 @@ use axum::http::HeaderMap;
 use axum::http::HeaderValue;
 use base64::Engine as _;
 use bijux_atlas_runtime::runtime::config::AuthMode;
-use hmac::{digest::KeyInit, Hmac, Mac};
+use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use std::time::Duration;
 

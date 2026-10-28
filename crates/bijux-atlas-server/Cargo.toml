@@ -27,7 +27,7 @@ bijux-atlas-runtime.workspace = true
 brotli = "9"
 clap = { version = "4", features = ["derive"] }
 flate2 = "1"
-hmac = "0.13"
+hmac = "0.12.1"
 hex = "0.4"
 opentelemetry = "0.33"
 opentelemetry-otlp = { version = "0.33", features = ["http-proto", "reqwest-client"] }
@@ -37,7 +37,7 @@ rusqlite.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_yaml = "0.9"
-sha2 = "0.11"
+sha2 = "0.10.9"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time", "signal"] }
 tracing = "0.1"
 tracing-opentelemetry = "0.34"
@@ -53,13 +53,13 @@ axum = "0.8"
 bijux-atlas-model.workspace = true
 criterion = "0.8"
 hex = "0.4"
-hmac = "0.13"
+hmac = "0.12.1"
 redis.workspace = true
 regex = "1.11"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "http2", "charset", "json"] }
 rusqlite.workspace = true
 serde_json.workspace = true
-sha2 = "0.11"
+sha2 = "0.10.9"
 tempfile = "=3.27.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time", "signal"] }
 tracing = "0.1"
