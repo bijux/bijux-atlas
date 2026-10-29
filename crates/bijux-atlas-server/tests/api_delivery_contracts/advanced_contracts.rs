@@ -2,7 +2,7 @@
 
 use super::*;
 use bijux_atlas_model::dataset::{Catalog, CatalogEntry};
-use hmac::KeyInit;
+use hmac::Mac;
 
 #[tokio::test]
 async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {

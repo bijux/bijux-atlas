@@ -20,7 +20,7 @@ serde = ["dep:base64", "dep:serde_json"]
 base64 = { version = "0.23", optional = true }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", optional = true }
-sha2 = "0.11"
+sha2 = "0.10.9"
 
 [dev-dependencies]
 criterion = "0.8"

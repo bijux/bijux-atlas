@@ -12,6 +12,16 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ### Changed
 
+- Use secure SHA-2 0.10 and HMAC 0.12 dependencies compatible with Rust 1.86,
+  preserve SHA-256 signatures, and patch Rustls, WebPKI and certificate trust roots.
+- Keep owned workflow action pins and their security inventory consistent with
+  the accepted shared workflow revisions.
+
+- Qualify current Rust, spelling and Markdown lint dependencies, patch the lint
+  engine's regex dependency, and adopt accepted shared workflow action pins.
+- Check SQLite benchmark fixture growth by gene counts without assuming that
+  whole-page database allocation must increase for every larger row set.
+
 - Adopt accepted reader preference recovery, inert native search, truthful clipboard feedback, patched publication dependencies and authenticated workflow actions; retain the frozen documentation spelling dependency graph ([#158](https://github.com/bijux/bijux-atlas/pull/158)).
 
 - Bound manual documentation publication to the canonical 60-minute hosted budget and verify common governance independently from the retained documentation source ([#156](https://github.com/bijux/bijux-atlas/pull/156)).

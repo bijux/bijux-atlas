@@ -29,12 +29,12 @@
       - "name": "Check out the repository"
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - "name": "Set up Rust"
-        "uses": "dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f"
+        "uses": "dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8"
         "with":
           "toolchain": "${{ env.RUST_TOOLCHAIN_VERSION }}"
           "components": "rustfmt"
       - "name": "Restore the Rust cache"
-        "uses": "Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+        "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0"
         "with":
           "shared-key": "ci-fmt"
       - "name": "Run repository formatting gate"
@@ -48,12 +48,12 @@
       - "name": "Check out the repository"
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - "name": "Set up Rust"
-        "uses": "dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f"
+        "uses": "dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8"
         "with":
           "toolchain": "${{ env.RUST_TOOLCHAIN_VERSION }}"
           "components": "clippy"
       - "name": "Restore the Rust cache"
-        "uses": "Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+        "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0"
         "with":
           "shared-key": "ci-lint"
       - "name": "Run repository lint gate"
@@ -67,11 +67,11 @@
       - "name": "Check out the repository"
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - "name": "Set up Rust"
-        "uses": "dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f"
+        "uses": "dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8"
         "with":
           "toolchain": "${{ env.RUST_TOOLCHAIN_VERSION }}"
       - "name": "Restore the Rust cache"
-        "uses": "Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+        "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0"
         "with":
           "shared-key": "ci-audit"
       - "name": "Install Rust audit tools"
@@ -87,11 +87,11 @@
       - "name": "Check out the repository"
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - "name": "Set up Rust"
-        "uses": "dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f"
+        "uses": "dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8"
         "with":
           "toolchain": "${{ env.RUST_TOOLCHAIN_VERSION }}"
       - "name": "Restore the Rust cache"
-        "uses": "Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+        "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0"
         "with":
           "shared-key": "ci-test"
       - "name": "Install cargo-nextest"

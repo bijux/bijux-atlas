@@ -102,20 +102,20 @@ jobs:
 
       - name: Set up Python
         if: ${{ inputs.enable_python_toolchain }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v6.3.0
         with:
           python-version: ${{ inputs.python_setup_version }}
           cache: pip
           cache-dependency-path: ${{ inputs.python_cache_dependency_path }}
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: ${{ inputs.rust_toolchain_version }}
           components: rustfmt
 
       - name: Restore the Rust cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.2
 
       - name: Run formatting checks
         run: ${{ inputs.fmt_command }}
@@ -130,20 +130,20 @@ jobs:
 
       - name: Set up Python
         if: ${{ inputs.enable_python_toolchain }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v6.3.0
         with:
           python-version: ${{ inputs.python_setup_version }}
           cache: pip
           cache-dependency-path: ${{ inputs.python_cache_dependency_path }}
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: ${{ inputs.rust_toolchain_version }}
           components: clippy
 
       - name: Restore the Rust cache
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.2
 
       - name: Run lint checks
         run: ${{ inputs.lint_command }}
@@ -164,7 +164,7 @@ jobs:
 
       - name: Set up Python
         if: ${{ inputs.enable_python_toolchain }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v6.3.0
         with:
           python-version: ${{ inputs.python_setup_version }}
           cache: pip
@@ -179,13 +179,13 @@ jobs:
           fi
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: ${{ inputs.rust_toolchain_version }}
 
       - name: Restore the Rust cache
         if: ${{ !inputs.use_isolated_temp_roots }}
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.2
 
       - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
@@ -246,7 +246,7 @@ jobs:
 
       - name: Set up Python
         if: ${{ inputs.enable_python_toolchain }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v6.3.0
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -261,13 +261,13 @@ jobs:
           fi
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # v1
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: ${{ inputs.rust_toolchain_version }}
 
       - name: Restore the Rust cache
         if: ${{ !inputs.use_isolated_temp_roots }}
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.2
 
       - name: Normalize cache and temp roots to workspace paths
         if: ${{ inputs.use_isolated_temp_roots }}
