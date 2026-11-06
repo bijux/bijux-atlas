@@ -73,8 +73,8 @@
       "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3"
     },
     "astral-sh/setup-uv": {
-      "ref": "v10.3.2",
-      "sha": "07a047e608db84b3d8c06cd9a7c7dcc9c355c18e"
+      "ref": "v10.3.3",
+      "sha": "68559e99cc807c1eb7e9238fd43a15bba460eec2"
     },
     "actions/setup-java": {
       "ref": "v6.0.1",
@@ -85,8 +85,8 @@
       "sha": "9000827ccba6bdab643e8b6fd33ac0654aef8333"
     },
     "ruby/setup-ruby": {
-      "sha": "7f797815d8adceb1c412e7abefdd1ab4abc47a5f",
-      "ref": "v1.335.0"
+      "sha": "de492cf36cbab201753d720ce4f4e336cd688c94",
+      "ref": "v1.336.0"
     }
   },
   "images": {

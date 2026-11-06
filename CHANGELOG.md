@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ### Changed
 
+- Qualify Brotli 9.1 and current documentation tooling, and adopt accepted
+  shared workflow actions while preserving secure Rust 1.86 cryptography.
+
 - Use secure SHA-2 0.10 and HMAC 0.12 dependencies compatible with Rust 1.86,
   preserve SHA-256 signatures, and patch Rustls, WebPKI and certificate trust roots.
 - Keep owned workflow action pins and their security inventory consistent with
