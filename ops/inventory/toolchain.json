@@ -65,8 +65,8 @@
       "sha": "5f6978faf089d4d20b00c7766989d076bb2fc7f1"
     },
     "softprops/action-gh-release": {
-      "ref": "v3.0.3",
-      "sha": "efb35369e0ad2afab669f228072c1b0d510eae64"
+      "ref": "v3.0.4",
+      "sha": "8a0cd651e5b2365bd640854a3fa5dfc70e4875f3"
     },
     "actions/github-script": {
       "ref": "v9.0.0",
@@ -85,8 +85,8 @@
       "sha": "9000827ccba6bdab643e8b6fd33ac0654aef8333"
     },
     "ruby/setup-ruby": {
-      "sha": "de492cf36cbab201753d720ce4f4e336cd688c94",
-      "ref": "v1.336.0"
+      "sha": "b3aaceaef7e0ee231b499e7b5f49c03fc1d32199",
+      "ref": "v1.338.0"
     }
   },
   "images": {
