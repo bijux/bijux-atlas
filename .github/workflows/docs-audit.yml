@@ -41,7 +41,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
-          toolchain: 1.86.0
+          toolchain: 1.89.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24.21.0"
@@ -60,13 +60,13 @@ jobs:
           path: |
             .cache/cargo/home/docs-audit/registry
             .cache/cargo/home/docs-audit/git
-          key: cargo-registry-nightly-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-nightly-${{ runner.os }}-1.89.0-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: .cache/cargo/target/docs-audit
-          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.89.0-${{ hashFiles('Cargo.lock') }}
       - name: Install docs toolchain
         shell: bash
         run: |
@@ -122,13 +122,13 @@ jobs:
           path: |
             .cache/cargo/home/docs-audit/registry
             .cache/cargo/home/docs-audit/git
-          key: cargo-registry-nightly-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-registry-nightly-${{ runner.os }}-1.89.0-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: .cache/cargo/target/docs-audit
-          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.86.0-${{ hashFiles('Cargo.lock') }}
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.89.0-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
