@@ -15,7 +15,7 @@ carry their own explanation and proof, not just code edits in isolation.
 
 ## Prerequisites
 
-- Rust 1.85.0 through [`rust-toolchain.toml`](rust-toolchain.toml)
+- Rust 1.89.0 through [`rust-toolchain.toml`](rust-toolchain.toml)
 - Cargo
 - GNU Make
 - Python 3 when you need to run the MkDocs documentation toolchain from [`configs/sources/repository/docs/requirements.txt`](configs/sources/repository/docs/requirements.txt)

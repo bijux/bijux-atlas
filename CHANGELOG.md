@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org) and the
 
 ### Changed
 
+- Consolidate dependency proposals in [#176](https://github.com/bijux/bijux-atlas/pull/176): qualify TOML 1.2, SHA-2 0.11, HMAC 0.13 and the revision-date plugin patch; repair constant-time utility and bundled SQLite advisories with Rust 1.89; adopt accepted shared workflow action pins and preserve hash and cursor compatibility.
+
 - Qualify Brotli 9.1 and current documentation tooling, and adopt accepted
   shared workflow actions while preserving secure Rust 1.86 cryptography.
 

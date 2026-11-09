@@ -2,7 +2,7 @@
 
 use super::*;
 use bijux_atlas_model::dataset::{Catalog, CatalogEntry};
-use hmac::Mac;
+use hmac::{KeyInit, Mac};
 
 #[tokio::test]
 async fn diff_endpoints_return_added_removed_changed_and_support_latest_alias() {
@@ -724,7 +724,7 @@ async fn sqlite_progress_handler_timeout_aborts_query() {
         ..Default::default()
     };
     let mgr = DatasetCacheManager::new(cfg, store);
-    let conn = mgr
+    let mut conn = mgr
         .open_dataset_connection(&ds)
         .await
         .expect("open dataset connection");

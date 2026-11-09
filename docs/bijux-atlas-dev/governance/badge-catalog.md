@@ -31,7 +31,7 @@ Atlas is Rust-first, so the catalog focuses on:
 ## Repository Summary
 
 <!-- bijux-atlas-badges:repository-summary:start -->
-[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas)
+[![Rust 1.89+](https://img.shields.io/badge/rust-1.89%2B-DEA584?logo=rust&logoColor=white)](https://crates.io/crates/bijux-atlas)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![CI](https://github.com/bijux/bijux-atlas/workflows/repo%20/%20ci/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/ci.yml?query=branch%3Amain)
 [![Docs](https://github.com/bijux/bijux-atlas/workflows/deploy-docs/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml)
@@ -50,7 +50,7 @@ a badge block in a package README or handbook.
 
 ```markdown
 <!-- bijux-atlas-badges:runtime-package-summary:start -->
-[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)]({{ crate_registry_url }})
+[![Rust 1.89+](https://img.shields.io/badge/rust-1.89%2B-DEA584?logo=rust&logoColor=white)]({{ crate_registry_url }})
 [![crates.io](https://img.shields.io/crates/v/{{ crate_name }}?logo=rust)]({{ crate_registry_url }})
 [![rust-docs](https://img.shields.io/badge/rust--docs-{{ crate_badge_label }}-DEA584?logo=rust&logoColor=white)]({{ crate_docs_url }})
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
@@ -61,7 +61,7 @@ a badge block in a package README or handbook.
 ## Maintainer Summary
 
 <!-- bijux-atlas-badges:maintainer-summary:start -->
-[![Rust 1.86+](https://img.shields.io/badge/rust-1.86%2B-DEA584?logo=rust&logoColor=white)](https://github.com/bijux/bijux-atlas)
+[![Rust 1.89+](https://img.shields.io/badge/rust-1.89%2B-DEA584?logo=rust&logoColor=white)](https://github.com/bijux/bijux-atlas)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-0F766E)](https://github.com/bijux/bijux-atlas/blob/main/LICENSE)
 [![Docs](https://github.com/bijux/bijux-atlas/workflows/deploy-docs/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/deploy-docs.yml)
 [![Docs Audit](https://github.com/bijux/bijux-atlas/workflows/docs-audit/badge.svg)](https://github.com/bijux/bijux-atlas/actions/workflows/docs-audit.yml)

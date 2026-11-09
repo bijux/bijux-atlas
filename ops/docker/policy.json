@@ -13,7 +13,7 @@
     "gcr.io/distroless/cc-debian12:nonroot@sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb"
   ],
   "allowed_builder_images": [
-    "rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88"
+    "rust:1.89.0-bookworm@sha256:948f9b08a66e7fe01b03a98ef1c7568292e07ec2e4fe90d88c07bb14563c84ff"
   ],
   "allow_platform_in_from": false,
   "shell_policy": "forbid",

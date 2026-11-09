@@ -94,7 +94,7 @@ changes that miss the filters. Treat the mismatch as a workflow coverage defect
 until the trigger follows current ownership.
 
 The workflow installs the floating `stable` Rust toolchain, while other Atlas
-workflows commonly pin Rust 1.86. A green result can therefore move when stable
+workflows commonly pin Rust 1.89. A green result can therefore move when stable
 moves. Record the resolved toolchain in evidence and distinguish toolchain drift
 from governance-policy drift.
 

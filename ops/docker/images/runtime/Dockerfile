@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-ARG RUST_VERSION=1.84.1
+ARG RUST_VERSION=1.89.0
 ARG DEBIAN_FRONTEND=noninteractive
 ARG IMAGE_VERSION=dev-local
 ARG VCS_REF=unknown
@@ -7,7 +7,7 @@ ARG BUILD_DATE=1970-01-01T00:00:00Z
 ARG SOURCE_DATE_EPOCH=0
 ARG IMAGE_PROVENANCE=local
 
-FROM rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88 AS builder
+FROM rust:1.89.0-bookworm@sha256:948f9b08a66e7fe01b03a98ef1c7568292e07ec2e4fe90d88c07bb14563c84ff AS builder
 WORKDIR /workspace
 
 RUN apt-get update \

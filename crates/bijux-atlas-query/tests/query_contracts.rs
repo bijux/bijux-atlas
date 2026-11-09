@@ -2,3 +2,6 @@
 
 #[path = "query_contracts/query_contract_fixtures.rs"]
 mod query_contract_fixtures;
+
+#[path = "query_contracts/cursor_compatibility.rs"]
+mod cursor_compatibility;
