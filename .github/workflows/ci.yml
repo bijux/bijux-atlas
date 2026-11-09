@@ -16,9 +16,9 @@
 "permissions":
   "contents": "read"
 "env":
-  "RUST_TOOLCHAIN_VERSION": "1.86.0"
-  "CARGO_DENY_VERSION": "0.18.3"
-  "CARGO_AUDIT_VERSION": "0.22.0"
+  "RUST_TOOLCHAIN_VERSION": "1.89.0"
+  "CARGO_DENY_VERSION": "0.18.9"
+  "CARGO_AUDIT_VERSION": "0.22.2"
   "CARGO_NEXTEST_VERSION": "0.9.100"
 "jobs":
   "fmt":
