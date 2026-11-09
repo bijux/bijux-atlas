@@ -752,7 +752,7 @@ fn run_scenarios(
     let mut scenarios = registry
         .scenarios
         .into_iter()
-        .filter(|row| filter_ids.is_empty() || filter_ids.iter().any(|id| row.id.as_str() == *id))
+        .filter(|row| filter_ids.is_empty() || filter_ids.contains(&row.id.as_str()))
         .collect::<Vec<_>>();
     scenarios.sort_by(|a, b| a.id.cmp(&b.id));
 

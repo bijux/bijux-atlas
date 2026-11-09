@@ -24,7 +24,7 @@ impl io::Write for BufferWriter {
         let mut guard = self
             .0
             .lock()
-            .map_err(|_| io::Error::new(io::ErrorKind::Other, "lock poisoned"))?;
+            .map_err(|_| io::Error::other("lock poisoned"))?;
         guard.extend_from_slice(buf);
         Ok(buf.len())
     }

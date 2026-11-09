@@ -423,7 +423,7 @@ pub(crate) async fn genes_handler(
     let stage_dataset_resolve_started = Instant::now();
     let work = async {
         info!(request_id = %request_id, dataset = ?dataset, "dataset resolve");
-        let c = state.cache.open_dataset_connection(&dataset).await?;
+        let mut c = state.cache.open_dataset_connection(&dataset).await?;
         let _ = c
             .conn
             .prepare_cached(app_query::prepared_sql_for_class(class));

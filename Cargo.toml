@@ -19,7 +19,7 @@ resolver = "2"
 edition = "2021"
 version = "0.2.2"
 license = "Apache-2.0"
-rust-version = "1.86.0"
+rust-version = "1.89.0"
 description = "Genomics dataset delivery platform for immutable artifacts, gene-query APIs, and Rust-owned repository automation"
 repository = "https://github.com/bijux/bijux-atlas.git"
 homepage = "https://bijux.io/bijux-atlas/"
@@ -42,9 +42,9 @@ todo = "deny"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-# Pin Redis to preserve workspace Rust 1.86.0 compatibility.
+# Keep Redis at the qualified workspace release.
 redis = { version = "=1.2.2", features = ["tokio-comp"] }
-rusqlite = { version = "0.40", features = ["bundled", "vtab", "hooks"] }
+rusqlite = { version = "0.41", features = ["bundled", "vtab", "hooks"] }
 bijux-atlas = { version = "=0.2.2", path = "crates/bijux-atlas" }
 bijux-atlas-runtime = { version = "=0.2.2", path = "crates/bijux-atlas-runtime" }
 bijux-atlas-api = { version = "=0.2.2", path = "crates/bijux-atlas-api" }

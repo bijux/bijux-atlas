@@ -123,7 +123,7 @@ repository-provided production backup system.
 
 ## Install the Public Binaries
 
-Atlas requires Rust 1.86 or newer. Install the direct command, server, and
+Atlas requires Rust 1.89 or newer. Install the direct command, server, and
 OpenAPI exporter from crates.io:
 
 ```bash

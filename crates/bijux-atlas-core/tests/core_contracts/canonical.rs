@@ -21,6 +21,14 @@ fn sha256_is_repeatable_for_same_bytes() {
 }
 
 #[test]
+fn sha256_matches_the_standard_abc_vector() {
+    assert_eq!(
+        sha256_hex(b"abc"),
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    );
+}
+
+#[test]
 fn stable_json_hash_repeatable_across_invocations() {
     let value = json!({"k2": 2, "k1": 1, "nested": {"b": 2, "a": 1}});
     let h1 = canonical::stable_json_hash_hex(&value).expect("hash1");

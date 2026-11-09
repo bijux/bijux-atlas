@@ -1,5 +1,5 @@
 {
-  "channel": "1.85.0",
+  "channel": "1.89.0",
   "consumers": [
     ".github/workflows/ci.yml",
     ".github/workflows/ci.yml",
