@@ -43,7 +43,7 @@ todo = "deny"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Keep Redis at the qualified workspace release.
-redis = { version = "=1.2.2", features = ["tokio-comp"] }
+redis = { version = "=1.8.1", features = ["tokio-comp"] }
 rusqlite = { version = "0.41", features = ["bundled", "vtab", "hooks"] }
 bijux-atlas = { version = "=0.2.2", path = "crates/bijux-atlas" }
 bijux-atlas-runtime = { version = "=0.2.2", path = "crates/bijux-atlas-runtime" }
