@@ -88,13 +88,13 @@
           "node-version": "24.21.0"
       - "name": "Prepare hub documentation builder"
         "if": "${{ matrix.check == 'contracts' && github.repository == 'bijux/bijux.github.io' }}"
-        "uses": "astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2"
+        "uses": "astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d"
         "with":
           "version": "0.11.17"
           "enable-cache": false
       - "name": "Provision action reference parser"
         "if": "${{ matrix.check == 'standard' }}"
-        "uses": "ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199"
+        "uses": "ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0"
         "with":
           "ruby-version": "3.3.12"
       - "name": "Admit action reference parser runtime"
@@ -205,7 +205,7 @@
       - "name": "Checkout"
         "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - "name": "Prepare the pinned dependency installer"
-        "uses": "astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2"
+        "uses": "astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d"
         "with":
           "version": "0.11.17"
           "enable-cache": false
